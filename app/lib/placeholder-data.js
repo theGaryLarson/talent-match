@@ -2,7 +2,7 @@
 // https://nextjs.org/learn/dashboard-app/fetching-data
 const users = [
   {
-    id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    id: '410544B2-4001-4271-9855-FEC4B6A6442A',
     name: 'User',
     email: 'user@nextmail.com',
     password: '123456',
@@ -11,49 +11,49 @@ const users = [
 
 const customers = [
   {
-    id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    id: '3958DC9E-712F-4377-85E9-FEC4B6A6442A',
     name: 'Delba de Oliveira',
     email: 'delba@oliveira.com',
     image_url: '/customers/delba-de-oliveira.png',
   },
   {
-    id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
+    id: '3958DC9E-742F-4377-85E9-FEC4B6A6442A',
     name: 'Lee Robinson',
     email: 'lee@robinson.com',
     image_url: '/customers/lee-robinson.png',
   },
   {
-    id: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
+    id: '3958DC9E-737F-4377-85E9-FEC4B6A6442A',
     name: 'Hector Simpson',
     email: 'hector@simpson.com',
     image_url: '/customers/hector-simpson.png',
   },
   {
-    id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
+    id: '50CA3E18-62CD-11EE-8C99-0242AC120002',
     name: 'Steven Tey',
     email: 'steven@tey.com',
     image_url: '/customers/steven-tey.png',
   },
   {
-    id: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    id: '3958DC9E-787F-4377-85E9-FEC4B6A6442A',
     name: 'Steph Dietz',
     email: 'steph@dietz.com',
     image_url: '/customers/steph-dietz.png',
   },
   {
-    id: '76d65c26-f784-44a2-ac19-586678f7c2f2',
+    id: '76D65C26-F784-44A2-AC19-586678F7C2F2',
     name: 'Michael Novotny',
     email: 'michael@novotny.com',
     image_url: '/customers/michael-novotny.png',
   },
   {
-    id: 'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa',
+    id: 'D6E15727-9FE1-4961-8C5B-EA44A9BD81AA',
     name: 'Evil Rabbit',
     email: 'evil@rabbit.com',
     image_url: '/customers/evil-rabbit.png',
   },
   {
-    id: '126eed9c-c90c-4ef6-a4a8-fcf7408d3c66',
+    id: '126EED9C-C90C-4EF6-A4A8-FCF7408D3C66',
     name: 'Emil Kowalski',
     email: 'emil@kowalski.com',
     image_url: '/customers/emil-kowalski.png',

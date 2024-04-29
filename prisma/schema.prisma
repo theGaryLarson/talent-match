@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Subcategories {
+  id             String   @id(map: "PK__subcateg__3213E83F064F714D") @default(uuid()) @db.Char(36)
+  skill_category String   @db.VarChar(255)
+  description    String?  @db.VarChar(255)
+  skills         Skills[]
+}
+
+model Skills {
+  id             String        @id(map: "PK__skills__3213E83FEC93D05F") @default(uuid()) @db.Char(36)
+  subcategory_id String        @db.Char(36)
+  skill          String        @unique(map: "UQ_skill") @db.VarChar(255)
+  info_url       String?       @db.VarChar(255)
+  subcategories  Subcategories @relation(fields: [subcategory_id], references: [id], onUpdate: NoAction, map: "FK_subcategory_id")
+}
+
+model User {
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
+  password String
+}
+
+model Invoice {
+  id         String   @id @default(uuid())
+  customerId String
+  amount     Int
+  status     String
+  date       DateTime
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+}
+
+model Customer {
+  id       String    @id @default(uuid())
+  name     String
+  email    String    @unique
+  imageUrl String
+
+  invoices Invoice[]
+}
+
+model Revenue {
+  month   String @id
+  revenue Int
+}
