@@ -7,6 +7,7 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
+  LatestInvoice,
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -22,24 +23,33 @@ export async function fetchRevenue(): Promise<Revenue[]> {
   }
 }
 
-export async function fetchLatestInvoices(): Promise<LatestInvoiceRaw> {
+export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
   try {
     const data = await prisma.invoices.findMany({
-      include: {
-        customers: true,
-      },
+      take: 5,
       orderBy: {
-        date: 'desc'
+        date: 'desc',
       },
-      take: 5
+      select: {
+        amount: true,
+        customers: {
+          select: {
+            id: true,
+            name: true,
+            image_url: true,
+            email: true,
+          }
+        }
+      }
     });
-
-    const latestInvoices = data.map(invoice => ({
-      ...invoice,
+  
+    return data.map(invoice => ({
+      id: invoice.customers.id,
       amount: formatCurrency(invoice.amount),
+      name: invoice.customers.name,
+      image_url: invoice.customers.image_url,
+      email: invoice.customers.email,
     }));
-
-    return latestInvoices;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the latest invoices.');
