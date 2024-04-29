@@ -22,30 +22,30 @@ model Skills {
   subcategories  Subcategories @relation(fields: [subcategory_id], references: [id], onUpdate: NoAction, map: "FK_subcategory_id")
 }
 
-model User {
+model Users {
   id       String   @id @default(uuid())
   name     String
   email    String   @unique
   password String
 }
 
-model Invoice {
-  id         String   @id @default(uuid())
-  customerId String
-  amount     Int
-  status     String
-  date       DateTime
+model Invoices {
+  id          String   @id @default(uuid())
+  customer_id String
+  amount      Int
+  status      String
+  date        DateTime
 
-  customer   Customer @relation(fields: [customerId], references: [id])
+  customers   Customers @relation(fields: [customer_id], references: [id])
 }
 
-model Customer {
-  id       String    @id @default(uuid())
-  name     String
-  email    String    @unique
-  imageUrl String
+model Customers {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  image_url String
 
-  invoices Invoice[]
+  invoices Invoices[]
 }
 
 model Revenue {

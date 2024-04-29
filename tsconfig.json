@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.js",
     "scripts/seed.js"
-  ],
+, "prisma/seed.js", "data/skills.js"  ],
   "exclude": ["node_modules"]
 }

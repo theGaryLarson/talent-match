@@ -9985,5 +9985,4 @@ const skillsData = [
 		"info_url" : "https://lightcast.io/open-skills/skills/KS120MT6GSPFQV9PKZVS"
 	}
 ]
-
 export default skillsData;
