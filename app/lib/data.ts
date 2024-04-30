@@ -1,19 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import {
-  CustomerField,
-  CustomersTableType,
-  InvoiceForm,
-  InvoicesTable,
-  LatestInvoiceRaw,
-  User,
-  Revenue,
-  LatestInvoice,
-} from './definitions';
 import { formatCurrency } from './utils';
 
 const prisma = new PrismaClient();
 
-export async function fetchRevenue(): Promise<Revenue[]> {
+export async function fetchRevenue() {
   try {
     const data = await prisma.revenue.findMany({select: {month: true, revenue: true}});
     return data;
@@ -23,7 +13,7 @@ export async function fetchRevenue(): Promise<Revenue[]> {
   }
 }
 
-export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
+export async function fetchLatestInvoices() {
   try {
     const data = await prisma.invoices.findMany({
       take: 5,
@@ -42,7 +32,7 @@ export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
         }
       }
     });
-  
+
     return data.map(invoice => ({
       id: invoice.customers.id,
       amount: formatCurrency(invoice.amount),
@@ -58,24 +48,38 @@ export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
 
 export async function fetchCardData() {
   try {
-    const invoiceCount = await prisma.invoices.count();
-    const customerCount = await prisma.customers.count();
-    const invoiceStatus = await prisma.invoices.aggregate({
-      _sum: {
-        amount: true,
-      },
+    // Initialize asynchronous queries using Prisma
+    const invoiceCountPromise = prisma.invoices.count();
+    const customerCountPromise = prisma.customers.count();
+    const paidInvoiceCountPromise = prisma.invoices.count({
       where: {
-        status: {
-          equals: 'paid',
-        },
-      },
+        status: 'paid'
+      }
+    });
+    const pendingInvoiceCountPromise = prisma.invoices.count({
+      where: {
+        status: 'pending'
+      }
     });
 
+    const [
+      numberOfInvoices,
+      numberOfCustomers,
+      totalPaidInvoices,
+      totalPendingInvoices,
+    ] = await Promise.all([
+      invoiceCountPromise,
+      customerCountPromise,
+      paidInvoiceCountPromise,
+      pendingInvoiceCountPromise
+    ]);
+
+
     return {
-      numberOfCustomers: customerCount,
-      numberOfInvoices: invoiceCount,
-      totalPaidInvoices: formatCurrency(invoiceStatus._sum.amount || 0),
-      // Assuming handling for pending similar to paid
+      numberOfInvoices,
+      numberOfCustomers,
+      totalPaidInvoices,
+      totalPendingInvoices,
     };
   } catch (error) {
     console.error('Database Error:', error);
