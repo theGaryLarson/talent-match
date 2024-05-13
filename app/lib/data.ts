@@ -1,9 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { formatCurrency } from './utils';
+import { unstable_noStore as noStore } from 'next/cache';
 
 const prisma = new PrismaClient();
 
 export async function fetchRevenue() {
+  noStore();
+  console.log('Fetching revenue data...');
+  await new Promise((resolve) => setTimeout(resolve, 3000));
   try {
     const data = await prisma.revenue.findMany({select: {month: true, revenue: true}});
     return data;
@@ -11,9 +15,11 @@ export async function fetchRevenue() {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
   }
+  console.log('Data fetch completed after 3 seconds.');
 }
 
 export async function fetchLatestInvoices() {
+  noStore();
   try {
     const data = await prisma.invoices.findMany({
       take: 5,
@@ -47,6 +53,7 @@ export async function fetchLatestInvoices() {
 }
 
 export async function fetchCardData() {
+  noStore();
   try {
     // Initialize asynchronous queries using Prisma
     const invoiceCountPromise = prisma.invoices.count();
@@ -119,6 +126,7 @@ export async function fetchFilteredInvoices(query: string, currentPage: number) 
 }
 
 export async function fetchInvoicesPages(query: string) {
+  noStore();
   try {
     const count = await prisma.invoices.count({
       where: {
@@ -139,6 +147,7 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
+  noStore();
   try {
     const invoice = await prisma.invoices.findUnique({
       where: { id },
