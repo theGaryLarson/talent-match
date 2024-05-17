@@ -1,6 +1,6 @@
-import { Card } from '@/app/ui/candidate-dashboard/cards';
-import RevenueChart from '@/app/ui/candidate-dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/candidate-dashboard/latest-invoices';
+import {Card }from '@/app/ui/employer-dashboard/cards';
+import RevenueChart from '@/app/ui/employer-dashboard/revenue-chart';
+import LatestInvoices from '@/app/ui/employer-dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchLatestInvoices, fetchCardData } from '@/app/lib/data';
 import { Suspense } from 'react';
