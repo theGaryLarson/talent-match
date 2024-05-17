@@ -203,15 +203,18 @@ export async function fetchFilteredCustomers(query: string) {
   }
 }
 
-export async function getUser(email: string): Promise<User | null> {
-  try {
-    const user = await prisma.users.findUnique({
-      where: { email },
-    });
-    return user;
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
+export async function getUser(email?: string | null): Promise<User | null> {
+  if (email) {
+    try {
+      const user = await prisma.users.findUnique({
+        where: { email },
+      });
+      return user;
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+      throw new Error('Failed to fetch user.');
+    }
   }
+  return null;
 }
 

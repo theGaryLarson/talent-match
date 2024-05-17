@@ -3,7 +3,6 @@ import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import bcryptjs from 'bcryptjs';
-import { PrismaClient } from '@prisma/client';
 import { getUser } from './app/lib/data';
 
  
