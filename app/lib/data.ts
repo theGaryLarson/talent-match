@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
+import type { User } from '@/app/lib/definitions';
 
 const prisma = new PrismaClient();
 
@@ -39,7 +40,7 @@ export async function fetchLatestInvoices() {
       }
     });
 
-    return data.map(invoice => ({
+    return data.map((invoice: { customers: { id: any; name: any; image_url: any; email: any; }; amount: number; }) => ({
       id: invoice.customers.id,
       amount: formatCurrency(invoice.amount),
       name: invoice.customers.name,
@@ -191,7 +192,7 @@ export async function fetchFilteredCustomers(query: string) {
       }
     });
 
-    return customers.map(customer => ({
+    return customers.map((customer: { invoices: any[]; }) => ({
       ...customer,
       total_pending: customer.invoices.reduce((acc, curr) => curr.status === 'pending' ? acc + curr.amount : acc, 0),
       total_paid: customer.invoices.reduce((acc, curr) => curr.status === 'paid' ? acc + curr.amount : acc, 0),
@@ -202,10 +203,10 @@ export async function fetchFilteredCustomers(query: string) {
   }
 }
 
-export async function getUser(email: string) {
+export async function getUser(email: string): Promise<User | null> {
   try {
     const user = await prisma.users.findUnique({
-      where: { email }
+      where: { email },
     });
     return user;
   } catch (error) {
@@ -213,3 +214,4 @@ export async function getUser(email: string) {
     throw new Error('Failed to fetch user.');
   }
 }
+

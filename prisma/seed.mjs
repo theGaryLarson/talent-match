@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import skillsData from '../data/skills.mjs';
 const prisma = new PrismaClient();
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 
 import {
   invoices,
@@ -12,12 +12,13 @@ import {
 
 async function seedUsers() {
   for (const user of users) {
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword = await bcryptjs.hash(user.password, 10);
     await prisma.users.create({
       data: {
         name: user.name,
         email: user.email,
         password: hashedPassword,
+        role: user.role,
       },
     });
   }
