@@ -3,7 +3,7 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import Link from 'next/link';
 import Image from 'next/image';
-
+//entire CFA landing page
 export default function Page() {
   return (
     <main className="flex min-h-screen flex-col p-6">

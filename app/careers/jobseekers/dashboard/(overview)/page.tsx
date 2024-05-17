@@ -5,7 +5,7 @@ import { lusitana } from '@/app/ui/fonts';
 import { fetchLatestInvoices, fetchCardData } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton } from '@/app/ui/skeletons';
-
+//job seeker dashboard
 export default async function Page() {
   const latestInvoices = await fetchLatestInvoices();
   const {
