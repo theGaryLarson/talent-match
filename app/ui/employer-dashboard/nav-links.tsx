@@ -12,25 +12,22 @@ import clsx from 'clsx';
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'Home', href: '/employers/dashboard', icon: HomeIcon },
+  { name: 'Career Services', href: '/careers'},
   {
-    name: 'Invoices',
-    href: '/employers/dashboard/invoices',
-    icon: DocumentDuplicateIcon,
+    name: 'TBD',
+    href: '/todo'
   },
   {
-    name: 'Customers',
-    href: '/employers/dashboard/customers',
-    icon: UserGroupIcon,
+    name: 'TBD',
+    href: '/todo'
   },
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
   return (
-    <>
+    <nav className='flex flex-row space-x-4 md:space-x-2'>
       {links.map((link) => {
-        const LinkIcon = link.icon;
         return (
           <Link
             key={link.name}
@@ -42,11 +39,10 @@ export default function NavLinks() {
               },
             )}
           >
-            <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
           </Link>
         );
       })}
-    </>
+    </nav>
   );
 }
