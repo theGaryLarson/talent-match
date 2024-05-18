@@ -1,4 +1,4 @@
-import AcmeLogo from '@/app/ui/cfa-logo';
+import AcmeLogo from '@/app/ui/cfalogo';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import Link from 'next/link';

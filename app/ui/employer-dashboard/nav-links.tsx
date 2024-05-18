@@ -8,17 +8,18 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { boolean } from 'zod';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'Career Services', href: '/careers'},
+  { name: 'Features', href: '/careers'},
   {
-    name: 'TBD',
+    name: 'Marketplace',
     href: '/todo'
   },
   {
-    name: 'TBD',
+    name: 'Company',
     href: '/todo'
   },
 ];
@@ -26,23 +27,18 @@ const links = [
 export default function NavLinks() {
   const pathname = usePathname();
   return (
-    <nav className='flex flex-row space-x-4 md:space-x-2'>
+    <>
       {links.map((link) => {
         return (
           <Link
             key={link.name}
             href={link.href}
-            className={clsx(
-              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
-              {
-                'bg-sky-100 text-blue-600': pathname === link.href,
-              },
-            )}
+            className="text-sm font-semibold leading-6 text-gray-900"
           >
-            <p className="hidden md:block">{link.name}</p>
+          {link.name}
           </Link>
         );
       })}
-    </nav>
+    </>
   );
 }
