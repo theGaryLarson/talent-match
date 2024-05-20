@@ -22,7 +22,7 @@ import {
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 const CareerDropDownInfo = [
   { name: 'Career Services Landing Page', description: 'Mange your canidate search', href: '/careers', icon: ChartPieIcon },
-  { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '#', icon: ChartPieIcon },
+  { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/careers/employers', icon: ChartPieIcon },
   { name: 'Job Seeker Dashboard', description: 'Mange your job search', href: '#', icon: CursorArrowRaysIcon },
   { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
 ]

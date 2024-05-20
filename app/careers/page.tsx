@@ -3,7 +3,7 @@ export default function Page(){
 
     return(
         <main>
-            <p>Landing page career naviation</p>
+            <p>Landing page career services</p>
         </main>
     );
 }
