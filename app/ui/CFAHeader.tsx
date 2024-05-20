@@ -2,27 +2,19 @@
 import Link from 'next/link';
 import { signOut } from '@/auth';
 
-
-
-  
-
-
-
 import { Fragment, useState } from 'react'
-import { Dialog, DialogPanel, Disclosure, DisclosureButton, Popover, PopoverGroup, PopoverPanel, Transition } from '@headlessui/react'
+import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition } from '@headlessui/react'
 import {
-  ArrowPathIcon,
   Bars3Icon,
   ChartPieIcon,
   CursorArrowRaysIcon,
   FingerPrintIcon,
-  SquaresPlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 const CareerDropDownInfo = [
-  { name: 'Career Services Landing Page', description: 'Mange your canidate search', href: '/careers', icon: ChartPieIcon },
-  { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/careers/employers', icon: ChartPieIcon },
+  { name: 'Career Services Landing Page', description: 'Mange your canidate search', href: '/services', icon: ChartPieIcon },
+  { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
   { name: 'Job Seeker Dashboard', description: 'Mange your job search', href: '#', icon: CursorArrowRaysIcon },
   { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
 ]
@@ -51,7 +43,6 @@ function classNames(...classes: string[]) {
 
 export default function CFAHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
   return (
     <header className="bg-white">
       <nav className="mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
@@ -80,10 +71,10 @@ export default function CFAHeader() {
 
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <Popover className="relative">
-            <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
               Career Services
               <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-            </Popover.Button>
+            </PopoverButton>
 
             <Transition
               as={Fragment}
@@ -187,7 +178,7 @@ export default function CFAHeader() {
                           aria-hidden="true"
                         />
                       </DisclosureButton>
-                      <Disclosure.Panel className="mt-2 space-y-2">
+                      <DisclosurePanel className="mt-2 space-y-2">
                         {[...CareerDropDownInfo, ...callsToAction].map((item) => (
                           <DisclosureButton
                             key={item.name}
@@ -198,7 +189,7 @@ export default function CFAHeader() {
                             {item.name}
                           </DisclosureButton>
                         ))}
-                      </Disclosure.Panel>
+                      </DisclosurePanel>
                     </>
                   )}
                 </Disclosure>
