@@ -12,6 +12,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import Image from 'next/image';
 const CareerDropDownInfo = [
   { name: 'Career Services Landing Page', description: 'Mange your canidate search', href: '/services', icon: ChartPieIcon },
   { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
@@ -49,7 +50,7 @@ export default function CFAHeader() {
         <div className="flex lg:flex-1">
           <Link href="/">
             <span className="sr-only">Computing For All</span>
-            <img className="h-8 w-auto" src="/cfa_images/cfaLogoWithName.jpg" alt="Computing For All" />
+            <Image src="/cfa_images/cfaLogoWithName.jpg" alt="Computing For All" width={110} height={31.8} />
           </Link>
         </div>
 
@@ -146,7 +147,9 @@ export default function CFAHeader() {
           <div className="flex items-center justify-between">
             <Link href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Computing For All</span>
-              <img
+              <Image
+                width={50}
+                height={50}
                 className="h-8 w-auto"
                 src="/cfa_images/cfalogo.jpg"
                 alt=""
@@ -198,6 +201,7 @@ export default function CFAHeader() {
                     TopLevelLinks.map((link)=>{
                         return(
                             <Link
+                            key={link.name}
                             href={link.href}
                             className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                             >
