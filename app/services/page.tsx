@@ -3,7 +3,8 @@ export default function Page(){
 
     return(
         <main>
-            <p>Landing page career services</p>
+            <h1>Welcome to CFA Career Services</h1>
+            
         </main>
     );
 }

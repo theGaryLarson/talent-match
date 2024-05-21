@@ -1,4 +1,4 @@
-import CfaLogo from '@/app/ui/cfalogo';
+import CfaLogo from '@/app/ui/CFALogo';
 import LoginForm from '@/app/ui/login-form';
 
 export default function LoginPage() {

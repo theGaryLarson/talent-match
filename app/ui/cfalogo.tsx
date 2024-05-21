@@ -1,6 +1,6 @@
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image'
-export default function Cfalogo() {
+export default function CFALogo() {
   return (
     <div
       className={`${lusitana.className} flex flex-row items-center leading-none text-white`}

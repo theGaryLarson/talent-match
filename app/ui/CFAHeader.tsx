@@ -10,6 +10,7 @@ import {
   CursorArrowRaysIcon,
   FingerPrintIcon,
   XMarkIcon,
+  PresentationChartBarIcon
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image';
@@ -17,6 +18,7 @@ const CareerDropDownInfo = [
   { name: 'Career Services Landing Page', description: 'Mange your canidate search', href: '/services', icon: ChartPieIcon },
   { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
   { name: 'Job Seeker Dashboard', description: 'Mange your job search', href: '#', icon: CursorArrowRaysIcon },
+  { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon },
   { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
 ]
 const callsToAction = [
@@ -137,7 +139,7 @@ export default function CFAHeader() {
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <Link href="/login" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
+            Log in/Sign Up 
           </Link>
         </div>
       </nav>
@@ -216,7 +218,7 @@ export default function CFAHeader() {
                   href="/login"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  Log in
+                  Log in/Sign up
                 </Link>
               </div>
             </div>
