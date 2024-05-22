@@ -17,7 +17,7 @@ import Image from 'next/image';
 const CareerDropDownInfo = [
   { name: 'Career Services Landing Page', description: 'Mange your canidate search', href: '/services', icon: ChartPieIcon },
   { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
-  { name: 'Job Seeker Dashboard', description: 'Mange your job search', href: '#', icon: CursorArrowRaysIcon },
+  { name: 'Job Seeker Dashboard', description: 'Mange your job search', href: '/services/jobseekers/dashboard', icon: CursorArrowRaysIcon },
   { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon },
   { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
 ]

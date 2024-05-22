@@ -1,4 +1,4 @@
-import {Card }from '@/app/ui/employer-dashboard/cards';
+import { Card } from '@/app/ui/employer-dashboard/cards';
 import RevenueChart from '@/app/ui/employer-dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/employer-dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
