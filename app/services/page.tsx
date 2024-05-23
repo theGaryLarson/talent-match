@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <>
       <PageBanner title="Welcome To Career Services"></PageBanner>
-      <main className="px-6 md:px-12 lg:px-24">
+      <main className="px-6 md:px-12 py-16 lg:px-24 space-y-8">
         <strong className="text-xl">
           Unlock your potential with CFA Career Services
         </strong>
@@ -50,6 +50,14 @@ export default function Page() {
             callToAction={'View candidates, create an account '}
           />
         </div>
+        
+
+
+
+
+
+
+
       </main>
     </>
   );
