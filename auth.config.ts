@@ -1,21 +1,47 @@
-import type { NextAuthConfig } from 'next-auth';
- 
-export const authConfig = {
+import { NextAuthConfig, Session } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+import { User, Account, Profile } from 'next-auth';
+import { getUserRole } from './app/lib/data';
+
+export const authConfig: NextAuthConfig = {
   pages: {
     signIn: '/login',
   },
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    async jwt({ token, user }: { token: JWT; user?: User | null; account?: Account | null; profile?: Profile; isNewUser?: boolean }): Promise<JWT> {
+      if (user) {
+        const role = await getUserRole(user.id!);
+        token.role = role || 'guest';
+      }
+      return token;
+    },
+    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
+      if (token?.role && session.user) {
+        session.user.role = token.role as string;
+      }
+      return session;
+    },
+    async authorized({ auth, request: { nextUrl } }: { auth: any; request: { nextUrl: URL } }): Promise<boolean> {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/services/employers');
+      
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
+        if (isLoggedIn && auth.user.role === 'employer') {
+          return true; 
+        }
+        return false;
       } else if (isLoggedIn) {
-        return Response.redirect(new URL('/services/employers/dashboard', nextUrl));
+        if (auth.user.role === 'employer' && nextUrl.pathname !== '/services/employers/dashboard') {
+          return false;
+        } else if (auth.user.role === 'jobseeker' && nextUrl.pathname !== '/services/jobseekers/dashboard') {
+          return false;
+        }
       }
       return true;
     },
   },
-  providers: [], // Add providers with an empty array for now
-} satisfies NextAuthConfig;
+  providers: [
+    // Add your providers here, e.g.,
+    // Providers.Google({ clientId: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET }),
+  ],
+};

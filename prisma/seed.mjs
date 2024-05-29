@@ -4,66 +4,18 @@ const prisma = new PrismaClient();
 import bcryptjs from 'bcryptjs';
 
 import {
-  invoices,
-  customers,
-  revenue,
   users,
 } from '../app/lib/placeholder-data.mjs';
 
 async function seedUsers() {
   for (const user of users) {
     const hashedPassword = await bcryptjs.hash(user.password, 10);
-    await prisma.users.create({
+    await prisma.user.create({
       data: {
         name: user.name,
         email: user.email,
         password: hashedPassword,
         role: user.role,
-      },
-    });
-  }
-}
-
-async function seedInvoices() {
-  for (const invoice of invoices) {
-    const customerExists = await prisma.customers.findUnique({
-    where: { id: invoice.customer_id },
-  });
-
-  if (!customerExists) {
-    throw new Error("Customer does not exist");
-  }
-
-    await prisma.invoices.create({
-      data: {
-        customer_id: invoice.customer_id,
-        amount: invoice.amount,
-        status: invoice.status,
-        date: new Date(invoice.date),
-      },
-    });
-  }
-}
-
-async function seedCustomers() {
-  for (const customer of customers) {
-    await prisma.customers.create({
-      data: {
-        id: customer.id,
-        name: customer.name,
-        email: customer.email,
-        image_url: customer.image_url,
-      },
-    });
-  }
-}
-
-async function seedRevenue() {
-  for (const rev of revenue) {
-    await prisma.revenue.create({
-      data: {
-        month: rev.month,
-        revenue: rev.revenue,
       },
     });
   }
@@ -144,12 +96,9 @@ const subcategoriesData = [
 
 async function clearDatabase() {
   try {
-    // Delete data in the order of dependencies, child first if foreign keys exist
-    await prisma.invoices.deleteMany({});
-    await prisma.customers.deleteMany({});
-    await prisma.skills.deleteMany({});
-    await prisma.subcategories.deleteMany({});
-    await prisma.users.deleteMany({});
+    await prisma.skill.deleteMany({});
+    await prisma.subcategory.deleteMany({});
+    await prisma.user.deleteMany({});
     console.log('Database cleared successfully.');
   } catch (error) {
     console.error('Failed to clear the database:', error);
@@ -160,29 +109,38 @@ async function clearDatabase() {
 async function main() {
   console.log(`Start seeding ...`);
   await clearDatabase();
+
+  if (!prisma.subcategory || !prisma.skill) {
+    console.error('Prisma models are not defined.');
+    return;
+  }
+
   for (const category of subcategoriesData) {
-    const subcategory = await prisma.subcategories.create({
-      data: category,
+    const subcategory = await prisma.subcategory.create({
+      data: {
+        skill_category: category.skill_category,
+        description: category.description
+      }
     });
     console.log(`Created subcategory with id: ${subcategory.id}`);
+    
     // Seed skills that belong to this subcategory
     const relatedSkills = skillsData.filter(
       (s) => s.skill_category === category.skill_category,
     );
     for (const skill of relatedSkills) {
-      await prisma.skills.create({
+      await prisma.skill.create({
         data: {
           skill: skill.skill,
           info_url: skill.info_url,
-          subcategory_id: subcategory.id, // Linking with foreign key
+          subcategoryId: subcategory.id, // Linking with foreign key
         },
       });
     }
   }
+
   await seedUsers();
-  await seedCustomers();
-  await seedInvoices();
-  await seedRevenue();
+
   console.log(`Seeding finished.`);
 }
 
