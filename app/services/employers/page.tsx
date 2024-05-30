@@ -1,13 +1,14 @@
 //employer landing page
 import PageBanner from "@/app/ui/components/PageBannner"
 import Tabs from "@/app/ui/components/Tabs";
+import VideoBlock from "@/app/ui/components/VideoBlock";
 
 
 export default function Page(){
     const tabs = [
         {
           label: 'Why Join',
-          content: <div>Content of Tab 1</div>,
+          content: <VideoBlock/>,
         },
         {
           label: 'Candidates',
