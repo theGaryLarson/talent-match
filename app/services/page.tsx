@@ -1,5 +1,6 @@
 import PageBanner from '../ui/components/PageBannner';
 import RoundedButtonCard from '../ui/components/RoundedButtonCard';
+import VideoBlock from '../ui/components/VideoBlock';
 
 //landing page for career services
 export default function Page() {
@@ -50,6 +51,7 @@ export default function Page() {
             callToAction={'View candidates, create an account '}
           />
         </div>
+        <VideoBlock/>
         
 
 

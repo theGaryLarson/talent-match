@@ -1,4 +1,5 @@
 //employer landing page
+import BlockQuote from "@/app/ui/components/BlockQuote";
 import GreyBackgroundBulletPointListBlock from "@/app/ui/components/GreyBackgroundBulletPointListBlock";
 import PageBanner from "@/app/ui/components/PageBannner"
 import Tabs from "@/app/ui/components/Tabs";
@@ -8,23 +9,23 @@ import VideoBlock from "@/app/ui/components/VideoBlock";
 export default function Page(){
     const tabs = [
         {
-          label: 'Why Join',
+          label: 'Discover Our Services',
           content: <VideoBlock/>,
         },
         {
-          label: 'Candidates',
+          label: 'Build Your Skills',
           content: <div className="flex space-x-20"><GreyBackgroundBulletPointListBlock/><GreyBackgroundBulletPointListBlock/></div>,
         },
         {
-          label: 'Mentor',
+          label: 'Career Services',
           content: <div>Content of Tab 3</div>,
         },
         {
-            label: 'Post Jobs',
+            label: 'Showcase Your Work',
             content: <div>Content of Tab 4</div>,
         },
         {
-            label: 'Company Presence',
+            label: 'Gain Experence',
             content: <div>Content of Tab 5</div>,
         },
       ];
@@ -39,7 +40,15 @@ export default function Page(){
             </p> 
             <div className="container mx-auto">
               <Tabs tabs={tabs} />
+              
             </div>
+            <BlockQuote text={"This program provided top-notch training with state-of-the-art equipment, truly preparing me for the real world. A big thank you to the team!"} author={"James Lee"} imgSrc={"/cfa_images/stock/Mask group.png"}/>
+            <p>
+            <strong>Hire the right candidate</strong>
+            </p>
+            <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.
+            </p> 
         </main>
         </>
         
