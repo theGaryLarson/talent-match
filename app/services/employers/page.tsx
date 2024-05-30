@@ -31,7 +31,7 @@ export default function Page(){
 
     return(
         <>
-        <PageBanner title={"About Becoming a partner"}/>
+        <PageBanner title={"About Becoming a partner"} bg="bg-employer-hero-1"/>
         <main className="px-6 md:px-12 py-16 lg:px-24 space-y-8">
             <strong>Become a partner</strong>
             <p>
