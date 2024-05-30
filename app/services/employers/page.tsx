@@ -1,4 +1,5 @@
 //employer landing page
+import GreyBackgroundBulletPointListBlock from "@/app/ui/components/GreyBackgroundBulletPointListBlock";
 import PageBanner from "@/app/ui/components/PageBannner"
 import Tabs from "@/app/ui/components/Tabs";
 import VideoBlock from "@/app/ui/components/VideoBlock";
@@ -12,7 +13,7 @@ export default function Page(){
         },
         {
           label: 'Candidates',
-          content: <div>Content of Tab 2</div>,
+          content: <div className="flex space-x-20"><GreyBackgroundBulletPointListBlock/><GreyBackgroundBulletPointListBlock/></div>,
         },
         {
           label: 'Mentor',
