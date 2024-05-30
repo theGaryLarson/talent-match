@@ -1,7 +1,9 @@
 import { NextAuthConfig, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import { User, Account, Profile } from 'next-auth';
-import { getUserRole } from './app/lib/data';
+import { getUser, getUserRole } from './app/lib/data';
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcryptjs from 'bcryptjs';
 
 export const authConfig: NextAuthConfig = {
   pages: {
@@ -21,27 +23,29 @@ export const authConfig: NextAuthConfig = {
       }
       return session;
     },
-    async authorized({ auth, request: { nextUrl } }: { auth: any; request: { nextUrl: URL } }): Promise<boolean> {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/services/employers');
-      
-      if (isOnDashboard) {
-        if (isLoggedIn && auth.user.role === 'employer') {
-          return true; 
-        }
-        return false;
-      } else if (isLoggedIn) {
-        if (auth.user.role === 'employer' && nextUrl.pathname !== '/services/employers/dashboard') {
-          return false;
-        } else if (auth.user.role === 'jobseeker' && nextUrl.pathname !== '/services/jobseekers/dashboard') {
-          return false;
-        }
-      }
-      return true;
-    },
   },
   providers: [
-    // Add your providers here, e.g.,
-    // Providers.Google({ clientId: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET }),
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'email', placeholder: 'example@example.com' },
+        password: { label: 'Password', type: 'password' },
+      },
+      authorize: async (credentials) => {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Email and password are required.');
+        }
+
+        const email = credentials.email as string;
+        const password = credentials.password as string;
+        const user = await getUser(email);
+        console.log(user);
+        if (user && user.password && await bcryptjs.compare(password, user.password)) {
+          return user;
+        }
+
+        throw new Error('Invalid credentials.');
+      },
+    }),
   ],
 };
