@@ -2,47 +2,26 @@ import { Card } from '@/app/ui/employer-dashboard/cards';
 import RevenueChart from '@/app/ui/employer-dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/employer-dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchLatestInvoices, fetchCardData } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton } from '@/app/ui/skeletons';
 import ScoreCard from '@/app/ui/components/ScoreCard';
 //employer dashboard
 export default async function Page() {
-  const latestInvoices = await fetchLatestInvoices();
-  const {
-    numberOfInvoices,
-    numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
-  } = await fetchCardData();
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {<ScoreCard title='collected' val={totalPaidInvoices}/>}
-        {<Card title="Pending" value={totalPendingInvoices} type="pending" />}
-        {
-          <Card
-            title="Total Invoices"
-            value={numberOfInvoices}
-            type="invoices"
-          />
-        }
-        {
-          <Card
-            title="Total Customers"
-            value={numberOfCustomers}
-            type="customers"
-          />
-        }
+        {<ScoreCard title="collected" val={5} />}
+        {<Card title="Pending" value={5} type="pending" />}
+        {<Card title="Total Invoices" value={5} type="invoices" />}
+        {<Card title="Total Customers" value={5} type="customers" />}
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <Suspense fallback={<RevenueChartSkeleton />}>
           {<RevenueChart />}
         </Suspense>
-        {<LatestInvoices latestInvoices={latestInvoices} />}
       </div>
     </main>
   );
