@@ -2,6 +2,7 @@
 import BlockQuote from "@/app/ui/components/BlockQuote";
 import GreyBackgroundBulletPointListBlock from "@/app/ui/components/GreyBackgroundBulletPointListBlock";
 import PageBanner from "@/app/ui/components/PageBannner"
+import PhotoCardWithTitle from "@/app/ui/components/PhotoCardWithTitle";
 import Tabs from "@/app/ui/components/Tabs";
 import VideoBlock from "@/app/ui/components/VideoBlock";
 
@@ -48,7 +49,14 @@ export default function Page(){
             </p>
             <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.
-            </p> 
+            </p>
+            <div className="flex flex-wrap justify-around">
+            <PhotoCardWithTitle/>
+            <PhotoCardWithTitle/>
+            <PhotoCardWithTitle/>
+            </div>
+            
+
         </main>
         </>
         
