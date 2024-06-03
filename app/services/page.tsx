@@ -1,3 +1,4 @@
+import ArticleStub from '../ui/components/ArticleStub';
 import PageBanner from '../ui/components/PageBannner';
 import RoundedButtonCard from '../ui/components/RoundedButtonCard';
 import VideoBlock from '../ui/components/VideoBlock';
@@ -6,8 +7,11 @@ import VideoBlock from '../ui/components/VideoBlock';
 export default function Page() {
   return (
     <>
-      <PageBanner title="Welcome To Career Services" bg='bg-services-hero'></PageBanner>
-      <main className="px-6 md:px-12 py-16 lg:px-24 space-y-8">
+      <PageBanner
+        title="Welcome To Career Services"
+        bg="bg-services-hero"
+      ></PageBanner>
+      <main className="space-y-8 px-6 py-16 md:px-12 lg:px-24 font-['Roboto']">
         <strong className="text-xl">
           Unlock your potential with CFA Career Services
         </strong>
@@ -51,15 +55,9 @@ export default function Page() {
             callToAction={'View candidates, create an account '}
           />
         </div>
-        <VideoBlock/>
-        
-
-
-
-
-
-
-
+        <VideoBlock />
+        <ArticleStub isPhotoFirst={true}/>
+        <ArticleStub isPhotoFirst={false}/>
       </main>
     </>
   );
