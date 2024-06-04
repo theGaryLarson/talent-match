@@ -55,9 +55,9 @@ export default function Page(){
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.
             </p>
             <div className="flex flex-wrap justify-around">
-            <PhotoCardWithTitle/>
-            <PhotoCardWithTitle/>
-            <PhotoCardWithTitle/>
+            <PhotoCardWithTitle title={"Canidates"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}/>
+            <PhotoCardWithTitle title={"Thing 2"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}/>
+            <PhotoCardWithTitle title={"Thing 3"} article={"Here is a b unch of random information that will be replaced yada yada radda radda"}/>
             </div>
             
 

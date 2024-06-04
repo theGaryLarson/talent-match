@@ -7,11 +7,11 @@ export default async function Page() {
       <h1 className={`mb-4 text-xl md:text-2xl`}>
         Dashboard
       </h1>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {<ScoreCard title="collected" val={5} />}
-        {<ScoreCard title="collected" val={5} />}
-        {<ScoreCard title="collected" val={5} />}
-        {<ScoreCard title="collected" val={5} />}
+      <div className="flex flex-wrap gap-2">
+        {<ScoreCard title="Saved Candidates" val={5} />}
+        {<ScoreCard title="Job Applications " val={5} />}
+        {<ScoreCard title="Direct Messages" val={5} />}
+        {<ScoreCard title="Connection Requests" val={5} />}
       </div>
    
     </main>
