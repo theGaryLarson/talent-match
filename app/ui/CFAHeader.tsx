@@ -1,8 +1,8 @@
 'use client'
 import Link from 'next/link';
 import { signOut } from '@/auth';
-
-import { Fragment, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition } from '@headlessui/react'
 import {
   Bars3Icon,
@@ -46,6 +46,12 @@ function classNames(...classes: string[]) {
 
 export default function CFAHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+  useEffect(() => {
+    // Do something here...
+  }, [pathname])
+
+
   return (
     <header className="bg-white">
       <nav className="mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
@@ -89,40 +95,48 @@ export default function CFAHeader() {
               leaveTo="opacity-0 translate-y-1"
             >
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-                <div className="p-4">
-                  {CareerDropDownInfo.map((item) => (
-                    <div
-                      key={item.name}
-                      className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
-                    >
-                      <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                        <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
+              {({ close }) => (
+                <><div className="p-4" onMouseLeave={()=>{close()}}>
+                    {CareerDropDownInfo.map((item) => (
+                    <Link key={item.name} href={item.href} className="block font-semibold text-gray-900" onClick={()=>{close()}}>
+                      <div
+                        
+                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                      >
+                        <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                          <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
+                        </div>
+                        <div className="flex-auto">
+                          
+                            {item.name}
+                          
+                          <p className="mt-1 text-gray-600">{item.description}</p>
+                        </div>
                       </div>
-                      <div className="flex-auto">
-                        <Link href={item.href} className="block font-semibold text-gray-900">
+                      </Link>
+                    ))}
+                  </div><div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
+                      {callsToAction.map((item) => (
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
+                        >
+                          <item.icon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
                           {item.name}
-                          <span className="absolute inset-0" />
-                        </Link>
-                        <p className="mt-1 text-gray-600">{item.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                  {callsToAction.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
-                    >
-                      <item.icon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-                      {item.name}
-                    </a>
-                  ))}
-                </div>
+                        </a>
+                      ))}
+                    </div></>
+              )}
+
+                
               </PopoverPanel>
             </Transition>
           </Popover>
+
+
+
+          
         {TopLevelLinks.map((link) => {
         return (
           <Link
@@ -143,6 +157,12 @@ export default function CFAHeader() {
           </Link>
         </div>
       </nav>
+
+
+
+
+
+
       <Dialog className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
@@ -187,9 +207,10 @@ export default function CFAHeader() {
                         {[...CareerDropDownInfo, ...callsToAction].map((item) => (
                           <DisclosureButton
                             key={item.name}
-                            as="a"
+                            as={Link}
                             href={item.href}
                             className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                            onClick={()=>{setMobileMenuOpen(false)}}
                           >
                             {item.name}
                           </DisclosureButton>
@@ -198,6 +219,9 @@ export default function CFAHeader() {
                     </>
                   )}
                 </Disclosure>
+
+
+
 
                 {
                     TopLevelLinks.map((link)=>{
