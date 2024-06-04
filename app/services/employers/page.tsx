@@ -10,25 +10,29 @@ import VideoBlock from "@/app/ui/components/VideoBlock";
 export default function Page(){
     const tabs = [
         {
-          label: 'Discover Our Services',
+          label: 'Why Join',
           content: <VideoBlock/>,
         },
         {
-          label: 'Build Your Skills',
+          label: 'Training & Development',
           content: <div className="flex space-x-20"><GreyBackgroundBulletPointListBlock/><GreyBackgroundBulletPointListBlock/></div>,
         },
         {
-          label: 'Career Services',
+          label: 'Candidates',
           content: <div>Content of Tab 3</div>,
         },
         {
-            label: 'Showcase Your Work',
+            label: 'Mentor',
             content: <div>Content of Tab 4</div>,
         },
         {
-            label: 'Gain Experence',
+            label: 'Post Jobs',
             content: <div>Content of Tab 5</div>,
         },
+        {
+          label: 'Company Presence',
+          content: <div>Content of Tab 6</div>,
+      },
       ];
 
     return(
