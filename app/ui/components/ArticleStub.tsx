@@ -1,7 +1,7 @@
 export default function ArticleStub({isPhotoFirst}:{isPhotoFirst:boolean}){
     return(
-        <div className={`flex flex-row${isPhotoFirst?" ":"-reverse justify-end "}flex-wrap  gap-[42px] 2xl:justify-evenly xl:flex-nowrap`}>
-          <div className="h-[332px] w-[600px] min-w-[500px] rounded-xl bg-zinc-800" />
+        <div className={`flex flex-row ${isPhotoFirst ? "" : "flex-row-reverse"} justify-evenly flex-wrap gap-[42px] 2xl:justify-evenly xl:flex-nowrap`}>
+          <div className="h-[332px] w-[600px] min-w-[500px] rounded-xl bg-zinc-800" id="photo"/>
             <div className="w-[600px] flex flex-col gap-[32px]">
                 <div className="font-['Roboto'] text-xl font-bold capitalize text-neutral-800">
                 Become a Mentor

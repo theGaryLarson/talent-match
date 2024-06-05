@@ -15,8 +15,9 @@ import {
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image';
 const CareerDropDownInfo = [
-  { name: 'Career Services Landing Page', description: 'Mange your canidate search', href: '/services', icon: ChartPieIcon },
-  { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
+  { name: 'Career Services Landing Page', description: 'Learn What Career Services has to Offer', href: '/services', icon: ChartPieIcon },
+  { name: 'Employer Landing Page', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
+  { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers/dashboard', icon: ChartPieIcon },
   { name: 'Job Seeker Dashboard', description: 'Mange your job search', href: '/services/jobseekers/dashboard', icon: CursorArrowRaysIcon },
   { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon },
   { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
@@ -53,7 +54,7 @@ export default function CFAHeader() {
 
 
   return (
-    <header className="bg-white">
+    <header className="bg-white" >
       <nav className="mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
         <div className="flex lg:flex-1">
           <Link href="/">
@@ -78,9 +79,9 @@ export default function CFAHeader() {
 
 
 
-        <PopoverGroup className="hidden lg:flex lg:gap-x-12">
+        <PopoverGroup className="hidden lg:flex lg:gap-x-12" >
           <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 ">
               Career Services
               <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
             </PopoverButton>
