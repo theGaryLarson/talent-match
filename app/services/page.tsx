@@ -11,7 +11,7 @@ export default function Page() {
         title="Welcome To Career Services"
         bg="bg-services-hero"
       ></PageBanner>
-      <main className="space-y-8 px-6 py-16 md:px-12 lg:px-24 font-['Roboto']">
+      <main className="space-y-8 px-6 py-16 md:px-[150px] lg:px-[200px] font-['Roboto']">
         <strong className="text-xl">
           Unlock your potential with CFA Career Services
         </strong>
@@ -56,8 +56,8 @@ export default function Page() {
           />
         </div>
         <VideoBlock />
-        <ArticleStub isPhotoFirst={true}/>
-        <ArticleStub isPhotoFirst={false}/>
+        <ArticleStub isPhotoFirst={true} imagesrc={"/cfa_images/stock/people-using-digital-device-while-meeting 2.png"}/>
+        <ArticleStub isPhotoFirst={false} imagesrc={'/cfa_images/stock/placeholder.jpg'}/>
       </main>
     </>
   );

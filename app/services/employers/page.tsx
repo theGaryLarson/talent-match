@@ -56,8 +56,8 @@ export default function Page(){
             </p>
             <div className="flex flex-wrap justify-around">
             <PhotoCardWithTitle title={"Canidates"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}/>
-            <PhotoCardWithTitle title={"Thing 2"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}/>
-            <PhotoCardWithTitle title={"Thing 3"} article={"Here is a b unch of random information that will be replaced yada yada radda radda"}/>
+            <PhotoCardWithTitle title={"Interns"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}/>
+            <PhotoCardWithTitle title={"Apprentice"} article={"Here is a b unch of random information that will be replaced yada yada radda radda"}/>
             </div>
             
 
