@@ -12,7 +12,7 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User | null; account?: Account | null; profile?: Profile; isNewUser?: boolean }): Promise<JWT> {
       if (user) {
-        const role = await getUserRole(user.id!);
+        const role = await getUserRole(user.email);
         token.role = role || 'guest';
       }
       return token;
