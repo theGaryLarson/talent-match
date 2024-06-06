@@ -12,7 +12,7 @@ export default function RoundedButtonCard(props: {
       <strong>{props.title}</strong>
       <p>{props.desc}</p>
       <strong>{props.callToAction}</strong>
-      <RoundedButton content={props.buttonText} />
+      <RoundedButton content={props.buttonText} link={'/#'} />
     </div>
   );
 }

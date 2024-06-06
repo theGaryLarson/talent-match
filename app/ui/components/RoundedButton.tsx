@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
-export default function RoundedButton(props: { content: string }) {
+export default function RoundedButton(props: { content: string, link:string}) {
   return (
     <Link
-      href={'/#'}
+      href={props.link}
       className="box-border inline-block w-fit rounded-full bg-blue-background px-14 py-3 text-white hover:bg-blue-400"
     >
       <strong>{props.content}</strong>

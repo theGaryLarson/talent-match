@@ -13,7 +13,7 @@ export default function PageBanner({
       {/* <img src={src}></img> */}
       <div className="w-80 bg-gray-trans rounded-xl p-10 space-y-5">
       <p className="text-4xl font-bold ">{title}</p>
-      <RoundedButton content={"SIGN UP"}/>
+      <RoundedButton content={"SIGN UP"} link={"/#"}/>
       </div>
       
     </div>

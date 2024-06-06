@@ -1,13 +1,11 @@
 
+import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import ScoreCard from '@/app/ui/components/ScoreCard';
 import Teaser from '@/app/ui/components/Teaser';
 //employer dashboard
 export default async function Page() {
   return (
     <main>
-      <h1 className={`mb-4 text-xl md:text-2xl`}>
-        Dashboard
-      </h1>
       <div className="flex flex-wrap gap-2">
         {<ScoreCard title="Saved Candidates" val={5} />}
         {<ScoreCard title="Job Applications " val={5} />}
@@ -23,6 +21,7 @@ export default async function Page() {
       </div>
       <Teaser isLarge={true}/>
       </div>
+      <LargeRoundedButtonCard/>
     </main>
   );
 }
