@@ -8,9 +8,9 @@ export default function GreyBackgroundBulletPointListBlock(){
             <li>Data Analyst</li>
             <li>IT Support</li>
             <li>Project Managment</li>
-            <li>item 6</li>
-            <li>item 7</li>
-            <li>item 8</li>
+            <li>Software Development</li>
+            <li>Web Development</li>
+            <li>UX Design</li>
         </ul>
     </div>
     );
