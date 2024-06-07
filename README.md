@@ -39,7 +39,7 @@ MSSQL_DATABASE=CoreDB
 MSSQL_CONNECTION_STRING=mssql://SA:YourComplex!P4ssw0rd@localhost:1433/CoreDB
 DATABASE_URL="sqlserver://localhost:1433;database=CoreDB;user=SA;password=YourComplex!P4ssw0rd;encrypt=false;trustServerCertificate=true"
 
-AUTH_SECRET=kRHlWXNXFPXM1wVFgj3giHmg5pv+8/WvaZnunti5rLA=
+AUTH_SECRET=<your generated base64 auth secret>
 ```
 
 ### 4. Setting Up MSSQL Server

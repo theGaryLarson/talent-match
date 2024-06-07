@@ -1,3 +1,5 @@
+'use client';
+
 import CfaLogo from '@/app/ui/CFALogo';
 import LoginForm from '@/app/ui/login-form';
 

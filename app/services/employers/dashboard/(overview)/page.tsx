@@ -1,6 +1,5 @@
 import { Card } from '@/app/ui/employer-dashboard/cards';
 import RevenueChart from '@/app/ui/employer-dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/employer-dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton } from '@/app/ui/skeletons';
