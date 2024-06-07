@@ -17,10 +17,13 @@ const config: Config = {
           500: '#0070F3',
           600: '#2F6FEB',
           'background': '#457996',
-          'border': '#4C809D'
+          'border': '#4C809D',
+          text: "#457996"
+
         },
         gray:{
-          trans: "#18181875"
+          trans: "#18181875",
+          background: "#F3F3F3"
         }
       },
       backgroundImage: {
