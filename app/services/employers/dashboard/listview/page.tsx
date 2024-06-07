@@ -1,11 +1,12 @@
-import React from 'react';
+import JobSeekerCardView from "@/app/ui/components/JobSeekerCardView";
 
-const ListViewPage = () => {
-  return (
-    <div>
-      <h1>Employer Dashboard - List View</h1>
-    </div>
-  );
-};
-
-export default ListViewPage;
+export default function page(){
+    return(
+        <main className="py-16 px-[200px] space-y-8">
+            <JobSeekerCardView isLarge={true} name={"Damien Cruz"} school={"University Of Washington"} pathway={"Web Devolpment"} skillsList={["java", "rust","react","figma"]}/>
+            <JobSeekerCardView isLarge={true} name={"Damien Cruz"} school={"University Of Washington"} pathway={"Web Devolpment"} skillsList={["java", "rust","react","figma"]}/>
+            <JobSeekerCardView isLarge={true} name={"Damien Cruz"} school={"University Of Washington"} pathway={"Web Devolpment"} skillsList={["java", "rust","react","figma"]}/>
+            <JobSeekerCardView isLarge={true} name={"Damien Cruz"} school={"University Of Washington"} pathway={"Web Devolpment"} skillsList={["java", "rust","react","figma"]}/>
+        </main>
+    );
+}

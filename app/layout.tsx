@@ -1,6 +1,7 @@
 import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import CFAHeader from './ui/CFAHeader';
+import CFAFooter from './ui/CFAFooter';
 
 
 export default function RootLayout({
@@ -10,7 +11,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}><CFAHeader/>{children}</body>
+      <body className={`${inter.className} antialiased`}><CFAHeader/>{children}<CFAFooter/></body>
     </html>
   );
 }

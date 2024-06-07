@@ -1,27 +1,91 @@
-import { Card } from '@/app/ui/employer-dashboard/cards';
-import RevenueChart from '@/app/ui/employer-dashboard/revenue-chart';
-import { lusitana } from '@/app/ui/fonts';
-import { Suspense } from 'react';
-import { RevenueChartSkeleton } from '@/app/ui/skeletons';
+import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
+import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import ScoreCard from '@/app/ui/components/ScoreCard';
+import Teaser from '@/app/ui/components/Teaser';
 //employer dashboard
 export default async function Page() {
   return (
-    <main>
-      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Dashboard
-      </h1>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {<ScoreCard title="collected" val={5} />}
-        {<Card title="Pending" value={5} type="pending" />}
-        {<Card title="Total Invoices" value={5} type="invoices" />}
-        {<Card title="Total Customers" value={5} type="customers" />}
+    <main className="px-[200px]">
+      <div className="flex flex-wrap gap-2">
+        {<ScoreCard title="Saved Candidates" val={5} />}
+        {<ScoreCard title="Job Applications " val={5} />}
+        {<ScoreCard title="Direct Messages" val={5} />}
+        {<ScoreCard title="Connection Requests" val={5} />}
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          {<RevenueChart />}
-        </Suspense>
+      <div className="flex py-8">
+        <div className="grid w-[900px] grid-cols-2 gap-4">
+          <Teaser
+            isLarge={false}
+            title={'Create a Job Posting'}
+            text={
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
+            }
+          />
+          <Teaser
+            isLarge={false}
+            title={'Create an Assessment'}
+            text={
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
+            }
+          />
+          <Teaser
+            isLarge={false}
+            title={'Web Analytics'}
+            text={
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
+            }
+          />
+          <Teaser
+            isLarge={false}
+            title={'Computing Details'}
+            text={
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
+            }
+          />
+        </div>
+        <Teaser
+          isLarge={true}
+          title={'Become a Mentor'}
+          text={
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+          }
+        />
       </div>
+      <LargeRoundedButtonCard />
+
+      <h2 className='text-xl'>Featured candidates</h2>
+      <div className='flex flex-wrap gap-5'>
+        <JobSeekerCardView
+          isLarge={false}
+          name={'Damien Cruz'}
+          school={'University Of Washington'}
+          pathway={'Software Devolpment'}
+          skillsList={['Rust', 'JavaScript', 'Python']}
+        />
+        <JobSeekerCardView
+          isLarge={false}
+          name={'John Hancock'}
+          school={'Bates Technical College'}
+          pathway={'Cyber Security'}
+          skillsList={['Rust', 'JavaScript', 'Python']}
+        />
+        <JobSeekerCardView
+          isLarge={false}
+          name={'Alice Johnson'}
+          school={'Massachusetts Institute of Technology'}
+          pathway={'Data Science'}
+          skillsList={['Python', 'R', 'SQL', 'Machine Learning']}
+        />
+
+        <JobSeekerCardView
+          isLarge={false}
+          name={'Carol White'}
+          school={'California Institute of Technology'}
+          pathway={'DevOps'}
+          skillsList={['Docker', 'Kubernetes', 'CI/CD', 'Bash']}
+        />
+      </div>
+      <h2 className='text-xl'>Browse By Categories</h2>
     </main>
   );
 }
