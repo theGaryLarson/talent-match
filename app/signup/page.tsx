@@ -1,7 +1,12 @@
-export default function Page(){
-    return(
-        <>
-        <p>genral signup page will have options to select employer or job seeker</p>
-        </>
-    );
-}
+import React from 'react';
+
+const SignupPage = () => {
+  return (
+    <div>
+      <h1>Signup Page</h1>
+      {/* Add your signup form or other components here */}
+    </div>
+  );
+};
+
+export default SignupPage;

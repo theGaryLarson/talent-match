@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import type { User } from '@/app/lib/definitions';
+import { User } from './definitions';
 
 const prisma = new PrismaClient();
 
+// Get user function specifically for credentials auth
 export async function getUser(email?: string | null): Promise<User | null> {
   console.log('getUser called with email:', email);
   if (email) {
@@ -10,14 +11,25 @@ export async function getUser(email?: string | null): Promise<User | null> {
       const user = await prisma.user.findUnique({
         where: { email },
       });
-      console.log('User fetched:', user);
-      return user;
+
+      if (user && user.password) {
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          image: user.image,
+          password: user.password,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        };
+      }
     } catch (error) {
-      console.error('Failed to fetch user:', error);
-      throw new Error('Failed to fetch user.');
+      console.error('Error fetching user:', error);
+      return null;
     }
   }
-  console.warn('No email provided to getUser');
   return null;
 }
 
@@ -28,17 +40,14 @@ export async function getUserRole(email?: string | null): Promise<string | null>
       const user = await prisma.user.findUnique({
         where: { email },
       });
+
       if (user) {
-        console.log('User role fetched:', user.role);
         return user.role;
-      } else {
-        console.warn('No user found for email:', email);
       }
     } catch (error) {
-      console.error('Failed to fetch user role:', error);
-      throw new Error('Failed to fetch user role.');
+      console.error('Error fetching user role:', error);
+      return null;
     }
   }
-  console.warn('No email provided to getUserRole');
   return null;
 }

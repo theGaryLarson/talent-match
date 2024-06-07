@@ -1,9 +1,7 @@
-import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
- 
-export default NextAuth(authConfig).auth;
- 
-export const config = {
-  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
-};
+// The middleware file runs between every request for the application
+import { NextRequest } from 'next/server';
+import { updateSession } from './app/lib/actions';
+
+export async function middleware(request: NextRequest) {
+    return await updateSession(request);
+}
