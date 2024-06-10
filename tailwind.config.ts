@@ -18,7 +18,9 @@ const config: Config = {
           600: '#2F6FEB',
           'background': '#457996',
           'border': '#4C809D',
-          text: "#457996"
+          text: "#457996",
+          trans: "#457996BF"
+          
 
         },
         gray:{
@@ -27,7 +29,7 @@ const config: Config = {
         }
       },
       backgroundImage: {
-        'services-hero': "url('/cfa_images/stock/razvan-chisu-Ua-agENjmI4-unsplash 1.png')",
+        'services-hero': "url('/cfa_images/stock/people-using-digital-device-while-meeting 1.png')",
         'employer-hero-1': "url('/cfa_images/stock/desola-lanre-ologun-IgUR1iX0mqM-unsplash 2.png')"
       }
     },

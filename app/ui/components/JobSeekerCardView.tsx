@@ -42,7 +42,7 @@ export default function JobSeekerCardView({
         </div>
         <div className="flex h-full flex-col justify-between items-end">
           <div className='flex gap-4 w-20 h-7'><ShareIcon/><BookmarkIcon/></div>
-          <RoundedButton content={'View Profile'} link={'/#'} />
+          <RoundedButton content={'View Profile'} link={'/#'} invertColor={false} />
         </div>
       </div>
     );
