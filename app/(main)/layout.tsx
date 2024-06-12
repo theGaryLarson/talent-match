@@ -1,7 +1,7 @@
 import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
-import CFAHeader from './ui/CFAHeader';
-import CFAFooter from './ui/CFAFooter';
+import CFAHeader from '@/app/ui/CFAHeader';
+import CFAFooter from '@/app/ui/CFAFooter';
 
 
 export default function RootLayout({
