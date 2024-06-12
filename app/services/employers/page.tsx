@@ -1,8 +1,11 @@
 //employer landing page
 import BlockQuote from "@/app/ui/components/BlockQuote";
 import GreyBackgroundBulletPointListBlock from "@/app/ui/components/GreyBackgroundBulletPointListBlock";
+import LargeRoundedButtonCard from "@/app/ui/components/LargeRoundedButtonCard";
 import PageBanner from "@/app/ui/components/PageBannner"
 import PhotoCardWithTitle from "@/app/ui/components/PhotoCardWithTitle";
+import RoundedButtonCard from "@/app/ui/components/RoundedButtonCard";
+import SimpleCard from "@/app/ui/components/SimpleCard";
 import Tabs from "@/app/ui/components/Tabs";
 import VideoBlock from "@/app/ui/components/VideoBlock";
 
@@ -14,7 +17,7 @@ export default function Page(){
           content: <VideoBlock/>,
         },
         {
-          label: 'Training & Development',
+          label: 'Growth',
           content: <div className="flex space-x-20"><GreyBackgroundBulletPointListBlock/><GreyBackgroundBulletPointListBlock/></div>,
         },
         {
@@ -26,11 +29,11 @@ export default function Page(){
             content: <div>Content of Tab 4</div>,
         },
         {
-            label: 'Post Jobs',
+            label: 'Recruitment',
             content: <div>Content of Tab 5</div>,
         },
         {
-          label: 'Company Presence',
+          label: 'Visibility',
           content: <div>Content of Tab 6</div>,
       },
       ];
@@ -38,29 +41,40 @@ export default function Page(){
     return(
         <>
         <PageBanner title={"About Becoming a partner"} bg="bg-employer-hero-1"/>
-        <main className="px-6 md:px-12 py-16 lg:px-24 space-y-8">
-            <strong>Become a partner</strong>
+        <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
+            <h1 className="text-2xl">Become a partner</h1>
             <p>
             Computing for All partners with Washington state community and technical colleges and training providers to source diverse students and job seekers for tech careers. We also train candidates in professional skill development to ensure they are career-ready.
             </p> 
+            
             <div className="container mx-auto">
               <Tabs tabs={tabs} />
-              
             </div>
-            <BlockQuote text={"This program provided top-notch training with state-of-the-art equipment, truly preparing me for the real world. A big thank you to the team!"} author={"James Lee"} imgSrc={"/cfa_images/stock/Mask group.png"}/>
-            <p>
-            <strong>Hire the right candidate</strong>
-            </p>
+
+
+            <BlockQuote text={"Partnering with Computing for All brought us an outstanding intern, Maria, whose fresh ideas and dedication have been invaluable to our team."} author={"James Lee"} imgSrc={"/cfa_images/stock/Mask group.png"}/>
+            <h1 className="text-2xl">
+            Hire the right candidate
+            </h1>
             <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.
             </p>
-            <div className="flex flex-wrap justify-around">
-            <PhotoCardWithTitle title={"Canidates"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}/>
-            <PhotoCardWithTitle title={"Interns"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}/>
-            <PhotoCardWithTitle title={"Apprentice"} article={"Here is a b unch of random information that will be replaced yada yada radda radda"}/>
+            <div className="flex justify-evenly flex-wrap gap-4">
+            <PhotoCardWithTitle title={"Canidates"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."} imgSrc={"/cfa_images/stock/annie-spratt-vGgn0xLdy8s-unsplash 1.png"}/>
+            <PhotoCardWithTitle title={"Interns"} article={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."} imgSrc={"/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"}/>
+            <PhotoCardWithTitle title={"Apprentice"} article={"Here is a b unch of random information that will be replaced yada yada radda radda"} imgSrc={"/cfa_images/stock/headway-5QgIuuBxKwM-unsplash 1.png"}/>
             </div>
-            
-
+            <LargeRoundedButtonCard title={"Ready to Hire"} blurb={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."} buttonContent={"Search For talent"} />
+            <h1 className="text-2xl">
+            Still not sure here, here are other  Ways to Meet Our Candidates
+            </h1>
+            <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.
+            </p>
+            <div className="flex justify-evenly gap-4 flex-wrap">
+            <SimpleCard title={"Host a Job Fair"} content={"Host a job fair with Computing for All. Get to know candidates ahead of the interview process."} href={"/#"}/>
+              <SimpleCard title={"Run a Job Readiness Workshop"} content={"Conduct a workshop on general career prep or get to know students through mock interviews."} href={"/#"}/>
+            </div>
         </main>
         </>
         

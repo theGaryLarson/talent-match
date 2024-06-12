@@ -1,3 +1,4 @@
+import ArticleStub from '@/app/ui/components/ArticleStub';
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import ScoreCard from '@/app/ui/components/ScoreCard';
@@ -5,44 +6,14 @@ import Teaser from '@/app/ui/components/Teaser';
 //employer dashboard
 export default async function Page() {
   return (
-    <main className="px-[200px]">
-      <div className="flex flex-wrap gap-2">
+    <main className="md:px-[80px] lg:px-[200px] space-y-4">
+      <div className="flex flex-wrap justify-evenly gap-4">
         {<ScoreCard title="Saved Candidates" val={5} />}
         {<ScoreCard title="Job Applications " val={5} />}
         {<ScoreCard title="Direct Messages" val={5} />}
-        {<ScoreCard title="Connection Requests" val={5} />}
       </div>
-      <div className="flex py-8">
-        <div className="grid w-[900px] grid-cols-2 gap-4">
-          <Teaser
-            isLarge={false}
-            title={'Create a Job Posting'}
-            text={
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
-            }
-          />
-          <Teaser
-            isLarge={false}
-            title={'Create an Assessment'}
-            text={
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
-            }
-          />
-          <Teaser
-            isLarge={false}
-            title={'Web Analytics'}
-            text={
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
-            }
-          />
-          <Teaser
-            isLarge={false}
-            title={'Computing Details'}
-            text={
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
-            }
-          />
-        </div>
+      <ArticleStub isPhotoFirst={true} imagesrc={"/cfa_images/stock/people-using-digital-device-while-meeting 2.png"}/>
+      <div className="flex py-8 justify-evenly flex-wrap">
         <Teaser
           isLarge={true}
           title={'Become a Mentor'}
@@ -50,10 +21,25 @@ export default async function Page() {
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
           }
         />
+        <Teaser
+          isLarge={true}
+          title={'Create a Job Posting'}
+          text={
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+          }
+        />
+        <Teaser
+          isLarge={true}
+          title={'Create an Assessment'}
+          text={
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+          }
+        />
       </div>
-      <LargeRoundedButtonCard />
+      <LargeRoundedButtonCard title={"Ready to Hire"} blurb={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."} buttonContent={"Search For talent"} />
 
-      <h2 className='text-xl'>Featured candidates</h2>
+      <h2 className='text-lg font-bold'>Featured candidates</h2>
+
       <div className='flex flex-wrap gap-5'>
         <JobSeekerCardView
           isLarge={false}
@@ -85,7 +71,6 @@ export default async function Page() {
           skillsList={['Docker', 'Kubernetes', 'CI/CD', 'Bash']}
         />
       </div>
-      <h2 className='text-xl'>Browse By Categories</h2>
     </main>
   );
 }

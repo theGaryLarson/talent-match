@@ -6,7 +6,7 @@ interface Props {
 }
 export default function ScoreCard(props:Props){
     return (
-        <div className="flex justify-between p-4 w-72 h-14 bg-whitebg rounded-md border border-blue-background items-center">
+        <div className="flex justify-between p-4 w-[260px] h-14 bg-whitebg rounded-md border border-blue-background items-center">
             <span className="space-x-2">
             <UserIcon className="inline-block w-8"/>
             <div className=" inline-block text-balance">{props.title}</div>
