@@ -8,7 +8,7 @@ export default function PageBanner({
   }){
     return (
       <div
-      className={"h-96 content-center bg-blend-darken p-24 text-white bg-[#00000066] bg-cover bg-center "+ bg}
+      className={"h-96 content-center bg-blend-darken p-4 md:p-10 lg:p-20 text-white bg-[#00000066] bg-cover bg-center "+ bg}
     >
       {/* <img src={src}></img> */}
       <div className="w-80 bg-blue-trans rounded-xl p-10 space-y-5">

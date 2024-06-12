@@ -1,3 +1,4 @@
+import ArticleStub from '@/app/ui/components/ArticleStub';
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import ScoreCard from '@/app/ui/components/ScoreCard';
@@ -6,11 +7,12 @@ import Teaser from '@/app/ui/components/Teaser';
 export default async function Page() {
   return (
     <main className="md:px-[80px] lg:px-[200px] space-y-4">
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap justify-evenly gap-4">
         {<ScoreCard title="Saved Candidates" val={5} />}
         {<ScoreCard title="Job Applications " val={5} />}
         {<ScoreCard title="Direct Messages" val={5} />}
       </div>
+      <ArticleStub isPhotoFirst={true} imagesrc={"/cfa_images/stock/people-using-digital-device-while-meeting 2.png"}/>
       <div className="flex py-8 justify-evenly flex-wrap">
         <Teaser
           isLarge={true}
