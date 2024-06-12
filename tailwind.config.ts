@@ -19,6 +19,7 @@ const config: Config = {
           'background': '#457996',
           'border': '#4C809D',
           text: "#457996",
+          textdark: "#014361",
           trans: "#457996BF"
           
 

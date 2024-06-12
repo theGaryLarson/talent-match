@@ -4,6 +4,8 @@ import BlockQuote from "@/app/ui/components/BlockQuote";
 import GreyBackgroundBulletPointListBlock from "@/app/ui/components/GreyBackgroundBulletPointListBlock";
 import VideoBlock from "@/app/ui/components/VideoBlock";
 import Image from "next/image"
+import SimpleCard from "@/app/ui/components/SimpleCard";
+import PhotoCardWithTitle from "@/app/ui/components/PhotoCardWithTitle";
 
 //job seeker landing page
 export default function Page() {
@@ -20,10 +22,11 @@ export default function Page() {
           <br/>
           <strong >Enhance Your Technical Skills And Workplace Success Strategies</strong>
           <br/><br/>
-          <div className="justify-center text-left space-y-20 md:space-x-10 md:space-y-0 md:columns-2">
-            <GreyBackgroundBulletPointListBlock title = "Technical skills development" bulletPoints = {["Cloud Computing", "Cyber Security", "Data Analyst", "IT Support",
-                                                                                                        "Project Management", "Software Development", "Web Development", "UX Design"]}/>
-            <GreyBackgroundBulletPointListBlock title = "Professional skills development" bulletPoints={["Leadership", "Teamwork", "Communication", "Problem Solving"]} singleColumn/>
+          <div className="grid justify-center space-y-10 lg:space-x-10 lg:space-y-0 lg:grid-cols-2">
+            <GreyBackgroundBulletPointListBlock title = "Technical skills development" paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." 
+                                                bulletPoints = {["Cloud Computing", "Cyber Security", "Data Analyst", "IT Support", "Project Management", "Software Development", "Web Development", "UX Design"]}/>
+            <GreyBackgroundBulletPointListBlock title = "Professional skills development" paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                bulletPoints={["Leadership", "Teamwork", "Communication", "Problem Solving"]} singleColumn/>
           </div>
         </div>,
     },
@@ -43,7 +46,8 @@ export default function Page() {
                             "Job search strategies and networking advice."
                           ]}
                           paragraph2="Still have questions? Join an information session today"
-                          image = "stock/placeholder.jpg"/>
+                          image = "stock/people-using-digital-device-while-meeting 2.png"
+                          imageLeft/>
         </div>,
     },
     {
@@ -62,7 +66,7 @@ export default function Page() {
                           "Job search strategies and networking advice."
                         ]}
                         paragraph2="Still have questions? Join an information session today"
-                        image = "stock/placeholder.jpg"/>
+                        image = "stock/people-using-digital-device-while-meeting 2.png"/>
       </div>,
     },
     {
@@ -81,7 +85,8 @@ export default function Page() {
                           "Job search strategies and networking advice."
                         ]}
                         paragraph2="Still have questions? Join an information session today"
-                        image = "stock/placeholder.jpg"/>
+                        image = "stock/people-using-digital-device-while-meeting 2.png"
+                        imageLeft/>
       </div>,
     },
     {
@@ -100,7 +105,7 @@ export default function Page() {
                           "Job search strategies and networking advice."
                         ]}
                         paragraph2="Still have questions? Join an information session today"
-                        image = "stock/placeholder.jpg"/>
+                        image = "stock/people-using-digital-device-while-meeting 2.png"/>
       </div>,
     },
   ];
@@ -108,32 +113,78 @@ export default function Page() {
   return (
     <>
       <PageBanner title = {"About joing CFA (Placeholder)"} bg ="bg-employer-hero-1"/>
-      <main className="px-6 md:px-12 lg:px-24 py-16 space-y-8">
-        <strong>Become a Lorem Ipsum</strong>
-        <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
+      <div className="px-6 md:px-12 lg:px-24 py-16 space-y-8 container mx-auto">
+        <div className="space-y-6 px-4">
+          <p className = "text-2xl">Unlock your potential with CFA Career Services</p>
+          <p>Showcase your talents to top employers through our non-profit, free program. 
+            Explore our unique process to connect with ready-to-hire employers and highlight 
+            your TechReady job skills and achievements. Gain technical proficiency, success 
+            strategies, and career navigation skills. 
+            </p>
+          <br></br>
+          <strong>Limited access is available through the Green Jobs Challenge grant and the Washington Jobs Initiative.</strong>
+        </div>
+        
         <br/>
-        <div className = "container mx-auto" >
+        <div className = "px-8">
           <Tabs tabs = {tabs}/>
         </div>
-        <BlockQuote text = {"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."} 
+        <div className="space-y-6">
+          <p className="text-2xl">Get the Experience You Need</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Mi tempus imperdiet nulla malesuada pellentesque. Id aliquet lectus proin nibh. 
+            Mi ipsum faucibus vitae aliquet nec ullamcorper. Sed elementum tempus egestas sed sed risus pretium. 
+            Nisl purus in mollis nunc sed id. Neque viverra justo nec ultrices dui sapien eget mi proin. 
+            Vulputate sapien nec sagittis aliquam. Hendrerit dolor magna eget est lorem ipsum dolor sit amet. 
+            Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. 
+            Commodo nulla facilisi nullam vehicula ipsum a arcu cursus. Nunc aliquet bibendum enim facilisis gravida. 
+          </p>
+          <p>Access diverse opportunties in the tech industry, including:</p>
+        </div>
+        <div className="flex justify-center flex-row gap-4 [&>*]:flex-grow">
+          <PhotoCardWithTitle title = "Apprentice" article = "lalalalala alalla lorem ipsum" 
+                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"/>
+          <PhotoCardWithTitle title = "Apprentice" article = "lalalalala alalla lorem ipsum" 
+                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"/>
+          <PhotoCardWithTitle title = "Apprentice" article = "lalalalala alalla lorem ipsum" 
+                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"/>
+        </div>
+      </div>
+      <BlockQuote text = {"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."} 
           author={"The Lorem Ipsum"} 
           imgSrc={"/cfa_images/stock/Mask Group.png"}/>
-        
-      </main>
+      <div className="px-6 md:px-12 lg:px-24 py-16 space-y-8 container mx-auto">
+        <div className="space-y-6 px-4">
+          <p className="text-2xl">Ready to get started, here are our steps:</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Mi tempus imperdiet nulla malesuada pellentesque. Id aliquet lectus proin nibh. 
+            Mi ipsum faucibus vitae aliquet nec ullamcorper. Sed elementum tempus egestas sed sed risus pretium. 
+            Nisl purus in mollis nunc sed id. Neque viverra justo nec ultrices dui sapien eget mi proin. 
+            Vulputate sapien nec sagittis aliquam. Hendrerit dolor magna eget est lorem ipsum dolor sit amet. 
+            Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. 
+            Commodo nulla facilisi nullam vehicula ipsum a arcu cursus. Nunc aliquet bibendum enim facilisis gravida. 
+          </p>
+
+        </div>
+        <div className="flex justify-evenly gap-4 flex-wrap">
+          <SimpleCard title={"Host a Job Fair"} content={"Host a job fair with Computing for All. Get to know candidates ahead of the interview process."} href={"/#"}/>
+          <SimpleCard title={"Run a Job Readiness Workshop"} content={"Conduct a workshop on general career prep or get to know students through mock interviews."} href={"/#"}/>
+        </div>
+      </div>
     </>
   );
 }
 
-function TextImageSlide({title, paragraph, list, paragraph2, image}:
-    {title:string, paragraph:string, list:Array<string>, paragraph2:string, image:string}){
+function TextImageSlide({title, paragraph, list, paragraph2, image, imageLeft = false}:
+    {title:string, paragraph:string, list:Array<string>, paragraph2:string, image:string, imageLeft?:boolean}){
   let listElements = [];
   for (let el of list){
     listElements.push(<li>{el}</li>)
   }
+  let imgEl = <div className="self-center"><Image width ={1000} height={1000} src={`/cfa_images/${image}`} alt = ""/></div>;
   return (
-    <div className="grid grid-cols-2 gap-4 text-left">
+    <div className="flex flex-col lg:flex-row gap-4 text-left">
+      {imageLeft && imgEl}
       <div>
         <strong >{title}</strong>
         <br/><br/>
@@ -145,6 +196,6 @@ function TextImageSlide({title, paragraph, list, paragraph2, image}:
         <br/><br/>
         <p>{paragraph2}</p>
       </div>
-      <Image width ={500} height={500} objectFit="contain" src={`/cfa_images/${image}`} alt = ""/>
+      {!imageLeft && imgEl}
     </div>);
 }
