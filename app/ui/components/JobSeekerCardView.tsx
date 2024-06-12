@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Avatar from './Avatar';
 import Pill from './Pill';
 import RoundedButton from './RoundedButton';
+import { BookmarkIcon, ShareIcon } from '@heroicons/react/24/outline';
 let pills = ['Java', 'AWS', 'Azure', 'Rust', 'C++'];
 export default function JobSeekerCardView({
   isLarge,
@@ -20,7 +21,7 @@ export default function JobSeekerCardView({
     return (
       <div className="flex h-[220px] w-full items-center space-x-16 rounded-lg border p-6">
         <Avatar imgsrc="/cfa_images/stock/Mask group.png" />
-        <div className="flex h-full w-3/5 flex-col justify-between">
+        <div className="flex h-full w-3/5 flex-col grow justify-between">
           <div className="space-y-2">
             <h3>
               <span className="font-bold">{pathway}</span> |{' '}
@@ -39,9 +40,9 @@ export default function JobSeekerCardView({
             ))}
           </div>
         </div>
-        <div className="flex h-full flex-col justify-between">
-          <h3 className="text-right">end cap</h3>
-          <RoundedButton content={'View Profile'} link={'/#'} />
+        <div className="flex h-full flex-col justify-between items-end">
+          <div className='flex gap-4 w-20 h-7'><ShareIcon/><BookmarkIcon/></div>
+          <RoundedButton content={'View Profile'} link={'/#'} invertColor={false} />
         </div>
       </div>
     );

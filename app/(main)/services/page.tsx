@@ -8,36 +8,36 @@ export default function Page() {
   return (
     <>
       <PageBanner
-        title="Welcome To Career Services" bg={'bg-services-hero'}      ></PageBanner>
-      <main className="space-y-8 px-6 py-16 md:px-[150px] lg:px-[200px] font-['Roboto']">
-        <strong className="text-xl">
+        title="Welcome To Career Services" bg={'bg-services-hero'}></PageBanner>
+      <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
+        <h1 className="text-2xl">
           Unlock your potential with CFA Career Services
-        </strong>
+        </h1>
+        <h2 className='text-xl text-blue-text'>
+        Want to showcase your talents to a select group of employers?
+        </h2>
         <p>
-          Want to showcase your talents to a select group of employers? Please
-          visit our non-profit, free program (Embedded link to the Career
-          Services landing page) to explore our unique process for getting you
-          connected with ready-to-hire employers as a job candidate with a
-          showcase of TechReady job skills and achievements. We provide
-          development opportunities in technical proficiency and success
-          strategies for success in the work environment, along with career
-          navigation skills. This access is limited to very few job candidates
-          as the initial project of a Department of Commerce funded Green Jobs
-          Challenge grant and the Washington Jobs Initiative.Whether you&apos;re
-          just starting out or a seasoned professional, our skills classes,
-          workshops, panels, and soft skills training offer invaluable insights
-          and tools to enhance your skill set and professional development. From
-          honing your communication skills to mastering the art of negotiation,
-          our training programs empower you to succeed in today&apos;s
-          competitive job market.
+        Please visit our non-profit, free program (Embedded link to the Career Services landing page) to explore our 
+        unique process for getting you connected with ready-to-hire employers as a job candidate with a showcase of 
+        TechReady job skills and achievements. We provide development opportunities in technical proficiency and success 
+        strategies for success in the work environment, along with career navigation skills. This access is limited to 
+        very few job candidates as the initial project of a Department of Commerce funded Green Jobs Challenge grant 
+        and the Washington Jobs Initiative.
         </p>
-        <div className=" flex flex-wrap justify-around py-16">
+        <p>
+        Whether you're just starting out or a seasoned professional, our skills 
+        classes, workshops, panels, and soft skills training offer invaluable insights 
+        and tools to enhance your skill set and professional development. From honing 
+        your communication skills to mastering the art of 
+        negotiation, our training programs empower you to succeed in today's competitive job market.
+        </p>
+        <div className="flex flex-wrap justify-evenly gap-10">
           <RoundedButtonCard
             title={'Job Seekers'}
             desc={
               'Navigate your tech career path with confidence using our career navigation tools. From resume optimization to interview preparation, we provide the guidance you need to make informed decisions and achieve your goals. '
             }
-            buttonText={'Register now'}
+            buttonText={'Register'}
             link={'/#'}
             callToAction={
               'Register for Information session, build your profile'
@@ -48,7 +48,7 @@ export default function Page() {
             desc={
               "Our Job Board connects you with a diverse range of opportunities in the tech industry. Whether you're seeking internships, apprenticeships, or full-time positions, our platform is your gateway to exciting career prospects. "
             }
-            buttonText={'Gert Started now'}
+            buttonText={'Register'}
             link={'/#'}
             callToAction={'View candidates, create an account '}
           />
