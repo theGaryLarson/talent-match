@@ -8,11 +8,11 @@ export default function RoundedButtonCard(props: {
   link: string;
 }) {
   return (
-    <div className="border-box m-7 flex w-[36rem] flex-col space-y-7 rounded-2xl border border-solid border-black px-5 py-5 shadow">
+    <div className="border-box flex max-w-[400px] min-w-[375px] flex-col space-y-2 rounded-2xl border border-solid border-black px-5 py-5 shadow">
       <strong>{props.title}</strong>
       <p>{props.desc}</p>
       <strong>{props.callToAction}</strong>
-      <RoundedButton content={props.buttonText} link={'/#'} />
+      <div className='flex justify-end'><RoundedButton content={props.buttonText} link={'/#'} invertColor={true} /></div>
     </div>
   );
 }
