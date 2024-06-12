@@ -46,31 +46,26 @@ export default async function Page() {
           name={'Damien Cruz'}
           school={'University Of Washington'}
           pathway={'Software Devolpment'}
-          skillsList={['Rust', 'JavaScript', 'Python']}
-        />
+          skillsList={['Rust', 'JavaScript', 'Python']} pfpPicSrc={"/cfa_images/stock/Mask group.png"} aboutMe={''}        />
         <JobSeekerCardView
           isLarge={false}
           name={'John Hancock'}
           school={'Bates Technical College'}
           pathway={'Cyber Security'}
-          skillsList={['Rust', 'JavaScript', 'Python']}
-        />
+          skillsList={['Rust', 'JavaScript', 'Python']} pfpPicSrc={"/cfa_images/stock/Mask group.png"} aboutMe={''}        />
         <JobSeekerCardView
           isLarge={false}
           name={'Alice Johnson'}
           school={'Massachusetts Institute of Technology'}
           pathway={'Data Science'}
-          skillsList={['Python', 'R', 'SQL', 'Machine Learning']}
-        />
+          skillsList={['Python', 'R', 'SQL', 'Machine Learning']} pfpPicSrc={"/cfa_images/stock/Mask group.png"} aboutMe={''}        />
 
         <JobSeekerCardView
           isLarge={false}
           name={'Carol White'}
           school={'California Institute of Technology'}
           pathway={'DevOps'}
-          skillsList={['Docker', 'Kubernetes', 'CI/CD', 'Bash']}
-        />
-      </div>
-    </main>
+          skillsList={['Docker', 'Kubernetes', 'CI/CD', 'Bash']} pfpPicSrc={"/cfa_images/stock/Mask group.png"} aboutMe={''}        />
+      </div>  </main>
   );
 }

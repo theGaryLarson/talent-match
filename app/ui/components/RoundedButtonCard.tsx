@@ -12,7 +12,7 @@ export default function RoundedButtonCard(props: {
       <strong>{props.title}</strong>
       <p>{props.desc}</p>
       <strong>{props.callToAction}</strong>
-      <div className='flex justify-end'><RoundedButton content={props.buttonText} link={'/#'} invertColor={true} /></div>
+      <div className='flex justify-end'><RoundedButton content={props.buttonText} link={props.link} invertColor={true} /></div>
     </div>
   );
 }

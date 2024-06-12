@@ -10,17 +10,24 @@ export default function JobSeekerCardView({
   school,
   pathway,
   skillsList,
+  pfpPicSrc,
+  aboutMe
 }: {
   isLarge: boolean;
   name: string;
   school: string;
   pathway: string;
   skillsList: string[];
+  pfpPicSrc: string;
+  aboutMe:string;
 }) {
   if (isLarge) {
     return (
-      <div className="flex h-[220px] w-full items-center space-x-16 rounded-lg border p-6">
-        <Avatar imgsrc="/cfa_images/stock/Mask group.png" />
+      <div className="flex h-[220px] w-full items-center gap-10 rounded-lg border p-6">
+        <div className='flex flex-col items-center text-center w-[128px]'>
+          <Avatar imgsrc={pfpPicSrc} />
+          <span className="font-bold text-wrap">{name}</span>
+        </div>
         <div className="flex h-full w-3/5 flex-col grow justify-between">
           <div className="space-y-2">
             <h3>
@@ -29,9 +36,7 @@ export default function JobSeekerCardView({
             </h3>
             <h4>Green River C.C. | Senior</h4>
             <p>
-              Eager to start applying my curriculum work into practical use! I
-              am flexible, hardworking, and on meeting deadlines efficiently to
-              meet the organization goals to ensure business success ...
+              {aboutMe}
             </p>
           </div>
           <div className="space-x-2">
@@ -61,8 +66,7 @@ export default function JobSeekerCardView({
         <div className="w-[75%]">
           <h3 className="text-lg font-bold">{name}</h3>
           <p className="text-xs">
-            “Ready to jump into the world of cloud where I can make a
-            difference”
+            {aboutMe}
           </p>
         </div>
       </span>
