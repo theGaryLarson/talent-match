@@ -6,7 +6,7 @@ import Teaser from '@/app/ui/components/Teaser';
 //employer dashboard
 export default async function Page() {
   return (
-    <main className="space-y-4 py-4 md:px-[80px] lg:px-[200px]">
+    <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
       <div className="flex flex-wrap justify-evenly gap-4">
         {<ScoreCard title="Saved Candidates" val={3} />}
         {<ScoreCard title="Job Applications " val={5} />}
@@ -18,7 +18,8 @@ export default async function Page() {
           '/cfa_images/stock/people-using-digital-device-while-meeting 2.png'
         }
       />
-      <div className="flex flex-wrap justify-evenly py-8">
+      <div className='flex justify-center'>
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
         <Teaser
           isLarge={true}
           title={'Become a Mentor'}
@@ -40,6 +41,7 @@ export default async function Page() {
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
           }
         />
+      </div>
       </div>
       <LargeRoundedButtonCard
         title={'Ready to Hire'}
