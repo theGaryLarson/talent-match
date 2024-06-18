@@ -1,5 +1,6 @@
 import ArticleStub from '@/app/ui/components/ArticleStub';
 import BrowseByCategory from '@/app/ui/components/BrowseByCategory';
+import EmployerNameTitleTag from '@/app/ui/components/EmployerNameTitleTag';
 import FeaturedCanidates from '@/app/ui/components/FeaturedCanidates';
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
@@ -9,6 +10,7 @@ import Teaser from '@/app/ui/components/Teaser';
 export default async function Page() {
   return (
     <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
+      <EmployerNameTitleTag name={'Damien Cruz'} title={'Programming Instructor'} company={'Computing For All'}/>
       <div className="flex flex-wrap justify-evenly gap-4">
         {<ScoreCard title="Saved Candidates" val={3} />}
         {<ScoreCard title="Job Applications " val={5} />}
