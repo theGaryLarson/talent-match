@@ -6,12 +6,13 @@ import VideoBlock from "@/app/ui/components/VideoBlock";
 import Image from "next/image"
 import SimpleCard from "@/app/ui/components/SimpleCard";
 import PhotoCardWithTitle from "@/app/ui/components/PhotoCardWithTitle";
+import LargeRoundedButtonCard from "@/app/ui/components/LargeRoundedButtonCard";
 
 //job seeker landing page
 export default function Page() {
   const tabs = [
     {
-      label: "Discover Our Services",
+      label: "Career Portal",
       content: 
       <VideoBlock/>,
     },
@@ -23,15 +24,15 @@ export default function Page() {
           <strong >Enhance Your Technical Skills And Workplace Success Strategies</strong>
           <br/><br/>
           <div className="grid justify-center space-y-10 lg:space-x-10 lg:space-y-0 lg:grid-cols-2">
-            <GreyBackgroundBulletPointListBlock title = "Technical skills development" paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." 
-                                                bulletPoints = {["Cloud Computing", "Cyber Security", "Data Analyst", "IT Support", "Project Management", "Software Development", "Web Development", "UX Design"]}/>
-            <GreyBackgroundBulletPointListBlock title = "Professional skills development" paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                                                bulletPoints={["Leadership", "Teamwork", "Communication", "Problem Solving"]} singleColumn/>
+            <GreyBackgroundBulletPointListBlock title = "Durable & Interpersonal Skills"
+                                                bulletPoints = {["Metacognition", "Critical Thinking", "Character", "Creativity", "Growth Mindset", "Fortitude", "Communication", "Conflict Resolution", "Customer Service", "Mindfulness", "Collaboration", "Leadership"]}/>
+            <GreyBackgroundBulletPointListBlock title = "Employability Skills" 
+                                                bulletPoints={[["Personal Brand", "Resume & Cover Letter", "LinkedIn & Social Media"], ["Interviewing", "Behavioral & Technical Interviews", "Preperation & Follow-Up"], ["Networking", "Building connections",  "Navigating Events"], ["Navigating the Job Market", "Job Search Strategies", "Thriving in the workplace"]]} singleColumn/>
           </div>
         </div>,
     },
     {
-      label: "Career Services",
+      label: "Career Prep",
       content: 
         <div className="text-center">
           <br/>
@@ -51,7 +52,7 @@ export default function Page() {
         </div>,
     },
     {
-      label: "Showcase Your Work",
+      label: "Events",
       content: 
       <div className="text-center">
         <br/>
@@ -70,7 +71,7 @@ export default function Page() {
       </div>,
     },
     {
-      label: "Gain Experience",
+      label: "Resource Library",
       content: 
       <div className="text-center">
         <br/>
@@ -90,7 +91,7 @@ export default function Page() {
       </div>,
     },
     {
-      label: "Earn College Credit",
+      label: "Job Board",
       content: 
       <div className="text-center">
         <br/>
@@ -116,10 +117,9 @@ export default function Page() {
       <div className="px-6 md:px-12 lg:px-24 py-16 space-y-8 container mx-auto">
         <div className="space-y-6 px-4">
           <p className = "text-2xl">Unlock your potential with CFA Career Services</p>
-          <p>Showcase your talents to top employers through our non-profit, free program. 
-            Explore our unique process to connect with ready-to-hire employers and highlight 
-            your TechReady job skills and achievements. Gain technical proficiency, success 
-            strategies, and career navigation skills. 
+          <p>CFA Career Services is your central hub for launching or advancing your tech career, no matter where you are on your journey. 
+            Bridge the skills gap with our programs, combining technical training and career readiness. 
+            Showcase your TechReady talents on our Career Portal, connect with top employers, and land your dream tech job.
             </p>
           <br></br>
           <strong>Limited access is available through the Green Jobs Challenge grant and the Washington Jobs Initiative.</strong>
@@ -129,6 +129,13 @@ export default function Page() {
         <div className = "px-8">
           <Tabs tabs = {tabs}/>
         </div>
+        <LargeRoundedButtonCard
+          title={'Join an Info Session to Get Started'}
+          blurb={
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
+          }
+          buttonContent={'Register Now'}
+        />
         <div className="space-y-6">
           <p className="text-2xl">Get the Experience You Need</p>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
