@@ -4,17 +4,7 @@ import React from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
-import type { CustomFlowbiteTheme } from 'flowbite-react';
-import { Avatar, Button, Flowbite, Label } from "flowbite-react";
-
-const customTheme: CustomFlowbiteTheme = {
-  button: {
-    color: {
-      primary: "border border-transparent bg-blue-700 text-white focus:ring-4 focus:ring-blue-300 enabled:hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800",
-      secondary: "border border-blue-700 bg-white text-gray-900 focus:ring-4 focus:ring-cyan-300 enabled:hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-600 dark:text-white dark:focus:ring-gray-700 dark:enabled:hover:border-gray-700 dark:enabled:hover:bg-gray-700",
-    },
-  },
-};
+import { Avatar, Button, Progress } from "flowbite-react";
 
 export default function CreateJobseekerProfileIntroPage(){
   return(
@@ -22,6 +12,7 @@ export default function CreateJobseekerProfileIntroPage(){
       <aside className="hidden lg:w-2/5 lg:block">
       </aside>
       <section className="w-full lg:w-3/5">
+        <Progress progress={20} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 1/5</p>
         <h1>Intro</h1>
         <p>* Indicates a required field</p>
@@ -32,7 +23,7 @@ export default function CreateJobseekerProfileIntroPage(){
             </legend>
             <label className="flex">
               <Avatar rounded />
-              <input type="file" defaultValue="Upload Image" accept=".svg,.png,.jpg,.jpeg,.gif,.webp" className="sr-only"/>
+              <input type="file" accept=".svg,.png,.jpg,.jpeg,.gif,.webp" className="sr-only"/>
               <div>
                 Upload Image
                 <p>File types: SVG, PNG, JPG, GIF, or WEBP (max. TBD MB)</p>
@@ -47,7 +38,7 @@ export default function CreateJobseekerProfileIntroPage(){
             <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" required>Last Name *</InputTextWithLabel>
             <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" required>Birth Date *</InputTextWithLabel>
             <div className="flex">
-              <InputTextWithLabel type="number" id="profile-creation-intro-zip-code" className="w-1/2" placeholder="Zipcode" required>Zip Code *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-zip-code" className="w-1/2" placeholder="Zipcode" required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
                 className="w-1/2"
@@ -382,10 +373,8 @@ export default function CreateJobseekerProfileIntroPage(){
             </div>
           </fieldset>
           <div className="flex">
-            <Flowbite theme={{ theme: customTheme }}>
-              <Button pill color="secondary">Previous</Button>
-              <Button pill type="submit" color="primary">Continue</Button>
-            </Flowbite>
+            <Button pill color="gray">Previous</Button>
+            <Button pill type="submit">Continue</Button>
           </div>
         </form>
       </section>

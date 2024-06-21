@@ -14,7 +14,7 @@ export default function InputFileDropzone({
   accept,
 }: Props) {
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex w-full items-center justify-center relative">
       <Label
         htmlFor={id}
         className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -40,10 +40,10 @@ export default function InputFileDropzone({
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400">{fileTypeText}</p>
         </div>
-        <FileInput
+        <input type="file"
           id={id}
           name={id}
-          className="hidden"
+          className="absolute top-0 left-0 w-full h-full opacity-0 block cursor-pointer"
           accept={accept}
         />
       </Label>
