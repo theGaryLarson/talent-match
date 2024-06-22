@@ -7,17 +7,17 @@ import Image from "next/image"
 import SimpleCard from "@/app/ui/components/SimpleCard";
 import PhotoCardWithTitle from "@/app/ui/components/PhotoCardWithTitle";
 import LargeRoundedButtonCard from "@/app/ui/components/LargeRoundedButtonCard";
+import CFAPortalCard from "@/app/ui/components/CFAPortalCard";
 
 //job seeker landing page
 export default function Page() {
   const tabs = [
     {
       label: "Career Portal",
-      content: 
-      <VideoBlock/>,
+      content: <CFAPortalCard/>,
     },
     {
-      label: "Build Your Skills",
+      label: "Career Prep",
       content: 
         <div className = "text-center">
           <br/>
@@ -27,28 +27,8 @@ export default function Page() {
             <GreyBackgroundBulletPointListBlock title = "Durable & Interpersonal Skills"
                                                 bulletPoints = {["Metacognition", "Critical Thinking", "Character", "Creativity", "Growth Mindset", "Fortitude", "Communication", "Conflict Resolution", "Customer Service", "Mindfulness", "Collaboration", "Leadership"]}/>
             <GreyBackgroundBulletPointListBlock title = "Employability Skills" 
-                                                bulletPoints={[["Personal Brand", "Resume & Cover Letter", "LinkedIn & Social Media"], ["Interviewing", "Behavioral & Technical Interviews", "Preperation & Follow-Up"], ["Networking", "Building connections",  "Navigating Events"], ["Navigating the Job Market", "Job Search Strategies", "Thriving in the workplace"]]} singleColumn/>
+                                                bulletPoints={[["Personal Brand", "Resume & Cover Letter", "LinkedIn & Social Media"], ["Interviewing", "Behavioral & Technical", "Preperation & Follow-Up"], ["Networking", "Building connections",  "Navigating Events"], ["Navigating the Job Market", "Job Search Strategies", "Thriving in the workplace"]]}/>
           </div>
-        </div>,
-    },
-    {
-      label: "Career Prep",
-      content: 
-        <div className="text-center">
-          <br/>
-          <strong >Get The Guidance To Help You Make Better Informed Decisions</strong>
-          <br/><br/>
-          <TextImageSlide title="Career  Services" 
-                          paragraph="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Augue neque gravida in fermentum et sollicitudin ac. Aliquet risus feugiat in ante metus dictum at tempor commodo."
-                          list = {[
-                            "Resume optimization and review.",
-                            "Interview preperation tips and mock interviews.",
-                            "Career counseling and navigation tools.",
-                            "Job search strategies and networking advice."
-                          ]}
-                          paragraph2="Still have questions? Join an information session today"
-                          image = "stock/people-using-digital-device-while-meeting 2.png"
-                          imageLeft/>
         </div>,
     },
     {
@@ -130,31 +110,27 @@ export default function Page() {
           <Tabs tabs = {tabs}/>
         </div>
         <LargeRoundedButtonCard
-          title={'Join an Info Session to Get Started'}
+          title={'Schedule an Info Session Today'}
           blurb={
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
+            'Book a FREE 30-minute info session to learn more about how CFA Career Services can help you unlock your full potential and chieve your tech career goals.'
           }
           buttonContent={'Register Now'}
         />
         <div className="space-y-6">
-          <p className="text-2xl">Get the Experience You Need</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Mi tempus imperdiet nulla malesuada pellentesque. Id aliquet lectus proin nibh. 
-            Mi ipsum faucibus vitae aliquet nec ullamcorper. Sed elementum tempus egestas sed sed risus pretium. 
-            Nisl purus in mollis nunc sed id. Neque viverra justo nec ultrices dui sapien eget mi proin. 
-            Vulputate sapien nec sagittis aliquam. Hendrerit dolor magna eget est lorem ipsum dolor sit amet. 
-            Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. 
-            Commodo nulla facilisi nullam vehicula ipsum a arcu cursus. Nunc aliquet bibendum enim facilisis gravida. 
-          </p>
+          <p className="text-2xl">CFA meets you where you are</p>
+          <p>We offer a range of programs to help aspiring tech professionals at all stages of their journey. Explore our programs and find the perfect fit for you.</p>
           <p>Access diverse opportunties in the tech industry, including:</p>
         </div>
-        <div className="flex justify-center flex-row gap-4 [&>*]:flex-grow">
-          <PhotoCardWithTitle title = "Apprentice" article = "lalalalala alalla lorem ipsum" 
-                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"/>
-          <PhotoCardWithTitle title = "Apprentice" article = "lalalalala alalla lorem ipsum" 
-                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"/>
-          <PhotoCardWithTitle title = "Apprentice" article = "lalalalala alalla lorem ipsum" 
-                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"/>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-8 flex-wrap">
+          <PhotoCardWithTitle title = "Pre-Apprenticeship Program" article = "WA residents, between the ages of 16-24 years old and in need of financial assistance, can apply for our Full Stack Web Development Pre-Apprenticeship program! Master in-demand coding skills & earn a certificate in 1.5 years." 
+                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"
+                              callToAction="Learn more & Apply"/>
+          <PhotoCardWithTitle title = "Project Factory" article = "Stuck between textbooks and your dream job? Project Factory bridges the gap! Our platform lets college students tackle real-world projects mentored by industry pros. Gain hands-on experience, refine in-demand skills, and build a portfolio that grabs attention. Get instant feedback, develop on real cloud infrastructure, and launch your career!" 
+                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"
+                              callToAction="Coming Soon"/>
+          <PhotoCardWithTitle title = "Career Prep" article = "Whether you are an experienced professional or a recent graduate, our Career Prep program helps you reach your full potential, no matter your experience level. We create personalized plans to guide you, with learning modules to hone your professional skills and career readiness. Complete milestones and impress employers by showcasing your achievements with TechReady badges on your Career Portal profile." 
+                              imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"
+                              callToAction="Coming Soon"/>
         </div>
       </div>
       <BlockQuote text = {"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."} 
@@ -162,15 +138,13 @@ export default function Page() {
           imgSrc={"/cfa_images/stock/Mask Group.png"}/>
       <div className="px-6 md:px-12 lg:px-24 py-16 space-y-8 container mx-auto">
         <div className="space-y-6 px-4">
-          <p className="text-2xl">Ready to get started, here are our steps:</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Mi tempus imperdiet nulla malesuada pellentesque. Id aliquet lectus proin nibh. 
-            Mi ipsum faucibus vitae aliquet nec ullamcorper. Sed elementum tempus egestas sed sed risus pretium. 
-            Nisl purus in mollis nunc sed id. Neque viverra justo nec ultrices dui sapien eget mi proin. 
-            Vulputate sapien nec sagittis aliquam. Hendrerit dolor magna eget est lorem ipsum dolor sit amet. 
-            Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. 
-            Commodo nulla facilisi nullam vehicula ipsum a arcu cursus. Nunc aliquet bibendum enim facilisis gravida. 
-          </p>
+          <p className="text-2xl">Your path to a thriving tech career starts here!</p>
+          <ul className="list-decimal leading-8">
+            <li><strong>Create Your Profile: </strong>Highlight your strengths, experience, and achievements on our Career Portal. Build a strong foundation that gets you noticed!</li>
+            <li><strong>Build Skills & Earn Badges: </strong>Master in-demand skills through our comprehensive programs. Earn badges along the way to validate your expertise.</li>
+            <li><strong>Showcase Your Talents: </strong>Utilize your Career Portal profile to showcase your TechReady skills and impress top employers.</li>
+            <li><strong>Confidently Navigate the Job Market: </strong>Gain the knowledge and skills you need to confidently navigate the job market and land your dream job.</li>
+          </ul>
 
         </div>
         <div className="flex justify-evenly gap-4 flex-wrap">

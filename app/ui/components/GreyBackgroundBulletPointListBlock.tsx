@@ -32,7 +32,7 @@ export default function GreyBackgroundBulletPointListBlock({title = "Technical S
             <h2 className="font-medium text-blue-text2">{title}</h2>
 
             <p className="text-sm">{paragraph}</p>
-            <ul className={`${singleColumn ? "columns-1" : "columns-2"} leading-8 list-inside text-blue-text2`}>
+            <ul className={`${singleColumn ? "columns-1" : "columns-2"} leading-10 list-inside text-blue-text2`}>
                 {list}
             </ul>
         </div>
