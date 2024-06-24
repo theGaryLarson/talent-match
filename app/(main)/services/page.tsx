@@ -13,7 +13,7 @@ export default function Page() {
         <h1 className="text-2xl">
           Unlock your potential with CFA Career Services
         </h1>
-        <h2 className='text-xl text-blue-text'>
+        <h2 className='text-xl text-primary-600'>
         Want to showcase your talents to a select group of employers?
         </h2>
         <p>
