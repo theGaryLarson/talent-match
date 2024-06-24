@@ -1,17 +1,24 @@
-export default function GreyBackgroundBulletPointListBlock(){
+export default function GreyBackgroundBulletPointListBlock({title = "Technical Skills Development", 
+                                                            bulletPoints = ["Cloud Computing", "Cyber Security", "Data Analyst", "IT Support",
+                                                            "Project Management", "Software Development", "Web Development", "UX Design"],
+                                                            paragraph,
+                                                            singleColumn = false} :
+                                                            {title?: string, bulletPoints?: Array<string>, paragraph?: string, singleColumn?: boolean}){
+    let list = [];
+    for(let bullet of bulletPoints){
+        list.push(<li>{bullet}</li>);
+    }
+    
     return(
-    <div className="bg-gray-300 w-5/12">
-        <h2 className="py-7 text-lg font-bold text-center">Technical Skills Development</h2>
-        <ul className="columns-1 sm:columns-2 list-disc list-inside px-16 pb-20">
-            <li>Cloud Computing</li>
-            <li>Cyber Security</li>
-            <li>Data Analyst</li>
-            <li>IT Support</li>
-            <li>Project Managment</li>
-            <li>Software Development</li>
-            <li>Web Development</li>
-            <li>UX Design</li>
-        </ul>
+    <div className="outline outline-2 outline-gray-400 rounded-xl px-4 py-6">
+        <div className="space-y-4 text-left items-center">
+            <h2 className="font-medium text-blue-textdark">{title}</h2>
+
+            <p className="text-sm">{paragraph}</p>
+            <ul className={`${singleColumn ? "columns-1" : "columns-2"} list-square list-inside text-blue-text`}>
+                {list}
+            </ul>
+        </div>
     </div>
     );
 }
