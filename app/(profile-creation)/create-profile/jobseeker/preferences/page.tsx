@@ -1,21 +1,29 @@
-import React from 'react';
+'use client';
 
-export default function CreateJobseekerProfileDisclosuresPage(){
-    return(
-        <main>
-          <h1>Create account</h1>
-          <form>
-            <fieldset>
-              <legend>Select your role first</legend>
-              <label>An employer <input type="radio" name="account-role"/></label>
-              <label>A job seeker <input type="radio" name="account-role"/></label>
-            </fieldset>
-            <input type="submit" value="Continue"/>
-          </form>
-          <p>or</p>
-          <div>
-            <p>Already have a CFA account?</p>
+import React from 'react';
+import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
+import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import { Button, Label, Progress, Radio } from "flowbite-react";
+
+export default function CreateJobseekerProfilePreferencesPage(){
+  return(
+    <main className="flex">
+      <aside className="hidden lg:w-2/5 lg:block">
+      </aside>
+      <section className="w-full lg:w-3/5">
+        <ProgressBarFlat progress={5/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+        <p>Step 5/6</p>
+        <h1>Your preferences</h1>
+        <p>* Indicates a required field</p>
+        <form>
+          <div className="flex">
+            <Button pill color="gray">Previous</Button>
+            <Button pill type="submit">Save and continue</Button>
           </div>
-        </main>
-    );
+        </form>
+      </section>
+    </main>
+  );
 }

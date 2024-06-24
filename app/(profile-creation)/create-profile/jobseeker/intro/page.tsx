@@ -3,6 +3,7 @@
 import React from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
+import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import { Avatar, Button, Progress } from "flowbite-react";
 
@@ -12,8 +13,8 @@ export default function CreateJobseekerProfileIntroPage(){
       <aside className="hidden lg:w-2/5 lg:block">
       </aside>
       <section className="w-full lg:w-3/5">
-        <Progress progress={20} size="sm" color="dark" className="lg:hidden"/>
-        <p>Step 1/5</p>
+        <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+        <p>Step 1/6</p>
         <h1>Intro</h1>
         <p>* Indicates a required field</p>
         <form>
@@ -374,7 +375,7 @@ export default function CreateJobseekerProfileIntroPage(){
           </fieldset>
           <div className="flex">
             <Button pill color="gray">Previous</Button>
-            <Button pill type="submit">Continue</Button>
+            <Button pill type="submit">Save and continue</Button>
           </div>
         </form>
       </section>
