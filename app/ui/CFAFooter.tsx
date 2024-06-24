@@ -3,7 +3,7 @@ import CFALogo from "./CFALogo"
 import Image from "next/image";
 export default function CFAFooter(){
     return(
-        <div className="w-full bg-blue-background text-white px-6 py-2">
+        <div className="w-full bg-primary-600 text-white px-6 py-2">
             <div className="flex justify-between items-center">
             <Link href={"/#"}>
             <Image src="/cfa_images/CFA logo_reverse 1.svg" alt={"CFA Logo"} width={150} height={75}/></Link>
