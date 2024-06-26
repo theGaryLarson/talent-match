@@ -8,29 +8,12 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { signIn } from 'next-auth/react'; // Ensure correct import
+import { SignIn } from '@/app/ui/components/GithubSignIn';
 
 export default function LoginForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    try {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (result?.error) {
-        console.error('Authentication error:', result.error);
-      }
-    } catch (error) {
-      console.error('Authentication error:', error);
-    }
+    const result = SignIn();
   };
 
   return (
