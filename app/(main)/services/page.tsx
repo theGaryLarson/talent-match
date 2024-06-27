@@ -1,7 +1,7 @@
-import ArticleStub from '../ui/components/ArticleStub';
-import PageBanner from '../ui/components/PageBannner';
-import RoundedButtonCard from '../ui/components/RoundedButtonCard';
-import VideoBlock from '../ui/components/VideoBlock';
+import ArticleStub from '@/app/ui/components/ArticleStub';
+import PageBanner from '@/app/ui/components/PageBannner';
+import RoundedButtonCard from '@/app/ui/components/RoundedButtonCard';
+import VideoBlock from '@/app/ui/components/VideoBlock';
 
 //landing page for career services
 export default function Page() {
@@ -13,7 +13,7 @@ export default function Page() {
         <h1 className="text-2xl">
           Unlock your potential with CFA Career Services
         </h1>
-        <h2 className='text-xl text-blue-text'>
+        <h2 className='text-xl text-primary-600'>
         Want to showcase your talents to a select group of employers?
         </h2>
         <p>
@@ -48,8 +48,8 @@ export default function Page() {
             desc={
               "Our Job Board connects you with a diverse range of opportunities in the tech industry. Whether you're seeking internships, apprenticeships, or full-time positions, our platform is your gateway to exciting career prospects. "
             }
-            buttonText={'Register'}
-            link={'/#'}
+            buttonText={'Learn More'}
+            link={'/services/employers'}
             callToAction={'View candidates, create an account '}
           />
         </div>
