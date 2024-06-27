@@ -1,10 +1,12 @@
 import type { Config } from 'tailwindcss';
+import flowbite from "flowbite-react/tailwind";
 
 const config: Config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    flowbite.content(),
   ],
   theme: {
     extend: {
@@ -24,6 +26,19 @@ const config: Config = {
           trans: "#457996BF"
           
 
+        },
+        primary:{
+          25:"#F2FAFC",
+          50:"#E6F5F9",
+          100:"#CDEBF3",
+          200:"#9BD8E7",
+          300:"#69C5DB",
+          400:"#37B2CF",
+          500:"#059FC3",
+          600:"#047F9C",
+          700:"#035F75",
+          800:"#023F4E",
+          900:"#011F27"
         },
         gray:{
           trans: "#18181875",
@@ -50,6 +65,9 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [
+    require('@tailwindcss/forms'),
+    flowbite.plugin(),
+  ],
 };
 export default config;

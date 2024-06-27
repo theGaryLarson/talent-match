@@ -19,6 +19,8 @@
     "autoprefixer": "10.4.15",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.0.0",
+    "flowbite": "^2.3.0",
+    "flowbite-react": "^0.10.1",
     "luxon": "^3.4.4",
     "mssql": "^10.0.2",
     "next": "^14.0.2",
