@@ -18,6 +18,30 @@ export default function CreateJobseekerProfilePreferencesPage(){
         <h1>Your preferences</h1>
         <p>* Indicates a required field</p>
         <form>
+          <fieldset>
+            <legend>
+              <h2>Your Preferences</h2>
+            </legend>
+            <div>
+              <fieldset>
+                <legend>What are you looking for?</legend>
+                {/* TODO: Pills need function to select */}
+                <div className="flex">
+                  <Button color="gray" pill>Full-time job</Button>
+                  <Button color="gray" pill>Part-time job</Button>
+                  <Button color="gray" pill>Internship</Button>
+                  <Button color="gray" pill>On-campus job</Button>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>What is your tech role/pathway targeted?</legend>
+                <Label className="block"><Radio name="profile-creation-preferences-require-role" required/> Software Development</Label>
+                <Label className="block"><Radio name="profile-creation-preferences-require-role" required/> Cloud Computing</Label>
+                <Label className="block"><Radio name="profile-creation-preferences-require-role" required/> Data analytics</Label>
+              </fieldset>
+            </div>
+          </fieldset>
+
           <div className="flex">
             <Button pill color="gray">Previous</Button>
             <Button pill type="submit">Save and continue</Button>
