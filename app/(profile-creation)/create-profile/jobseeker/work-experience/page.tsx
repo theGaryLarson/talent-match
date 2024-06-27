@@ -3,154 +3,51 @@
 import React, { useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from "react-icons/md";
-import { Button, Checkbox, Label, Radio, Textarea } from "flowbite-react";
+import { Button, Label, Radio } from "flowbite-react";
 import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
-import TextareaWithLabel from '../../../../ui/components/TextareaWithLabel';
+import WorkExperienceGroup, { defaultWorkExperienceGroupData } from '@/app/ui/form-field-groups/WorkExperienceGroup';
+import InternshipExperienceGroup, { defaultInternshipExperienceGroupData } from '@/app/ui/form-field-groups/InternshipExperienceGroup';
 
-interface WorkExperienceGroupProps {
-  groupNumber: number,
-}
-
-function WorkExperienceGroup({groupNumber}:WorkExperienceGroupProps){
-  const [isCurrent, setCurrent] = useState(false);
-
-  return (
-    <div>
-      <h3>Experience {groupNumber}</h3>
-      <InputTextWithLabel
-        id={"profile-creation-work-experience-group-" + groupNumber + "-company"}
-        className="w-full"
-        placeholder="Your company name"
-        required
-      >
-        Company *
-      </InputTextWithLabel>
-      <InputTextWithLabel
-        id={"profile-creation-work-experience-group-" + groupNumber + "-title"}
-        className="w-full"
-        placeholder="Your title"
-        required
-      >
-        Title *
-      </InputTextWithLabel>
-      <div className="flex">
-        <InputTextWithLabel
-          type="month"
-          id={"profile-creation-work-experience-group-" + groupNumber + "-starts"}
-          className="w-1/2"
-          required={(isCurrent)?false:true}
-          disabled={(isCurrent)?true:false}
-        >
-          Starts *
-        </InputTextWithLabel>
-        <InputTextWithLabel
-          type="month"
-          id={"profile-creation-work-experience-group-" + groupNumber + "-ends"}
-          className="w-1/2"
-          required={(isCurrent)?false:true}
-          disabled={(isCurrent)?true:false}
-        >
-          Ends *
-        </InputTextWithLabel>
-      </div>
-      <Label>
-        <Checkbox
-          id={"profile-creation-work-experience-group-" + groupNumber + "-current"}
-          onClick={()=>setCurrent(!isCurrent)}
-        />
-        Current
-      </Label>
-      <TextareaWithLabel
-        id={"profile-creation-work-experience-group-" + groupNumber + "-experience"}
-        placeholder="Your specific experience"
-        required
-      >
-        Experience *
-      </TextareaWithLabel>
-    </div>
-  );
-}
-
-interface InternshipExperienceGroupProps {
-  groupNumber: number,
-}
-
-function InternshipExperienceGroup({groupNumber}:InternshipExperienceGroupProps){
-  const [isCurrent, setCurrent] = useState(false);
-
-  return (
-    <div>
-      <h3>Experience {groupNumber}</h3>
-      <InputTextWithLabel
-        id={"profile-creation-internship-experience-group-" + groupNumber + "-company"}
-        className="w-full"
-        placeholder="Your company name"
-        required
-      >
-        Company *
-      </InputTextWithLabel>
-      <InputTextWithLabel
-        id={"profile-creation-internship-experience-group-" + groupNumber + "-title"}
-        className="w-full"
-        placeholder="Your title"
-        required
-      >
-        Title *
-      </InputTextWithLabel>
-      <div className="flex">
-        <InputTextWithLabel
-          type="month"
-          id={"profile-creation-internship-experience-group-" + groupNumber + "-starts"}
-          className="w-1/2"
-          required={(isCurrent)?false:true}
-          disabled={(isCurrent)?true:false}
-        >
-          Starts *
-        </InputTextWithLabel>
-        <InputTextWithLabel
-          type="month"
-          id={"profile-creation-internship-experience-group-" + groupNumber + "-ends"}
-          className="w-1/2"
-          required={(isCurrent)?false:true}
-          disabled={(isCurrent)?true:false}
-        >
-          Ends *
-        </InputTextWithLabel>
-      </div>
-      <Label>
-        <Checkbox
-          id={"profile-creation-internship-experience-group-" + groupNumber + "-current"}
-          onClick={()=>setCurrent(!isCurrent)}
-        />
-        Current
-      </Label>
-      <TextareaWithLabel
-        id={"profile-creation-internship-experience-group-" + groupNumber + "-experience"}
-        placeholder="Your specific experience"
-        required
-      >
-        Experience *
-      </TextareaWithLabel>
-    </div>
-  );
-}
-
+type WorkExperienceGroupsTuple = [React.ReactNode, number];
+type InternshipExperienceGroupsTuple = [React.ReactNode, number];
 export default function CreateJobseekerProfileWorkExperiencePage(){
-  const [workExperienceGroups, setWorkExperienceGroups] = useState<React.ReactNode[]>([]);
-  const [internshipExperienceGroups, setInternshipExperienceGroups] = useState<React.ReactNode[]>([]);
+  const [workExperienceGroups, setWorkExperienceGroups] = useState<WorkExperienceGroupsTuple[]>([]);
+  const [internshipExperienceGroups, setInternshipExperienceGroups] = useState<InternshipExperienceGroupsTuple[]>([]);
 
   function addNewWorkExperienceGroup() {
+    const newGroupData = defaultWorkExperienceGroupData();
     setWorkExperienceGroups((prevGroups) => [
       ...prevGroups,
-      <WorkExperienceGroup key={'WorkGroupKey'+(prevGroups.length+1)} groupNumber={prevGroups.length+1}/>
-    ])
+      [
+        <WorkExperienceGroup key={newGroupData.uid} groupData={newGroupData} onRemove={()=>removeWorkExperienceGroup(newGroupData.uid)} />,
+        newGroupData.uid
+      ]
+    ]);
+  }
+
+  function removeWorkExperienceGroup(byUid : number) {
+    setWorkExperienceGroups((prevGroups) => {
+      const updatedGroups = prevGroups.filter(([, uid]) => (uid !== byUid));
+      return updatedGroups;
+    })
   }
 
   function addNewInternshipExperienceGroup() {
+    const newGroupData = defaultInternshipExperienceGroupData();
     setInternshipExperienceGroups((prevGroups) => [
       ...prevGroups,
-      <InternshipExperienceGroup key={'InternshipGroupKey'+(prevGroups.length+1)} groupNumber={prevGroups.length+1}/>
-    ])
+      [
+        <InternshipExperienceGroup key={newGroupData.uid} groupData={newGroupData} onRemove={()=>removeInternshipExperienceGroup(newGroupData.uid)} />,
+        newGroupData.uid
+      ]
+    ]);
+  }
+
+  function removeInternshipExperienceGroup(byUid : number) {
+    setInternshipExperienceGroups((prevGroups) => {
+      const updatedGroups = prevGroups.filter(([, uid]) => (uid !== byUid));
+      return updatedGroups;
+    })
   }
 
   return(
@@ -162,8 +59,31 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
         <p>Step 3/6</p>
         <h1>Work experience</h1>
         <p>* Indicates a required field</p>
-        <form>
-          <fieldset>
+        <form onSubmit={(e)=>{
+          e.preventDefault();
+          const formData = new FormData(e.target as HTMLFormElement);
+          console.log(JSON.stringify(Array.from(formData.entries())))
+        }}>
+          <style jsx global>{`
+            .work-experience-groups {
+              counter-reset: work-group-item;
+            }
+            
+            .work-experience-groups fieldset h3::after {
+              counter-increment: work-group-item;
+              content: " " counter(work-group-item);
+            }
+
+            .internship-experience-groups {
+              counter-reset: internship-group-item;
+            }
+
+            .internship-experience-groups fieldset h3::after {
+              counter-increment: internship-group-item;
+              content: " " counter(internship-group-item);
+            }
+          `}</style>
+          <fieldset className="work-experience-groups">
             <legend>
               <h2>Work experience</h2>
             </legend>
@@ -179,7 +99,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                 </InputTextWithLabel>
             }
             {
-              workExperienceGroups
+              workExperienceGroups.map(([group]) => group)
             }
             <Button
               pill
@@ -190,7 +110,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
               Add work experience
             </Button>
           </fieldset>
-          <fieldset>
+          <fieldset className="internship-experience-groups">
             <legend>
               <h2>Internship experience</h2>
             </legend>
@@ -206,7 +126,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                 </InputTextWithLabel>
             }
             {
-              internshipExperienceGroups
+              internshipExperienceGroups.map(([group]) => group)
             }
             <Button
               pill
@@ -224,14 +144,14 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
             <p>Note: All work authentication information you provide will only be used for the purpose of verifying your qualifications for this job application and will not be disclosed to public view or any third parties without your express consent.</p>
             <div>
               Are you authorized to work in the U.S.? *
-              <Label className="block"><Radio name="profile-creation-authentication-us-authorized" required/> Yes</Label>
-              <Label className="block"><Radio name="profile-creation-authentication-us-authorized" required/> No</Label>
+              <Label className="block"><Radio name="profile-creation-authentication-us-authorized" value="yes" required/> Yes</Label>
+              <Label className="block"><Radio name="profile-creation-authentication-us-authorized" value="no" required/> No</Label>
             </div>
             <div>
               <h3>United States of America</h3>
               <p>Will you, now or in the future, require sponsorship for employment visa status? *</p>
-              <Label className="block"><Radio name="profile-creation-authentication-require-sponsor" required/> Yes</Label>
-              <Label className="block"><Radio name="profile-creation-authentication-require-sponsor" required/> No</Label>
+              <Label className="block"><Radio name="profile-creation-authentication-require-sponsor" value="yes" required/> Yes</Label>
+              <Label className="block"><Radio name="profile-creation-authentication-require-sponsor" value="no" required/> No</Label>
             </div>
           </fieldset>
           <div className="flex">
