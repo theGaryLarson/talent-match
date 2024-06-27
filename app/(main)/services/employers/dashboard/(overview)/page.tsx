@@ -1,4 +1,7 @@
 import ArticleStub from '@/app/ui/components/ArticleStub';
+import BrowseByCategory from '@/app/ui/components/BrowseByCategory';
+import EmployerNameTitleTag from '@/app/ui/components/EmployerNameTitleTag';
+import FeaturedCanidates from '@/app/ui/components/FeaturedCanidates';
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import ScoreCard from '@/app/ui/components/ScoreCard';
@@ -6,14 +9,21 @@ import Teaser from '@/app/ui/components/Teaser';
 //employer dashboard
 export default async function Page() {
   return (
-    <main className="md:px-[80px] lg:px-[200px] space-y-4">
+    <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
+      <EmployerNameTitleTag name={'Damien Cruz'} title={'Programming Instructor'} company={'Computing For All'}/>
       <div className="flex flex-wrap justify-evenly gap-4">
-        {<ScoreCard title="Saved Candidates" val={5} />}
+        {<ScoreCard title="Saved Candidates" val={3} />}
         {<ScoreCard title="Job Applications " val={5} />}
-        {<ScoreCard title="Direct Messages" val={5} />}
+        {<ScoreCard title="Direct Messages" val={1} />}
       </div>
-      <ArticleStub isPhotoFirst={true} imagesrc={"/cfa_images/stock/people-using-digital-device-while-meeting 2.png"}/>
-      <div className="flex py-8 justify-evenly flex-wrap">
+      <ArticleStub
+        isPhotoFirst={true}
+        imagesrc={
+          '/cfa_images/stock/people-using-digital-device-while-meeting 2.png'
+        }
+      />
+      <div className='flex justify-center'>
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
         <Teaser
           isLarge={true}
           title={'Become a Mentor'}
@@ -36,41 +46,16 @@ export default async function Page() {
           }
         />
       </div>
-      <LargeRoundedButtonCard title={"Ready to Hire"} blurb={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."} buttonContent={"Search For talent"} />
-
-      <h2 className='text-lg font-bold'>Featured candidates</h2>
-
-      <div className='flex flex-wrap gap-5'>
-        <JobSeekerCardView
-          isLarge={false}
-          name={'Damien Cruz'}
-          school={'University Of Washington'}
-          pathway={'Software Devolpment'}
-          skillsList={['Rust', 'JavaScript', 'Python']}
-        />
-        <JobSeekerCardView
-          isLarge={false}
-          name={'John Hancock'}
-          school={'Bates Technical College'}
-          pathway={'Cyber Security'}
-          skillsList={['Rust', 'JavaScript', 'Python']}
-        />
-        <JobSeekerCardView
-          isLarge={false}
-          name={'Alice Johnson'}
-          school={'Massachusetts Institute of Technology'}
-          pathway={'Data Science'}
-          skillsList={['Python', 'R', 'SQL', 'Machine Learning']}
-        />
-
-        <JobSeekerCardView
-          isLarge={false}
-          name={'Carol White'}
-          school={'California Institute of Technology'}
-          pathway={'DevOps'}
-          skillsList={['Docker', 'Kubernetes', 'CI/CD', 'Bash']}
-        />
       </div>
+      <LargeRoundedButtonCard
+        title={'Ready to Hire'}
+        blurb={
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
+        }
+        buttonContent={'Search For talent'}
+      />
+      <FeaturedCanidates/>
+      <BrowseByCategory/>
     </main>
   );
 }

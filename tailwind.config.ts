@@ -21,9 +21,23 @@ const config: Config = {
           'background': '#457996',
           'border': '#4C809D',
           text: "#457996",
+          textdark: "#014361",
           trans: "#457996BF"
           
 
+        },
+        primary:{
+          25:"#F2FAFC",
+          50:"#E6F5F9",
+          100:"#CDEBF3",
+          200:"#9BD8E7",
+          300:"#69C5DB",
+          400:"#37B2CF",
+          500:"#059FC3",
+          600:"#047F9C",
+          700:"#035F75",
+          800:"#023F4E",
+          900:"#011F27"
         },
         gray:{
           trans: "#18181875",
@@ -33,6 +47,9 @@ const config: Config = {
       backgroundImage: {
         'services-hero': "url('/cfa_images/stock/people-using-digital-device-while-meeting 1.png')",
         'employer-hero-1': "url('/cfa_images/stock/desola-lanre-ologun-IgUR1iX0mqM-unsplash 2.png')"
+      },
+      listStyleType: {
+        square: 'square',
       }
     },
     keyframes: {
