@@ -9,11 +9,11 @@ export default function PhotoCardWithTitle({title, article, imgSrc, callToAction
             </div>
             <div className="width-1/1">
                 <div className="p-3 space-y-3">
-                <p>{article}</p>
-                <div>
-                    <strong>{callToAction}</strong>
-                </div>
-                <p>Lorem ipsum dolor sit amet, consectetur</p>
+                    <p>{article}</p>
+                    <div>
+                        <strong>{callToAction}</strong>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur</p>
                 </div>
             </div>
         </div>

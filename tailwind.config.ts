@@ -49,6 +49,7 @@ const config: Config = {
         'services-hero': "url('/cfa_images/stock/people-using-digital-device-while-meeting 1.png')",
         'employer-hero-1': "url('/cfa_images/stock/desola-lanre-ologun-IgUR1iX0mqM-unsplash 2.png')",
         'blue-square': "url('/blue-bullet.png')",
+        'quote': "url('/cfa_images/stock/quote-bg-1.png')"
       },
       listStyleType: {
         square: 'square'
@@ -64,6 +65,9 @@ const config: Config = {
         },
       },
     },
+    fontFamily: {
+      'roboto': ['Roboto'],
+    }
   },
   plugins: [
     require('@tailwindcss/forms'),
