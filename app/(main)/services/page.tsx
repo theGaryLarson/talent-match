@@ -44,7 +44,7 @@ export default function Page() {
             }
           />
           <RoundedButtonCard
-            title={'Employer'}
+            title={'Employers'}
             desc={
               "Our Job Board connects you with a diverse range of opportunities in the tech industry. Whether you're seeking internships, apprenticeships, or full-time positions, our platform is your gateway to exciting career prospects. "
             }

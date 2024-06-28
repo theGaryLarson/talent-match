@@ -1,49 +1,14 @@
 //employer landing page
-import BlockQuote from '@/app/ui/components/BlockQuote';
 import BrowseByCategory from '@/app/ui/components/BrowseByCategory';
-import GreyBackgroundBulletPointListBlock from '@/app/ui/components/GreyBackgroundBulletPointListBlock';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import PageBanner from '@/app/ui/components/PageBannner';
 import PhotoCardWithTitle from '@/app/ui/components/PhotoCardWithTitle';
 import RoundedButton from '@/app/ui/components/RoundedButton';
-import RoundedButtonCard from '@/app/ui/components/RoundedButtonCard';
+
 import SimpleCard from '@/app/ui/components/SimpleCard';
-import Tabs from '@/app/ui/components/Tabs';
-import VideoBlock from '@/app/ui/components/VideoBlock';
+
 
 export default function Page() {
-  const tabs = [
-    {
-      label: 'Why Join',
-      content: <VideoBlock />,
-    },
-    {
-      label: 'Growth',
-      content: (
-        <div className="flex space-x-20">
-          <GreyBackgroundBulletPointListBlock />
-          <GreyBackgroundBulletPointListBlock />
-        </div>
-      ),
-    },
-    {
-      label: 'Candidates',
-      content: <div>Content of Tab 3</div>,
-    },
-    {
-      label: 'Mentor',
-      content: <div>Content of Tab 4</div>,
-    },
-    {
-      label: 'Recruitment',
-      content: <div>Content of Tab 5</div>,
-    },
-    {
-      label: 'Visibility',
-      content: <div>Content of Tab 6</div>,
-    },
-  ];
-
   return (
     <>
       <PageBanner title={'Employers: Discover Talent'} bg="bg-employer-hero-1" />
@@ -89,31 +54,6 @@ export default function Page() {
         <p>
         Whether you are looking for an intern or an experienced software developer, you can find talent to meet your hiring needs here.  Click on the box that best describes the position you are trying to fill to identify the most qualified candidates.
         </p>
-        <div className="flex flex-wrap justify-evenly gap-4">
-          <PhotoCardWithTitle
-            title={'Job Candidates'}
-            article={
-              "Discover top talent ready to join your team and hit the ground running. Our curated pool of job candidates brings a wealth of experience and fresh perspectives to drive your company's success."
-            }
-            imgSrc={'/cfa_images/stock/annie-spratt-vGgn0xLdy8s-unsplash 1.png'}
-          />
-          <PhotoCardWithTitle
-            title={'Interns'}
-            article={
-              "Nurture the next generation of innovators. They have an educational foundation and are ready for real work. Invest in the future with these bright minds eager to grow."
-            }
-            imgSrc={
-              '/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png'
-            }
-          />
-          <PhotoCardWithTitle
-            title={'Apprentice'}
-            article={
-              'Here is a b unch of random information that will be replaced yada yada radda radda'
-            }
-            imgSrc={'/cfa_images/stock/headway-5QgIuuBxKwM-unsplash 1.png'}
-          />
-        </div>
         
         {/* <BlockQuote
           text={
@@ -124,15 +64,8 @@ export default function Page() {
         /> */}
         <BrowseByCategory/>
         <h1 className="text-2xl">
-          Still not sure here, here are other Ways to Meet Our Candidates
+          Get Involved! Ways to volunteer
         </h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat.
-        </p>
         <div className="flex flex-wrap justify-evenly gap-4">
           <SimpleCard
             title={'Host a Job Fair'}
@@ -149,6 +82,7 @@ export default function Page() {
             href={'/#'}
           />
         </div>
+        
       </main>
     </>
   );
