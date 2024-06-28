@@ -3,6 +3,7 @@ import GitHub from "next-auth/providers/github"
 import { getUserRole } from "./app/lib/data";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  debug: true,
   providers: [GitHub],
   callbacks: {
     jwt({ token, user }) {
