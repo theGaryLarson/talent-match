@@ -7,13 +7,7 @@ export default function CFAFooter(){
             <div className="flex justify-between items-center">
             <Link href={"/#"}>
             <Image src="/cfa_images/CFA logo_reverse 1.svg" alt={"CFA Logo"} width={150} height={75}/></Link>
-            <div className="grid grid-cols-3 grid rows-3 gap-4 text-sm p-2">
-                <Link href={"/#"}>Lorem Ipsum</Link>
-                <Link href={"/#"}>Lorem Ipsum</Link>
-                <Link href={"/#"}>Lorem Ipsum</Link>
-                <Link href={"/#"}>Lorem Ipsum</Link>
-                <Link href={"/#"}>Lorem Ipsum</Link>
-                <Link href={"/#"}>Lorem Ipsum</Link>
+            <div className="grid grid-cols-3 gap-4 text-sm p-2">
                 <Link href={"/#"}>Lorem Ipsum</Link>
                 <Link href={"/#"}>Lorem Ipsum</Link>
                 <Link href={"/#"}>Lorem Ipsum</Link>
