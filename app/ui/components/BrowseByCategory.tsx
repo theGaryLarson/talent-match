@@ -13,7 +13,7 @@ export default function BrowseByCategory(){
             <Link href={""}>Software Dev</Link>
             <Link href={""}>AI Analyst</Link>
             <Link href={""}>UX Researcher</Link>
-            <Link href={""}>Machine Learning </Link>
+            <Link href={""}>Machine Learning</Link>
             <Link href={""}>UX Designer</Link>
             <Link href={""}>Lorem Ipsum</Link>
             <Link href={""}>Lorem Ipsum</Link>
