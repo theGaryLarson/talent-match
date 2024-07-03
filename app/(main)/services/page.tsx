@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <>
       <PageBanner
-        title="Welcome To Career Services" bg={'bg-services-hero'}></PageBanner>
+        title="Tech Ready Talent Showcase" bg={'bg-services-hero'}></PageBanner>
       <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
         <h1 className="text-2xl">
           Unlock your potential with CFA Career Services
@@ -44,7 +44,7 @@ export default function Page() {
             }
           />
           <RoundedButtonCard
-            title={'Employer'}
+            title={'Employers'}
             desc={
               "Our Job Board connects you with a diverse range of opportunities in the tech industry. Whether you're seeking internships, apprenticeships, or full-time positions, our platform is your gateway to exciting career prospects. "
             }

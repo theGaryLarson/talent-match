@@ -7,7 +7,7 @@ export default function ArticleStub({isPhotoFirst, imagesrc}:{isPhotoFirst:boole
           <Image className="rounded-xl object-contain" src={imagesrc} alt={""} width={600} height={332}/>
             <div className="max-w-[600px] flex flex-col gap-[32px]">
                 <div className="font-['Roboto'] text-xl font-bold capitalize text-neutral-800">
-                Become a Mentor
+                Become a Volunteer
                 </div>
                   <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed

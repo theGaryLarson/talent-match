@@ -11,17 +11,13 @@ export default async function Page() {
   return (
     <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
       <EmployerNameTitleTag name={'Damien Cruz'} title={'Programming Instructor'} company={'Computing For All'}/>
-      <div className="flex flex-wrap justify-evenly gap-4">
+      <div className="flex justify-end">
         {<ScoreCard title="Saved Candidates" val={3} />}
+        {/*not in MVP 
         {<ScoreCard title="Job Applications " val={5} />}
-        {<ScoreCard title="Direct Messages" val={1} />}
+        {<ScoreCard title="Direct Messages" val={1} />} */}
       </div>
-      <ArticleStub
-        isPhotoFirst={true}
-        imagesrc={
-          '/cfa_images/stock/people-using-digital-device-while-meeting 2.png'
-        }
-      />
+     
       <div className='flex justify-center'>
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
         <Teaser
@@ -56,6 +52,12 @@ export default async function Page() {
       />
       <FeaturedCanidates/>
       <BrowseByCategory/>
+       {/* <ArticleStub
+        isPhotoFirst={true}
+        imagesrc={
+          '/cfa_images/stock/people-using-digital-device-while-meeting 2.png'
+        }
+      /> */}
     </main>
   );
 }
