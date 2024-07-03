@@ -114,7 +114,7 @@ export default function Page() {
           identify the most qualified candidates.
         </p>
 
-        <div className='flex flex-wrap'>
+        <div className='flex flex-wrap gap-5'>
           <CategoryCard
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
