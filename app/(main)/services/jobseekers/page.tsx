@@ -155,7 +155,7 @@ export default function Page() {
           imgSrc={"/cfa_images/stock/Mask Group.png"}/>
       <div className="px-6 md:px-12 lg:px-24 py-16 space-y-8 container mx-auto">
         <div className="space-y-6 px-4">
-          <p className="text-2xl">Ready to get started, here are our steps:</p>
+          {/* <p className="text-2xl">Ready to get started, here are our steps:</p>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             Mi tempus imperdiet nulla malesuada pellentesque. Id aliquet lectus proin nibh. 
             Mi ipsum faucibus vitae aliquet nec ullamcorper. Sed elementum tempus egestas sed sed risus pretium. 
@@ -163,12 +163,16 @@ export default function Page() {
             Vulputate sapien nec sagittis aliquam. Hendrerit dolor magna eget est lorem ipsum dolor sit amet. 
             Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. 
             Commodo nulla facilisi nullam vehicula ipsum a arcu cursus. Nunc aliquet bibendum enim facilisis gravida. 
-          </p>
+          </p> */}
+          <p className="text-2xl">Your path to a thriving tech career starts here!</p>
 
         </div>
-        <div className="flex justify-evenly gap-4 flex-wrap">
-          <SimpleCard title={"Host a Job Fair"} content={"Host a job fair with Computing for All. Get to know candidates ahead of the interview process."} href={"/#"}/>
-          <SimpleCard title={"Run a Job Readiness Workshop"} content={"Conduct a workshop on general career prep or get to know students through mock interviews."} href={"/#"}/>
+        <div className="flex justify-evenly gap-5 columns-4">
+          <SimpleCard title={"Create Your Profile:"} content={"Highlight your strengths, experience, and achievements on our Career Portal. Build a strong foundation that gets you noticed!"} href={"/#"}/>
+          <SimpleCard title={"Build Skills & Earn Badges:"} content={"Master in-demand skills through our comprehensive programs. Earn badges along the way to validate your expertise."} href={"/#"}/>
+          <SimpleCard title={"Showcase Your Talents:"} content={"Utilize your Career Portal profile to showcase your TechReady skills and impress top employers."} href={"/#"}/>
+          <SimpleCard title={"Confidently Navigate the Job Market:"} content={"Gain the knowledge and skills you need to confidently navigate the job market and land your dream job."} href={"/#"}/>
+          
         </div>
       </div>
     </>
