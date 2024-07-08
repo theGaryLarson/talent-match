@@ -7,6 +7,7 @@ import PhotoCardWithTitle from '@/app/ui/components/PhotoCardWithTitle';
 import RoundedButton from '@/app/ui/components/RoundedButton';
 
 import SimpleCard from '@/app/ui/components/SimpleCard';
+import SimpleCardWithPhoto from '@/app/ui/components/SimpleCarWithPhoto';
 
 export default function Page() {
   return (
@@ -16,8 +17,8 @@ export default function Page() {
         bg="bg-employer-hero-1"
       />
       <main className="mx-4 space-y-3 py-8 font-['Roboto'] md:mx-[150px] lg:mx-[200px]">
-        <h1 className="text-2xl font-bold">
-        Employers: Discover diverse talent, post jobs, and volunteer
+        <h1 className="text-3xl font-bold">
+        Employers: Discover Diverse Talent • Post Jobs • Volunteer
         </h1>
         <h2 className="text-lg text-primary-600">
         CFA’s Tech Talent Showcase (platform or interface?) will help you make the right hires.
@@ -25,8 +26,7 @@ export default function Page() {
         <p>
         We are inviting employers to take part in this initial project of a Department of Commerce funded Green Jobs Challenge grant and the Washington Jobs initiative. Expand and diversify your talent pipeline with fresh talent that will contribute expertise, diverse voices, and innovative ideas.
         </p>
-
-        <p className="text-xl font-bold">Why Join</p>
+        <p className="text-2xl font-bold">Why Join</p>
         <p>
         Gain exclusive access to expand and diversify your talent pipeline with skilled candidates who will contribute to your long-term hiring strategy and help meet your company’s unique, evolving needs.
         </p>
@@ -43,7 +43,7 @@ export default function Page() {
           invertColor={true}
         />
 
-        <h1 className="text-2xl">Tech Ready Candidates</h1>
+        <h1 className="text-2xl font-bold">Tech Ready Candidates</h1>
         <h2 className="text-xl text-primary-600">
         What does a Tech Ready badge represent?
         </h2>
@@ -75,11 +75,11 @@ export default function Page() {
           buttonContent={'Search For talent'}
         />
 
-        <h1 className="text-2xl">Hire the right candidate</h1>
+        <h1 className="text-2xl font-bold">Hire the Right Candidate</h1>
         <p>
         Whether you are looking for an intern or an experienced software developer, you can find talent to meet your hiring needs <i>here</i>. Click on the box that best describes the position you are trying to fill to identify the most qualified candidates. 
         </p>
-        <h1 className="text-xl">Browse by Jobseeker Skills</h1>
+        <h1 className="text-2xl font-bold">Browse by Jobseeker Skills</h1>
         <div className='flex flex-wrap gap-6'>
           
           
@@ -141,7 +141,7 @@ export default function Page() {
 
         </div>
         
-        <h1 className="text-xl">Employers: Get Involved by volunteering!</h1>
+        <h1 className="text-2xl font-bold">Employers: Get Involved by volunteering!</h1>
         <h2 className="text-lg">There are many ways to get involved:</h2>
         <div className="flex flex-wrap gap-4">
           <SimpleCard
@@ -177,9 +177,13 @@ export default function Page() {
             }
             href={'/#'}
           />
+          <SimpleCardWithPhoto title={'Volunteer At CFA'} content={'Email us at: Volunteer@ComputingforAll.org'} href={''}></SimpleCardWithPhoto>
         </div>
-        <BrowseByCategory />
+        {/* <BrowseByCategory /> */}
       </main>
     </>
   );
 }
+
+
+
