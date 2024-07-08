@@ -155,15 +155,6 @@ export default function Page() {
           imgSrc={"/cfa_images/stock/Mask Group.png"}/>
       <div className="px-6 md:px-12 lg:px-24 py-16 space-y-8 container mx-auto">
         <div className="space-y-6 px-4">
-          {/* <p className="text-2xl">Ready to get started, here are our steps:</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Mi tempus imperdiet nulla malesuada pellentesque. Id aliquet lectus proin nibh. 
-            Mi ipsum faucibus vitae aliquet nec ullamcorper. Sed elementum tempus egestas sed sed risus pretium. 
-            Nisl purus in mollis nunc sed id. Neque viverra justo nec ultrices dui sapien eget mi proin. 
-            Vulputate sapien nec sagittis aliquam. Hendrerit dolor magna eget est lorem ipsum dolor sit amet. 
-            Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. 
-            Commodo nulla facilisi nullam vehicula ipsum a arcu cursus. Nunc aliquet bibendum enim facilisis gravida. 
-          </p> */}
           <p className="text-2xl">Your path to a thriving tech career starts here!</p>
 
         </div>
