@@ -13,11 +13,11 @@ export default function JobSeekerCardView({
   aboutMe
 }: {
   isLarge: boolean;
-  name: string;
+  name: string|null;
   school: string;
   pathway: string;
   skillsList: string[];
-  pfpPicSrc: string;
+  pfpPicSrc: string|null;
   aboutMe:string;
 }) {
   if (isLarge) {

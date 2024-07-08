@@ -1,5 +1,8 @@
+
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import SearchBar from '@/app/ui/components/SearchBar';
+import { getUsers } from '@/app/lib/prisma';
+import { GetServerSideProps } from 'next';
 const jobSeekers = [
   {
     isLarge: true,
@@ -108,7 +111,9 @@ const jobSeekers = [
       'Game Developer with expertise in Unity, C#, Blender, and Unreal Engine. Passionate about creating immersive gaming experiences. Dedicated to pushing the boundaries of interactive entertainment.',
   },
 ];
-export default function page() {
+
+export default async function page() {
+  const jobSeekers = await getUsers();
   return (
     <main className="space-y-8 px-[200px] py-16">
       <h1 className="text-2xl">Search Results</h1>
@@ -116,13 +121,13 @@ export default function page() {
       {jobSeekers.map((jobSeeker, index) => (
         <JobSeekerCardView
           key={index}
-          isLarge={jobSeeker.isLarge}
+          isLarge={true}
           name={jobSeeker.name}
-          school={jobSeeker.school}
-          pathway={jobSeeker.pathway}
-          skillsList={jobSeeker.skillsList}
-          pfpPicSrc={jobSeeker.pfpPicSrc}
-          aboutMe={jobSeeker.aboutMe}
+          school={"Place Holder U"}
+          pathway={"pathway"}
+          skillsList={["JavaScript","skill2","skill3"]}
+          pfpPicSrc={jobSeeker.image}
+          aboutMe={"This is a short bio about myself "}
         />
       ))}
     </main>
