@@ -9,9 +9,7 @@ import CFAPortalCard from "@/app/ui/components/CFAPortalCard";
 import RoundedButton from "@/app/ui/components/RoundedButton";
 import InfoCard from "@/app/ui/components/InfoCard";
 import SimpleCard from "@/app/ui/components/SimpleCard";
-import image from "next/image";
-import { list } from "postcss";
-import { title } from "process";
+
 
 /**
  * @returns Job seeker landing page
