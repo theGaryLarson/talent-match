@@ -31,18 +31,19 @@ interface Props {
   onRemove: MouseEventHandler<HTMLButtonElement>,
 }
 
-function LicenseGroup({
+const classNamePrefix = "profile-creation-license-group-";
+export default function LicenseGroup({
   groupData,
   onRemove,
 }:Props) {
   return (
-    <fieldset className="">
+    <fieldset>
       <legend className="w-full flex justify-between">
         <h3>License</h3>
         <Button onClick={onRemove} size="xs" color="dark" outline pill><MdClose className="h-5 w-5" /></Button>
       </legend>
       <InputTextWithLabel
-        id={"profile-creation-license-group-" + groupData.uid + "-name"}
+        id={classNamePrefix + groupData.uid + "-name"}
         className="w-full"
         placeholder="Ex: Microsoft certified network associate security"
         required
@@ -51,7 +52,7 @@ function LicenseGroup({
         Name *
       </InputTextWithLabel>
       <InputTextWithLabel
-        id={"profile-creation-license-group-" + groupData.uid + "-issuing-org"}
+        id={classNamePrefix + groupData.uid + "-issuing-org"}
         className="w-full"
         placeholder="Ex: Microsoft"
         required
@@ -60,14 +61,14 @@ function LicenseGroup({
         Issuing organization *
       </InputTextWithLabel>
       <InputTextWithLabel
-        id={"profile-creation-license-group-" + groupData.uid + "-credential-id"}
+        id={classNamePrefix + groupData.uid + "-credential-id"}
         className="w-1/2"
         defaultValue={groupData.credentialId}
       >
         Credential ID
       </InputTextWithLabel>
       <InputTextWithLabel
-        id={"profile-creation-license-group-" + groupData.uid + "-credential-url"}
+        id={classNamePrefix + groupData.uid + "-credential-url"}
         className="w-1/2"
         defaultValue={groupData.credentialUrl}
       >
@@ -75,7 +76,7 @@ function LicenseGroup({
       </InputTextWithLabel>
       <InputTextWithLabel
         type="month"
-        id={"profile-creation-license-group-" + groupData.uid + "-issue-date"}
+        id={classNamePrefix + groupData.uid + "-issue-date"}
         className="w-1/2"
         defaultValue={groupData.issueDate}
       >
@@ -83,7 +84,7 @@ function LicenseGroup({
       </InputTextWithLabel>
       <InputTextWithLabel
         type="month"
-        id={"profile-creation-license-group-" + groupData.uid + "-expiration-date"}
+        id={classNamePrefix + groupData.uid + "-expiration-date"}
         className="w-1/2"
         defaultValue={groupData.expirationDate}
       >
@@ -92,5 +93,3 @@ function LicenseGroup({
     </fieldset>
   );
 }
-
-export default LicenseGroup;

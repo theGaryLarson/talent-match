@@ -32,7 +32,8 @@ interface Props {
   onRemove: MouseEventHandler<HTMLButtonElement>,
 }
 
-function InternshipExperienceGroup({
+const classNamePrefix = "profile-creation-internship-experience-group-";
+export default function InternshipExperienceGroup({
   groupData,
   onRemove,
 }:Props){
@@ -44,7 +45,7 @@ function InternshipExperienceGroup({
         <Button onClick={onRemove} size="xs" color="dark" outline pill><MdClose className="h-5 w-5" /></Button>
       </legend>
       <InputTextWithLabel
-        id={"profile-creation-internship-experience-group-" + groupData.uid + "-company"}
+        id={classNamePrefix + groupData.uid + "-company"}
         className="w-full"
         placeholder="Your company name"
         required
@@ -53,7 +54,7 @@ function InternshipExperienceGroup({
         Company *
       </InputTextWithLabel>
       <InputTextWithLabel
-        id={"profile-creation-internship-experience-group-" + groupData.uid + "-title"}
+        id={classNamePrefix + groupData.uid + "-title"}
         className="w-full"
         placeholder="Your title"
         required
@@ -64,7 +65,7 @@ function InternshipExperienceGroup({
       <div className="flex">
         <InputTextWithLabel
           type="month"
-          id={"profile-creation-internship-experience-group-" + groupData.uid + "-starts"}
+          id={classNamePrefix + groupData.uid + "-starts"}
           className="w-1/2"
           required
           defaultValue={groupData.startDate}
@@ -73,7 +74,7 @@ function InternshipExperienceGroup({
         </InputTextWithLabel>
         <InputTextWithLabel
           type="month"
-          id={"profile-creation-internship-experience-group-" + groupData.uid + "-ends"}
+          id={classNamePrefix + groupData.uid + "-ends"}
           className="w-1/2"
           required={(isCurrent)?false:true}
           disabled={(isCurrent)?true:false}
@@ -84,15 +85,15 @@ function InternshipExperienceGroup({
       </div>
       <Label>
         <Checkbox
-          id={"profile-creation-internship-experience-group-" + groupData.uid + "-current"}
-          name={"profile-creation-internship-experience-group-" + groupData.uid + "-current"}
+          id={classNamePrefix + groupData.uid + "-current"}
+          name={classNamePrefix + groupData.uid + "-current"}
           defaultChecked={groupData.isCurrent}
           onClick={()=>setCurrent(!isCurrent)}
         />
         Current
       </Label>
       <TextareaWithLabel
-        id={"profile-creation-internship-experience-group-" + groupData.uid + "-experience"}
+        id={classNamePrefix + groupData.uid + "-experience"}
         placeholder="Your specific experience"
         required
         defaultValue={groupData.experienceDetails}
@@ -102,5 +103,3 @@ function InternshipExperienceGroup({
     </fieldset>
   );
 }
-
-export default InternshipExperienceGroup;

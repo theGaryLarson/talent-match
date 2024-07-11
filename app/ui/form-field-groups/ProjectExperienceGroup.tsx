@@ -36,18 +36,19 @@ interface Props {
   onRemove: MouseEventHandler<HTMLButtonElement>,
 }
 
-function ProjectExperienceGroup({
+const classNamePrefix = "profile-creation-project-experience-group-";
+export default function ProjectExperienceGroup({
   groupData,
   onRemove,
 }:Props) {
   return (
-    <fieldset className="">
+    <fieldset>
       <legend className="w-full flex justify-between">
         <h3>Project Experience</h3>
         <Button onClick={onRemove} size="xs" color="dark" outline pill><MdClose className="h-5 w-5" /></Button>
       </legend>
       <InputTextWithLabel
-        id={"profile-creation-project-experience-group-" + groupData.uid + "-title"}
+        id={classNamePrefix + groupData.uid + "-title"}
         className="w-full"
         placeholder="Ex: Microsoft certified network associate security"
         required
@@ -56,7 +57,7 @@ function ProjectExperienceGroup({
         Title *
       </InputTextWithLabel>
       <InputTextWithLabel
-        id={"profile-creation-project-experience-group-" + groupData.uid + "-project-role"}
+        id={classNamePrefix + groupData.uid + "-project-role"}
         className="w-full"
         placeholder="Ex: Microsoft"
         required
@@ -67,7 +68,7 @@ function ProjectExperienceGroup({
       <div className="flex">
         <InputTextWithLabel
           type="month"
-          id={"profile-creation-project-experience-group-" + groupData.uid + "-starting-date"}
+          id={classNamePrefix + groupData.uid + "-starting-date"}
           className="w-1/2"
           required
           defaultValue={groupData.startingDate}
@@ -76,7 +77,7 @@ function ProjectExperienceGroup({
         </InputTextWithLabel>
         <InputTextWithLabel
           type="month"
-          id={"profile-creation-project-experience-group-" + groupData.uid + "-completion-date"}
+          id={classNamePrefix + groupData.uid + "-completion-date"}
           className="w-1/2"
           required
           defaultValue={groupData.completionDate}
@@ -85,14 +86,14 @@ function ProjectExperienceGroup({
         </InputTextWithLabel>
       </div>
       <InputTextWithLabel
-        id={"profile-creation-project-experience-group-" + groupData.uid + "-reference-url"}
+        id={classNamePrefix + groupData.uid + "-reference-url"}
         className="w-1/2"
         defaultValue={groupData.referenceUrl}
       >
         Reference url
       </InputTextWithLabel>
       <InputTextWithLabel
-        id={"profile-creation-project-experience-group-" + groupData.uid + "-description"}
+        id={classNamePrefix + groupData.uid + "-description"}
         className="w-1/2"
         defaultValue={groupData.description}
       >
@@ -100,14 +101,14 @@ function ProjectExperienceGroup({
       </InputTextWithLabel>
       <InputTextWithLabel
         type="number"
-        id={"profile-creation-project-experience-group-" + groupData.uid + "-team-size"}
+        id={classNamePrefix + groupData.uid + "-team-size"}
         className="w-1/2"
         defaultValue={groupData.teamSize}
       >
         Team Size
       </InputTextWithLabel>
       <InputTextWithLabel
-        id={"profile-creation-project-experience-group-" + groupData.uid + "-skills-stack"}
+        id={classNamePrefix + groupData.uid + "-skills-stack"}
         className="w-1/2"
         defaultValue={groupData.skillStack}
       >
@@ -116,5 +117,3 @@ function ProjectExperienceGroup({
     </fieldset>
   );
 }
-
-export default ProjectExperienceGroup;
