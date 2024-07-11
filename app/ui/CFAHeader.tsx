@@ -18,7 +18,7 @@ const CareerDropDownInfo = [
   { name: 'Career Services Landing Page', description: 'Learn What Career Services has to Offer', href: '/services', icon: ChartPieIcon },
   { name: 'Employer Landing Page', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
   { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers/dashboard', icon: ChartPieIcon },
-  { name: 'Job Seeker Dashboard', description: 'Mange your job search', href: '/services/jobseekers/dashboard', icon: CursorArrowRaysIcon },
+  { name: 'Job Seeker Landing Page', description: 'Mange your job search', href: '/services/jobseekers', icon: CursorArrowRaysIcon },
   { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon },
   { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
 ]
@@ -117,7 +117,8 @@ export default function CFAHeader() {
                       </div>
                       </Link>
                     ))}
-                  </div><div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
+                  </div>
+                  {/* <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
                       {callsToAction.map((item) => (
                         <a
                           key={item.name}
@@ -128,7 +129,8 @@ export default function CFAHeader() {
                           {item.name}
                         </a>
                       ))}
-                    </div></>
+                    </div> */}
+                    </>
               )}
 
                 
@@ -206,7 +208,7 @@ export default function CFAHeader() {
                         />
                       </DisclosureButton>
                       <DisclosurePanel className="mt-2 space-y-2">
-                        {[...CareerDropDownInfo, ...callsToAction].map((item) => (
+                        {[...CareerDropDownInfo].map((item) => (
                           <DisclosureButton
                             key={item.name}
                             as={Link}
