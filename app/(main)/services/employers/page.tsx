@@ -8,6 +8,7 @@ import RoundedButton from '@/app/ui/components/RoundedButton';
 
 import SimpleCard from '@/app/ui/components/SimpleCard';
 import SimpleCardWithPhoto from '@/app/ui/components/SimpleCarWithPhoto';
+import Link from 'next/link';
 
 export default function Page() {
   return (
@@ -18,32 +19,31 @@ export default function Page() {
       />
       <main className="mx-4 space-y-3 py-8 font-['Roboto'] md:mx-[150px] lg:mx-[200px]">
         <h1 className="text-3xl font-bold">
-        Employers: Discover Diverse Talent • Post Jobs • Volunteer
+        Unique Access to Tech Talent
         </h1>
-        <h2 className="text-lg text-primary-600">
-        CFA’s Tech Talent Showcase (platform or interface?) will help you make the right hires.
+        <h2 className="text-2xl text-primary-600">
+        Experienced workers, easily assimilated into your culture
         </h2>
-        <p>
-        We are inviting employers to take part in this initial project of a Department of Commerce funded Green Jobs Challenge grant and the Washington Jobs initiative. Expand and diversify your talent pipeline with fresh talent that will contribute expertise, diverse voices, and innovative ideas.
-        </p>
-        <p className="text-2xl font-bold">Why Join</p>
-        <p>
-        Gain exclusive access to expand and diversify your talent pipeline with skilled candidates who will contribute to your long-term hiring strategy and help meet your company’s unique, evolving needs.
-        </p>
-        <p>
-        Our Showcase features jobseekers of all ages, work experience and backgrounds who have participated in programs from one of our Washington Tech Workforce coalition colleges and tech training partners. Jobseekers not only have up to date tech training, but the durable workplace communication and teamwork skills you most value.
-        </p>
-        <p>
-        The Showcase provides you with a quick and easy way to screen potential hires. Job candidates who have completed our screening and training program will display a TechReady Badge along with a two-minute personal brand video where you can learn more about them.
-        </p>
+
+
+      <p>
+      Take advantage of a <span className='font-bold'>$5M Department of Commerce grant</span> that enhances jobseeker abilities to add productivity and innovation to your workforce.
+      </p>
+      <p>
+      Experienced jobseekers with a <span className='font-bold'>BS or BAS degree are completing our months-long professional development process,</span> providing them with the durable communication and teamwork skills our industry partners have specified. 
+      </p>
+      <p>
+      <span className='font-bold'>Our Tech Finder Portal</span> provides quick and easy ways to find and screen potential hires. Once in the Portal, a <span className='font-bold'>Showcase offers insights into job candidates that are not available through traditional job boards.</span>
+      </p>
+
 
         <RoundedButton
-          content={'Join Here'}
+          content={'Register Here'}
           link={'/signup'}
           invertColor={true}
         />
 
-        <h1 className="text-2xl font-bold">Tech Ready Candidates</h1>
+        {/* <h1 className="text-2xl font-bold">Tech Ready Candidates</h1>
         <h2 className="text-xl text-primary-600">
         What does a Tech Ready badge represent?
         </h2>
@@ -73,44 +73,25 @@ export default function Page() {
             "You are invited to enjoy elite access to TechReady IT talent, a pipeline of college graduates and both new and veteran workforce candidates with the skills and experience to quickly become productive in your organization."
           }
           buttonContent={'Search For talent'}
-        />
+        /> */}
 
         <h1 className="text-2xl font-bold">Hire the Right Candidate</h1>
         <p>
-        Whether you are looking for an intern or an experienced software developer, you can find talent to meet your hiring needs <i>here</i>. Click on the box that best describes the position you are trying to fill to identify the most qualified candidates. 
+        Whether you are looking for an intern or an experienced software developer, you can find talent to meet your hiring needs here. 
+        </p>
+        <p className='font-bold'>
+        Click on the box that best describes the position you are trying to fill to identify the most qualified candidates.
         </p>
         <h1 className="text-2xl font-bold">Browse by Jobseeker Skills</h1>
-        <div className='flex flex-wrap gap-6'>
-          
-          
-          
-          
-          
-          
-          
-          
-          <CategoryCard
+        <div className='flex flex-wrap gap-4'>
+        <CategoryCard
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
             }
-            title={'Cloud Computing'}
-            text={'Find job seekers with training and expertise in Cloud Computing.'}
+            title={'Software Devolopment'}
+            text={'Find job seekers with training and expertise in Software Devolopment'}
           />
-          <CategoryCard
-            imgSrc={
-              '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
-            }
-            title={'Cyber Security'}
-            text={'Find job seekers with training and expertise in Cyber Security.'}
-          />
-          <CategoryCard
-            imgSrc={
-              '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
-            }
-            title={'Data Analyst'}
-            text={'Find job seekers with training and expertise in Data Analytics'}
-          />
-          <CategoryCard
+        <CategoryCard
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
             }
@@ -123,25 +104,20 @@ export default function Page() {
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
             }
-            title={'Project Management'}
-            text={'Find job seekers with training and expertise in Project Management'}
+            title={'Cyber Security'}
+            text={'Find job seekers with training and expertise in Cyber Security.'}
           />
           <CategoryCard
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
             }
-            title={'Software Devolopment'}
-            text={'Find job seekers with training and expertise in Software Devolopment'}
+            title={'Data Analytics'}
+            text={'Find job seekers with training and expertise in Data Analytics'}
           />
-          
-
-
-
-
-
         </div>
-        
-        <h1 className="text-2xl font-bold">Employers: Get Involved by volunteering!</h1>
+        <h4 className='text-lg font-bold'>Need more information? <Link href={'/services/employers/faq'}>Click here.</Link></h4>
+        <h4 className='text-lg text-primary-600'>First candidates will be available for interview in September. This offer is limited to ~ 100 employers as we develop an initial cohort of job candidates.</h4>
+        {/* <h1 className="text-2xl font-bold">Employers: Get Involved by volunteering!</h1>
         <h2 className="text-lg">There are many ways to get involved:</h2>
         <div className="flex flex-wrap gap-4">
           <SimpleCard
@@ -178,7 +154,7 @@ export default function Page() {
             href={'/#'}
           />
           <SimpleCardWithPhoto title={'Volunteer At CFA'} content={'Email us at: Volunteer@ComputingforAll.org'} href={''}></SimpleCardWithPhoto>
-        </div>
+        </div> */}
         {/* <BrowseByCategory /> */}
       </main>
     </>
