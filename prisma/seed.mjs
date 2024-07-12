@@ -253,7 +253,6 @@ const developmentTeamRoles = [
     "Machine Learning Engineer"
 ];
 
-
 const waStateCountiesWithZipCodes = [
     {
         county: "Adams",
@@ -734,6 +733,12 @@ function generateCompensation(isInternship) {
     }
 }
 
+function getRandomUserPhoto() {
+    const gender = faker.helpers.arrayElement(['men', 'women']);
+    const number = faker.number.int({min: 0, max: 99});
+    return `https://randomuser.me/api/portraits/${gender}/${number}.jpg`;
+}
+
 const racesAndEthnicities = [
     "White",
     "Black or African American",
@@ -769,7 +774,7 @@ async function seedContacts(numContacts = 4) {
                     phone: null,
                     gender: null,
                     race: null,
-                    photo_url: null,
+                    photo_url: getRandomUserPhoto(),
                 }
             });
         }
@@ -788,7 +793,7 @@ async function seedContacts(numContacts = 4) {
                     phone: generateE164PhoneNumber(),
                     gender: faker.person.gender(),
                     race: faker.helpers.arrayElement(racesAndEthnicities),
-                    photo_url: faker.internet.url(),
+                    photo_url: getRandomUserPhoto(),
                 }
             });
         }
