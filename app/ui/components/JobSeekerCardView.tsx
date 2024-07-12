@@ -15,6 +15,7 @@ export default function JobSeekerCardView({
   skillsList,
   pfpPicSrc,
   aboutMe,
+  id
 }: {
   isLarge: boolean;
   name: string | null;
@@ -23,6 +24,7 @@ export default function JobSeekerCardView({
   skillsList: JobSeekerCardViewDTO['jobseeker_has_skills'];
   pfpPicSrc?: string | null;
   aboutMe: string;
+  id:string;
 }) {
   // Extract the first three skills from the jobseeker_has_skills array
   const firstNSkills: SkillDTO[] = skillsList
@@ -62,7 +64,7 @@ export default function JobSeekerCardView({
           </div>
           <RoundedButton
             content={'View Profile'}
-            link={'/login'}
+            link={'/jobseekers/'+id}
             invertColor={false}
           />
         </div>
@@ -71,7 +73,7 @@ export default function JobSeekerCardView({
   }
   return (
     <div className="min-h-[280px] w-[350px] space-y-3 rounded-lg border p-2 hover:bg-gray-100">
-      <Link className="space-y-3" href={'/services/jobseekers/abc123'}>
+      <Link className="space-y-3" href={'/services/jobseekers/'+id}>
         <div className="flex items-center space-x-4">
           <Avatar imgsrc={pfpPicSrc} />
           <h3 className="text-lg font-bold">{name}</h3>
