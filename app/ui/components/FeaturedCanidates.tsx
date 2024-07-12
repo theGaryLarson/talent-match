@@ -44,6 +44,25 @@ export default function FeaturedCanidates(){
           pfpPicSrc="https://t3.ftcdn.net/jpg/03/91/34/72/360_F_391347204_XaDg0S7PtbzJRoeow3yWO1vK4pnqBVQY.jpg"
           aboutMe="AI enthusiast focused on machine learning and deep learning. Proficient in TensorFlow, PyTorch, and Python. Passionate about developing innovative AI solutions to solve complex problems."
         />
+        <JobSeekerCardView
+          isLarge={false}
+          name="Casey White"
+          school="University Of California, Berkeley"
+          pathway="Web Development"
+          skillsList={['javascript', 'html', 'css', 'react']}
+          pfpPicSrc="https://media.istockphoto.com/id/1560360283/photo/confident-smiling-young-asian-business-woman-in-office-headshot-portrait.webp?b=1&s=170667a&w=0&k=20&c=s7wgWSfWCU5YJRelANTDiiH_NNEUJG0pkRkG5Q0UMwA="
+          aboutMe="Web Developer with expertise in JavaScript, HTML, CSS, and React. Passionate about creating responsive and user-friendly web applications. Dedicated to continuous learning and improvement."
+        />
+        <JobSeekerCardView
+          isLarge={false}
+          name="Quinn Davis"
+          school="Princeton University"
+          pathway="Game Development"
+          skillsList={['unity', 'c#', 'blender', 'unreal engine']}
+          pfpPicSrc=""
+          aboutMe="Game Developer with expertise in Unity, C#, Blender, and Unreal Engine. Passionate about creating immersive gaming experiences. Dedicated to pushing the boundaries of interactive entertainment."
+        />
+        
       </div>
     </div>
 )}
