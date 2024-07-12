@@ -56,11 +56,11 @@ export default function CFAHeader() {
   return (
     <header className="bg-white" >
       <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"></link>
-      <nav className="mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <nav className="mx-auto flex items-center justify-between p-4 lg:px-8" aria-label="Global">
         <div className="flex lg:flex-1">
           <Link href="/">
             <span className="sr-only">Computing For All</span>
-            <Image src="/cfa_images/cfaLogoWithName.jpg" alt="Computing For All" width={110} height={31.8} />
+            <Image src="/cfa_images/TWC_75x50_2024.svg" alt="Computing For All" width={75} height={31.8} />
           </Link>
         </div>
 

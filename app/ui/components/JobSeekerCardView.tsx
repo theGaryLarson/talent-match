@@ -52,13 +52,16 @@ export default function JobSeekerCardView({
     );
   }
   return (
-    <Link href={'/#'}>
+    
     <div className="min-h-[280px] w-[350px] space-y-3 rounded-lg border p-2 hover:bg-gray-100">
+      <Link className='space-y-3' href={'/services/jobseekers/abc123'}>
       <div className="flex space-x-4 items-center">
         <Avatar imgsrc={pfpPicSrc}/>
         <h3 className="text-lg font-bold">{name}</h3>
       </div>
+      
       <p className='text-xs'>{'"'+aboutMe.substring(0,100)+'"'}</p>
+      </Link>
       {/* note about me needs to be limted and just trimming to main summery would most likely produce incomplete unprofesstional summerys */}
       <hr/>
 
@@ -69,6 +72,8 @@ export default function JobSeekerCardView({
         {school}
       </h4>
       <hr />
+      
+      
       <div className="space-x-2 grow">
         {skillsList.slice(0, 3).map((pill) => (
           <Pill key={pill} text={pill} />
@@ -81,6 +86,6 @@ export default function JobSeekerCardView({
 
 
 
-    </Link>
+    
   );
 }
