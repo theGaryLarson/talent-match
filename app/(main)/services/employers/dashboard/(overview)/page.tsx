@@ -11,11 +11,10 @@ export default async function Page() {
   return (
     <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
       <EmployerNameTitleTag name={'Damien Cruz'} title={'Programming Instructor'} company={'Computing For All'}/>
-      <div className="flex justify-end">
-        {<ScoreCard title="Saved Candidates" val={3} />}
-        {/*not in MVP 
+      <div className="flex flex-wrap justify-between gap-5">
+        {<ScoreCard title="Saved Candidates" val={3} />} 
         {<ScoreCard title="Job Applications " val={5} />}
-        {<ScoreCard title="Direct Messages" val={1} />} */}
+        {<ScoreCard title="Direct Messages" val={1} />}
       </div>
      
       <div className='flex justify-center'>
@@ -24,21 +23,21 @@ export default async function Page() {
           isLarge={true}
           title={'Become a Mentor'}
           text={
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
           }
         />
         <Teaser
           isLarge={true}
           title={'Create a Job Posting'}
           text={
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elitr derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
           }
         />
         <Teaser
           isLarge={true}
           title={'Create an Assessment'}
           text={
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut fugito aliqua. ed do eiusmod tempor incididunt '
           }
         />
       </div>

@@ -8,6 +8,7 @@ import RoundedButton from '@/app/ui/components/RoundedButton';
 
 import SimpleCard from '@/app/ui/components/SimpleCard';
 import SimpleCardWithPhoto from '@/app/ui/components/SimpleCarWithPhoto';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Page() {
@@ -117,6 +118,30 @@ export default function Page() {
         </div>
         <h4 className='text-lg font-bold'>Need more information? <Link href={'/services/employers/faq'}>Click here.</Link></h4>
         <h4 className='text-lg text-primary-600'>First candidates will be available for interview in September. This offer is limited to ~ 100 employers as we develop an initial cohort of job candidates.</h4>
+        
+        <div className='flex flex-wrap'>
+          <div className='w-6/12 space-y-8 grow'>
+            <h3 className='text-xl font-bold'>About the Washington Tech Workforce Coalition:</h3>
+            <p className='font-bold'>The Coalition is comprised of Community, Education, Government, Industry, and Workforce Partners with the common goal to cultivate a diverse, highly skilled technology workforce throughout Washington State.</p>
+            <p>The Coalition provides strategic guidance and support for the tech sector and tech roles, clarifies industry demand, participates in the development and implementation of programs to holistically answer demand and realize job placements, and ensure opportunity and priority for underserved and underrepresented populations.</p>
+          </div>
+          <Image src={'/cfa_images/TWC_75x50_2024.svg'} alt={'TWC logo'} width={400} height={266}/>
+        </div>
+        <div className='flex flex-wrap-reverse gap-5'>
+          <Image src={'/cfa_images/stock/black-office-worker-checkered-shirt-embracing-blonde-secretary-woman-while-she-making-selfie-young-managers-international-company-having-fun-meeting 1.png'} alt={'Stock Image of office workers'} width={400} height={266}/>
+          <div className='w-6/12 space-y-8 grow'>
+            <h3 className='text-xl font-bold'>About Computing for All:</h3>
+            <p className='font-bold'>Computing for All is a nonprofit that has trained diverse, low-income high school and college students for more than five years. </p>
+            <p>In our role as the <span className='font-bold'>Washington State IT/Cybersecurity Sector Intermediary,</span> we manage the <span className='font-bold'>Tech Workforce Coalition</span>, building synergies among community, education, and business partners to align training and job opportunities while uniting and lifting our local economies. </p>
+          </div>
+          
+        </div>
+        
+        
+        
+        
+        
+        
         {/* <h1 className="text-2xl font-bold">Employers: Get Involved by volunteering!</h1>
         <h2 className="text-lg">There are many ways to get involved:</h2>
         <div className="flex flex-wrap gap-4">
