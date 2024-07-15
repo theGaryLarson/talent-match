@@ -1015,24 +1015,34 @@ async function seedJobSeekersPrivateData() {
 }
 
 async function seedJobSeekerSkills() {
-    console.log(`Seeding Jobseeker skills...`)
+    console.log(`Seeding Jobseeker skills...`);
     const jobseekers = await prisma.jobseekers.findMany();
     const skills = await prisma.skills.findMany();
-    let skillCount = 0
+    let skillCount = 0;
+
     for (const js of jobseekers) {
+        const usedSkills = new Set();
         for (let i = 0; i < 5; i++) {
+            let skill;
+
+            do {
+                skill = faker.helpers.arrayElement(skills);
+            } while (usedSkills.has(skill.skill_id));
+
+            usedSkills.add(skill.skill_id);
+
             await prisma.jobseeker_has_skills.create({
                 data: {
                     jobseeker_id: js.jobseeker_id,
-                    skill_id: faker.helpers.arrayElement(skills).skill_id,
-                }
+                    skill_id: skill.skill_id,
+                },
             });
             skillCount++;
         }
-
     }
-    console.log(`Seeded ${skillCount} Jobseeker skills.\n`)
+    console.log(`Seeded ${skillCount} Jobseeker skills.\n`);
 }
+
 
 async function seedWorkExperiences() {
     try {
@@ -1120,23 +1130,33 @@ async function seedProjectExperiences() {
 }
 
 async function seedProjectSkills() {
-    console.log(`Seeding Project skills...`)
+    console.log(`Seeding Project skills...`);
     const projects = await prisma.project_experiences.findMany();
     const skills = await prisma.skills.findMany();
-    let skillCount = 0
+    let skillCount = 0;
+
     for (const p of projects) {
+        const usedSkills = new Set();
         for (let i = 0; i < 3; i++) {
+            let skill;
+            do {
+                skill = faker.helpers.arrayElement(skills);
+            } while (usedSkills.has(skill.skill_id));
+
+            usedSkills.add(skill.skill_id);
+
             await prisma.project_has_skills.create({
                 data: {
                     proj_exp_id: p.proj_exp_id,
-                    skill_id: faker.helpers.arrayElement(skills).skill_id,
-                }
+                    skill_id: skill.skill_id,
+                },
             });
+
             skillCount++;
         }
-
     }
-    console.log(`Seeded ${skillCount} Project skills.\n`)
+
+    console.log(`Seeded ${skillCount} Project skills.\n`);
 }
 
 async function seedJobSeekerCertificates() {
@@ -1393,7 +1413,7 @@ async function main() {
     await seedSubcategories();
     await seedSkills();
     await seedSocialMediaPlatforms();
-    await seedContacts(20);
+    await seedContacts(5000);
     await seedContactAddresses();
     await seedEduInstitutions();
     await SeedEduAddresses();

@@ -28,7 +28,7 @@ export default function JobSeekerCardView({
 }) {
   // Extract the first three skills from the jobseeker_has_skills array
   const firstNSkills: SkillDTO[] = skillsList
-    .slice(0, 3)
+    .slice(0, 5)
     .map((item: JobseekerSkill) => item.skills);
   if (isLarge) {
     return (

@@ -1,8 +1,8 @@
 import JobSeekerCardView from "./JobSeekerCardView";
-import { getJobSeekerCardView } from '@/app/lib/prisma';
+import { getAllJobSeekerCardView } from '@/app/lib/prisma';
 import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
-export default async function FeaturedCanidates(){
-  const jobSeekers = await getJobSeekerCardView();
+export default async function FeaturedCandidates(){
+  const jobSeekers = await getAllJobSeekerCardView();
     return(
     <div>
     <h2 className="text-lg font-bold py-5">Featured candidates</h2>
