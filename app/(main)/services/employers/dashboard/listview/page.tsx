@@ -1,12 +1,12 @@
 
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import SearchBar from '@/app/ui/components/SearchBar';
-import {getJobSeekersFilteredBySkills} from "@/app/lib/prisma";
+import {getFilteredJobSeekerCardView} from "@/app/lib/prisma";
 import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 
 
 export default async function page() {
-    const filteredView = await getJobSeekersFilteredBySkills([]);
+    const filteredView = await getFilteredJobSeekerCardView([], 0);
     return (
         <main className="space-y-8 px-[200px] py-16">
             <h1 className="text-2xl">Search Results</h1>
