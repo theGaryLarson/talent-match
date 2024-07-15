@@ -6,7 +6,7 @@ import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 
 
 export default async function page() {
-    const filteredView = await getFilteredJobSeekerCardView([], 0);
+    const filteredView = await getFilteredJobSeekerCardView(['']);
     return (
         <main className="space-y-8 px-[200px] py-16">
             <h1 className="text-2xl">Search Results</h1>
