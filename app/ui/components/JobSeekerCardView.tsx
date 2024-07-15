@@ -64,7 +64,7 @@ export default function JobSeekerCardView({
           </div>
           <RoundedButton
             content={'View Profile'}
-            link={'/jobseekers/'+id}
+            link={'/services/jobseekers/'+id}
             invertColor={false}
           />
         </div>

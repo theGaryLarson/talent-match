@@ -14,15 +14,14 @@ export default async function page() {
             <SearchBar/>
             {jobSeekers.map((jobSeeker: JobSeekerCardViewDTO, index: Key) => (
         <JobSeekerCardView
-          key={index}
-          isLarge={true}
-          name={jobSeeker.contacts.first_name + ' ' + jobSeeker.contacts.last_name}
-          school={jobSeeker?.edu_institutions?.name??''}
-          pathway={jobSeeker?.pathways?.pathway_title??''}
-          skillsList={jobSeeker?.jobseeker_has_skills}
-          pfpPicSrc={jobSeeker?.contacts?.photo_url??null}
-          aboutMe={jobSeeker?.intro_headline}
-        />
+                key={index}
+                isLarge={true}
+                name={jobSeeker.contacts.first_name + ' ' + jobSeeker.contacts.last_name}
+                school={jobSeeker?.edu_institutions?.name ?? ''}
+                pathway={jobSeeker?.pathways?.pathway_title ?? ''}
+                skillsList={jobSeeker?.jobseeker_has_skills}
+                pfpPicSrc={jobSeeker?.contacts?.photo_url ?? null}
+                aboutMe={jobSeeker?.intro_headline} id={jobSeeker?.jobseeker_id}        />
       ))}
     </main>
   );
