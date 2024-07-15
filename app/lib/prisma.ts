@@ -1,46 +1,49 @@
 import {PrismaClient} from '@prisma/client';
+import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 
 const prisma = new PrismaClient();
 
-export async function getAllJobSeekerCardView(): Promise<any> {
-    const jobSeekerCardViews = await prisma.jobseekers.findMany({
+const jobSeekerCardViewSelect = {
+    jobseeker_id: true,
+    user_id: true,
+    intro_headline: true,
+    pathways: {
         select: {
-            jobseeker_id: true,
-            user_id: true,
-            intro_headline: true,
-            pathways: {
+            pathway_title: true,
+        }
+    },
+    contacts: {
+        select: {
+            role: true,
+            first_name: true,
+            last_name: true,
+            photo_url: true,
+        },
+    },
+    edu_institutions: {
+        select: {
+            name: true,
+        },
+    },
+    jobseeker_has_skills: {
+        select: {
+            skills: {
                 select: {
-                    pathway_title: true,
-                }
-            },
-            contacts: {
-                select: {
-                    role: true,
-                    first_name: true,
-                    last_name: true,
-                    photo_url: true,
-                },
-            },
-            edu_institutions: {
-                select: {
-                    name: true,
-                },
-            },
-            jobseeker_has_skills: {
-                select: {
-                    skills: {
-                        select: {
-                            skill_id: true,
-                            skill_name: true,
-                            skill_info_url: true,
-                        },
-                    },
+                    skill_id: true,
+                    skill_name: true,
+                    skill_info_url: true,
                 },
             },
         },
+    },
+}
+
+export async function getAllJobSeekerCardView(): Promise<JobSeekerCardViewDTO[]> {
+    const jobSeekerCardViews = await prisma.jobseekers.findMany({
+        select: jobSeekerCardViewSelect
     });
     // console.log(JSON.stringify(jobSeekerCardViews, null, 2));
-    return jobSeekerCardViews;
+    return jobSeekerCardViews as JobSeekerCardViewDTO[];
 }
 
 export async function getJobSeekerEmployerView(jobSeekerId: string) {
@@ -61,20 +64,20 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                 select: {
                     user_id: true,
                     first_name: true,
-                    last_name:true,
+                    last_name: true,
                     photo_url: true,
                     email: true,
                     phone: true,
                 }
             },
             work_experiences: {
-              select: {
-                  company: true,
-                  job_title: true,
-                  is_internship: true,
-                  is_current_job: true,
-                  responsibilities: true,
-              }
+                select: {
+                    company: true,
+                    job_title: true,
+                    is_internship: true,
+                    is_current_job: true,
+                    responsibilities: true,
+                }
             },
             edu_institutions: { // TODO: refactor jobseeker education into its own table...
                 select: {
@@ -90,7 +93,8 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                     repo_url: true,
                     demo_url: true,
                     problem_solved_description: true,
-                    project_has_skills: { select:
+                    project_has_skills: {
+                        select:
                             {
                                 skills: {
                                     select: {
@@ -121,54 +125,69 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
     return empView;
 }
 
-export async function getJobSeekersFilteredBySkills(skills: string[]) {
-    if (!skills || skills.length === 0) {
-        // Return all jobseekers if no skills are provided
-        return getAllJobSeekerCardView();
-    }
-    // Filter job seekers based on skills
-    const filteredJobSeekers = await prisma.jobseekers.findMany({
-        where: {
-            OR: [
-                {
-                    jobseeker_has_skills: {
-                        some: {
-                            skills: {
-                                skill_name: {
-                                    in: skills,
-                                },
+// intended for use with the search bar. Currently, supports searching by combinations of skills and work experience.
+// If skills is [] or contains empty strings [''] will disregard and only focus on work experience.
+// If work experience is not a query parameter it should be set to 0
+export async function getFilteredJobSeekerCardView(skills: string[], yearsWorkExp: number): Promise<JobSeekerCardViewDTO[]> {
+    // Normalize skills array
+    const normalizedSkills = skills.filter(skill => skill && skill.trim() !== '');
+
+    // Construct the AND conditions array
+    const andConditions: any[] = [];
+
+    // If skills are provided, add the OR condition for skills
+    if (normalizedSkills.length > 0) {
+        const orConditions = [
+            {
+                jobseeker_has_skills: {
+                    some: {
+                        skills: {
+                            skill_name: {
+                                in: normalizedSkills,
                             },
                         },
                     },
-                },
-                {
-                    project_experiences: {
-                        some: {
-                            project_has_skills: {
-                                some: {
-                                    skills: {
-                                        skill_name: {
-                                            in: skills,
-                                        }
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            ],
-        },
-        include: {
-            contacts: true,
-            edu_institutions: true,
-            jobseeker_has_skills: {
-                include: {
-                    skills: true,
                 },
             },
-            project_experiences: true, // Adjust this if necessary
-        },
+            {
+                project_experiences: {
+                    some: {
+                        project_has_skills: {
+                            some: {
+                                skills: {
+                                    skill_name: {
+                                        in: normalizedSkills,
+                                    }
+                                },
+                            },
+                        },
+                    },
+                },
+            }
+        ];
+        andConditions.push({OR: orConditions});
+    }
+
+    // Add the condition for years of work experience if greater than 0
+    if (yearsWorkExp > 0) {
+        andConditions.push({
+            years_work_exp: {
+                gte: yearsWorkExp,
+            }
+        });
+    }
+
+    // Filter job seekers based on skills and years of work experience
+    const filteredJobSeekers = await prisma.jobseekers.findMany({
+        where: andConditions.length > 0 ? {AND: andConditions} : undefined,
+        select: jobSeekerCardViewSelect
     });
-    console.log(JSON.stringify(filteredJobSeekers, null, 2))
-    return filteredJobSeekers;
+
+    console.log(JSON.stringify(filteredJobSeekers, null, 2));
+    return filteredJobSeekers as JobSeekerCardViewDTO[];
+}
+
+// returns those jobseekers with at least yearsExp in a profession
+export async function getJobSeekerCardViewByWorkExperience() {
+
 }
