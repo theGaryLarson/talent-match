@@ -128,7 +128,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 // intended for use with the search bar. Currently, supports searching by combinations of skills and work experience.
 // If skills is [] or contains empty strings [''] will disregard and only focus on work experience.
 // If work experience is not a query parameter it should be set to 0
-export async function getFilteredJobSeekerCardView(skills: string[], yearsWorkExp: number): Promise<JobSeekerCardViewDTO[]> {
+export async function getFilteredJobSeekerCardView(skills: string[] = [], yearsWorkExp: number = 0): Promise<JobSeekerCardViewDTO[]> {
     // Normalize skills array
     const normalizedSkills = skills.filter(skill => skill && skill.trim() !== '');
 
@@ -168,16 +168,15 @@ export async function getFilteredJobSeekerCardView(skills: string[], yearsWorkEx
         andConditions.push({OR: orConditions});
     }
 
-    // Add the condition for years of work experience if greater than 0
-    if (yearsWorkExp > 0) {
-        andConditions.push({
-            years_work_exp: {
-                gte: yearsWorkExp,
-            }
-        });
-    }
+    // Add the condition for years of work experience
+    andConditions.push({
+        years_work_exp: {
+            gte: yearsWorkExp,
+        }
+    });
 
-    // Filter job seekers based on skills and years of work experience
+
+    // Filter jobseekers based on skills and years of work experience
     const filteredJobSeekers = await prisma.jobseekers.findMany({
         where: andConditions.length > 0 ? {AND: andConditions} : undefined,
         select: jobSeekerCardViewSelect
