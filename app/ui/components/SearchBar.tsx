@@ -1,7 +1,7 @@
 'use client'
 
 import {useSearchParams, usePathname, useRouter} from 'next/navigation';
-import {SetStateAction, useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 
 export default function SearchBar() {
     const searchParams = useSearchParams();
