@@ -52,6 +52,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
             jobseeker_id: jobSeekerId,
         },
         select: {
+            intro_headline:true,
             current_job_title: true,
             current_enrolled_ed_program: true,
             current_grade_level: true,
@@ -104,6 +105,11 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                                 }
                             }
                     }
+                }
+            },
+            pathways: {
+                select: {
+                    pathway_title: true,
                 }
             },
             jobseeker_has_skills: {
