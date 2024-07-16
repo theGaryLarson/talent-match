@@ -1,7 +1,6 @@
 'use client'
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import SearchBar from '@/app/ui/components/SearchBar';
-import {getFilteredJobSeekerCardView} from "@/app/lib/prisma";
 import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 import {useCallback, useEffect, useState} from 'react'
 import { useSearchParams } from 'next/navigation';
