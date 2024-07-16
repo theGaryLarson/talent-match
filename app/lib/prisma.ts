@@ -3,7 +3,7 @@ import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 
 const prisma = new PrismaClient();
 
-const jobSeekerCardViewSelect = {
+export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
     user_id: true,
     intro_headline: true,
