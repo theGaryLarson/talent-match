@@ -1,7 +1,9 @@
 export async function GET(req:Request) {
-  const res = Response;
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get('q');
+  console.log(q);
 
-  return res.json([
+  return Response.json([
       'C and C++',
       'C#',
       'HTML',

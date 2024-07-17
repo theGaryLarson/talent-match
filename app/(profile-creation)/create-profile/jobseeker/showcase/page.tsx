@@ -28,6 +28,7 @@ export default function CreateJobseekerProfileShowcasePage(){
               apiSearchRoute="/api/skills?q="
               fieldLabel="Select your skills *"
               id="profile-creation-showcase-skills"
+              maxTags={5}
               searchingText="Searching..."
               noResultsText="No skills found..."
               onChange={function(ev, val){ console.log(val); }}
