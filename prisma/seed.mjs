@@ -1,11 +1,11 @@
-import  {PrismaClient} from '@prisma/client';
 import skillsData_v2 from '../data/skills_v2.mjs';
 import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
+import  getPrismaClient from '../app/lib/prismaClient.mjs'
 
 faker.seed(123); // set seed so generated data is deterministic
-const prisma = new PrismaClient();
+const prisma = getPrismaClient();
 
 
 /////////////////////////////////////////////////
