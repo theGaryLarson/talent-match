@@ -6,6 +6,7 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import DividerWithText from '@/app/ui/components/DividerWithText';
 import { Button, Label, List, ListItem, TextInput } from "flowbite-react";
 import { MdOutlineFileUpload } from "react-icons/md";
+import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 
 
 export default function CreateJobseekerProfileShowcasePage(){
@@ -23,10 +24,15 @@ export default function CreateJobseekerProfileShowcasePage(){
             <legend>
               <h2>Skills</h2>
             </legend>
-
-            {/* TODO: skills section will need to update to searchable list with selectable skill "pills" */}
-            <Label htmlFor="profile-creation-showcase-skills" value="Select your skills *" />
-            <TextInput id="profile-creation-showcase-skills" name="profile-creation-showcase-skills" placeholder="Skill (ex: Java)" required />
+            <TagsWithAutocomplete
+              apiSearchRoute="/api/skills?q="
+              fieldLabel="Select your skills *"
+              id="profile-creation-showcase-skills"
+              searchingText="Searching..."
+              noResultsText="No skills found..."
+              onChange={function(ev, val){ console.log(val); }}
+              searchPlaceholder="Skill (ex: Java)"
+            />
             <p>Select your top 5 skills from your skills list</p>
 
             <Label htmlFor="profile-creation-showcase-portfolio" value="Portfolio" />
