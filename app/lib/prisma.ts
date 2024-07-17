@@ -1,7 +1,13 @@
 import {PrismaClient} from '@prisma/client';
 import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
-const prisma = new PrismaClient();
+// used singleton pattern to avoid connection timeouts due to reaching connection limit
+const prisma: PrismaClient = getPrismaClient();
+
+
+
+
 
 export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
