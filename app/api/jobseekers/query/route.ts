@@ -1,4 +1,3 @@
-// app/api/jobseekers/filtered/route.ts
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import {jobSeekerCardViewSelect} from "@/app/lib/prisma";
