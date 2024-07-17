@@ -915,28 +915,69 @@ async function seedSubcategories() {
 
 async function seedSkills() {
     const subcategories = await prisma.skill_subcategories.findMany();
-    console.log('Seeding skills...')
+    console.log('Seeding skills...');
     let skillsCount = 0;
-    const skillsPromises = subcategories.map(subcategory => {
+
+    const skillsToCreate = subcategories.flatMap(subcategory => {
         const relatedSkills = skillsData_v2.filter(
-            (s) => s.skill_category.toLowerCase().trim() === subcategory.subcategory_name.toLowerCase().trim(),
+            (s) => s.skill_category.toLowerCase().trim() === subcategory.subcategory_name.toLowerCase().trim()
         );
-        skillsCount += relatedSkills.length
-        return Promise.all(relatedSkills.map(skill => {
-            return prisma.skills.create({
-                data: {
-                    skill_id: uuidv4(),
-                    skill_name: skill.skill,
-                    skill_info_url: skill.info_url,
-                    skill_subcategory_id: subcategory.skill_subcategory_id
-                }
-            });
+        skillsCount += relatedSkills.length;
+        return relatedSkills.map(skill => ({
+            skill_id: uuidv4(),
+            skill_name: skill.skill,
+            skill_info_url: skill.info_url,
+            skill_subcategory_id: subcategory.skill_subcategory_id
         }));
     });
 
-    await Promise.all(skillsPromises);
-    console.log(`${skillsCount} skills have been added.\n`);
+    await prisma.skills.createMany({
+        data: skillsToCreate
+    });
+
+    console.log(`Seeded ${skillsCount} skills.\n`);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// async function seedSkills() {
+//     const subcategories = await prisma.skill_subcategories.findMany();
+//     console.log('Seeding skills...')
+//     let skillsCount = 0;
+//     const batchSize = 100; // Adjust the batch size as needed
+//     for (const subcategory of subcategories) {
+//         const relatedSkills = skillsData_v2.filter(
+//             (s) => s.skill_category.toLowerCase().trim() === subcategory.subcategory_name.toLowerCase().trim()
+//         );
+
+//         skillsCount += relatedSkills.length;
+
+//         // Batch insert skills for each subcategory
+//         for (let i = 0; i < relatedSkills.length; i += batchSize) {
+//             const batch = relatedSkills.slice(i, i + batchSize).map(skill => ({
+//                 skill_id: uuidv4(),
+//                 skill_name: skill.skill,
+//                 skill_info_url: skill.info_url,
+//                 skill_subcategory_id: subcategory.skill_subcategory_id
+//             }));
+
+//             // Use createMany for batch insertion
+//             await prisma.skills.createMany({
+//                 data: batch
+//             });
+//         }
+//     }
+//     console.log(`${skillsCount} skills have been added.\n`);
+// }
 
 async function seedJobSeekers() {
     const jobSeekers = await prisma.contacts.findMany({
@@ -1413,7 +1454,7 @@ async function main() {
     await seedSubcategories();
     await seedSkills();
     await seedSocialMediaPlatforms();
-    await seedContacts(500);
+    await seedContacts(5000);
     await seedContactAddresses();
     await seedEduInstitutions();
     await SeedEduAddresses();
