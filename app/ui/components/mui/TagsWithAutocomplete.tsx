@@ -46,7 +46,7 @@ export default function TagsWithAutocomplete({
             }
             else if (newInputValue.length !== 0) {
               setLoading(true);
-              const response = await fetch(`${apiSearchRoute}${newInputValue}`);
+              const response = await fetch(`${apiSearchRoute}${encodeURIComponent(newInputValue)}`);
               const data:string[] = await response.json();
               cachedFetches[newInputValue] = data; // Cache the fetch data
 

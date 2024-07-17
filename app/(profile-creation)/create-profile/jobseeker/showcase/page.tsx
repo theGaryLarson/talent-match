@@ -25,7 +25,7 @@ export default function CreateJobseekerProfileShowcasePage(){
               <h2>Skills</h2>
             </legend>
             <TagsWithAutocomplete
-              apiSearchRoute="/api/skills?q="
+              apiSearchRoute="/api/skills/search/"
               fieldLabel="Select your skills *"
               id="profile-creation-showcase-skills"
               maxTags={5}
