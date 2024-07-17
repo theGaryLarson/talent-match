@@ -103,7 +103,7 @@ model company_testimonials {
 
 model contact_addresses {
   contact_address_id String   @id(clustered: false, map: "contact_addresses_PRIMARY") @db.NVarChar(36)
-  user_id            String   @db.NVarChar(36)
+  user_id            String   @unique @db.NVarChar(36)
   zip                String   @db.NVarChar(10)
   state              String   @db.VarChar(255)
   city               String   @db.VarChar(255)
@@ -119,7 +119,7 @@ model contacts {
   first_name         String               @db.VarChar(255)
   last_name          String               @db.VarChar(255)
   birthdate          DateTime             @db.DateTime
-  email              String               @db.VarChar(255)
+  email              String               @unique @db.VarChar(255)
   phone              String?              @db.VarChar(15)
   gender             String?              @db.VarChar(45)
   race               String?              @db.VarChar(45)
@@ -148,7 +148,7 @@ model edu_addresses {
 
 model edu_institutions {
   edu_institution_id String               @id(clustered: false, map: "edu_institutions_PRIMARY") @unique(map: "edu_institutions_edu_institution_id_UNIQUE") @db.NVarChar(36)
-  name               String?              @db.VarChar(255)
+  name               String?              @unique @db.VarChar(255)
   contact_email      String               @db.VarChar(255)
   edu_url            String               @db.VarChar(255)
   edu_addresses      edu_addresses[]
@@ -242,7 +242,7 @@ model jobseeker_has_skills {
 
 model jobseekers {
   jobseeker_id                       String                               @id(clustered: false, map: "jobseekers_PRIMARY") @unique(map: "jobseekers_learner_id_UNIQUE") @db.NVarChar(36)
-  user_id                            String                               @db.NVarChar(36)
+  user_id                            String                               @unique @db.NVarChar(36)
   targeted_pathway                   String                               @db.NVarChar(36)
   edu_institution_id                 String?                              @db.NVarChar(36)
   is_enrolled_college                Int?                                 @db.SmallInt
@@ -279,10 +279,10 @@ model jobseekers {
 
 model jobseekers_private_data {
   jobseeker_private_data_id    String     @id(clustered: false, map: "jobseekers_private_data_PRIMARY") @unique(map: "jobseekers_private_data_learner_private_data_id_UNIQUE") @db.NVarChar(36)
-  jobseeker_id                 String     @db.NVarChar(36)
+  jobseeker_id                 String     @unique @db.NVarChar(36)
   ssn                          String?    @db.VarChar(255)
-  is_authorized_to_work_in_usa Int        @default(0, map: "DF__jobseeker__is_au__3C34F16F") @db.SmallInt
-  job_sponsorship_required     Int        @default(0, map: "DF__jobseeker__job_s__3D2915A8") @db.SmallInt
+  is_authorized_to_work_in_usa Boolean    @default(false, map: "DF__jobseeker__is_au__3C34F16F") @db.Bit
+  job_sponsorship_required     Boolean    @default(false, map: "DF__jobseeker__job_s__3D2915A8") @db.Bit
   is_veteran                   Int        @default(0, map: "DF__jobseeker__is_ve__3E1D39E1") @db.SmallInt
   has_disability               String     @default("prefer not to say", map: "DF__jobseeker__has_d__3F115E1A") @db.VarChar(45)
   jobseekers                   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_user_learner_private_data_user1")
@@ -335,7 +335,7 @@ model pathway_subcategories {
 
 model pathways {
   pathway_id                  String                        @id(clustered: false, map: "pathways_PRIMARY") @db.NVarChar(36)
-  pathway_title               String                        @db.VarChar(255)
+  pathway_title               String                        @unique @db.VarChar(255)
   jobseekers                  jobseekers[]
   pathway_has_skills          pathway_has_skills[]
   pathway_subcategories       pathway_subcategories[]
