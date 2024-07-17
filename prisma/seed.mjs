@@ -1413,7 +1413,7 @@ async function main() {
     await seedSubcategories();
     await seedSkills();
     await seedSocialMediaPlatforms();
-    await seedContacts(100);
+    await seedContacts(500);
     await seedContactAddresses();
     await seedEduInstitutions();
     await SeedEduAddresses();
