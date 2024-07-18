@@ -9,21 +9,16 @@ export default function Page() {
   return (
     <>
     <PageBanner
-      title="WE BUILD FUTURE-READY TECH CAREERS" bg={'bg-services-hero'}></PageBanner>
+      title="Washington Tech Workforce Coalition" bg={'bg-services-hero'}></PageBanner>
     <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
       <h1 className="text-2xl">
       Computing For All
       </h1>
       <h2 className='text-xl text-primary-600'>
-      Computing for All works with employers, schools, colleges, and community organizations to prepare diverse Washington state students and job seekers for careers in tech
+        CFA is the backbone organization working with the Washington Tech Workforce Coalition, an organization of employers, schools, colleges, and community organizations to prepare diverse jobseekers across the state for careers in tech.
       </h2>
       <p>
-      Please visit our non-profit, free program (Embedded link to the Career Services landing page) to explore our 
-      unique process for getting you connected with ready-to-hire employers as a job candidate with a showcase of 
-      TechReady job skills and achievements. We provide development opportunities in technical proficiency and success 
-      strategies for success in the work environment, along with career navigation skills. This access is limited to 
-      very few job candidates as the initial project of a Department of Commerce funded Green Jobs Challenge grant 
-      and the Washington Jobs Initiative.
+        Welcome Employers and Jobseekers to this initial project of a Department of Commerce funded Green Jobs Challenge grant and the Washington Jobs Initiative.
       </p>
       <p>
       Whether you're just starting out or a seasoned professional, our skills 
@@ -36,7 +31,7 @@ export default function Page() {
         <RoundedButtonCard
           title={'Job Seekers'}
           desc={
-            'Navigate your tech career path with confidence using our career navigation tools. From resume optimization to interview preparation, we provide the guidance you need to make informed decisions and achieve your goals. '
+            'Join our unique process for getting you connected with ready-to-hire employers as a job candidate with a showcase of TechReady job skills and achievements. We provide development opportunities in technical proficiency and success strategies for success in the work environment, along with career navigation skills. '
           }
           buttonText={'Register'}
           link={'/#'}
@@ -47,7 +42,7 @@ export default function Page() {
         <RoundedButtonCard
           title={'Employers'}
           desc={
-            "Our Job Board connects you with a diverse range of opportunities in the tech industry. Whether you're seeking internships, apprenticeships, or full-time positions, our platform is your gateway to exciting career prospects. "
+            "Explore our Unique Talent Showcase. The Tech Talent Finder Portal is designed for small and medium businesses to find quality candidates in our searchable database: Accessing a carefully sourced talent pool built from referrals within the Washington Tech Workforce Coalition. "
           }
           buttonText={'Learn More'}
           link={'/services/employers'}
