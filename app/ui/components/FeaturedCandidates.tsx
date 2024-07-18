@@ -15,7 +15,7 @@ export default async function FeaturedCandidates(){
           school={jobSeeker?.edu_institutions?.name ?? ''}
           pathway={jobSeeker?.pathways?.pathway_title ?? ''}
           skillsList={jobSeeker?.jobseeker_has_skills}
-          // pfpPicSrc={jobSeeker?.contacts?.photo_url??null}
+          pfpPicSrc={jobSeeker?.contacts?.photo_url}
           aboutMe={jobSeeker?.intro_headline} id={jobSeeker?.jobseeker_id}        />
       ))}
         
