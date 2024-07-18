@@ -6,9 +6,52 @@ import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from "react-icons/md";
 import { Button, Label, Progress, Radio } from "flowbite-react";
+import {JsEducationDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import {v4 as uuidv4} from 'uuid';
 
 export default function CreateJobseekerProfileEducationPage(){
   const [eduProgram, setEduProgram] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [completionDate, setCompletionDate] = useState("");
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleApiCall = async (formData: JsEducationDTO) => {
+    try {
+      const res = await fetch('/api/jobseekers/create-edu', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await res.json();
+      setResponse(data);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.currentTarget as HTMLFormElement;
+
+    const formData: JsEducationDTO = {
+      userId: '07154e8a-8b1b-45a1-a857-e751857af689', // fixme: access user id from state management
+      highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
+      currentEnrolledEdProgram: eduProgram,
+      startDate: new Date(startDate).toISOString(),
+      completionDate: new Date(completionDate).toISOString(),
+      currentGrade: form['profile-creation-education-high-school-grade']?.value || '',
+    };
+    console.log(JSON.stringify(formData,null,2))
+    await handleApiCall(formData);
+  };
 
   return(
     <main className="flex">
@@ -19,7 +62,7 @@ export default function CreateJobseekerProfileEducationPage(){
         <p>Step 2/6</p>
         <h1>Education</h1>
         <p>* Indicates a required field</p>
-        <form>
+        <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
               <h2>Highest Education</h2>
@@ -28,6 +71,7 @@ export default function CreateJobseekerProfileEducationPage(){
               id="profile-creation-education-highest-completed"
               className="w-full"
               options={[
+
                 {label:"High school", value:"High school"},
                 {label:"Associate's degree", value:"Associate's degree"},
                 {label:"Bachelor's degree", value:"Bachelor's degree"},
@@ -108,6 +152,8 @@ export default function CreateJobseekerProfileEducationPage(){
                     type="month"
                     id="profile-creation-education-high-school-starting-date"
                     className="w-1/2"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                     required
                   >
                     Starting date *
@@ -116,6 +162,8 @@ export default function CreateJobseekerProfileEducationPage(){
                     type="month"
                     id="profile-creation-education-high-school-completion-date"
                     className="w-1/2"
+                    value={completionDate}
+                    onChange={(e) => setCompletionDate(e.target.value)}
                     required
                   >
                     Completion date *
