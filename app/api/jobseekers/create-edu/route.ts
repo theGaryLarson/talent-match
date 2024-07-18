@@ -17,6 +17,7 @@ export async function POST(request: Request) {
             startDate,
             completionDate,
             currentGrade,
+            isEnrolledInCollege,
         } = body;
 
 
@@ -61,13 +62,14 @@ export async function POST(request: Request) {
                     edu_start_date: start_date,
                     edu_end_date: completion_date,
                     current_grade_level: currentGrade,
+                    is_enrolled_college: isEnrolledInCollege,
                 },
                 create: {
                     jobseeker_id: jobseekerId,
                     user_id: userId,
                     targeted_pathway: targetedPathway,
                     edu_institution_id: undefined,
-                    is_enrolled_college: undefined,
+                    is_enrolled_college: isEnrolledInCollege,
                     highest_level_of_study_completed: highestLevelOfStudy,
                     current_grade_level: currentGrade,
                     current_enrolled_ed_program: currentEnrolledEdProgram,
