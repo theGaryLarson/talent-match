@@ -969,12 +969,15 @@ async function seedJobSeekers() {
     console.log('Seeding jobseekers...')
     for (const jobSeeker of jobSeekers) {
         const isEnrolledCollege = Math.random() < 0.6; // 60% chance of being enrolled in college.
+        const startDate = faker.date.past({years: 4});
         const jobSeekerData = {
             jobseeker_id: uuidv4(),
             user_id: jobSeeker.user_id,
             targeted_pathway: faker.helpers.arrayElement(pathways).pathway_id,
             edu_institution_id: faker.helpers.arrayElement(edInstitutions).edu_institution_id,
-            is_enrolled_college: isEnrolledCollege ? 1 : 0,  //TODO: convert to Boolean @db.Bit in schema.prisma
+            is_enrolled_college: isEnrolledCollege,
+            edu_start_date: startDate,
+            edu_end_date: faker.date.between({from: startDate, to: new Date()}),
             highest_level_of_study_completed: faker.helpers.arrayElement(['High School', 'Certificate', 'AAS', 'BAS', 'Boot Camp']),
             current_grade_level: faker.helpers.arrayElement(['freshman', 'sophomore', 'junior', 'senior']),
             current_enrolled_ed_program: isEnrolledCollege ? faker.helpers.arrayElement(techEdPrograms) : null,
@@ -1011,7 +1014,7 @@ async function seedJobSeekersPrivateData() {
                     ssn: generateSSN(),
                     is_authorized_to_work_in_usa: Boolean(faker.number.int({min: 0, max: 1})),
                     job_sponsorship_required: Boolean(faker.number.int({min: 0, max: 1})),
-                    is_veteran: faker.number.int({min: 0, max: 2}),
+                    is_veteran: faker.helpers.arrayElement(['yes', 'no', 'undisclosed']),
                     has_disability: faker.helpers.arrayElement(['yes', 'no', 'undisclosed'])
                 }
             });
@@ -1078,9 +1081,9 @@ async function seedWorkExperiences() {
                         jobseeker_id: js.jobseeker_id,
                         technology_area_id: faker.helpers.arrayElement(techAreas).technology_area_id,
                         company: faker.company.name(),
-                        is_internship: faker.number.int({min: 0, max: 1}),
+                        is_internship: faker.datatype.boolean(),
                         job_title: faker.person.jobTitle(),
-                        is_current_job: isCurrentJob ? 1 : 0,
+                        is_current_job: isCurrentJob,
                         start_date: startDate,
                         end_date: isCurrentJob ? null : faker.date.between({from: startDate, to: new Date()}),
                         responsibilities: generateResponsibilities(faker.number.int({min: 3, max: 6})),
@@ -1377,7 +1380,7 @@ async function seedJobPostings() {
                     // 40% chance job post is an internship
                     const isInternship = Math.random() < 0.4;
                     // paid if not internship, internships have a 50% chance of being paid
-                    const isPaid = !isInternship ? 1 : (Math.random() < 0.5 ? 1 : 0);
+                    const isPaid = !isInternship ? true : (Math.random() < 0.5 ? true : false);
                     const regionInfo = waStateCountiesWithZipCodes[faker.number.int({
                         min: 0,
                         max: waStateCountiesWithZipCodes.length - 1
@@ -1389,7 +1392,7 @@ async function seedJobPostings() {
                             employer_id: e.employer_id,
                             job_title: faker.helpers.arrayElement(itJobTitles),
                             job_description: faker.person.jobDescriptor(),
-                            is_internship: isInternship ? 1 : 0,
+                            is_internship: isInternship,
                             is_paid: isPaid,
                             employment_type: faker.helpers.arrayElement(['full-time', 'part-time', 'contract']),
                             location: faker.helpers.arrayElement(['on-site', 'remote', 'hybrid']),

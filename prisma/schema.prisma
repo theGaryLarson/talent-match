@@ -208,8 +208,8 @@ model job_postings {
   technology_area_id     String                   @db.NVarChar(36)
   job_title              String                   @db.VarChar(255)
   job_description        String                   @db.VarChar(255)
-  is_internship          Int                      @default(0, map: "DF__job_posti__is_in__571DF1D5") @db.SmallInt
-  is_paid                Int                      @default(1, map: "DF__job_posti__is_pa__5812160E") @db.SmallInt
+  is_internship          Boolean                  @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
+  is_paid                Boolean                  @default(true, map: "DF__job_posti__is_pa__5812160E") @db.Bit
   employment_type        String                   @default("N'full-time'", map: "DF__job_posti__emplo__59063A47") @db.NVarChar(255)
   location               String                   @db.NVarChar(255)
   salary_range           String                   @db.VarChar(45)
@@ -245,7 +245,9 @@ model jobseekers {
   user_id                            String                               @unique @db.NVarChar(36)
   targeted_pathway                   String                               @db.NVarChar(36)
   edu_institution_id                 String?                              @db.NVarChar(36)
-  is_enrolled_college                Int?                                 @db.SmallInt
+  edu_start_date                     DateTime?                            @db.DateTime
+  edu_end_date                       DateTime?                            @db.DateTime
+  is_enrolled_college                Boolean                              @db.Bit
   highest_level_of_study_completed   String?                              @db.VarChar(255)
   current_grade_level                String?                              @db.VarChar(45)
   current_enrolled_ed_program        String?                              @db.VarChar(255)
@@ -283,7 +285,7 @@ model jobseekers_private_data {
   ssn                          String?    @db.VarChar(255)
   is_authorized_to_work_in_usa Boolean    @default(false, map: "DF__jobseeker__is_au__3C34F16F") @db.Bit
   job_sponsorship_required     Boolean    @default(false, map: "DF__jobseeker__job_s__3D2915A8") @db.Bit
-  is_veteran                   Int        @default(0, map: "DF__jobseeker__is_ve__3E1D39E1") @db.SmallInt
+  is_veteran                   String     @default("prefer not to say", map: "DF__jobseeker__is_ve__3E1D39E1") @db.VarChar(45)
   has_disability               String     @default("prefer not to say", map: "DF__jobseeker__has_d__3F115E1A") @db.VarChar(45)
   jobseekers                   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_user_learner_private_data_user1")
 
@@ -303,7 +305,7 @@ model learner_proj_based_tech_assessment {
   jobseeker_id                          String                      @db.NVarChar(36)
   proj_based_tech_assessment_id         String                      @db.NVarChar(36)
   attempt_date                          DateTime                    @db.DateTime
-  has_passed                            Int                         @db.SmallInt
+  has_passed                            Boolean                     @db.Bit
   proj_based_tech_assessments           proj_based_tech_assessments @relation(fields: [proj_based_tech_assessment_id], references: [proj_based_tech_assessment_id], onUpdate: NoAction, map: "fk_user_has_proj_based_tech_assessment_proj_based_tech_asse1")
   jobseekers                            jobseekers                  @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_user_has_proj_based_tech_assessment_user1")
 
@@ -387,7 +389,7 @@ model sa_possible_answers {
   sa_possible_answer_id String       @id(clustered: false, map: "sa_possible_answers_PRIMARY") @unique(map: "sa_possible_answers_sa_possible_answer_id_UNIQUE") @db.NVarChar(36)
   sa_question_id        String       @db.NVarChar(36)
   answer_text           String?      @db.VarChar(255)
-  is_correct            Int          @default(0, map: "DF__sa_possib__is_co__1332DBDC") @db.SmallInt
+  is_correct            Boolean      @default(true, map: "DF__sa_possib__is_co__1332DBDC") @db.Bit
   sa_questions          sa_questions @relation(fields: [sa_question_id], references: [sa_question_id], onUpdate: NoAction, map: "fk_sa_possilbe_answer_sa_question1")
 
   @@index([sa_question_id], map: "sa_possible_answers_fk_sa_possible_answer_sa_question1_idx")
@@ -522,9 +524,9 @@ model work_experiences {
   jobseeker_id       String           @db.NVarChar(36)
   technology_area_id String           @db.NVarChar(36)
   company            String           @db.VarChar(255)
-  is_internship      Int              @default(0, map: "DF__work_expe__is_in__75A278F5") @db.SmallInt
+  is_internship      Boolean          @default(false, map: "DF__work_expe__is_in__75A278F5") @db.Bit
   job_title          String           @db.VarChar(45)
-  is_current_job     Int              @default(0, map: "DF__work_expe__is_cu__76969D2E") @db.SmallInt
+  is_current_job     Boolean          @default(false, map: "DF__work_expe__is_cu__76969D2E") @db.Bit
   start_date         DateTime         @db.DateTime
   end_date           DateTime?        @db.DateTime
   responsibilities   String           @db.NText

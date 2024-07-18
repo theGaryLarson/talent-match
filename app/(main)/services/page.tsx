@@ -11,7 +11,7 @@ export default function Page() {
         title="Tech Ready Talent Showcase" bg={'bg-services-hero'}></PageBanner>
       <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
         <h1 className="text-2xl">
-          Unlock your potential with CFA Career Services
+          Unlock your potential with Tech Talent Showcase
         </h1>
         <h2 className='text-xl text-primary-600'>
         Want to showcase your talents to a select group of employers?
@@ -35,7 +35,7 @@ export default function Page() {
           <RoundedButtonCard
             title={'Job Seekers'}
             desc={
-              'Navigate your tech career path with confidence using our career navigation tools. From resume optimization to interview preparation, we provide the guidance you need to make informed decisions and achieve your goals. '
+              'Explore our unique process for getting you connected with ready-to-hire employers as a job candidate with a showcase of TechReady job skills and achievements. We provide development opportunities in technical proficiency and success strategies for success in the work environment, along with career navigation skills. '
             }
             buttonText={'Register'}
             link={'/#'}

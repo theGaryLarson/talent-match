@@ -34,7 +34,7 @@ export async function POST(request: Request) {
         const cleanedPhoneNumber = phone?.replace(/[-\s()]/g, '');
 
         // Format the phone number in E.164 format
-        const formattedPhone = `${phoneCountryCode}${cleanedPhoneNumber}`;
+        const formattedPhone = `+${phoneCountryCode}-${cleanedPhoneNumber}`;
 
         // Transaction to ensure atomicity
         const result = await prisma.$transaction(async (prisma) => {
@@ -67,10 +67,11 @@ export async function POST(request: Request) {
             // Find the jobseeker_id or generate a new one
             const jobseeker = await prisma.jobseekers.findUnique({
                 where: {user_id: user_id},
-                select: {jobseeker_id: true, targeted_pathway: true}
+                select: {jobseeker_id: true, targeted_pathway: true, is_enrolled_college: true}
             });
 
             const jobseeker_id = jobseeker?.jobseeker_id || uuidv4();
+            const isEnrolledInCollege = jobseeker?.is_enrolled_college || false;
 
             // Find or create the targeted pathway for 'Undecided'
             let targeted_pathway = jobseeker?.targeted_pathway;
@@ -113,7 +114,7 @@ export async function POST(request: Request) {
                     user_id: contact.user_id,
                     targeted_pathway: targeted_pathway,
                     edu_institution_id: edu_institution_id,
-                    is_enrolled_college: undefined,
+                    is_enrolled_college: isEnrolledInCollege,
                     highest_level_of_study_completed: undefined,
                     current_grade_level: undefined,
                     current_enrolled_ed_program: undefined,
@@ -161,8 +162,7 @@ export async function POST(request: Request) {
 
             return {contact, jobSeeker, };
         });
-
-        return NextResponse.json(result);
+        return NextResponse.json(result, { status: 200 });
     } catch (error) {
         console.error('Error creating job seeker intro:', error);
         return NextResponse.json({error: 'Failed to create job seeker intro'}, {status: 500});
