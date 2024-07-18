@@ -12,22 +12,12 @@ export type JsIntroDTO = {
     email: string;
     phoneCountryCode: string | null;
     introHeadline: string | null;
-    currentSchool: string | null;
+    currentSchool: string | null; // TODO: move to JSEducationDTO
     currentJobTitle: string | null;
     resumeUrl: string | null;
 }
 
-export type JsEducationDTO = {
-    userId: string,
-    highestLevelOfStudy: string;
-    currentEnrolledEdProgram: string;
-    startDate: string;
-    completionDate: string;
-    currentGrade: string;
-    // gpa: string // fix: do not need to collect
-}
-
-export type JsCertDTO = {
+ type JsCertDTO = {
     certName: string,
     issuingOrg: string,
     credentialId: string | null,
@@ -36,7 +26,7 @@ export type JsCertDTO = {
     expirationDate: string,
 }
 
-export type JsProjectExpDTO = {
+ type JsProjectExpDTO = {
     projTitle: string,
     role: string,
     startDate: string,
@@ -47,6 +37,19 @@ export type JsProjectExpDTO = {
     teamSize: string,
     skills: string[],
 }
+
+export type JsEducationDTO = {
+    userId: string,
+    highestLevelOfStudy: string;
+    currentEnrolledEdProgram: string;
+    startDate: string;
+    completionDate: string;
+    currentGrade: string;
+    isEnrolledInCollege: boolean
+    // gpa: string // fix: do not need to collect
+}
+
+
 
 type workExperienceDTO = {
     company: string,
