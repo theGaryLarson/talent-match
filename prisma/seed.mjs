@@ -969,12 +969,15 @@ async function seedJobSeekers() {
     console.log('Seeding jobseekers...')
     for (const jobSeeker of jobSeekers) {
         const isEnrolledCollege = Math.random() < 0.6; // 60% chance of being enrolled in college.
+        const startDate = faker.date.past({years: 4});
         const jobSeekerData = {
             jobseeker_id: uuidv4(),
             user_id: jobSeeker.user_id,
             targeted_pathway: faker.helpers.arrayElement(pathways).pathway_id,
             edu_institution_id: faker.helpers.arrayElement(edInstitutions).edu_institution_id,
             is_enrolled_college: isEnrolledCollege ? 1 : 0,  //TODO: convert to Boolean @db.Bit in schema.prisma
+            edu_start_date: startDate,
+            edu_end_date: faker.date.between({from: startDate, to: new Date()}),
             highest_level_of_study_completed: faker.helpers.arrayElement(['High School', 'Certificate', 'AAS', 'BAS', 'Boot Camp']),
             current_grade_level: faker.helpers.arrayElement(['freshman', 'sophomore', 'junior', 'senior']),
             current_enrolled_ed_program: isEnrolledCollege ? faker.helpers.arrayElement(techEdPrograms) : null,
