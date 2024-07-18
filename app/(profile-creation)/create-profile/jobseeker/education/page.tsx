@@ -44,7 +44,7 @@ export default function CreateJobseekerProfileEducationPage() {
         const startDateWithDay = `${startDate}-01`
         const completionDateWithDay = `${completionDate}-01`
         const formData: JsEducationDTO = {
-            userId: '5c1541db-ecae-4bba-a865-0f8d56aa3b39', // fixme: access user id from state management
+            userId: '2609cf8e-d48d-40dc-bebe-ebb4c2890f0f', // fixme: access user id from state management
             highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
             currentEnrolledEdProgram: eduProgram,
             startDate: new Date(startDateWithDay).toISOString(),
