@@ -14,20 +14,18 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image';
-const CareerDropDownInfo = [
+const forEmpoyersDropDownInfo = [
   { name: 'Career Services Landing Page', description: 'Learn What Career Services has to Offer', href: '/services', icon: ChartPieIcon },
   { name: 'Employer Landing Page', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
   { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers/dashboard', icon: ChartPieIcon },
   { name: 'Job Seeker Landing Page', description: 'Mange your job search', href: '/services/jobseekers', icon: CursorArrowRaysIcon },
   { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon },
 ]
-console.log(
-typeof Bars3Icon
-)
 const forJobSeekers = [
   { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon }
 ]
 const forStudentsDropDownInfo = [
+{ name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '#', icon: CursorArrowRaysIcon },
 { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
 
 
@@ -39,13 +37,6 @@ const callsToAction = [
 const TopLevelLinks = [
     { name: 'Explore', href: '/todo'},
     {
-      name: 'News & Events',
-      href: '/todo'
-    },
-    {
-      name: 'About Us',
-      href: '/todo'
-    },{
       name:"Contact Us",
       href:"/todo"
     }
@@ -109,7 +100,7 @@ export default function CFAHeader() {
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
               {({ close }) => (
                 <><div className="p-4" onMouseLeave={()=>{close()}}>
-                    {CareerDropDownInfo.map((item) => (
+                    {forEmpoyersDropDownInfo.map((item) => (
                     <Link key={item.name} href={item.href} className="block font-semibold text-gray-900" onClick={()=>{close()}}>
                       <div
                         
@@ -242,8 +233,8 @@ export default function CFAHeader() {
         
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link href="/login" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in/Sign Up 
+          <Link href="/services/employers/dashboard" className="text-sm font-semibold leading-6 text-gray-900">
+            My Dashboard 
           </Link>
         </div>
       </nav>
@@ -294,7 +285,7 @@ export default function CFAHeader() {
                         />
                       </DisclosureButton>
                       <DisclosurePanel className="mt-2 space-y-2">
-                        {[...CareerDropDownInfo].map((item) => (
+                        {[...forEmpoyersDropDownInfo].map((item) => (
                           <DisclosureButton
                             key={item.name}
                             as={Link}
