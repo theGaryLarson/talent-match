@@ -2,7 +2,8 @@ import skillsData_v2 from '../data/skills_v2.mjs';
 import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
-import  getPrismaClient from '../app/lib/prismaClient.mjs'
+import getPrismaClient from '../app/lib/prismaClient.mjs'
+import skills_v2 from "../data/skills_v2.mjs";
 
 faker.seed(123); // set seed so generated data is deterministic
 const prisma = getPrismaClient();
@@ -557,26 +558,26 @@ const itCertifications = [
 ];
 
 const socialMediaPlatforms = [
-    { platform: 'Facebook', social_logo_url: faker.internet.url() },
-    { platform: 'X (Twitter)', social_logo_url: faker.internet.url() },
-    { platform: 'Instagram', social_logo_url: faker.internet.url() },
-    { platform: 'LinkedIn', social_logo_url: faker.internet.url() },
-    { platform: 'Snapchat', social_logo_url: faker.internet.url() },
-    { platform: 'Pinterest', social_logo_url: faker.internet.url() },
-    { platform: 'TikTok', social_logo_url: faker.internet.url() },
-    { platform: 'Reddit', social_logo_url: faker.internet.url() },
-    { platform: 'YouTube', social_logo_url: faker.internet.url() },
-    { platform: 'WhatsApp', social_logo_url: faker.internet.url() },
-    { platform: 'WeChat', social_logo_url: faker.internet.url() },
-    { platform: 'Telegram', social_logo_url: faker.internet.url() },
-    { platform: 'Tumblr', social_logo_url: faker.internet.url() },
-    { platform: 'Quora', social_logo_url: faker.internet.url() },
-    { platform: 'Viber', social_logo_url: faker.internet.url() },
-    { platform: 'Discord', social_logo_url: faker.internet.url() },
-    { platform: 'Twitch', social_logo_url: faker.internet.url() },
-    { platform: 'Flickr', social_logo_url: faker.internet.url() },
-    { platform: 'Medium', social_logo_url: faker.internet.url() },
-    { platform: 'Clubhouse', social_logo_url: faker.internet.url() }
+    {platform: 'Facebook', social_logo_url: faker.internet.url()},
+    {platform: 'X (Twitter)', social_logo_url: faker.internet.url()},
+    {platform: 'Instagram', social_logo_url: faker.internet.url()},
+    {platform: 'LinkedIn', social_logo_url: faker.internet.url()},
+    {platform: 'Snapchat', social_logo_url: faker.internet.url()},
+    {platform: 'Pinterest', social_logo_url: faker.internet.url()},
+    {platform: 'TikTok', social_logo_url: faker.internet.url()},
+    {platform: 'Reddit', social_logo_url: faker.internet.url()},
+    {platform: 'YouTube', social_logo_url: faker.internet.url()},
+    {platform: 'WhatsApp', social_logo_url: faker.internet.url()},
+    {platform: 'WeChat', social_logo_url: faker.internet.url()},
+    {platform: 'Telegram', social_logo_url: faker.internet.url()},
+    {platform: 'Tumblr', social_logo_url: faker.internet.url()},
+    {platform: 'Quora', social_logo_url: faker.internet.url()},
+    {platform: 'Viber', social_logo_url: faker.internet.url()},
+    {platform: 'Discord', social_logo_url: faker.internet.url()},
+    {platform: 'Twitch', social_logo_url: faker.internet.url()},
+    {platform: 'Flickr', social_logo_url: faker.internet.url()},
+    {platform: 'Medium', social_logo_url: faker.internet.url()},
+    {platform: 'Clubhouse', social_logo_url: faker.internet.url()}
 ];
 
 const industrySectors = [
@@ -683,8 +684,8 @@ function formatISODate(date) {
 }
 
 function generateE164PhoneNumber() {
-    const countryCode = faker.number.int({ min: 1, max: 999 }).toString();
-    const nationalNumber = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
+    const countryCode = faker.number.int({min: 1, max: 999}).toString();
+    const nationalNumber = faker.number.int({min: 1000000000, max: 9999999999}).toString();
     return `+${countryCode}${nationalNumber}`;
 }
 
@@ -718,17 +719,17 @@ function generateSalesPitch(firstName, lastName) {
 }
 
 function generateSSN() {
-    const ssn = faker.number.int({ min: 100000000, max: 999999999 }).toString();
+    const ssn = faker.number.int({min: 100000000, max: 999999999}).toString();
     return `${ssn.substring(0, 3)}-${ssn.substring(3, 5)}-${ssn.substring(5, 9)}`;
 }
 
 function generateCompensation(isInternship) {
     if (isInternship) {
-        const stipend = faker.finance.amount({min: 1000, max: 5000, dec:0, autoFormat: true}); // Generate a stipend amount between $1000 and $5000
+        const stipend = faker.finance.amount({min: 1000, max: 5000, dec: 0, autoFormat: true}); // Generate a stipend amount between $1000 and $5000
         return `$${stipend} stipend`;
     } else {
-        const minSalary = faker.finance.amount({min: 50000, max: 70000, dec:0, autoFormat: true}); // Generate a minimum salary between $50,000 and $70,000
-        const maxSalary = faker.finance.amount({min: 80000, max: 120000, dec:0, autoFormat: true}); // Generate a maximum salary between $80,000 and $100,000
+        const minSalary = faker.finance.amount({min: 50000, max: 70000, dec: 0, autoFormat: true}); // Generate a minimum salary between $50,000 and $70,000
+        const maxSalary = faker.finance.amount({min: 80000, max: 120000, dec: 0, autoFormat: true}); // Generate a maximum salary between $80,000 and $100,000
         return `$${minSalary} - $${maxSalary} / year`;
     }
 }
@@ -822,7 +823,7 @@ async function seedContactAddresses() {
 }
 
 async function seedPathways() {
-    const pathways = ["Cloud Computing", "Software Development", "Data Analytics"]
+    const pathways = ["Cloud Computing", "Software Development", "Data Analytics", "Undecided"]
     console.log('Seeding Pathways...')
     for (const path of pathways) {
         await prisma.pathways.create({
@@ -859,6 +860,13 @@ async function seedEduInstitutions() {
             edu_url: faker.internet.url(),
         });
     }
+    institutions.push({
+        edu_institution_id: uuidv4(),
+        name: 'No data',
+        contact_email: '',
+        edu_url: '',
+
+    })
 
     for (const institution of institutions) {
         await prisma.edu_institutions.create({
@@ -873,9 +881,12 @@ async function SeedEduAddresses() {
     const edInstitutions = await prisma.edu_institutions.findMany({
         select: {
             edu_institution_id: true,
+            name: true, // needed to filter out the unknown. In case a jobseeker does not enter an institution.
         }
     });
-    const addresses = edInstitutions.map(institution => {
+    const addresses = edInstitutions
+        .filter(institution => institution.name !== "No data")
+        .map(institution => {
         const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
         return {
             edu_address_id: uuidv4(),
@@ -917,7 +928,6 @@ async function seedSkills() {
     const subcategories = await prisma.skill_subcategories.findMany();
     console.log('Seeding skills...');
     let skillsCount = 0;
-
     const skillsToCreate = subcategories.flatMap(subcategory => {
         const relatedSkills = skillsData_v2.filter(
             (s) => s.skill_category.toLowerCase().trim() === subcategory.subcategory_name.toLowerCase().trim()
@@ -936,48 +946,8 @@ async function seedSkills() {
     });
 
     console.log(`Seeded ${skillsCount} skills.\n`);
+    console.log(`Actual count of skills ${skills_v2.length}`)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// async function seedSkills() {
-//     const subcategories = await prisma.skill_subcategories.findMany();
-//     console.log('Seeding skills...')
-//     let skillsCount = 0;
-//     const batchSize = 100; // Adjust the batch size as needed
-//     for (const subcategory of subcategories) {
-//         const relatedSkills = skillsData_v2.filter(
-//             (s) => s.skill_category.toLowerCase().trim() === subcategory.subcategory_name.toLowerCase().trim()
-//         );
-
-//         skillsCount += relatedSkills.length;
-
-//         // Batch insert skills for each subcategory
-//         for (let i = 0; i < relatedSkills.length; i += batchSize) {
-//             const batch = relatedSkills.slice(i, i + batchSize).map(skill => ({
-//                 skill_id: uuidv4(),
-//                 skill_name: skill.skill,
-//                 skill_info_url: skill.info_url,
-//                 skill_subcategory_id: subcategory.skill_subcategory_id
-//             }));
-
-//             // Use createMany for batch insertion
-//             await prisma.skills.createMany({
-//                 data: batch
-//             });
-//         }
-//     }
-//     console.log(`${skillsCount} skills have been added.\n`);
-// }
 
 async function seedJobSeekers() {
     const jobSeekers = await prisma.contacts.findMany({
@@ -1004,7 +974,7 @@ async function seedJobSeekers() {
             user_id: jobSeeker.user_id,
             targeted_pathway: faker.helpers.arrayElement(pathways).pathway_id,
             edu_institution_id: faker.helpers.arrayElement(edInstitutions).edu_institution_id,
-            is_enrolled_college: isEnrolledCollege ? 1 : 0,
+            is_enrolled_college: isEnrolledCollege ? 1 : 0,  //TODO: convert to Boolean @db.Bit in schema.prisma
             highest_level_of_study_completed: faker.helpers.arrayElement(['High School', 'Certificate', 'AAS', 'BAS', 'Boot Camp']),
             current_grade_level: faker.helpers.arrayElement(['freshman', 'sophomore', 'junior', 'senior']),
             current_enrolled_ed_program: isEnrolledCollege ? faker.helpers.arrayElement(techEdPrograms) : null,
@@ -1039,10 +1009,10 @@ async function seedJobSeekersPrivateData() {
                     jobseeker_private_data_id: uuidv4(),
                     jobseeker_id: js.jobseeker_id,
                     ssn: generateSSN(),
-                    is_authorized_to_work_in_usa: faker.number.int({ min: 0, max: 1 }),
-                    job_sponsorship_required: faker.number.int({ min: 0, max: 1 }),
-                    is_veteran: faker.number.int({ min: 0, max: 1 }),
-                    has_disability: 'prefer not to say'
+                    is_authorized_to_work_in_usa: Boolean(faker.number.int({min: 0, max: 1})),
+                    job_sponsorship_required: Boolean(faker.number.int({min: 0, max: 1})),
+                    is_veteran: faker.number.int({min: 0, max: 2}),
+                    has_disability: faker.helpers.arrayElement(['yes', 'no', 'undisclosed'])
                 }
             });
         }
@@ -1296,7 +1266,7 @@ async function seedEmployers() {
             role: 'EMPLOYER',
         }
     });
-    for(const e of employers) {
+    for (const e of employers) {
         const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
         await prisma.employers.create({
             data: {
@@ -1315,7 +1285,7 @@ async function seedEmployers() {
 
 async function seedCompanyAddresses() {
     const companies = await prisma.companies.findMany();
-    for(const c of companies) {
+    for (const c of companies) {
         const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
         await prisma.company_addresses.create({
             data: {
@@ -1335,8 +1305,8 @@ async function seedCompanyTestimonials() {
     console.log(`Seeding Company Testimonials...`)
     let count = 0;
     const companies = await prisma.companies.findMany();
-    for( const c of companies) {
-        for(let i = 0; i < 3; i++) {
+    for (const c of companies) {
+        for (let i = 0; i < 3; i++) {
             await prisma.company_testimonials.create({
                 data: {
                     testimonial_id: uuidv4(),
@@ -1408,7 +1378,10 @@ async function seedJobPostings() {
                     const isInternship = Math.random() < 0.4;
                     // paid if not internship, internships have a 50% chance of being paid
                     const isPaid = !isInternship ? 1 : (Math.random() < 0.5 ? 1 : 0);
-                    const regionInfo = waStateCountiesWithZipCodes[faker.number.int({ min: 0, max: waStateCountiesWithZipCodes.length - 1 })];
+                    const regionInfo = waStateCountiesWithZipCodes[faker.number.int({
+                        min: 0,
+                        max: waStateCountiesWithZipCodes.length - 1
+                    })];
                     await prisma.job_postings.create({
                         data: {
                             job_posting_id: uuidv4(),
@@ -1454,7 +1427,7 @@ async function main() {
     await seedSubcategories();
     await seedSkills();
     await seedSocialMediaPlatforms();
-    await seedContacts(5000);
+    await seedContacts(500);
     await seedContactAddresses();
     await seedEduInstitutions();
     await SeedEduAddresses();
