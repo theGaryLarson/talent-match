@@ -14,13 +14,21 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image';
-const CareerDropDownInfo = [
+const forEmpoyersDropDownInfo = [
   { name: 'Career Services Landing Page', description: 'Learn What Career Services has to Offer', href: '/services', icon: ChartPieIcon },
   { name: 'Employer Landing Page', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
   { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers/dashboard', icon: ChartPieIcon },
   { name: 'Job Seeker Landing Page', description: 'Mange your job search', href: '/services/jobseekers', icon: CursorArrowRaysIcon },
   { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon },
-  { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
+]
+const forJobSeekers = [
+  { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon }
+]
+const forStudentsDropDownInfo = [
+{ name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '#', icon: CursorArrowRaysIcon },
+{ name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
+
+
 ]
 const callsToAction = [
   { name: 'Call to Action 1', href: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', icon: PlayCircleIcon },
@@ -29,13 +37,6 @@ const callsToAction = [
 const TopLevelLinks = [
     { name: 'Explore', href: '/todo'},
     {
-      name: 'News & Events',
-      href: '/todo'
-    },
-    {
-      name: 'About Us',
-      href: '/todo'
-    },{
       name:"Contact Us",
       href:"/todo"
     }
@@ -83,7 +84,7 @@ export default function CFAHeader() {
         <PopoverGroup className="hidden lg:flex lg:gap-x-12" >
           <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 ">
-              Services
+              For Employers
               <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
             </PopoverButton>
 
@@ -99,7 +100,7 @@ export default function CFAHeader() {
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
               {({ close }) => (
                 <><div className="p-4" onMouseLeave={()=>{close()}}>
-                    {CareerDropDownInfo.map((item) => (
+                    {forEmpoyersDropDownInfo.map((item) => (
                     <Link key={item.name} href={item.href} className="block font-semibold text-gray-900" onClick={()=>{close()}}>
                       <div
                         
@@ -118,26 +119,100 @@ export default function CFAHeader() {
                       </Link>
                     ))}
                   </div>
-                  {/* <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                      {callsToAction.map((item) => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
-                        >
-                          <item.icon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-                          {item.name}
-                        </a>
-                      ))}
-                    </div> */}
                     </>
               )}
-
                 
               </PopoverPanel>
             </Transition>
           </Popover>
+      
+          <Popover className="relative">
+            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 ">
+              For JobSeekers
+              <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+            </PopoverButton>
 
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-0 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-150"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
+              {({ close }) => (
+                <><div className="p-4" onMouseLeave={()=>{close()}}>
+                    {forJobSeekers.map((item) => (
+                    <Link key={item.name} href={item.href} className="block font-semibold text-gray-900" onClick={()=>{close()}}>
+                      <div
+                        
+                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                      >
+                        <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                          <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
+                        </div>
+                        <div className="flex-auto">
+                          
+                            {item.name}
+                          
+                          <p className="mt-1 text-gray-600">{item.description}</p>
+                        </div>
+                      </div>
+                      </Link>
+                    ))}
+                  </div>
+                    </>
+              )}
+                
+              </PopoverPanel>
+            </Transition>
+          </Popover>
+          <Popover className="relative">
+            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 ">
+              For Students
+              <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+            </PopoverButton>
+
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-0 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-150"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
+              {({ close }) => (
+                <><div className="p-4" onMouseLeave={()=>{close()}}>
+                    {forStudentsDropDownInfo.map((item) => (
+                    <Link key={item.name} href={item.href} className="block font-semibold text-gray-900" onClick={()=>{close()}}>
+                      <div
+                        
+                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                      >
+                        <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                          <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
+                        </div>
+                        <div className="flex-auto">
+                          
+                            {item.name}
+                          
+                          <p className="mt-1 text-gray-600">{item.description}</p>
+                        </div>
+                      </div>
+                      </Link>
+                    ))}
+                  </div>
+                    </>
+              )}
+                
+              </PopoverPanel>
+            </Transition>
+          </Popover>
+          
 
 
           
@@ -155,9 +230,11 @@ export default function CFAHeader() {
 
 
         </PopoverGroup>
+        
+
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link href="/login" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in/Sign Up 
+          <Link href="/services/employers/dashboard" className="text-sm font-semibold leading-6 text-gray-900">
+            My Dashboard 
           </Link>
         </div>
       </nav>
@@ -201,14 +278,14 @@ export default function CFAHeader() {
                   {({ open }) => (
                     <>
                       <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                        Services
+                        For Employers
                         <ChevronDownIcon
                           className={classNames(open ? 'rotate-180' : '', 'h-5 w-5 flex-none')}
                           aria-hidden="true"
                         />
                       </DisclosureButton>
                       <DisclosurePanel className="mt-2 space-y-2">
-                        {[...CareerDropDownInfo].map((item) => (
+                        {[...forEmpoyersDropDownInfo].map((item) => (
                           <DisclosureButton
                             key={item.name}
                             as={Link}
@@ -223,7 +300,58 @@ export default function CFAHeader() {
                     </>
                   )}
                 </Disclosure>
-
+                <Disclosure as="div" className="-mx-3">
+                  {({ open }) => (
+                    <>
+                      <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        For Job Seekers
+                        <ChevronDownIcon
+                          className={classNames(open ? 'rotate-180' : '', 'h-5 w-5 flex-none')}
+                          aria-hidden="true"
+                        />
+                      </DisclosureButton>
+                      <DisclosurePanel className="mt-2 space-y-2">
+                        {[...forStudentsDropDownInfo].map((item) => (
+                          <DisclosureButton
+                            key={item.name}
+                            as={Link}
+                            href={item.href}
+                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                            onClick={()=>{setMobileMenuOpen(false)}}
+                          >
+                            {item.name}
+                          </DisclosureButton>
+                        ))}
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
+                <Disclosure as="div" className="-mx-3">
+                  {({ open }) => (
+                    <>
+                      <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        For Students
+                        <ChevronDownIcon
+                          className={classNames(open ? 'rotate-180' : '', 'h-5 w-5 flex-none')}
+                          aria-hidden="true"
+                        />
+                      </DisclosureButton>
+                      <DisclosurePanel className="mt-2 space-y-2">
+                        {[...forStudentsDropDownInfo].map((item) => (
+                          <DisclosureButton
+                            key={item.name}
+                            as={Link}
+                            href={item.href}
+                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                            onClick={()=>{setMobileMenuOpen(false)}}
+                          >
+                            {item.name}
+                          </DisclosureButton>
+                        ))}
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
 
 
 
