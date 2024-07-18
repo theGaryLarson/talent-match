@@ -43,8 +43,6 @@ export default function CreateJobseekerProfileEducationPage() {
 
         const startDateWithDay = `${startDate}-01`
         const completionDateWithDay = `${completionDate}-01`
-        console.log(startDateWithDay)
-
         const formData: JsEducationDTO = {
             userId: '5c1541db-ecae-4bba-a865-0f8d56aa3b39', // fixme: access user id from state management
             highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
@@ -54,7 +52,6 @@ export default function CreateJobseekerProfileEducationPage() {
             currentGrade: form['profile-creation-education-high-school-grade']?.value || '',
             isEnrolledInCollege: eduProgram === "College"
         };
-        console.log(JSON.stringify(formData, null, 2))
         await handleApiCall(formData);
     };
 
