@@ -245,6 +245,8 @@ model jobseekers {
   user_id                            String                               @unique @db.NVarChar(36)
   targeted_pathway                   String                               @db.NVarChar(36)
   edu_institution_id                 String?                              @db.NVarChar(36)
+  edu_start_date                     DateTime?                            @db.DateTime
+  edu_end_date                       DateTime?                            @db.DateTime
   is_enrolled_college                Int?                                 @db.SmallInt
   highest_level_of_study_completed   String?                              @db.VarChar(255)
   current_grade_level                String?                              @db.VarChar(45)
