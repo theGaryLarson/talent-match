@@ -18,12 +18,13 @@ export type JsIntroDTO = {
 }
 
 export type JsEducationDTO = {
+    userId: string,
     highestLevelOfStudy: string;
     currentEnrolledEdProgram: string;
-    startDate: string;  // todo: add to db
-    completionDate: string; // todo: add to db
+    startDate: string;
+    completionDate: string;
     currentGrade: string;
-    gpa: string // fix: do not need to collect
+    // gpa: string // fix: do not need to collect
 }
 
 export type JsCertDTO = {
