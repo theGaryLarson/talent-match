@@ -161,8 +161,7 @@ export async function POST(request: Request) {
 
             return {contact, jobSeeker, };
         });
-
-        return NextResponse.json(result);
+        return NextResponse.json(result, { status: 200 });
     } catch (error) {
         console.error('Error creating job seeker intro:', error);
         return NextResponse.json({error: 'Failed to create job seeker intro'}, {status: 500});
