@@ -1,13 +1,13 @@
 import { getJobSeekerEmployerView } from "@/app/lib/prisma";
 import Avatar from "@/app/ui/components/Avatar";
 import Pill from "@/app/ui/components/Pill";
+import Toggle from "@/app/ui/components/Toggle";
 export default async function page({params}:{params: {id:string}}){
     let jobseeker = await getJobSeekerEmployerView(params.id)
-    console.log(jobseeker)
     return(
         <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
-           
-            <div className="border w-[750px] h-[200px] flex items-center">
+           <Toggle/>
+            <div className="border w-[750px] h-[200px] flex items-center rounded-md">
                 <div className="flex items-center gap-5 p-4">
                 <Avatar imgsrc={jobseeker?.contacts.photo_url} scale={3}></Avatar>
                 <div>
@@ -19,10 +19,10 @@ export default async function page({params}:{params: {id:string}}){
 
             </div>
 
-            <div className="border w-[750px] p-4 space-y-4">
+            <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl">Work Experence</h1>
                 {jobseeker?.work_experiences.map((experence)=>
-                    <div className="border p-4">
+                    <div className="border p-4 rounded-md">
                         <h2 className="font-bold text-xl">{experence.company} | {experence.job_title}</h2>
                         <p>{experence.is_internship?"Internship":''}</p>
                         <p>{experence.responsibilities}</p>
@@ -30,18 +30,18 @@ export default async function page({params}:{params: {id:string}}){
                 )}
                 
             </div>
-            <div className="border w-[750px] p-4 space-y-4">
+            <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl">Education</h1>
-                <div className="border p-4">
+                <div className="border p-4 rounded-md">
                 <h2 className="font-bold text-xl">{jobseeker?.edu_institutions?.name}</h2>
                 </div>
             </div>
-            <div className="border w-[750px] p-4 space-y-4">
-                <h1 className="font-bold text-2xl">Projects</h1>
+            <div className="border w-[750px] p-4 space-y-4 rounded-md">
+                <h1 className="font-bold text-2xl ">Projects</h1>
     
                     {
                         jobseeker?.project_experiences.map((experence)=>
-                        <div className="border p-4">
+                        <div className="border p-4 rounded-md">
                         <h2 className="text-xl">{experence.project_title}</h2>
                         <p className="text-sm">{experence.start_date.toLocaleDateString()+" - "+experence.completion_date.toLocaleDateString()}</p>
                         <p>{experence.problem_solved_description}</p>
@@ -52,7 +52,7 @@ export default async function page({params}:{params: {id:string}}){
                     }
             </div>
             
-            <div className="border w-[750px] p-4 space-y-4">
+            <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl">Skills</h1>
                     <div className="flex flex-wrap gap-4">
                 {jobseeker?.jobseeker_has_skills.map(
@@ -61,11 +61,11 @@ export default async function page({params}:{params: {id:string}}){
                 )}
                 </div>
             </div>
-            <div className="border w-[750px] p-4 space-y-4">
+            <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl">Resume</h1>
                 {jobseeker?.resume_url?<a href={jobseeker?.resume_url}>View Resume</a>:''}
             </div>
-            <div className="border w-[750px] p-4 space-y-4">
+            <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl">Portfolio</h1>
                 {jobseeker?.portfolio_url?<a href={jobseeker?.portfolio_url}>{jobseeker?.portfolio_url}</a>:''}
             </div>
