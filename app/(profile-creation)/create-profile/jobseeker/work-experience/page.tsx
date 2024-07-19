@@ -5,8 +5,8 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from "react-icons/md";
 import { Button, Label, Radio } from "flowbite-react";
 import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
-import WorkExperienceGroup, { defaultWorkExperienceGroupData } from '@/app/ui/form-field-groups/WorkExperienceGroup';
-import InternshipExperienceGroup, { defaultInternshipExperienceGroupData } from '@/app/ui/form-field-groups/InternshipExperienceGroup';
+import WorkExperienceGroup, { defaultWorkExperienceGroupData, extractWorkExperienceGroups } from '@/app/ui/form-field-groups/WorkExperienceGroup';
+import InternshipExperienceGroup, { defaultInternshipExperienceGroupData, extractInternshipExperienceGroups } from '@/app/ui/form-field-groups/InternshipExperienceGroup';
 
 type WorkExperienceGroupsTuple = [React.ReactNode, number];
 type InternshipExperienceGroupsTuple = [React.ReactNode, number];
@@ -62,7 +62,11 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
         <form onSubmit={(e)=>{
           e.preventDefault();
           const formData = new FormData(e.target as HTMLFormElement);
-          console.log(JSON.stringify(Array.from(formData.entries())))
+          const [extractedWorkExperienceData, remainingFormData] = extractWorkExperienceGroups(Array.from(formData.entries()));
+          const [extractedInternshipExperienceData, remainingFormData2] = extractInternshipExperienceGroups(remainingFormData);
+          console.log(extractedWorkExperienceData);
+          console.log(extractedInternshipExperienceData);
+          console.log(remainingFormData2);
         }}>
           <style jsx global>{`
             .work-experience-groups {

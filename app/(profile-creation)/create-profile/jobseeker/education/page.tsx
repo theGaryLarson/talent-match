@@ -7,8 +7,8 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from "react-icons/md";
 import { Button, Label, Progress, Radio } from "flowbite-react";
 
-import LicenseGroup, { defaultLicenseGroupData } from '@/app/ui/form-field-groups/LicenseGroup';
-import ProjectExperienceGroup, { defaultProjectExperienceGroupData } from '@/app/ui/form-field-groups/ProjectExperienceGroup';
+import LicenseGroup, { defaultLicenseGroupData, extractLicenseGroups } from '@/app/ui/form-field-groups/LicenseGroup';
+import ProjectExperienceGroup, { defaultProjectExperienceGroupData, extractProjectExperienceGroups } from '@/app/ui/form-field-groups/ProjectExperienceGroup';
 
 type LicenseGroupsTuple = [React.ReactNode, number];
 type ProjectExperienceGroupsTuple = [React.ReactNode, number];
@@ -65,7 +65,11 @@ export default function CreateJobseekerProfileEducationPage(){
         <form onSubmit={(e)=>{
           e.preventDefault();
           const formData = new FormData(e.target as HTMLFormElement);
-          console.log(JSON.stringify(Array.from(formData.entries())))
+          const [extractedLicenseData, remainingFormData] = extractLicenseGroups(Array.from(formData.entries()));
+          const [extractedProjectExperienceData, remainingFormData2] = extractProjectExperienceGroups(remainingFormData);
+          console.log(extractedLicenseData);
+          console.log(extractedProjectExperienceData);
+          console.log(remainingFormData2);
         }}>
           <fieldset>
             <legend>
