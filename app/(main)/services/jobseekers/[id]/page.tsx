@@ -1,7 +1,6 @@
 import { getJobSeekerEmployerView } from "@/app/lib/prisma";
 import Avatar from "@/app/ui/components/Avatar";
-import JobSeekerCardView from "@/app/ui/components/JobSeekerCardView";
-
+import Pill from "@/app/ui/components/Pill";
 export default async function page({params}:{params: {id:string}}){
     let jobseeker = await getJobSeekerEmployerView(params.id)
     console.log(jobseeker)
@@ -25,6 +24,7 @@ export default async function page({params}:{params: {id:string}}){
                 {jobseeker?.work_experiences.map((experence)=>
                     <div className="border p-4">
                         <h2 className="font-bold text-xl">{experence.company} | {experence.job_title}</h2>
+                        <p>{experence.is_internship?"Internship":''}</p>
                         <p>{experence.responsibilities}</p>
                     </div>
                 )}
@@ -51,6 +51,26 @@ export default async function page({params}:{params: {id:string}}){
                         )
                     }
             </div>
+            
+            <div className="border w-[750px] p-4 space-y-4">
+                <h1 className="font-bold text-2xl">Skills</h1>
+                    <div className="flex flex-wrap gap-4">
+                {jobseeker?.jobseeker_has_skills.map(
+                    (skill)=> 
+                        <Pill text={skill.skills.skill_name} href={skill.skills.skill_info_url} key={skill.skills.skill_id}/>
+                )}
+                </div>
+            </div>
+            <div className="border w-[750px] p-4 space-y-4">
+                <h1 className="font-bold text-2xl">Resume</h1>
+                {jobseeker?.resume_url?<a href={jobseeker?.resume_url}>View Resume</a>:''}
+            </div>
+            <div className="border w-[750px] p-4 space-y-4">
+                <h1 className="font-bold text-2xl">Portfolio</h1>
+                {jobseeker?.portfolio_url?<a href={jobseeker?.portfolio_url}>{jobseeker?.portfolio_url}</a>:''}
+            </div>
+
+
         </main>
     );
 }

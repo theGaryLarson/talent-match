@@ -42,16 +42,13 @@ export default function Page() {
     })();
   }, [loadJobSeekers]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
     return (
         <main className="space-y-8 px-[200px] py-16">
             <h1 className="text-2xl">Search Results</h1>
               <SearchBar />
-            { jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
-        <JobSeekerCardView
+              {loading?<div className='w-full h-full text-center text-3xl'>Loading...</div>:        
+              jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
+              <JobSeekerCardView
                 key={jobSeeker.jobseeker_id}
                 isLarge={true}
                 name={jobSeeker.contacts.first_name + ' ' + jobSeeker.contacts.last_name}
@@ -61,6 +58,6 @@ export default function Page() {
                 pfpPicSrc={jobSeeker?.contacts?.photo_url ?? null}
                 aboutMe={jobSeeker?.intro_headline} id={jobSeeker?.jobseeker_id} />
       ))}
-    </main>
+        </main>
   );
 }
