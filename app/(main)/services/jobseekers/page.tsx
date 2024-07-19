@@ -8,6 +8,8 @@ import LargeRoundedButtonCard from "@/app/ui/components/LargeRoundedButtonCard";
 import CFAPortalCard from "@/app/ui/components/CFAPortalCard";
 import RoundedButton from "@/app/ui/components/RoundedButton";
 import InfoCard from "@/app/ui/components/InfoCard";
+import SimpleCard from "@/app/ui/components/SimpleCard";
+
 
 /**
  * @returns Job seeker landing page
@@ -184,6 +186,7 @@ export default function Page() {
       </div>
 
     </div>
+  </div>
   );
 }
 
@@ -195,6 +198,7 @@ export default function Page() {
  * @param image File path/name from within /cfa_images/
  * @param imageLeft True if image should be displayed on the left, false if image should be on the right.
  */
+ 
 function TextImageSlide({title, paragraph, list, paragraph2, image, imageLeft = false}:
     {title:string, paragraph:string, list:Array<string>, paragraph2:string, image:string, imageLeft?:boolean}){
   let listElements = [];

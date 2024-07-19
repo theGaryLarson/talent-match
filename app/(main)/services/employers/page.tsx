@@ -7,6 +7,9 @@ import PhotoCardWithTitle from '@/app/ui/components/PhotoCardWithTitle';
 import RoundedButton from '@/app/ui/components/RoundedButton';
 
 import SimpleCard from '@/app/ui/components/SimpleCard';
+import SimpleCardWithPhoto from '@/app/ui/components/SimpleCarWithPhoto';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Page() {
   return (
@@ -16,128 +19,86 @@ export default function Page() {
         bg="bg-employer-hero-1"
       />
       <main className="mx-4 space-y-3 py-8 font-['Roboto'] md:mx-[150px] lg:mx-[200px]">
-        <h1 className="text-2xl font-bold">
-          Discover diverse talent, post jobs, and volunteer
+        <h1 className="text-3xl font-bold">
+        Unique Access to Tech Talent
         </h1>
-
-        <h1 className="text-xl">
-          Employers: Find and Attract Job Ready Candidates
-        </h1>
-        <h2 className="text-lg text-primary-600">
-          CFA’s Tech Talent Showcase interface will help you make the right
-          hires.
+        <h2 className="text-2xl text-primary-600">
+        Experienced workers, easily assimilated into your culture
         </h2>
-        <p>
-          We are inviting employers to take part in this initial project of a
-          Department of Commerce funded Green Jobs Challenge grant and the
-          Washington Jobs initiative.
-        </p>
 
-        <p className="text-xl font-bold">Why Join</p>
-        <p>
-          Expand and diversify your talent pipeline with the best of both new
-          and existing talent who will bring diverse voices and innovative ideas
-          to your company.
-        </p>
-        <p>
-          Join here to gain exclusive access to expand and diversify your talent
-          pipeline with the best of both new and existing talent. Our Tech Ready
-          Talent Showcase offers diverse, skilled talent will contribute to your
-          company’s long-term hiring strategy and help you meet your unique,
-          evolving needs.
-        </p>
-        <p>
-          Our Showcase includes jobseekers of all ages and backgrounds who have
-          participated in programs from one of our Washington Tech Workforce
-          coalition colleges and tech training partners. Jobseekers not only
-          have up to date tech training, but the durable workplace communication
-          and teamwork skills you most value.
-        </p>
-        <p>
-          The Showcase provides you with a quick and easy way to screen
-          potential hires. Jobseekers who have completed our screening and
-          training program will display a TechReady Badge along with a
-          two-minute personal brand video where you can learn more about them.
-        </p>
+
+      <p>
+      Take advantage of a <span className='font-bold'>$5M Department of Commerce grant</span> that enhances jobseeker abilities to add productivity and innovation to your workforce.
+      </p>
+      <p>
+      Experienced jobseekers with a <span className='font-bold'>BS or BAS degree are completing our months-long professional development process,</span> providing them with the durable communication and teamwork skills our industry partners have specified. 
+      </p>
+      <p>
+      <span className='font-bold'>Our Tech Finder Portal</span> provides quick and easy ways to find and screen potential hires. Once in the Portal, a <span className='font-bold'>Showcase offers insights into job candidates that are not available through traditional job boards.</span>
+      </p>
+
 
         <RoundedButton
-          content={'Join Here'}
+          content={'Register Here'}
           link={'/signup'}
           invertColor={true}
         />
 
-        <h1 className="text-2xl">Tech Ready Candidates</h1>
+        {/* <h1 className="text-2xl font-bold">Tech Ready Candidates</h1>
         <h2 className="text-xl text-primary-600">
-          What is a Tech Ready badge?
+        What does a Tech Ready badge represent?
         </h2>
         <p>
-          TechReady Jobseekers have completed a series of training courses with
-          CFA or our training partners, qualifying them for a TechReady badge.
-          These candidates:
+        TechReady Jobseekers have completed their college degrees or a series of training courses with CFA or one of our Washington Tech Workforce coalition training partners, qualifying them for a TechReady badge.  A candidate featuring a Tech Ready badge will:
         </p>
-
         <ul className="list-square">
           <li className="list-inside pl-8">
-            Have relevant work experience directly related to job postings for
-            their desired roles.
+          Have relevant work experience related to job postings for their desired roles.
           </li>
           <li className="list-inside pl-8">
-            Possess an updated, relevant resume with pertinent letters of
-            reference.
+          Have translated their work experience into valuable knowledge and skills for target jobs and can apply their skills in a professional setting.
           </li>
           <li className="list-inside pl-8">
-            Have translated their work experience into valuable knowledge and
-            skills for target jobs.
+          Demonstrated essential soft skills like effective communication, teamwork, problem-solving, adaptability, and time management. 
           </li>
           <li className="list-inside pl-8">
-            Created a personal brand video showcasing who they are, their
-            superpower, and their value proposition.
+          Possess an updated, relevant resume with pertinent letters of reference. 
           </li>
           <li className="list-inside pl-8">
-            Demonstrated essential soft skills like effective communication,
-            teamwork, problem-solving, adaptability, and time management.
+          Created a personal brand video showcasing who they are, their superpower, and their value proposition.  
           </li>
         </ul>
         <LargeRoundedButtonCard
           title={'Ready to Hire'}
           blurb={
-            "You're invited to enjoy elite access to TechReady talent, a pipeline of IT/Cybersecurity 2 and 4-year graduates with the skills and experience to quickly become productive in your organization."
+            "You are invited to enjoy elite access to TechReady IT talent, a pipeline of college graduates and both new and veteran workforce candidates with the skills and experience to quickly become productive in your organization."
           }
           buttonContent={'Search For talent'}
-        />
+        /> */}
 
-        <h1 className="text-2xl">Hire the right candidate</h1>
+        <h1 className="text-2xl font-bold">Hire the Right Candidate</h1>
         <p>
-          Whether you are looking for an intern or an experienced software
-          developer, you can find talent to meet your hiring needs here. Click
-          on the box that best describes the position you are trying to fill to
-          identify the most qualified candidates.
+        Whether you are looking for an intern or an experienced software developer, you can find talent to meet your hiring needs here. 
         </p>
-
-        <div className='flex flex-wrap gap-5'>
-          <CategoryCard
+        <p className='font-bold'>
+        Click on the box that best describes the position you are trying to fill to identify the most qualified candidates.
+        </p>
+        <h1 className="text-2xl font-bold">Browse by Jobseeker Skills</h1>
+        <div className='flex flex-wrap gap-4'>
+        <CategoryCard
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
             }
-            title={'Software Engineering'}
-            text={'Develops and maintains software applications and systems.'}
+            title={'Software Devolopment'}
+            text={'Find job seekers with training and expertise in Software Devolopment'}
           />
-          <CategoryCard
-            imgSrc={
-              '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
-            }
-            title={'UX Designer'}
-            text={
-              'Designs user-friendly interfaces and enhances user experience.'
-            }
-          />
-          <CategoryCard
+        <CategoryCard
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
             }
             title={'IT Support'}
             text={
-              'Provides technical assistance and support for computer systems.'
+              'Find job seekers with training and expertise in IT Support'
             }
           />
           <CategoryCard
@@ -145,67 +106,85 @@ export default function Page() {
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
             }
             title={'Cyber Security'}
-            text={
-              'Protects systems and networks from cyber threats and attacks.'
-            }
+            text={'Find job seekers with training and expertise in Cyber Security.'}
           />
           <CategoryCard
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
             }
-            title={'Machine Learning'}
-            text={
-              'Creates algorithms that enable computers to learn from data.'
-            }
-          />
-          <CategoryCard
-            imgSrc={
-              '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
-            }
-            title={'Project Management'}
-            text={'Plans, executes, and oversees projects to achieve goals.'}
+            title={'Data Analytics'}
+            text={'Find job seekers with training and expertise in Data Analytics'}
           />
         </div>
+        <h4 className='text-lg font-bold'>Need more information? <Link href={'/services/employers/faq'}>Click here.</Link></h4>
+        <h4 className='text-lg text-primary-600'>First candidates will be available for interview in September. This offer is limited to ~ 100 employers as we develop an initial cohort of job candidates.</h4>
         
-        <h1 className="text-xl">Employers: Get Involved by volunteering!</h1>
+        <div className='flex flex-wrap'>
+          <div className='w-6/12 space-y-8 grow'>
+            <h3 className='text-xl font-bold'>About the Washington Tech Workforce Coalition:</h3>
+            <p className='font-bold'>The Coalition is comprised of Community, Education, Government, Industry, and Workforce Partners with the common goal to cultivate a diverse, highly skilled technology workforce throughout Washington State.</p>
+            <p>The Coalition provides strategic guidance and support for the tech sector and tech roles, clarifies industry demand, participates in the development and implementation of programs to holistically answer demand and realize job placements, and ensure opportunity and priority for underserved and underrepresented populations.</p>
+          </div>
+          <Image src={'/cfa_images/TWC_75x50_2024.svg'} alt={'TWC logo'} width={400} height={266}/>
+        </div>
+        <div className='flex flex-wrap-reverse gap-5'>
+          <Image src={'/cfa_images/stock/black-office-worker-checkered-shirt-embracing-blonde-secretary-woman-while-she-making-selfie-young-managers-international-company-having-fun-meeting 1.png'} alt={'Stock Image of office workers'} width={400} height={266}/>
+          <div className='w-6/12 space-y-8 grow'>
+            <h3 className='text-xl font-bold'>About Computing for All:</h3>
+            <p className='font-bold'>Computing for All is a nonprofit that has trained diverse, low-income high school and college students for more than five years. </p>
+            <p>In our role as the <span className='font-bold'>Washington State IT/Cybersecurity Sector Intermediary,</span> we manage the <span className='font-bold'>Tech Workforce Coalition</span>, building synergies among community, education, and business partners to align training and job opportunities while uniting and lifting our local economies. </p>
+          </div>
+          
+        </div>
+        
+        
+        
+        
+        
+        
+        {/* <h1 className="text-2xl font-bold">Employers: Get Involved by volunteering!</h1>
         <h2 className="text-lg">There are many ways to get involved:</h2>
         <div className="flex flex-wrap gap-4">
           <SimpleCard
             title={'Host a Job Fair'}
             content={
-              'Host a job fair with Computing for All. Get to know candidates ahead of the interview process.'
+              'Join Computing for All by hosting a job fair. This is a great opportunity to meet and engage with potential candidates before the interview process begins.'
             }
             href={'/#'}
           />
           <SimpleCard
             title={'Run a Job Readiness Workshop'}
             content={
-              'Conduct a workshop on general career prep or get to know students through mock interviews.'
+              'Lead a workshop focused on general career preparation or specific job roles. Conduct mock interviews to get to know our candidates better.'
             }
             href={'/#'}
           />
           <SimpleCard
             title={'Participate in a Career Awareness Panel'}
-            content={'describing in-demand job roles at your company'}
+            content={'Share insights about in-demand job roles at your company by participating in one of our career awareness panels.'}
             href={'/#'}
           />
           <SimpleCard
             title={'Virtual Speakers'}
             content={
-              'Volunteer as a virtual classroom speaker describing your career journey and other topics of interest to job seekers.  Speak aro our Web Development Pre-Apprenticeship or at one of our training events'
+              'Volunteer as a virtual classroom speaker to share your career journey and other topics of interest with job seekers. Speak at our Web Development Pre-Apprenticeship or during one of our training events.'
             }
             href={'/#'}
           />
           <SimpleCard
             title={'Host an internship or Apprenticeship'}
             content={
-              'If your company already hosts an internship or Apprenticeship, please post it on our Job Board!  If you would like assistance developing an internship or Apprenticeship program at your company please let us know here and we will reach out to you with resources to help  you get started.'
+              'If your company offers internships or apprenticeships, please post them on our Job Board! If you need assistance developing an internship or apprenticeship program, we can guide you to resources to help you get started. '
             }
             href={'/#'}
           />
-        </div>
-        <BrowseByCategory />
+          <SimpleCardWithPhoto title={'Volunteer At CFA'} content={'Email us at: Volunteer@ComputingforAll.org'} href={''}></SimpleCardWithPhoto>
+        </div> */}
+        {/* <BrowseByCategory /> */}
       </main>
     </>
   );
 }
+
+
+

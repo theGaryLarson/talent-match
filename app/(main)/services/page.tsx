@@ -53,9 +53,6 @@ export default function Page() {
             callToAction={'View candidates, create an account '}
           />
         </div>
-        <VideoBlock />
-        <ArticleStub isPhotoFirst={true} imagesrc={"/cfa_images/stock/people-using-digital-device-while-meeting 2.png"}/>
-        <ArticleStub isPhotoFirst={false} imagesrc={'/cfa_images/stock/placeholder.jpg'}/>
       </main>
     </>
   );
