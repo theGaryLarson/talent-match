@@ -40,13 +40,17 @@ export type JsIntroDTO = {
 
 export type JsEducationDTO = {
     userId: string,
-    highestLevelOfStudy: string;
-    currentEnrolledEdProgram: string;
-    startDate: string;
-    completionDate: string;
-    currentGrade: string;
-    isEnrolledInCollege: boolean
-    // gpa: string // fix: do not need to collect
+    school: string | null | undefined,
+    currentEdProgram: string | null | undefined
+    fieldOfStudy: string | null | undefined;
+    highestLevelOfStudy: string | null | undefined;
+    startDate: string | null | undefined;
+    completionDate: string | null | undefined;
+    currentGrade: string | null | undefined;
+    isEnrolledInCollege: boolean;
+    edSystem: string | null | undefined;
+    gpa: string | null | undefined;
+    description: string | null | undefined;
 }
 
 
