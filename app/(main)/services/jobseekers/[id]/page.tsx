@@ -4,7 +4,7 @@ import JobSeekerCardView from "@/app/ui/components/JobSeekerCardView";
 
 export default async function page({params}:{params: {id:string}}){
     let jobseeker = await getJobSeekerEmployerView(params.id)
-
+    console.log(jobseeker)
     return(
         <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
            
@@ -36,9 +36,21 @@ export default async function page({params}:{params: {id:string}}){
                 <h2 className="font-bold text-xl">{jobseeker?.edu_institutions?.name}</h2>
                 </div>
             </div>
-           
-            
-        <p>Student id is:{params.id}</p>
+            <div className="border w-[750px] p-4 space-y-4">
+                <h1 className="font-bold text-2xl">Projects</h1>
+    
+                    {
+                        jobseeker?.project_experiences.map((experence)=>
+                        <div className="border p-4">
+                        <h2 className="text-xl">{experence.project_title}</h2>
+                        <p className="text-sm">{experence.start_date.toLocaleDateString()+" - "+experence.completion_date.toLocaleDateString()}</p>
+                        <p>{experence.problem_solved_description}</p>
+                        {experence.demo_url?<a target="_blank" href={experence.demo_url}>{experence.demo_url}</a>:''}
+                        </div>
+                        
+                        )
+                    }
+            </div>
         </main>
     );
 }
