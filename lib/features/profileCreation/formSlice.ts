@@ -32,11 +32,11 @@ export const formSlice = createSlice({
     initialState,
 
     reducers: {
-        addField: (state, action: PayloadAction<{ id: string; label: string; type: 'text' | 'email' | 'number' | 'select' | 'radio'; options?: { value: string | number; label: string }[] }>) => {
+        addField: (state, action: PayloadAction<{ id: string; label: string; value: string | number; type: 'text' | 'email' | 'number' | 'select' | 'radio'; options?: { value: string | number; label: string }[] }>) => {
             state.fields.push({
                 id: action.payload.id,
                 label: action.payload.label,
-                value: action.payload.type === 'number' ? 0 : '',
+                value: action.payload.value,
                 type: action.payload.type,
                 options: action.payload.options,
             });

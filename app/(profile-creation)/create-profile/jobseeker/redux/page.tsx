@@ -26,12 +26,20 @@ export default function CreateJobseekerProfileIntroPage(){
   const [newFieldType, setNewFieldType] = useState<'text' | 'email' | 'number'>('text');
   const [newFieldOptions, setNewFieldOptions] = useState<{ value: string | number; label: string }[]>([]);
   
+  // const [newFieldValue, setNewFieldValue] = useState('');
+  const [newSelectedOption, setNewSelectedOption] = useState('');
+
   const testText = useSelector((state: RootState) => state.form);
+
+  const testChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    console.log('Selected option:', e.target.value);
+    setNewSelectedOption(e.target.value);
+  };
 
   const handleFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    console.log(name, value);
     console.log(testText);
+    console.log(name, value);
     const field = fields.find((field) => field.id === name);
     if (field) {
       const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
@@ -40,7 +48,7 @@ export default function CreateJobseekerProfileIntroPage(){
       dispatch(addField({
         id: e.target.id,
         label: newFieldLabel,
-        value: e.target.type === 'number' ? 0 : '',
+        value: e.target.value,
         type: newFieldType,
         options: newFieldOptions,
     }));
@@ -83,25 +91,6 @@ export default function CreateJobseekerProfileIntroPage(){
         <h1>Intro</h1>
         <p>* Indicates a required field</p>
 
-        {/* TODO: REDUX TEST FORM HERE, REMOVE/REFACTOR LATER */}
-        {/* REVIEW: May not be proper param usage firstName.value? */}
-        {/* <form>
-          <input onChange={(e) => dispatch(setForm({name: e.target.name, value: e.target.value}))} type="text" name="firstName" id="firstName" />
-          <input onChange={(e) => dispatch(setForm(e.target.value))} type="text" name="lastName" id="lastName" />
-        </form> */}
-        {/* <h1>Test text displayed here: {fName} {lName}</h1> */}
-        {/* <button onClick={() => dispatch(submitForm())}>Submit Console Log</button> */}
-
-        {/* REVIEW: Code from Jonathan, takes all Form Data and returns an array with tuples of name:value pairs
-        <form onSubmit={(e)=>{
-          e.preventDefault();
-          const formData = new FormData(e.target as HTMLFormElement);
-          console.log(JSON.stringify(Array.from(formData.entries())))
-        }}>
-        */}
-        {/* REVIEW: Test text below */}
-        {/* <h1>testText: {testText}</h1> */}
-
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
@@ -129,7 +118,8 @@ export default function CreateJobseekerProfileIntroPage(){
                 id="profile-creation-intro-state"
                 className="w-1/2"
                 // TODO: Fix handleFieldChange not working with Select / options tags
-                // onClick={console.log("clicked")}
+                // value={newSelectedOption}
+                // onChange={testChange}
                 onChange={handleFieldChange}
                 options={[
                   {label:"Alabama", value:"AL"},
@@ -193,6 +183,7 @@ export default function CreateJobseekerProfileIntroPage(){
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
                 className="w-1/2"
+                onChange={handleFieldChange}
                 options={[
                   {label:"Afghanistan +93", value:"Afghanistan +93"},
                   {label:"Albania +355", value:"Albania +355"},

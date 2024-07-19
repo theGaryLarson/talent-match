@@ -34,17 +34,17 @@ export default function CreateJobseekerProfileIntroPage(){
 
         {/* TODO: REDUX TEST FORM HERE, REMOVE/REFACTOR LATER */}
         {/* REVIEW: May not be proper param usage firstName.value? */}
-        <form>
+        {/* <form> */}
         {/* <input onChange={() => dispatch(setFirstName(firstName.value))} type="text" name="firstName" id="firstName" /> */}
         {/* <input onChange={(e) => dispatch(setFirstName(e.target.value))} type="text" name="firstName" id="firstName" /> */}
         {/* <input onChange={(e) => dispatch(setLastName(e.target.value))} type="text" name="lastName" id="lastName" /> */}
 
-        <input onChange={(e) => dispatch(setForm({name: e.target.name, value: e.target.value}))} type="text" name="firstName" id="firstName" />
+        {/* <input onChange={(e) => dispatch(setForm({name: e.target.name, value: e.target.value}))} type="text" name="firstName" id="firstName" />
         <input onChange={(e) => dispatch(setForm(e.target.value))} type="text" name="lastName" id="lastName" />
 
         </form>
         <h1>Test text displayed here: {fName} {lName}</h1>
-        <button onClick={() => dispatch(submitForm())}>Submit Console Log</button>
+        <button onClick={() => dispatch(submitForm())}>Submit Console Log</button> */}
 
         {/* REVIEW: Code from Jonathan, takes all Form Data and returns an array with tuples of name:value pairs
         <form onSubmit={(e)=>{
