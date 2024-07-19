@@ -36,7 +36,15 @@ export default function CreateJobseekerProfileEducationPage() {
             setError(err.message);
         }
     };
+    const setFieldOfStudy = (currentEdProgram: string, form: HTMLFormElement) => {
+        if (eduProgram === 'None' || eduProgram === 'High School') {
+            return undefined
+        }
+        return form[`profile-creation-education-${currentEdProgram.toLowerCase().trim()}-program`].value
+    }
+    const setHighestLevelOfStudy = (eduProgram: string, form: HTMLFormElement) => {
 
+    }
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const form = event.currentTarget as HTMLFormElement;
@@ -44,14 +52,20 @@ export default function CreateJobseekerProfileEducationPage() {
         const startDateWithDay = `${startDate}-01`
         const completionDateWithDay = `${completionDate}-01`
         const formData: JsEducationDTO = {
-            userId: '2609cf8e-d48d-40dc-bebe-ebb4c2890f0f', // fixme: access user id from state management
+            userId: '13dea0a1-9f9e-4660-aee9-c5ced9a12d58', // fixme: access user id from state management
+            school: null,
+            currentEdProgram: eduProgram,
+            fieldOfStudy: setFieldOfStudy(eduProgram, form),
             highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
-            currentEnrolledEdProgram: eduProgram,
             startDate: new Date(startDateWithDay).toISOString(),
             completionDate: new Date(completionDateWithDay).toISOString(),
-            currentGrade: form['profile-creation-education-high-school-grade']?.value || '',
-            isEnrolledInCollege: eduProgram === "College"
+            currentGrade: form['profile-creation-education-college-grade']?.value,
+            isEnrolledInCollege: eduProgram === "College",
+            edSystem: null,
+            gpa: null,
+            description: null,
         };
+        console.log(formData)
         await handleApiCall(formData);
     };
 
@@ -254,7 +268,6 @@ export default function CreateJobseekerProfileEducationPage() {
                                             onChange= {(e) => {
                                                 const newValue = e.target.value;
                                                 setStartDate(newValue);
-                                                console.log('Start Date:', newValue)
                                             }}
                                             required
                                         >
