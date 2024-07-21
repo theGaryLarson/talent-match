@@ -1,3 +1,5 @@
+import {SkillDTO} from "@/data/dtos/SkillDTO";
+
 export type JsIntroDTO = {
     user_id: string,
     photo_url: string | null;
@@ -60,21 +62,21 @@ type workExperienceDTO = {
     jobTitle: string,
     startDate: string,
     endDate: string,
-    isCurrent: number, // 0 false 1 true tinyint represents boolean in the database
-    isInternship: number, // 0 false 1 true tinyint represents boolean in the database
+    isCurrent: boolean,
+    isInternship: boolean,
     responsibility: string,
 }
 
 export type JsWorkExpDTO = {
     yearsWorkExperience: string,
     AmountInternshipExperience: string, // TODO: add field to the database
-    isAuthorizedToWorkUsa: number // 0 false 1 true tinyint represents boolean in the database
-    requiresSponsorship: number // 0 false 1 true tinyint represents boolean in the database
+    isAuthorizedToWorkUsa: boolean,
+    requiresSponsorship: boolean,
     workExperiences: workExperienceDTO[]
 }
 
 export type JsShowcaseDTO = {
-    skills: string[], // we should store uuid of the skill
+    skills: SkillDTO[],
     portfolioUrl: string,
     portfolioPassword: string,
     video_url: string,
@@ -88,7 +90,7 @@ export type JsPreferences = {
 // TODO: this needs to be secure
 export type JsDisclosures = {
     gender: string,
-    isVeteran: number, // 0: no 1:yes 2: prefer not to say
+    isVeteran: string, // 0: no 1:yes 2: prefer not to say
     ethnicity: string,
     hasDisability: string,
     hasReadTerms: number // TODO: add to the db
