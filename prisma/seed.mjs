@@ -1447,7 +1447,7 @@ async function seedJobPostings() {
                     // 40% chance job post is an internship
                     const isInternship = Math.random() < 0.4;
                     // paid if not internship, internships have a 50% chance of being paid
-                    const isPaid = !isInternship ? true : (Math.random() < 0.5 ? true : false);
+                    const isPaid = !isInternship ? true : Math.random() < 0.5 ;
                     const regionInfo = waStateCountiesWithZipCodes[faker.number.int({
                         min: 0,
                         max: waStateCountiesWithZipCodes.length - 1
