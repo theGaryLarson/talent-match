@@ -1090,7 +1090,7 @@ async function seedJobSeekersEducation() {
 
 
         for (let i = 0; i < numEntries; i++) {
-            const eduId = faker.helpers.arrayElement(edInstitutions).edu_institution_id;
+            const edu_institution_id = faker.helpers.arrayElement(edInstitutions).edu_institution_id;
             const startDate = faker.date.past({years: 15});
             const endDate = faker.date.between({from: startDate, to: new Date()});
             const jobseekerEducationData = {
@@ -1109,7 +1109,7 @@ async function seedJobSeekersEducation() {
                 },
                 edu_institutions: {
                     connect: {
-                        edu_institution_id: eduId,
+                        edu_institution_id: edu_institution_id,
 
                     }
                 }
