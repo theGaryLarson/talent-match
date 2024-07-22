@@ -11,25 +11,26 @@ export async function POST(request: Request) {
         const body: JsEducationDTO = await request.json();
 
         const {
-            userId,
+            user_id,
             highestLevelOfStudy,
-            currentEnrolledEdProgram,
-            startDate,
-            completionDate,
+            currentEdProgram,
             currentGrade,
-            isEnrolledInCollege,
+            isEnrolled,
+            schools,
+            certifications,
+            projects,
         } = body;
 
 
-        const start_date = new Date(startDate).toISOString();
-        const completion_date = new Date(completionDate).toISOString();
+        // const start_date = new Date(startDate).toISOString();
+        // const completion_date = new Date(graduationDate).toISOString();
 
         const result = await prisma.$transaction(async (prisma) => {
 
             // Find the jobseeker_id or generate a new one
             const jobseeker = await prisma.jobseekers.findUnique({
-                where: {user_id: userId},
-                select: {jobseeker_id: true, targeted_pathway: true}
+                where: {user_id},
+                select: {jobseeker_id: true, targeted_pathway: true, is_enrolled_ed_program: true}
             });
 
             const jobseekerId = jobseeker?.jobseeker_id || uuidv4();
@@ -52,27 +53,24 @@ export async function POST(request: Request) {
                     });
                 }
                 targetedPathway = jobseeker?.targeted_pathway || pathway.pathway_id;
-                }
+            }
 
             const jobSeeker = await prisma.jobseekers.upsert({
-                where: { jobseeker_id: jobseekerId },
+                where: {user_id: user_id},
                 update: {
                     highest_level_of_study_completed: highestLevelOfStudy,
-                    current_enrolled_ed_program: currentEnrolledEdProgram,
-                    edu_start_date: start_date,
-                    edu_end_date: completion_date,
                     current_grade_level: currentGrade,
-                    is_enrolled_college: isEnrolledInCollege,
+                    current_enrolled_ed_program: currentEdProgram,
+                    is_enrolled_ed_program: jobseeker?.is_enrolled_ed_program || false,
                 },
                 create: {
                     jobseeker_id: jobseekerId,
-                    user_id: userId,
+                    user_id: user_id,
                     targeted_pathway: targetedPathway,
-                    edu_institution_id: undefined,
-                    is_enrolled_college: isEnrolledInCollege,
+                    is_enrolled_ed_program: isEnrolledInCollege,
                     highest_level_of_study_completed: highestLevelOfStudy,
                     current_grade_level: currentGrade,
-                    current_enrolled_ed_program: currentEnrolledEdProgram,
+                    current_enrolled_ed_program: currentEdProgram,
                     degree_type: undefined,
                     intern_hours_required: undefined,
                     major: undefined,
@@ -85,15 +83,15 @@ export async function POST(request: Request) {
                     video_url: undefined,
                     employment_type_sought: undefined,
                     edu_start_date: new Date(startDate),
-                    edu_end_date: new Date(completionDate),
+                    edu_end_date: new Date(graduationDate),
                 },
             });
             return {jobSeeker}
         });
-        return NextResponse.json(result, { status: 200 });
+        return NextResponse.json(result, {status: 200});
     } catch (e: any) {
         console.log(e.message)
-        return NextResponse.json({ error: 'Failed to create jobseeker education' }, { status: 500 });
+        return NextResponse.json({error: 'Failed to create jobseeker education'}, {status: 500});
     } finally {
         await prisma.$disconnect();
     }
