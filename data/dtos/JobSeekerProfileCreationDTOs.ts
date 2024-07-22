@@ -84,11 +84,12 @@ export type EducationInfo = {
 }
 
 export type JsEducationDTO = {
+    user_id: string,
     highestLevelOfStudy: DegreeType | null | undefined;
     currentEdProgram: EdProgram | null | undefined  // college, high school, etc.
     currentGrade: CurrentGrade | null | undefined;
     isEnrolled: boolean;
-    eduHistory: EducationInfo[];
+    schools: EducationInfo[];
     certifications: CertDTO[];
     projects: ProjectExpDTO[];
 }
