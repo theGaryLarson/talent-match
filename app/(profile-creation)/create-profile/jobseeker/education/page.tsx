@@ -53,15 +53,15 @@ export default function CreateJobseekerProfileEducationPage() {
         const completionDateWithDay = `${completionDate}-01`
         const formData: JsEducationDTO = {
             userId: '13dea0a1-9f9e-4660-aee9-c5ced9a12d58', // fixme: access user id from state management
-            school: null,
+            schoolId: null,
             currentEdProgram: eduProgram,
             fieldOfStudy: setFieldOfStudy(eduProgram, form),
             highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
             startDate: new Date(startDateWithDay).toISOString(),
-            completionDate: new Date(completionDateWithDay).toISOString(),
+            graduationDate: new Date(completionDateWithDay).toISOString(),
             currentGrade: form['profile-creation-education-college-grade']?.value,
             isEnrolledInCollege: eduProgram === "College",
-            edSystem: null,
+            edSystem: null, // pre apprenticeship question don't know context 
             gpa: null,
             description: null,
         };
