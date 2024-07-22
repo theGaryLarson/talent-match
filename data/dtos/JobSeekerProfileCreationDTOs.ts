@@ -19,7 +19,7 @@ export type JsIntroDTO = {
     resumeUrl: string | null;
 }
 
- type JsCertDTO = {
+ export type CertDTO = {
     certName: string,
     issuingOrg: string,
     credentialId: string | null,
@@ -28,7 +28,7 @@ export type JsIntroDTO = {
     expirationDate: string,
 }
 
- type JsProjectExpDTO = {
+ export type ProjectExpDTO = {
     projTitle: string,
     role: string,
     startDate: string,
@@ -40,22 +40,58 @@ export type JsIntroDTO = {
     skills: string[],
 }
 
-export type JsEducationDTO = {
-    userId: string,
-    school: string | null | undefined,
-    currentEdProgram: string | null | undefined
-    fieldOfStudy: string | null | undefined;
-    highestLevelOfStudy: string | null | undefined;
-    startDate: string | null | undefined;
-    completionDate: string | null | undefined;
-    currentGrade: string | null | undefined;
-    isEnrolledInCollege: boolean;
-    edSystem: string | null | undefined;
+export enum DegreeType {
+    None = "None",
+    HighSchool = "High School",
+    Certification = "Certification",
+    AssociatesDegree = "Associate's Degree",
+    BachelorsDegree = "Bachelor's Degree",
+    MastersDegree = "Master's Degree",
+    DoctoralDegree = "Doctoral Degree"
+}
+
+export enum CurrentGrade {
+    Freshman = "Freshman",
+    Sophomore = "Sophomore",
+    Junior = "Junior",
+    Senior = "Senior"
+}
+
+export enum EdProgram {
+    None = "None",
+    HighSchool = "High school",
+    College = "College",
+    TrainingProgram = "Training program",
+    BootCamp = "Boot camp",
+    PreApprenticeship = "Pre-apprenticeship",
+    Other = "Other",
+}
+
+export type EducationInfo = {
+    jobseekerEdId: string,
+    jobSeekerId: string,
+    edInstitutionId: string | null | undefined, // use name lookup to find ID.
+    edProgram: EdProgram | null | undefined,
+    isEnrolled: boolean,
+    startDate: string,
+    gradDate: string,
+    degreeType: DegreeType | null | undefined,
+    major: string | null | undefined,
+    minor: string | null | undefined,
+    edSystem: string | null | undefined; // pre apprenticeship option
     gpa: string | null | undefined;
     description: string | null | undefined;
 }
 
-
+export type JsEducationDTO = {
+    highestLevelOfStudy: DegreeType | null | undefined;
+    currentEdProgram: EdProgram | null | undefined  // college, high school, etc.
+    currentGrade: CurrentGrade | null | undefined;
+    isEnrolled: boolean;
+    eduHistory: EducationInfo[];
+    certifications: CertDTO[];
+    projects: ProjectExpDTO[];
+}
 
 type workExperienceDTO = {
     company: string,
