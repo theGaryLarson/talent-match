@@ -147,14 +147,14 @@ model edu_addresses {
 }
 
 model edu_institutions {
-  edu_institution_id String               @id(clustered: false, map: "edu_institutions_PRIMARY") @unique(map: "edu_institutions_edu_institution_id_UNIQUE") @db.NVarChar(36)
-  name               String?              @unique @db.VarChar(255)
-  contact_email      String               @db.VarChar(255)
-  edu_url            String               @db.VarChar(255)
-  edu_addresses      edu_addresses[]
-  educators          educators[]
-  jobseekers         jobseekers[]
-  training_providers training_providers[]
+  edu_institution_id  String                 @id(clustered: false, map: "edu_institutions_PRIMARY") @unique(map: "edu_institutions_edu_institution_id_UNIQUE") @db.NVarChar(36)
+  name                String?                @unique @db.VarChar(255)
+  contact_email       String                 @db.VarChar(255)
+  edu_url             String                 @db.VarChar(255)
+  edu_addresses       edu_addresses[]
+  educators           educators[]
+  training_providers  training_providers[]
+  jobseeker_education jobseekers_education[]
 }
 
 model educators {
@@ -244,17 +244,11 @@ model jobseekers {
   jobseeker_id                       String                               @id(clustered: false, map: "jobseekers_PRIMARY") @unique(map: "jobseekers_learner_id_UNIQUE") @db.NVarChar(36)
   user_id                            String                               @unique @db.NVarChar(36)
   targeted_pathway                   String                               @db.NVarChar(36)
-  edu_institution_id                 String?                              @db.NVarChar(36)
-  edu_start_date                     DateTime?                            @db.DateTime
-  edu_end_date                       DateTime?                            @db.DateTime
-  is_enrolled_college                Boolean                              @db.Bit
+  is_enrolled_ed_program             Boolean                              @db.Bit
   highest_level_of_study_completed   String?                              @db.VarChar(255)
   current_grade_level                String?                              @db.VarChar(45)
   current_enrolled_ed_program        String?                              @db.VarChar(255)
-  degree_type                        String?                              @db.VarChar(45)
   intern_hours_required              Int                                  @default(0, map: "DF__jobseeker__inter__6383C8BA") @db.SmallInt
-  major                              String?                              @db.VarChar(45)
-  minor                              String?                              @db.VarChar(45)
   intro_headline                     String?                              @db.VarChar(max)
   current_job_title                  String?                              @db.VarChar(255)
   resume_url                         String?                              @db.VarChar(255)
@@ -266,16 +260,15 @@ model jobseekers {
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
   pathways                           pathways                             @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
-  edu_institutions                   edu_institutions?                    @relation(fields: [edu_institution_id], references: [edu_institution_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_learner_edu_institution1")
   contacts                           contacts                             @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_learner_user1")
   jobseekers_private_data            jobseekers_private_data[]
   jobseekers_skill_gap_data          jobseekers_skill_gap_data[]
   learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
   project_experiences                project_experiences[]
   work_experiences                   work_experiences[]
+  jobseeker_education                jobseekers_education[]
 
   @@index([targeted_pathway], map: "jobseekers_fk_jobseeker_Pathways1_idx")
-  @@index([edu_institution_id], map: "jobseekers_fk_learner_edu_institution1_idx")
   @@index([user_id], map: "jobseekers_fk_learner_user1_idx")
 }
 
@@ -290,6 +283,24 @@ model jobseekers_private_data {
   jobseekers                   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_user_learner_private_data_user1")
 
   @@index([jobseeker_id], map: "jobseekers_private_data_fk_user_learner_private_data_user1")
+}
+
+model jobseekers_education {
+  jobseeker_ed_id    String           @id @default(dbgenerated("newid()")) @db.NVarChar(36)
+  jobseeker_id       String           @db.NVarChar(36)
+  edu_institution_id String           @db.NVarChar(36)
+  ed_program         String           @db.NVarChar(45) // high school, college, boot camp, etc.
+  is_enrolled        Boolean          @db.Bit
+  start_date         DateTime         @db.Date
+  graduation_date    DateTime         @db.Date
+  degree_type        String           @db.NVarChar(45) // Cert, AAS, BAS etc.
+  major              String?          @db.NVarChar(45) // name of college program
+  minor              String?          @db.NVarChar(45)
+  jobseekers         jobseekers       @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_education_jobseeker1")
+  edu_institutions   edu_institutions @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_jobseeker_education_edu_institution1")
+
+  @@index([jobseeker_id], map: "fk_jobseeker_education_jobseeker1_idx")
+  @@index([edu_institution_id], map: "fk_jobseeker_education_edu_institution1_idx")
 }
 
 model jobseekers_skill_gap_data {
