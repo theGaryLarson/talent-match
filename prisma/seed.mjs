@@ -5,6 +5,7 @@ import {users,} from '../app/lib/placeholder-data.mjs';
 import getPrismaClient from '../app/lib/prismaClient.mjs'
 import skills_v2 from "../data/skills_v2.mjs";
 
+
 faker.seed(123); // set seed so generated data is deterministic
 const prisma = getPrismaClient();
 
@@ -19,7 +20,22 @@ const roles = [
     'Jobseeker',
     'Employer',
 ]
+const edPrograms = [
+    'None',
+    'High school',
+    'College',
+    'Training program/bootcamp',
+    'Pre-apprenticeship',
+    'Other',
+]
+const degreeTypes = [
+    'Certificate',
+    'Associate',
+    'Bachelor',
+    'Master',
+    'Doctorate'
 
+]
 const subcategoriesData = [
     {skill_category: 'Agile Software Development'},
     {skill_category: 'Application Programming Interfaces (API)'},
@@ -93,59 +109,59 @@ const subcategoriesData = [
     {skill_category: 'Wireless Technologies'},
 ]; // Lightcast IT subcategories data
 
-const techEdPrograms = [
-    "None",
-    "Computer Science",
-    "Information Technology",
-    "Software Engineering",
-    "Cybersecurity",
-    "Data Science",
-    "Artificial Intelligence",
-    "Network Administration",
-    "Cloud Computing",
-    "Mobile Application Development",
-    "Web Development",
-    "Database Management",
-    "Game Development",
-    "Digital Forensics",
-    "IT Project Management",
-    "Systems Analysis",
-    "Computer Engineering",
-    "Robotics",
-    "Embedded Systems",
-    "Computer Graphics",
-    "Information Systems",
-    "Business Information Technology",
-    "Health Informatics",
-    "Human-Computer Interaction",
-    "Augmented Reality Development",
-    "Virtual Reality Development",
-    "Blockchain Technology",
-    "Machine Learning",
-    "Big Data Analytics",
-    "IT Support Specialist",
-    "DevOps Engineering",
-    "IT Networking",
-    "Software Quality Assurance",
-    "Ethical Hacking",
-    "Programming Languages",
-    "Technical Writing",
-    "IT Entrepreneurship",
-    "IT Consulting",
-    "Geographic Information Systems (GIS)",
-    "Bioinformatics",
-    "Quantum Computing",
-    "Computer and Network Security",
-    "Multimedia Technology",
-    "Internet of Things (IoT)",
-    "Artificial Intelligence and Machine Learning",
-    "IT Service Management",
-    "Information Assurance",
-    "Software Architecture",
-    "Mobile and Web Design",
-    "Technology Management",
-    "Computer Systems Technology",
-    "Technical Studies in IT"
+const techEdMajors = [
+    {name: "None", program_id: uuidv4()},
+    {name: "Computer Science", program_id: uuidv4()},
+    {name: "Information Technology", program_id: uuidv4()},
+    {name: "Software Engineering", program_id: uuidv4()},
+    {name: "Cybersecurity", program_id: uuidv4()},
+    {name: "Data Science", program_id: uuidv4()},
+    {name: "Artificial Intelligence", program_id: uuidv4()},
+    {name: "Network Administration", program_id: uuidv4()},
+    {name: "Cloud Computing", program_id: uuidv4()},
+    {name: "Mobile Application Development", program_id: uuidv4()},
+    {name: "Web Development", program_id: uuidv4()},
+    {name: "Database Management", program_id: uuidv4()},
+    {name: "Game Development", program_id: uuidv4()},
+    {name: "Digital Forensics", program_id: uuidv4()},
+    {name: "IT Project Management", program_id: uuidv4()},
+    {name: "Systems Analysis", program_id: uuidv4()},
+    {name: "Computer Engineering", program_id: uuidv4()},
+    {name: "Robotics", program_id: uuidv4()},
+    {name: "Embedded Systems", program_id: uuidv4()},
+    {name: "Computer Graphics", program_id: uuidv4()},
+    {name: "Information Systems", program_id: uuidv4()},
+    {name: "Business Information Technology", program_id: uuidv4()},
+    {name: "Health Informatics", program_id: uuidv4()},
+    {name: "Human-Computer Interaction", program_id: uuidv4()},
+    {name: "Augmented Reality Development", program_id: uuidv4()},
+    {name: "Virtual Reality Development", program_id: uuidv4()},
+    {name: "Blockchain Technology", program_id: uuidv4()},
+    {name: "Machine Learning", program_id: uuidv4()},
+    {name: "Big Data Analytics", program_id: uuidv4()},
+    {name: "IT Support Specialist", program_id: uuidv4()},
+    {name: "DevOps Engineering", program_id: uuidv4()},
+    {name: "IT Networking", program_id: uuidv4()},
+    {name: "Software Quality Assurance", program_id: uuidv4()},
+    {name: "Ethical Hacking", program_id: uuidv4()},
+    {name: "Programming Languages", program_id: uuidv4()},
+    {name: "Technical Writing", program_id: uuidv4()},
+    {name: "IT Entrepreneurship", program_id: uuidv4()},
+    {name: "IT Consulting", program_id: uuidv4()},
+    {name: "Geographic Information Systems (GIS)", program_id: uuidv4()},
+    {name: "Bioinformatics", program_id: uuidv4()},
+    {name: "Quantum Computing", program_id: uuidv4()},
+    {name: "Computer and Network Security", program_id: uuidv4()},
+    {name: "Multimedia Technology", program_id: uuidv4()},
+    {name: "Internet of Things (IoT)", program_id: uuidv4()},
+    {name: "Artificial Intelligence and Machine Learning", program_id: uuidv4()},
+    {name: "IT Service Management", program_id: uuidv4()},
+    {name: "Information Assurance", program_id: uuidv4()},
+    {name: "Software Architecture", program_id: uuidv4()},
+    {name: "Mobile and Web Design", program_id: uuidv4()},
+    {name: "Technology Management", program_id: uuidv4()},
+    {name: "Computer Systems Technology", program_id: uuidv4()},
+    {name: "Technical Studies in IT", program_id: uuidv4()}
 ];
 
 const itOccupationTechnologyAreas = [
@@ -887,17 +903,17 @@ async function SeedEduAddresses() {
     const addresses = edInstitutions
         .filter(institution => institution.name !== "No data")
         .map(institution => {
-        const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
-        return {
-            edu_address_id: uuidv4(),
-            edu_institution_id: institution.edu_institution_id,
-            street1: faker.location.streetAddress(),
-            street2: faker.location.secondaryAddress(),
-            city: faker.location.city(),
-            state: regionInfo.county,
-            zip: faker.helpers.arrayElement(regionInfo.zipCodes),
-        };
-    });
+            const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
+            return {
+                edu_address_id: uuidv4(),
+                edu_institution_id: institution.edu_institution_id,
+                street1: faker.location.streetAddress(),
+                street2: faker.location.secondaryAddress(),
+                city: faker.location.city(),
+                state: regionInfo.county,
+                zip: faker.helpers.arrayElement(regionInfo.zipCodes),
+            };
+        });
 
     for (const address of addresses) {
         await prisma.edu_addresses.create({
@@ -960,33 +976,31 @@ async function seedJobSeekers() {
             pathway_id: true,
         }
     });
-    const edInstitutions = await prisma.edu_institutions.findMany({
-        select: {
-            edu_institution_id: true,
-        }
-    });
 
     console.log('Seeding jobseekers...')
     for (const jobSeeker of jobSeekers) {
-        const isEnrolledCollege = Math.random() < 0.6; // 60% chance of being enrolled in college.
-        const startDate = faker.date.past({years: 4});
+        const isEnrolledEdProgram = Math.random() < 0.6; // 60% chance of being enrolled in ed program.
+        const edProgram = isEnrolledEdProgram ? faker.helpers.arrayElement(edPrograms) : 'None';
+        let currentJobTitle;
+        if (isEnrolledEdProgram && edProgram !== 'None') {
+            currentJobTitle = Math.random() < 0.4 ? faker.person.jobTitle() : 'Student';
+        } else {
+            currentJobTitle = faker.person.jobTitle();
+        }
         const jobSeekerData = {
             jobseeker_id: uuidv4(),
             user_id: jobSeeker.user_id,
             targeted_pathway: faker.helpers.arrayElement(pathways).pathway_id,
-            edu_institution_id: faker.helpers.arrayElement(edInstitutions).edu_institution_id,
-            is_enrolled_college: isEnrolledCollege,
-            edu_start_date: startDate,
-            edu_end_date: faker.date.between({from: startDate, to: new Date()}),
-            highest_level_of_study_completed: faker.helpers.arrayElement(['High School', 'Certificate', 'AAS', 'BAS', 'Boot Camp']),
-            current_grade_level: faker.helpers.arrayElement(['freshman', 'sophomore', 'junior', 'senior']),
-            current_enrolled_ed_program: isEnrolledCollege ? faker.helpers.arrayElement(techEdPrograms) : null,
-            degree_type: null,
-            intern_hours_required: isEnrolledCollege ? faker.number.int({min: 75, max: 300}) : 0,
-            major: null,
-            minor: null,
+            is_enrolled_ed_program: isEnrolledEdProgram,
+            highest_level_of_study_completed: faker.helpers.arrayElement(['None', 'High School', 'Certification', 'Associate\'s Degree', 'Bachelor\'s Degree', 'Master\'s Degree', 'Doctoral Degree']),
+            current_grade_level: edProgram === 'High school' || edProgram === 'College' ? faker.helpers.arrayElement(['freshman', 'sophomore', 'junior', 'senior']) : undefined,
+            current_enrolled_ed_program: edProgram,
+            intern_hours_required: edProgram === 'College' || edProgram === 'Pre-apprenticeship' ? faker.number.int({
+                min: 75,
+                max: 300
+            }) : 0,
             intro_headline: generateSalesPitch(jobSeeker.first_name, jobSeeker.last_name),
-            current_job_title: faker.person.jobTitle(),
+            current_job_title: currentJobTitle,
             resume_url: null,
             years_work_exp: faker.number.int({min: 0, max: 3}), // years of experience
             portfolio_url: faker.internet.url(),
@@ -1057,6 +1071,58 @@ async function seedJobSeekerSkills() {
     console.log(`Seeded ${skillCount} Jobseeker skills.\n`);
 }
 
+async function seedJobSeekersEducation() {
+    let edCount = 0;
+    const jobseekers = await prisma.jobseekers.findMany();
+
+    const edInstitutions = await prisma.edu_institutions.findMany({
+        select: {
+            edu_institution_id: true,
+        }
+    });
+
+    console.log('Seeding jobseeker education...');
+    for (const jobseeker of jobseekers) {
+        const numEntries = jobseeker.is_enrolled_ed_program ? faker.number.int({
+            min: 1,
+            max: 3
+        }) : faker.number.int({ min: 0, max: 3 });
+
+
+        for (let i = 0; i < numEntries; i++) {
+            const eduId = faker.helpers.arrayElement(edInstitutions).edu_institution_id;
+            const startDate = faker.date.past({years: 15});
+            const endDate = faker.date.between({from: startDate, to: new Date()});
+            const jobseekerEducationData = {
+                jobseeker_ed_id: uuidv4(),
+                is_enrolled: false, // Set to false initially
+                start_date: startDate,
+                graduation_date: endDate,
+                degree_type: faker.helpers.arrayElement(degreeTypes),
+                major: jobseeker.is_enrolled_ed_program ? faker.helpers.arrayElement(techEdMajors).program_id : null,
+                minor: null,
+                ed_program: 'College',
+                jobseekers: {
+                    connect: {
+                        jobseeker_id: jobseeker.jobseeker_id,
+                    }
+                },
+                edu_institutions: {
+                    connect: {
+                        edu_institution_id: eduId,
+
+                    }
+                }
+            };
+
+            await prisma.jobseekers_education.create({
+                data: jobseekerEducationData
+            });
+            edCount++;
+        }
+    }
+    console.log(`Created ${edCount} jobseeker education records.\n`);
+}
 
 async function seedWorkExperiences() {
     try {
@@ -1087,6 +1153,7 @@ async function seedWorkExperiences() {
                         start_date: startDate,
                         end_date: isCurrentJob ? null : faker.date.between({from: startDate, to: new Date()}),
                         responsibilities: generateResponsibilities(faker.number.int({min: 3, max: 6})),
+
                     },
                 }));
             }
@@ -1112,7 +1179,7 @@ async function seedProjectExperiences() {
 
             // Create three project experiences for each jobseeker
             for (let i = 0; i < 3; i++) {
-                const startDate = faker.date.past({years: 5});
+                const startDate = faker.date.past({years: 2});
                 const completionDate = faker.date.between({from: startDate, to: new Date()});
 
                 projectExperiencePromises.push(prisma.project_experiences.create({
@@ -1437,6 +1504,7 @@ async function main() {
     await seedJobSeekers();
     await seedJobSeekersPrivateData();
     await seedJobSeekerSkills();
+    await seedJobSeekersEducation();
     await seedWorkExperiences();
     await seedJobSeekerCertificates();
     await seedProjectExperiences();
