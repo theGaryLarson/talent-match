@@ -4,9 +4,10 @@ import { useRef } from 'react'
 import { Provider } from 'react-redux'
 import { makeStore, AppStore } from '../lib/store'
 // import { initializeCounter } from '../lib/profileCreation/features/counterSlice'
+// import initializeForm from '../lib/features/profileCreation/formSlice'
 
 export default function StoreProvider({
-    // counter,
+    // form,
     children
 }: {
     // counter: number
@@ -17,7 +18,7 @@ export default function StoreProvider({
         // Create the store instance the first time this renders
         storeRef.current = makeStore()
 
-        // storeRef.current.dispatch(initializeCounter(counter))
+        // storeRef.current.dispatch(initializeForm(form))
     }
 
     return <Provider store={storeRef.current}>{children}</Provider>

@@ -10,6 +10,7 @@ import { Avatar, Button, Progress } from "flowbite-react";
 // REVIEW: testing redux
 import type { RootState } from '../../../../../lib/store';
 import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 
 
 // TODO: Remove jobseeker jobseeker slice
@@ -19,6 +20,7 @@ import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // REVIEW: ================================================== Below Here ==================================================================
   const [newFieldId, setNewFieldId] = useState('');
@@ -69,6 +71,7 @@ export default function CreateJobseekerProfileIntroPage(){
     console.log(testText);
     e.preventDefault();
     dispatch(submitForm());
+    router.push('/create-profile/jobseeker/preferences');
 
     // Simulate a form submission
     setTimeout(() => {
