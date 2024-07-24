@@ -671,6 +671,19 @@ const itJobTitles = [
     "E-commerce Specialist"
 ];
 
+const frontendProjectSkills = [
+    {
+        skill_id: '356e0040-8400-49a0-b772-6f6475776612',
+        skill_name: 'JavaScript',
+        skill_info_url: 'https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language',
+    },
+    {
+        skill_id: '38943cce-679d-408f-9fb1-6d054012e54f',
+        skill_name: '.NET Assemblies',
+        skill_info_url: 'https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X',
+    },
+];
+
 /////////////////////////////////////////////////
 ////////////   helper functions  ////////////////
 /////////////////////////////////////////////////
@@ -878,7 +891,7 @@ async function seedEduInstitutions() {
     }
     institutions.push({
         edu_institution_id: uuidv4(),
-        name: 'No data',
+        name: 'Not in list',
         contact_email: '',
         edu_url: '',
 
@@ -948,13 +961,27 @@ async function seedSkills() {
         const relatedSkills = skillsData_v2.filter(
             (s) => s.skill_category.toLowerCase().trim() === subcategory.subcategory_name.toLowerCase().trim()
         );
-        skillsCount += relatedSkills.length;
-        return relatedSkills.map(skill => ({
-            skill_id: uuidv4(),
-            skill_name: skill.skill,
-            skill_info_url: skill.info_url,
-            skill_subcategory_id: subcategory.skill_subcategory_id
-        }));
+
+        return relatedSkills.map(skill => {
+            // Check if the skill is in the manual skills array
+            const manualSkill = frontendProjectSkills.find(ms => ms.skill_name.toLowerCase().trim() === skill.skill.toLowerCase().trim());
+            skillsCount++;
+            if (manualSkill) {
+                return {
+                    skill_id: manualSkill.skill_id,
+                    skill_name: manualSkill.skill_name,
+                    skill_info_url: manualSkill.skill_info_url,
+                    skill_subcategory_id: subcategory.skill_subcategory_id
+                };
+            } else {
+                return {
+                    skill_id: uuidv4(),
+                    skill_name: skill.skill,
+                    skill_info_url: skill.info_url,
+                    skill_subcategory_id: subcategory.skill_subcategory_id
+                };
+            }
+        });
     });
 
     await prisma.skills.createMany({
@@ -962,7 +989,7 @@ async function seedSkills() {
     });
 
     console.log(`Seeded ${skillsCount} skills.\n`);
-    console.log(`Actual count of skills ${skills_v2.length}`)
+    console.log(`Actual count of skills ${skillsData_v2.length}`);
 }
 
 async function seedJobSeekers() {
@@ -1090,26 +1117,26 @@ async function seedJobSeekersEducation() {
 
 
         for (let i = 0; i < numEntries; i++) {
-            const edu_institution_id = faker.helpers.arrayElement(edInstitutions).edu_institution_id;
+            const edInstitutionId = faker.helpers.arrayElement(edInstitutions).edu_institution_id;
             const startDate = faker.date.past({years: 15});
             const endDate = faker.date.between({from: startDate, to: new Date()});
             const jobseekerEducationData = {
-                jobseeker_ed_id: uuidv4(),
-                is_enrolled: false, // Set to false initially
-                start_date: startDate,
-                graduation_date: endDate,
-                degree_type: faker.helpers.arrayElement(degreeTypes),
+                jobseekerEdId: uuidv4(),
+                isEnrolled: false, // Set to false initially
+                startDate: startDate,
+                gradDate: endDate,
+                degreeType: faker.helpers.arrayElement(degreeTypes),
                 major: jobseeker.is_enrolled_ed_program ? faker.helpers.arrayElement(techEdMajors).program_id : null,
                 minor: null,
-                ed_program: 'College',
+                edProgram: 'College',
                 jobseekers: {
                     connect: {
                         jobseeker_id: jobseeker.jobseeker_id,
                     }
                 },
-                edu_institutions: {
+                eduInstitutions: {
                     connect: {
-                        edu_institution_id: edu_institution_id,
+                        edu_institution_id: edInstitutionId,
 
                     }
                 }
@@ -1179,22 +1206,20 @@ async function seedProjectExperiences() {
 
             // Create three project experiences for each jobseeker
             for (let i = 0; i < 3; i++) {
-                const startDate = faker.date.past({years: 2});
-                const completionDate = faker.date.between({from: startDate, to: new Date()});
-
-                projectExperiencePromises.push(prisma.project_experiences.create({
+                const startDate = faker.date.past({ years: 2 });
+                const completionDate = faker.date.between({ from: startDate, to: new Date() });
+                projectExperiencePromises.push(prisma.projectExperiences.create({
                     data: {
-                        proj_exp_id: uuidv4(),
-                        jobseeker_id: js.jobseeker_id,
-                        project_title: faker.helpers.arrayElement(itProjectTitles),
-                        jobseeker_role: faker.helpers.arrayElement(developmentTeamRoles),
-                        start_date: startDate,
-                        completion_date: completionDate,
-                        problem_solved_description:
-                            generateProblemSolvedDescription(faker.number.int({min: 3, max: 12})),
-                        team_size: faker.number.int({min: 3, max: 10}),
-                        repo_url: faker.internet.url(),
-                        demo_url: faker.internet.url(),
+                        projectId: uuidv4(),
+                        jobseekerId: js.jobseeker_id,
+                        projTitle: faker.helpers.arrayElement(itProjectTitles),
+                        projectRole: faker.helpers.arrayElement(developmentTeamRoles),
+                        startDate: startDate,
+                        completionDate: completionDate,
+                        problemSolvedDescription: generateProblemSolvedDescription(faker.number.int({ min: 3, max: 12 })),
+                        teamSize: faker.number.int({ min: 3, max: 10 }),
+                        repoUrl: faker.internet.url(),
+                        demoUrl: faker.internet.url(),
                     },
                 }));
             }
@@ -1212,7 +1237,7 @@ async function seedProjectExperiences() {
 
 async function seedProjectSkills() {
     console.log(`Seeding Project skills...`);
-    const projects = await prisma.project_experiences.findMany();
+    const projects = await prisma.projectExperiences.findMany();
     const skills = await prisma.skills.findMany();
     let skillCount = 0;
 
@@ -1228,7 +1253,7 @@ async function seedProjectSkills() {
 
             await prisma.project_has_skills.create({
                 data: {
-                    proj_exp_id: p.proj_exp_id,
+                    proj_exp_id: p.projectId ,
                     skill_id: skill.skill_id,
                 },
             });
@@ -1260,15 +1285,15 @@ async function seedJobSeekerCertificates() {
 
                 certificatePromises.push(prisma.certificates.create({
                     data: {
-                        certification_id: uuidv4(),
-                        jobseeker_id: js.jobseeker_id,
+                        certId: uuidv4(),
+                        jobSeekerId: js.jobseeker_id,
                         name: certification.name,
-                        logo_url: certification.logo_url,
-                        issuing_org: certification.issuing_org,
-                        credential_id: certification.credential_id,
-                        credential_url: certification.credential_url,
-                        issue_date: issueDate,
-                        expiration_date: expirationDate,
+                        logoUrl: certification.logo_url,
+                        issuingOrg: certification.issuing_org,
+                        credentialId: certification.credential_id,
+                        credentialUrl: certification.credential_url,
+                        issueDate: issueDate,
+                        expiryDate: expirationDate,
                     },
                 }));
             }
