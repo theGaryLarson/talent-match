@@ -12,11 +12,11 @@ export async function POST(request: Request) {
 
         // Destructure the DTO
         const {
-            user_id,
-            photo_url,
-            first_name,
-            last_name,
-            birthdate,
+            userId,
+            photoUrl,
+            firstName,
+            lastName,
+            birthDate,
             phoneCountryCode,
             phone,
             zipCode,
@@ -25,7 +25,6 @@ export async function POST(request: Request) {
             county,
             email,
             introHeadline,
-            currentSchool,
             currentJobTitle,
             resumeUrl,
         } = body;
@@ -42,36 +41,36 @@ export async function POST(request: Request) {
             const contact = await prisma.contacts.upsert({
                 where: {email: email},
                 update: {
-                    first_name,
-                    last_name,
-                    birthdate,
+                    first_name: firstName,
+                    last_name: lastName,
+                    birthdate: birthDate,
                     phone: formattedPhone,
                     email,
-                    photo_url
+                    photo_url: photoUrl
                 },
                 create: {
-                    user_id: user_id,
+                    user_id: userId,
                     role: 'Jobseeker',
-                    first_name,
-                    last_name,
-                    birthdate,
+                    first_name: firstName,
+                    last_name: lastName,
+                    birthdate: birthDate,
                     phone,
                     email,
                     gender: undefined,
                     race: undefined,
-                    photo_url,
+                    photo_url: photoUrl,
                 },
             });
 
             // Upsert jobseeker
             // Find the jobseeker_id or generate a new one
             const jobseeker = await prisma.jobseekers.findUnique({
-                where: {user_id: user_id},
-                select: {jobseeker_id: true, targeted_pathway: true, is_enrolled_college: true}
+                where: {user_id: userId},
+                select: {jobseeker_id: true, targeted_pathway: true, is_enrolled_ed_program: true}
             });
 
             const jobseeker_id = jobseeker?.jobseeker_id || uuidv4();
-            const isEnrolledInCollege = jobseeker?.is_enrolled_college || false;
+            const isEnrolledInCollege = jobseeker?.is_enrolled_ed_program || false;
 
             // Find or create the targeted pathway for 'Undecided'
             let targeted_pathway = jobseeker?.targeted_pathway;
@@ -92,14 +91,6 @@ export async function POST(request: Request) {
                 }
                 targeted_pathway = jobseeker?.targeted_pathway || pathway.pathway_id;
             }
-            let edu_institution_id = undefined;
-            if (currentSchool) {
-                const school = await prisma.edu_institutions.findUnique({
-                    where: { name: currentSchool },
-                    select: { edu_institution_id: true }
-                });
-                edu_institution_id = school?.edu_institution_id;
-            }
 
 
             const jobSeeker = await prisma.jobseekers.upsert({
@@ -113,15 +104,11 @@ export async function POST(request: Request) {
                     jobseeker_id: jobseeker_id,
                     user_id: contact.user_id,
                     targeted_pathway: targeted_pathway,
-                    edu_institution_id: edu_institution_id,
-                    is_enrolled_college: isEnrolledInCollege,
+                    is_enrolled_ed_program: isEnrolledInCollege,
                     highest_level_of_study_completed: undefined,
                     current_grade_level: undefined,
                     current_enrolled_ed_program: undefined,
-                    degree_type: undefined,
                     intern_hours_required: undefined,
-                    major: undefined,
-                    minor: undefined,
                     intro_headline: introHeadline,
                     current_job_title: currentJobTitle,
                     resume_url: resumeUrl,
@@ -162,7 +149,7 @@ export async function POST(request: Request) {
 
             return {contact, jobSeeker, };
         });
-        return NextResponse.json(result, { status: 200 });
+        return NextResponse.json({success: true, result}, { status: 200 });
     } catch (error) {
         console.error('Error creating job seeker intro:', error);
         return NextResponse.json({error: 'Failed to create job seeker intro'}, {status: 500});
