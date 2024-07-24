@@ -43,11 +43,11 @@ export default function CreateJobseekerProfileIntroPage(){
         const birthdate = new Date(birthdateInput).toISOString() // prisma expects an iso string
 
         const formData: JsIntroDTO = {
-            user_id: uuidv4(), // fixme: this is just a hack to make it work. We need state to store contacts.user_id
-            photo_url: 'http://example.com/photo.jpg', // need to work with Keith on how we are storing images and pdfs.
-            first_name: form['profile-creation-intro-first-name'].value,
-            last_name: form['profile-creation-intro-last-name'].value,
-            birthdate: birthdate,
+            userId: uuidv4(), // fixme: this is just a hack to make it work. We need state to store contacts.user_id
+            photoUrl: 'http://example.com/photo.jpg', // need to work with Keith on how we are storing images and pdfs.
+            firstName: form['profile-creation-intro-first-name'].value,
+            lastName: form['profile-creation-intro-last-name'].value,
+            birthDate: birthdate,
             phoneCountryCode: form['profile-creation-intro-country-phone-code'].value.split(' +')[1],
             phone: form['profile-creation-intro-phone-number'].value,
             zipCode: form['profile-creation-intro-zip-code'].value,
@@ -56,7 +56,6 @@ export default function CreateJobseekerProfileIntroPage(){
             county: 'King', // Replace with your value
             email: 'gary@next.org', //NEEDED TO IDENTIFY A UNIQUE RECORD. IF NOT ENTERED IT WILL CREATE A DIFFERENT RECORD
             introHeadline: form['profile-creation-intro-headlines'].value,
-            currentSchool: form['profile-creation-intro-current-or-graduated-school'].value,
             currentJobTitle: form['profile-creation-intro-current-position'].value,
             resumeUrl: 'http://example.com/resume.pdf', // Replace with your value
         };
