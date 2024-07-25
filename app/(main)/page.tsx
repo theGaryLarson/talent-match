@@ -24,11 +24,11 @@ export default function Page() {
                     Jobs Challenge grant and the Washington Jobs Initiative.
                 </p>
                 <p>
-                    Whether you're just starting out or a seasoned professional, our skills
-                    classes, workshops, panels, and soft skills training offer invaluable insights
-                    and tools to enhance your skill set and professional development. From honing
-                    your communication skills to mastering the art of
-                    negotiation, our training programs empower you to succeed in today's competitive job market.
+                    {`Whether you're just starting out or a seasoned professional, our skills
+                        classes, workshops, panels, and soft skills training offer invaluable insights
+                        and tools to enhance your skill set and professional development. From honing
+                        your communication skills to mastering the art of
+                        negotiation, our training programs empower you to succeed in today's competitive job market.`}
                 </p>
                 <div className="flex flex-wrap justify-evenly gap-10">
                     <RoundedButtonCard
