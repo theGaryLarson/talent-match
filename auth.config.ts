@@ -25,27 +25,27 @@ export const authConfig: NextAuthConfig = {
     },
   },
   providers: [
-    CredentialsProvider({
-      name: 'Credentials',
-      credentials: {
-        email: { label: 'Email', type: 'email', placeholder: 'example@example.com' },
-        password: { label: 'Password', type: 'password' },
-      },
-      authorize: async (credentials) => {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
-        const email = credentials.email as string;
-        const password = credentials.password as string;
-        const user = await getUser(email);
-
-        if (user && user.password && await bcryptjs.compare(password, user.password)) {
-          return user;
-        }
-
-        return null;
-      },
-    }),
+    // CredentialsProvider({
+    //   name: 'Credentials',
+    //   credentials: {
+    //     email: { label: 'Email', type: 'email', placeholder: 'example@example.com' },
+    //     password: { label: 'Password', type: 'password' },
+    //   },
+    //   authorize: async (credentials) => {
+    //     if (!credentials?.email || !credentials?.password) {
+    //       return null;
+    //     }
+    //
+    //     const email = credentials.email as string;
+    //     const password = credentials.password as string;
+    //     const user = await getUser(email);
+    //
+    //     if (user && user.password && await bcryptjs.compare(password, user.password)) {
+    //       return user;
+    //     }
+    //
+    //     return null;
+    //   },
+    // }),
   ],
 };

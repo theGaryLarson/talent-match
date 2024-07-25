@@ -5,9 +5,19 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import {MdAdd} from "react-icons/md";
-import {Button, Label, Progress, Radio} from "flowbite-react";
-import {JsEducationDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import {Button, Label, Radio} from "flowbite-react";
+import {
+    CertDTO,
+    CurrentGrade,
+    DegreeType,
+    EdProgram,
+    EducationInfoDTO,
+    JsEducationDTO,
+    ProjectExpDTO
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
+import {SkillDTO} from "@/data/dtos/SkillDTO";
+
 
 export default function CreateJobseekerProfileEducationPage() {
     const [eduProgram, setEduProgram] = useState("");
@@ -16,6 +26,107 @@ export default function CreateJobseekerProfileEducationPage() {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        const form = event.currentTarget as HTMLFormElement;
+        const startDateWithDay = `${startDate}-01`
+        const completionDateWithDay = `${completionDate}-01`
+        console.log('Date:', new Date('2024-12-1').toISOString());
+
+        const debugUserId = 'ae80e273-2975-4703-a894-f3c1e01428fd' //static
+        const debugJobSeekerId = '5e62fbb0-1e3c-4c2c-bb69-672f150e8fe4' //if reseeding needs adjusted
+
+        // Mock data for schools
+        const mockSchools: EducationInfoDTO[] = [
+            {
+                jobseekerEdId: '53d66079-60e2-46a2-9214-e86e2f766734', // not being applied can remove
+                edInstitutionId: 'School A',
+                institutionName: 'North Seattle College',
+                edProgram: EdProgram.College,
+                edSystem: undefined,
+                isEnrolled: true,
+                startDate: new Date('2024-12-1').toISOString(),
+                gradDate: new Date('2028-7-1').toISOString(),
+                degreeType: DegreeType.BachelorsDegree,
+                major: 'Computer Science',
+                minor: 'Mathematics',
+                description: 'Studied various computer science topics and applied them in practical projects.'
+            },
+            {
+                jobseekerEdId: 'dc9fb674-1e7c-46c3-a3d2-5bc72e5dd4c6', // not being applied can remove
+                edInstitutionId: 'School B',
+                institutionName: 'CFA PAP',
+                edProgram: EdProgram.PreApprenticeship,
+                edSystem: 'System ABC',
+                isEnrolled: true,
+                startDate: new Date('2022-6-1').toISOString(),
+                gradDate: new Date('2028-6-1').toISOString(),
+                degreeType: DegreeType.None,
+                major: undefined,
+                minor: undefined,
+                description: 'Studied various computer science topics and applied them in practical projects.'
+            }
+        ];
+
+        // Mock data for certifications
+        const mockCertifications: CertDTO[] = [
+            {
+                certId: '5b97ce22-6f37-4ea1-91c4-9f41e513d8e0',
+                jobSeekerId: debugJobSeekerId,
+                name: 'Certified JavaScript Developer',
+                logoUrl: '',
+                issuingOrg: 'XYZ Institute',
+                credentialId: 'CJD-002',
+                credentialUrl: 'http://credential.u',
+                issueDate: '2023-01-01',
+                expiryDate: '2025-01-01',
+                description: 'Certification for proficiency in JavaScript programming.'
+            }
+        ];
+
+        // Mock data for projects
+        const mockProjects: ProjectExpDTO[] = [
+            {
+                projectId: uuidv4(),
+                jobseekerId: debugJobSeekerId,
+                projTitle: 'Web Development Project',
+                projectRole: 'backend dev',
+                startDate: '2022-01-01',
+                completionDate: '2022-06-01',
+                problemSolvedDescription: 'Developed a web application using React and Node.js.',
+                teamSize: '8',
+                demoUrl: 'https:///www.demo.url',
+                repoUrl: 'https://www.repo.url',
+                skills: [
+                    {
+                        skill_id: '356e0040-8400-49a0-b772-6f6475776612',
+                        skill_name: 'JavaScript',
+                        skill_info_url: 'https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language'
+
+                    },
+                    {
+                        skill_id: '38943cce-679d-408f-9fb1-6d054012e54f',
+                        skill_name: '.NET Assemblies',
+                        skill_info_url: 'https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X'
+                    }
+                ] as SkillDTO[]
+            }
+        ];
+
+        const formData: JsEducationDTO = {
+            userId: debugUserId, // fixme: access user id from state management
+            currentEdProgram: EdProgram.College,
+            highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
+            currentGrade: CurrentGrade.Junior,
+            isEnrolledEdProgram: EdProgram.College === eduProgram || EdProgram.HighSchool === eduProgram,
+            schools: mockSchools,
+            certifications: mockCertifications,
+            projects: mockProjects,
+        };
+        console.log(formData)
+        await handleApiCall(formData);
+    };
     const handleApiCall = async (formData: JsEducationDTO) => {
         try {
             const res = await fetch('/api/jobseekers/create-edu', {
@@ -36,24 +147,15 @@ export default function CreateJobseekerProfileEducationPage() {
             setError(err.message);
         }
     };
+    const setFieldOfStudy = (currentEdProgram: string, form: HTMLFormElement) => {
+        if (eduProgram === 'None' || eduProgram === 'High School') {
+            return undefined
+        }
+        return form[`profile-creation-education-${currentEdProgram.toLowerCase().trim()}-program`].value
+    }
+    const setHighestLevelOfStudy = (eduProgram: string, form: HTMLFormElement) => {
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        const form = event.currentTarget as HTMLFormElement;
-
-        const startDateWithDay = `${startDate}-01`
-        const completionDateWithDay = `${completionDate}-01`
-        const formData: JsEducationDTO = {
-            userId: '2609cf8e-d48d-40dc-bebe-ebb4c2890f0f', // fixme: access user id from state management
-            highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
-            currentEnrolledEdProgram: eduProgram,
-            startDate: new Date(startDateWithDay).toISOString(),
-            completionDate: new Date(completionDateWithDay).toISOString(),
-            currentGrade: form['profile-creation-education-high-school-grade']?.value || '',
-            isEnrolledInCollege: eduProgram === "College"
-        };
-        await handleApiCall(formData);
-    };
+    }
 
     return (
         <main className="flex">
@@ -88,18 +190,18 @@ export default function CreateJobseekerProfileEducationPage() {
                     </fieldset>
                     <fieldset>
                         <legend>
-                            <h2>Current education</h2>
+                            <h2>Current educations</h2>
                         </legend>
                         <div>
                             What is your currently enrolled in Ed program? *
-                          <Label className="block">
-                            <Radio
-                                name="profile-creation-education-currently-enrolled"
-                                onClick={() => setEduProgram("None")}
-                                required
-                            />
-                            None
-                          </Label>
+                            <Label className="block">
+                                <Radio
+                                    name="profile-creation-education-currently-enrolled"
+                                    onClick={() => setEduProgram("None")}
+                                    required
+                                />
+                                None
+                            </Label>
                             <Label className="block">
                                 <Radio
                                     name="profile-creation-education-currently-enrolled"
@@ -250,11 +352,10 @@ export default function CreateJobseekerProfileEducationPage() {
                                             type="month"
                                             id="profile-creation-education-college-starting-date"
                                             className="w-1/2"
-                                            value = {startDate}
-                                            onChange= {(e) => {
+                                            value={startDate}
+                                            onChange={(e) => {
                                                 const newValue = e.target.value;
                                                 setStartDate(newValue);
-                                                console.log('Start Date:', newValue)
                                             }}
                                             required
                                         >
@@ -264,8 +365,8 @@ export default function CreateJobseekerProfileEducationPage() {
                                             type="month"
                                             id="profile-creation-education-college-completion-date"
                                             className="w-1/2"
-                                            value = {completionDate}
-                                            onChange= {(e) =>
+                                            value={completionDate}
+                                            onChange={(e) =>
                                                 setCompletionDate(e.target.value)}
                                             required
                                         >

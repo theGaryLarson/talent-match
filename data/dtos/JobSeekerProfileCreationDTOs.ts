@@ -1,78 +1,127 @@
+import {SkillDTO} from "@/data/dtos/SkillDTO";
+import {DateTime} from "@auth/core/providers/kakao";
+
 export type JsIntroDTO = {
-    user_id: string,
-    photo_url: string | null;
-    first_name: string;
-    last_name: string;
-    birthdate: string | Date;
+    userId: string,
+    photoUrl: string | null;
+    firstName: string;
+    lastName: string;
+    birthDate: string | Date;
+    phoneCountryCode: string | null;
     phone: string | null;
     zipCode: string;
     state: string;
     city: string;
     county: string;
     email: string;
-    phoneCountryCode: string | null;
     introHeadline: string | null;
-    currentSchool: string | null; // TODO: move to JSEducationDTO
     currentJobTitle: string | null;
     resumeUrl: string | null;
 }
 
- type JsCertDTO = {
-    certName: string,
+export type CertDTO = {
+    certId: string,
+    jobSeekerId: string,
+    name: string,
+    logoUrl: string | undefined,
     issuingOrg: string,
-    credentialId: string | null,
-    credentialUrl: string | null,
+    credentialId: string | undefined,
+    credentialUrl: string | undefined,
     issueDate: string,
-    expirationDate: string,
+    expiryDate: string,
+    description: string | undefined,
 }
 
- type JsProjectExpDTO = {
+export type ProjectExpDTO = {
+    projectId: string,
+    jobseekerId: string,
     projTitle: string,
-    role: string,
+    projectRole: string,
     startDate: string,
-    endDate: string,
-    demoUrl: string,
-    repoUrl: string,
+    completionDate: string,
     problemSolvedDescription: string,
     teamSize: string,
-    skills: string[],
+    repoUrl?: string,
+    demoUrl?: string,
+    skills: SkillDTO[],
+}
+
+export enum DegreeType {
+    None = "None",
+    HighSchool = "High School",
+    Certification = "Certification",
+    AssociatesDegree = "Associate's Degree",
+    BachelorsDegree = "Bachelor's Degree",
+    MastersDegree = "Master's Degree",
+    DoctoralDegree = "Doctoral Degree"
+}
+
+export enum CurrentGrade {
+    Freshman = "Freshman",
+    Sophomore = "Sophomore",
+    Junior = "Junior",
+    Senior = "Senior"
+}
+
+export enum EdProgram {
+    None = "None",
+    HighSchool = "High school",
+    College = "College",
+    TrainingProgram = "Training program",
+    BootCamp = "Boot camp",
+    PreApprenticeship = "Pre-apprenticeship",
+    Other = "Other",
+}
+
+export type EducationInfoDTO = {
+    jobseekerEdId: string,
+    edInstitutionId: string | undefined, // use name lookup to find ID.
+    institutionName: string,
+    isEnrolled: boolean,
+    startDate: string,
+    gradDate: string,
+    degreeType: DegreeType,
+    major: string | undefined,
+    minor: string | undefined,
+    edProgram: EdProgram,
+    edSystem: string | undefined; // pre apprenticeship option
+    description: string | undefined;
 }
 
 export type JsEducationDTO = {
     userId: string,
-    highestLevelOfStudy: string;
-    currentEnrolledEdProgram: string;
-    startDate: string;
-    completionDate: string;
-    currentGrade: string;
-    isEnrolledInCollege: boolean
-    // gpa: string // fix: do not need to collect
+    highestLevelOfStudy: DegreeType | null | undefined;
+    currentEdProgram: EdProgram // college, high school, etc.
+    currentGrade: CurrentGrade | undefined;
+    isEnrolledEdProgram: boolean;
+    schools: EducationInfoDTO[];
+    certifications: CertDTO[];
+    projects: ProjectExpDTO[];
 }
-
-
 
 type workExperienceDTO = {
     company: string,
     jobTitle: string,
     startDate: string,
     endDate: string,
-    isCurrent: number, // 0 false 1 true tinyint represents boolean in the database
-    isInternship: number, // 0 false 1 true tinyint represents boolean in the database
+    isCurrent: boolean,
+    isInternship: boolean,
     responsibility: string,
 }
+
 
 export type JsWorkExpDTO = {
     yearsWorkExperience: string,
     AmountInternshipExperience: string, // TODO: add field to the database
-    isAuthorizedToWorkUsa: number // 0 false 1 true tinyint represents boolean in the database
-    requiresSponsorship: number // 0 false 1 true tinyint represents boolean in the database
+    isAuthorizedToWorkUsa: boolean, // TODO: encrypt
+    requiresSponsorship: boolean, // TODO: encrypt
     workExperiences: workExperienceDTO[]
 }
 
 export type JsShowcaseDTO = {
-    skills: string[], // we should store uuid of the skill
+    skills: SkillDTO[],
     portfolioUrl: string,
-    portfolioPassword: string,
+    portfolioPassword: string, // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
     video_url: string,
 }
 
@@ -84,7 +133,7 @@ export type JsPreferences = {
 // TODO: this needs to be secure
 export type JsDisclosures = {
     gender: string,
-    isVeteran: number, // 0: no 1:yes 2: prefer not to say
+    isVeteran: string,
     ethnicity: string,
     hasDisability: string,
     hasReadTerms: number // TODO: add to the db

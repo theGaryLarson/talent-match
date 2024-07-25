@@ -19,11 +19,11 @@ export default function JobSeekerCardView({
 }: {
   isLarge: boolean;
   name: string | null;
-  school: string | null | undefined;
-  pathway: string | null | undefined;
+  school: string | null;
+  pathway: string | null;
   skillsList: JobSeekerCardViewDTO['jobseeker_has_skills'];
   pfpPicSrc?: string | null;
-  aboutMe: string;
+  aboutMe: string | null;
   id:string;
 }) {
   // Extract the first three skills from the jobseeker_has_skills array
@@ -79,7 +79,7 @@ export default function JobSeekerCardView({
           <h3 className="text-lg font-bold">{name}</h3>
         </div>
 
-        <p className="text-xs">{'"' + aboutMe.substring(0, 100) + '..."'}</p>
+        <p className="text-xs">{'"' + aboutMe?.substring(0, 100) + '..."'}</p>
       </Link>
       {/* note about me needs to be limited and just trimming to main summary would most likely produce incomplete unprofessional summaries */}
       <hr />
