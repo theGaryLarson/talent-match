@@ -120,10 +120,13 @@ model contacts {
   last_name          String               @db.VarChar(255)
   birthdate          DateTime             @db.DateTime
   email              String               @unique @db.VarChar(255)
+  emailVerified      DateTime?            @map("email_verified") @db.DateTime
   phone              String?              @db.VarChar(15)
   gender             String?              @db.VarChar(45)
   race               String?              @db.VarChar(45)
   photo_url          String?              @db.VarChar(255)
+  createdAt          DateTime             @map("created_at") @db.DateTime
+  updatedAt          DateTime?            @map("updated_at") @db.DateTime
   cfa_admin          cfa_admin[]
   contact_addresses  contact_addresses[]
   educators          educators[]
