@@ -37,6 +37,7 @@ export async function POST(request: Request) {
 
         // Transaction to ensure atomicity
         const result = await prisma.$transaction(async (prisma) => {
+
             // Upsert contact
             const contact = await prisma.contacts.upsert({
                 where: {email: email},
@@ -46,7 +47,8 @@ export async function POST(request: Request) {
                     birthdate: birthDate,
                     phone: formattedPhone,
                     email,
-                    photo_url: photoUrl
+                    photo_url: photoUrl,
+                    updatedAt: new Date(),
                 },
                 create: {
                     user_id: userId,
@@ -59,6 +61,9 @@ export async function POST(request: Request) {
                     gender: undefined,
                     race: undefined,
                     photo_url: photoUrl,
+                    createdAt: new Date(),
+                    updatedAt: undefined,
+                    emailVerified: undefined,
                 },
             });
 
