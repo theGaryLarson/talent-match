@@ -7,12 +7,22 @@ import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import { Button, Label, Progress, Radio } from "flowbite-react";
 
+// REVIEW: testing redux
+import type { RootState } from '../../../../../lib/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { addField, updateField } from '../../../../../lib/features/profileCreation/formSlice';
+
+
 export default function CreateJobseekerProfilePreferencesPage(){
+  const { fields } = useSelector((state: RootState) => state.form);
+  const dispatch = useDispatch();
   return(
     <main className="flex">
       <aside className="hidden lg:w-2/5 lg:block">
       </aside>
       <section className="w-full lg:w-3/5">
+        <h1>Data on Another Page</h1>
+        <pre>{JSON.stringify(fields, null, 2)}</pre>
         <ProgressBarFlat progress={5/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 5/6</p>
         <h1>Your preferences</h1>

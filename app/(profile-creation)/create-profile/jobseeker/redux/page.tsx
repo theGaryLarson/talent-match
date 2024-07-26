@@ -1,31 +1,47 @@
 'use client';
 
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import type { RootState } from '../../../../../lib/store';
-import { useSelector, useDispatch } from 'react-redux';
-import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure } from '../../../../../lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import { Avatar, Button, Progress } from "flowbite-react";
-import {JsIntroDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
-import {v4 as uuidv4} from 'uuid';
 
+// REVIEW: testing redux
+import type { RootState } from '../../../../../lib/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
+
+
+// TODO: Remove jobseeker jobseeker slice
+// import { setFirstName, setLastName, submitForm, setForm } from '../../../../../lib/features/profileCreation/jobseekerSlice';
+import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure } from '../../../../../lib/features/profileCreation/formSlice';
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
   const router = useRouter();
 
+  // REVIEW: ================================================== Below Here ==================================================================
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
   const [newFieldType, setNewFieldType] = useState<'text' | 'email' | 'number'>('text');
   const [newFieldOptions, setNewFieldOptions] = useState<{ value: string | number; label: string }[]>([]);
   
+  // const [newFieldValue, setNewFieldValue] = useState('');
+  // REVIEW: This needed?
+  const [newSelectedOption, setNewSelectedOption] = useState('');
+
+  const testText = useSelector((state: RootState) => state.form);
+
+  const testChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    console.log('Selected option:', e.target.value);
+    setNewSelectedOption(e.target.value);
+  };
+
   const handleFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    console.log(testText);
     console.log(name, value);
     const field = fields.find((field) => field.id === name);
     if (field) {
@@ -53,6 +69,7 @@ export default function CreateJobseekerProfileIntroPage(){
   };
 
   const handleSubmit = (e: FormEvent) => {
+    console.log(testText);
     e.preventDefault();
     dispatch(submitForm());
     router.push('/create-profile/jobseeker/preferences');
@@ -66,58 +83,7 @@ export default function CreateJobseekerProfileIntroPage(){
       }
     }, 1000);
   };
-
-    const [response, setResponse] = useState(null);
-    const [error, setError] = useState(null);
-
-    const handleApiCall = async (formData: JsIntroDTO) => {
-        try {
-            const res = await fetch('/api/jobseekers/create-intro', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!res.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await res.json();
-            setResponse(data);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-
-        const birthdateInput = form['profile-creation-intro-birth-date'].value;
-        const birthdate = new Date(birthdateInput).toISOString() // prisma expects an iso string
-
-        const formData: JsIntroDTO = {
-            userId: uuidv4(), // fixme: this is just a hack to make it work. We need state to store contacts.user_id
-            photoUrl: 'http://example.com/photo.jpg', // need to work with Keith on how we are storing images and pdfs.
-            firstName: form['profile-creation-intro-first-name'].value,
-            lastName: form['profile-creation-intro-last-name'].value,
-            birthDate: birthdate,
-            phoneCountryCode: form['profile-creation-intro-country-phone-code'].value.split(' +')[1],
-            phone: form['profile-creation-intro-phone-number'].value,
-            zipCode: form['profile-creation-intro-zip-code'].value,
-            state: form['profile-creation-intro-state'].value,
-            city: 'Seattle', // Replace with your value
-            county: 'King', // Replace with your value
-            email: 'gary@next.org', //NEEDED TO IDENTIFY A UNIQUE RECORD. IF NOT ENTERED IT WILL CREATE A DIFFERENT RECORD
-            introHeadline: form['profile-creation-intro-headlines'].value,
-            currentJobTitle: form['profile-creation-intro-current-position'].value,
-            resumeUrl: 'http://example.com/resume.pdf', // Replace with your value
-        };
-        console.log(JSON.stringify(formData, null, 2));
-        handleApiCall(formData);
-    };
+  // REVIEW: ================================================== Above Here ==================================================================
 
   return(
     <main className="flex">
@@ -155,6 +121,9 @@ export default function CreateJobseekerProfileIntroPage(){
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
                 className="w-1/2"
+                // TODO: Fix handleFieldChange not working with Select / options tags
+                // value={newSelectedOption}
+                // onChange={testChange}
                 onChange={handleFieldChange}
                 options={[
                   {label:"Alabama", value:"AL"},
@@ -475,9 +444,9 @@ export default function CreateJobseekerProfileIntroPage(){
             <legend>
               <h2>Intro</h2>
             </legend>
-            <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-intro-headlines" placeholder="Type here" onChange={handleFieldChange}>Headlines</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" placeholder="Type here" onChange={handleFieldChange} required>Current School / Graduated School *</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-intro-current-position" placeholder="e.g., Software Developer" onChange={handleFieldChange}>Current Position</InputTextWithLabel>
             <div>
               Resume *
               <InputFileDropzone
