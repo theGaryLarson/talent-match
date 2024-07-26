@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import type { RootState } from '../../../../../lib/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure } from '../../../../../lib/features/profileCreation/formSlice';
-
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import { Avatar, Button, Progress } from "flowbite-react";
-
+import {JsIntroDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import {v4 as uuidv4} from 'uuid';
 
 
 export default function CreateJobseekerProfileIntroPage(){
@@ -67,6 +67,58 @@ export default function CreateJobseekerProfileIntroPage(){
     }, 1000);
   };
 
+    const [response, setResponse] = useState(null);
+    const [error, setError] = useState(null);
+
+    const handleApiCall = async (formData: JsIntroDTO) => {
+        try {
+            const res = await fetch('/api/jobseekers/create-intro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await res.json();
+            setResponse(data);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+
+        const birthdateInput = form['profile-creation-intro-birth-date'].value;
+        const birthdate = new Date(birthdateInput).toISOString() // prisma expects an iso string
+
+        const formData: JsIntroDTO = {
+            userId: uuidv4(), // fixme: this is just a hack to make it work. We need state to store contacts.user_id
+            photoUrl: 'http://example.com/photo.jpg', // need to work with Keith on how we are storing images and pdfs.
+            firstName: form['profile-creation-intro-first-name'].value,
+            lastName: form['profile-creation-intro-last-name'].value,
+            birthDate: birthdate,
+            phoneCountryCode: form['profile-creation-intro-country-phone-code'].value.split(' +')[1],
+            phone: form['profile-creation-intro-phone-number'].value,
+            zipCode: form['profile-creation-intro-zip-code'].value,
+            state: form['profile-creation-intro-state'].value,
+            city: 'Seattle', // Replace with your value
+            county: 'King', // Replace with your value
+            email: 'gary@next.org', //NEEDED TO IDENTIFY A UNIQUE RECORD. IF NOT ENTERED IT WILL CREATE A DIFFERENT RECORD
+            introHeadline: form['profile-creation-intro-headlines'].value,
+            currentJobTitle: form['profile-creation-intro-current-position'].value,
+            resumeUrl: 'http://example.com/resume.pdf', // Replace with your value
+        };
+        console.log(JSON.stringify(formData, null, 2));
+        handleApiCall(formData);
+    };
+
   return(
     <main className="flex">
       <aside className="hidden lg:w-2/5 lg:block">
@@ -77,7 +129,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <h1>Intro</h1>
         <p>* Indicates a required field</p>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
               <h2>Avatar</h2>

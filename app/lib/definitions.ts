@@ -1,3 +1,5 @@
+import {DateTime} from "@auth/core/providers/kakao";
+
 export type Account = {
   userId: string;
   type: string;
@@ -19,11 +21,10 @@ export type User = {
   id: string;
   name?: string | null;
   email?: string | null;
-  emailVerified?: Date | null;
+  emailVerified?: DateTime | null;
   image?: string | null;
-  password: string;
   role: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DateTime;
+  updatedAt: DateTime | null;
 };
 
