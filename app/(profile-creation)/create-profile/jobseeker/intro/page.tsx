@@ -1,26 +1,71 @@
 'use client';
 
-import React from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import type { RootState } from '../../../../../lib/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure } from '../../../../../lib/features/profileCreation/formSlice';
+
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import { Avatar, Button, Progress } from "flowbite-react";
 
-// REVIEW: testing redux
-import type { RootState } from '../../../../../lib/store';
-import { useSelector, useDispatch } from 'react-redux';
 
-// TODO: Remove jobseeker jobseeker slice
-// import { setFirstName, setLastName, submitForm, setForm } from '../../../../../lib/features/profileCreation/jobseekerSlice';
-import { addField, updateField } from '../../../../../lib/features/profileCreation/formSlice';
 
 export default function CreateJobseekerProfileIntroPage(){
-  // const fName = useSelector((state: RootState) => state.jobseeker.fName);
-  // const lName = useSelector((state: RootState) => state.jobseeker.lName);
-
-  const { fields } = useSelector((state: RootState) => state.form); //isSubmitting, error 
+  const { fields, isSubmitting, error } = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [newFieldId, setNewFieldId] = useState('');
+  const [newFieldLabel, setNewFieldLabel] = useState('');
+  const [newFieldType, setNewFieldType] = useState<'text' | 'email' | 'number'>('text');
+  const [newFieldOptions, setNewFieldOptions] = useState<{ value: string | number; label: string }[]>([]);
+  
+  const handleFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    const field = fields.find((field) => field.id === name);
+    if (field) {
+      const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
+      dispatch(updateField({ id: field.id, value: parsedValue }));
+    } else {
+      dispatch(addField({
+        id: e.target.id,
+        label: newFieldLabel,
+        value: e.target.value,
+        type: newFieldType,
+        options: newFieldOptions,
+    }));
+    }
+  };
+
+  const handleAddField = () => {
+    if (newFieldLabel) {
+      dispatch(addField({ id: newFieldId, label: newFieldLabel, type: newFieldType, options: newFieldType === 'select' || newFieldType === 'radio' ? newFieldOptions : undefined }));
+      setNewFieldId('');
+      setNewFieldLabel('');
+      setNewFieldType('text');
+      setNewFieldOptions([]);
+    }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    dispatch(submitForm());
+    router.push('/create-profile/jobseeker/preferences');
+
+    // Simulate a form submission
+    setTimeout(() => {
+      if (fields.every((field) => field.value !== '' && field.value !== 0)) {
+        dispatch(submitFormSuccess());
+      } else {
+        dispatch(submitFormFailure('All fields are required'));
+      }
+    }, 1000);
+  };
 
   return(
     <main className="flex">
@@ -31,29 +76,6 @@ export default function CreateJobseekerProfileIntroPage(){
         <p>Step 1/6</p>
         <h1>Intro</h1>
         <p>* Indicates a required field</p>
-
-        {/* TODO: REDUX TEST FORM HERE, REMOVE/REFACTOR LATER */}
-        {/* REVIEW: May not be proper param usage firstName.value? */}
-        {/* <form> */}
-        {/* <input onChange={() => dispatch(setFirstName(firstName.value))} type="text" name="firstName" id="firstName" /> */}
-        {/* <input onChange={(e) => dispatch(setFirstName(e.target.value))} type="text" name="firstName" id="firstName" /> */}
-        {/* <input onChange={(e) => dispatch(setLastName(e.target.value))} type="text" name="lastName" id="lastName" /> */}
-
-        {/* <input onChange={(e) => dispatch(setForm({name: e.target.name, value: e.target.value}))} type="text" name="firstName" id="firstName" />
-        <input onChange={(e) => dispatch(setForm(e.target.value))} type="text" name="lastName" id="lastName" />
-
-        </form>
-        <h1>Test text displayed here: {fName} {lName}</h1>
-        <button onClick={() => dispatch(submitForm())}>Submit Console Log</button> */}
-
-        {/* REVIEW: Code from Jonathan, takes all Form Data and returns an array with tuples of name:value pairs
-        <form onSubmit={(e)=>{
-          e.preventDefault();
-          const formData = new FormData(e.target as HTMLFormElement);
-          console.log(JSON.stringify(Array.from(formData.entries())))
-        }}>
-        */}
-
 
         <form>
           <fieldset>
@@ -73,14 +95,15 @@ export default function CreateJobseekerProfileIntroPage(){
             <legend>
               <h2>Basic info</h2>
             </legend>
-            <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" required>First Name *</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" required>Last Name *</InputTextWithLabel>
-            <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" required>Birth Date *</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
+            <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
             <div className="flex">
-              <InputTextWithLabel id="profile-creation-intro-zip-code" className="w-1/2" placeholder="Zipcode" required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-zip-code" className="w-1/2" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
                 className="w-1/2"
+                onChange={handleFieldChange}
                 options={[
                   {label:"Alabama", value:"AL"},
                   {label:"Alaska", value:"AK"},
@@ -143,6 +166,7 @@ export default function CreateJobseekerProfileIntroPage(){
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
                 className="w-1/2"
+                onChange={handleFieldChange}
                 options={[
                   {label:"Afghanistan +93", value:"Afghanistan +93"},
                   {label:"Albania +355", value:"Albania +355"},
@@ -392,16 +416,16 @@ export default function CreateJobseekerProfileIntroPage(){
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-phone-number" className="w-1/2" type="tel" placeholder="Phone number" required>Phone Number *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-phone-number" className="w-1/2" type="tel" placeholder="Phone number" onChange={handleFieldChange} required>Phone Number *</InputTextWithLabel>
             </div>
           </fieldset>
           <fieldset>
             <legend>
               <h2>Intro</h2>
             </legend>
-            <InputTextWithLabel id="profile-creation-intro-headlines" placeholder="Type here">Headlines</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-current-position" placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
             <div>
               Resume *
               <InputFileDropzone

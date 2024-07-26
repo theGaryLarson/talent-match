@@ -29,6 +29,7 @@ export default function CreateJobseekerProfileIntroPage(){
   const [newFieldOptions, setNewFieldOptions] = useState<{ value: string | number; label: string }[]>([]);
   
   // const [newFieldValue, setNewFieldValue] = useState('');
+  // REVIEW: This needed?
   const [newSelectedOption, setNewSelectedOption] = useState('');
 
   const testText = useSelector((state: RootState) => state.form);
