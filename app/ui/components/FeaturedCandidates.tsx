@@ -7,12 +7,12 @@ export default async function FeaturedCandidates(){
     <div>
     <h2 className="text-lg font-bold py-5">Featured candidates</h2>
       <div className="flex flex-wrap gap-5">
-      {jobSeekers.map((jobSeeker: JobSeekerCardViewDTO) => (
+      {jobSeekers.map((jobSeeker) => (
         <JobSeekerCardView
           key={jobSeeker.jobseeker_id}
           isLarge={false}
           name={jobSeeker.contacts.first_name + ' ' + jobSeeker.contacts.last_name}
-          school={jobSeeker?.edu_institutions?.name ?? ''}
+          school={''} // TODO: needs fixed to align with array
           pathway={jobSeeker?.pathways?.pathway_title ?? ''}
           skillsList={jobSeeker?.jobseeker_has_skills}
           pfpPicSrc={jobSeeker?.contacts?.photo_url}

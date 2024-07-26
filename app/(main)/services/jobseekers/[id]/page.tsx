@@ -13,27 +13,26 @@ export default async function page({params}:{params: {id:string}}){
                 <div>
                     <h1 className="font-bold text-2xl">{jobseeker?.contacts.first_name + ' ' + jobseeker?.contacts.last_name}</h1>
                     <h2>{jobseeker?.pathways?.pathway_title}</h2>
-                    <h2>{jobseeker?.edu_institutions?.name}</h2>
+                    <h2>{jobseeker?.jobseeker_education[0]?.eduInstitutions?.name}</h2>
                 </div>
                 </div>
 
             </div>
 
-            <div className="border w-[750px] p-4 space-y-4 rounded-md">
-                <h1 className="font-bold text-2xl">Work Experence</h1>
-                {jobseeker?.work_experiences.map((experence)=>
-                    <div className="border p-4 rounded-md">
-                        <h2 className="font-bold text-xl">{experence.company} | {experence.job_title}</h2>
-                        <p>{experence.is_internship?"Internship":''}</p>
-                        <p>{experence.responsibilities}</p>
+            <div className="border w-[750px] p-4 space-y-4">
+                <h1 className="font-bold text-2xl">Work Experience</h1>
+                {jobseeker?.work_experiences.map((experience)=>
+                    <div key={experience.work_id} className="border p-4">
+                        <h2 className="font-bold text-xl">{experience.company} | {experience.job_title}</h2>
+                        <p>{experience.responsibilities}</p>
                     </div>
                 )}
                 
             </div>
             <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl">Education</h1>
-                <div className="border p-4 rounded-md">
-                <h2 className="font-bold text-xl">{jobseeker?.edu_institutions?.name}</h2>
+                <div className="border p-4">
+                <h2 className="font-bold text-xl">{jobseeker?.jobseeker_education[0]?.eduInstitutions?.name}</h2>
                 </div>
             </div>
             <div className="border w-[750px] p-4 space-y-4 rounded-md">

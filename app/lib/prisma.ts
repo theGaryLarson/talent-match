@@ -5,30 +5,40 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 
-
-
-
-
 export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
     user_id: true,
     intro_headline: true,
     pathways: {
         select: {
+            pathway_id: true,
             pathway_title: true,
         }
     },
     contacts: {
         select: {
+            user_id: true,
             role: true,
             first_name: true,
             last_name: true,
             photo_url: true,
         },
     },
-    edu_institutions: {
+    jobseeker_education: {
         select: {
-            name: true,
+            eduInstitutions: {
+                select: {
+                    edu_institution_id: true,
+                    name: true,
+                },
+            },
+            jobseekerEdId: true,
+            edProgram: true,
+            isEnrolled: true,
+            startDate: true,
+            gradDate: true,
+            degreeType: true,
+            major: true,
         },
     },
     jobseeker_has_skills: {
@@ -42,14 +52,14 @@ export const jobSeekerCardViewSelect = {
             },
         },
     },
-}
+};
 
-export async function getAllJobSeekerCardView(): Promise<JobSeekerCardViewDTO[]> {
+export async function getAllJobSeekerCardView() {
     const jobSeekerCardViews = await prisma.jobseekers.findMany({
         select: jobSeekerCardViewSelect
     });
-    // console.log(JSON.stringify(jobSeekerCardViews, null, 2));
-    return jobSeekerCardViews as JobSeekerCardViewDTO[];
+    console.log(JSON.stringify(jobSeekerCardViews, null, 2));
+    return jobSeekerCardViews;
 }
 
 export async function getJobSeekerEmployerView(jobSeekerId: string) {
@@ -77,8 +87,28 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                     phone: true,
                 }
             },
+            jobseeker_education: {
+                select: {
+                    eduInstitutions: {
+                        select: {
+                            name: true,
+                        }
+                    },
+                    edInstitutionId: true,
+                    edProgram: true,
+                    edSystem: true,
+                    isEnrolled: true,
+                    startDate: true,
+                    gradDate: true,
+                    degreeType: true,
+                    major: true,
+                    minor: true,
+                    description: true,
+                }
+            },
             work_experiences: {
                 select: {
+                    work_id: true,
                     company: true,
                     job_title: true,
                     is_internship: true,
@@ -86,20 +116,16 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                     responsibilities: true,
                 }
             },
-            edu_institutions: { // TODO: refactor jobseeker education into its own table...
-                select: {
-                    name: true, // TODO: add start and graduation times to database
-                }
-            },
             project_experiences: {
                 select: {
-                    project_title: true,
-                    start_date: true,
-                    completion_date: true,
-                    team_size: true,
-                    repo_url: true,
-                    demo_url: true,
-                    problem_solved_description: true,
+                    projectId: true,
+                    projTitle: true,
+                    startDate: true,
+                    completionDate: true,
+                    teamSize: true,
+                    repoUrl: true,
+                    demoUrl: true,
+                    problemSolvedDescription: true,
                     project_has_skills: {
                         select:
                             {
@@ -140,7 +166,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 // intended for use with the search bar. Currently, supports searching by combinations of skills and work experience.
 // If skills is [] or contains empty strings [''] will disregard and only focus on work experience.
 // If work experience is not a query parameter it should be set to 0
-export async function getFilteredJobSeekerCardView(skills: string[] = [], yearsWorkExp: number = 0): Promise<JobSeekerCardViewDTO[]> {
+export async function getFilteredJobSeekerCardView(skills: string[] = [], yearsWorkExp: number = 0) {
     // Normalize skills array
     const normalizedSkills = skills.filter(skill => skill && skill.trim() !== '');
 
@@ -195,7 +221,7 @@ export async function getFilteredJobSeekerCardView(skills: string[] = [], yearsW
     });
 
     console.log(JSON.stringify(filteredJobSeekers, null, 2));
-    return filteredJobSeekers as JobSeekerCardViewDTO[];
+    return filteredJobSeekers;
 }
 
 // returns those jobseekers with at least yearsExp in a profession
