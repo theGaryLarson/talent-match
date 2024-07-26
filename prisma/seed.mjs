@@ -805,6 +805,7 @@ async function seedContacts(numContacts = 4) {
                     gender: null,
                     race: null,
                     photo_url: getRandomUserPhoto(),
+                    createdAt: new Date(),
                 }
             });
         }
@@ -1169,17 +1170,17 @@ async function seedWorkExperiences() {
                 const startDate = faker.date.past({years: 5});
                 const isCurrentJob = Math.random() < 0.2; // 20% chance of being current job
 
-                workExperiencePromises.push(prisma.work_experiences.create({
+                workExperiencePromises.push(prisma.workExperiences.create({
                     data: {
-                        work_id: uuidv4(),
-                        jobseeker_id: js.jobseeker_id,
-                        technology_area_id: faker.helpers.arrayElement(techAreas).technology_area_id,
+                        workId: uuidv4(),
+                        jobseekerId: js.jobseeker_id,
+                        techAreaId: faker.helpers.arrayElement(techAreas).technology_area_id,
                         company: faker.company.name(),
-                        is_internship: faker.datatype.boolean(),
-                        job_title: faker.person.jobTitle(),
-                        is_current_job: isCurrentJob,
-                        start_date: startDate,
-                        end_date: isCurrentJob ? null : faker.date.between({from: startDate, to: new Date()}),
+                        isInternship: faker.datatype.boolean(),
+                        jobTitle: faker.person.jobTitle(),
+                        isCurrentJob: isCurrentJob,
+                        startDate: startDate,
+                        endDate: isCurrentJob ? null : faker.date.between({from: startDate, to: new Date()}),
                         responsibilities: generateResponsibilities(faker.number.int({min: 3, max: 6})),
 
                     },
