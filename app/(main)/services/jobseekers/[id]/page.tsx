@@ -23,8 +23,8 @@ export default async function page({params}:{params: {id:string}}){
             <div className="border w-[750px] p-4 space-y-4">
                 <h1 className="font-bold text-2xl">Work Experience</h1>
                 {jobseeker?.work_experiences.map((experience)=>
-                    <div key={experience.work_id} className="border p-4">
-                        <h2 className="font-bold text-xl">{experience.company} | {experience.job_title}</h2>
+                    <div key={experience.workId} className="border p-4">
+                        <h2 className="font-bold text-xl">{experience.company} | {experience.jobTitle}</h2>
                         <p>{experience.responsibilities}</p>
                     </div>
                 )}
