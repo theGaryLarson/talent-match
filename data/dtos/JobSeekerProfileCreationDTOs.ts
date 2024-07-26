@@ -111,11 +111,12 @@ type workExperienceDTO = {
 
 
 export type JsWorkExpDTO = {
+    userId: string,
     yearsWorkExperience: string,
-    AmountInternshipExperience: string, // TODO: add field to the database
+    amountInternshipExperience?: string, // TODO: add field to the database
     isAuthorizedToWorkUsa: boolean, // TODO: encrypt
     requiresSponsorship: boolean, // TODO: encrypt
-    workExperiences: workExperienceDTO[]
+    workExperiences?: workExperienceDTO[]
 }
 
 export type JsShowcaseDTO = {
