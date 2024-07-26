@@ -8,7 +8,7 @@ export default function SimpleCardWithPhoto(props:{title:string, content:string,
             <p>{props.content}</p>
             </div>
             <div className="flex justify-center">
-            <img src='/cfa_images/CFA_volunteer.png' width={250}></img>
+            <img src='/cfa_images/CFA_volunteer.png' width={250} alt="Picture Of speakers at an event"></img>
             </div>
         </div>
         </Link>

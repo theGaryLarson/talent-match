@@ -825,7 +825,7 @@ async function seedContacts(numContacts = 4) {
                     gender: faker.person.gender(),
                     race: faker.helpers.arrayElement(racesAndEthnicities),
                     photo_url: getRandomUserPhoto(),
-                    createdAt: new Date(),
+                    createdAt: new Date().toISOString()
                 }
             });
         }

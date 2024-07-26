@@ -17,22 +17,17 @@ import Image from 'next/image';
 const forEmpoyersDropDownInfo = [
   { name: 'Career Services Landing Page', description: 'Learn What Career Services has to Offer', href: '/services', icon: ChartPieIcon },
   { name: 'Employer Landing Page', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
-  { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers/dashboard', icon: ChartPieIcon },
-  { name: 'Job Seeker Landing Page', description: 'Mange your job search', href: '/services/jobseekers', icon: CursorArrowRaysIcon },
-  { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon },
+  { name: 'Upcoming Info Sessions', description: 'Coming Soon', href: '#', icon: PresentationChartBarIcon },
 ]
 const forJobSeekers = [
-  { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon }
+  { name: 'Job Seeker Landing Page', description: 'Mange your job search', href: '/services/jobseekers', icon: CursorArrowRaysIcon },
+  { name: 'Upcoming Info Sessions', description: 'Coming Soon', href: '#', icon: PresentationChartBarIcon }
 ]
 const forStudentsDropDownInfo = [
-{ name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '#', icon: CursorArrowRaysIcon },
-{ name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
+{ name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
+{ name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '#', icon: FingerPrintIcon }
 
 
-]
-const callsToAction = [
-  { name: 'Call to Action 1', href: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', icon: PlayCircleIcon },
-  { name: 'Call to Action 2', href: '#', icon: PhoneIcon },
 ]
 const TopLevelLinks = [
     { name: 'Explore', href: '/todo'},
