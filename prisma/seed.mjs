@@ -1170,7 +1170,7 @@ async function seedWorkExperiences() {
                 const startDate = faker.date.past({years: 5});
                 const isCurrentJob = Math.random() < 0.2; // 20% chance of being current job
 
-                workExperiencePromises.push(prisma.workExperiences.create({
+                workExperiencePromises.push(prisma.workExperience.create({
                     data: {
                         workId: uuidv4(),
                         jobseekerId: js.jobseeker_id,
