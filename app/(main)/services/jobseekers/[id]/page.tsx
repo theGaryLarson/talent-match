@@ -40,11 +40,11 @@ export default async function page({params}:{params: {id:string}}){
     
                     {
                         jobseeker?.project_experiences.map((experence)=>
-                        <div className="border p-4 rounded-md">
-                        <h2 className="text-xl">{experence.project_title}</h2>
-                        <p className="text-sm">{experence.start_date.toLocaleDateString()+" - "+experence.completion_date.toLocaleDateString()}</p>
-                        <p>{experence.problem_solved_description}</p>
-                        {experence.demo_url?<a target="_blank" href={experence.demo_url}>{experence.demo_url}</a>:''}
+                        <div className="border p-4 rounded-md" key={experence.projectId}>
+                        <h2 className="text-xl">{experence.projTitle}</h2>
+                        <p className="text-sm">{experence.startDate.toLocaleDateString()+" - "+experence.completionDate.toLocaleDateString()}</p>
+                        <p>{experence.problemSolvedDescription}</p>
+                        {experence.demoUrl?<a target="_blank" href={experence.demoUrl}>{experence.demoUrl}</a>:''}
                         </div>
                         
                         )
