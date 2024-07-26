@@ -268,7 +268,7 @@ model jobseekers {
   jobseekers_skill_gap_data          jobseekers_skill_gap_data[]
   learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
   project_experiences                ProjectExperiences[]
-  work_experiences                   work_experiences[]
+  work_experiences                   WorkExperience[]
   jobseeker_education                jobseekers_education[]
 
   @@index([targeted_pathway], map: "jobseekers_fk_jobseeker_Pathways1_idx")
@@ -466,10 +466,10 @@ model social_media_platforms {
 }
 
 model technology_areas {
-  technology_area_id String             @id(clustered: false, map: "technology_areas_PRIMARY") @db.NVarChar(36)
-  title              String             @db.VarChar(255)
+  technology_area_id String           @id(clustered: false, map: "technology_areas_PRIMARY") @db.NVarChar(36)
+  title              String           @db.VarChar(255)
   job_postings       job_postings[]
-  work_experiences   work_experiences[]
+  work_experiences   WorkExperience[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -536,20 +536,21 @@ model volunteers {
   @@index([user_id], map: "volunteers_fk_mentor_user1_idx")
 }
 
-model work_experiences {
-  work_id            String           @id(clustered: false, map: "work_experiences_PRIMARY") @db.NVarChar(36)
-  jobseeker_id       String           @db.NVarChar(36)
-  technology_area_id String           @db.NVarChar(36)
-  company            String           @db.VarChar(255)
-  is_internship      Boolean          @default(false, map: "DF__work_expe__is_in__75A278F5") @db.Bit
-  job_title          String           @db.VarChar(45)
-  is_current_job     Boolean          @default(false, map: "DF__work_expe__is_cu__76969D2E") @db.Bit
-  start_date         DateTime         @db.DateTime
-  end_date           DateTime?        @db.DateTime
-  responsibilities   String           @db.NText
-  jobseekers         jobseekers       @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_work_experience_jobseeker1")
-  technology_areas   technology_areas @relation(fields: [technology_area_id], references: [technology_area_id], onUpdate: NoAction, map: "fk_work_experiences_technology_areas1")
+model WorkExperience {
+  workId           String           @id(clustered: false, map: "work_experiences_PRIMARY") @map("work_id") @db.NVarChar(36)
+  jobseekerId      String           @map("jobseeker_id") @db.NVarChar(36)
+  techAreaId       String           @map("technology_area_id") @db.NVarChar(36)
+  company          String           @db.VarChar(255)
+  isInternship     Boolean          @default(false, map: "DF__work_expe__is_in__75A278F5") @map("is_internship") @db.Bit
+  jobTitle         String           @map("job_title") @db.VarChar(45)
+  isCurrentJob     Boolean          @default(false, map: "DF__work_expe__is_cu__76969D2E") @map("is_current_job") @db.Bit
+  startDate        DateTime         @map("start_date") @db.DateTime
+  endDate          DateTime?        @map("end_date") @db.DateTime
+  responsibilities String           @db.NText
+  jobseekers       jobseekers       @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_work_experience_jobseeker1")
+  technology_areas technology_areas @relation(fields: [techAreaId], references: [technology_area_id], onUpdate: NoAction, map: "fk_work_experiences_technology_areas1")
 
-  @@index([technology_area_id], map: "fk_work_experiences_technology_areas1_idx")
-  @@index([jobseeker_id], map: "work_experiences_fk_work_experience_jobseeker1_idx")
+  @@index([techAreaId], map: "fk_work_experiences_technology_areas1_idx")
+  @@index([jobseekerId], map: "work_experiences_fk_work_experience_jobseeker1_idx")
+  @@map("work_experiences")
 }
