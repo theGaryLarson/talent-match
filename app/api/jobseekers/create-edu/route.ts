@@ -5,12 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 const prisma: PrismaClient = getPrismaClient();
 
-// Utility function to filter out undefined values
-const filterUndefined = <T extends object>(obj: T): Partial<T> => {
-    return Object.fromEntries(
-        Object.entries(obj).filter(([, value]) => value !== undefined)
-    ) as Partial<T>;
-};
 
 const toMidnightUTC = (date: string): string => {
     const d = new Date(date);
@@ -32,12 +26,11 @@ export async function POST(request: Request) {
             projects,
         } = body;
 
-        const createdCerts: certificates[] = [];
-        const createdProjects: ProjectExperiences[] = [];
-        const createdSchools: jobseekers_education[] = [];
-        let createdJobSeeker: jobseekers | null = null;
-
         const result = await prisma.$transaction(async (prisma) => {
+            const createdCerts: certificates[] = [];
+            const createdProjects: ProjectExperiences[] = [];
+            const createdSchools: jobseekers_education[] = [];
+            let updatedJobseeker: jobseekers | null = null;
             // Find the jobseeker_id or generate a new one
             const jobseeker = await prisma.jobseekers.findUnique({
                 where: { user_id: userId },
@@ -71,7 +64,7 @@ export async function POST(request: Request) {
                 targetedPathway = jobseeker?.targeted_pathway || pathway.pathway_id;
             }
 
-            createdJobSeeker = await prisma.jobseekers.upsert({
+            updatedJobseeker = await prisma.jobseekers.upsert({
                 where: { user_id: userId },
                 update: {
                     highest_level_of_study_completed: highestLevelOfStudy,
@@ -101,8 +94,7 @@ export async function POST(request: Request) {
             const certPromises = certifications.map(async cert => {
                 const existingCert = await prisma.certificates.findFirst({
                     where: {
-                        jobSeekerId: jobseekerId,
-                        name: cert.name,
+                        certId: cert.certId,
                     },
                 });
 
@@ -118,7 +110,7 @@ export async function POST(request: Request) {
 
                 if (existingCert) {
                     const updatedCert = await prisma.certificates.update({
-                        where: { certId: existingCert.certId },
+                        where: { certId: cert.certId },
                         data: updateData,
                     });
                     createdCerts.push(updatedCert);
@@ -137,26 +129,21 @@ export async function POST(request: Request) {
                     createdCerts.push(createdCert);
                 }
             });
-
             await Promise.all(certPromises);
 
             const schoolPromises = schools.map(async school => {
                 let eduInstitution = await prisma.edu_institutions.findUnique({
-                    where: { name: school.institutionName }
+                    where: { edu_institution_id: school.edInstitutionId }
                 });
-                const newEduInstitutionId = uuidv4();
                 if (!eduInstitution) {
                     await prisma.edu_institutions.create({
                         data: {
-                            edu_institution_id: newEduInstitutionId,
+                            edu_institution_id: school.edInstitutionId,
                             name: school.institutionName,
                             contact_email: null,
                             edu_url: null,
                         }
                     });
-                    school.edInstitutionId = newEduInstitutionId;
-                } else {
-                    school.edInstitutionId = eduInstitution.edu_institution_id;
                 }
 
                 const existingEducation = await prisma.jobseekers_education.findFirst({
@@ -196,7 +183,7 @@ export async function POST(request: Request) {
                 } else {
                     const createdEducation = await prisma.jobseekers_education.create({
                         data: {
-                            jobseekerEdId: uuidv4(),
+                            jobseekerEdId: school.jobseekerEdId,
                             edProgram: school.edProgram,
                             edSystem: school.edSystem,
                             isEnrolled: school.isEnrolled,
@@ -221,11 +208,12 @@ export async function POST(request: Request) {
                     createdSchools.push(createdEducation);
                 }
             });
+            await Promise.all(schoolPromises);
 
             const projPromises = projects.map(async (proj: ProjectExpDTO) => {
-                const existingProject = await prisma.projectExperiences.findFirst({
+                const existingProject = await prisma.projectExperiences.findUnique({
                     where: {
-                        projectId: proj?.projectId,
+                        projectId: proj.projectId,
                     },
                 });
 
@@ -248,7 +236,7 @@ export async function POST(request: Request) {
                 } else {
                     const createdProject = await prisma.projectExperiences.create({
                         data: {
-                            projectId: uuidv4(),
+                            projectId: proj.projectId,
                             projTitle: proj.projTitle,
                             projectRole: proj.projectRole,
                             startDate: new Date(proj.startDate),
@@ -274,17 +262,14 @@ export async function POST(request: Request) {
                     createdProjects.push(createdProject);
                 }
             });
-
             await Promise.all(projPromises);
-            await Promise.all(schoolPromises);
+
+            return {updatedJobseeker, createdCerts, createdProjects, createdSchools}
         });
 
         return NextResponse.json({
             success: true,
-            createdJobSeeker,
-            createdCerts,
-            createdProjects,
-            createdSchools
+            result
         }, { status: 200 });
     } catch (e: any) {
         console.log(e.message);
