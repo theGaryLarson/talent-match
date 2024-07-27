@@ -1,5 +1,6 @@
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 import {DateTime} from "@auth/core/providers/kakao";
+import {WorkExperience} from "@prisma/client";
 
 export type JsIntroDTO = {
     userId: string,
@@ -34,7 +35,6 @@ export type CertDTO = {
 
 export type ProjectExpDTO = {
     projectId: string,
-    jobseekerId: string,
     projTitle: string,
     projectRole: string,
     startDate: string,
@@ -75,7 +75,7 @@ export enum EdProgram {
 
 export type EducationInfoDTO = {
     jobseekerEdId: string,
-    edInstitutionId: string | undefined, // use name lookup to find ID.
+    edInstitutionId: string, // use name lookup to find ID.
     institutionName: string,
     isEnrolled: boolean,
     startDate: string,
@@ -100,6 +100,8 @@ export type JsEducationDTO = {
 }
 
 type workExperienceDTO = {
+    workExpId: string,
+    techAreaId: string,
     company: string,
     jobTitle: string,
     startDate: string,
@@ -116,7 +118,7 @@ export type JsWorkExpDTO = {
     amountInternshipExperience?: string, // TODO: add field to the database
     isAuthorizedToWorkUsa: boolean, // TODO: encrypt
     requiresSponsorship: boolean, // TODO: encrypt
-    workExperiences?: workExperienceDTO[]
+    workExperiences?: WorkExperience[]
 }
 
 export type JsShowcaseDTO = {
