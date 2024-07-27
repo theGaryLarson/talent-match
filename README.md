@@ -1,6 +1,6 @@
 # Computing for All Career Services
 
-This repository contains the source code for the Computing for All Career Services website, built with Next.js and Prisma ORM, styled with TailwindCSS. This application helps match employers with job seekers in the tech industry.
+This repository contains the source code for the Washington Tech Workforce Coalition Tech Talent Showcase website, built with Next.js and Prisma ORM, styled with TailwindCSS. This application helps match employers with job seekers in the tech industry.
 
 ## Prerequisites
 

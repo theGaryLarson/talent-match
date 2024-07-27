@@ -6,7 +6,7 @@ import {useCallback, useEffect, useState} from 'react'
 import { useSearchParams } from 'next/navigation';
 
 async function fetchFilteredJobSeekerCardView(skills: string[] = [], yearsWorkExp: number = 0): Promise<JobSeekerCardViewDTO[]> {
-  const response = await fetch('/api/jobseekers/filtered', {
+  const response = await fetch('/api/jobseekers/query', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ export default function Page() {
                 key={jobSeeker.jobseeker_id}
                 isLarge={true}
                 name={jobSeeker.contacts.first_name + ' ' + jobSeeker.contacts.last_name}
-                school={jobSeeker?.edu_institutions?.name ?? ''}
+                school={jobSeeker?.jobseeker_education?.eduInstitutions?.name ?? ''}
                 pathway={jobSeeker?.pathways?.pathway_title ?? ''}
                 skillsList={jobSeeker?.jobseeker_has_skills}
                 pfpPicSrc={jobSeeker?.contacts?.photo_url ?? null}

@@ -92,15 +92,6 @@ export default function Page() {
             title={'Software Devolopment'}
             text={'Find job seekers with training and expertise in Software Devolopment'}
           />
-        <CategoryCard
-            imgSrc={
-              '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
-            }
-            title={'IT Support'}
-            text={
-              'Find job seekers with training and expertise in IT Support'
-            }
-          />
           <CategoryCard
             imgSrc={
               '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'

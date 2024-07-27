@@ -4,6 +4,8 @@ import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import CFAProfileCreationHeader from '@/app/ui/CFAProfileCreationHeader';
 
+// REVIEW: You can locate the store in the layout component if all the routes using that layout need the store. 
+import StoreProvider from '../StoreProvider';
 
 export default function ProfileCreationLayout({
   children,
@@ -15,7 +17,9 @@ export default function ProfileCreationLayout({
       <body className={`${inter.className} antialiased`}>
         <AppRouterCacheProvider>
           <CFAProfileCreationHeader/>
-          {children}
+          <StoreProvider>
+            {children}
+          </StoreProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

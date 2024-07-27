@@ -1,0 +1,32 @@
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+
+import '@/app/ui/global.css';
+import { inter } from '@/app/ui/fonts';
+import CFAProfileCreationHeader from '@/app/ui/CFAProfileCreationHeader';
+
+// REVIEW: You can locate the store in the layout component if all the routes using that layout need the store. 
+import StoreProvider from '../StoreProvider';
+
+export default function ProfileCreationLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className={`${inter.className} antialiased`}>
+<<<<<<< HEAD
+        <AppRouterCacheProvider>
+          <CFAProfileCreationHeader/>
+          {children}
+        </AppRouterCacheProvider>
+=======
+        <CFAProfileCreationHeader/>
+        <StoreProvider>
+          {children}
+        </StoreProvider>
+>>>>>>> 6dc0543fbc5248c132f72422f7acf6d54e4aa939
+      </body>
+    </html>
+  );
+}
