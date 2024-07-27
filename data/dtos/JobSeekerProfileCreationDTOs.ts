@@ -22,15 +22,14 @@ export type JsIntroDTO = {
 
 export type CertDTO = {
     certId: string,
-    jobSeekerId: string,
     name: string,
-    logoUrl: string | undefined,
+    logoUrl?: string | null,
     issuingOrg: string,
-    credentialId: string | undefined,
-    credentialUrl: string | undefined,
+    credentialId?: string | null,
+    credentialUrl?: string | null,
     issueDate: string,
     expiryDate: string,
-    description: string | undefined,
+    description?: string | null,
 }
 
 export type ProjectExpDTO = {
@@ -41,8 +40,8 @@ export type ProjectExpDTO = {
     completionDate: string,
     problemSolvedDescription: string,
     teamSize: string,
-    repoUrl?: string,
-    demoUrl?: string,
+    repoUrl?: string | null,
+    demoUrl?: string | null,
     skills: SkillDTO[],
 }
 
@@ -76,23 +75,23 @@ export enum EdProgram {
 export type EducationInfoDTO = {
     jobseekerEdId: string,
     edInstitutionId: string, // use name lookup to find ID.
-    institutionName: string,
+    institutionName?: string,
     isEnrolled: boolean,
     startDate: string,
     gradDate: string,
-    degreeType: DegreeType,
-    major: string | undefined,
-    minor: string | undefined,
-    edProgram: EdProgram,
-    edSystem: string | undefined; // pre apprenticeship option
-    description: string | undefined;
+    degreeType?: DegreeType,
+    major?: string | null,
+    minor?: string | null,
+    edProgram?: EdProgram,
+    edSystem?: string | null; // pre apprenticeship option
+    description?: string | null;
 }
 
 export type JsEducationDTO = {
     userId: string,
-    highestLevelOfStudy: DegreeType | null | undefined;
+    highestLevelOfStudy: DegreeType;
     currentEdProgram: EdProgram // college, high school, etc.
-    currentGrade: CurrentGrade | undefined;
+    currentGrade: CurrentGrade;
     isEnrolledEdProgram: boolean;
     schools: EducationInfoDTO[];
     certifications: CertDTO[];
