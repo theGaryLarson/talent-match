@@ -188,11 +188,11 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
             },
             work_experiences: {
                 select: {
-                    work_id: true,
+                    workId: true,
                     company: true,
-                    job_title: true,
-                    is_internship: true,
-                    is_current_job: true,
+                    jobTitle: true,
+                    isInternship: true,
+                    isCurrentJob: true,
                     responsibilities: true,
                 }
             },
