@@ -28,6 +28,7 @@ model certificates {
   credentialUrl String?    @map("credential_url") @db.VarChar(255)
   issueDate     DateTime   @map("issue_date") @db.DateTime
   expiryDate    DateTime   @map("expiration_date") @db.DateTime
+  description   String?    @db.NText
   jobseekers    jobseekers @relation(fields: [jobSeekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_certificates_jobseeker1")
 
   @@index([jobSeekerId], map: "fk_certificates_jobseeker1_idx")
