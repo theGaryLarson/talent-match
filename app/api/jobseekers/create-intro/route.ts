@@ -133,7 +133,7 @@ export async function POST(request: Request) {
             })
             const contact_address_id = existingContactAddress?.contact_address_id || uuidv4();
             const contactAddress = await prisma.contact_addresses.upsert({
-                where: { user_id: contact.user_id},
+                where: {user_id: contact.user_id},
                 update: {
                     zip: zipCode,
                     state,
@@ -149,12 +149,9 @@ export async function POST(request: Request) {
                     county
                 }
             })
-
-
-
-            return {contact, jobSeeker, };
+            return {contact, jobSeeker,};
         });
-        return NextResponse.json({success: true, result}, { status: 200 });
+        return NextResponse.json({success: true, result}, {status: 200});
     } catch (error) {
         console.error('Error creating job seeker intro:', error);
         return NextResponse.json({error: 'Failed to create job seeker intro'}, {status: 500});
