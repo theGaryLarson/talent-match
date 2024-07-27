@@ -30,7 +30,7 @@ export async function POST(request: Request) {
             const createdCerts: certificates[] = [];
             const createdProjects: ProjectExperiences[] = [];
             const createdSchools: jobseekers_education[] = [];
-            let updatedJobseeker: jobseekers | null = null;
+            let updatedJobseeker: jobseekers | null;
             // Find the jobseeker_id or generate a new one
             const jobseeker = await prisma.jobseekers.findUnique({
                 where: { user_id: userId },
@@ -106,6 +106,7 @@ export async function POST(request: Request) {
                     credentialUrl: cert.credentialUrl,
                     issueDate: new Date(cert.issueDate).toISOString(),
                     expiryDate: new Date(cert.expiryDate).toISOString(),
+                    description: cert.description,
                 };
 
                 if (existingCert) {
@@ -184,7 +185,7 @@ export async function POST(request: Request) {
                     const createdEducation = await prisma.jobseekers_education.create({
                         data: {
                             jobseekerEdId: school.jobseekerEdId,
-                            edProgram: school.edProgram,
+                            edProgram: school.edProgram??"None",
                             edSystem: school.edSystem,
                             isEnrolled: school.isEnrolled,
                             startDate: new Date(school.startDate).toISOString(),
