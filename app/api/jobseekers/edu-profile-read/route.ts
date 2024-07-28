@@ -15,7 +15,7 @@ const prisma: PrismaClient = getPrismaClient();
 
 const mapToEnum = (value: string, enumType: any): any => {
     const enumValues = Object.values(enumType);
-    return enumValues.includes(value) ? value : undefined;
+    return enumValues.includes(value) ? value : undefined; // fixme: would we rather have a property return that's null or have the property omitted altogether?
 };
 
 export async function POST(request: Request) {
