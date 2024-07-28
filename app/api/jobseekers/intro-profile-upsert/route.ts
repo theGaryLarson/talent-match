@@ -149,7 +149,7 @@ export async function POST(request: Request) {
                     county
                 }
             });
-            return {contact, jobSeeker,};
+            return {contact, contactAddress, jobSeeker,};
         });
         return NextResponse.json({success: true, result}, {status: 200});
     } catch (error) {
