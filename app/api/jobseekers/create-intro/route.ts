@@ -148,7 +148,7 @@ export async function POST(request: Request) {
                     city,
                     county
                 }
-            })
+            });
             return {contact, jobSeeker,};
         });
         return NextResponse.json({success: true, result}, {status: 200});
