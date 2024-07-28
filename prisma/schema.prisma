@@ -260,6 +260,7 @@ model jobseekers {
   portfolio_url                      String?                              @db.VarChar(255)
   video_url                          String?                              @db.VarChar(255)
   employment_type_sought             String?                              @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
+  is_marked_deletion                 DateTime?                            @db.DateTime
   case_mgmt                          case_mgmt[]
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
