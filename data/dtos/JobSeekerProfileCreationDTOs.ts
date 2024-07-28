@@ -19,6 +19,24 @@ export type JsIntroDTO = {
     resumeUrl?: string | null;
 }
 
+export type JsIntroPostDTO = {
+    userId: string,
+    photoUrl?: string | null;
+    firstName: string;
+    lastName: string;
+    birthDate: string | Date;
+    phoneCountryCode?: string | null;
+    phone?: string | null;
+    zipCode: string;
+    state: string;
+    city: string;
+    county: string;
+    email: string;
+    introHeadline?: string | null;
+    currentJobTitle?: string | null;
+    resumeUrl?: string | null;
+}
+
 export type CertDTO = {
     certId: string,
     name: string,
