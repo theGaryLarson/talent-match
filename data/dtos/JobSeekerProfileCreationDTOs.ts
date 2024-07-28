@@ -3,20 +3,20 @@ import {WorkExperience} from "@prisma/client";
 
 export type JsIntroDTO = {
     userId: string,
-    photoUrl: string | null;
+    photoUrl?: string | null;
     firstName: string;
     lastName: string;
     birthDate: string | Date;
-    phoneCountryCode: string | null;
-    phone: string | null;
-    zipCode: string;
-    state: string;
-    city: string;
-    county: string;
+    phoneCountryCode?: string | null;
+    phone?: string | null;
+    zipCode?: string | null;
+    state?: string | null;
+    city?: string | null;
+    county?: string | null;
     email: string;
-    introHeadline: string | null;
-    currentJobTitle: string | null;
-    resumeUrl: string | null;
+    introHeadline?: string | null;
+    currentJobTitle?: string | null;
+    resumeUrl?: string | null;
 }
 
 export type CertDTO = {
