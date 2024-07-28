@@ -1,5 +1,4 @@
 import {SkillDTO} from "@/data/dtos/SkillDTO";
-import {DateTime} from "@auth/core/providers/kakao";
 import {WorkExperience} from "@prisma/client";
 
 export type JsIntroDTO = {
