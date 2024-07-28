@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
-import {JsIntroDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {JsIntroDTO, JsIntroPostDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
@@ -8,7 +8,7 @@ const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
-        const body: JsIntroDTO = await request.json();
+        const body: JsIntroPostDTO = await request.json();
 
         // Destructure the DTO
         const {
@@ -29,11 +29,13 @@ export async function POST(request: Request) {
             resumeUrl,
         } = body;
 
+        // TODO: fix install and use libphonenumber-js to handle country codes. Supported React Component as well.
         // Clean the phoneNumber to remove special characters
-        const cleanedPhoneNumber = phone?.replace(/[-\s()]/g, '');
+        const cleanedPhoneCountryCode = phoneCountryCode?.replace(/[-\s().]/g, '')
+        const cleanedPhoneNumber = phone?.replace(/[-\s().]/g, '');
 
         // Format the phone number in E.164 format
-        const formattedPhone = `+${phoneCountryCode}-${cleanedPhoneNumber}`;
+        const formattedPhone = `+${cleanedPhoneCountryCode}-${cleanedPhoneNumber}`;
 
         // Transaction to ensure atomicity
         const result = await prisma.$transaction(async (prisma) => {
