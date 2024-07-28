@@ -18,7 +18,7 @@ export async function DELETE(request: Request) {
         return NextResponse.json({ success: true, result: deletedEntry });
     } catch (e: any) {
         console.log(e.message);
-        const msg = jsEduId ? `(No record with id ${jsEduId})` : `unknown id`;
+        const msg = jsEduId ? `(No Jobseeker Education record with id ${jsEduId})` : `unknown id`;
         return NextResponse.json({ error: `Failed to delete jobseeker education with id: ${msg}` });
     } finally {
         await prisma.$disconnect();
