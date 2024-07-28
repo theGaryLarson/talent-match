@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const normalizedSkills: string[] = skills.filter((skill: string) => skill && skill.trim() !== '');
 
     const andConditions: any[] = [];
-
+    andConditions.push({is_marked_deletion: null})
     if (normalizedSkills.length > 0) {
         const orConditions = [
             {
