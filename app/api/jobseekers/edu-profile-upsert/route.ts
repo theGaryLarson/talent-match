@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient, ProjectExperiences, jobseekers, certificates, jobseekers_education } from '@prisma/client';
-import { EducationInfoDTO, JsEducationDTO, ProjectExpDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {
+    CertDTO,
+    CurrentGrade,
+    DegreeType,
+    EdProgram,
+    EducationInfoDTO,
+    JsEducationDTO,
+    ProjectExpDTO
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import {mapToEnum} from "@/app/api/jobseekers/edu-profile-read/route";
 const prisma: PrismaClient = getPrismaClient();
 
 
@@ -91,7 +100,7 @@ export async function POST(request: Request) {
                 },
             });
 
-            const certPromises = certifications.map(async cert => {
+            const certPromises = certifications.map(async (cert: CertDTO) => {
                 const existingCert = await prisma.certificates.findFirst({
                     where: {
                         certId: cert.certId,
@@ -132,7 +141,7 @@ export async function POST(request: Request) {
             });
             await Promise.all(certPromises);
 
-            const schoolPromises = schools.map(async school => {
+            const schoolPromises = schools.map(async (school: EducationInfoDTO) => {
                 let eduInstitution = await prisma.edu_institutions.findUnique({
                     where: { edu_institution_id: school.edInstitutionId }
                 });
@@ -163,7 +172,7 @@ export async function POST(request: Request) {
                     school.jobseekerEdId = existingEducation.jobseekerEdId;
                 }
                 // Build update object and filter undefined values
-                const updateData: Partial<EducationInfoDTO> = {
+                const eduUpdateData: Partial<EducationInfoDTO> = {
                     jobseekerEdId: school.jobseekerEdId,
                     edProgram: school.edProgram,
                     edSystem: school.edSystem,
@@ -178,7 +187,7 @@ export async function POST(request: Request) {
                 if (existingEducation) {
                     const updatedEducation = await prisma.jobseekers_education.update({
                         where: { jobseekerEdId: existingEducation.jobseekerEdId },
-                        data: updateData
+                        data: eduUpdateData
                     });
                     createdSchools.push(updatedEducation);
                 } else {
@@ -265,7 +274,46 @@ export async function POST(request: Request) {
             });
             await Promise.all(projPromises);
 
-            return {updatedJobseeker, createdCerts, createdProjects, createdSchools}
+            // Map the school data to DTO
+            const edHistory: EducationInfoDTO[] = createdSchools.map((edu) => ({
+                jobseekerEdId: edu.jobseekerEdId,
+                edInstitutionId: edu.edInstitutionId,
+                edProgram: mapToEnum(edu.edProgram, EdProgram),
+                edSystem: edu.edSystem,
+                isEnrolled: edu.isEnrolled,
+                startDate: edu.startDate.toISOString(),
+                gradDate: edu.gradDate.toISOString(),
+                degreeType: mapToEnum(edu.degreeType ?? "None", DegreeType),
+                major: edu?.major,
+                minor: edu?.minor,
+                description: edu.description
+            }));
+
+            // Map the certificate data to DTO
+            const certs: CertDTO[] = createdCerts.map((cert) => ({
+                certId: cert.certId,
+                name: cert.name,
+                logoUrl: cert.logoUrl,
+                issuingOrg: cert.issuingOrg,
+                credentialId: cert.credentialId,
+                credentialUrl: cert.credentialUrl,
+                issueDate: cert.issueDate.toISOString(),
+                expiryDate: cert.issueDate.toISOString(),
+                description: cert.description,
+            }));
+
+            // Return consistent result using JSEducationDTO
+            const result: JsEducationDTO = {
+                userId: updatedJobseeker?.user_id,
+                currentEdProgram: mapToEnum(updatedJobseeker?.current_enrolled_ed_program ?? "None", EdProgram),
+                highestLevelOfStudy: mapToEnum(updatedJobseeker?.highest_level_of_study_completed ?? "None", DegreeType),
+                currentGrade: mapToEnum(updatedJobseeker?.current_grade_level ?? "None", CurrentGrade),
+                isEnrolledEdProgram: updatedJobseeker?.is_enrolled_ed_program,
+                schools: edHistory,
+                certifications: certs,
+                projects: projects,
+            }
+            return {result}
         });
 
         return NextResponse.json({
