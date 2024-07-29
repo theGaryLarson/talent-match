@@ -257,6 +257,7 @@ model jobseekers {
   current_job_title                  String?                              @db.VarChar(255)
   resume_url                         String?                              @db.VarChar(255)
   years_work_exp                     Int?                                 @db.SmallInt
+  months_internship_exp              Int?                                 @db.SmallInt
   portfolio_url                      String?                              @db.VarChar(255)
   video_url                          String?                              @db.VarChar(255)
   employment_type_sought             String?                              @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
