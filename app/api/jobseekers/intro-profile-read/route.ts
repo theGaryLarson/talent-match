@@ -10,14 +10,14 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
         ;
-        const {userId} = body;
-        if (!userId) {
-            return NextResponse.json({error: 'User ID is required'}, {status: 400});
+        const {email} = body;
+        if (!email) {
+            return NextResponse.json({error: 'User email is required'}, {status: 400});
         }
         // Fetch the contacts data
         const contact = await prisma.contacts.findUnique({
             where: {
-                user_id: userId
+                email: email
             },
             select: {
                 user_id: true,
@@ -53,6 +53,7 @@ export async function POST(request: Request) {
                         years_work_exp: true,
                         portfolio_url: true,
                         video_url: true,
+                        is_marked_deletion: true,
                         employment_type_sought: true,
                         pathways: {
                             select: {
@@ -89,7 +90,7 @@ export async function POST(request: Request) {
             email: contact.email,
             introHeadline: jobseeker?.intro_headline,
             currentJobTitle: jobseeker?.current_job_title,
-            resumeUrl: jobseeker?.resume_url,
+            resumeUrl: jobseeker?.resume_url??null,
         };
 
         // metadata that may be needed
@@ -98,7 +99,8 @@ export async function POST(request: Request) {
             createdAt: contact.createdAt,
             pathwayId: jobseeker?.pathways.pathway_id,
             jobseekerId: jobseeker?.jobseeker_id,
-            contactAddressId: address?.contact_address_id
+            contactAddressId: address?.contact_address_id,
+            isMarkedDeletion: jobseeker?.is_marked_deletion,
         }
         const result = {loadIntroPage, meta}
         return NextResponse.json({
