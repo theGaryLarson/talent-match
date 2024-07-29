@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient, ProjectExperiences} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
 const prisma: PrismaClient = getPrismaClient();
@@ -19,7 +19,7 @@ export async function DELETE(request: Request) {
             }
         });
 
-        const deletedEntry = await prisma.projectExperiences.delete({
+        const deletedEntry: ProjectExperiences = await prisma.projectExperiences.delete({
             where: {
                 projectId: projId,
             }
