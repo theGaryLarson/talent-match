@@ -13,15 +13,13 @@ import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
 
 const prisma: PrismaClient = getPrismaClient();
 
-const mapToEnum = (value: string, enumType: any): any => {
+export const mapToEnum = (value: string, enumType: any): any => {
     const enumValues = Object.values(enumType);
     return enumValues.includes(value) ? value : null;
 }
 
 export async function POST(request: Request) {
     try {
-        // const {searchParams} = new URL(request.url);
-        // const userId = searchParams.get('userId');
         const body = await request.json();
         const {userId} = body;
         if (!userId) {
