@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient, WorkExperience} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
 const prisma: PrismaClient = getPrismaClient();
@@ -10,7 +10,7 @@ export async function DELETE(request: Request) {
         const body = await request.json();
         const { workId } = body;
         jsWorkExpId = workId;
-        const deletedEntry = await prisma.workExperience.delete({
+        const deletedEntry: WorkExperience = await prisma.workExperience.delete({
             where: {
                 workId: jsWorkExpId,
             }
