@@ -19,6 +19,7 @@ export default function CreateJobseekerProfileIntroPage(){
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
   const [newFieldType, setNewFieldType] = useState<'text' | 'email' | 'number'>('text');
+  const [newFieldValue, setNewFieldValue] = useState('');
   const [newFieldOptions, setNewFieldOptions] = useState<{ value: string | number; label: string }[]>([]);
   
   const handleFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -41,10 +42,12 @@ export default function CreateJobseekerProfileIntroPage(){
 
   const handleAddField = () => {
     if (newFieldLabel) {
-      dispatch(addField({ id: newFieldId, label: newFieldLabel, type: newFieldType, options: newFieldType === 'select' || newFieldType === 'radio' ? newFieldOptions : undefined }));
+      dispatch(addField(
+        { id: newFieldId, label: newFieldLabel, value: newFieldValue, type: newFieldType, options: newFieldType === 'select' || newFieldType === 'radio' ? newFieldOptions : undefined }));
       setNewFieldId('');
       setNewFieldLabel('');
       setNewFieldType('text');
+      setNewFieldValue('');
       setNewFieldOptions([]);
     }
   };
@@ -52,7 +55,8 @@ export default function CreateJobseekerProfileIntroPage(){
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     dispatch(submitForm());
-    router.push('/create-profile/jobseeker/preferences');
+    router.push('/create-profile/jobseeker/education');
+
 
     // Simulate a form submission
     setTimeout(() => {
