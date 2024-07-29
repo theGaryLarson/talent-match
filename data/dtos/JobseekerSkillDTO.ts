@@ -1,5 +1,5 @@
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 
-export type JobseekerSkill = {
+export type JobseekerSkillDTO = {
     skills: SkillDTO;
 };

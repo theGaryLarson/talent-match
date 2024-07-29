@@ -1,4 +1,4 @@
-import { JobseekerSkill } from "@/data/dtos/JobSeekerSkill";
+import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
 
 //fixme: this type cannot be used yet because it does not align with the returned object
 type ContactDTO = {
@@ -45,7 +45,7 @@ export type JobSeekerEmployerViewDTO = {
     work_experiences: WorkExperienceDTO[];
     edu_institutions: EducationInstitutionDTO;
     project_experiences: ProjectExperienceDTO[];
-    jobseeker_has_skills: JobseekerSkill[];
+    jobseeker_has_skills: JobseekerSkillDTO[];
 } | null;
 
 export default JobSeekerEmployerViewDTO;

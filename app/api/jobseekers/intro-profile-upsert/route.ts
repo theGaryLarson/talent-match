@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
-import {JsIntroDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {JsIntroDTO, JsIntroPostDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
@@ -8,7 +8,7 @@ const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
-        const body: JsIntroDTO = await request.json();
+        const body: JsIntroPostDTO = await request.json();
 
         // Destructure the DTO
         const {
@@ -29,11 +29,13 @@ export async function POST(request: Request) {
             resumeUrl,
         } = body;
 
+        // TODO: fix install and use libphonenumber-js to handle country codes. Supported React Component as well.
         // Clean the phoneNumber to remove special characters
-        const cleanedPhoneNumber = phone?.replace(/[-\s()]/g, '');
+        const cleanedPhoneCountryCode = phoneCountryCode?.replace(/[-\s().]/g, '')
+        const cleanedPhoneNumber = phone?.replace(/[-\s().]/g, '');
 
         // Format the phone number in E.164 format
-        const formattedPhone = `+${phoneCountryCode}-${cleanedPhoneNumber}`;
+        const formattedPhone = `+${cleanedPhoneCountryCode}-${cleanedPhoneNumber}`;
 
         // Transaction to ensure atomicity
         const result = await prisma.$transaction(async (prisma) => {
@@ -69,16 +71,16 @@ export async function POST(request: Request) {
 
             // Upsert jobseeker
             // Find the jobseeker_id or generate a new one
-            const jobseeker = await prisma.jobseekers.findUnique({
+            const js = await prisma.jobseekers.findUnique({
                 where: {user_id: userId},
                 select: {jobseeker_id: true, targeted_pathway: true, is_enrolled_ed_program: true}
             });
 
-            const jobseeker_id = jobseeker?.jobseeker_id || uuidv4();
-            const isEnrolledInCollege = jobseeker?.is_enrolled_ed_program || false;
+            const jobseeker_id = js?.jobseeker_id || uuidv4();
+            const isEnrolledInCollege = js?.is_enrolled_ed_program || false;
 
             // Find or create the targeted pathway for 'Undecided'
-            let targeted_pathway = jobseeker?.targeted_pathway;
+            let targeted_pathway = js?.targeted_pathway;
             if (!targeted_pathway) {
                 let pathway = await prisma.pathways.findUnique({
                     where: {pathway_title: 'Undecided'},
@@ -94,11 +96,11 @@ export async function POST(request: Request) {
                         select: {pathway_id: true}
                     });
                 }
-                targeted_pathway = jobseeker?.targeted_pathway || pathway.pathway_id;
+                targeted_pathway = js?.targeted_pathway || pathway.pathway_id;
             }
 
 
-            const jobSeeker = await prisma.jobseekers.upsert({
+            const jobseeker = await prisma.jobseekers.upsert({
                 where: {user_id: contact.user_id},
                 update: {
                     intro_headline: introHeadline,
@@ -133,7 +135,7 @@ export async function POST(request: Request) {
             })
             const contact_address_id = existingContactAddress?.contact_address_id || uuidv4();
             const contactAddress = await prisma.contact_addresses.upsert({
-                where: { user_id: contact.user_id},
+                where: {user_id: contact.user_id},
                 update: {
                     zip: zipCode,
                     state,
@@ -148,13 +150,37 @@ export async function POST(request: Request) {
                     city,
                     county
                 }
-            })
+            });
+            const loadIntroPage: JsIntroDTO = {
+                userId: contact.user_id,
+                photoUrl: contact.photo_url,
+                firstName: contact.first_name,
+                lastName: contact.last_name,
+                birthDate: contact.birthdate,
+                phoneCountryCode: cleanedPhoneCountryCode,
+                phone: cleanedPhoneNumber,
+                zipCode: contactAddress.zip,
+                state: contactAddress.state,
+                city: contactAddress.city,
+                county: contactAddress.county,
+                email: contact.email,
+                introHeadline: jobseeker.intro_headline,
+                currentJobTitle: jobseeker.current_job_title,
+                resumeUrl: jobseeker?.resume_url ?? null,
+            }
 
 
-
-            return {contact, jobSeeker, };
+            const meta = {
+                emailVerified: contact.emailVerified,
+                createdAt: contact.createdAt,
+                pathwayId: jobseeker.targeted_pathway,
+                jobseekerId: jobseeker.jobseeker_id,
+                contactAddressId: contactAddress.contact_address_id,
+                isMarkedDeletion: jobseeker.is_marked_deletion,
+            }
+            return {loadIntroPage, meta};
         });
-        return NextResponse.json({success: true, result}, { status: 200 });
+        return NextResponse.json({success: true, result}, {status: 200});
     } catch (error) {
         console.error('Error creating job seeker intro:', error);
         return NextResponse.json({error: 'Failed to create job seeker intro'}, {status: 500});

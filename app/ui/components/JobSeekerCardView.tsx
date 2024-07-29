@@ -4,7 +4,7 @@ import Pill from './Pill';
 import RoundedButton from './RoundedButton';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { BookmarkIcon, ShareIcon } from '@heroicons/react/24/outline';
-import { JobseekerSkill } from '@/data/dtos/JobSeekerSkill';
+import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import { JobSeekerCardViewDTO } from '@/data/dtos/JobSeekerCardViewDTO';
 
 export default function JobSeekerCardView({
@@ -29,7 +29,7 @@ export default function JobSeekerCardView({
   // Extract the first three skills from the jobseeker_has_skills array
   const firstNSkills: SkillDTO[] = skillsList
     .slice(0, 5)
-    .map((item: JobseekerSkill) => item.skills);
+    .map((item: JobseekerSkillDTO) => item.skills);
   if (isLarge) {
     return (
       <div className="flex h-[220px] w-full items-center gap-10 rounded-lg border p-6">

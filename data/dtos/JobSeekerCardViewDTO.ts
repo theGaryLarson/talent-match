@@ -1,4 +1,4 @@
-import {JobseekerSkill} from "@/data/dtos/JobSeekerSkill";
+import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
 
 export type JobSeekerCardViewDTO = {
     jobseeker_id: string;
@@ -24,5 +24,5 @@ export type JobSeekerCardViewDTO = {
         degreeType: string | null;
         major: string | null;
     } | null;
-    jobseeker_has_skills: JobseekerSkill[];
+    jobseeker_has_skills: JobseekerSkillDTO[];
 };

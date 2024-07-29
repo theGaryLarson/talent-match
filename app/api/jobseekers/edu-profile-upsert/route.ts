@@ -1,16 +1,19 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient, ProjectExperiences, jobseekers, certificates, jobseekers_education } from '@prisma/client';
-import { EducationInfoDTO, JsEducationDTO, ProjectExpDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {
+    CertDTO,
+    CurrentGrade,
+    DegreeType,
+    EdProgram,
+    EducationInfoDTO,
+    JsEducationDTO,
+    ProjectExpDTO
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import {mapToEnum} from "@/app/api/jobseekers/edu-profile-read/route";
 const prisma: PrismaClient = getPrismaClient();
 
-// Utility function to filter out undefined values
-const filterUndefined = <T extends object>(obj: T): Partial<T> => {
-    return Object.fromEntries(
-        Object.entries(obj).filter(([, value]) => value !== undefined)
-    ) as Partial<T>;
-};
 
 const toMidnightUTC = (date: string): string => {
     const d = new Date(date);
@@ -32,12 +35,11 @@ export async function POST(request: Request) {
             projects,
         } = body;
 
-        const createdCerts: certificates[] = [];
-        const createdProjects: ProjectExperiences[] = [];
-        const createdSchools: jobseekers_education[] = [];
-        let createdJobSeeker: jobseekers | null = null;
-
         const result = await prisma.$transaction(async (prisma) => {
+            const createdCerts: certificates[] = [];
+            const createdProjects: ProjectExperiences[] = [];
+            const createdSchools: jobseekers_education[] = [];
+            let updatedJobseeker: jobseekers | null;
             // Find the jobseeker_id or generate a new one
             const jobseeker = await prisma.jobseekers.findUnique({
                 where: { user_id: userId },
@@ -71,7 +73,7 @@ export async function POST(request: Request) {
                 targetedPathway = jobseeker?.targeted_pathway || pathway.pathway_id;
             }
 
-            createdJobSeeker = await prisma.jobseekers.upsert({
+            updatedJobseeker = await prisma.jobseekers.upsert({
                 where: { user_id: userId },
                 update: {
                     highest_level_of_study_completed: highestLevelOfStudy,
@@ -98,11 +100,10 @@ export async function POST(request: Request) {
                 },
             });
 
-            const certPromises = certifications.map(async cert => {
+            const certPromises = certifications.map(async (cert: CertDTO) => {
                 const existingCert = await prisma.certificates.findFirst({
                     where: {
-                        jobSeekerId: jobseekerId,
-                        name: cert.name,
+                        certId: cert.certId,
                     },
                 });
 
@@ -114,11 +115,12 @@ export async function POST(request: Request) {
                     credentialUrl: cert.credentialUrl,
                     issueDate: new Date(cert.issueDate).toISOString(),
                     expiryDate: new Date(cert.expiryDate).toISOString(),
+                    description: cert.description,
                 };
 
                 if (existingCert) {
                     const updatedCert = await prisma.certificates.update({
-                        where: { certId: existingCert.certId },
+                        where: { certId: cert.certId },
                         data: updateData,
                     });
                     createdCerts.push(updatedCert);
@@ -137,26 +139,21 @@ export async function POST(request: Request) {
                     createdCerts.push(createdCert);
                 }
             });
-
             await Promise.all(certPromises);
 
-            const schoolPromises = schools.map(async school => {
+            const schoolPromises = schools.map(async (school: EducationInfoDTO) => {
                 let eduInstitution = await prisma.edu_institutions.findUnique({
-                    where: { name: school.institutionName }
+                    where: { edu_institution_id: school.edInstitutionId }
                 });
-                const newEduInstitutionId = uuidv4();
                 if (!eduInstitution) {
                     await prisma.edu_institutions.create({
                         data: {
-                            edu_institution_id: newEduInstitutionId,
+                            edu_institution_id: school.edInstitutionId,
                             name: school.institutionName,
                             contact_email: null,
                             edu_url: null,
                         }
                     });
-                    school.edInstitutionId = newEduInstitutionId;
-                } else {
-                    school.edInstitutionId = eduInstitution.edu_institution_id;
                 }
 
                 const existingEducation = await prisma.jobseekers_education.findFirst({
@@ -175,7 +172,7 @@ export async function POST(request: Request) {
                     school.jobseekerEdId = existingEducation.jobseekerEdId;
                 }
                 // Build update object and filter undefined values
-                const updateData: Partial<EducationInfoDTO> = {
+                const eduUpdateData: Partial<EducationInfoDTO> = {
                     jobseekerEdId: school.jobseekerEdId,
                     edProgram: school.edProgram,
                     edSystem: school.edSystem,
@@ -190,14 +187,14 @@ export async function POST(request: Request) {
                 if (existingEducation) {
                     const updatedEducation = await prisma.jobseekers_education.update({
                         where: { jobseekerEdId: existingEducation.jobseekerEdId },
-                        data: updateData
+                        data: eduUpdateData
                     });
                     createdSchools.push(updatedEducation);
                 } else {
                     const createdEducation = await prisma.jobseekers_education.create({
                         data: {
-                            jobseekerEdId: uuidv4(),
-                            edProgram: school.edProgram,
+                            jobseekerEdId: school.jobseekerEdId,
+                            edProgram: school.edProgram??"None",
                             edSystem: school.edSystem,
                             isEnrolled: school.isEnrolled,
                             startDate: new Date(school.startDate).toISOString(),
@@ -221,11 +218,12 @@ export async function POST(request: Request) {
                     createdSchools.push(createdEducation);
                 }
             });
+            await Promise.all(schoolPromises);
 
             const projPromises = projects.map(async (proj: ProjectExpDTO) => {
-                const existingProject = await prisma.projectExperiences.findFirst({
+                const existingProject = await prisma.projectExperiences.findUnique({
                     where: {
-                        projectId: proj?.projectId,
+                        projectId: proj.projectId,
                     },
                 });
 
@@ -248,7 +246,7 @@ export async function POST(request: Request) {
                 } else {
                     const createdProject = await prisma.projectExperiences.create({
                         data: {
-                            projectId: uuidv4(),
+                            projectId: proj.projectId,
                             projTitle: proj.projTitle,
                             projectRole: proj.projectRole,
                             startDate: new Date(proj.startDate),
@@ -274,17 +272,53 @@ export async function POST(request: Request) {
                     createdProjects.push(createdProject);
                 }
             });
-
             await Promise.all(projPromises);
-            await Promise.all(schoolPromises);
+
+            // Map the school data to DTO
+            const edHistory: EducationInfoDTO[] = createdSchools.map((edu) => ({
+                jobseekerEdId: edu.jobseekerEdId,
+                edInstitutionId: edu.edInstitutionId,
+                edProgram: mapToEnum(edu.edProgram, EdProgram),
+                edSystem: edu.edSystem,
+                isEnrolled: edu.isEnrolled,
+                startDate: edu.startDate.toISOString(),
+                gradDate: edu.gradDate.toISOString(),
+                degreeType: mapToEnum(edu.degreeType ?? "None", DegreeType),
+                major: edu?.major,
+                minor: edu?.minor,
+                description: edu.description
+            }));
+
+            // Map the certificate data to DTO
+            const certs: CertDTO[] = createdCerts.map((cert) => ({
+                certId: cert.certId,
+                name: cert.name,
+                logoUrl: cert.logoUrl,
+                issuingOrg: cert.issuingOrg,
+                credentialId: cert.credentialId,
+                credentialUrl: cert.credentialUrl,
+                issueDate: cert.issueDate.toISOString(),
+                expiryDate: cert.issueDate.toISOString(),
+                description: cert.description,
+            }));
+
+            // Return consistent result using JSEducationDTO
+            const result: JsEducationDTO = {
+                userId: updatedJobseeker?.user_id,
+                currentEdProgram: mapToEnum(updatedJobseeker?.current_enrolled_ed_program ?? "None", EdProgram),
+                highestLevelOfStudy: mapToEnum(updatedJobseeker?.highest_level_of_study_completed ?? "None", DegreeType),
+                currentGrade: mapToEnum(updatedJobseeker?.current_grade_level ?? "None", CurrentGrade),
+                isEnrolledEdProgram: updatedJobseeker?.is_enrolled_ed_program,
+                schools: edHistory,
+                certifications: certs,
+                projects: projects,
+            }
+            return {result}
         });
 
         return NextResponse.json({
             success: true,
-            createdJobSeeker,
-            createdCerts,
-            createdProjects,
-            createdSchools
+            result
         }, { status: 200 });
     } catch (e: any) {
         console.log(e.message);
