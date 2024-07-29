@@ -47,6 +47,7 @@ export default function CreateJobseekerProfileIntroPage(){
       setNewFieldId('');
       setNewFieldLabel('');
       setNewFieldType('text');
+      setNewFieldValue('');
       setNewFieldOptions([]);
     }
   };
