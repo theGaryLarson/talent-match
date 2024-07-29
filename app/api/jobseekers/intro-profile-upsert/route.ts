@@ -71,16 +71,16 @@ export async function POST(request: Request) {
 
             // Upsert jobseeker
             // Find the jobseeker_id or generate a new one
-            const jobseeker = await prisma.jobseekers.findUnique({
+            const js = await prisma.jobseekers.findUnique({
                 where: {user_id: userId},
                 select: {jobseeker_id: true, targeted_pathway: true, is_enrolled_ed_program: true}
             });
 
-            const jobseeker_id = jobseeker?.jobseeker_id || uuidv4();
-            const isEnrolledInCollege = jobseeker?.is_enrolled_ed_program || false;
+            const jobseeker_id = js?.jobseeker_id || uuidv4();
+            const isEnrolledInCollege = js?.is_enrolled_ed_program || false;
 
             // Find or create the targeted pathway for 'Undecided'
-            let targeted_pathway = jobseeker?.targeted_pathway;
+            let targeted_pathway = js?.targeted_pathway;
             if (!targeted_pathway) {
                 let pathway = await prisma.pathways.findUnique({
                     where: {pathway_title: 'Undecided'},
@@ -96,11 +96,11 @@ export async function POST(request: Request) {
                         select: {pathway_id: true}
                     });
                 }
-                targeted_pathway = jobseeker?.targeted_pathway || pathway.pathway_id;
+                targeted_pathway = js?.targeted_pathway || pathway.pathway_id;
             }
 
 
-            const jobSeeker = await prisma.jobseekers.upsert({
+            const jobseeker = await prisma.jobseekers.upsert({
                 where: {user_id: contact.user_id},
                 update: {
                     intro_headline: introHeadline,
@@ -151,7 +151,34 @@ export async function POST(request: Request) {
                     county
                 }
             });
-            return {contact, contactAddress, jobSeeker,};
+            const loadIntroPage: JsIntroDTO = {
+                userId: contact.user_id,
+                photoUrl: contact.photo_url,
+                firstName: contact.first_name,
+                lastName: contact.last_name,
+                birthDate: contact.birthdate,
+                phoneCountryCode: cleanedPhoneCountryCode,
+                phone: cleanedPhoneNumber,
+                zipCode: contactAddress.zip,
+                state: contactAddress.state,
+                city: contactAddress.city,
+                county: contactAddress.county,
+                email: contact.email,
+                introHeadline: jobseeker.intro_headline,
+                currentJobTitle: jobseeker.current_job_title,
+                resumeUrl: jobseeker?.resume_url ?? null,
+            }
+
+
+            const meta = {
+                emailVerified: contact.emailVerified,
+                createdAt: contact.createdAt,
+                pathwayId: jobseeker.targeted_pathway,
+                jobseekerId: jobseeker.jobseeker_id,
+                contactAddressId: contactAddress.contact_address_id,
+                isMarkedDeletion: jobseeker.is_marked_deletion,
+            }
+            return {loadIntroPage, meta};
         });
         return NextResponse.json({success: true, result}, {status: 200});
     } catch (error) {
