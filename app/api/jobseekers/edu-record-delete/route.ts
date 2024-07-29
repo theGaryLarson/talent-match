@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import {jobseekers_education, PrismaClient} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
 const prisma: PrismaClient = getPrismaClient();
@@ -10,7 +10,7 @@ export async function DELETE(request: Request) {
         const body = await request.json();
         const { jobseekerEdId } = body;
         jsEduId = jobseekerEdId;
-        const deletedEntry = await prisma.jobseekers_education.delete({
+        const deletedEntry: jobseekers_education = await prisma.jobseekers_education.delete({
             where: {
                 jobseekerEdId: jsEduId,
             }
