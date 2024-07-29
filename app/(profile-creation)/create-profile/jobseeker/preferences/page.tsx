@@ -21,8 +21,9 @@ export default function CreateJobseekerProfilePreferencesPage(){
       <aside className="hidden lg:w-2/5 lg:block">
       </aside>
       <section className="w-full lg:w-3/5">
-        <h1>Data on Another Page</h1>
-        <pre>{JSON.stringify(fields, null, 2)}</pre>
+        {/* TODO: Comment/Uncomment test script below for viewing */}
+        {/* <h1>Data on Another Page</h1>
+        <pre>{JSON.stringify(fields, null, 2)}</pre> */}
         <ProgressBarFlat progress={5/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 5/6</p>
         <h1>Your preferences</h1>
