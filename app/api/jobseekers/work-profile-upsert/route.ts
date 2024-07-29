@@ -7,25 +7,27 @@ import {JsWorkExpDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
+    let result: JsWorkExpDTO | null = null;
     try {
         const body: JsWorkExpDTO = await request.json();
 
         const {
             userId,
             yearsWorkExperience,
-            amountInternshipExperience,
+            monthsInternshipExperience,
             isAuthorizedToWorkUsa,
             requiresSponsorship,
             workExperiences
         } = body;
 
 
-        const result = await prisma.$transaction(async (prisma) => {
+        await prisma.$transaction(async (prisma) => {
             // Update the jobseeker table with the provided properties
             const updatedJobseeker = await prisma.jobseekers.update({
                 where: {user_id: userId},
                 data: {
                     years_work_exp: yearsWorkExperience ? parseInt(yearsWorkExperience, 10) : undefined,
+                    months_internship_exp: monthsInternshipExperience ? parseInt(monthsInternshipExperience, 10): undefined
                 },
             });
 
@@ -102,7 +104,16 @@ export async function POST(request: Request) {
             if (workExpPromises) {
                 await Promise.all(workExpPromises);
             }
-            return {updatedJobseeker, updatedPrivateData, createdWorkExperiences}
+
+            result = {
+                userId: updatedJobseeker.user_id,
+                yearsWorkExperience: updatedJobseeker?.years_work_exp?.toString() ?? "0",
+                monthsInternshipExperience: updatedJobseeker?.months_internship_exp?.toString() ?? "0",
+                isAuthorizedToWorkUsa: updatedPrivateData.is_authorized_to_work_in_usa,
+                requiresSponsorship: updatedPrivateData.job_sponsorship_required ,
+                workExperiences: createdWorkExperiences,
+            }
+            return result;
         });
 
         return NextResponse.json({
