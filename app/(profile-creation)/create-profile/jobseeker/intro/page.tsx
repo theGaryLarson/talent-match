@@ -4,7 +4,7 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { RootState } from '../../../../../lib/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure } from '../../../../../lib/features/profileCreation/formSlice';
+import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '../../../../../lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
@@ -12,7 +12,7 @@ import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import { Avatar, Button, Progress } from "flowbite-react";
 
 export default function CreateJobseekerProfileIntroPage(){
-  const { fields, isSubmitting, error } = useSelector((state: RootState) => state.form);
+  const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
   const router = useRouter();
 
