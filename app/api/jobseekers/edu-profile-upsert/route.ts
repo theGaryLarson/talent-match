@@ -308,7 +308,7 @@ export async function POST(request: Request) {
                 certifications: certs,
                 projects: projects,
             }
-            return {result}
+            return result
         });
 
         return NextResponse.json({
