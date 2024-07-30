@@ -8,10 +8,10 @@ import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
 const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
     try {
-        const body: JsShowcaseDTO = await request.json();
+        const body = await request.json();
         const {userId} = body;
 
-        const updatedShowcase = await prisma.jobseekers.findUnique({
+        const showcase = await prisma.jobseekers.findUnique({
             where: {
                 user_id: userId
             },
@@ -35,23 +35,23 @@ export async function POST(request: Request) {
             }
         });
 
-        if (!updatedShowcase) {
+        if (!showcase) {
             return NextResponse.json({success:false, error:`Record does not exist for id ${userId}`})
         } else {
-            const mappedSkills: SkillDTO[]  = updatedShowcase.jobseeker_has_skills.map((jsSkill: JobseekerSkillDTO) => ({
+            const mappedSkills: SkillDTO[]  = showcase.jobseeker_has_skills.map((jsSkill: JobseekerSkillDTO) => ({
                 skill_id: jsSkill.skills.skill_id,
                 skill_name: jsSkill.skills.skill_name,
                 skill_info_url: jsSkill.skills.skill_info_url
 
             }));
             const result: JsShowcaseDTO  = {
-                userId: updatedShowcase.user_id,
+                userId: showcase.user_id,
                 skills: mappedSkills,
-                portfolioUrl: updatedShowcase.portfolio_url,
-                portfolioPassword: updatedShowcase.portfolio_password,
-                video_url: updatedShowcase.video_url
+                portfolioUrl: showcase.portfolio_url,
+                portfolioPassword: showcase.portfolio_password,
+                video_url: showcase.video_url
             }
-            // console.log(JSON.stringify(updatedShowcase, null ,2))
+            // console.log(JSON.stringify(showcase, null ,2))
             return NextResponse.json({success: true, result}, {status: 200})
         }
 
