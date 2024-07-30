@@ -1,7 +1,7 @@
 // NOTE: Request instance Store per Nextjs Redux starter here: https://redux.js.org/usage/nextjs#folder-structure
 import { Middleware } from '@reduxjs/toolkit';
 import { useMemo } from 'react';
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, ConfigureStoreOptions } from '@reduxjs/toolkit'
 import jobseekerReducer from './features/profileCreation/jobseekerSlice'
 import formReducer from './features/profileCreation/formSlice'
 
@@ -12,8 +12,8 @@ import formReducer from './features/profileCreation/formSlice'
 //     return result;
 // };
 
-export const makeStore = (preloadedState?: State) => {
-    return configureStore({
+export const makeStore = (preloadedState?: any) => {
+    const configureStoreOptions : ConfigureStoreOptions = {
         reducer: {
             jobseeker: jobseekerReducer,
             form: formReducer,
@@ -21,7 +21,9 @@ export const makeStore = (preloadedState?: State) => {
         preloadedState,
         devTools: process.env.NODE_ENV !== 'production',
         // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(loggerMiddleware),
-    })
+    };
+
+    return configureStore(configureStoreOptions);
 }
 
 // Infer the type of makeStore
