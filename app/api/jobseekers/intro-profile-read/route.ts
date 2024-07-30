@@ -96,7 +96,7 @@ export async function POST(request: Request) {
         const meta = {
             emailVerified: contact.emailVerified,
             createdAt: contact.createdAt,
-            pathwayId: jobseeker?.pathways.pathway_id,
+            pathwayId: jobseeker?.pathways?.pathway_id,
             jobseekerId: jobseeker?.jobseeker_id,
             contactAddressId: address?.contact_address_id,
             isMarkedDeletion: jobseeker?.is_marked_deletion,
