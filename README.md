@@ -931,6 +931,63 @@ _This route is meant to be used with the `/create-profile/jobseeker/work-experie
 }
 ```
 
+#### Read Jobseeker Work Experience Profile Page
+
+_This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for initial load of data, if any._
+
+**Endpoint**: `/api/jobseekers/work-profile-read`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: ``
+```json
+{
+  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
+}
+```
+
+##### Sample Response
+**DTO**: ``
+```json
+{
+    "success": true,
+    "result": {
+        "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+        "yearsWorkExperience": "5",
+        "monthsInternshipExperience": "2",
+        "isAuthorizedToWorkUsa": true,
+        "requiresSponsorship": false,
+        "workExperiences": [
+            {
+                "workId": "ddf90dca-5273-4651-aef3-340ea8494335",
+                "jobseekerId": "a7e2b588-201a-4b2c-a35c-495ede76f840",
+                "company": "CFA",
+                "jobTitle": "Backend Web Developer",
+                "isCurrentJob": true,
+                "startDate": "2020-01-01T00:00:00.000Z",
+                "endDate": null,
+                "responsibilities": "Coordinating and developing Project Factory projects",
+                "isInternship": false,
+                "techAreaId": "7acd2248-a2c3-4789-b414-a2463b75997a"
+            },
+            {
+                "workId": "ddf90cad-5273-4651-aef3-340ea8494335",
+                "jobseekerId": "a7e2b588-201a-4b2c-a35c-495ede76f840",
+                "company": "CFA",
+                "jobTitle": "intern",
+                "isCurrentJob": false,
+                "startDate": "2022-01-01T00:00:00.000Z",
+                "endDate": "2022-03-25T00:00:00.000Z",
+                "responsibilities": "Microsoft Dynamics Plugins for admin workflow",
+                "isInternship": true,
+                "techAreaId": "4c376b09-38e2-4278-b70b-975837c43fe5"
+            }
+        ]
+    }
+}
+```
+
 #### Delete Jobseeker Work Experience
 
 _This route is intended for use by a jobseeker to delete a Work Experience from their profile_
@@ -966,11 +1023,32 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
     }
 }
 ```
+### Showcase Page
 
+#### Query Title
+
+_Description_
+
+**Endpoint**: ``
+
+**Method**: ``
+
+##### Sample Request
+**DTO**: ``
+```json
+
+```
+
+##### Sample Response
+**DTO**: ``
+```json
+
+```
 ---
 ## Jobseeker API Routes Coming Soon
 
 ##### Showcase Profile Page
+- `showcase-profile-read`
 - `showcase-profile-upsert`
 - `showcase-skill-delete`
 - `showcase-video-delete`
