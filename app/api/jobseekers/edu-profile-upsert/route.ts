@@ -254,9 +254,6 @@ export async function POST(request: Request) {
                     },
 
                 });
-                // console.log('//////////////////////////////////////////////////////////')
-                // console.log(JSON.stringify(existingProject, null, 2))
-                // console.log('//////////////////////////////////////////////////////////')
                 const updateProjectData: Partial<ProjectExperiences> = {
                     projTitle: proj.projTitle,
                     projectRole: proj.projectRole,
