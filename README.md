@@ -1082,12 +1082,69 @@ _This route is meant to be used with the `/create-profile/jobseeker/showcase` pa
     }
 }
 ```
+
+#### Upsert Showcase Page
+
+_This route is meant to be used with the `/create-profile/jobseeker/showcase` page for updating or creating data._
+
+**Endpoint**: `/api/jobseekers/showcase-profile-upsert`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: `JsShowcaseDTO`
+```json
+{
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+    "portfolioUrl": "https://lost-clone.biz/",
+    "portfolioPassword": "drowssap",
+    "video_url": "https://my-video.url",
+    "skills": [
+        {
+          "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
+          "skill_name": "JavaScript",
+          "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
+        },
+        {
+          "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
+          "skill_name": ".NET Assemblies",
+          "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
+        }
+      ]
+    
+}
+```
+
+##### Sample Response
+**DTO**: `result property is type `JsShowcaseDTO`.`
+```json
+{
+    "success": true,
+    "result": {
+        "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+        "portfolioUrl": "https://lost-clone.biz/",
+        "portfolioPassword": "drowssap",
+        "video_url": "https://my-video.url",
+        "skills": [
+            {
+                "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
+                "skill_name": "JavaScript",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
+            },
+            {
+                "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
+                "skill_name": ".NET Assemblies",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
+            }
+        ]
+    }
+}
+```
+
 ---
 ## Jobseeker API Routes Coming Soon
 
 ##### Showcase Profile Page
-- `showcase-profile-read`
-- `showcase-profile-upsert`
 - `showcase-skill-delete`
 - `showcase-video-delete`
 - `showcase-skill-upsert`
