@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server';
-import {PrismaClient, contacts, jobseekers} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import {JsIntroDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
@@ -9,7 +9,6 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        ;
         const {email} = body;
         if (!email) {
             return NextResponse.json({error: 'User email is required'}, {status: 400});
@@ -96,7 +95,7 @@ export async function POST(request: Request) {
         const meta = {
             emailVerified: contact.emailVerified,
             createdAt: contact.createdAt,
-            pathwayId: jobseeker?.pathways.pathway_id,
+            pathwayId: jobseeker?.pathways?.pathway_id,
             jobseekerId: jobseeker?.jobseeker_id,
             contactAddressId: address?.contact_address_id,
             isMarkedDeletion: jobseeker?.is_marked_deletion,

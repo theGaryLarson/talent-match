@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server';
-import {jobseekers, PrismaClient} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {JsShowcaseDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import {SkillDTO} from "@/data/dtos/SkillDTO";
