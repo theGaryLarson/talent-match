@@ -138,6 +138,7 @@ export type JsWorkExpDTO = {
 }
 
 export type JsShowcaseDTO = {
+    userId: string,
     skills: SkillDTO[],
     portfolioUrl: string,
     portfolioPassword: string, // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
