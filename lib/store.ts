@@ -1,9 +1,10 @@
 // NOTE: Request instance Store per Nextjs Redux starter here: https://redux.js.org/usage/nextjs#folder-structure
 import { Middleware } from '@reduxjs/toolkit';
 import { useMemo } from 'react';
-import { configureStore, ConfigureStoreOptions } from '@reduxjs/toolkit'
-import jobseekerReducer from './features/profileCreation/jobseekerSlice'
-import formReducer from './features/profileCreation/formSlice'
+import { configureStore } from '@reduxjs/toolkit'
+import jobseekerReducer, { JobseekerState } from './features/profileCreation/jobseekerSlice'
+import formReducer, { FormState } from './features/profileCreation/formSlice'
+import counterReducer, { CounterState } from './features/profileCreation/counterSlice'
 
 // const loggerMiddleware: Middleware = (storeAPI) => (next) => (action) => {
 //     console.log('Dispatching:', action);
@@ -12,19 +13,24 @@ import formReducer from './features/profileCreation/formSlice'
 //     return result;
 // };
 
-export const makeStore = (preloadedState?: any) => {
-    const configureStoreOptions : ConfigureStoreOptions = {
-        reducer: {
-            jobseeker: jobseekerReducer,
-            form: formReducer,
-        },
-        preloadedState,
-        devTools: process.env.NODE_ENV !== 'production',
-        // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(loggerMiddleware),
-    };
-
-    return configureStore(configureStoreOptions);
+interface PreloadedState {
+    jobseeker: JobseekerState,
+    form: FormState,
+    counter: CounterState
 }
+
+// WARNING: preloadedState MUST utilize the interface which MUST match the same slices used for the reducers
+// WARNING: The ConfigureStoreOptions MUST be passed directly into configureStore without having its type specified
+export const makeStore = (preloadedState?:PreloadedState) => configureStore({
+    reducer: {
+        jobseeker: jobseekerReducer,
+        form: formReducer,
+        counter: counterReducer
+    },
+    preloadedState,
+    devTools: process.env.NODE_ENV !== 'production',
+    // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(loggerMiddleware),
+});
 
 // Infer the type of makeStore
 export type AppStore = ReturnType<typeof makeStore>

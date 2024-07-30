@@ -6,11 +6,12 @@ const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     let jsId = null;
+    let jsMarkedForDeletion = null;
     try {
         const body =  await request.json();
         const { jobseekerId } = body;
         jsId = jobseekerId;
-        const jsMarkedForDeletion = await prisma.jobseekers.update({
+        jsMarkedForDeletion = await prisma.jobseekers.update({
             where: {
                 jobseeker_id: jsId,
             },
@@ -21,8 +22,8 @@ export async function POST(request: Request) {
         return NextResponse.json({success: true, result: jsMarkedForDeletion});
     }  catch (e: any) {
         console.log(e.message);
-        const msg = jsId ? `(No record with id ${jsId})` : `unknown id`;
-        return NextResponse.json({ error: `Failed to delete jobseeker with id: ${msg}` });
+        const msg = jsMarkedForDeletion ? `Failed to mark jobseeker with id: ${jsId} for deletion`  : `No record with id ${jsId})`;
+        return NextResponse.json({ error: msg });
     } finally {
         await prisma.$disconnect();
     }

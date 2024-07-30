@@ -526,80 +526,78 @@ institution.
 {
   "success": true,
   "result": {
-    "result": {
-      "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
-      "currentEdProgram": "College",
-      "highestLevelOfStudy": "Bachelor's Degree",
-      "currentGrade": "Junior",
-      "isEnrolledEdProgram": false,
-      "schools": [
-        {
-          "jobseekerEdId": "53d66079-60e2-46a2-9214-e86e2f766734",
-          "edInstitutionId": "077291f4-a2d6-484c-82bc-ae96ba036761",
-          "edProgram": "College",
-          "edSystem": null,
-          "isEnrolled": true,
-          "startDate": "2024-12-01T00:00:00.000Z",
-          "gradDate": "2028-07-01T00:00:00.000Z",
-          "degreeType": null,
-          "major": "Computer Science",
-          "minor": "asdf",
-          "description": "Studied various computer science topics and applied them in practical projects."
-        },
-        {
-          "jobseekerEdId": "dc9fb674-1e7c-46c3-a3d2-5bc72e5dd4c6",
-          "edInstitutionId": "24f31a6d-2c7b-48d2-88ee-cf65edbd5fa0",
-          "edProgram": null,
-          "edSystem": "System ABC",
-          "isEnrolled": false,
-          "startDate": "2022-06-01T00:00:00.000Z",
-          "gradDate": "2028-06-01T00:00:00.000Z",
-          "degreeType": "None",
-          "major": null,
-          "minor": null,
-          "description": "Studied various computer science topics and applied them in practical projects."
-        }
-      ],
-      "certifications": [
-        {
-          "certId": "5b97ce22-6f37-4ea1-91c4-9f41e513d8e0",
-          "name": "Certified JavaScript Developer",
-          "logoUrl": null,
-          "issuingOrg": "XYZ Institute",
-          "credentialId": "CJD-002",
-          "credentialUrl": "http://credential.u",
-          "issueDate": "2023-01-01T00:00:00.000Z",
-          "expiryDate": "2023-01-01T00:00:00.000Z",
-          "description": "Certification"
-        }
-      ],
-      "projects": [
-        {
-          "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6",
-          "jobseekerId": "7e1db701-f79a-43e5-a434-23dd6690fb57",
-          "projTitle": "Web Development Project",
-          "projectRole": "backend dev",
-          "startDate": "2022-01-01T00:00:00.000Z",
-          "completionDate": "2022-06-01T00:00:00.000Z",
-          "problemSolvedDescription": "Developed a web application using React and Node.js.",
-          "teamSize": "8",
-          "repoUrl": "https://www.repo.url",
-          "demoUrl": "https:///www.demo.url",
-          "skills": [
-            {
-              "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
-              "skill_name": "JavaScript",
-              "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
-            },
-            {
-              "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
-              "skill_name": ".NET Assemblies",
-              "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
-            }
-          ]
-        }
-      ]
-    }
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+    "currentEdProgram": "College",
+    "highestLevelOfStudy": "Bachelor's Degree",
+    "currentGrade": "Junior",
+    "isEnrolledEdProgram": false,
+    "schools": [
+      {
+        "jobseekerEdId": "53d66079-60e2-46a2-9214-e86e2f766734",
+        "edInstitutionId": "077291f4-a2d6-484c-82bc-ae96ba036761",
+        "edProgram": "College",
+        "edSystem": null,
+        "isEnrolled": true,
+        "startDate": "2024-12-01T00:00:00.000Z",
+        "gradDate": "2028-07-01T00:00:00.000Z",
+        "degreeType": null,
+        "major": "Computer Science",
+        "minor": "asdf",
+        "description": "Studied various computer science topics and applied them in practical projects."
+      },
+      {
+        "jobseekerEdId": "dc9fb674-1e7c-46c3-a3d2-5bc72e5dd4c6",
+        "edInstitutionId": "24f31a6d-2c7b-48d2-88ee-cf65edbd5fa0",
+        "edProgram": null,
+        "edSystem": "System ABC",
+        "isEnrolled": true,
+        "startDate": "2022-06-01T00:00:00.000Z",
+        "gradDate": "2028-06-01T00:00:00.000Z",
+        "degreeType": "None",
+        "major": null,
+        "minor": null,
+        "description": "Studied various computer science topics and applied them in practical projects."
+      }
+    ],
+    "certifications": [
+      {
+        "certId": "5b97ce22-6f37-4ea1-91c4-9f41e513d8e0",
+        "name": "Certified JavaScript Developer",
+        "logoUrl": null,
+        "issuingOrg": "XYZ Institute",
+        "credentialId": "CJD-002",
+        "credentialUrl": "http://credential.u",
+        "issueDate": "2023-01-01T00:00:00.000Z",
+        "expiryDate": "2023-01-01T00:00:00.000Z",
+        "description": "Certification"
+      }
+    ],
+    "projects": [
+      {
+        "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6",
+        "jobseekerId": "7e1db701-f79a-43e5-a434-23dd6690fb57",
+        "projTitle": "Web Development Project",
+        "projectRole": "backend dev",
+        "startDate": "2022-01-01T00:00:00.000Z",
+        "completionDate": "2022-06-01T00:00:00.000Z",
+        "problemSolvedDescription": "Developed a web application using React and Node.js.",
+        "teamSize": "8",
+        "repoUrl": "https://www.repo.url",
+        "demoUrl": "https:///www.demo.url",
+        "skills": [
+          {
+            "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
+            "skill_name": "JavaScript",
+            "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
+          },
+          {
+            "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
+            "skill_name": ".NET Assemblies",
+            "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -933,6 +931,63 @@ _This route is meant to be used with the `/create-profile/jobseeker/work-experie
 }
 ```
 
+#### Read Jobseeker Work Experience Profile Page
+
+_This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for initial load of data, if any._
+
+**Endpoint**: `/api/jobseekers/work-profile-read`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: ``
+```json
+{
+  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
+}
+```
+
+##### Sample Response
+**DTO**: ``
+```json
+{
+    "success": true,
+    "result": {
+        "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+        "yearsWorkExperience": "5",
+        "monthsInternshipExperience": "2",
+        "isAuthorizedToWorkUsa": true,
+        "requiresSponsorship": false,
+        "workExperiences": [
+            {
+                "workId": "ddf90dca-5273-4651-aef3-340ea8494335",
+                "jobseekerId": "a7e2b588-201a-4b2c-a35c-495ede76f840",
+                "company": "CFA",
+                "jobTitle": "Backend Web Developer",
+                "isCurrentJob": true,
+                "startDate": "2020-01-01T00:00:00.000Z",
+                "endDate": null,
+                "responsibilities": "Coordinating and developing Project Factory projects",
+                "isInternship": false,
+                "techAreaId": "7acd2248-a2c3-4789-b414-a2463b75997a"
+            },
+            {
+                "workId": "ddf90cad-5273-4651-aef3-340ea8494335",
+                "jobseekerId": "a7e2b588-201a-4b2c-a35c-495ede76f840",
+                "company": "CFA",
+                "jobTitle": "intern",
+                "isCurrentJob": false,
+                "startDate": "2022-01-01T00:00:00.000Z",
+                "endDate": "2022-03-25T00:00:00.000Z",
+                "responsibilities": "Microsoft Dynamics Plugins for admin workflow",
+                "isInternship": true,
+                "techAreaId": "4c376b09-38e2-4278-b70b-975837c43fe5"
+            }
+        ]
+    }
+}
+```
+
 #### Delete Jobseeker Work Experience
 
 _This route is intended for use by a jobseeker to delete a Work Experience from their profile_
@@ -942,7 +997,7 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
 **Method**: `DELETE`
 
 ##### Sample Request
-**DTO**: ``
+**DTO**: `none`
 ```json
 {
   "workId": "ddf90cad-5273-4651-aef3-340ea8494335"
@@ -968,12 +1023,128 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
     }
 }
 ```
+### Showcase Page
+
+#### Read Showcase page
+
+_This route is meant to be used with the `/create-profile/jobseeker/showcase` page for initial load of data, if any._
+
+
+**Endpoint**: `/api/jobseekers/showcase-profile-read`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: `none`
+```json
+{
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
+}
+```
+
+##### Sample Response
+**DTO**: result property is type `JsShowcaseDTO`.
+```json
+{
+    "success": true,
+    "result": {
+        "userId": "71099f10-054e-4027-9237-ef2da5b071ff",
+        "skills": [
+            {
+                "skill_id": "2e560cd6-2560-4aca-b47b-aeebafc0bdd7",
+                "skill_name": "Samba (Software)",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS4407R6K7SXDL4JTSW9"
+            },
+            {
+                "skill_id": "48925f92-982a-45f4-8183-613fb3c257ab",
+                "skill_name": "Variable-Length Subnet Masking (VLSM)",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS441WD6BX1NJ03KKWT1"
+            },
+            {
+                "skill_id": "67e0630b-0806-4d26-a2f1-87ff57d77368",
+                "skill_name": "Artificial Intelligence Markup Language (AIML)",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS120C16DHL5K6SSZX7F"
+            },
+            {
+                "skill_id": "8480e593-d0d3-4bbe-8a5f-104221485ec7",
+                "skill_name": "Spring AOP",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/ESD850EECFAA1B3058FD"
+            },
+            {
+                "skill_id": "9abeb859-9e74-4378-8cfa-5fb870b912c1",
+                "skill_name": "Vim (Text Editor)",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS124K86RDS814LF5MC9"
+            }
+        ],
+        "portfolioUrl": "https://lost-clone.biz/",
+        "portfolioPassword": null,
+        "video_url": "https://blaring-existence.info/"
+    }
+}
+```
+
+#### Upsert Showcase Page
+
+_This route is meant to be used with the `/create-profile/jobseeker/showcase` page for updating or creating data._
+
+**Endpoint**: `/api/jobseekers/showcase-profile-upsert`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: `JsShowcaseDTO`
+```json
+{
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+    "portfolioUrl": "https://lost-clone.biz/",
+    "portfolioPassword": "drowssap",
+    "video_url": "https://my-video.url",
+    "skills": [
+        {
+          "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
+          "skill_name": "JavaScript",
+          "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
+        },
+        {
+          "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
+          "skill_name": ".NET Assemblies",
+          "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
+        }
+      ]
+    
+}
+```
+
+##### Sample Response
+**DTO**: `result property is type `JsShowcaseDTO`.`
+```json
+{
+    "success": true,
+    "result": {
+        "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+        "portfolioUrl": "https://lost-clone.biz/",
+        "portfolioPassword": "drowssap",
+        "video_url": "https://my-video.url",
+        "skills": [
+            {
+                "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
+                "skill_name": "JavaScript",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
+            },
+            {
+                "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
+                "skill_name": ".NET Assemblies",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
+            }
+        ]
+    }
+}
+```
 
 ---
 ## Jobseeker API Routes Coming Soon
 
 ##### Showcase Profile Page
-- `showcase-profile-upsert`
 - `showcase-skill-delete`
 - `showcase-video-delete`
 - `showcase-skill-upsert`

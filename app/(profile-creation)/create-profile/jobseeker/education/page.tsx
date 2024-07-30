@@ -73,7 +73,6 @@ export default function CreateJobseekerProfileEducationPage() {
         const mockCertifications: CertDTO[] = [
             {
                 certId: '5b97ce22-6f37-4ea1-91c4-9f41e513d8e0',
-                jobSeekerId: debugJobSeekerId,
                 name: 'Certified JavaScript Developer',
                 logoUrl: '',
                 issuingOrg: 'XYZ Institute',
@@ -89,7 +88,6 @@ export default function CreateJobseekerProfileEducationPage() {
         const mockProjects: ProjectExpDTO[] = [
             {
                 projectId: uuidv4(),
-                jobseekerId: debugJobSeekerId,
                 projTitle: 'Web Development Project',
                 projectRole: 'backend dev',
                 startDate: '2022-01-01',

@@ -32,6 +32,11 @@ export const formSlice = createSlice({
     initialState,
 
     reducers: {
+        initializeForm: (state, action: PayloadAction<FormState>) => {
+            action.payload.fields.forEach(field => state.fields.push(field));
+            state.isSubmitting = action.payload.isSubmitting;
+            state.error = action.payload.error;
+        },
         addField: (state, action: PayloadAction<{ id: string; label: string; value: string | number; type: 'text' | 'email' | 'number' | 'select' | 'radio'; options?: { value: string | number; label: string }[] }>) => {
             state.fields.push({
                 id: action.payload.id,
@@ -62,5 +67,5 @@ export const formSlice = createSlice({
     }
 });
     
-export const { addField, updateField, submitForm, submitFormSuccess, submitFormFailure } = formSlice.actions;
+export const { initializeForm, addField, updateField, submitForm, submitFormSuccess, submitFormFailure } = formSlice.actions;
 export default formSlice.reducer;

@@ -3,13 +3,13 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 
 // Define a type for the slice state
-export interface jobseekerState {
+export interface JobseekerState {
     fName: string,
     lName: string
 }
 
 // Define the initial state using that type
-const initialState: jobseekerState = {
+const initialState: JobseekerState = {
     fName: '',
     lName: ''
 }
@@ -22,6 +22,10 @@ export const jobseekerSlice = createSlice({
 
     // REVIEW: each field will need its own reducer? unsure if best, seems there should be a way to deconstruct ...state then update this.id/param specific?
     reducers: {
+        initializeJobseeker: (state, action: PayloadAction<JobseekerState>) => {
+            state.fName = action.payload.fName;
+            state.lName = action.payload.lName;
+        },
         setFirstName: (state, action: PayloadAction<string>) => { state.fName = action.payload },
         setLastName: (state, action: PayloadAction<string>) => { state.lName = action.payload },
         submitForm: (state) => {
@@ -33,7 +37,7 @@ export const jobseekerSlice = createSlice({
     }
 });
 
-export const { setFirstName, setLastName, submitForm } = jobseekerSlice.actions;
+export const { initializeJobseeker, setFirstName, setLastName, submitForm } = jobseekerSlice.actions;
 
 // TODO: Review if needed in future
 // Other code such as selectors can use the imported `RootState` type

@@ -131,17 +131,18 @@ type workExperienceDTO = {
 export type JsWorkExpDTO = {
     userId: string,
     yearsWorkExperience: string,
-    monthsInternshipExperience?: string, // TODO: add field to the database
+    monthsInternshipExperience?: string | null, // TODO: add field to the database
     isAuthorizedToWorkUsa: boolean, // TODO: encrypt
     requiresSponsorship: boolean, // TODO: encrypt
     workExperiences?: WorkExperience[]
 }
 
 export type JsShowcaseDTO = {
+    userId: string,
     skills: SkillDTO[],
-    portfolioUrl: string,
-    portfolioPassword: string, // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
-    video_url: string,
+    portfolioUrl?: string | null,
+    portfolioPassword?: string  | null, // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
+    video_url?: string  | null,
 }
 
 export type JsPreferences = {
