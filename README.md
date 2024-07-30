@@ -997,7 +997,7 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
 **Method**: `DELETE`
 
 ##### Sample Request
-**DTO**: ``
+**DTO**: `none`
 ```json
 {
   "workId": "ddf90cad-5273-4651-aef3-340ea8494335"
@@ -1025,24 +1025,62 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
 ```
 ### Showcase Page
 
-#### Query Title
+#### Read Showcase page
 
-_Description_
+_This route is meant to be used with the `/create-profile/jobseeker/showcase` page for initial load of data, if any._
 
-**Endpoint**: ``
 
-**Method**: ``
+**Endpoint**: `/api/jobseekers/showcase-profile-read`
+
+**Method**: `POST`
 
 ##### Sample Request
-**DTO**: ``
+**DTO**: `none`
 ```json
-
+{
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
+}
 ```
 
 ##### Sample Response
-**DTO**: ``
+**DTO**: result property is type `JsShowcaseDTO`.
 ```json
-
+{
+    "success": true,
+    "result": {
+        "userId": "71099f10-054e-4027-9237-ef2da5b071ff",
+        "skills": [
+            {
+                "skill_id": "2e560cd6-2560-4aca-b47b-aeebafc0bdd7",
+                "skill_name": "Samba (Software)",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS4407R6K7SXDL4JTSW9"
+            },
+            {
+                "skill_id": "48925f92-982a-45f4-8183-613fb3c257ab",
+                "skill_name": "Variable-Length Subnet Masking (VLSM)",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS441WD6BX1NJ03KKWT1"
+            },
+            {
+                "skill_id": "67e0630b-0806-4d26-a2f1-87ff57d77368",
+                "skill_name": "Artificial Intelligence Markup Language (AIML)",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS120C16DHL5K6SSZX7F"
+            },
+            {
+                "skill_id": "8480e593-d0d3-4bbe-8a5f-104221485ec7",
+                "skill_name": "Spring AOP",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/ESD850EECFAA1B3058FD"
+            },
+            {
+                "skill_id": "9abeb859-9e74-4378-8cfa-5fb870b912c1",
+                "skill_name": "Vim (Text Editor)",
+                "skill_info_url": "https://lightcast.io/open-skills/skills/KS124K86RDS814LF5MC9"
+            }
+        ],
+        "portfolioUrl": "https://lost-clone.biz/",
+        "portfolioPassword": null,
+        "video_url": "https://blaring-existence.info/"
+    }
+}
 ```
 ---
 ## Jobseeker API Routes Coming Soon
