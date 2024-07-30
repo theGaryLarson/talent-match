@@ -14,7 +14,7 @@ export async function POST(request: Request) {
             return NextResponse.json({error: 'User ID is required'}, {status: 400});
         }
 
-        const c = await prisma.contacts.findUnique({
+        const contact = await prisma.contacts.findUnique({
             where: {
                 user_id: userId
             },
@@ -35,26 +35,47 @@ export async function POST(request: Request) {
                     }
                 }
             }
-        })
-        if (!c) {
-            return NextResponse.json({error: `Record does not exist for userId:${userId}`}, {status: 400})
-        } else {
-            const js = c.jobseekers.map(j => {
+        });
 
-            })
+        if (!contact) {
+            return NextResponse.json({error: `Record does not exist for userId: ${userId}`}, {status: 400});
+        } else {
+            // Assuming there is only one jobseeker per user
+            const jobseeker = contact.jobseekers[0];
+
+            const privateData = jobseeker?.jobseekers_private_data[0]; // There's only one private data record per jobseeker
+
+            const workExperiences: WorkExperience[] = jobseeker?.work_experiences.map((w) => ({
+                workId: w.workId,
+                jobseekerId: w.jobseekerId,
+                company: w.company,
+                jobTitle: w.jobTitle,
+                isCurrentJob: w.isCurrentJob,
+                startDate: w.startDate,
+                endDate: w.endDate,
+                responsibilities: w.responsibilities,
+                isInternship: w.isInternship,
+                techAreaId: w.techAreaId,
+            }));
+
+            const result: JsWorkExpDTO = {
+                userId: contact.user_id,
+                yearsWorkExperience: jobseeker.years_work_exp?.toString() ?? "0",
+                monthsInternshipExperience: jobseeker.months_internship_exp?.toString() ?? "0",
+                isAuthorizedToWorkUsa: privateData.is_authorized_to_work_in_usa,
+                requiresSponsorship: privateData.job_sponsorship_required,
+                workExperiences: workExperiences,
+            };
+
+            return NextResponse.json({
+                success: true,
+                result,
+            }, {status: 200});
         }
 
-
-        // const jobseeker: JsWorkExpDTO = {
-        //     userId: c.user_id,
-        //     yearsWorkExperience:
-        // }
-        return NextResponse.json({
-            success: true,
-            c,
-        }, {status: 200});
-    } catch (error: any) {
-
+    } catch (e: any) {
+        console.log(e.message);
+        return NextResponse.json({error: `Failed to read work experiences.\n${e.message} `}, {status: 500});
     } finally {
         await prisma.$disconnect();
     }
