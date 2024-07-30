@@ -376,10 +376,10 @@ export async function POST(request: Request) {
 
             // Map the projects data to DTO
             const mappedProjects: ProjectExpDTO[] = upsertedProjects.map((proj: any) => {
-                const skills: SkillDTO[] = proj.project_has_skills.map((p: JobseekerSkillDTO) => ({
-                    skill_id: p.skills.skill_id,
-                    skill_name: p.skills.skill_name,
-                    skill_info_url: p.skills.skill_info_url
+                const skills: SkillDTO[] = proj.project_has_skills.map((s: JobseekerSkillDTO) => ({
+                    skill_id: s.skills.skill_id,
+                    skill_name: s.skills.skill_name,
+                    skill_info_url: s.skills.skill_info_url
                 }));
                 return {
                     projectId: proj.projectId,
@@ -397,11 +397,11 @@ export async function POST(request: Request) {
 
             // Return consistent result using JSEducationDTO
             const result: JsEducationDTO = {
-                userId: upsertedJobseeker?.user_id,
-                currentEdProgram: mapToEnum(upsertedJobseeker?.current_enrolled_ed_program ?? "None", EdProgram),
-                highestLevelOfStudy: mapToEnum(upsertedJobseeker?.highest_level_of_study_completed ?? "None", DegreeType),
-                currentGrade: mapToEnum(upsertedJobseeker?.current_grade_level ?? "None", CurrentGrade),
-                isEnrolledEdProgram: upsertedJobseeker?.is_enrolled_ed_program,
+                userId: upsertedJobseeker.user_id,
+                currentEdProgram: mapToEnum(upsertedJobseeker.current_enrolled_ed_program ?? "None", EdProgram),
+                highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed ?? "None", DegreeType),
+                currentGrade: mapToEnum(upsertedJobseeker.current_grade_level ?? "None", CurrentGrade),
+                isEnrolledEdProgram: upsertedJobseeker.is_enrolled_ed_program,
                 schools: mappedEdHistory,
                 certifications: mappedCerts,
                 projects: mappedProjects,
