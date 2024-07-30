@@ -526,80 +526,78 @@ institution.
 {
   "success": true,
   "result": {
-    "result": {
-      "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
-      "currentEdProgram": "College",
-      "highestLevelOfStudy": "Bachelor's Degree",
-      "currentGrade": "Junior",
-      "isEnrolledEdProgram": false,
-      "schools": [
-        {
-          "jobseekerEdId": "53d66079-60e2-46a2-9214-e86e2f766734",
-          "edInstitutionId": "077291f4-a2d6-484c-82bc-ae96ba036761",
-          "edProgram": "College",
-          "edSystem": null,
-          "isEnrolled": true,
-          "startDate": "2024-12-01T00:00:00.000Z",
-          "gradDate": "2028-07-01T00:00:00.000Z",
-          "degreeType": null,
-          "major": "Computer Science",
-          "minor": "asdf",
-          "description": "Studied various computer science topics and applied them in practical projects."
-        },
-        {
-          "jobseekerEdId": "dc9fb674-1e7c-46c3-a3d2-5bc72e5dd4c6",
-          "edInstitutionId": "24f31a6d-2c7b-48d2-88ee-cf65edbd5fa0",
-          "edProgram": null,
-          "edSystem": "System ABC",
-          "isEnrolled": false,
-          "startDate": "2022-06-01T00:00:00.000Z",
-          "gradDate": "2028-06-01T00:00:00.000Z",
-          "degreeType": "None",
-          "major": null,
-          "minor": null,
-          "description": "Studied various computer science topics and applied them in practical projects."
-        }
-      ],
-      "certifications": [
-        {
-          "certId": "5b97ce22-6f37-4ea1-91c4-9f41e513d8e0",
-          "name": "Certified JavaScript Developer",
-          "logoUrl": null,
-          "issuingOrg": "XYZ Institute",
-          "credentialId": "CJD-002",
-          "credentialUrl": "http://credential.u",
-          "issueDate": "2023-01-01T00:00:00.000Z",
-          "expiryDate": "2023-01-01T00:00:00.000Z",
-          "description": "Certification"
-        }
-      ],
-      "projects": [
-        {
-          "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6",
-          "jobseekerId": "7e1db701-f79a-43e5-a434-23dd6690fb57",
-          "projTitle": "Web Development Project",
-          "projectRole": "backend dev",
-          "startDate": "2022-01-01T00:00:00.000Z",
-          "completionDate": "2022-06-01T00:00:00.000Z",
-          "problemSolvedDescription": "Developed a web application using React and Node.js.",
-          "teamSize": "8",
-          "repoUrl": "https://www.repo.url",
-          "demoUrl": "https:///www.demo.url",
-          "skills": [
-            {
-              "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
-              "skill_name": "JavaScript",
-              "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
-            },
-            {
-              "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
-              "skill_name": ".NET Assemblies",
-              "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
-            }
-          ]
-        }
-      ]
-    }
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+    "currentEdProgram": "College",
+    "highestLevelOfStudy": "Bachelor's Degree",
+    "currentGrade": "Junior",
+    "isEnrolledEdProgram": false,
+    "schools": [
+      {
+        "jobseekerEdId": "53d66079-60e2-46a2-9214-e86e2f766734",
+        "edInstitutionId": "077291f4-a2d6-484c-82bc-ae96ba036761",
+        "edProgram": "College",
+        "edSystem": null,
+        "isEnrolled": true,
+        "startDate": "2024-12-01T00:00:00.000Z",
+        "gradDate": "2028-07-01T00:00:00.000Z",
+        "degreeType": null,
+        "major": "Computer Science",
+        "minor": "asdf",
+        "description": "Studied various computer science topics and applied them in practical projects."
+      },
+      {
+        "jobseekerEdId": "dc9fb674-1e7c-46c3-a3d2-5bc72e5dd4c6",
+        "edInstitutionId": "24f31a6d-2c7b-48d2-88ee-cf65edbd5fa0",
+        "edProgram": null,
+        "edSystem": "System ABC",
+        "isEnrolled": true,
+        "startDate": "2022-06-01T00:00:00.000Z",
+        "gradDate": "2028-06-01T00:00:00.000Z",
+        "degreeType": "None",
+        "major": null,
+        "minor": null,
+        "description": "Studied various computer science topics and applied them in practical projects."
+      }
+    ],
+    "certifications": [
+      {
+        "certId": "5b97ce22-6f37-4ea1-91c4-9f41e513d8e0",
+        "name": "Certified JavaScript Developer",
+        "logoUrl": null,
+        "issuingOrg": "XYZ Institute",
+        "credentialId": "CJD-002",
+        "credentialUrl": "http://credential.u",
+        "issueDate": "2023-01-01T00:00:00.000Z",
+        "expiryDate": "2023-01-01T00:00:00.000Z",
+        "description": "Certification"
+      }
+    ],
+    "projects": [
+      {
+        "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6",
+        "jobseekerId": "7e1db701-f79a-43e5-a434-23dd6690fb57",
+        "projTitle": "Web Development Project",
+        "projectRole": "backend dev",
+        "startDate": "2022-01-01T00:00:00.000Z",
+        "completionDate": "2022-06-01T00:00:00.000Z",
+        "problemSolvedDescription": "Developed a web application using React and Node.js.",
+        "teamSize": "8",
+        "repoUrl": "https://www.repo.url",
+        "demoUrl": "https:///www.demo.url",
+        "skills": [
+          {
+            "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
+            "skill_name": "JavaScript",
+            "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
+          },
+          {
+            "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
+            "skill_name": ".NET Assemblies",
+            "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
