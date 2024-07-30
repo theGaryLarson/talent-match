@@ -15,17 +15,18 @@ import { useRouter } from 'next/navigation';
 
 // TODO: Remove jobseeker jobseeker slice
 // import { setFirstName, setLastName, submitForm, setForm } from '../../../../../lib/features/profileCreation/jobseekerSlice';
-import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure } from '../../../../../lib/features/profileCreation/formSlice';
+import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '../../../../../lib/features/profileCreation/formSlice';
 
 export default function CreateJobseekerProfileIntroPage(){
-  const { fields, isSubmitting, error } = useSelector((state: RootState) => state.form);
+  const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
   const router = useRouter();
 
   // REVIEW: ================================================== Below Here ==================================================================
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
-  const [newFieldType, setNewFieldType] = useState<'text' | 'email' | 'number'>('text');
+  const [newFieldType, setNewFieldType] = useState<'text' | 'email' | 'number' | 'select' | 'radio'>('text');
+  const [newFieldValue, setNewFieldValue] = useState('');
   const [newFieldOptions, setNewFieldOptions] = useState<{ value: string | number; label: string }[]>([]);
   
   // const [newFieldValue, setNewFieldValue] = useState('');
@@ -60,7 +61,8 @@ export default function CreateJobseekerProfileIntroPage(){
 
   const handleAddField = () => {
     if (newFieldLabel) {
-      dispatch(addField({ id: newFieldId, label: newFieldLabel, type: newFieldType, options: newFieldType === 'select' || newFieldType === 'radio' ? newFieldOptions : undefined }));
+      dispatch(addField(
+        { id: newFieldId, label: newFieldLabel, value: newFieldValue, type: newFieldType, options: newFieldType === 'select' || newFieldType === 'radio' ? newFieldOptions : undefined }));
       setNewFieldId('');
       setNewFieldLabel('');
       setNewFieldType('text');
