@@ -11,15 +11,10 @@ import {
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import {mapToEnum} from "@/app/api/jobseekers/edu-profile-read/route";
+import {mapToEnum} from "@/app/lib/utils";
+import {toMidnightUTC} from "@/app/lib/utils";
+
 const prisma: PrismaClient = getPrismaClient();
-
-
-const toMidnightUTC = (date: string): string => {
-    const d = new Date(date);
-    d.setUTCHours(0, 0, 0, 0);
-    return d.toISOString();
-};
 
 export async function POST(request: Request) {
     try {
