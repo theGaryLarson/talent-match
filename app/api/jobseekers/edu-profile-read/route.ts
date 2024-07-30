@@ -8,15 +8,11 @@ import {
     EducationInfoDTO,
     JsEducationDTO, ProjectExpDTO
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {mapToEnum} from "@/app/lib/utils";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
 
 const prisma: PrismaClient = getPrismaClient();
-
-export const mapToEnum = (value: string, enumType: any): any => {
-    const enumValues = Object.values(enumType);
-    return enumValues.includes(value) ? value : null;
-}
 
 export async function POST(request: Request) {
     try {
