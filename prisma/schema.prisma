@@ -259,6 +259,7 @@ model jobseekers {
   years_work_exp                     Int?                                 @db.SmallInt
   months_internship_exp              Int?                                 @db.SmallInt
   portfolio_url                      String?                              @db.VarChar(255)
+  portfolio_password                 String?                              @db.NVarChar(255)
   video_url                          String?                              @db.VarChar(255)
   employment_type_sought             String?                              @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
   is_marked_deletion                 DateTime?                            @db.DateTime
