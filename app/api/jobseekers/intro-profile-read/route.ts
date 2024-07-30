@@ -66,7 +66,6 @@ export async function POST(request: Request) {
                 }
             }
         });
-        console.log(JSON.stringify(contact, null, 2));
         if (!contact) {
             return NextResponse.json({error: 'Jobseeker not found'}, {status: 404})
         }
