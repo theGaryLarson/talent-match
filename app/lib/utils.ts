@@ -55,3 +55,14 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export const mapToEnum = (value: string, enumType: any): any => {
+  const enumValues = Object.values(enumType);
+  return enumValues.includes(value) ? value : null;
+}
+
+export const toMidnightUTC = (date: string): string => {
+  const d = new Date(date);
+  d.setUTCHours(0, 0, 0, 0);
+  return d.toISOString();
+};
