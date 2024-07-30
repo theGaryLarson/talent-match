@@ -7,7 +7,6 @@ import {JsWorkExpDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
-    let result: JsWorkExpDTO | null = null;
     try {
         const body: JsWorkExpDTO = await request.json();
 
@@ -21,7 +20,7 @@ export async function POST(request: Request) {
         } = body;
 
 
-        await prisma.$transaction(async (prisma) => {
+        const result: JsWorkExpDTO = await prisma.$transaction(async (prisma) => {
             // Update the jobseeker table with the provided properties
             const updatedJobseeker = await prisma.jobseekers.update({
                 where: {user_id: userId},
@@ -105,7 +104,7 @@ export async function POST(request: Request) {
                 await Promise.all(workExpPromises);
             }
 
-            result = {
+            return {
                 userId: updatedJobseeker.user_id,
                 yearsWorkExperience: updatedJobseeker?.years_work_exp?.toString() ?? "0",
                 monthsInternshipExperience: updatedJobseeker?.months_internship_exp?.toString() ?? "0",
@@ -113,7 +112,6 @@ export async function POST(request: Request) {
                 requiresSponsorship: updatedPrivateData.job_sponsorship_required ,
                 workExperiences: createdWorkExperiences,
             }
-            return result;
         });
 
         return NextResponse.json({
