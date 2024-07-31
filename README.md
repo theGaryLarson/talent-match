@@ -202,13 +202,15 @@ Use the generated string as your `AUTH_SECRET` in the `.env` file.
 - `seed`: Seeds the database with initial data.
 - `lint`: Runs ESLint to check for code issues.
 
+---
+
 ## API Routes
 
 This section provides detailed information on the available API routes for the Computing for All Talent Finder
 application.
-
+---
 ### Jobseeker Routes
-
+---
 #### Jobseeker List View Query
 
 _This route is used to generate the cards on the listview page. On the server side it filters based on skills and years
@@ -290,7 +292,10 @@ work experience. Also, it will also filter out any jobseeker accounts that have 
 
 ## Profile Creation APIs
 
+---
+
 ### Introduction Page
+---
 
 #### Create or Update Introduction Page
 
@@ -362,7 +367,7 @@ creates or updates all the data in entire introduction page._
   }
 }
 ```
-
+---
 #### Read Jobseeker Introduction Page
 
 _This route is meant to be used with the `/create-profile/jobseeker/intro` page for initial load if there is preexisting
@@ -418,8 +423,11 @@ data._
   }
 }
 ```
+---
 
 ### Education Page
+
+---
 
 #### Create or Update Jobseeker Education Page
 
@@ -603,6 +611,7 @@ institution.
   }
 }
 ```
+---
 
 #### Read Jobseeker Education Profile Page
 
@@ -707,7 +716,7 @@ data, if any._
   }
 }
 ```
-
+---
 #### Delete Jobseeker Education Record
 
 _This will delete a jobseeker education record. It is intended for use within the `/create-profile/jobseeker/education`
@@ -750,7 +759,7 @@ page using the key from the respective jobseeker education entry._
   }
 }
 ```
-
+---
 #### Delete Jobseeker Certification
 
 _This will delete a jobseeker certification record. It is intended for use within
@@ -791,7 +800,7 @@ the `/create-profile/jobseeker/education` page using the key from the respective
   }
 }
 ```
-
+---
 #### Delete Jobseeker Project Experience
 
 _This will delete a jobseeker project experience record. It is intended for use within
@@ -838,8 +847,11 @@ delete the associated skills from within the `project_has_skills` table._
   }
 }
 ```
+---
 
 ### Work Experience Page
+
+---
 
 #### Create or Update Jobseeker Work Profile Page
 
@@ -934,7 +946,7 @@ data._
   }
 }
 ```
-
+---
 #### Read Jobseeker Work Experience Profile Page
 
 _This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for initial load of data, if
@@ -996,7 +1008,7 @@ any._
   }
 }
 ```
-
+---
 #### Delete Jobseeker Work Experience
 
 _This route is intended for use by a jobseeker to delete a Work Experience from their profile_
@@ -1036,9 +1048,11 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
   }
 }
 ```
+---
 
 ### Showcase Page
 
+---
 #### Read Showcase page
 
 _This route is meant to be used with the `/create-profile/jobseeker/showcase` page for initial load of data, if any._
@@ -1099,6 +1113,7 @@ _This route is meant to be used with the `/create-profile/jobseeker/showcase` pa
   }
 }
 ```
+---
 
 #### Upsert Showcase Page
 
@@ -1160,10 +1175,53 @@ _This route is meant to be used with the `/create-profile/jobseeker/showcase` pa
   }
 }
 ```
+---
+
+#### Upsert Jobseeker Skills
+
+_Used to push jobseeker selected skills into the database_
+
+**Endpoint**: `/api/jobseekers/skill-upsert`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: ``
+```json
+{
+    "jobseekerId": "8d1026fa-b723-4b55-95d3-7d8a7f40d9b0",
+    "skillIds": [
+        "356e0040-8400-49a0-b772-6f6475776612",
+        "38943cce-679d-408f-9fb1-6d054012e54f"
+    ]
+}
+```
+
+##### Sample Response
+**DTO**: Result is property Type `SKillDTO[]`
+```json
+{
+    "success": true,
+    "result": [
+        {
+            "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
+            "skill_name": "JavaScript",
+            "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
+        },
+        {
+            "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
+            "skill_name": ".NET Assemblies",
+            "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
+        }
+    ]
+}
+```
+---
 
 #### Delete Jobseeker Skill
 
-_This route is intended for use with the `/create-profile/jobseeker/showcase` page. It can be used anywhere a skill needs unassociated with a jobseeker._
+_This route is intended for use with the `/create-profile/jobseeker/showcase` page. It can be used anywhere skills
+needs unassociated with a jobseeker._
 
 **Endpoint**: `/api/jobseekers/skill-delete`
 
@@ -1176,43 +1234,82 @@ _This route is intended for use with the `/create-profile/jobseeker/showcase` pa
 ```json
 {
   "jobseekerId": "8d1026fa-b723-4b55-95d3-7d8a7f40d9b0",
-  "skillId": "356e0040-8400-49a0-b772-6f6475776612"
+  "skillIds": [
+    "356e0040-8400-49a0-b772-6f6475776612",
+    "38943cce-679d-408f-9fb1-6d054012e54f"
+  ]
 }
 ```
 
 ##### Sample Response
 
-**DTO**: result is property type `SKillDTO & {userId: string}`
+**DTO**: result is property type `SKillDTO[]`
 
 ```json
 {
   "success": true,
-  "result": {
-    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
-    "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
-    "skill_name": "JavaScript",
-    "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
-  }
+  "result": [
+    {
+      "skill_id": "356e0040-8400-49a0-b772-6f6475776612",
+      "skill_name": "JavaScript",
+      "skill_info_url": "https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language"
+    },
+    {
+      "skill_id": "38943cce-679d-408f-9fb1-6d054012e54f",
+      "skill_name": ".NET Assemblies",
+      "skill_info_url": "https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X"
+    }
+  ]
+}
+```
+---
+#### Jobseeker Video Delete
+
+_This route is meant to be used with the `/create-profile/jobseeker/showcase` page. It will set the jobseekers.video_url property to null and mark it for
+deletion in blob storage._
+
+> Blob storage isn't available yet. Plan on implementing as soon as we have access.
+
+**Endpoint**: `/api/jobseekers/video-delete`
+
+**Method**: `POST`
+
+##### Sample Request
+
+**DTO**: ``
+
+```json
+{
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
 }
 ```
 
+##### Sample Response
+
+**DTO**: `{jobseekerId: string, videoUrl?: string | null}`
+
+```json
+{
+    "success": true,
+    "result": {
+        "jobseekerId": "8d1026fa-b723-4b55-95d3-7d8a7f40d9b0",
+        "videoUrl": null
+    }
+}
+```
 ---
 
 ## Jobseeker API Routes Coming Soon
 
-##### Showcase Profile Page
-
-- `showcase-video-delete`
-- `skill-upsert`
-
 ##### Preferences Profile Page
 
 - `preferences-profile-upsert`
+- `preferences-profile-read`
 
 ##### Voluntary Disclosures Page
 
 - `disclosures-profile-upsert`
--
+- `disclosures-profile-read`
 
 ---
 
