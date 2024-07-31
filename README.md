@@ -1299,12 +1299,75 @@ deletion in blob storage._
 ```
 ---
 
+### Preferences Page
+
+---
+#### Read Preferences
+
+_This route is intended to load the `/create-profile/jobseeker/preferences` page with preexisting data, if any_
+
+**Endpoint**: `/api/jobseekers/prefs-profile-read`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: `none`
+```json
+{
+    "jobseekerId": "653516c5-0aec-4ed6-a88c-91a1c02b8507"
+}
+```
+
+##### Sample Response
+**DTO**: result property is of Type `JsPreferencesDTO & {targetedPathway?: string | null}`
+```json
+{
+    "success": true,
+    "result": {
+        "jobseekerId": "653516c5-0aec-4ed6-a88c-91a1c02b8507",
+        "targetedPathwayId": "79608104-d50e-4d0f-b541-2a9de7bc0f89",
+        "targetedPathway": "Software Development",
+        "preferredEmploymentType": "Full-time"
+    }
+}
+```
+---
+#### Upsert Jobseeker Preferences
+
+_This is intended for use updating or creating Jobseeker preferences on the `/create-profile/jobseeker/preferences` page_
+
+**Endpoint**: `/api/jobseekers/prefs-profile-upsert`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: `JsPreferencesDTO`
+```json
+{
+  "jobseekerId": "653516c5-0aec-4ed6-a88c-91a1c02b8507",
+  "targetedPathwayId": "79608104-d50e-4d0f-b541-2a9de7bc0f89",
+  "preferredEmploymentType": "Full-time"
+}
+```
+
+##### Sample Response
+**DTO**: `result property is of Type `JsPreferencesDTO & {targetedPathway?: string | null}``
+```json
+{
+    "success": true,
+    "result": {
+        "jobseekerId": "653516c5-0aec-4ed6-a88c-91a1c02b8507",
+        "targetedPathwayId": "79608104-d50e-4d0f-b541-2a9de7bc0f89",
+        "targetedPathway": "Software Development",
+        "preferredEmploymentType": "Full-time"
+    }
+}
+```
+---
+
 ## Jobseeker API Routes Coming Soon
 
 ##### Preferences Profile Page
-
-- `preferences-profile-upsert`
-- `preferences-profile-read`
 
 ##### Voluntary Disclosures Page
 
