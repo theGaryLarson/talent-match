@@ -141,21 +141,23 @@ export type JsShowcaseDTO = {
     userId: string,
     skills: SkillDTO[],
     portfolioUrl?: string | null,
-    portfolioPassword?: string  | null, // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
-    video_url?: string  | null,
+    portfolioPassword?: string | null, // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
+    video_url?: string | null,
 }
 
-export type JsPreferences = {
-    preferredEmploymentType: string,
-    targetedPathway: string
+export type JsPreferencesDTO = {
+    jobseekerId: string,
+    targetedPathwayId?: string | null
+    preferredEmploymentType?: string | null,
 }
 
 // TODO: this needs to be secure
-export type JsDisclosures = {
-    gender: string,
-    isVeteran: string,
-    ethnicity: string,
-    hasDisability: string,
-    hasReadTerms: number // TODO: add to the db
+export type JsDisclosuresDTO = {
+    jobseekerId: string,
+    gender: string, // contacts.gender
+    isVeteran: string, // jobseekers_private_data
+    ethnicity: string, //contacts.race
+    hasDisability: string, // jobseekers_private_data
+    hasReadTerms: boolean //contacts.has_read_terms
 
 }
