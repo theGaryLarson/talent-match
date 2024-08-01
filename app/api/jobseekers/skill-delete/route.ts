@@ -9,13 +9,25 @@ const prisma: PrismaClient = getPrismaClient();
 export async function DELETE(request: Request) {
     try {
         const body = await request.json();
-        const { jobseekerId, skillIds } = body;
-        if (!jobseekerId || !Array.isArray(skillIds) || skillIds.length === 0) {
+        const { userId, skillIds } = body;
+        if (!userId || !Array.isArray(skillIds) || skillIds.length === 0) {
             return NextResponse.json({
                 success: false,
                 error: "Need to provide both jobseekerId and an array of skillIds"
             }, { status: 400 });
         }
+
+        // Find the jobseekerId based on the userId
+        const jobseeker = await prisma.jobseekers.findUnique({
+            where: { user_id: userId },
+            select: { jobseeker_id: true }
+        });
+
+        if (!jobseeker) {
+            return NextResponse.json({ error: 'Jobseeker not found' }, { status: 404 });
+        }
+
+        const jobseekerId = jobseeker.jobseeker_id;
 
         const deletedSkills = await prisma.jobseeker_has_skills.deleteMany({
             where: {

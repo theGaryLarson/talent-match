@@ -29,7 +29,7 @@ export async function POST(request: Request) {
             resumeUrl,
         } = body;
 
-        // TODO: fix install and use libphonenumber-js to handle country codes. Supported React Component as well.
+        // TODO: fix: install and use libphonenumber-js to handle country codes.  There is a supported React Component as well.
         // Clean the phoneNumber to remove special characters
         const cleanedPhoneCountryCode = phoneCountryCode?.replace(/[-\s().]/g, '')
         const cleanedPhoneNumber = phone?.replace(/[-\s().]/g, '');
@@ -42,13 +42,13 @@ export async function POST(request: Request) {
 
             // Upsert contact
             const contact = await prisma.contacts.upsert({
-                where: {email: email},
+                where: {user_id: userId},
                 update: {
                     first_name: firstName,
                     last_name: lastName,
                     birthdate: birthDate,
                     phone: formattedPhone,
-                    email,
+                    email: email,
                     photo_url: photoUrl,
                     updatedAt: new Date(),
                 },
@@ -79,26 +79,6 @@ export async function POST(request: Request) {
             const jobseeker_id = js?.jobseeker_id || uuidv4();
             const isEnrolledInCollege = js?.is_enrolled_ed_program || false;
 
-            // Find or create the targeted pathway for 'Undecided'
-            let targeted_pathway = js?.targeted_pathway;
-            if (!targeted_pathway) {
-                let pathway = await prisma.pathways.findUnique({
-                    where: {pathway_title: 'Undecided'},
-                    select: {pathway_id: true}
-                });
-
-                if (!pathway) {
-                    pathway = await prisma.pathways.create({
-                        data: {
-                            pathway_id: uuidv4(),
-                            pathway_title: 'Undecided'
-                        },
-                        select: {pathway_id: true}
-                    });
-                }
-                targeted_pathway = js?.targeted_pathway || pathway.pathway_id;
-            }
-
 
             const jobseeker = await prisma.jobseekers.upsert({
                 where: {user_id: contact.user_id},
@@ -110,7 +90,7 @@ export async function POST(request: Request) {
                 create: {
                     jobseeker_id: jobseeker_id,
                     user_id: contact.user_id,
-                    targeted_pathway: targeted_pathway,
+                    targeted_pathway: undefined,
                     is_enrolled_ed_program: isEnrolledInCollege,
                     highest_level_of_study_completed: undefined,
                     current_grade_level: undefined,

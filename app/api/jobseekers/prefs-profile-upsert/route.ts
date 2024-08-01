@@ -8,22 +8,22 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
     try {
         const body: JsPreferencesDTO = await request.json();
-        const {jobseekerId, preferredEmploymentType, targetedPathwayId } = body;
+        const {userId, preferredEmploymentType, targetedPathwayId } = body;
 
-        if (!jobseekerId && (!preferredEmploymentType || !targetedPathwayId)) {
-            return NextResponse.json({error: 'Invalid input. Requires jobseekerId and preferredEmploymentType and/or targetedPathwayId'}, {status: 400});
+        if (!userId && (!preferredEmploymentType || !targetedPathwayId)) {
+            return NextResponse.json({error: 'Invalid input. Requires userId and preferredEmploymentType and/or targetedPathwayId'}, {status: 400});
         }
 
             const upsertedPreferences = await prisma.jobseekers.update({
 
-                where: {jobseeker_id: jobseekerId},
+                where: {user_id: userId},
                 data: {
-                    jobseeker_id: jobseekerId,
+                    user_id: userId,
                     employment_type_sought: preferredEmploymentType,
                     targeted_pathway: targetedPathwayId
                 },
                 select: {
-                    jobseeker_id: true,
+                    user_id: true,
                     targeted_pathway: true,
                     employment_type_sought: true,
                     pathways: {
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
             });
         const result: JsPreferencesDTO & {targetedPathway?: string | null} ={
-            jobseekerId: upsertedPreferences.jobseeker_id,
+            userId: upsertedPreferences.user_id,
             targetedPathwayId: upsertedPreferences.targeted_pathway,
             targetedPathway: upsertedPreferences.pathways?.pathway_title,
             preferredEmploymentType: upsertedPreferences.employment_type_sought
