@@ -8,16 +8,27 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
     try {
         const body: JsPreferencesDTO = await request.json();
-        const {jobseekerId} = body;
+        const {userId} = body;
 
-        if (!jobseekerId) {
-            return NextResponse.json({error: 'Invalid input. Requires jobseekerId.'}, {status: 400});
+        if (!userId) {
+            return NextResponse.json({error: 'Invalid input. Requires userId.'}, {status: 400});
         }
 
+        // Find the jobseekerId based on the userId
+        const jobseeker = await prisma.jobseekers.findUnique({
+            where: { user_id: userId },
+            select: { jobseeker_id: true }
+        });
+
+        if (!jobseeker) {
+            return NextResponse.json({ error: 'Jobseeker not found' }, { status: 404 });
+        }
+
+        const jobseekerId = jobseeker.jobseeker_id;
         const preferences = await prisma.jobseekers.findUnique({
             where: {jobseeker_id: jobseekerId},
             select: {
-                jobseeker_id: true,
+                user_id: true,
                 targeted_pathway: true,
                 employment_type_sought: true,
                 pathways: {
@@ -33,7 +44,7 @@ export async function POST(request: Request) {
         }
 
         const result: JsPreferencesDTO & {targetedPathway?: string} ={
-            jobseekerId: preferences.jobseeker_id,
+            userId: preferences.user_id,
             targetedPathwayId: preferences.targeted_pathway,
             targetedPathway: preferences.pathways?.pathway_title,
             preferredEmploymentType: preferences.employment_type_sought
