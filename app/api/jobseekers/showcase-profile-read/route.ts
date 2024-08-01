@@ -46,10 +46,10 @@ export async function POST(request: Request) {
             }));
             const result: JsShowcaseDTO  = {
                 userId: showcase.user_id,
-                skills: mappedSkills,
                 portfolioUrl: showcase.portfolio_url,
                 portfolioPassword: showcase.portfolio_password,
-                video_url: showcase.video_url
+                video_url: showcase.video_url,
+                skills: mappedSkills
             }
             // console.log(JSON.stringify(showcase, null ,2))
             return NextResponse.json({success: true, result}, {status: 200})

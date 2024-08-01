@@ -854,15 +854,22 @@ async function seedContactAddresses() {
 }
 
 async function seedPathways() {
-    const pathways = ["Cloud Computing", "Software Development", "Data Analytics", "Undecided"]
+    const pathways = ["Cloud Computing", "Software Development", "Data Analytics", "Cybersecurity"]
     console.log('Seeding Pathways...')
+    const uuids = ['0645cc89-e942-48b4-a34a-f7ad7e87dec3',
+        '79608104-d50e-4d0f-b541-2a9de7bc0f89',
+        'a54f3940-301c-4e2e-85e8-bcaf244c89bb',
+        'b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009'
+    ]
+    let idx = 0
     for (const path of pathways) {
         await prisma.pathways.create({
             data: {
-                pathway_id: uuidv4(),
+                pathway_id: uuids[idx],
                 pathway_title: path,
             }
         });
+        idx++;
     }
     console.log(`Seeded ${pathways.length} Pathways.\n`)
 }
@@ -1255,7 +1262,7 @@ async function seedProjectSkills() {
 
             await prisma.project_has_skills.create({
                 data: {
-                    proj_exp_id: p.projectId ,
+                    proj_exp_id: p.projectId,
                     skill_id: skill.skill_id,
                 },
             });
@@ -1474,7 +1481,7 @@ async function seedJobPostings() {
                     // 40% chance job post is an internship
                     const isInternship = Math.random() < 0.4;
                     // paid if not internship, internships have a 50% chance of being paid
-                    const isPaid = !isInternship ? true : Math.random() < 0.5 ;
+                    const isPaid = !isInternship ? true : Math.random() < 0.5;
                     const regionInfo = waStateCountiesWithZipCodes[faker.number.int({
                         min: 0,
                         max: waStateCountiesWithZipCodes.length - 1
