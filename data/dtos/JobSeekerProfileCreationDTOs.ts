@@ -153,11 +153,22 @@ export type JsPreferencesDTO = {
 
 // TODO: this needs to be secure
 export type JsDisclosuresDTO = {
-    jobseekerId: string,
+    jobseekerId?: string | null, // jsDetails
+    isVeteran?: string | null, // privateDetails
+    hasDisability?: string | null, // privateDetails
+    gender?: string | null, // contacts.gender
+    race?: string | null, //contacts.race
+    hasReadTerms: boolean //contacts.has_read_terms
+
+}
+
+export type JsDisclosuresPostDTO = {
+    userId: string,
+    jobseekerId: string, // contacts.jobseekers[0].jobseeker_id
+    isVeteran: string, // jobseekers[0].jobseekers_private_data[0].is_veteran
+    hasDisability: string, // jobseekers[0].jobseekers_private_data[0].has_disability
     gender: string, // contacts.gender
-    isVeteran: string, // jobseekers_private_data
-    ethnicity: string, //contacts.race
-    hasDisability: string, // jobseekers_private_data
+    race: string, //contacts.race
     hasReadTerms: boolean //contacts.has_read_terms
 
 }
