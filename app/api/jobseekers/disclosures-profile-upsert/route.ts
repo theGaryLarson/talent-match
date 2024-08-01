@@ -1,5 +1,5 @@
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import {jobseekers_private_data, PrismaClient} from "@prisma/client";
+import {PrismaClient} from "@prisma/client";
 import {NextResponse} from "next/server";
 import {JsDisclosuresDTO, JsDisclosuresPostDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
