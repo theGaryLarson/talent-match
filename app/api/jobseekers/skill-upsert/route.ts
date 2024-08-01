@@ -8,15 +8,32 @@ const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
-        const { jobseekerId, skillIds } = await request.json();
+        const { userId, skillIds } = await request.json();
 
-        if (!jobseekerId || !Array.isArray(skillIds)) {
+        if (!userId || !Array.isArray(skillIds)) {
             return NextResponse.json({ error: 'Invalid input. Requires jobseekerId and skillId[]' }, { status: 400 });
         }
+
+        if (!userId || !Array.isArray(skillIds)) {
+            return NextResponse.json({ error: 'Invalid input. Requires userId and skillIds[]' }, { status: 400 });
+        }
+
+        // Find the jobseekerId based on the userId
+        const jobseeker = await prisma.jobseekers.findUnique({
+            where: { user_id: userId },
+            select: { jobseeker_id: true }
+        });
+
+        if (!jobseeker) {
+            return NextResponse.json({ error: 'Jobseeker not found' }, { status: 404 });
+        }
+
+        const jobseekerId = jobseeker.jobseeker_id;
 
         // Normalize skillIds array: remove blanks, trim spaces, and filter out empty strings
         const normalizedSkillIds: string[] = skillIds.filter((id: string) => id && id.trim() !== '');
         const upsertedSkills = [];
+
         for (const skillId of normalizedSkillIds) {
             const upsertedskill: JobseekerSkillDTO= await prisma.jobseeker_has_skills.upsert({
                 where: { jobseeker_id_skill_id: { jobseeker_id: jobseekerId, skill_id: skillId } },
