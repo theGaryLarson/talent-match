@@ -56,26 +56,6 @@ export async function POST(request: Request) {
             const jobseekerId: string = jobseeker?.jobseeker_id || uuidv4();
             const isEnrolledEdProgram = jobseeker?.is_enrolled_ed_program || false;
 
-            // Find or create the targeted pathway for 'Undecided'
-            let targetedPathway = jobseeker?.targeted_pathway;
-            if (!targetedPathway) {
-                let pathway = await prisma.pathways.findUnique({
-                    where: {pathway_title: 'Undecided'},
-                    select: {pathway_id: true}
-                });
-
-                if (!pathway) {
-                    pathway = await prisma.pathways.create({
-                        data: {
-                            pathway_id: uuidv4(),
-                            pathway_title: 'Undecided'
-                        },
-                        select: {pathway_id: true}
-                    });
-                }
-                targetedPathway = jobseeker?.targeted_pathway || pathway.pathway_id;
-            }
-
             upsertedJobseeker = await prisma.jobseekers.upsert({
                 where: {user_id: userId},
                 update: {
@@ -87,7 +67,7 @@ export async function POST(request: Request) {
                 create: {
                     jobseeker_id: jobseekerId,
                     user_id: userId,
-                    targeted_pathway: targetedPathway,
+                    targeted_pathway: undefined,
                     is_enrolled_ed_program: isEnrolledEdProgram,
                     highest_level_of_study_completed: highestLevelOfStudy,
                     current_grade_level: currentGrade,

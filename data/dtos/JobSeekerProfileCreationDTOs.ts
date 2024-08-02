@@ -141,21 +141,34 @@ export type JsShowcaseDTO = {
     userId: string,
     skills: SkillDTO[],
     portfolioUrl?: string | null,
-    portfolioPassword?: string  | null, // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
-    video_url?: string  | null,
+    portfolioPassword?: string | null, // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
+    video_url?: string | null,
 }
 
-export type JsPreferences = {
-    preferredEmploymentType: string,
-    targetedPathway: string
+export type JsPreferencesDTO = {
+    userId: string,
+    targetedPathwayId?: string | null
+    preferredEmploymentType?: string | null,
 }
 
 // TODO: this needs to be secure
-export type JsDisclosures = {
-    gender: string,
-    isVeteran: string,
-    ethnicity: string,
-    hasDisability: string,
-    hasReadTerms: number // TODO: add to the db
+export type JsDisclosuresDTO = {
+    jobseekerId?: string | null, // jsDetails
+    isVeteran?: string | null, // privateDetails
+    hasDisability?: string | null, // privateDetails
+    gender?: string | null, // contacts.gender
+    race?: string | null, //contacts.race
+    hasReadTerms: boolean //contacts.has_read_terms
+
+}
+
+export type JsDisclosuresPostDTO = {
+    userId: string,
+    jobseekerId: string, // contacts.jobseekers[0].jobseeker_id
+    isVeteran: string, // jobseekers[0].jobseekers_private_data[0].is_veteran
+    hasDisability: string, // jobseekers[0].jobseekers_private_data[0].has_disability
+    gender: string, // contacts.gender
+    race: string, //contacts.race
+    hasReadTerms: boolean //contacts.has_read_terms
 
 }

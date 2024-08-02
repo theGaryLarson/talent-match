@@ -9,14 +9,14 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const {email} = body;
-        if (!email) {
+        const {userId} = body;
+        if (!userId) {
             return NextResponse.json({error: 'User email is required'}, {status: 400});
         }
         // Fetch the contacts data
         const contact = await prisma.contacts.findUnique({
             where: {
-                email: email
+                user_id: userId
             },
             select: {
                 user_id: true,

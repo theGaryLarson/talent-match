@@ -126,6 +126,7 @@ model contacts {
   gender             String?              @db.VarChar(45)
   race               String?              @db.VarChar(45)
   photo_url          String?              @db.VarChar(255)
+  has_agreed_terms   Boolean              @default(false) @db.Bit
   createdAt          DateTime             @map("created_at") @db.DateTime
   updatedAt          DateTime?            @map("updated_at") @db.DateTime
   cfa_admin          cfa_admin[]
