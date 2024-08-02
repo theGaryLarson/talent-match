@@ -8,10 +8,10 @@ export default function PageBanner({
   }){
     return (
       <div
-      className={"h-[420px] content-center bg-blend-darken p-4 md:p-10 lg:p-20 text-white bg-[#00000066] bg-cover bg-center "+ bg}
+      className={"h-[420px] content-center bg-blend-darken p-4 md:p-10 lg:p-20 text-white bg-[#047F9C4D] bg-cover bg-center "+ bg}
     >
       {/* <img src={src}></img> */}
-      <div className="w-80 bg-blue-trans rounded-xl p-10 space-y-5">
+      <div className="w-[540px] bg-blue-trans rounded-xl p-10 space-y-5">
       <p className="text-4xl font-bold ">{title}</p>
       <RoundedButton content={"SIGN UP"} link={"/signup"} invertColor={false}/>
       </div>

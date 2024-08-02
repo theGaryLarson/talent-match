@@ -5,8 +5,8 @@ import Toggle from "@/app/ui/components/Toggle";
 export default async function page({params}:{params: {id:string}}){
     let jobseeker = await getJobSeekerEmployerView(params.id)
     return(
-        <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
-           <Toggle/>
+        <main className="flex flex-col space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto'] items-center">
+           {/* <Toggle/> */}
             <div className="border w-[750px] h-[200px] flex items-center rounded-md">
                 <div className="flex items-center gap-5 p-4">
                 <Avatar imgsrc={jobseeker?.contacts.photo_url} scale={3}></Avatar>
@@ -19,10 +19,10 @@ export default async function page({params}:{params: {id:string}}){
 
             </div>
 
-            <div className="border w-[750px] p-4 space-y-4">
+            <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl">Work Experience</h1>
                 {jobseeker?.work_experiences.map((experience)=>
-                    <div key={experience.workId} className="border p-4">
+                    <div key={experience.workId} className="border p-4 rounded-md" >
                         <h2 className="font-bold text-xl">{experience.company} | {experience.jobTitle}</h2>
                         <p>{experience.responsibilities}</p>
                     </div>
@@ -31,9 +31,20 @@ export default async function page({params}:{params: {id:string}}){
             </div>
             <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl">Education</h1>
-                <div className="border p-4">
-                <h2 className="font-bold text-xl">{jobseeker?.jobseeker_education[0]?.eduInstitutions?.name}</h2>
-                </div>
+                {
+                    jobseeker?.jobseeker_education.map((education)=>{
+                        return(
+                        <div className="border p-4 rounded-md">
+                        <h3 className="font-bold text-lg">{education.eduInstitutions.name}</h3>
+                        <p>{education.degreeType}</p>
+                        <p>{education.gradDate.toUTCString()}</p>
+                        </div> );
+                    }
+                    )
+                }
+                
+                
+                
             </div>
             <div className="border w-[750px] p-4 space-y-4 rounded-md">
                 <h1 className="font-bold text-2xl ">Projects</h1>
