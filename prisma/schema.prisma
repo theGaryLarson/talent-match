@@ -28,6 +28,7 @@ model certificates {
   credentialUrl String?    @map("credential_url") @db.VarChar(255)
   issueDate     DateTime   @map("issue_date") @db.DateTime
   expiryDate    DateTime   @map("expiration_date") @db.DateTime
+  description   String?    @db.NText
   jobseekers    jobseekers @relation(fields: [jobSeekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_certificates_jobseeker1")
 
   @@index([jobSeekerId], map: "fk_certificates_jobseeker1_idx")
@@ -125,6 +126,7 @@ model contacts {
   gender             String?              @db.VarChar(45)
   race               String?              @db.VarChar(45)
   photo_url          String?              @db.VarChar(255)
+  has_agreed_terms   Boolean              @default(false) @db.Bit
   createdAt          DateTime             @map("created_at") @db.DateTime
   updatedAt          DateTime?            @map("updated_at") @db.DateTime
   cfa_admin          cfa_admin[]
@@ -246,7 +248,7 @@ model jobseeker_has_skills {
 model jobseekers {
   jobseeker_id                       String                               @id(clustered: false, map: "jobseekers_PRIMARY") @unique(map: "jobseekers_learner_id_UNIQUE") @db.NVarChar(36)
   user_id                            String                               @unique @db.NVarChar(36)
-  targeted_pathway                   String                               @db.NVarChar(36)
+  targeted_pathway                   String?                              @db.NVarChar(36)
   is_enrolled_ed_program             Boolean                              @db.Bit
   highest_level_of_study_completed   String?                              @db.VarChar(255)
   current_grade_level                String?                              @db.VarChar(45)
@@ -256,13 +258,16 @@ model jobseekers {
   current_job_title                  String?                              @db.VarChar(255)
   resume_url                         String?                              @db.VarChar(255)
   years_work_exp                     Int?                                 @db.SmallInt
+  months_internship_exp              Int?                                 @db.SmallInt
   portfolio_url                      String?                              @db.VarChar(255)
+  portfolio_password                 String?                              @db.NVarChar(255)
   video_url                          String?                              @db.VarChar(255)
   employment_type_sought             String?                              @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
+  is_marked_deletion                 DateTime?                            @db.DateTime
   case_mgmt                          case_mgmt[]
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
-  pathways                           pathways                             @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
+  pathways                           pathways?                            @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
   contacts                           contacts                             @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_learner_user1")
   jobseekers_private_data            jobseekers_private_data[]
   jobseekers_skill_gap_data          jobseekers_skill_gap_data[]

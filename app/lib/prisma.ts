@@ -138,7 +138,6 @@ export async function getAllJobSeekerCardView() {
     const jobSeekerCardViews = await prisma.jobseekers.findMany({
         select: jobSeekerCardViewSelect
     });
-    console.log(JSON.stringify(jobSeekerCardViews, null, 2));
     return jobSeekerCardViews;
 }
 
@@ -238,8 +237,6 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 
         }
     });
-    console.log('///// EMPLOYER VIEW //////');
-    console.log(JSON.stringify(empView, null, 2));
     return empView;
 }
 
@@ -300,7 +297,6 @@ export async function getFilteredJobSeekerCardView(skills: string[] = [], yearsW
         select: jobSeekerCardViewSelect
     });
 
-    console.log(JSON.stringify(filteredJobSeekers, null, 2));
     return filteredJobSeekers;
 }
 

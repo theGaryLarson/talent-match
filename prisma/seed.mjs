@@ -165,21 +165,21 @@ const techEdMajors = [
 ];
 
 const itOccupationTechnologyAreas = [
-    "Cybersecurity",
-    "Cloud Computing",
-    "Data Science",
-    "Artificial Intelligence",
-    "Network Administration",
-    "Software Development",
-    "Database Management",
-    "DevOps",
-    "Web Development",
-    "Mobile App Development",
-    "IT Support",
-    "System Analysis",
-    "IT Project Management",
-    "Machine Learning",
-    "Big Data Analytics"
+    { id: "364dc5b4-0e7a-41ca-b247-bb72341f777f", name: "Cybersecurity" },
+    { id: "37152daa-90cc-4b7d-93ad-c4a4907339d8", name: "Cloud Computing" },
+    { id: "3d17ad59-8f41-4a40-ba3a-7ee2483c8bf3", name: "Data Science" },
+    { id: "d4e5f6g7-h8i9-10jk-11lmn-12opab2c3d3", name: "Artificial Intelligence" },
+    { id: "47a735e5-f1c6-47b9-ae26-1146dcc0a8d7", name: "Network Administration" },
+    { id: "4c376b09-38e2-4278-b70b-975837c43fe5", name: "Software Development" },
+    { id: "5e722521-153b-4f81-8687-2a4cfa438ffe", name: "Database Management" },
+    { id: "683b1693-742f-44a7-8f58-0c9d7c34936a", name: "DevOps" },
+    { id: "7acd2248-a2c3-4789-b414-a2463b75997a", name: "Web Development" },
+    { id: "9fef823b-2e49-49bf-a515-ce1da3a13936", name: "Mobile App Development" },
+    { id: "a2b84270-ff5f-47b6-a14b-cd52a0120d98", name: "IT Support" },
+    { id: "a90ef5fd-5705-495c-ac07-58ccec1186a8", name: "System Analysis" },
+    { id: "ae4c1d99-1da5-4a50-9004-2dff45781862", name: "IT Project Management" },
+    { id: "bfdd9b1f-6e60-4816-a71e-b37ba292cfa4", name: "Machine Learning" },
+    { id: "eb419696-1c1d-4c73-8513-b7a82397c5ca", name: "Big Data Analytics" }
 ];
 
 const predefinedResponsibilities = [
@@ -854,15 +854,22 @@ async function seedContactAddresses() {
 }
 
 async function seedPathways() {
-    const pathways = ["Cloud Computing", "Software Development", "Data Analytics", "Undecided"]
+    const pathways = ["Cloud Computing", "Software Development", "Data Analytics", "Cybersecurity"]
     console.log('Seeding Pathways...')
+    const uuids = ['0645cc89-e942-48b4-a34a-f7ad7e87dec3',
+        '79608104-d50e-4d0f-b541-2a9de7bc0f89',
+        'a54f3940-301c-4e2e-85e8-bcaf244c89bb',
+        'b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009'
+    ]
+    let idx = 0
     for (const path of pathways) {
         await prisma.pathways.create({
             data: {
-                pathway_id: uuidv4(),
+                pathway_id: uuids[idx],
                 pathway_title: path,
             }
         });
+        idx++;
     }
     console.log(`Seeded ${pathways.length} Pathways.\n`)
 }
@@ -872,8 +879,8 @@ async function seedTechnologyAreas() {
     for (const techArea of itOccupationTechnologyAreas) {
         await prisma.technology_areas.create({
             data: {
-                technology_area_id: uuidv4(),
-                title: techArea,
+                technology_area_id: techArea.id,
+                title: techArea.name,
             }
         });
     }
@@ -1255,7 +1262,7 @@ async function seedProjectSkills() {
 
             await prisma.project_has_skills.create({
                 data: {
-                    proj_exp_id: p.projectId ,
+                    proj_exp_id: p.projectId,
                     skill_id: skill.skill_id,
                 },
             });
@@ -1474,7 +1481,7 @@ async function seedJobPostings() {
                     // 40% chance job post is an internship
                     const isInternship = Math.random() < 0.4;
                     // paid if not internship, internships have a 50% chance of being paid
-                    const isPaid = !isInternship ? true : Math.random() < 0.5 ;
+                    const isPaid = !isInternship ? true : Math.random() < 0.5;
                     const regionInfo = waStateCountiesWithZipCodes[faker.number.int({
                         min: 0,
                         max: waStateCountiesWithZipCodes.length - 1
