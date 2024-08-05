@@ -1,3 +1,4 @@
+
 import {PrismaClient} from '@prisma/client';
 import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
@@ -5,6 +6,85 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 
+export async function searchSkills(searchTerm:string): Promise<string[]> {
+  const MAX_RESULTS = 10;
+
+  if (searchTerm.length === 0) {
+    return [];
+  }
+  else {
+    const exactResults = (await prisma.skills.findMany({
+      where: {
+        OR: [
+          {
+            skill_name:{
+              equals: searchTerm
+            }
+          },
+          {
+            skill_name:{
+              equals: searchTerm + " (Programming Language)"
+            }
+          }
+        ]
+      },
+      take: 2
+    })).map((val) => val.skill_name).sort();
+
+    const startsWithResults = (await prisma.skills.findMany({
+      where: {
+        AND: [
+          {
+            skill_name:{
+              startsWith: searchTerm
+            }
+          },
+          {
+            NOT: {
+              skill_name:{
+                equals: searchTerm
+              }
+            }
+          },
+          {
+            NOT: {
+              skill_name:{
+                equals: searchTerm + " (Programming Language)"
+              }
+            }
+          }
+        ]
+      },
+      take: MAX_RESULTS - exactResults.length
+    })).map((val) => val.skill_name).sort();
+    const containsResults =
+      (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
+        (await prisma.skills.findMany({
+          where: {
+            AND: [
+              {
+                skill_name: {
+                  contains: searchTerm
+                }
+              },
+              {
+                NOT: {
+                  skill_name: {
+                    startsWith: searchTerm
+                  }
+                }
+              }
+            ]
+          },
+          take: MAX_RESULTS - exactResults.length - startsWithResults.length
+        })).map((val) => val.skill_name).sort()
+      : []
+    // Had to query them separately to guarantee Exact and StartsWith
+    //   matches were found since I'm limiting the results, and OR
+    //   clauses do not guarantee results in the order of the filters
+    return [...exactResults, ...startsWithResults, ...containsResults];
+  }
+}
 export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
     user_id: true,
