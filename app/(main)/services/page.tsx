@@ -38,7 +38,7 @@ export default function Page() {
               'Explore our unique process for getting you connected with ready-to-hire employers as a job candidate with a showcase of TechReady job skills and achievements. We provide development opportunities in technical proficiency and success strategies for success in the work environment, along with career navigation skills. '
             }
             buttonText={'Register'}
-            link={'/#'}
+            link={'/signup'}
             callToAction={
               'Register for Information session, build your profile'
             }
