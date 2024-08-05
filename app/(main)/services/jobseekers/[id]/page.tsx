@@ -5,10 +5,10 @@ import Toggle from '@/app/ui/components/Toggle';
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
   return (
-    <main className="mx-4 space-y-3 py-8 font-['Roboto'] md:mx-[150px] lg:mx-[200px]">
+    <main className="px-4 space-y-3 py-8 font-['Roboto'] md:px-[150px] lg:px-[200px] bg-gray-bg">
       {/* <Toggle/> */}
       
-        <div className="flex h-[200px] items-center rounded-md border">
+        <div className="flex h-[200px] items-center rounded-md border bg-white">
           <div className="flex items-center gap-5 p-4">
             <Avatar imgsrc={jobseeker?.contacts.photo_url} scale={3}></Avatar>
             <div>
@@ -27,10 +27,10 @@ export default async function page({ params }: { params: { id: string } }) {
       
 <div className='flex flex-wrap gap-4'>
 <div className='space-y-3 shrink max-w-[700px]'>
-      <div className="space-y-4 rounded-md border p-4">
+      <div className="space-y-4 rounded-md border p-4 bg-white">
         <h1 className="text-2xl font-bold">Work Experience</h1>
         {jobseeker?.work_experiences.map((experience) => (
-          <div key={experience.workId} className="rounded-md border p-4">
+          <div key={experience.workId} className="rounded-md border p-4 bg-gray-bg">
             <h2 className="text-xl font-bold">
               {experience.company} | {experience.jobTitle}
             </h2>
@@ -39,11 +39,11 @@ export default async function page({ params }: { params: { id: string } }) {
         ))}
       </div>
 
-      <div className="space-y-4 rounded-md border p-4">
+      <div className="space-y-4 rounded-md border p-4 bg-white">
         <h1 className="text-2xl font-bold">Education</h1>
         {jobseeker?.jobseeker_education.map((education) => {
           return (
-            <div className="rounded-md border p-4">
+            <div className="rounded-md border p-4 bg-gray-bg">
               <h3 className="text-lg font-bold">
                 {education.eduInstitutions.name}
               </h3>
@@ -54,11 +54,11 @@ export default async function page({ params }: { params: { id: string } }) {
         })}
       </div>
 
-      <div className="space-y-4 rounded-md border p-4">
+      <div className="space-y-4 rounded-md border p-4 bg-white">
         <h1 className="text-2xl font-bold ">Projects</h1>
 
         {jobseeker?.project_experiences.map((experence) => (
-          <div className="rounded-md border p-4" key={experence.projectId}>
+          <div className="rounded-md border p-4 bg-gray-bg" key={experence.projectId}>
             <h2 className="text-xl">{experence.projTitle}</h2>
             <p className="text-sm">
               {experence.startDate.toLocaleDateString() +
@@ -78,7 +78,7 @@ export default async function page({ params }: { params: { id: string } }) {
       </div>
 </div>
 <div className='w-[350px] space-y-3 grow-[2]'>
-      <div className="space-y-4 rounded-md border p-4">
+      <div className="space-y-4 rounded-md border p-4 bg-white">
         <h1 className="text-2xl font-bold">Skills</h1>
         <div className="flex flex-wrap gap-4">
           {jobseeker?.jobseeker_has_skills.map((skill) => (
@@ -91,7 +91,7 @@ export default async function page({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <div className="space-y-4 rounded-md border p-4">
+      <div className="space-y-4 rounded-md border p-4 bg-white">
         <h1 className="text-2xl font-bold">Resume</h1>
         {jobseeker?.resume_url ? (
           <a href={jobseeker?.resume_url}>View Resume</a>
@@ -100,7 +100,7 @@ export default async function page({ params }: { params: { id: string } }) {
         )}
       </div>
 
-      <div className="space-y-4 rounded-md border p-4">
+      <div className="space-y-4 rounded-md border p-4 bg-white">
         <h1 className="text-2xl font-bold">Portfolio</h1>
         {jobseeker?.portfolio_url ? (
           <a href={jobseeker?.portfolio_url}>{jobseeker?.portfolio_url}</a>
