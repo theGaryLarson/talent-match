@@ -58,6 +58,7 @@ export async function GET(request: Request, { params }: { params: { companyId: s
                 company_id: companyId
             },
             select: {
+                company_address_id: true,
                 city: true,
                 state: true,
                 zip_region: true,
@@ -71,6 +72,7 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             industrySectorTitle: companyInfo?.industry_sectors?.sector_title,
             companyName: companyInfo.company_name,
             companyAddresses: updatedAddresses.map(address => ({
+                addressId: address.company_address_id,
                 state: address.state,
                 city: address.city,
                 zipCode: address.zip_region,
