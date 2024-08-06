@@ -140,6 +140,7 @@ export async function POST(request: Request) {
                 company_id: companyId
             },
             select: {
+                company_address_id: true,
                 city: true,
                 state: true,
                 zip_region: true,
@@ -153,6 +154,7 @@ export async function POST(request: Request) {
             industrySectorTitle: upsertedCompany?.industry_sectors?.sector_title,
             companyName: upsertedCompany.company_name,
             companyAddresses: updatedAddresses.map(address => ({
+                addressId: address.company_address_id,
                 state: address.state,
                 city: address.city,
                 zipCode: address.zip_region,
