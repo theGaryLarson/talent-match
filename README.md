@@ -1525,7 +1525,6 @@ _Intended to be used with the `/create-profile/jobseeker/disclosures` page to up
 ```json
 {
   "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
-  "jobseekerId": "96682e87-4940-411f-a09c-be7d45d118c8",
   "gender": "male",
   "race": "caucasian",
   "hasReadTerms": true,
