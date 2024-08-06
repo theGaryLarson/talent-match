@@ -134,7 +134,7 @@ export async function POST(request: Request) {
             });
         });
 
-        const upsertedAddresses = await Promise.all(upsertPromises);
+        await Promise.all(upsertPromises);
         const updatedAddresses = await prisma.company_addresses.findMany( {
             where: {
                 company_id: companyId
