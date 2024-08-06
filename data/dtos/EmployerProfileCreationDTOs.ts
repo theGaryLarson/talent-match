@@ -45,6 +45,7 @@ export type CompanyInfoSummaryDTO = {
 }
 
 export type ReadAddressDTO = {
+    addressId: string,
     city?: string,
     state?: string,
     zipCode?: string,
