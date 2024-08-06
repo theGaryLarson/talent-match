@@ -19,17 +19,68 @@ import {v4 as uuidv4} from 'uuid';
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 
 
+import LicenseGroup, { defaultLicenseGroupData, extractLicenseGroups } from '@/app/ui/form-field-groups/LicenseGroup';
+import ProjectExperienceGroup, { defaultProjectExperienceGroupData, extractProjectExperienceGroups } from '@/app/ui/form-field-groups/ProjectExperienceGroup';
+
+type LicenseGroupsTuple = [React.ReactNode, number];
+type ProjectExperienceGroupsTuple = [React.ReactNode, number];
 export default function CreateJobseekerProfileEducationPage() {
     const [eduProgram, setEduProgram] = useState("");
+    const [licenseGroups, setLicenseGroups] = useState<LicenseGroupsTuple[]>([]);
+    const [projectExperienceGroups, setProjectExperienceGroups] = useState<ProjectExperienceGroupsTuple[]>([]);
     const [startDate, setStartDate] = useState("");
     const [completionDate, setCompletionDate] = useState("");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
 
+  function addNewLicenseGroup() {
+    const newGroupData = defaultLicenseGroupData();
+    setLicenseGroups((prevGroups) => [
+      ...prevGroups,
+      [
+        <LicenseGroup key={newGroupData.uid} groupData={newGroupData} onRemove={()=>removeLicenseGroup(newGroupData.uid)} />,
+        newGroupData.uid
+      ]
+    ]);
+  }
+
+  function removeLicenseGroup(byUid : number) {
+    setLicenseGroups((prevGroups) => {
+      const updatedGroups = prevGroups.filter(([, uid]) => (uid !== byUid));
+      return updatedGroups;
+    })
+  }
+
+  function addNewProjectExperienceGroup() {
+    const newGroupData = defaultProjectExperienceGroupData();
+    setProjectExperienceGroups((prevGroups) => [
+      ...prevGroups,
+      [
+        <ProjectExperienceGroup key={newGroupData.uid} groupData={newGroupData} onRemove={()=>removeProjectExperienceGroup(newGroupData.uid)} />,
+        newGroupData.uid
+      ]
+    ]);
+  }
+
+  function removeProjectExperienceGroup(byUid : number) {
+    setProjectExperienceGroups((prevGroups) => {
+      const updatedGroups = prevGroups.filter(([, uid]) => (uid !== byUid));
+      return updatedGroups;
+    })
+  }
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const form = event.currentTarget as HTMLFormElement;
+        
+        const formDataObj = new FormData(form);
+        const [extractedLicenseData, remainingFormData] = extractLicenseGroups(Array.from(formDataObj.entries()));
+        const [extractedProjectExperienceData, remainingFormData2] = extractProjectExperienceGroups(remainingFormData);
+        console.log(extractedLicenseData);
+        console.log(extractedProjectExperienceData);
+        console.log(remainingFormData2);
+        
         const startDateWithDay = `${startDate}-01`
         const completionDateWithDay = `${completionDate}-01`
         console.log('Date:', new Date('2024-12-1').toISOString());
@@ -542,16 +593,41 @@ export default function CreateJobseekerProfileEducationPage() {
                                 </div>
                         }
                     </fieldset>
-                    <fieldset>
+          <style jsx global>{`
+            .license-groups {
+              counter-reset: work-group-item;
+            }
+            
+            .license-groups fieldset h3::after {
+              counter-increment: work-group-item;
+              content: " " counter(work-group-item);
+            }
+              
+            .project-experience-groups {
+              counter-reset: work-group-item;
+            }
+            
+            .project-experience-groups fieldset h3::after {
+              counter-increment: work-group-item;
+              content: " " counter(work-group-item);
+            }
+          `}</style>
+          <fieldset className="license-groups">
                         <legend><h2>Licenses &amp; certificates</h2></legend>
-                        <Button pill color="gray">
+            {
+              licenseGroups.map(([group]) => group)
+            }
+            <Button pill color="gray" onClick={addNewLicenseGroup}>
                             <MdAdd className="mr-2 h-5 w-5"/>
                             Add license
                         </Button>
                     </fieldset>
-                    <fieldset>
+          <fieldset className="project-experience-groups">
                         <legend><h2>Project experience</h2></legend>
-                        <Button pill color="gray">
+            {
+              projectExperienceGroups.map(([group]) => group)
+            }
+            <Button pill color="gray" onClick={addNewProjectExperienceGroup}>
                             <MdAdd className="mr-2 h-5 w-5"/>
                             Add project experience
                         </Button>
