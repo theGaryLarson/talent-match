@@ -616,7 +616,7 @@ const industrySectors = [
     "Telecommunications",
     "Transportation and Logistics",
     "Travel and Hospitality",
-    "Utilities"
+    "Utilities",
 ];
 
 const itJobTitles = [
@@ -1343,7 +1343,7 @@ async function seedCompanies() {
                 industry_sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                 company_name: faker.company.name(),
                 company_logo_url: faker.internet.url(),
-                description: faker.lorem.sentences(2),
+                about_us: faker.lorem.sentences(2),
                 company_email: faker.internet.email(),
                 year_founded: faker.number.int({min: 1900, max: 2024}),
                 company_website_url: faker.internet.url(),
@@ -1352,7 +1352,7 @@ async function seedCompanies() {
                 company_mission: faker.lorem.sentences(3),
                 company_vision: faker.lorem.sentences(3),
                 size: faker.number.int({min: 5, max: 1500}).toString(),
-                predicted_annual_hires: faker.number.int({min: 1, max: 10})
+                estimated_annual_hires: faker.number.int({min: 1, max: 10})
             }
         });
     }
@@ -1378,9 +1378,8 @@ async function seedEmployers() {
                 user_id: e.user_id,
                 company_id: faker.helpers.arrayElement(companies).company_id,
                 job_title: faker.person.jobTitle(),
-                home_office_location: faker.location.city() + ', WA ' + faker.helpers.arrayElement(regionInfo.zipCodes),
-                employer_url: null,
-                logo_url: null,
+                work_location: faker.location.city() + ', WA ' + faker.helpers.arrayElement(regionInfo.zipCodes),
+                linkedin_url: null,
             }
         })
     }
