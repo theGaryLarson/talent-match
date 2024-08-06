@@ -27,6 +27,14 @@ export default async function page({ params }: { params: { id: string } }) {
       
 <div className='flex flex-wrap gap-4'>
 <div className='space-y-3 shrink max-w-[700px]'>
+      <div className='space-y-4 rounded-md border p-4 bg-white'>
+        <h1 className="text-2xl font-bold">Introduction</h1>
+        <p>{jobseeker?.intro_headline}</p>
+      </div>
+      
+      
+      
+      
       <div className="space-y-4 rounded-md border p-4 bg-white">
         <h1 className="text-2xl font-bold">Work Experience</h1>
         {jobseeker?.work_experiences.map((experience) => (
@@ -43,7 +51,7 @@ export default async function page({ params }: { params: { id: string } }) {
         <h1 className="text-2xl font-bold">Education</h1>
         {jobseeker?.jobseeker_education.map((education) => {
           return (
-            <div className="rounded-md border p-4 bg-gray-bg">
+            <div className="rounded-md border p-4 bg-gray-bg" key={education.edInstitutionId}>
               <h3 className="text-lg font-bold">
                 {education.eduInstitutions.name}
               </h3>
