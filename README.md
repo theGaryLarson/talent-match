@@ -1551,10 +1551,333 @@ _Intended to be used with the `/create-profile/jobseeker/disclosures` page to up
 }
 ```
 
+---
+
 ### Employer Routes
 
-> Coming soon...
+---
 
+### Employer Account Creation
+
+---
+
+#### Upsert Employer Personal Information Page
+
+_This route is used to upsert information from the employer account creation personal information page._
+
+**Endpoint**: `api/employers/account/personal-info/upsert`
+
+**Method**: `POST`
+
+##### Sample Request
+
+**DTO**: `PostEmployerPersonalDTO`
+
+```json
+{
+  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+  "firstName": "Inita",
+  "lastName": "Talent",
+  "birthDate": "1990-12-08",
+  "email": "inita@employer.com",
+  "gender": "female",
+  "race": "asian",
+  "photoUrl": "https://blobName.myphoto-123.png"
+}
+```
+
+##### Sample Response
+
+**DTO**: result property is type `ReadEmployerPersonalDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "firstName": "Inita",
+    "lastName": "Talent",
+    "birthDate": "1990-12-08T00:00:00.000Z",
+    "email": "inita@employer.com",
+    "phone": null,
+    "gender": "female",
+    "race": "asian",
+    "photoUrl": "https://blobName.myphoto-123.png"
+  }
+}
+```
+
+---
+
+#### Read Employer Personal Information Page
+
+_This route is used for the initial load of data for Account Page: Employer Personal Information._
+
+**Endpoint**: `/api/employers/account/personal-info/<userId>`
+
+**Method**: `GET`
+
+##### Sample Response
+
+**DTO**: result property is type `ReadEmployerPersonalDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "firstName": "Inita",
+    "lastName": "Talent",
+    "birthDate": "1990-12-08T00:00:00.000Z",
+    "email": "inita@employer.com",
+    "phone": null,
+    "gender": "female",
+    "race": "asian",
+    "photoUrl": "https://blobName.myphoto-123.png"
+  }
+}
+```
+
+---
+
+#### Upsert Employer Professional Information Page
+
+_This route is used for the initial load of data for Account Page: Employer Professional Information. There needs to be
+a drop-down for an employer to select companies' address_
+
+**Endpoint**: `/api/employers/account/professional-info/upsert`
+
+**Method**: `POST`
+
+##### Sample Request
+
+**DTO**: `PostEmployerWorkDTO`
+
+```json
+{
+  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+  "currentJobTitle": "Full-stack Developer",
+  "linkedInUrl": "https://www.linkedin.com/in/theEmployer/",
+  "workAddressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6"
+}
+```
+
+##### Sample Response
+
+**DTO**: result property is type `ReadEmployerWorkDTO & CompanyInfoSummaryDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "employerId": "d651f281-8bdd-4ff6-87ee-fad3727aade2",
+    "currentJobTitle": "Full-stack Developer",
+    "linkedInUrl": "https://www.linkedin.com/in/theEmployer/",
+    "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
+    "companyName": "Gulgowski - Mohr",
+    "isVerifiedEmployee": false,
+    "companyAddress": {
+      "city": "Thousand Oaks",
+      "state": "Washington",
+      "zipCode": "98092"
+    }
+  }
+}
+```
+
+---
+
+#### Read Employer Professional Information Page
+
+_This route is used for the initial load of data for Account Page: Employer Professional Information._
+
+**Endpoint**: `api/employers/account/professional-info/<userId>`
+
+**Method**: `GET`
+
+
+##### Sample Response
+**DTO**: ``
+```json
+{
+    "success": true,
+    "result": {
+        "employerId": "d651f281-8bdd-4ff6-87ee-fad3727aade2",
+        "currentJobTitle": "Full-stack Developer",
+        "linkedInUrl": "https://www.linkedin.com/in/theEmployer/",
+        "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
+        "companyName": "Gulgowski - Mohr",
+        "isVerifiedEmployee": false,
+        "companyAddress": {}
+    }
+}
+```
+
+---
+
+#### Upsert Employer Company Information Page
+
+_This route is used for upserting employer data for Account Page: Employer Company Information._
+
+**Endpoint**: `/api/employers/account/company-info/upsert`
+
+**Method**: `POST`
+
+##### Sample Request
+**DTO**: `PostCompanyInfoDTO`
+```json
+{
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+    "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
+    "industrySectorId": "ad7ab06d-d4bb-4ec4-beb3-1ee4d71c0586",
+    "companyName": "Gulgowski - Mohr",
+    "companyAddresses": [
+        {
+            "city": "Thousand Oaks",
+            "state": "Washington",
+            "zipCode": "98092",
+            "county": "Pierce"
+        }
+    ],
+    "logoUrl": "https://monthly-sentence.org",
+    "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
+    "companyEmail": "Sophie.McClure65@yahoo.com",
+    "yearFounded": "1995",
+    "websiteUrl": "https://even-policy.biz/",
+    "videoUrl": "https://stylish-pursuit.com",
+    "companyPhone": "+323762322141",
+    "mission": "Hire everyone!",
+    "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
+    "employeeCount": "249",
+    "estimatedAnnualHires": "10"
+}
+```
+
+##### Sample Response
+**DTO**: result property is of type `ReadCompanyInfoDTO`
+```json
+{
+    "success": true,
+    "result": {
+        "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
+        "industrySectorId": "ad7ab06d-d4bb-4ec4-beb3-1ee4d71c0586",
+        "industrySectorTitle": "Insurance",
+        "companyName": "Gulgowski - Mohr",
+        "companyAddresses": [
+            {
+                "addressId": "c633d591-8312-44ad-85d1-7bd6f97d0cc5",
+                "state": "WA",
+                "city": "Clarksville",
+                "zipCode": "99347",
+                "county": "Garfield"
+            },
+            {
+                "addressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6",
+                "state": "Washington",
+                "city": "Thousand Oaks",
+                "zipCode": "98092",
+                "county": "Pierce"
+            }
+        ],
+        "logoUrl": "https://monthly-sentence.org",
+        "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
+        "companyEmail": "Sophie.McClure65@yahoo.com",
+        "yearFounded": "1995",
+        "websiteUrl": "https://even-policy.biz/",
+        "videoUrl": "https://stylish-pursuit.com",
+        "companyPhone": "+323762322141",
+        "mission": "Hire everyone!",
+        "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
+        "employeeCount": "249",
+        "estimatedAnnualHires": "10",
+        "isApproved": false
+    }
+}
+```
+
+---
+
+#### Get Company Addresses By Id
+
+_This is used to get the locations for a specific company_
+
+**Endpoint**: `/api/employers/companies/locations/<companyId>`
+
+**Method**: `GET`
+
+##### Sample Response
+**DTO**: result property is of type `ReadAddressDTO[]`
+```json
+{
+    "success": true,
+    "result": [
+        {
+            "addressId": "c633d591-8312-44ad-85d1-7bd6f97d0cc5",
+            "city": "Clarksville",
+            "state": "WA",
+            "zipCode": "99347",
+            "county": "Garfield"
+        },
+        {
+            "addressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6",
+            "city": "Thousand Oaks",
+            "state": "Washington",
+            "zipCode": "98092",
+            "county": "Pierce"
+        }
+    ]
+}
+```
+
+---
+
+#### Read Employer Company Information Page
+
+_This route is used for the initial load of data for Account Page: Employer Company Information._
+
+**Endpoint**: `/api/employers/account/company-info/<companyId>`
+
+**Method**: `GET`
+
+##### Sample Response
+**DTO**: result property is of type `ReadCompanyInfoDTO`
+```json
+{
+    "success": true,
+    "result": {
+        "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
+        "industrySectorId": "ad7ab06d-d4bb-4ec4-beb3-1ee4d71c0586",
+        "industrySectorTitle": "Insurance",
+        "companyName": "Gulgowski - Mohr",
+        "companyAddresses": [
+            {
+                "addressId": "c633d591-8312-44ad-85d1-7bd6f97d0cc5",
+                "state": "WA",
+                "city": "Clarksville",
+                "zipCode": "99347",
+                "county": "Garfield"
+            },
+            {
+                "addressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6",
+                "state": "Washington",
+                "city": "Thousand Oaks",
+                "zipCode": "98092",
+                "county": "Pierce"
+            }
+        ],
+        "logoUrl": "https://monthly-sentence.org",
+        "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
+        "companyEmail": "Sophie.McClure65@yahoo.com",
+        "yearFounded": "1995",
+        "websiteUrl": "https://even-policy.biz/",
+        "videoUrl": "https://stylish-pursuit.com",
+        "companyPhone": "+323762322141",
+        "mission": "Hire everyone!",
+        "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
+        "employeeCount": "249",
+        "estimatedAnnualHires": "10",
+        "isApproved": false
+    }
+}
+```
 ## Technologies Used
 
 - **Next.js**: React framework for server-side rendering. [Next.js Documentation](https://nextjs.org/docs)
