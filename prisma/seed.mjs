@@ -3,7 +3,6 @@ import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
 import getPrismaClient from '../app/lib/prismaClient.mjs'
-import skills_v2 from "../data/skills_v2.mjs";
 
 
 faker.seed(123); // set seed so generated data is deterministic
@@ -1371,7 +1370,6 @@ async function seedEmployers() {
         }
     });
     for (const e of employers) {
-        const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
         await prisma.employers.create({
             data: {
                 employer_id: uuidv4(),
