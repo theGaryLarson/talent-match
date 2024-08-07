@@ -687,25 +687,6 @@ const frontendProjectSkills = [
 ////////////   helper functions  ////////////////
 /////////////////////////////////////////////////
 
-
-// Don't need. running 'prisma migrate reset' simplifies
-async function clearDatabase() {
-    try {
-        await prisma.skills.deleteMany({});
-        await prisma.skill_subcategories.deleteMany({});
-        await prisma.contacts.deleteMany({});
-        await prisma.pathways.deleteMany({});
-        // await prisma.edu_institutions.deleteMany({});
-        await prisma.jobseekers.deleteMany({});
-        // await prisma.edu_addresses.deleteMany({});
-
-        console.log('Database cleared successfully.');
-    } catch (error) {
-        console.error('Failed to clear the database:', error);
-        throw error;
-    }
-}
-
 // Helper function to format date to ISO-8601 to match data type in db
 function formatISODate(date) {
     return new Date(date).toISOString();
