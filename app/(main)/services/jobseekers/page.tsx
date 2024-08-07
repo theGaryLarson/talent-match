@@ -163,7 +163,7 @@ export default function Page() {
 
     return (
         <div className="font-roboto">
-            <PageBanner title={"Join the Tech Talent Showcase"} bg="bg-employer-hero-1"/>
+            <PageBanner title={"Welcome to CFA’s Tech Talent Showcase"} bg="bg-jobseeker-hero-1"/>
 
             <div className="px-8 md:px-12 lg:px-16 py-16 space-y-8 container mx-auto">
                 {topBlurb}
