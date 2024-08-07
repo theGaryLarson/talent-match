@@ -1378,7 +1378,7 @@ async function seedEmployers() {
                 user_id: e.user_id,
                 company_id: faker.helpers.arrayElement(companies).company_id,
                 job_title: faker.person.jobTitle(),
-                work_location: faker.location.city() + ', WA ' + faker.helpers.arrayElement(regionInfo.zipCodes),
+                work_address_id: null,
                 linkedin_url: null,
             }
         })
