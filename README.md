@@ -1795,7 +1795,7 @@ _This route is used for upserting employer data for Account Page: Employer Compa
 
 ---
 
-#### Get Company Addresses By Id
+#### Get Company Locations By Id
 
 _This is used to get the locations for a specific company_
 
@@ -1857,58 +1857,6 @@ _This route is used for the initial load of data for Account Page: Employer Comp
             },
             {
                 "addressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6",
-                "state": "Washington",
-                "city": "Thousand Oaks",
-                "zipCode": "98092",
-                "county": "Pierce"
-            }
-        ],
-        "logoUrl": "https://monthly-sentence.org",
-        "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
-        "companyEmail": "Sophie.McClure65@yahoo.com",
-        "yearFounded": "1995",
-        "websiteUrl": "https://even-policy.biz/",
-        "videoUrl": "https://stylish-pursuit.com",
-        "companyPhone": "+323762322141",
-        "mission": "Hire everyone!",
-        "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
-        "employeeCount": "249",
-        "estimatedAnnualHires": "10",
-        "isApproved": false
-    }
-}
-```
-
----
-
-#### Get Company Addresses By ID
-
-_This route is intended to retrieve the different locations of a specific company._
-
-**Endpoint**: `/api/employers/companies/locations/<companyId>`
-
-**Method**: `GET`
-
-##### Sample Response
-**DTO**: result property is of type `ReadCompanyInfoDTO`
-```json
-{
-    "success": true,
-    "result": {
-        "companyId": "00b5c928-e865-433f-bd6c-10236e46846d",
-        "industrySectorId": "868241c7-75c2-47a0-ab0b-1ea9bb74ce2b",
-        "industrySectorTitle": "Insurance",
-        "companyName": "Gulgowski - Mohr",
-        "companyAddresses": [
-            {
-                "addressId": "a204630e-5849-423e-b030-aaaa11a43210",
-                "state": "WA",
-                "city": "North Zellaboro",
-                "zipCode": "98524",
-                "county": "Mason"
-            },
-            {
-                "addressId": "d12383f7-0526-4682-8b32-016654bac9ed",
                 "state": "Washington",
                 "city": "Thousand Oaks",
                 "zipCode": "98092",
