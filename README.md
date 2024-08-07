@@ -1890,7 +1890,7 @@ _This is intended for an employer to choose their work location for companies th
 **Method**: `POST`
 
 ##### Sample Request
-**DTO**: ``
+**DTO**: `none`
 ```json
 {
     "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
@@ -1899,7 +1899,7 @@ _This is intended for an employer to choose their work location for companies th
 ```
 
 ##### Sample Response
-**DTO**: ``
+**DTO**: result property is of type `ReadEmployerWorkDTO & CompanyInfoSummaryDTO`
 ```json
 {
     "success": true,
