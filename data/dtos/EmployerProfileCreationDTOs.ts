@@ -26,14 +26,14 @@ export type PostEmployerWorkDTO = {
     userId: string,
     currentJobTitle: string,
     linkedInUrl: string,
-    workLocation: string,
+    workAddressId?: string,
 }
 
 export type ReadEmployerWorkDTO = {
     employerId?: string | null,
     currentJobTitle?: string | null,
     linkedInUrl?: string | null,
-    workLocation?: string | null
+    workAddressId?: string | null
     isVerifiedEmployee?: boolean | null
 }
 
@@ -45,7 +45,7 @@ export type CompanyInfoSummaryDTO = {
 }
 
 export type ReadAddressDTO = {
-    addressId: string,
+    addressId?: string,
     city?: string,
     state?: string,
     zipCode?: string,
