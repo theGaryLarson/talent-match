@@ -43,7 +43,7 @@ export default async function page({ params }: { params: { id: string } }) {
         <h1 className="text-2xl font-bold">Education</h1>
         {jobseeker?.jobseeker_education.map((education) => {
           return (
-            <div className="rounded-md border p-4 bg-gray-bg">
+            <div key={education.edInstitutionId} className="rounded-md border p-4 bg-gray-bg">
               <h3 className="text-lg font-bold">
                 {education.eduInstitutions.name}
               </h3>

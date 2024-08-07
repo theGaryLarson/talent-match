@@ -10,7 +10,6 @@ export async function POST(request: Request) {
         const body: JsDisclosuresPostDTO = await request.json();
         const {
             userId,
-            jobseekerId,
             isVeteran,
             hasDisability,
             gender,
@@ -21,6 +20,22 @@ export async function POST(request: Request) {
         if (!userId) {
             return NextResponse.json({success: false, error: `A userId must be provided.`})
         }
+
+        const jobseekerRecord = await prisma.jobseekers.findUnique({
+            where: {
+                user_id: userId
+            },
+            select: {
+                jobseeker_id: true,
+            }
+        })
+        if (!jobseekerRecord) {
+            return NextResponse.json({
+                success: false,
+                error: `Jobseeker record does not exist for userId: ${userId}`
+            }, {status: 400})
+        }
+        const jobseekerId = jobseekerRecord.jobseeker_id
 
         const contact = await prisma.contacts.update({
             where: {
