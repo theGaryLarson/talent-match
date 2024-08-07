@@ -3,7 +3,6 @@ import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
 import getPrismaClient from '../app/lib/prismaClient.mjs'
-import skills_v2 from "../data/skills_v2.mjs";
 
 
 faker.seed(123); // set seed so generated data is deterministic
@@ -616,7 +615,7 @@ const industrySectors = [
     "Telecommunications",
     "Transportation and Logistics",
     "Travel and Hospitality",
-    "Utilities"
+    "Utilities",
 ];
 
 const itJobTitles = [
@@ -687,25 +686,6 @@ const frontendProjectSkills = [
 /////////////////////////////////////////////////
 ////////////   helper functions  ////////////////
 /////////////////////////////////////////////////
-
-
-// Don't need. running 'prisma migrate reset' simplifies
-async function clearDatabase() {
-    try {
-        await prisma.skills.deleteMany({});
-        await prisma.skill_subcategories.deleteMany({});
-        await prisma.contacts.deleteMany({});
-        await prisma.pathways.deleteMany({});
-        // await prisma.edu_institutions.deleteMany({});
-        await prisma.jobseekers.deleteMany({});
-        // await prisma.edu_addresses.deleteMany({});
-
-        console.log('Database cleared successfully.');
-    } catch (error) {
-        console.error('Failed to clear the database:', error);
-        throw error;
-    }
-}
 
 // Helper function to format date to ISO-8601 to match data type in db
 function formatISODate(date) {
@@ -1343,7 +1323,7 @@ async function seedCompanies() {
                 industry_sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                 company_name: faker.company.name(),
                 company_logo_url: faker.internet.url(),
-                description: faker.lorem.sentences(2),
+                about_us: faker.lorem.sentences(2),
                 company_email: faker.internet.email(),
                 year_founded: faker.number.int({min: 1900, max: 2024}),
                 company_website_url: faker.internet.url(),
@@ -1352,7 +1332,7 @@ async function seedCompanies() {
                 company_mission: faker.lorem.sentences(3),
                 company_vision: faker.lorem.sentences(3),
                 size: faker.number.int({min: 5, max: 1500}).toString(),
-                predicted_annual_hires: faker.number.int({min: 1, max: 10})
+                estimated_annual_hires: faker.number.int({min: 1, max: 10})
             }
         });
     }
@@ -1371,16 +1351,14 @@ async function seedEmployers() {
         }
     });
     for (const e of employers) {
-        const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
         await prisma.employers.create({
             data: {
                 employer_id: uuidv4(),
                 user_id: e.user_id,
                 company_id: faker.helpers.arrayElement(companies).company_id,
                 job_title: faker.person.jobTitle(),
-                home_office_location: faker.location.city() + ', WA ' + faker.helpers.arrayElement(regionInfo.zipCodes),
-                employer_url: null,
-                logo_url: null,
+                work_address_id: null,
+                linkedin_url: null,
             }
         })
     }
