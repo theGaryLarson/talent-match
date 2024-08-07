@@ -17,22 +17,25 @@ export async function POST(request: Request) {
             userId,
             currentJobTitle,
             linkedInUrl,
+            workAddressId,
         } = body;
+        const addressId = !workAddressId ? undefined : workAddressId
         const upsertedEmployer = await prisma.employers.upsert({
             where: {
                 user_id: userId
             },
             update: {
                 job_title: currentJobTitle,
-                linkedin_url: linkedInUrl
+                linkedin_url: linkedInUrl,
+                work_address_id: addressId,
             },
             create: {
                 employer_id: uuidv4(),
                 user_id: userId,
                 company_id: undefined,
                 job_title: currentJobTitle,
-                work_location: undefined,
-                linkedin_url: undefined,
+                work_address_id: addressId,
+                linkedin_url: linkedInUrl,
                 is_verified_employee: false
             },
             select: {
@@ -46,7 +49,12 @@ export async function POST(request: Request) {
                         company_name: true,
                         company_logo_url: true,
                         company_addresses: {
+                            where: {
+                                company_address_id: addressId,
+
+                            },
                             select: {
+                                company_address_id: true,
                                 city: true,
                                 state: true,
                                 zip_region: true,
@@ -56,7 +64,7 @@ export async function POST(request: Request) {
                 }
             }
         })
-
+        console.log(JSON.stringify(upsertedEmployer, null, 2))
         const result: ReadEmployerWorkDTO & CompanyInfoSummaryDTO = {
             employerId: upsertedEmployer.employer_id,
             currentJobTitle: upsertedEmployer.job_title,
@@ -65,9 +73,10 @@ export async function POST(request: Request) {
             companyName: upsertedEmployer?.companies?.company_name,
             isVerifiedEmployee: upsertedEmployer.is_verified_employee,
             companyAddress: {
-                city: upsertedEmployer?.companies?.company_addresses[0].city,
-                state: upsertedEmployer?.companies?.company_addresses[0].state,
-                zipCode: upsertedEmployer?.companies?.company_addresses[0].zip_region
+                addressId: upsertedEmployer?.companies?.company_addresses[0]?.company_address_id,
+                city: upsertedEmployer?.companies?.company_addresses[0]?.city,
+                state: upsertedEmployer?.companies?.company_addresses[0]?.state,
+                zipCode: upsertedEmployer?.companies?.company_addresses[0]?.zip_region
             }
 
         }
