@@ -1,18 +1,16 @@
 import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
-import {
-    ReadAddressDTO,
-    ReadCompanyInfoDTO,
-} from "@/data/dtos/EmployerProfileCreationDTOs";
+import {ReadAddressDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
+
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, { params }: { params: { companyId: string } }) {
+export async function GET(request: Request, {params}: { params: { companyId: string } }) {
     try {
         const companyId = params.companyId;
 
-        if(!companyId) {
-            return NextResponse.json({success:false, error: `A uuidv4 companyId is required.`}, {status: 400})
+        if (!companyId) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId is required.`}, {status: 400})
         }
 
         const companyAddresses = await prisma.company_addresses.findMany({
@@ -28,7 +26,10 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             }
         })
         if (!companyAddresses) {
-            return NextResponse.json({success:false, error: `There are no companies with id ${companyId}`}, {status: 400})
+            return NextResponse.json({
+                success: false,
+                error: `There are no companies with id ${companyId}`
+            }, {status: 400})
 
         }
 
@@ -40,9 +41,9 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             county: address.county,
         }));
 
-        return NextResponse.json({success:true, result}, {status: 200})
+        return NextResponse.json({success: true, result}, {status: 200})
 
-    } catch(e: any) {
+    } catch (e: any) {
         console.error('Error reading company addresses:', e.message);
         return NextResponse.json({error: `Failed to read company addresses.\n${e.message}`}, {status: 500});
     } finally {
