@@ -4,11 +4,10 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: Request, {params}: {params: {workId: string}}) {
     let jsWorkExpId = null;
     try {
-        const body = await request.json();
-        const { workId } = body;
+        const workId = params.workId;
         jsWorkExpId = workId;
         const deletedEntry: WorkExperience = await prisma.workExperience.delete({
             where: {
