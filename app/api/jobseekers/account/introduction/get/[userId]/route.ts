@@ -6,10 +6,9 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 const prisma: PrismaClient = getPrismaClient();
 
 
-export async function POST(request: Request) {
+export async function GET(request: Request, {params}: {params: {userId: string}}) {
     try {
-        const body = await request.json();
-        const {userId} = body;
+        const userId = params.userId;
         if (!userId) {
             return NextResponse.json({error: 'User email is required'}, {status: 400});
         }
