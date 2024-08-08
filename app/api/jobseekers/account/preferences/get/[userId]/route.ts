@@ -5,7 +5,7 @@ import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function POST(request: Request, {params}: {params: {userId: string}}) {
+export async function GET(request: Request, {params}: {params: {userId: string}}) {
     try {
         const userId = params.userId;
 
