@@ -44,8 +44,8 @@ export async function GET(request: Request, {params}: { params: { companyId: str
         return NextResponse.json({success: true, result}, {status: 200})
 
     } catch (e: any) {
-        console.error('Error reading company addresses:', e.message);
-        return NextResponse.json({error: `Failed to read company addresses.\n${e.message}`}, {status: 500});
+        console.error('Error reading company locations:', e.message);
+        return NextResponse.json({error: `Failed to read company locations.\n${e.message}`}, {status: 500});
     } finally {
         await prisma.$disconnect();
     }
