@@ -4,7 +4,9 @@ import React from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import { Button, Label, List, ListItem, Radio, Checkbox } from "flowbite-react";
+import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
+import { Button, Label, List, ListItem, Checkbox } from "flowbite-react";
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 
 export default function CreateJobseekerProfileDisclosuresPage(){
   return(
@@ -23,9 +25,12 @@ export default function CreateJobseekerProfileDisclosuresPage(){
           </p>
           <fieldset>
             {/* REVIEW: These options are from dynamics, but may be deprecated? */}
-            <SelectOptionsWithLabel
+            <SelectWithLabel
               id="profile-creation-disclosures-gender"
-              className="w-full"
+              fullWidth
+              label="Gender"
+              value={""}
+              onChange={()=>{}}
               options={[
                 {label:"Male", value:"Male"},
                 {label:"Female", value:"Female"},
@@ -35,12 +40,13 @@ export default function CreateJobseekerProfileDisclosuresPage(){
               ]}
               placeholder="Please select"
               required
-            >
-              Gender *
-            </SelectOptionsWithLabel>
-            <SelectOptionsWithLabel
-              id="profile-creation-disclosures-gender"
-              className="w-full"
+            />
+            <SelectWithLabel
+              id="profile-creation-disclosures-veterans"
+              fullWidth
+              label="Veterans"
+              value={""}
+              onChange={()=>{}}
               options={[
                 {label:"Yes", value:"Yes"},
                 {label:"No", value:"No"},
@@ -48,12 +54,13 @@ export default function CreateJobseekerProfileDisclosuresPage(){
               ]}
               placeholder="Please select"
               required
-            >
-              Veterans *
-            </SelectOptionsWithLabel>
-            <SelectOptionsWithLabel
-              id="profile-creation-disclosures-gender"
-              className="w-full"
+            />
+            <SelectWithLabel
+              id="profile-creation-disclosures-ethnicity"
+              fullWidth
+              label="Ethnicity"
+              value={""}
+              onChange={()=>{}}
               options={[
                 {label:"I am a person of Hispanic origin", value:"I am a person of Hispanic origin"},
                 {label:"I am NOT Hispanic", value:"I am NOT Hispanic"},
@@ -61,9 +68,7 @@ export default function CreateJobseekerProfileDisclosuresPage(){
               ]}
               placeholder="Please select"
               required
-            >
-              Ethnicity *
-            </SelectOptionsWithLabel>
+            />
           </fieldset>
           <fieldset>
             <legend>
@@ -74,38 +79,44 @@ export default function CreateJobseekerProfileDisclosuresPage(){
             </p>
 
             {/* TODO: the li bullets are missing */}
-            <List>
-              <ListItem>Alcohol or other substance use disorder (not currently using drugs illegally)</ListItem>
-              <ListItem>Autoimmune disorder, for example, lupus, fibromyalgia, rheumatoid arthritis, HIV/AIDS</ListItem>
-              <ListItem>Blind or low vision</ListItem>
-              <ListItem>Cancer (past or present)</ListItem>
-              <ListItem>Cardiovascular or heart disease</ListItem>
-              <ListItem>Celiac disease</ListItem>
-              <ListItem>Cerebral palsy</ListItem>
-              <ListItem>Deaf or serious difficulty hearing</ListItem>
-              <ListItem>Diabetes</ListItem>
-              <ListItem>Disfigurement, for example, disfigurement caused by burns, wounds, accidents, or congenital disorders</ListItem>
-              <ListItem>Epilepsy or other seizure disorder</ListItem>
-              <ListItem>Gastrointestinal disorders, for example, Crohn&apos;s Disease, irritable bowel syndrome</ListItem>
-              <ListItem>Intellectual or developmental disability</ListItem>
-              <ListItem>Mental health conditions, for example, depression, bipolar disorder, anxiety disorder, schizophrenia, PTSD</ListItem>
-              <ListItem>Missing limbs or partially missing limbs</ListItem>
-              <ListItem>Mobility impairment, benefiting from the use of a wheelchair, scooter, walker, leg brace(s) and/or other supports</ListItem>
-              <ListItem>Nervous system condition, for example, migraine headaches, Parkinson&apos;s disease, multiple sclerosis (MS)</ListItem>
-              <ListItem>Neurodivergence, for example, attention-deficit/hyperactivity disorder (ADHD), autism spectrum disorder, dyslexia, dyspraxia, other learning disabilities</ListItem>
-              <ListItem>Partial or complete paralysis (any cause)</ListItem>
-              <ListItem>Pulmonary or respiratory conditions, for example, tuberculosis, asthma, emphysema</ListItem>
-              <ListItem>Short stature (dwarfism)</ListItem>
-              <ListItem>Traumatic brain injury</ListItem>
-            </List>
+            <ul>
+              <li>Alcohol or other substance use disorder (not currently using drugs illegally)</li>
+              <li>Autoimmune disorder, for example, lupus, fibromyalgia, rheumatoid arthritis, HIV/AIDS</li>
+              <li>Blind or low vision</li>
+              <li>Cancer (past or present)</li>
+              <li>Cardiovascular or heart disease</li>
+              <li>Celiac disease</li>
+              <li>Cerebral palsy</li>
+              <li>Deaf or serious difficulty hearing</li>
+              <li>Diabetes</li>
+              <li>Disfigurement, for example, disfigurement caused by burns, wounds, accidents, or congenital disorders</li>
+              <li>Epilepsy or other seizure disorder</li>
+              <li>Gastrointestinal disorders, for example, Crohn&apos;s Disease, irritable bowel syndrome</li>
+              <li>Intellectual or developmental disability</li>
+              <li>Mental health conditions, for example, depression, bipolar disorder, anxiety disorder, schizophrenia, PTSD</li>
+              <li>Missing limbs or partially missing limbs</li>
+              <li>Mobility impairment, benefiting from the use of a wheelchair, scooter, walker, leg brace(s) and/or other supports</li>
+              <li>Nervous system condition, for example, migraine headaches, Parkinson&apos;s disease, multiple sclerosis (MS)</li>
+              <li>Neurodivergence, for example, attention-deficit/hyperactivity disorder (ADHD), autism spectrum disorder, dyslexia, dyspraxia, other learning disabilities</li>
+              <li>Partial or complete paralysis (any cause)</li>
+              <li>Pulmonary or respiratory conditions, for example, tuberculosis, asthma, emphysema</li>
+              <li>Short stature (dwarfism)</li>
+              <li>Traumatic brain injury</li>
+            </ul>
             
             {/* REVIEW: on the figma this was checkboxes, but has been built as radio instead; comment made on figma to double-check */}
-            <fieldset>
-              <legend>Please select one of the options below: *</legend>
-              <Label className="block"><Radio name="profile-creation-disclosures-require-disability" required/> Yes, I have a disability, or have had one in the past</Label>
-              <Label className="block"><Radio name="profile-creation-disclosures-require-disability" required/> No, I do not have a disability and have not had one in the past</Label>
-              <Label className="block"><Radio name="profile-creation-disclosures-require-disability" required/> I do not want to answer</Label>
-            </fieldset>
+            <FormControl component="fieldset">
+              <FormLabel id="profile-creation-disclosures-require-disability-label" component="legend" sx={{color:"#000000ff"}}>Please select one of the options below: *</FormLabel>
+              <RadioGroup
+                aria-labelledby="profile-creation-disclosures-require-disability-label"
+                defaultValue="female"
+                name="profile-creation-disclosures-require-disability"
+              >
+                <FormControlLabel value="Yes, I have a disability, or have had one in the past" control={<Radio />} label="Yes, I have a disability, or have had one in the past" />
+                <FormControlLabel value="No, I do not have a disability and have not had one in the past" control={<Radio />} label="No, I do not have a disability and have not had one in the past" />
+                <FormControlLabel value="I do not want to answer" control={<Radio />} label="I do not want to answer" />
+              </RadioGroup>
+            </FormControl>
           </fieldset>
           <fieldset>
             <legend>
