@@ -49,8 +49,8 @@ export async function POST(request: Request) {
         return NextResponse.json({success: true, result}, {status: 200})
 
     } catch (e: any) {
-        console.error('Error creating company addresses:', e.message);
-        return NextResponse.json({error: `Failed to create company addresses.\n${e.message}`}, {status: 500});
+        console.error('Error creating company location:', e.message);
+        return NextResponse.json({error: `Failed to create company location.\n${e.message}`}, {status: 500});
     } finally {
         await prisma.$disconnect();
     }
