@@ -8,16 +8,23 @@ import {
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, {params}: { params: { userId: string } }) {
+export async function PATCH(request: Request) {
     try {
-        const userId = params.userId;
+        const body = await request.json();
+        const {
+            userId,
+            companyAddressId,
+        } = body;
 
         if (!userId) {
             return NextResponse.json({success: false, error: `A uuidv4 userId is required.`}, {status: 400})
         }
-        const empWorkInfo = await prisma.employers.findUnique({
+        const empWorkInfo = await prisma.employers.update({
             where: {
                 user_id: userId
+            },
+            data: {
+                work_address_id: companyAddressId,
             },
             select: {
                 employer_id: true,

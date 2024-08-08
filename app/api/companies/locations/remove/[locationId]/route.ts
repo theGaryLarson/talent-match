@@ -5,17 +5,17 @@ import {ReadAddressDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, {params}: { params: { companyId: string } }) {
+export async function DELETE(request: Request, {params}: { params: { locationId: string } }) {
     try {
-        const companyId = params.companyId;
+        const addressId = params.locationId;
 
-        if (!companyId) {
+        if (!addressId) {
             return NextResponse.json({success: false, error: `A uuidv4 companyId is required.`}, {status: 400})
         }
 
-        const companyAddresses = await prisma.company_addresses.findMany({
+        const deletedAddress = await prisma.company_addresses.delete({
             where: {
-                company_id: companyId
+                company_address_id: addressId
             },
             select: {
                 company_address_id: true,
@@ -25,27 +25,27 @@ export async function GET(request: Request, {params}: { params: { companyId: str
                 county: true
             }
         })
-        if (!companyAddresses) {
+        if (!deletedAddress) {
             return NextResponse.json({
                 success: false,
-                error: `There are no companies with id ${companyId}`
+                error: `There are no companies with id ${addressId}`
             }, {status: 400})
 
         }
 
-        const result: ReadAddressDTO[] = companyAddresses.map(address => ({
-            addressId: address.company_address_id,
-            city: address.city,
-            state: address.state,
-            zipCode: address.zip_region,
-            county: address.county,
-        }));
+        const result: ReadAddressDTO = {
+            addressId: deletedAddress.company_address_id,
+            city: deletedAddress.city,
+            state: deletedAddress.state,
+            zipCode: deletedAddress.zip_region,
+            county: deletedAddress.county,
+        }
 
         return NextResponse.json({success: true, result}, {status: 200})
 
     } catch (e: any) {
-        console.error('Error reading company addresses:', e.message);
-        return NextResponse.json({error: `Failed to read company addresses.\n${e.message}`}, {status: 500});
+        console.error('Error reading company location:', e.message);
+        return NextResponse.json({error: `Failed to read company location.\n${e.message}`}, {status: 500});
     } finally {
         await prisma.$disconnect();
     }
