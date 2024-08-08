@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
-import skills from "@/data/skills.mjs";
 
 const prisma: PrismaClient = getPrismaClient();
 
