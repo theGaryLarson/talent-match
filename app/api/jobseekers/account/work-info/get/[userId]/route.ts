@@ -5,11 +5,10 @@ import {JsWorkExpDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function POST(request: Request) {
+export async function GET(request: Request, {params}: {params: {userId: string}}) {
     try {
-        const body = await request.json();
+        const userId = params.userId;
 
-        const {userId} = body;
         if (!userId) {
             return NextResponse.json({error: 'User ID is required'}, {status: 400});
         }
