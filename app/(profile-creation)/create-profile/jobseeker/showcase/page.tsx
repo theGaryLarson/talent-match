@@ -2,11 +2,10 @@
 
 import React from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import DividerWithText from '@/app/ui/components/DividerWithText';
-import { Button, Label, List, ListItem, TextInput } from "flowbite-react";
-import { MdOutlineFileUpload } from "react-icons/md";
+import Button from '@mui/material/Button';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
+import TextFieldWithSeparatedLabel from '@/app/ui/components/mui/TextFieldWithSeparatedLabel';
+import TextFieldWithNoLabel from '@/app/ui/components/mui/TextFieldWithNoLabel';
 
 
 export default function CreateJobseekerProfileShowcasePage(){
@@ -36,11 +35,20 @@ export default function CreateJobseekerProfileShowcasePage(){
             />
             <p>Select your top 5 skills from your skills list</p>
 
-            <Label htmlFor="profile-creation-showcase-portfolio" value="Portfolio" />
-            <TextInput id="profile-creation-showcase-portfolio" name="profile-creation-showcase-portfolio" type="text" placeholder="Url" />
+            <TextFieldWithSeparatedLabel
+              id="profile-creation-showcase-portfolio"
+              label="Portfolio"
+              placeholder="Url"
+              fullWidth
+            />
 
-            <Label htmlFor="profile-creation-showcase-password" value="Password if it is applicable" />
-            <TextInput id="profile-creation-showcase-password" name="profile-creation-showcase-password" type="password" placeholder="Password" />
+            <TextFieldWithSeparatedLabel
+              id="profile-creation-showcase-password"
+              label="Password if it is applicable"
+              placeholder="Password"
+              type="password"
+              fullWidth
+            />
           </fieldset>
           <fieldset>
             <legend>
@@ -48,11 +56,11 @@ export default function CreateJobseekerProfileShowcasePage(){
             </legend>
             <p>Employers are tired of the same old paper trail. They want to see the real YOU! So, apart from uploading your resume, creating a dynamic video introduction that gets you noticed.</p>
             <p>Here&apos;s what to dish in your video:</p>
-            <List>
-              <ListItem><b>Your Story:</b> Take viewers on a journey through your experience and learning path. Where did you start? What challenges did you conquer?</ListItem>
-              <ListItem><b>Your Superpowers:</b> Flex your strengths! Show off your skills and what makes you a unique asset. Think problem-solving, communication, or maybe you&apos;re a coding whiz!</ListItem>
-              <ListItem><b>Your Dream Gig:</b> Paint a picture of what excites you! What kind of role are you looking for? Let employers know why YOU&apos;RE the missing piece to their puzzle.</ListItem>
-            </List>
+            <ul>
+              <li><b>Your Story:</b> Take viewers on a journey through your experience and learning path. Where did you start? What challenges did you conquer?</li>
+              <li><b>Your Superpowers:</b> Flex your strengths! Show off your skills and what makes you a unique asset. Think problem-solving, communication, or maybe you&apos;re a coding whiz!</li>
+              <li><b>Your Dream Gig:</b> Paint a picture of what excites you! What kind of role are you looking for? Let employers know why YOU&apos;RE the missing piece to their puzzle.</li>
+            </ul>
 
             {/*
             TODO: If we change our minds and want to implement video uploads, the button needs upload function added
@@ -64,11 +72,15 @@ export default function CreateJobseekerProfileShowcasePage(){
             <DividerWithText>or</DividerWithText>
             */}
 
-            <TextInput id="profile-creation-showcase-video" name="profile-creation-showcase-video" placeholder="Upload your video url" />
+            <TextFieldWithNoLabel
+              id="profile-creation-showcase-video"
+              placeholder="Upload your video url"
+              fullWidth
+            />
           </fieldset>
           <div className="flex">
-            <Button pill color="gray">Previous</Button>
-            <Button pill type="submit">Save and continue</Button>
+            <Button variant="outlined">Previous</Button>
+            <Button variant="contained" type="submit">Save and continue</Button>
           </div>
         </form>
       </section>
