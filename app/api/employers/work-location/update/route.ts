@@ -8,7 +8,7 @@ import {
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function POST(request: Request) {
+export async function PATCH(request: Request) {
     try {
         const body = await request.json();
         const {
