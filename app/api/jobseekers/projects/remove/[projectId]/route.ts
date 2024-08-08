@@ -7,8 +7,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function DELETE(request: Request, {params}: { params: { projectId: string } }) {
     let projId = null;
     try {
-        const projectId = params.projectId;
-        projId = projectId;
+        projId = params.projectId;
 
         const skillsCount = await prisma.project_has_skills.deleteMany({
             where: {
