@@ -5,10 +5,9 @@ import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function POST(request: Request) {
+export async function POST(request: Request, {params}: {params: {userId: string}}) {
     try {
-        const body: JsPreferencesDTO = await request.json();
-        const {userId} = body;
+        const userId = params.userId;
 
         if (!userId) {
             return NextResponse.json({error: 'Invalid input. Requires userId.'}, {status: 400});
