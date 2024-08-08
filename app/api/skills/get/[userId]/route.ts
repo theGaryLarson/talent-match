@@ -5,10 +5,9 @@ import {SkillDTO} from "@/data/dtos/SkillDTO";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function POST(request: Request) {
+export async function GET(request: Request, {params}: {params: {userId: string}}) {
     try {
-        const body = await request.json();
-        const {userId} = body;
+        const userId = params.userId;
 
         const data = await prisma.jobseekers.findUnique({
             where: {
