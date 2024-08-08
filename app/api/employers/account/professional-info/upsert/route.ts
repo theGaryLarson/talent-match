@@ -39,6 +39,7 @@ export async function POST(request: Request) {
                 is_verified_employee: false
             },
             select: {
+                user_id: true,
                 employer_id: true,
                 job_title: true,
                 linkedin_url: true,
@@ -66,6 +67,7 @@ export async function POST(request: Request) {
         })
         console.log(JSON.stringify(upsertedEmployer, null, 2))
         const result: ReadEmployerWorkDTO & CompanyInfoSummaryDTO = {
+            userId: upsertedEmployer.user_id,
             employerId: upsertedEmployer.employer_id,
             currentJobTitle: upsertedEmployer.job_title,
             linkedInUrl: upsertedEmployer.linkedin_url,
