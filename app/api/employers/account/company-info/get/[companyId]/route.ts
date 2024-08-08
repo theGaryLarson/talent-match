@@ -71,13 +71,6 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             industrySectorId: companyInfo.industry_sector_id,
             industrySectorTitle: companyInfo?.industry_sectors?.sector_title,
             companyName: companyInfo.company_name,
-            companyAddresses: updatedAddresses.map(address => ({
-                addressId: address.company_address_id,
-                state: address.state,
-                city: address.city,
-                zipCode: address.zip_region,
-                county: address.county
-            })),
             logoUrl: companyInfo.company_logo_url,
             aboutUs: companyInfo.about_us,
             companyEmail: companyInfo.company_email,
@@ -89,7 +82,14 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             vision: companyInfo.company_vision,
             employeeCount: companyInfo.size,
             estimatedAnnualHires: companyInfo?.estimated_annual_hires?.toString(),
-            isApproved: companyInfo.is_approved
+            isApproved: companyInfo.is_approved,
+            companyAddresses: updatedAddresses.map(address => ({
+                addressId: address.company_address_id,
+                state: address.state,
+                city: address.city,
+                zipCode: address.zip_region,
+                county: address.county
+            }))
 
         }
         return NextResponse.json({success:true, result}, {status: 200})
