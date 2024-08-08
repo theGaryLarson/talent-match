@@ -44,8 +44,8 @@ export async function DELETE(request: Request, {params}: { params: { locationId:
         return NextResponse.json({success: true, result}, {status: 200})
 
     } catch (e: any) {
-        console.error('Error reading company addresses:', e.message);
-        return NextResponse.json({error: `Failed to read company addresses.\n${e.message}`}, {status: 500});
+        console.error('Error reading company location:', e.message);
+        return NextResponse.json({error: `Failed to read company location.\n${e.message}`}, {status: 500});
     } finally {
         await prisma.$disconnect();
     }
