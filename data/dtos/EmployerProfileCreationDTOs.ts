@@ -98,3 +98,35 @@ export type ReadCompanyInfoDTO = {
     estimatedAnnualHires?: string | null,
     isApproved: boolean,
 }
+
+export type PostCompanyTestimonialsDTO = {
+    companyId: string,
+    employerId: string,
+    text: string,
+    author: string,
+}
+
+export type ReadCompanyTestimonialsDTO = {
+    testimonyId: string,
+    companyId?: string,
+    employerId?: string,
+    text?: string,
+    author?: string,
+}
+
+export type PostCompanySocialLinkDTO = {
+    companyId: string,
+    socialPlatformId: string,
+    employerId: string,
+    socialUrl: string,
+}
+
+export type ReadCompanySocialLinkDTO = {
+    companySocialId?: string,
+    socialPlatformId?: string,
+    companyId?: string,
+    employerId?: string,
+    socialUrl?: string,
+    platform?: string,
+    platformIconUrl?: string,
+}
