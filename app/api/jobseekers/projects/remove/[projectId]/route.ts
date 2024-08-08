@@ -4,11 +4,10 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: Request, {params}: {params: {projectId: string}}) {
     let projId = null;
     try {
-        const body = await request.json();
-        const { projectId } = body;
+        const projectId = params.projectId;
         projId = projectId;
 
         const skillsCount = await prisma.project_has_skills.deleteMany({
