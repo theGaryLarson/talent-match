@@ -20,6 +20,7 @@ export async function GET(request: Request, {params}: { params: { userId: string
                 user_id: userId
             },
             select: {
+                user_id: true,
                 employer_id: true,
                 job_title: true,
                 linkedin_url: true,
@@ -57,6 +58,7 @@ export async function GET(request: Request, {params}: { params: { userId: string
 
         console.log(JSON.stringify(empWorkInfo, null, 2));
         const result: ReadEmployerWorkDTO & CompanyInfoSummaryDTO = {
+            userId: empWorkInfo.user_id,
             employerId: empWorkInfo.employer_id,
             currentJobTitle: empWorkInfo.job_title,
             linkedInUrl: empWorkInfo.linkedin_url,
