@@ -307,7 +307,7 @@ work experience. Also, it will also filter out any jobseeker accounts that have 
 _This route is meant to be used with the `profile-creation/jobseeker/intro page` to create or update new entries. It
 creates or updates all the data in entire introduction page._
 
-**Endpoint**: `/api/jobseekers/intro-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/introduction/upsert`
 
 **Method**: `POST`
 
@@ -380,19 +380,9 @@ creates or updates all the data in entire introduction page._
 _This route is meant to be used with the `/create-profile/jobseeker/intro` page for initial load if there is preexisting
 data._
 
-**Endpoint**: `/api/jobseekers/intro-profile-read`
+**Endpoint**: `/api/jobseekers/account/introduction/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -449,7 +439,7 @@ institution.
 > NOTE: For optimization we may want to implement individual CREATE routes for each of the following: certifications,
 > project experiences, work experiences.
 
-**Endpoint**: `/api/jobseekers/edu-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/edu-info/upsert`
 
 **Method**: `POST`
 
@@ -627,19 +617,9 @@ institution.
 _This route is meant to be used with the `/create-profile/jobseeker/education` page for initial loading of preexisting
 data, if any._
 
-**Endpoint**: `/api/jobseekers/edu-profile-read`
+**Endpoint**: `/api/jobseekers/account/edu-info/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -733,19 +713,9 @@ data, if any._
 _This will delete a jobseeker education record. It is intended for use within the `/create-profile/jobseeker/education`
 page using the key from the respective jobseeker education entry._
 
-**Endpoint**: `/api/jobseekers/edu-record-delete`
+**Endpoint**: `/api/jobseekers/education/remove/<eduId>`
 
 **Method**: `DELETE`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "jobseekerEdId": "53d66079-60e2-46a2-9214-e86e2f766734"
-}
-```
 
 ##### Sample Response
 
@@ -778,19 +748,7 @@ page using the key from the respective jobseeker education entry._
 _This will delete a jobseeker certification record. It is intended for use within
 the `/create-profile/jobseeker/education` page using the key from the respective certification entry._
 
-**Endpoint**: `/api/jobseekers/cert-record-delete`
-
-**Method**: `DELETE`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "certId": "5b97ce22-6f37-4ea1-91c4-9f41e513d8e0"
-}
-```
+**Endpoint**: `/api/jobseekers/certifications/remove/<certificateId>`
 
 ##### Sample Response
 
@@ -822,19 +780,9 @@ _This will delete a jobseeker project experience record. It is intended for use 
 the `/create-profile/jobseeker/education` page using the key from the respective project experience entry. It will also
 delete the associated skills from within the `project_has_skills` table._
 
-**Endpoint**: `/api/jobseekers/proj-record-delete`
+**Endpoint**: `/api/jobseekers/projects/remove/<projectId>`
 
 **Method**: `DELETE`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6"
-}
-```
 
 ##### Sample Response
 
@@ -844,19 +792,17 @@ delete the associated skills from within the `project_has_skills` table._
 {
   "success": true,
   "result": {
-    "deletedEntry": {
-      "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6",
-      "jobseekerId": "48586cd0-74ba-4da0-9bb2-2862a5c7ca5b",
-      "projTitle": "Web Development Project",
-      "projectRole": "backend dev",
-      "startDate": "2022-01-01T00:00:00.000Z",
-      "completionDate": "2022-06-01T00:00:00.000Z",
-      "problemSolvedDescription": "Developed a web application using React and Node.js.",
-      "teamSize": 8,
-      "repoUrl": "https://www.repo.url",
-      "demoUrl": "https:///www.demo.url"
-    },
-    "skills": {
+    "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6",
+    "jobseekerId": "da7339e0-8cf9-4cdb-b02e-97ee598c8c1d",
+    "projTitle": "Web Development Project",
+    "projectRole": "backend dev",
+    "startDate": "2022-01-01T00:00:00.000Z",
+    "completionDate": "2022-06-01T00:00:00.000Z",
+    "problemSolvedDescription": "Developed a web application using React and Node.js.",
+    "teamSize": 8,
+    "repoUrl": "https://www.repo.url",
+    "demoUrl": "https:///www.demo.url",
+    "skillsCount": {
       "count": 2
     }
   }
@@ -869,12 +815,12 @@ delete the associated skills from within the `project_has_skills` table._
 
 ---
 
-#### Create or Update Jobseeker Work Profile Page
+#### Upsert Jobseeker Work Profile Page
 
 _This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for creating or updating
 data._
 
-**Endpoint**: `/api/jobseekers/work-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/work-info/upsert`
 
 **Method**: `POST`
 
@@ -970,19 +916,9 @@ data._
 _This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for initial load of data, if
 any._
 
-**Endpoint**: `/api/jobseekers/work-profile-read`
+**Endpoint**: `/api/jobseekers/account/work-info/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -1033,19 +969,9 @@ any._
 
 _This route is intended for use by a jobseeker to delete a Work Experience from their profile_
 
-**Endpoint**: `/api/jobseekers/work-record-delete`
+**Endpoint**: `/api/jobseekers/work-experience/remove/<workId>`
 
 **Method**: `DELETE`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "workId": "ddf90cad-5273-4651-aef3-340ea8494335"
-}
-```
 
 ##### Sample Response
 
@@ -1079,19 +1005,9 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
 
 _This route is meant to be used with the `/create-profile/jobseeker/showcase` page for initial load of data, if any._
 
-**Endpoint**: `/api/jobseekers/showcase-profile-read`
+**Endpoint**: `/api/jobseekers/account/showcase/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -1142,7 +1058,7 @@ _This route is meant to be used with the `/create-profile/jobseeker/showcase` pa
 
 _This route is meant to be used with the `/create-profile/jobseeker/showcase` page for updating or creating data._
 
-**Endpoint**: `/api/jobseekers/showcase-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/showcase/upsert`
 
 **Method**: `POST`
 
@@ -1206,19 +1122,9 @@ _This route is meant to be used with the `/create-profile/jobseeker/showcase` pa
 _Intended for use where showing project skills in addition to the top 5 skills is desired. Any duplicate skills between
 topSkills and OtherSkills are removed from the OtherSkills Array._
 
-**Endpoint**: `/api/jobseekers/skill-read`
+**Endpoint**: `/api/skills/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "0629cbe6-55b5-486e-84c6-530aa8d5c737"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -1262,7 +1168,7 @@ topSkills and OtherSkills are removed from the OtherSkills Array._
 
 _Used to push jobseeker selected skills into the database_
 
-**Endpoint**: `/api/jobseekers/skill-upsert`
+**Endpoint**: `/api/skills/upsert`
 
 **Method**: `POST`
 
@@ -1309,7 +1215,7 @@ _Used to push jobseeker selected skills into the database_
 _This route is intended for use with the `/create-profile/jobseeker/showcase` page. It can be used anywhere skills
 needs unassociated with a jobseeker._
 
-**Endpoint**: `/api/jobseekers/skill-delete`
+**Endpoint**: `/api/skills/remove`
 
 **Method**: `DELETE`
 
@@ -1359,19 +1265,9 @@ deletion in blob storage._
 
 > Blob storage isn't available yet. Plan on implementing as soon as we have access.
 
-**Endpoint**: `/api/jobseekers/video-delete`
+**Endpoint**: `/api/jobseekers/video/remove/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `PATCH`
 
 ##### Sample Response
 
@@ -1397,19 +1293,9 @@ deletion in blob storage._
 
 _This route is intended to load the `/create-profile/jobseeker/preferences` page with preexisting data, if any_
 
-**Endpoint**: `/api/jobseekers/prefs-profile-read`
+**Endpoint**: `/api/jobseekers/account/preferences/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -1434,7 +1320,7 @@ _This route is intended to load the `/create-profile/jobseeker/preferences` page
 _This is intended for use updating or creating Jobseeker preferences on the `/create-profile/jobseeker/preferences`
 page_
 
-**Endpoint**: `/api/jobseekers/prefs-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/preferences/upsert`
 
 **Method**: `POST`
 
@@ -1476,19 +1362,9 @@ page_
 
 _Intended to load Jobseeker disclosures data in `/create-profile/jobseeker/disclosures` page, if any._
 
-**Endpoint**: `/api/jobseekers/disclosures-profile-read`
+**Endpoint**: `/api/jobseekers/account/disclosures/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -1514,7 +1390,7 @@ _Intended to load Jobseeker disclosures data in `/create-profile/jobseeker/discl
 
 _Intended to be used with the `/create-profile/jobseeker/disclosures` page to update or create disclosure data._
 
-**Endpoint**: `/api/jobseekers/disclosures-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/disclosures/upsert`
 
 **Method**: `POST`
 
