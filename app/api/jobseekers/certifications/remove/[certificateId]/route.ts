@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import {NextResponse} from 'next/server';
 import {certificates, PrismaClient} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
@@ -7,8 +7,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function DELETE(request: Request, {params}: {params: {certificateId: string}}) {
     let certificateId = null;
     try {
-        const certId = params.certificateId
-        certificateId = certId;
+        certificateId = params.certificateId;
         const deletedEntry: certificates = await prisma.certificates.delete({
             where: {
                 certId: certificateId,
