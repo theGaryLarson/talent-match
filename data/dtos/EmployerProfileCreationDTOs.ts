@@ -11,6 +11,7 @@ export type PostEmployerPersonalDTO = {
 }
 
 export type ReadEmployerPersonalDTO = {
+    employerId?: string | null,
     userId?: string | null,
     firstName?: string | null,
     lastName?: string | null,
@@ -30,6 +31,7 @@ export type PostEmployerWorkDTO = {
 }
 
 export type ReadEmployerWorkDTO = {
+    userId?: string | null,
     employerId?: string | null,
     currentJobTitle?: string | null,
     linkedInUrl?: string | null,
