@@ -23,6 +23,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
         }
 
         const result: ReadEmployerPersonalDTO = {
+            userId: empPersonalInfo.user_id,
             firstName: empPersonalInfo?.first_name,
             lastName: empPersonalInfo?.last_name,
             birthDate: empPersonalInfo?.birthdate.toISOString(),
