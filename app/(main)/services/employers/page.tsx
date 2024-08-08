@@ -86,26 +86,17 @@ export default function Page() {
         <h1 className="text-2xl font-bold">Browse by Jobseeker Skills</h1>
         <div className='flex flex-wrap gap-4'>
         <CategoryCard
-            imgSrc={
-              '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
-            }
+            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
             title={'Software Devolopment'}
-            text={'Find job seekers with training and expertise in Software Devolopment'}
-          />
+            text={'Find job seekers with training and expertise in Software Devolopment'} href={'/services/employers/dashboard/listview?search=Software+Devolopment'}          />
           <CategoryCard
-            imgSrc={
-              '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
-            }
+            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
             title={'Cyber Security'}
-            text={'Find job seekers with training and expertise in Cyber Security.'}
-          />
+            text={'Find job seekers with training and expertise in Cyber Security.'} href={'/services/employers/dashboard/listview?search=Cyber+Security'}          />
           <CategoryCard
-            imgSrc={
-              '/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'
-            }
+            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
             title={'Data Analytics'}
-            text={'Find job seekers with training and expertise in Data Analytics'}
-          />
+            text={'Find job seekers with training and expertise in Data Analytics'} href={'/services/employers/dashboard/listview?search=Data+Analytics'}          />
         </div>
         <h4 className='text-lg font-bold'>Need more information? <Link href={'/services/employers/faq'}>Click here.</Link></h4>
         <h4 className='text-lg text-primary-600'>First candidates will be available for interview in September. This offer is limited to ~ 100 employers as we develop an initial cohort of job candidates.</h4>

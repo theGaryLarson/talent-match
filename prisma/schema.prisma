@@ -45,20 +45,21 @@ model cfa_admin {
 
 model companies {
   company_id             String                 @id(clustered: false, map: "companies_PRIMARY") @db.NVarChar(36)
-  industry_sector_id     String                 @db.VarChar(36)
+  industry_sector_id     String?                @db.VarChar(36)
   company_name           String                 @db.VarChar(255)
-  company_logo_url       String                 @db.VarChar(255)
-  description            String                 @db.VarChar(255)
+  company_logo_url       String?                @db.VarChar(255)
+  about_us               String                 @db.VarChar(255)
   company_email          String                 @db.VarChar(255)
   year_founded           Int
-  company_website_url    String                 @db.VarChar(255)
+  company_website_url    String?                @db.VarChar(255)
   company_video_url      String?                @db.VarChar(255)
   company_phone          String?                @db.VarChar(15)
   company_mission        String?                @db.VarChar(255)
   company_vision         String?                @db.VarChar(255)
-  size                   String                 @default("less than 25", map: "DF__companies__size__3F466844") @db.VarChar(45)
-  predicted_annual_hires Int?
-  industry_sectors       industry_sectors       @relation(fields: [industry_sector_id], references: [industry_sector_id], onUpdate: NoAction, map: "fk_company_industry_sectors1")
+  size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
+  estimated_annual_hires Int?
+  is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
+  industry_sectors       industry_sectors?      @relation(fields: [industry_sector_id], references: [industry_sector_id], onUpdate: NoAction, map: "fk_company_industry_sectors1")
   company_addresses      company_addresses[]
   company_social_links   company_social_links[]
   company_testimonials   company_testimonials[]
@@ -69,14 +70,16 @@ model companies {
 }
 
 model company_addresses {
-  company_address_id String    @id(clustered: false, map: "company_addresses_PRIMARY") @db.VarChar(36)
-  company_id         String    @db.NVarChar(36)
-  city               String    @db.VarChar(255)
-  state              String    @db.VarChar(255)
-  zip_region         String    @db.VarChar(10)
-  county             String    @db.VarChar(255)
-  companies          companies @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_address_company1")
+  company_address_id String      @id(clustered: false, map: "company_addresses_PRIMARY") @db.VarChar(36)
+  company_id         String      @db.NVarChar(36)
+  city               String      @db.VarChar(255)
+  state              String      @db.VarChar(255)
+  zip_region         String      @db.VarChar(10)
+  county             String      @db.VarChar(255)
+  companies          companies   @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_address_company1")
+  employers          employers[]
 
+  @@unique([company_id, city], map: "company_addresses_company_id_city_unique")
   @@index([company_id], map: "company_addresses_fk_company_address_company1_idx")
 }
 
@@ -174,15 +177,16 @@ model educators {
 }
 
 model employers {
-  employer_id          String         @id(clustered: false, map: "employers_PRIMARY") @unique(map: "employers_employer_id_UNIQUE") @db.NVarChar(36)
-  user_id              String         @db.NVarChar(36)
-  company_id           String         @db.NVarChar(36)
-  job_title            String         @db.VarChar(255)
-  home_office_location String?        @db.VarChar(255)
-  employer_url         String?        @db.VarChar(255)
-  logo_url             String?        @db.VarChar(255)
-  contacts             contacts       @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_employer_user1")
-  companies            companies      @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")
+  employer_id          String             @id(clustered: false, map: "employers_PRIMARY") @unique(map: "employers_employer_id_UNIQUE") @db.NVarChar(36)
+  user_id              String             @unique @db.NVarChar(36)
+  company_id           String?            @db.NVarChar(36)
+  job_title            String             @db.VarChar(255)
+  work_address_id      String?            @db.VarChar(36)
+  linkedin_url         String?            @db.VarChar(255)
+  is_verified_employee Boolean            @default(false, map: "DF__employers__is_verified") @db.Bit
+  contacts             contacts           @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_employer_user1")
+  companies            companies?         @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")
+  company_addresses    company_addresses? @relation(fields: [work_address_id], references: [company_address_id], onUpdate: NoAction, map: "fk_employers_company_addresses")
   job_postings         job_postings[]
 
   @@index([user_id], map: "employers_fk_employer_user1_idx")

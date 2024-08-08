@@ -42,7 +42,8 @@ const config: Config = {
         },
         gray:{
           trans: "#18181875",
-          background: "#F3F3F3"
+          background: "#F3F3F3",
+          bg: "#F5F5F5"
         }
       },
       backgroundImage: {

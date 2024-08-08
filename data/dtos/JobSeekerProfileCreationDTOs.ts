@@ -164,7 +164,6 @@ export type JsDisclosuresDTO = {
 
 export type JsDisclosuresPostDTO = {
     userId: string,
-    jobseekerId: string, // contacts.jobseekers[0].jobseeker_id
     isVeteran: string, // jobseekers[0].jobseekers_private_data[0].is_veteran
     hasDisability: string, // jobseekers[0].jobseekers_private_data[0].has_disability
     gender: string, // contacts.gender
