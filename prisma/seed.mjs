@@ -1386,13 +1386,20 @@ async function seedCompanyAddresses() {
 async function seedCompanyTestimonials() {
     console.log(`Seeding Company Testimonials...`)
     let count = 0;
+
     const companies = await prisma.companies.findMany();
     for (const c of companies) {
+        const employer = await prisma.employers.findFirst( {
+            where: {
+                company_id: c.company_id
+            }
+        })
         for (let i = 0; i < 3; i++) {
             await prisma.company_testimonials.create({
                 data: {
                     testimonial_id: uuidv4(),
                     company_id: c.company_id,
+                    employer_id: employer.employer_id,
                     text: faker.lorem.sentences(2),
                     author: faker.person.fullName(),
                 }
@@ -1426,11 +1433,17 @@ async function seedCompanySocialLinks() {
     const platforms = await prisma.social_media_platforms.findMany();
     let count = 0;
     for (const c of companies) {
+        const employer = await prisma.employers.findFirst( {
+            where: {
+                company_id: c.company_id
+            }
+        })
         for (let i = 0; i < 3; i++) {
             let platform = platforms.pop();
             await prisma.company_social_links.create({
                 data: {
                     social_media_id: uuidv4(),
+                    employer_id: employer.employer_id,
                     company_id: c.company_id,
                     social_platform_id: platform.social_platform_id,
                     social_url: `https://www.${platform.platform.toLowerCase()}/${c.company_name.toLowerCase().replace(/[\s\W]/g, '')}`,
@@ -1455,6 +1468,11 @@ async function seedJobPostings() {
         let totalJobPostings = 0;
         for (const e of employers) {
             for (let i = 0; i < 3; i++) {
+                const companyAddresses = await prisma.company_addresses.findMany( {
+                    where: {
+                        company_id: e.company_id
+                    }
+                });
                 try {
                     // 40% chance job post is an internship
                     const isInternship = Math.random() < 0.4;
@@ -1469,6 +1487,7 @@ async function seedJobPostings() {
                             job_posting_id: uuidv4(),
                             company_id: e.company_id,
                             employer_id: e.employer_id,
+                            location_id: faker.helpers.arrayElement(companyAddresses).company_address_id,
                             job_title: faker.helpers.arrayElement(itJobTitles),
                             job_description: faker.person.jobDescriptor(),
                             is_internship: isInternship,
@@ -1487,7 +1506,7 @@ async function seedJobPostings() {
                     });
                     totalJobPostings++; // Increment the total job postings counter
                 } catch (innerError) {
-                    console.error(`Error seeding job posting for employer ${e.employer_id}:`, innerError);
+                    console.error(`Error seeding job posting for employer: ${e.employer_id}.\n`, innerError);
                 }
             }
         }
@@ -1528,10 +1547,10 @@ async function main() {
     // Employer data
     await seedIndustrySectors();
     await seedCompanies();
+    await seedEmployers();
     await seedCompanyAddresses();
     await seedCompanyTestimonials();
     await seedCompanySocialLinks();
-    await seedEmployers();
     await seedJobPostings();
     console.log(`Finished seeding ...\n`);
 }
