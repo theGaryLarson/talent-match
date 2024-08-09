@@ -50,6 +50,7 @@ export async function POST(request: Request) {
         })
 
         const result: ReadEmployerPersonalDTO = {
+            userId: upsertedEmployer.user_id,
             firstName: upsertedEmployer.first_name,
             lastName: upsertedEmployer.last_name,
             birthDate: upsertedEmployer.birthdate.toISOString(),

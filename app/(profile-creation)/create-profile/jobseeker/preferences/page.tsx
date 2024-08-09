@@ -2,15 +2,12 @@
 
 import React from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import { PlusIcon } from '@heroicons/react/16/solid';
-import { Button, Label, Progress, Radio } from "flowbite-react";
 
 // REVIEW: testing redux
 import type { RootState } from '../../../../../lib/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { addField, updateField } from '../../../../../lib/features/profileCreation/formSlice';
+import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 
 
 export default function CreateJobseekerProfilePreferencesPage(){
@@ -38,24 +35,30 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <legend>What are you looking for?</legend>
                 {/* TODO: Pills need function to select */}
                 <div className="flex">
-                  <Button color="gray" pill>Full-time job</Button>
-                  <Button color="gray" pill>Part-time job</Button>
-                  <Button color="gray" pill>Internship</Button>
-                  <Button color="gray" pill>On-campus job</Button>
+                  <Button variant="outlined">Full-time job</Button>
+                  <Button variant="outlined">Part-time job</Button>
+                  <Button variant="outlined">Internship</Button>
+                  <Button variant="outlined">On-campus job</Button>
                 </div>
               </fieldset>
-              <fieldset>
-                <legend>What is your tech role/pathway targeted?</legend>
-                <Label className="block"><Radio name="profile-creation-preferences-require-role" required/> Software Development</Label>
-                <Label className="block"><Radio name="profile-creation-preferences-require-role" required/> Cloud Computing</Label>
-                <Label className="block"><Radio name="profile-creation-preferences-require-role" required/> Data analytics</Label>
-              </fieldset>
+              <FormControl component="fieldset">
+                <FormLabel id="profile-creation-preferences-require-role" component="legend" sx={{color:"#000000ff"}}>What is your tech role/pathway targeted?</FormLabel>
+                <RadioGroup
+                  aria-labelledby="profile-creation-preferences-require-role"
+                  defaultValue="female"
+                  name="profile-creation-preferences-require-role"
+                >
+                  <FormControlLabel value="Software Development" control={<Radio />} label="Software Development" />
+                  <FormControlLabel value="Cloud Computing" control={<Radio />} label="Cloud Computing" />
+                  <FormControlLabel value="Data analytics" control={<Radio />} label="Data analytics" />
+                </RadioGroup>
+              </FormControl>
             </div>
           </fieldset>
 
           <div className="flex">
-            <Button pill color="gray">Previous</Button>
-            <Button pill type="submit">Save and continue</Button>
+            <Button variant="outlined">Previous</Button>
+            <Button variant="contained">Save and continue</Button>
           </div>
         </form>
       </section>
