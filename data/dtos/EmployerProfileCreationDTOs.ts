@@ -11,6 +11,7 @@ export type PostEmployerPersonalDTO = {
 }
 
 export type ReadEmployerPersonalDTO = {
+    employerId?: string | null,
     userId?: string | null,
     firstName?: string | null,
     lastName?: string | null,
@@ -30,6 +31,7 @@ export type PostEmployerWorkDTO = {
 }
 
 export type ReadEmployerWorkDTO = {
+    userId?: string | null,
     employerId?: string | null,
     currentJobTitle?: string | null,
     linkedInUrl?: string | null,
@@ -97,4 +99,36 @@ export type ReadCompanyInfoDTO = {
     employeeCount: string,
     estimatedAnnualHires?: string | null,
     isApproved: boolean,
+}
+
+export type PostCompanyTestimonialsDTO = {
+    companyId: string,
+    employerId: string,
+    text: string,
+    author: string,
+}
+
+export type ReadCompanyTestimonialsDTO = {
+    testimonyId: string,
+    companyId?: string,
+    employerId?: string,
+    text?: string,
+    author?: string,
+}
+
+export type PostCompanySocialLinkDTO = {
+    companyId: string,
+    socialPlatformId: string,
+    employerId: string,
+    socialUrl: string,
+}
+
+export type ReadCompanySocialLinkDTO = {
+    companySocialId?: string,
+    socialPlatformId?: string,
+    companyId?: string,
+    employerId?: string,
+    socialUrl?: string,
+    platform?: string,
+    platformIconUrl?: string,
 }
