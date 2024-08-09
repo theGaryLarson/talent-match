@@ -100,7 +100,7 @@ work experience. Also, it will also filter out any jobseeker accounts that have 
 _This route is meant to be used with the `profile-creation/jobseeker/intro page` to create or update new entries. It
 creates or updates all the data in entire introduction page._
 
-**Endpoint**: `/api/jobseekers/intro-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/introduction/upsert`
 
 **Method**: `POST`
 
@@ -173,19 +173,9 @@ creates or updates all the data in entire introduction page._
 _This route is meant to be used with the `/create-profile/jobseeker/intro` page for initial load if there is preexisting
 data._
 
-**Endpoint**: `/api/jobseekers/intro-profile-read`
+**Endpoint**: `/api/jobseekers/account/introduction/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -242,7 +232,7 @@ institution.
 > NOTE: For optimization we may want to implement individual CREATE routes for each of the following: certifications,
 > project experiences, work experiences.
 
-**Endpoint**: `/api/jobseekers/edu-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/edu-info/upsert`
 
 **Method**: `POST`
 
@@ -420,19 +410,9 @@ institution.
 _This route is meant to be used with the `/create-profile/jobseeker/education` page for initial loading of preexisting
 data, if any._
 
-**Endpoint**: `/api/jobseekers/edu-profile-read`
+**Endpoint**: `/api/jobseekers/account/edu-info/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -526,19 +506,9 @@ data, if any._
 _This will delete a jobseeker education record. It is intended for use within the `/create-profile/jobseeker/education`
 page using the key from the respective jobseeker education entry._
 
-**Endpoint**: `/api/jobseekers/edu-record-delete`
+**Endpoint**: `/api/jobseekers/education/remove/<eduId>`
 
 **Method**: `DELETE`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "jobseekerEdId": "53d66079-60e2-46a2-9214-e86e2f766734"
-}
-```
 
 ##### Sample Response
 
@@ -571,19 +541,7 @@ page using the key from the respective jobseeker education entry._
 _This will delete a jobseeker certification record. It is intended for use within
 the `/create-profile/jobseeker/education` page using the key from the respective certification entry._
 
-**Endpoint**: `/api/jobseekers/cert-record-delete`
-
-**Method**: `DELETE`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "certId": "5b97ce22-6f37-4ea1-91c4-9f41e513d8e0"
-}
-```
+**Endpoint**: `/api/jobseekers/certifications/remove/<certificateId>`
 
 ##### Sample Response
 
@@ -615,19 +573,9 @@ _This will delete a jobseeker project experience record. It is intended for use 
 the `/create-profile/jobseeker/education` page using the key from the respective project experience entry. It will also
 delete the associated skills from within the `project_has_skills` table._
 
-**Endpoint**: `/api/jobseekers/proj-record-delete`
+**Endpoint**: `/api/jobseekers/projects/remove/<projectId>`
 
 **Method**: `DELETE`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6"
-}
-```
 
 ##### Sample Response
 
@@ -637,19 +585,17 @@ delete the associated skills from within the `project_has_skills` table._
 {
   "success": true,
   "result": {
-    "deletedEntry": {
-      "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6",
-      "jobseekerId": "48586cd0-74ba-4da0-9bb2-2862a5c7ca5b",
-      "projTitle": "Web Development Project",
-      "projectRole": "backend dev",
-      "startDate": "2022-01-01T00:00:00.000Z",
-      "completionDate": "2022-06-01T00:00:00.000Z",
-      "problemSolvedDescription": "Developed a web application using React and Node.js.",
-      "teamSize": 8,
-      "repoUrl": "https://www.repo.url",
-      "demoUrl": "https:///www.demo.url"
-    },
-    "skills": {
+    "projectId": "b5a4f51c-90e5-4b6e-9a5a-83f1c8f789c6",
+    "jobseekerId": "da7339e0-8cf9-4cdb-b02e-97ee598c8c1d",
+    "projTitle": "Web Development Project",
+    "projectRole": "backend dev",
+    "startDate": "2022-01-01T00:00:00.000Z",
+    "completionDate": "2022-06-01T00:00:00.000Z",
+    "problemSolvedDescription": "Developed a web application using React and Node.js.",
+    "teamSize": 8,
+    "repoUrl": "https://www.repo.url",
+    "demoUrl": "https:///www.demo.url",
+    "skillsCount": {
       "count": 2
     }
   }
@@ -662,12 +608,12 @@ delete the associated skills from within the `project_has_skills` table._
 
 ---
 
-#### Create or Update Jobseeker Work Profile Page
+#### Upsert Jobseeker Work Profile Page
 
 _This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for creating or updating
 data._
 
-**Endpoint**: `/api/jobseekers/work-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/work-info/upsert`
 
 **Method**: `POST`
 
@@ -763,19 +709,9 @@ data._
 _This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for initial load of data, if
 any._
 
-**Endpoint**: `/api/jobseekers/work-profile-read`
+**Endpoint**: `/api/jobseekers/account/work-info/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -826,19 +762,9 @@ any._
 
 _This route is intended for use by a jobseeker to delete a Work Experience from their profile_
 
-**Endpoint**: `/api/jobseekers/work-record-delete`
+**Endpoint**: `/api/jobseekers/work-experience/remove/<workId>`
 
 **Method**: `DELETE`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "workId": "ddf90cad-5273-4651-aef3-340ea8494335"
-}
-```
 
 ##### Sample Response
 
@@ -872,19 +798,9 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
 
 _This route is meant to be used with the `/create-profile/jobseeker/showcase` page for initial load of data, if any._
 
-**Endpoint**: `/api/jobseekers/showcase-profile-read`
+**Endpoint**: `/api/jobseekers/account/showcase/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -935,7 +851,7 @@ _This route is meant to be used with the `/create-profile/jobseeker/showcase` pa
 
 _This route is meant to be used with the `/create-profile/jobseeker/showcase` page for updating or creating data._
 
-**Endpoint**: `/api/jobseekers/showcase-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/showcase/upsert`
 
 **Method**: `POST`
 
@@ -999,19 +915,9 @@ _This route is meant to be used with the `/create-profile/jobseeker/showcase` pa
 _Intended for use where showing project skills in addition to the top 5 skills is desired. Any duplicate skills between
 topSkills and OtherSkills are removed from the OtherSkills Array._
 
-**Endpoint**: `/api/jobseekers/skill-read`
+**Endpoint**: `/api/skills/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "0629cbe6-55b5-486e-84c6-530aa8d5c737"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -1055,7 +961,7 @@ topSkills and OtherSkills are removed from the OtherSkills Array._
 
 _Used to push jobseeker selected skills into the database_
 
-**Endpoint**: `/api/jobseekers/skill-upsert`
+**Endpoint**: `/api/skills/upsert`
 
 **Method**: `POST`
 
@@ -1102,7 +1008,7 @@ _Used to push jobseeker selected skills into the database_
 _This route is intended for use with the `/create-profile/jobseeker/showcase` page. It can be used anywhere skills
 needs unassociated with a jobseeker._
 
-**Endpoint**: `/api/jobseekers/skill-delete`
+**Endpoint**: `/api/skills/remove`
 
 **Method**: `DELETE`
 
@@ -1152,19 +1058,9 @@ deletion in blob storage._
 
 > Blob storage isn't available yet. Plan on implementing as soon as we have access.
 
-**Endpoint**: `/api/jobseekers/video-delete`
+**Endpoint**: `/api/jobseekers/video/remove/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `PATCH`
 
 ##### Sample Response
 
@@ -1190,19 +1086,9 @@ deletion in blob storage._
 
 _This route is intended to load the `/create-profile/jobseeker/preferences` page with preexisting data, if any_
 
-**Endpoint**: `/api/jobseekers/prefs-profile-read`
+**Endpoint**: `/api/jobseekers/account/preferences/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -1227,7 +1113,7 @@ _This route is intended to load the `/create-profile/jobseeker/preferences` page
 _This is intended for use updating or creating Jobseeker preferences on the `/create-profile/jobseeker/preferences`
 page_
 
-**Endpoint**: `/api/jobseekers/prefs-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/preferences/upsert`
 
 **Method**: `POST`
 
@@ -1269,19 +1155,9 @@ page_
 
 _Intended to load Jobseeker disclosures data in `/create-profile/jobseeker/disclosures` page, if any._
 
-**Endpoint**: `/api/jobseekers/disclosures-profile-read`
+**Endpoint**: `/api/jobseekers/account/disclosures/get/<userId>`
 
-**Method**: `POST`
-
-##### Sample Request
-
-**DTO**: `none`
-
-```json
-{
-  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd"
-}
-```
+**Method**: `GET`
 
 ##### Sample Response
 
@@ -1307,7 +1183,7 @@ _Intended to load Jobseeker disclosures data in `/create-profile/jobseeker/discl
 
 _Intended to be used with the `/create-profile/jobseeker/disclosures` page to update or create disclosure data._
 
-**Endpoint**: `/api/jobseekers/disclosures-profile-upsert`
+**Endpoint**: `/api/jobseekers/account/disclosures/upsert`
 
 **Method**: `POST`
 
@@ -1356,7 +1232,7 @@ _Intended to be used with the `/create-profile/jobseeker/disclosures` page to up
 
 #### Upsert Employer Personal Information Page
 
-_This route is used to upsert information from the employer account creation personal information page._
+_This route is used to upsert information from the employer account creation personal information page. This _
 
 **Endpoint**: `api/employers/account/personal-info/upsert`
 
@@ -1387,11 +1263,12 @@ _This route is used to upsert information from the employer account creation per
 {
   "success": true,
   "result": {
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
     "firstName": "Inita",
     "lastName": "Talent",
     "birthDate": "1990-12-08T00:00:00.000Z",
     "email": "inita@employer.com",
-    "phone": null,
+    "phone": "+1-5551234567",
     "gender": "female",
     "race": "asian",
     "photoUrl": "https://blobName.myphoto-123.png"
@@ -1417,11 +1294,12 @@ _This route is used for the initial load of data for Account Page: Employer Pers
 {
   "success": true,
   "result": {
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
     "firstName": "Inita",
     "lastName": "Talent",
     "birthDate": "1990-12-08T00:00:00.000Z",
     "email": "inita@employer.com",
-    "phone": null,
+    "phone": "+1-5551234567",
     "gender": "female",
     "race": "asian",
     "photoUrl": "https://blobName.myphoto-123.png"
@@ -1461,16 +1339,18 @@ a drop-down for an employer to select companies' address_
 {
   "success": true,
   "result": {
-    "employerId": "d651f281-8bdd-4ff6-87ee-fad3727aade2",
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+    "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
     "currentJobTitle": "Full-stack Developer",
     "linkedInUrl": "https://www.linkedin.com/in/theEmployer/",
-    "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
+    "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
     "companyName": "Gulgowski - Mohr",
     "isVerifiedEmployee": false,
     "companyAddress": {
-      "city": "Thousand Oaks",
-      "state": "Washington",
-      "zipCode": "98092"
+      "addressId": "97da86f2-e596-4370-9a72-d4ec354580c0",
+      "city": "Jackson",
+      "state": "WA",
+      "zipCode": "99350"
     }
   }
 }
@@ -1486,21 +1366,28 @@ _This route is used for the initial load of data for Account Page: Employer Prof
 
 **Method**: `GET`
 
-
 ##### Sample Response
+
 **DTO**: ``
+
 ```json
 {
-    "success": true,
-    "result": {
-        "employerId": "d651f281-8bdd-4ff6-87ee-fad3727aade2",
-        "currentJobTitle": "Full-stack Developer",
-        "linkedInUrl": "https://www.linkedin.com/in/theEmployer/",
-        "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
-        "companyName": "Gulgowski - Mohr",
-        "isVerifiedEmployee": false,
-        "companyAddress": {}
+  "success": true,
+  "result": {
+    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+    "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+    "currentJobTitle": "Full-stack Developer",
+    "linkedInUrl": "https://www.linkedin.com/in/theEmployer/",
+    "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+    "companyName": "Gulgowski - Mohr",
+    "isVerifiedEmployee": false,
+    "companyAddress": {
+      "addressId": "97da86f2-e596-4370-9a72-d4ec354580c0",
+      "city": "Jackson",
+      "state": "WA",
+      "zipCode": "99350"
     }
+  }
 }
 ```
 
@@ -1515,20 +1402,71 @@ _This route is used for upserting employer data for Account Page: Employer Compa
 **Method**: `POST`
 
 ##### Sample Request
+
 **DTO**: `PostCompanyInfoDTO`
+
 ```json
 {
-    "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
-    "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
-    "industrySectorId": "ad7ab06d-d4bb-4ec4-beb3-1ee4d71c0586",
+  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+  "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+  "industrySectorId": "60829f24-fbaf-46aa-9ad7-1f4810de1069",
+  "companyName": "Gulgowski - Mohr",
+  "companyAddresses": [
+    {
+      "city": "Thousand Oaks",
+      "state": "Washington",
+      "zipCode": "98092",
+      "county": "Pierce"
+    }
+  ],
+  "logoUrl": "https://monthly-sentence.org",
+  "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
+  "companyEmail": "Sophie.McClure65@yahoo.com",
+  "yearFounded": "1995",
+  "websiteUrl": "https://even-policy.biz/",
+  "videoUrl": "https://stylish-pursuit.com",
+  "companyPhone": "+323762322141",
+  "mission": "Hire everyone!",
+  "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
+  "employeeCount": "249",
+  "estimatedAnnualHires": "10"
+}
+```
+
+##### Sample Response
+
+**DTO**: result property is of type `ReadCompanyInfoDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+    "industrySectorId": "60829f24-fbaf-46aa-9ad7-1f4810de1069",
+    "industrySectorTitle": "Retail",
     "companyName": "Gulgowski - Mohr",
     "companyAddresses": [
-        {
-            "city": "Thousand Oaks",
-            "state": "Washington",
-            "zipCode": "98092",
-            "county": "Pierce"
-        }
+      {
+        "addressId": "97da86f2-e596-4370-9a72-d4ec354580c0",
+        "state": "WA",
+        "city": "Jackson",
+        "zipCode": "99350",
+        "county": "Benton"
+      },
+      {
+        "addressId": "22ac8110-4b0b-4ee6-ba94-8c4311ad0401",
+        "state": "Washington",
+        "city": "Thousand Oaks",
+        "zipCode": "98092",
+        "county": "Pierce"
+      },
+      {
+        "addressId": "6abc28c5-7208-4a75-ae31-132f14f16952",
+        "state": "Washington",
+        "city": "Sequim",
+        "zipCode": "98382",
+        "county": "Clallam"
+      }
     ],
     "logoUrl": "https://monthly-sentence.org",
     "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
@@ -1540,55 +1478,15 @@ _This route is used for upserting employer data for Account Page: Employer Compa
     "mission": "Hire everyone!",
     "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
     "employeeCount": "249",
-    "estimatedAnnualHires": "10"
-}
-```
-
-##### Sample Response
-**DTO**: result property is of type `ReadCompanyInfoDTO`
-```json
-{
-    "success": true,
-    "result": {
-        "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
-        "industrySectorId": "ad7ab06d-d4bb-4ec4-beb3-1ee4d71c0586",
-        "industrySectorTitle": "Insurance",
-        "companyName": "Gulgowski - Mohr",
-        "companyAddresses": [
-            {
-                "addressId": "c633d591-8312-44ad-85d1-7bd6f97d0cc5",
-                "state": "WA",
-                "city": "Clarksville",
-                "zipCode": "99347",
-                "county": "Garfield"
-            },
-            {
-                "addressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6",
-                "state": "Washington",
-                "city": "Thousand Oaks",
-                "zipCode": "98092",
-                "county": "Pierce"
-            }
-        ],
-        "logoUrl": "https://monthly-sentence.org",
-        "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
-        "companyEmail": "Sophie.McClure65@yahoo.com",
-        "yearFounded": "1995",
-        "websiteUrl": "https://even-policy.biz/",
-        "videoUrl": "https://stylish-pursuit.com",
-        "companyPhone": "+323762322141",
-        "mission": "Hire everyone!",
-        "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
-        "employeeCount": "249",
-        "estimatedAnnualHires": "10",
-        "isApproved": false
-    }
+    "estimatedAnnualHires": "10",
+    "isApproved": false
+  }
 }
 ```
 
 ---
 
-#### Get Company Addresses By Id
+#### Get Company Locations By ID
 
 _This is used to get the locations for a specific company_
 
@@ -1597,26 +1495,28 @@ _This is used to get the locations for a specific company_
 **Method**: `GET`
 
 ##### Sample Response
+
 **DTO**: result property is of type `ReadAddressDTO[]`
+
 ```json
 {
-    "success": true,
-    "result": [
-        {
-            "addressId": "c633d591-8312-44ad-85d1-7bd6f97d0cc5",
-            "city": "Clarksville",
-            "state": "WA",
-            "zipCode": "99347",
-            "county": "Garfield"
-        },
-        {
-            "addressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6",
-            "city": "Thousand Oaks",
-            "state": "Washington",
-            "zipCode": "98092",
-            "county": "Pierce"
-        }
-    ]
+  "success": true,
+  "result": [
+    {
+      "addressId": "c633d591-8312-44ad-85d1-7bd6f97d0cc5",
+      "city": "Clarksville",
+      "state": "WA",
+      "zipCode": "99347",
+      "county": "Garfield"
+    },
+    {
+      "addressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6",
+      "city": "Thousand Oaks",
+      "state": "Washington",
+      "zipCode": "98092",
+      "county": "Pierce"
+    }
+  ]
 }
 ```
 
@@ -1631,43 +1531,461 @@ _This route is used for the initial load of data for Account Page: Employer Comp
 **Method**: `GET`
 
 ##### Sample Response
+
 **DTO**: result property is of type `ReadCompanyInfoDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+    "industrySectorId": "60829f24-fbaf-46aa-9ad7-1f4810de1069",
+    "industrySectorTitle": "Retail",
+    "companyName": "Gulgowski - Mohr",
+    "logoUrl": "https://monthly-sentence.org",
+    "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
+    "companyEmail": "Sophie.McClure65@yahoo.com",
+    "yearFounded": "1995",
+    "websiteUrl": "https://even-policy.biz/",
+    "videoUrl": "https://stylish-pursuit.com",
+    "companyPhone": "+323762322141",
+    "mission": "Hire everyone!",
+    "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
+    "employeeCount": "249",
+    "estimatedAnnualHires": "10",
+    "isApproved": false,
+    "companyAddresses": [
+      {
+        "addressId": "97da86f2-e596-4370-9a72-d4ec354580c0",
+        "state": "WA",
+        "city": "Jackson",
+        "zipCode": "99350",
+        "county": "Benton"
+      },
+      {
+        "addressId": "22ac8110-4b0b-4ee6-ba94-8c4311ad0401",
+        "state": "Washington",
+        "city": "Thousand Oaks",
+        "zipCode": "98092",
+        "county": "Pierce"
+      },
+      {
+        "addressId": "6abc28c5-7208-4a75-ae31-132f14f16952",
+        "state": "Washington",
+        "city": "Sequim",
+        "zipCode": "98382",
+        "county": "Clallam"
+      }
+    ]
+  }
+}
+```
+
+---
+
+#### Update Employer Work Address
+
+_This is intended for an employer to choose their work location for companies that have more than one location_
+
+**Endpoint**: `/api/employers/account/work-address/update`
+
+**Method**: `POST`
+
+##### Sample Request
+
+**DTO**: `none`
+
+```json
+{
+  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+  "companyAddressId": "d12383f7-0526-4682-8b32-016654bac9ed"
+}
+```
+
+##### Sample Response
+
+**DTO**: result property is of type `ReadEmployerWorkDTO & CompanyInfoSummaryDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "employerId": "2babec5f-3bd0-4356-9d82-34f13874e577",
+    "currentJobTitle": "Full-stack Developer",
+    "linkedInUrl": "https://www.linkedin.com/in/theEmployer/",
+    "companyId": "00b5c928-e865-433f-bd6c-10236e46846d",
+    "companyName": "Gulgowski - Mohr",
+    "isVerifiedEmployee": false,
+    "companyAddress": {
+      "addressId": "d12383f7-0526-4682-8b32-016654bac9ed",
+      "city": "Thousand Oaks",
+      "state": "Washington",
+      "zipCode": "98092"
+    }
+  }
+}
+```
+
+---
+
+#### Update Employer Work Address
+
+_This route is intended for use by the employer to update their work location_
+
+**Endpoint**: `api/employers/work-location/update`
+
+**Method**: `PATCH`
+
+##### Sample Request
+
+**DTO**: `none`
+
+```json
+{
+  "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
+  "companyAddressId": "97da86f2-e596-4370-9a72-d4ec354580c0"
+}
+```
+
+##### Sample Response
+
+**DTO**: result property is of type `ReadEmployerWorkDTO & CompanyInfoSummaryDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+    "currentJobTitle": "Full-stack Developer",
+    "linkedInUrl": "https://www.linkedin.com/in/theEmployer/",
+    "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+    "companyName": "Gulgowski - Mohr",
+    "isVerifiedEmployee": false,
+    "companyAddress": {
+      "addressId": "97da86f2-e596-4370-9a72-d4ec354580c0",
+      "city": "Jackson",
+      "state": "WA",
+      "zipCode": "99350"
+    }
+  }
+}
+```
+
+---
+
+#### Get All Company Testimonials By Company ID
+
+_This is intended to display all testimonials on a Company page and for editing purposes by approved Employers._
+
+**Endpoint**: `api/companies/testimonials/get/<companyId>`
+
+**Method**: `GET`
+
+##### Sample Response
+
+**DTO**: result property is of type `ReadCompanyTestimonialsDTO[]`
+
+```json
+{
+  "success": true,
+  "result": [
+    {
+      "testimonyId": "7b633c0b-93be-4654-b56f-73c30e36340b",
+      "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+      "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+      "text": "Patrocinor vetus audentia eius cum. Utroque causa avarus sono caelestis alter admoneo auctus.",
+      "author": "Garry Cremin"
+    },
+    {
+      "testimonyId": "78f5e2d1-0578-49b8-afef-95799f378294",
+      "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+      "employerId": "013c2369-4bcf-4ecf-8298-0efd55fc038c",
+      "text": "Turba conatus angulus artificiose averto acidus adfero solitudo. Tabella viduo basium caecus debilito patria sunt talis valetudo.",
+      "author": "Beth O'Kon"
+    }
+  ]
+}
+```
+
+---
+
+#### Delete Company Testimonial
+
+_Intended for use by APPROVED employer to remove a single testimonial._
+
+**Endpoint**: `api/companies/testimonials/remove/<testimonialId>`
+
+**Method**: `DELETE`
+
+##### Sample Response
+
+**DTO**: result property is of type `ReadCompanyTestimonialsDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "testimonyId": "7b633c0b-93be-4654-b56f-73c30e36340b",
+    "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+    "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+    "text": "Patrocinor vetus audentia eius cum. Utroque causa avarus sono caelestis alter admoneo auctus.",
+    "author": "Garry Cremin"
+  }
+}
+```
+
+---
+
+#### Get Company Locations by Company ID
+
+_Intended to display company locations for company page and for the Employer to choose their work location._
+
+**Endpoint**: `api/companies/locations/get/<companyId>`
+
+**Method**: `GET`
+
+##### Sample Response
+
+**DTO**: result property is of type `ReadAddressDTO[]`
+
+```json
+{
+  "success": true,
+  "result": [
+    {
+      "addressId": "97da86f2-e596-4370-9a72-d4ec354580c0",
+      "city": "Jackson",
+      "state": "WA",
+      "zipCode": "99350",
+      "county": "Benton"
+    },
+    {
+      "addressId": "22ac8110-4b0b-4ee6-ba94-8c4311ad0401",
+      "city": "Thousand Oaks",
+      "state": "Washington",
+      "zipCode": "98092",
+      "county": "Pierce"
+    },
+    {
+      "addressId": "6abc28c5-7208-4a75-ae31-132f14f16952",
+      "city": "Sequim",
+      "state": "Washington",
+      "zipCode": "98382",
+      "county": "Clallam"
+    }
+  ]
+}
+```
+
+---
+
+#### Add Company Location
+
+_Intended for an APPROVED employer to add a work location. There should be one unique entry per zip code._
+
+**Endpoint**: `api/companies/locations/add`
+
+**Method**: `POST`
+
+##### Sample Request
+
+**DTO**: `PostAddressDTO & {companyId: string}`
+
+```json
+{
+  "companyId": "10a34e0f-97af-40c8-8258-d460dd4d3a91",
+  "city": "Thousand Oaks",
+  "state": "Washington",
+  "zipCode": "98092",
+  "county": "Pierce"
+}
+```
+
+##### Sample Response
+
+**DTO**: result property is type `ReadAddressDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "addressId": "83105c24-f72c-4707-924c-e2f96923a2d9",
+    "city": "Thousand Oaks",
+    "state": "Washington",
+    "zipCode": "98092",
+    "county": "Pierce"
+  }
+}
+```
+
+---
+
+#### Delete Company Location by locationId
+
+_This is intended for an APPROVED employer to remove company locations._
+
+**Endpoint**: `api/companies/locations/remove/<locationId>`
+
+**Method**: `DELETE`
+
+##### Sample Response
+
+**DTO**: result property is type `ReadAddressDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "addressId": "22ac8110-4b0b-4ee6-ba94-8c4311ad0401",
+    "city": "Thousand Oaks",
+    "state": "Washington",
+    "zipCode": "98092",
+    "county": "Pierce"
+  }
+}
+```
+
+---
+
+#### Get Company Social Media Entries by companyId
+
+_This is used to display the currently stored social media entries for a company._
+
+**Endpoint**: `api/companies/social-media/get/<companyId>`
+
+**Method**: `GET`
+
+##### Sample Response
+
+**DTO**: result property is of type `ReadCompanySocialLinkDTO[]`
+
+```json
+{
+  "success": true,
+  "result": [
+    {
+      "companySocialId": "4ad49542-4e25-4ece-a94f-2db708d953f9",
+      "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+      "employerId": "0453b6d4-9329-4da0-b013-f9c77f943325",
+      "socialPlatformId": "6d2a55ee-1676-436c-b32b-1ead5d4cf578",
+      "socialUrl": "https://www.medium/gulgowskimohr",
+      "platform": "Medium",
+      "platformIconUrl": "https://sick-telescreen.net/"
+    },
+    {
+      "companySocialId": "6222a6a0-c4c5-4d6e-ac8a-d3c343e53652",
+      "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+      "employerId": "0453b6d4-9329-4da0-b013-f9c77f943325",
+      "socialPlatformId": "f4d5948f-0f5b-47bc-8db3-0714cb2fb1ad",
+      "socialUrl": "https://www.wechat/gulgowskimohr",
+      "platform": "WeChat",
+      "platformIconUrl": "https://fond-statistics.info"
+    },
+    {
+      "companySocialId": "83997cb6-106b-422c-8bd8-432a8edf07d4",
+      "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+      "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+      "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
+      "socialUrl": "https:linkedin/in/testCompany",
+      "platform": "LinkedIn",
+      "platformIconUrl": "https://imaginative-praise.name"
+    },
+    {
+      "companySocialId": "52454c81-0e8f-44a5-97cf-737316388dc2",
+      "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+      "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+      "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
+      "socialUrl": "https:linkedin/in/testCompany",
+      "platform": "LinkedIn",
+      "platformIconUrl": "https://imaginative-praise.name"
+    },
+    {
+      "companySocialId": "5d493359-6bba-4e0a-8f9b-2f50b0954665",
+      "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+      "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+      "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
+      "socialUrl": "https:linkedin/in/testCompany",
+      "platform": "LinkedIn",
+      "platformIconUrl": "https://imaginative-praise.name"
+    },
+    {
+      "companySocialId": "055d4805-0ff7-4049-b685-89554004462c",
+      "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+      "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+      "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
+      "socialUrl": "https:linkedin/in/testCompany",
+      "platform": "LinkedIn",
+      "platformIconUrl": "https://imaginative-praise.name"
+    }
+  ]
+}
+```
+
+---
+
+#### Add Company Social Media Link
+
+_This is for an APPROVED employer to add additional social media links to appear on the company page._
+
+**Endpoint**: `api/companies/social-media/add`
+
+**Method**: `POST`
+
+##### Sample Request
+
+**DTO**: `PostCompanySocialLinkDTO`
+
+```json
+{
+  "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+  "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
+  "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+  "socialUrl": "https:linkedin/in/testCompany"
+}
+```
+
+##### Sample Response
+
+**DTO**: result property is type `ReadCompanySocialLinkDTO`
+
+```json
+{
+  "success": true,
+  "result": {
+    "companySocialId": "055d4805-0ff7-4049-b685-89554004462c",
+    "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+    "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+    "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
+    "socialUrl": "https:linkedin/in/testCompany",
+    "platform": "LinkedIn",
+    "platformIconUrl": "https://imaginative-praise.name"
+  }
+}
+```
+
+___
+
+#### Delete Company Social Media Entry
+
+_This is for an APPROVED employer to remove company social media links._
+
+**Endpoint**: `/api/companies/social-media/remove/<socialId>`
+
+**Method**: `DELETE`
+
+##### Sample Response
+**DTO**: ``
 ```json
 {
     "success": true,
     "result": {
-        "companyId": "b9e1769b-3d02-46ec-8e56-77788916dadb",
-        "industrySectorId": "ad7ab06d-d4bb-4ec4-beb3-1ee4d71c0586",
-        "industrySectorTitle": "Insurance",
-        "companyName": "Gulgowski - Mohr",
-        "companyAddresses": [
-            {
-                "addressId": "c633d591-8312-44ad-85d1-7bd6f97d0cc5",
-                "state": "WA",
-                "city": "Clarksville",
-                "zipCode": "99347",
-                "county": "Garfield"
-            },
-            {
-                "addressId": "8c08d31f-9e1f-4172-b195-66e528e39fd6",
-                "state": "Washington",
-                "city": "Thousand Oaks",
-                "zipCode": "98092",
-                "county": "Pierce"
-            }
-        ],
-        "logoUrl": "https://monthly-sentence.org",
-        "aboutUs": "Adstringo triumphus vado dapifer verumtamen sumptus uberrime volva suasoria socius. Tantum vulariter socius vetus sto socius.",
-        "companyEmail": "Sophie.McClure65@yahoo.com",
-        "yearFounded": "1995",
-        "websiteUrl": "https://even-policy.biz/",
-        "videoUrl": "https://stylish-pursuit.com",
-        "companyPhone": "+323762322141",
-        "mission": "Hire everyone!",
-        "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
-        "employeeCount": "249",
-        "estimatedAnnualHires": "10",
-        "isApproved": false
+        "companySocialId": "055d4805-0ff7-4049-b685-89554004462c",
+        "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+        "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+        "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
+        "socialUrl": "https:linkedin/in/testCompany",
+        "platform": "LinkedIn",
+        "platformIconUrl": "https://imaginative-praise.name"
     }
 }
 ```
