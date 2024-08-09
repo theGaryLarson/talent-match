@@ -96,10 +96,44 @@ export default function CreateJobseekerProfileIntroPage(){
             <legend>
               <h2>Basic info</h2>
             </legend>
-            <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
-            <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
-            <div className="flex">
+            {/* TODO: Quincy 
+              [X] Input Sizing:
+                  [X] fName=50%, lName=50%, 
+                  [X] bDate=done,
+                  [X] zip=50%, state=50%,
+                  [X] city=50%, county=50%,
+                  [*] email=done, (NOTE: field does not exist)
+                  [X] country=50%, phone=50%,
+                
+                  [X] headline=done,
+                  [X] school=done,
+                  [X] position=done,
+              [] Components:
+                  [.] InputTextWithLabel
+                  [.] SelectOptionsWithLabel
+                  [] Button
+                  [] h1
+                  [] h2
+              [.] Input Margin + Padding
+              [] Button spacing
+              [] Title sizing
+              [] Header bold
+              
+              [] Intro page, button previous => cancel
+              [] Add email field
+
+              REVIEW: 
+            */}
+            <div className="grid gap-6 my-6 md:grid-cols-2">
+              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
+            </div>
+            
+            <div className="grid gap-6 my-6">
+              <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
+            </div>
+            
+            <div className="grid gap-6 my-6 md:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-zip-code" className="w-1/2" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
@@ -163,7 +197,8 @@ export default function CreateJobseekerProfileIntroPage(){
                 State
               </SelectOptionsWithLabel>
             </div>
-            <div className="flex">
+            
+            <div className="grid gap-6 my-6 md:grid-cols-2">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
                 className="w-1/2"
@@ -423,10 +458,12 @@ export default function CreateJobseekerProfileIntroPage(){
           <fieldset>
             <legend>
               <h2>Intro</h2>
-            </legend>
-            <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
+            </legend>            
+            <div className="grid gap-6 my-6">
+              <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
+            </div>
             <div>
               Resume *
               <InputFileDropzone

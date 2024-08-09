@@ -18,6 +18,7 @@ export default function InputTextWithLabel({
 }: Props) {
     return (
         <div className={"relative " + className}>
+            <div>
             <input
                 id={id}
                 name={id}
@@ -31,6 +32,7 @@ export default function InputTextWithLabel({
             >
                 {children}
             </label>
+            </div>
         </div>
     );
 }
