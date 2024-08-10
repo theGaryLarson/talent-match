@@ -834,12 +834,22 @@ async function seedContactAddresses() {
 }
 
 async function seedPathways() {
-    const pathways = ["Cloud Computing", "Software Development", "Data Analytics", "Cybersecurity"]
+    const pathways = [
+        "Network and Computer Systems Administrator",
+        "Web Developer",
+        "Software Developer",
+        "Software Quality Assurance Analysts and Tester",
+        "Graphic Designer",
+        "Computer User Support Specialist"
+    ]
     console.log('Seeding Pathways...')
-    const uuids = ['0645cc89-e942-48b4-a34a-f7ad7e87dec3',
+    const uuids = [
+        '0645cc89-e942-48b4-a34a-f7ad7e87dec3',
         '79608104-d50e-4d0f-b541-2a9de7bc0f89',
         'a54f3940-301c-4e2e-85e8-bcaf244c89bb',
-        'b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009'
+        'b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009',
+        '79608104-c3ea-47b5-9bbf-6f7f8f9c6009',
+        'c45fce80-c3ea-47b5-b541-6f7f8f9c6009',
     ]
     let idx = 0
     for (const path of pathways) {
