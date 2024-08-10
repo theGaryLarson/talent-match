@@ -100,7 +100,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
         const edHistory: EducationInfoDTO[] = jobseeker.jobseeker_education.map((edu) => ({
             jobseekerEdId: edu.jobseekerEdId,
             edInstitutionId: edu.edInstitutionId,
-            institutionName: edu.eduInstitutions.name ?? undefined, // TODO: fix this
+            institutionName: edu.eduInstitutions.name ?? undefined,
             edProgram: mapToEnum(edu.edProgram, EdProgram),
             edSystem: edu.edSystem,
             isEnrolled: edu.isEnrolled,
