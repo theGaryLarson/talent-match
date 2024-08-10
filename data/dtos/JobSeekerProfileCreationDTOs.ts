@@ -72,34 +72,55 @@ export enum DegreeType {
     DoctoralDegree = "Doctoral Degree"
 }
 
-export enum CurrentGrade {
+export enum SchoolGradeLevel {
     Freshman = "Freshman",
     Sophomore = "Sophomore",
     Junior = "Junior",
     Senior = "Senior"
 }
 
+export enum PreALevel {
+    Level1 = "Level 1",
+    Level2 = "Level 2",
+    Level3 = "Level 3",
+    Level4 = "Level 4",
+    Level5 = "Level 5",
+    Level6 = "Level 6",
+    LastMile = "Last Mile",
+}
+
 export enum EdProgram {
     None = "None",
     HighSchool = "High school",
     College = "College",
-    TrainingProgram = "Training program",
-    BootCamp = "Boot camp",
+    TrainingProgram = "Training program / Bootcamp",
     PreApprenticeship = "Pre-apprenticeship",
+    Other = "Other",
+}
+
+export enum EdSystem {
+    None = "None",
+    SystemA = "System A",
+    SystemB = "System B",
+    SystemC = "System C",
     Other = "Other",
 }
 
 export type EducationInfoDTO = {
     jobseekerEdId: string,
     edInstitutionId: string, // use name lookup to find ID.
+    edProgram?: EdProgram,
     institutionName?: string,
     isEnrolled: boolean,
     startDate: string,
     gradDate: string,
     degreeType?: DegreeType,
+    collegeProgram?: string | null,
     major?: string | null,
     minor?: string | null,
-    edProgram?: EdProgram,
+    gpa?: number | null,
+    gradeLevel?: SchoolGradeLevel | null,
+    preALevel?: PreALevel | null,
     edSystem?: string | null; // pre apprenticeship option
     description?: string | null;
 }
@@ -108,7 +129,7 @@ export type JsEducationDTO = {
     userId: string,
     highestLevelOfStudy: DegreeType;
     currentEdProgram: EdProgram // college, high school, etc.
-    currentGrade: CurrentGrade;
+    currentGrade: SchoolGradeLevel;
     isEnrolledEdProgram: boolean;
     schools: EducationInfoDTO[];
     certifications: CertDTO[];

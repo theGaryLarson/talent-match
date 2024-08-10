@@ -2,7 +2,7 @@ import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import {
     CertDTO,
-    CurrentGrade,
+    SchoolGradeLevel,
     DegreeType,
     EdProgram,
     EducationInfoDTO,
@@ -147,7 +147,7 @@ export async function POST(request: Request) {
             userId: jobseeker.user_id,
             currentEdProgram: mapToEnum(jobseeker.current_enrolled_ed_program ?? "None", EdProgram),
             highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed ?? "None", DegreeType),
-            currentGrade: mapToEnum(jobseeker.current_grade_level ?? "None", CurrentGrade),
+            currentGrade: mapToEnum(jobseeker.current_grade_level ?? "None", SchoolGradeLevel),
             isEnrolledEdProgram: jobseeker.is_enrolled_ed_program,
             schools: edHistory,
             certifications: certs,
