@@ -115,8 +115,8 @@ creates or updates all the data in entire introduction page._
   "firstName": "Gary",
   "lastName": "Larson",
   "birthDate": "2000-01-01T00:00:00.000Z",
-  "phoneCountryCode": "1",
-  "phone": "(555) 123.4567",
+  "phoneCountryCode": "+1",
+  "phone": "(360) 322-9617",
   "zipCode": "98101",
   "state": "WA",
   "city": "Seattle",
@@ -126,6 +126,7 @@ creates or updates all the data in entire introduction page._
   "currentJobTitle": "Junior Developer",
   "resumeUrl": "http://example.com/resume.pdf"
 }
+
 
 ```
 
@@ -144,7 +145,7 @@ creates or updates all the data in entire introduction page._
       "lastName": "Larson",
       "birthDate": "2000-01-01T00:00:00.000Z",
       "phoneCountryCode": "1",
-      "phone": "5551234567",
+      "phone": "+13603229617",
       "zipCode": "98101",
       "state": "WA",
       "city": "Seattle",
@@ -156,11 +157,11 @@ creates or updates all the data in entire introduction page._
     },
     "meta": {
       "emailVerified": null,
-      "createdAt": "2024-07-28T21:04:28.486Z",
-      "pathwayId": "0e05761b-f42a-448a-9284-301596146aed",
-      "jobseekerId": "48586cd0-74ba-4da0-9bb2-2862a5c7ca5b",
-      "contactAddressId": "7954a995-836d-4cc2-9c92-07910a1b8836",
-      "isMarkedDeletion": "2024-07-29T18:51:20.993Z"
+      "createdAt": "2024-08-08T07:20:17.273Z",
+      "pathwayId": "79608104-d50e-4d0f-b541-2a9de7bc0f89",
+      "jobseekerId": "da7339e0-8cf9-4cdb-b02e-97ee598c8c1d",
+      "contactAddressId": "356b592c-663e-4201-8a8a-540ed4d2d957",
+      "isMarkedDeletion": null
     }
   }
 }
@@ -191,8 +192,8 @@ data._
       "firstName": "Gary",
       "lastName": "Larson",
       "birthDate": "2000-01-01T00:00:00.000Z",
-      "phoneCountryCode": "+1",
-      "phone": "5551234567",
+      "phoneCountryCode": "1",
+      "phone": "+13603229617",
       "zipCode": "98101",
       "state": "WA",
       "city": "Seattle",
@@ -204,11 +205,11 @@ data._
     },
     "meta": {
       "emailVerified": null,
-      "createdAt": "2024-07-28T21:04:28.486Z",
-      "pathwayId": "0e05761b-f42a-448a-9284-301596146aed",
-      "jobseekerId": "48586cd0-74ba-4da0-9bb2-2862a5c7ca5b",
-      "contactAddressId": "7954a995-836d-4cc2-9c92-07910a1b8836",
-      "isMarkedDeletion": "2024-07-29T18:51:20.993Z"
+      "createdAt": "2024-08-08T07:20:17.273Z",
+      "pathwayId": "79608104-d50e-4d0f-b541-2a9de7bc0f89",
+      "jobseekerId": "da7339e0-8cf9-4cdb-b02e-97ee598c8c1d",
+      "contactAddressId": "356b592c-663e-4201-8a8a-540ed4d2d957",
+      "isMarkedDeletion": null
     }
   }
 }
@@ -1249,6 +1250,8 @@ _This route is used to upsert information from the employer account creation per
   "lastName": "Talent",
   "birthDate": "1990-12-08",
   "email": "inita@employer.com",
+  "phoneCountryCode": "+44-1624",
+  "phone": "123-456",
   "gender": "female",
   "race": "asian",
   "photoUrl": "https://blobName.myphoto-123.png"
@@ -1268,7 +1271,8 @@ _This route is used to upsert information from the employer account creation per
     "lastName": "Talent",
     "birthDate": "1990-12-08T00:00:00.000Z",
     "email": "inita@employer.com",
-    "phone": "+1-5551234567",
+    "phoneCountryCode": "44",
+    "phone": "+441624123456",
     "gender": "female",
     "race": "asian",
     "photoUrl": "https://blobName.myphoto-123.png"
@@ -1299,7 +1303,8 @@ _This route is used for the initial load of data for Account Page: Employer Pers
     "lastName": "Talent",
     "birthDate": "1990-12-08T00:00:00.000Z",
     "email": "inita@employer.com",
-    "phone": "+1-5551234567",
+    "phoneCountryCode": "44",
+    "phone": "+441624123777",
     "gender": "female",
     "race": "asian",
     "photoUrl": "https://blobName.myphoto-123.png"
@@ -1425,7 +1430,8 @@ _This route is used for upserting employer data for Account Page: Employer Compa
   "yearFounded": "1995",
   "websiteUrl": "https://even-policy.biz/",
   "videoUrl": "https://stylish-pursuit.com",
-  "companyPhone": "+323762322141",
+  "phoneCountryCode": "+1",
+  "companyPhone": "2065555555",
   "mission": "Hire everyone!",
   "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
   "employeeCount": "249",
@@ -1454,7 +1460,7 @@ _This route is used for upserting employer data for Account Page: Employer Compa
         "county": "Benton"
       },
       {
-        "addressId": "22ac8110-4b0b-4ee6-ba94-8c4311ad0401",
+        "addressId": "83105c24-f72c-4707-924c-e2f96923a2d9",
         "state": "Washington",
         "city": "Thousand Oaks",
         "zipCode": "98092",
@@ -1474,7 +1480,8 @@ _This route is used for upserting employer data for Account Page: Employer Compa
     "yearFounded": "1995",
     "websiteUrl": "https://even-policy.biz/",
     "videoUrl": "https://stylish-pursuit.com",
-    "companyPhone": "+323762322141",
+    "phoneCountryCode": "1",
+    "companyPhone": "+12065555555",
     "mission": "Hire everyone!",
     "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
     "employeeCount": "249",
@@ -1548,7 +1555,8 @@ _This route is used for the initial load of data for Account Page: Employer Comp
     "yearFounded": "1995",
     "websiteUrl": "https://even-policy.biz/",
     "videoUrl": "https://stylish-pursuit.com",
-    "companyPhone": "+323762322141",
+    "phoneCountryCode": "1",
+    "companyPhone": "+12065555555",
     "mission": "Hire everyone!",
     "vision": "Amita clarus tumultus theca adimpleo amoveo amet statim adipisci. Amita concedo viscus tener dicta auditor desino deduco sonitus. Cinis blandior velum agnitio.",
     "employeeCount": "249",
@@ -1563,7 +1571,7 @@ _This route is used for the initial load of data for Account Page: Employer Comp
         "county": "Benton"
       },
       {
-        "addressId": "22ac8110-4b0b-4ee6-ba94-8c4311ad0401",
+        "addressId": "83105c24-f72c-4707-924c-e2f96923a2d9",
         "state": "Washington",
         "city": "Thousand Oaks",
         "zipCode": "98092",
