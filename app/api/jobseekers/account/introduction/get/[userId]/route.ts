@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import {JsIntroDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -25,7 +26,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                 birthdate: true,
                 email: true,
                 emailVerified: true,
-                phone: true, // TODO: fix with libphonenumber-js package to conform to E.164 format
+                phone: true,
                 photo_url: true,
                 createdAt: true,
                 contact_addresses: {
@@ -78,8 +79,8 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             firstName: contact.first_name,
             lastName: contact.last_name,
             birthDate: contact.birthdate,
-            phoneCountryCode: contact.phone?.split('-')[0], // TODO: use libphonenumber-js parsing functions
-            phone: contact?.phone?.split('-')[1],
+            phoneCountryCode: contact.phone ? parsePhoneNumberFromString(contact.phone)?.countryCallingCode : null,
+            phone: contact.phone ? parsePhoneNumberFromString(contact.phone)?.number : null,
             zipCode: address?.zip,
             state: address?.state,
             city: address?.city,
