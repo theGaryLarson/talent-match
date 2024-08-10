@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {PostEmployerPersonalDTO, ReadEmployerPersonalDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -28,6 +29,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
             lastName: empPersonalInfo?.last_name,
             birthDate: empPersonalInfo?.birthdate.toISOString(),
             email: empPersonalInfo?.email,
+            phoneCountryCode: empPersonalInfo?.phone ? parsePhoneNumberFromString(empPersonalInfo.phone)?.countryCallingCode : null,
             phone: empPersonalInfo?.phone,
             gender: empPersonalInfo?.gender,
             race: empPersonalInfo?.race,
