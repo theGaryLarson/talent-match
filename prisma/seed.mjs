@@ -1115,7 +1115,7 @@ async function seedJobSeekersEducation() {
                 startDate: startDate,
                 gradDate: endDate,
                 degreeType: faker.helpers.arrayElement(degreeTypes),
-                major: jobseeker.is_enrolled_ed_program ? faker.helpers.arrayElement(techEdMajors).program_id : null,
+                major: jobseeker.is_enrolled_ed_program ? faker.helpers.arrayElement(techEdMajors).name: null,
                 minor: null,
                 edProgram: 'College',
                 jobseekers: {
