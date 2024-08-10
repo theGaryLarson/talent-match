@@ -148,6 +148,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
         },
         select: {
             intro_headline:true,
+            video_url:true,
             current_job_title: true,
             current_enrolled_ed_program: true,
             current_grade_level: true,
@@ -193,6 +194,8 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                     isInternship: true,
                     isCurrentJob: true,
                     responsibilities: true,
+                    startDate:true,
+                    endDate:true
                 }
             },
             project_experiences: {

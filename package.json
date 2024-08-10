@@ -8,7 +8,8 @@
     "start": "next start",
     "seed": "node -r dotenv/config ./prisma/seed.mjs",
     "lint": "next lint",
-    "db-push": "prisma db push"
+    "db-push": "prisma db push",
+    "db-reset":"prisma migrate reset"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.1.0",
