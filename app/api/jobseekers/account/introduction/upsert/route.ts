@@ -3,6 +3,8 @@ import {PrismaClient} from '@prisma/client';
 import {JsIntroDTO, JsIntroPostDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import parsePhoneNumberFromString from "libphonenumber-js";
+import {formatPhoneE164} from "@/app/lib/utils";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -29,15 +31,8 @@ export async function POST(request: Request) {
             resumeUrl,
         } = body;
 
-        // TODO: fix: install and use libphonenumber-js to handle country codes.  There is a supported React Component as well.
-        // Clean the phoneNumber to remove special characters
-        const cleanedPhoneCountryCode = phoneCountryCode?.replace(/[-\s().]/g, '')
-        const cleanedPhoneNumber = phone?.replace(/[-\s().]/g, '');
+        const formattedPhone = formatPhoneE164(phoneCountryCode, phone)
 
-        // Format the phone number in E.164 format
-        const formattedPhone = `+${cleanedPhoneCountryCode}-${cleanedPhoneNumber}`;
-
-        // Transaction to ensure atomicity
         const result = await prisma.$transaction(async (prisma) => {
 
             // Upsert contact
@@ -137,8 +132,8 @@ export async function POST(request: Request) {
                 firstName: contact.first_name,
                 lastName: contact.last_name,
                 birthDate: contact.birthdate,
-                phoneCountryCode: cleanedPhoneCountryCode,
-                phone: cleanedPhoneNumber,
+                phoneCountryCode: contact.phone ? parsePhoneNumberFromString(contact.phone)?.countryCallingCode : null,
+                phone: contact.phone,
                 zipCode: contactAddress.zip,
                 state: contactAddress.state,
                 city: contactAddress.city,
