@@ -54,7 +54,7 @@ export default async function Page() {
        {/* <ArticleStub
         isPhotoFirst={true}
         imagesrc={
-          '/cfa_images/stock/people-using-digital-device-while-meeting 2.png'
+          '/cfa_images/stock/people-using-digital-device-while-meeting 2.jpg'
         }
       /> */}
     </main>
