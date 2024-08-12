@@ -96,34 +96,7 @@ export default function CreateJobseekerProfileIntroPage(){
             <legend>
               <h2>Basic info</h2>
             </legend>
-            {/* TODO: Quincy 
-              [X] Input Sizing:
-                  [X] fName=50%, lName=50%, 
-                  [X] bDate=done,
-                  [X] zip=50%, state=50%,
-                  [X] city=50%, county=50%,
-                  [*] email=done, (NOTE: field does not exist)
-                  [X] country=50%, phone=50%,
-                
-                  [X] headline=done,
-                  [X] school=done,
-                  [X] position=done,
-              [] Components:
-                  [X] InputTextWithLabel
-                  [X] SelectOptionsWithLabel
-                  [] Button
-                  [X] h1
-                  [X] h2
-              [X] Input Margin + Padding
-              [] Button spacing
-              [X] Title sizing
-              [X] Header bold
-              
-              [] Intro page, button previous => cancel
-              [] Add email field
-
-              REVIEW: 
-            */}
+            
             <div className="grid gap-6 my-3 md:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
               <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
@@ -475,8 +448,8 @@ export default function CreateJobseekerProfileIntroPage(){
               />
             </div>
           </fieldset>
-          <div className="flex">
-            <Button pill color="gray">Previous</Button>
+          <div className="flex justify-between my-4">
+            <Button pill color="gray">Cancel</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>
