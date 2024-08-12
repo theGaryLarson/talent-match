@@ -134,10 +134,9 @@ export default function CreateJobseekerProfileIntroPage(){
             </div>
             
             <div className="grid gap-6 my-6 md:grid-cols-2">
-              <InputTextWithLabel id="profile-creation-intro-zip-code" className="w-1/2" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
-                className="w-1/2"
                 onChange={handleFieldChange}
                 options={[
                   {label:"Alabama", value:"AL"},
@@ -201,7 +200,6 @@ export default function CreateJobseekerProfileIntroPage(){
             <div className="grid gap-6 my-6 md:grid-cols-2">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
-                className="w-1/2"
                 onChange={handleFieldChange}
                 options={[
                   {label:"Afghanistan +93", value:"Afghanistan +93"},
@@ -452,7 +450,7 @@ export default function CreateJobseekerProfileIntroPage(){
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-phone-number" className="w-1/2" type="tel" placeholder="Phone number" onChange={handleFieldChange} required>Phone Number *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} required>Phone Number *</InputTextWithLabel>
             </div>
           </fieldset>
           <fieldset>
