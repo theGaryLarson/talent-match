@@ -72,10 +72,10 @@ model companies {
 model company_addresses {
   company_address_id String         @id(clustered: false, map: "company_addresses_PRIMARY") @db.VarChar(36)
   company_id         String         @db.NVarChar(36)
-  city               String         @db.VarChar(255)
-  state              String         @db.VarChar(255)
+  city               String?        @db.VarChar(255)
+  state              String?        @db.VarChar(255)
   zip_region         String         @db.VarChar(10)
-  county             String         @db.VarChar(255)
+  county             String?        @db.VarChar(255)
   companies          companies      @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_address_company1")
   employers          employers[]
   job_postings       job_postings[]
@@ -114,9 +114,9 @@ model contact_addresses {
   contact_address_id String   @id(clustered: false, map: "contact_addresses_PRIMARY") @db.NVarChar(36)
   user_id            String   @unique @db.NVarChar(36)
   zip                String   @db.NVarChar(10)
-  state              String   @db.VarChar(255)
-  city               String   @db.VarChar(255)
-  county             String   @db.VarChar(255)
+  state              String?  @db.VarChar(255)
+  city               String?  @db.VarChar(255)
+  county             String?  @db.VarChar(255)
   contacts           contacts @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_address_contacts1")
 
   @@index([user_id], map: "contact_addresses_fk_address_contacts1_idx")
