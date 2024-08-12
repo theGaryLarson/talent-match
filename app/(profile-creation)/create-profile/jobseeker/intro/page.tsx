@@ -4,7 +4,7 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { RootState } from '@/lib/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '../../../../../lib/features/profileCreation/formSlice';
+import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
