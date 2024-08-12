@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-key */
 import { redirect } from 'next/navigation';
 import { signIn, auth, providerMap } from '@/auth';
-import { AuthError } from 'next-auth';
-import { NextResponse } from 'next/server';
 
 export default async function SignInPage() {
   return (
@@ -28,7 +26,6 @@ export default async function SignInPage() {
               // https://nextjs.org/docs/app/api-reference/functions/redirect#server-component
               throw error;
             }
-            NextResponse.redirect(new URL('/'));
           }}
         >
           <button type="submit">

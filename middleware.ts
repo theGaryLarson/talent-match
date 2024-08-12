@@ -3,13 +3,19 @@ import { NextResponse } from 'next/server';
 
 export default auth((req) => {
 
-  if (!req.auth && req.nextUrl.pathname !== "/login") {
+  if (!req.auth && req.nextUrl.pathname !== "/signin") {
     console.log("redirected to signin again");
-    const loginUrl = new URL("/login", req.nextUrl.origin);
+    const loginUrl = new URL("/signin", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
   }
 
-/** 
+  if (req.auth && req.nextUrl.pathname === "/signin") {
+    console.log("logged in, redirecting to dashboard");
+    const loginUrl = new URL("/", req.nextUrl.origin);
+    return NextResponse.redirect(loginUrl);
+  }
+
+/**
     // Allow navigation within employer or jobseeker paths
     if (userRole === "EMPLOYER" && req.nextUrl.pathname.startsWith("/services/employers/")) {
       return NextResponse.next();
@@ -31,10 +37,9 @@ export default auth((req) => {
         return NextResponse.redirect(jobseekerDashboardUrl);
       }
     }
-    
   }
   */
- }
+}
 
 );
 

@@ -1,11 +1,11 @@
-import { signOut } from '@/auth';
+import { signOut, auth } from '@/auth';
 
 export default function SignOutPage() {
   return (
     <div>
       <h5>Are you sure you want to sign out?</h5>
       <form
-        action={async (formData) => {
+        action={async () => {
           'use server';
           await signOut();
         }}
