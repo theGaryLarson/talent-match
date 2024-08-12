@@ -75,13 +75,13 @@ export default function CreateJobseekerProfileIntroPage(){
       <section className="w-full lg:w-3/5 pr-80">
         <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 1/6</p>
-        <h1>Intro</h1>
+        <h1 className="text-5xl my-2">Intro</h1>
         <p>* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Avatar</h2>
+              <h2 className="text-2xl my-3">Avatar</h2>
             </legend>
             <label className="flex">
               <Avatar rounded />
@@ -94,7 +94,7 @@ export default function CreateJobseekerProfileIntroPage(){
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Basic info</h2>
+              <h2 className="text-2xl my-3">Basic info</h2>
             </legend>
             {/* TODO: Quincy 
               [X] Input Sizing:
@@ -109,12 +109,12 @@ export default function CreateJobseekerProfileIntroPage(){
                   [X] school=done,
                   [X] position=done,
               [] Components:
-                  [.] InputTextWithLabel
-                  [.] SelectOptionsWithLabel
+                  [X] InputTextWithLabel
+                  [X] SelectOptionsWithLabel
                   [] Button
                   [] h1
                   [] h2
-              [.] Input Margin + Padding
+              [-] Input Margin + Padding
               [] Button spacing
               [] Title sizing
               [] Header bold
@@ -455,7 +455,7 @@ export default function CreateJobseekerProfileIntroPage(){
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Intro</h2>
+              <h2 className="text-2xl my-3">Intro</h2>
             </legend>            
             <div className="grid gap-6 my-6">
               <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
