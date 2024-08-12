@@ -76,8 +76,8 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
         const loadIntroPage: JsIntroDTO = {
             userId: contact.user_id,
             photoUrl: contact.photo_url,
-            firstName: contact.first_name,
-            lastName: contact.last_name,
+            firstName: contact?.first_name,
+            lastName: contact?.last_name,
             birthDate: contact.birthdate,
             phoneCountryCode: contact.phone ? parsePhoneNumberFromString(contact.phone)?.countryCallingCode : null,
             phone: contact.phone ? parsePhoneNumberFromString(contact.phone)?.number : null,
