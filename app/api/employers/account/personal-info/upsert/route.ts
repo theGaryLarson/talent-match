@@ -58,7 +58,7 @@ export async function POST(request: Request) {
             userId: upsertedEmployer.user_id,
             firstName: upsertedEmployer.first_name,
             lastName: upsertedEmployer.last_name,
-            birthDate: upsertedEmployer.birthdate.toISOString(),
+            birthDate: upsertedEmployer?.birthdate?.toISOString(),
             email: upsertedEmployer.email,
             phoneCountryCode: upsertedEmployer?.phone ? parsePhoneNumberFromString(upsertedEmployer.phone)?.countryCallingCode : null,
             phone: upsertedEmployer?.phone ? parsePhoneNumberFromString(upsertedEmployer.phone)?.number : null,
