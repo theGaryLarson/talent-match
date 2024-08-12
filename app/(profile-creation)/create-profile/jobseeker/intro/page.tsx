@@ -52,20 +52,53 @@ export default function CreateJobseekerProfileIntroPage(){
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     dispatch(submitForm());
-    router.push('/create-profile/jobseeker/education');
 
+    const birthDateValue = fields.find(f => f.id === 'profile-creation-intro-birth-date')?.value || null;
+    const birthDateISO = birthDateValue ? new Date(birthDateValue).toISOString() : null;
 
-    // Simulate a form submission
-    setTimeout(() => {
-      if (fields.every((field) => field.value !== '' && field.value !== 0)) {
-        dispatch(submitFormSuccess());
-      } else {
-        dispatch(submitFormFailure('All fields are required'));
+    // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
+    //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO
+    const formData = {
+          userId: 'USER_ID_FROM_SESSION_OR_AUTH',
+          photoUrl: fields.find(f => f.id === 'profile-creation-intro-avatar')?.value || null,
+          firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
+          lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
+          birthDate: birthDateISO,
+          phoneCountryCode: fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null,
+          phone: fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null,
+          zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
+          state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
+          city: '',
+          county: '',
+          email: 'USER_EMAIL_FROM_SESSION_OR_AUTH',
+          introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
+          currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
+          resumeUrl: fields.find(f => f.id === 'profile-creation-intro-resume')?.value || null,
+      };
+
+      try {
+          const response = await fetch('/api/jobseekers/account/introduction/upsert', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+              const result = await response.json();
+              dispatch(submitFormSuccess());
+              router.push('/create-profile/jobseeker/education');
+          } else {
+              const errorData = await response.json();
+              dispatch(submitFormFailure(errorData.error || 'Failed to submit the form'));
+          }
+      } catch (error) {
+          dispatch(submitFormFailure('Failed to submit the form'));
       }
-    }, 1000);
   };
 
   return(
