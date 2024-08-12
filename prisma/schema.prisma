@@ -125,9 +125,9 @@ model contact_addresses {
 model contacts {
   user_id            String               @id(clustered: false, map: "contacts_PRIMARY") @unique(map: "contacts_user_id_UNIQUE") @db.NVarChar(36)
   role               String               @db.VarChar(255)
-  first_name         String               @db.VarChar(255)
-  last_name          String               @db.VarChar(255)
-  birthdate          DateTime             @db.DateTime
+  first_name         String?              @db.VarChar(255)
+  last_name          String?              @db.VarChar(255)
+  birthdate          DateTime?            @db.DateTime
   email              String               @unique @db.VarChar(255)
   emailVerified      DateTime?            @map("email_verified") @db.DateTime
   phone              String?              @db.VarChar(16)

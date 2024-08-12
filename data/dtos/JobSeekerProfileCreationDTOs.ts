@@ -6,7 +6,7 @@ export type JsIntroDTO = {
     photoUrl?: string | null;
     firstName: string;
     lastName: string;
-    birthDate: string | Date;
+    birthDate?: string | Date | null;
     phoneCountryCode?: string | null;
     phone?: string | null;
     zipCode?: string | null;
