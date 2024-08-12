@@ -16,3 +16,11 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+h1 {
+  @apply text-5xl my-2;
+}
+
+h2 {
+  @apply text-2xl my-3;
+}
