@@ -4,8 +4,8 @@ import {WorkExperience} from "@prisma/client";
 export type JsIntroDTO = {
     userId: string,
     photoUrl?: string | null;
-    firstName: string;
-    lastName: string;
+    firstName?: string | null;
+    lastName?: string | null;
     birthDate?: string | Date | null;
     phoneCountryCode?: string | null;
     phone?: string | null;
