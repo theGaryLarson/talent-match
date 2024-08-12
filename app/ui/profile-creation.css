@@ -4,8 +4,20 @@
 
 h1 {
   @apply text-5xl my-2;
+
+  /* From Figma Properties */
+  /* font-size: 48px;
+  font-weight: 400;
+  line-height: 56.02px;
+  text-align: left; */
+
 }
 
 h2 {
-  @apply text-2xl my-3;
+  @apply text-2xl my-2;
+  /* From Figma Properties */
+  /* font-size: 24px;
+  font-weight: 400;
+  line-height: 32.02px;
+  text-align: left; */
 }
