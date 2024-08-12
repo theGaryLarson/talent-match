@@ -112,12 +112,12 @@ export default function CreateJobseekerProfileIntroPage(){
                   [X] InputTextWithLabel
                   [X] SelectOptionsWithLabel
                   [] Button
-                  [] h1
-                  [] h2
-              [-] Input Margin + Padding
+                  [X] h1
+                  [X] h2
+              [X] Input Margin + Padding
               [] Button spacing
-              [] Title sizing
-              [] Header bold
+              [X] Title sizing
+              [X] Header bold
               
               [] Intro page, button previous => cancel
               [] Add email field
@@ -197,6 +197,10 @@ export default function CreateJobseekerProfileIntroPage(){
               </SelectOptionsWithLabel>
             </div>
             
+            <div className="grid gap-6 my-6">
+              <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" required>Email *</InputTextWithLabel>
+            </div>
+
             <div className="grid gap-6 my-6 md:grid-cols-2">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
