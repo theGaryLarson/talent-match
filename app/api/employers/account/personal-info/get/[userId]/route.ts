@@ -27,7 +27,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
             userId: empPersonalInfo.user_id,
             firstName: empPersonalInfo?.first_name,
             lastName: empPersonalInfo?.last_name,
-            birthDate: empPersonalInfo?.birthdate.toISOString(),
+            birthDate: empPersonalInfo?.birthdate?.toISOString(),
             email: empPersonalInfo?.email,
             phoneCountryCode: empPersonalInfo?.phone ? parsePhoneNumberFromString(empPersonalInfo.phone)?.countryCallingCode : null,
             phone: empPersonalInfo?.phone,
