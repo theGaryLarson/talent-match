@@ -20,8 +20,8 @@ export async function POST(request: Request) {
         const data = await prisma.contacts.create({
             data: {
                 user_id: uuidv4(),
-                first_name: firstName, // fixme: may need to be made optional depending on the data from oauth
-                last_name: lastName, // fixme: may need to be made optional depending on the data from oauth
+                first_name: firstName,
+                last_name: lastName,
                 email: email,
                 role: roles[0].toUpperCase().trim(), // fixme: modify database to handle multiple roles.
                 createdAt: new Date(),
