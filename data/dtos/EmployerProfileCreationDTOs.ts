@@ -50,17 +50,21 @@ export type CompanyInfoSummaryDTO = {
 
 export type ReadAddressDTO = {
     addressId?: string,
-    city?: string,
-    state?: string,
-    zipCode?: string,
-    county?: string,
+    city?: string | null,
+    state?: string | null,
+    zipCode?: string | null,
+    county?: string | null,
+    lat?: string | null,
+    lon?: string | null,
 }
 
 export type PostAddressDTO = {
     city: string,
-    state: string,
+    state?: string,
     zipCode: string,
-    county: string,
+    county?: string  | null,
+    lat?: number | null,
+    lon?: number | null,
 }
 
 export type PostCompanyInfoDTO = {
