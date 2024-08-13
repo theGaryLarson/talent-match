@@ -14,7 +14,7 @@ export async function GET(request: Request, {params}: {params: {email: string}})
                 email: email,
             },
             select: {
-                user_id: true,
+                id: true,
                 role: true,
                 jobseekers: {
                     select: {
@@ -35,13 +35,13 @@ export async function GET(request: Request, {params}: {params: {email: string}})
                 }
             }
         });
-        if (!data?.user_id) {
+        if (!data?.id) {
             return NextResponse.json({success: false, error: `User not found.`}, {status: 404})
         }
         const roles: Role[] = [];
             roles.push(data.role.toUpperCase() as Role)
         const result: ReadUserInfoDTO  = {
-            userId: data.user_id,
+            userId: data.id,
             roles: roles,
             jobseekerId: data.jobseekers?.[0]?.jobseeker_id || null,
             employerId: data.employers?.[0]?.employer_id || null,
