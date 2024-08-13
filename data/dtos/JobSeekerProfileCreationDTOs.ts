@@ -156,9 +156,9 @@ export type JsDisclosuresDTO = {
     jobseekerId?: string | null, // jsDetails
     isVeteran?: string | null, // privateDetails
     hasDisability?: string | null, // privateDetails
-    gender?: string | null, // contacts.gender
-    race?: string | null, //contacts.race
-    hasReadTerms: boolean //contacts.has_read_terms
+    gender?: string | null, // users.gender
+    race?: string | null, //users.race
+    hasReadTerms: boolean //users.has_read_terms
 
 }
 
@@ -166,8 +166,8 @@ export type JsDisclosuresPostDTO = {
     userId: string,
     isVeteran: string, // jobseekers[0].jobseekers_private_data[0].is_veteran
     hasDisability: string, // jobseekers[0].jobseekers_private_data[0].has_disability
-    gender: string, // contacts.gender
-    race: string, //contacts.race
-    hasReadTerms: boolean //contacts.has_read_terms
+    gender: string, // users.gender
+    race: string, //users.race
+    hasReadTerms: boolean //users.has_read_terms
 
 }
