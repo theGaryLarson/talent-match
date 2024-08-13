@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
         if(!userId) {
             return NextResponse.json({success:false, error: `A uuidv4 userId is required.`}, {status: 400})
         }
-        const empPersonalInfo = await prisma.contacts.findUnique({
+        const empPersonalInfo = await prisma.users.findUnique({
             where: {
                 user_id: userId
             }
