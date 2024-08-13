@@ -767,12 +767,12 @@ const racesAndEthnicities = [
 
 
 ///////        Employer Data      ///////////////
-async function seedContacts(numContacts = 4) {
-    console.log('Seeding Contacts...')
-    if (numContacts <= 4) {
-        for (let idx = 0; idx < numContacts; idx++) {
+async function seedUsers(numUsers = 4) {
+    console.log('Seeding Users...')
+    if (numUsers <= 4) {
+        for (let idx = 0; idx < numUsers; idx++) {
             // const hashedPassword = await bcryptjs.hash(user.password, 10);
-            await prisma.contacts.create({
+            await prisma.users.create({
                 data: {
                     user_id: uuidv4(),
                     first_name: users[idx].firstName,
@@ -790,10 +790,10 @@ async function seedContacts(numContacts = 4) {
             });
         }
     } else {
-        for (let idx = 0; idx < numContacts; idx++) {
+        for (let idx = 0; idx < numUsers; idx++) {
             const fName = faker.person.firstName();
             const lName = faker.person.lastName();
-            await prisma.contacts.create({
+            await prisma.users.create({
                 data: {
                     user_id: uuidv4(),
                     first_name: fName,
@@ -810,18 +810,18 @@ async function seedContacts(numContacts = 4) {
             });
         }
     }
-    console.log(`Seeded ${numContacts} contacts.\n`)
+    console.log(`Seeded ${numUsers} users.\n`)
 }
 
-async function seedContactAddresses() {
-    console.log(`Seeding Contact Addresses...`)
-    const contacts = await prisma.contacts.findMany();
-    for (const contact of contacts) {
+async function seedUserAddresses() {
+    console.log(`Seeding User Addresses...`)
+    const users = await prisma.users.findMany();
+    for (const user of users) {
         const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
-        await prisma.contact_addresses.create({
+        await prisma.user_addresses.create({
             data: {
-                contact_address_id: uuidv4(),
-                user_id: contact.user_id,
+                user_address_id: uuidv4(),
+                user_id: user.user_id,
                 zip: faker.helpers.arrayElement(regionInfo.zipCodes),
                 state: 'WA',
                 city: faker.location.city(),
@@ -830,7 +830,7 @@ async function seedContactAddresses() {
             }
         })
     }
-    console.log(`Seeded ${contacts.length} Contact Addresses.\n`)
+    console.log(`Seeded ${users.length} User Addresses.\n`)
 }
 
 async function seedPathways() {
@@ -992,7 +992,7 @@ async function seedSkills() {
 }
 
 async function seedJobSeekers() {
-    const jobSeekers = await prisma.contacts.findMany({
+    const jobSeekers = await prisma.users.findMany({
         where: {
             role: 'JOBSEEKER',
         }
@@ -1355,7 +1355,7 @@ async function seedEmployers() {
             company_id: true,
         }
     });
-    const employers = await prisma.contacts.findMany({
+    const employers = await prisma.users.findMany({
         where: {
             role: 'EMPLOYER',
         }
@@ -1538,8 +1538,8 @@ async function main() {
     await seedSubcategories();
     await seedSkills();
     await seedSocialMediaPlatforms();
-    await seedContacts(500);
-    await seedContactAddresses();
+    await seedUsers(500);
+    await seedUserAddresses();
     await seedEduInstitutions();
     await SeedEduAddresses();
     await seedJobSeekers();
