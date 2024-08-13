@@ -795,7 +795,7 @@ async function seedUsers(numUsers = 4) {
             const lName = faker.person.lastName();
             await prisma.users.create({
                 data: {
-                    user_id: uuidv4(),
+                    id: uuidv4(),
                     first_name: fName,
                     last_name: lName,
                     birthdate: faker.date.birthdate({min: 18, max: 65, mode: "age"}),
@@ -821,7 +821,7 @@ async function seedUserAddresses() {
         await prisma.user_addresses.create({
             data: {
                 user_address_id: uuidv4(),
-                user_id: user.user_id,
+                user_id: user.id,
                 zip: faker.helpers.arrayElement(regionInfo.zipCodes),
                 state: 'WA',
                 city: faker.location.city(),
@@ -1015,7 +1015,7 @@ async function seedJobSeekers() {
         }
         const jobSeekerData = {
             jobseeker_id: uuidv4(),
-            user_id: jobSeeker.user_id,
+            user_id: jobSeeker.id,
             targeted_pathway: faker.helpers.arrayElement(pathways).pathway_id,
             is_enrolled_ed_program: isEnrolledEdProgram,
             highest_level_of_study_completed: faker.helpers.arrayElement(['None', 'High School', 'Certification', 'Associate\'s Degree', 'Bachelor\'s Degree', 'Master\'s Degree', 'Doctoral Degree']),
@@ -1364,7 +1364,7 @@ async function seedEmployers() {
         await prisma.employers.create({
             data: {
                 employer_id: uuidv4(),
-                user_id: e.user_id,
+                user_id: e.id,
                 company_id: faker.helpers.arrayElement(companies).company_id,
                 job_title: faker.person.jobTitle(),
                 work_address_id: null,
