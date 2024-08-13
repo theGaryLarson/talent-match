@@ -24,7 +24,7 @@ export async function POST(request: Request) {
         } = body;
 
         const formattedPhone = formatPhoneE164(phoneCountryCode, phone)
-        const upsertedEmployer = await prisma.contacts.upsert({
+        const upsertedEmployer = await prisma.users.upsert({
             where: {
                 user_id: userId
             },
