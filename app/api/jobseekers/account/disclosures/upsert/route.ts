@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
         const user = await prisma.users.update({
             where: {
-                user_id: userId
+                id: userId
             },
             data: {
                 gender: gender,
