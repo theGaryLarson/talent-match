@@ -128,10 +128,7 @@ export type EducationInfoDTO = {
 export type JsEducationDTO = {
     userId: string,
     highestLevelOfStudy: DegreeType;
-    currentEdProgram: EdProgram // college, high school, etc.
-    currentGrade: SchoolGradeLevel;
-    isEnrolledEdProgram: boolean;
-    schools: EducationInfoDTO[];
+    educations: EducationInfoDTO[];
     certifications: CertDTO[];
     projects: ProjectExpDTO[];
 }

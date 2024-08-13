@@ -186,11 +186,8 @@ export default function CreateJobseekerProfileEducationPage() {
 
         const formData: JsEducationDTO = {
             userId: debugUserId, // fixme: access user id from state management
-            currentEdProgram: EdProgram.College,
             highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
-            currentGrade: SchoolGradeLevel.Junior,
-            isEnrolledEdProgram: true,
-            schools: mockSchools,
+            educations: mockSchools,
             certifications: mockCertifications,
             projects: mockProjects,
         };

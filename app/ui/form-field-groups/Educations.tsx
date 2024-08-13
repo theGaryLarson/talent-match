@@ -159,7 +159,7 @@ export default memo(function Licenses({
                     placeholder="School name"
                     onChange={(e) => handleChange(index, classInstitutionName, e.target.value)}
                     required
-                    newselectedOption={education[classInstitutionName]}
+                    value={education[classInstitutionName]}
                 >
                     What is your school? *
                 </SelectOptionsWithLabel>
@@ -207,7 +207,7 @@ export default memo(function Licenses({
                     placeholder="Please select your current grade"
                     onChange={(e) => handleChange(index, classGradeLevel, e.target.value)}
                     required
-                    newselectedOption={education[classGradeLevel]?.toString()}
+                    value={education[classGradeLevel]?.toString()}
                 >
                     What is your grade? *
                 </SelectOptionsWithLabel>
@@ -237,7 +237,7 @@ export default memo(function Licenses({
                     placeholder="School name"
                     onChange={(e) => handleChange(index, classInstitutionName, e.target.value)}
                     required
-                    newselectedOption={education[classInstitutionName]}
+                    value={education[classInstitutionName]}
                 >
                     What is your school? *
                 </SelectOptionsWithLabel>
@@ -252,7 +252,7 @@ export default memo(function Licenses({
                     placeholder="Program"
                     onChange={(e) => handleChange(index, classProgramType, e.target.value)}
                     required
-                    newselectedOption={education[classProgramType]}
+                    value={education[classProgramType]}
                 >
                     What is your program? *
                 </SelectOptionsWithLabel>
@@ -267,7 +267,7 @@ export default memo(function Licenses({
                     placeholder="Degree type"
                     onChange={(e) => handleChange(index, classDegreeType, e.target.value)}
                     required
-                    newselectedOption={education[classDegreeType]}
+                    value={education[classDegreeType]}
                 >
                     What is your degree type? *
                 </SelectOptionsWithLabel>
@@ -315,7 +315,7 @@ export default memo(function Licenses({
                     placeholder="Please select your current grade"
                     onChange={(e) => handleChange(index, classGradeLevel, e.target.value)}
                     required
-                    newselectedOption={education[classGradeLevel]?.toString()}
+                    value={education[classGradeLevel]?.toString()}
                 >
                     What is your grade? *
                 </SelectOptionsWithLabel>
@@ -392,7 +392,7 @@ export default memo(function Licenses({
                     placeholder="Education system"
                     onChange={(e) => handleChange(index, classEdSystem, e.target.value)}
                     required
-                    newselectedOption={education[classEdSystem]?.toString()}
+                    value={education[classEdSystem]?.toString()}
                 >
                     What is your education system? *
                 </SelectOptionsWithLabel>
@@ -407,7 +407,7 @@ export default memo(function Licenses({
                     placeholder="Program"
                     onChange={(e) => handleChange(index, classProgramType, e.target.value)}
                     required
-                    newselectedOption={education[classProgramType]}
+                    value={education[classProgramType]}
                 >
                     What is your program? *
                 </SelectOptionsWithLabel>
@@ -458,7 +458,7 @@ export default memo(function Licenses({
                     placeholder="Please select your current grade"
                     onChange={(e) => handleChange(index, classPreALevel, e.target.value)}
                     required
-                    newselectedOption={education[classPreALevel]?.toString()}
+                    value={education[classPreALevel]?.toString()}
                 >
                     What is your grade? *
                 </SelectOptionsWithLabel>
