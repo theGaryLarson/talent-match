@@ -38,7 +38,7 @@ model cfa_admin {
   admin_id  String      @id(clustered: false, map: "cfa_admin_PRIMARY") @db.NVarChar(36)
   user_id   String      @db.NVarChar(36)
   case_mgmt case_mgmt[]
-  contacts  contacts    @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_admin_contacts1")
+  users     users       @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_admin_contacts1")
 
   @@index([user_id], map: "cfa_admin_fk_admin_contacts1_idx")
 }
@@ -110,19 +110,19 @@ model company_testimonials {
   @@index([company_id], map: "fk_company_testimonials_company1_idx")
 }
 
-model contact_addresses {
-  contact_address_id String   @id(clustered: false, map: "contact_addresses_PRIMARY") @db.NVarChar(36)
-  user_id            String   @unique @db.NVarChar(36)
-  zip                String   @db.NVarChar(10)
-  state              String?  @db.VarChar(255)
-  city               String?  @db.VarChar(255)
-  county             String?  @db.VarChar(255)
-  contacts           contacts @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_address_contacts1")
+model user_addresses {
+  user_address_id String  @id(clustered: false, map: "contact_addresses_PRIMARY") @db.NVarChar(36)
+  user_id         String  @unique @db.NVarChar(36)
+  zip             String  @db.NVarChar(10)
+  state           String? @db.VarChar(255)
+  city            String? @db.VarChar(255)
+  county          String? @db.VarChar(255)
+  users           users   @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_address_contacts1")
 
   @@index([user_id], map: "contact_addresses_fk_address_contacts1_idx")
 }
 
-model contacts {
+model users {
   user_id            String               @id(clustered: false, map: "contacts_PRIMARY") @unique(map: "contacts_user_id_UNIQUE") @db.NVarChar(36)
   role               String               @db.VarChar(255)
   first_name         String?              @db.VarChar(255)
@@ -138,7 +138,7 @@ model contacts {
   createdAt          DateTime             @map("created_at") @db.DateTime
   updatedAt          DateTime?            @map("updated_at") @db.DateTime
   cfa_admin          cfa_admin[]
-  contact_addresses  contact_addresses[]
+  user_addresses     user_addresses[]
   educators          educators[]
   employers          employers[]
   jobseekers         jobseekers[]
@@ -174,7 +174,7 @@ model educators {
   educator_id        String           @id(clustered: false, map: "educators_PRIMARY") @db.NVarChar(36)
   user_id            String           @db.NVarChar(36)
   edu_institution_id String           @db.NVarChar(36)
-  contacts           contacts         @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_educators_contacts1")
+  users              users            @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_educators_contacts1")
   edu_institutions   edu_institutions @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_educators_edu_institution1")
 
   @@index([user_id], map: "fk_educators_contacts1_idx")
@@ -189,7 +189,7 @@ model employers {
   work_address_id      String?                @db.VarChar(36)
   linkedin_url         String?                @db.VarChar(255)
   is_verified_employee Boolean                @default(false, map: "DF__employers__is_verified") @db.Bit
-  contacts             contacts               @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_employer_user1")
+  users                users                  @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_employer_user1")
   companies            companies?             @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")
   company_addresses    company_addresses?     @relation(fields: [work_address_id], references: [company_address_id], onUpdate: NoAction, map: "fk_employers_company_addresses")
   job_postings         job_postings[]
@@ -282,7 +282,7 @@ model jobseekers {
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
   pathways                           pathways?                            @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
-  contacts                           contacts                             @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_learner_user1")
+  users                              users                                @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_learner_user1")
   jobseekers_private_data            jobseekers_private_data[]
   jobseekers_skill_gap_data          jobseekers_skill_gap_data[]
   learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
@@ -490,14 +490,6 @@ model technology_areas {
   work_experiences   WorkExperience[]
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model timestamps {
-  create_time DateTime? @default(now(), map: "DF__timestamp__creat__2739D489") @db.DateTime
-  update_time DateTime? @db.DateTime
-
-  @@ignore
-}
-
 model training_program_has_skills {
   training_program_id String            @db.NVarChar(36)
   skill_id            String            @db.NVarChar(36)
@@ -527,7 +519,7 @@ model training_providers {
   edu_institution_id   String              @db.NVarChar(36)
   training_programs    training_programs[]
   edu_institutions     edu_institutions    @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_training_provider_edu_institution1")
-  contacts             contacts            @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_training_provider_user1")
+  users                users               @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_training_provider_user1")
 
   @@index([edu_institution_id], map: "training_providers_fk_training_provider_edu_institution1_idx")
   @@index([user_id], map: "training_providers_fk_training_provider_user1_idx")
@@ -549,7 +541,7 @@ model volunteers {
   user_id              String                 @db.NVarChar(36)
   volunteer_type       String                 @db.NVarChar(255)
   volunteer_has_skills volunteer_has_skills[]
-  contacts             contacts               @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_mentor_user1")
+  users                users                  @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_mentor_user1")
 
   @@index([user_id], map: "volunteers_fk_mentor_user1_idx")
 }
