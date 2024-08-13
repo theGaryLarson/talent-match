@@ -164,21 +164,21 @@ const techEdMajors = [
 ];
 
 const itOccupationTechnologyAreas = [
-    { id: "364dc5b4-0e7a-41ca-b247-bb72341f777f", name: "Cybersecurity" },
-    { id: "37152daa-90cc-4b7d-93ad-c4a4907339d8", name: "Cloud Computing" },
-    { id: "3d17ad59-8f41-4a40-ba3a-7ee2483c8bf3", name: "Data Science" },
-    { id: "d4e5f6g7-h8i9-10jk-11lmn-12opab2c3d3", name: "Artificial Intelligence" },
-    { id: "47a735e5-f1c6-47b9-ae26-1146dcc0a8d7", name: "Network Administration" },
-    { id: "4c376b09-38e2-4278-b70b-975837c43fe5", name: "Software Development" },
-    { id: "5e722521-153b-4f81-8687-2a4cfa438ffe", name: "Database Management" },
-    { id: "683b1693-742f-44a7-8f58-0c9d7c34936a", name: "DevOps" },
-    { id: "7acd2248-a2c3-4789-b414-a2463b75997a", name: "Web Development" },
-    { id: "9fef823b-2e49-49bf-a515-ce1da3a13936", name: "Mobile App Development" },
-    { id: "a2b84270-ff5f-47b6-a14b-cd52a0120d98", name: "IT Support" },
-    { id: "a90ef5fd-5705-495c-ac07-58ccec1186a8", name: "System Analysis" },
-    { id: "ae4c1d99-1da5-4a50-9004-2dff45781862", name: "IT Project Management" },
-    { id: "bfdd9b1f-6e60-4816-a71e-b37ba292cfa4", name: "Machine Learning" },
-    { id: "eb419696-1c1d-4c73-8513-b7a82397c5ca", name: "Big Data Analytics" }
+    { id: "f18b7623-60ba-4a5b-a0a4-6cb588bdf6db", name: "Cybersecurity" },
+    { id: "7e3b01fc-7c6a-4baf-b755-e47b07ad9191", name: "Cloud Computing" },
+    { id: "48d5b1e9-2f36-4c2a-89bb-3b6b063fdd77", name: "Data Science" },
+    { id: "92ad3c59-62e6-4e84-b908-f3f4c8b089be", name: "Artificial Intelligence" },
+    { id: "ad4f37e4-6e7f-4110-aba3-6dd591e4d733", name: "Network Administration" },
+    { id: "b77c5d72-2d8a-47e5-a13d-5d7a7893be09", name: "Software Development" },
+    { id: "a7c1a1a1-e07e-43b8-a8eb-59b80f5c7a99", name: "Database Management" },
+    { id: "4b303f74-d3f1-4c25-9e32-3cc585b47814", name: "DevOps" },
+    { id: "d2560874-32d3-4bc4-a5da-7b2b0dba62a0", name: "Web Development" },
+    { id: "1e7ec76f-4b90-47d7-b9b1-d9ac38fd8d63", name: "Mobile App Development" },
+    { id: "7634a5fb-2398-4657-aab5-203c1fc84168", name: "IT Support" },
+    { id: "907a2f50-becb-472f-b045-03f22cc92611", name: "System Analysis" },
+    { id: "7f61d839-d63a-44d7-8ef9-45726f401f16", name: "IT Project Management" },
+    { id: "c4d5c8a8-79d2-4429-960b-4991f1175462", name: "Machine Learning" },
+    { id: "dd832f38-9020-42f7-b59c-fb39f9a4b28f", name: "Big Data Analytics" }
 ];
 
 const predefinedResponsibilities = [
