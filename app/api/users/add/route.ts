@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 
         const data = await prisma.users.create({
             data: {
-                user_id: uuidv4(),
+                id: uuidv4(),
                 first_name: firstName,
                 last_name: lastName,
                 email: email,
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
                 createdAt: new Date(),
             },
             select: {
-                user_id: true,
+                id: true,
                 role: true,
                 jobseekers: {
                     select: {
@@ -48,13 +48,13 @@ export async function POST(request: Request) {
                 }
             }
         });
-        if (!data?.user_id) {
+        if (!data?.id) {
             return NextResponse.json({success: false, error: `User not found.`}, {status: 404})
         }
         const responseRoles: Role[] = [];
         responseRoles.push(data.role.toUpperCase() as Role)
         const result: ReadUserInfoDTO = {
-            userId: data.user_id,
+            userId: data.id,
             roles: responseRoles,
             jobseekerId: data.jobseekers?.[0]?.jobseeker_id || null,
             employerId: data.employers?.[0]?.employer_id || null,
