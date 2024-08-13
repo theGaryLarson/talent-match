@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         }
         const jobseekerId = jobseekerRecord.jobseeker_id
 
-        const contact = await prisma.contacts.update({
+        const user = await prisma.users.update({
             where: {
                 user_id: userId
             },
@@ -84,14 +84,14 @@ export async function POST(request: Request) {
             }
         });
 
-        const {jobseekers, gender: contactGender, has_agreed_terms, race: contactRace} = contact;
+        const {jobseekers, gender: userGender, has_agreed_terms, race: userRace} = user;
         const jobseekerDetails = jobseekers?.[0] || {};
         const privateDetails = jobseekerDetails.jobseekers_private_data?.[0] || {};
 
         const result: JsDisclosuresDTO = {
             jobseekerId: jobseekerDetails.jobseeker_id || null,
-            gender: contactGender || null,
-            race: contactRace || null,
+            gender: userGender || null,
+            race: userRace || null,
             hasReadTerms: has_agreed_terms || false,
             isVeteran: privateDetails.is_veteran || null,
             hasDisability: privateDetails.has_disability || null
