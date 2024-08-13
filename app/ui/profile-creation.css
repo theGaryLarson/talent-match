@@ -21,3 +21,11 @@ h2 {
   line-height: 32.02px;
   text-align: left; */
 }
+
+.profile-form-aside {
+  @apply hidden xl:w-2/5 lg:block xl:pl-80;
+}
+
+.profile-form-section {
+  @apply w-full xl:w-3/5 p-5 xl:pr-80;
+}

@@ -70,9 +70,9 @@ export default function CreateJobseekerProfileIntroPage(){
 
   return(
     <main className="flex">
-      <aside className="hidden lg:w-2/5 lg:block pl-80">
+      <aside className="profile-form-aside">
       </aside>
-      <section className="w-full lg:w-3/5 pr-80">
+      <section className="profile-form-section">
         <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 1/6</p>
         <h1>Intro</h1>
