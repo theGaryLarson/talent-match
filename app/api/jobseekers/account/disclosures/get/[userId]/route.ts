@@ -15,7 +15,7 @@ export async function GET(request: Request, {params}: {params: { userId: string 
 
         const user = await prisma.users.findUnique({
             where: {
-                user_id: userId
+                id: userId
             },
             select: {
                 jobseekers: {
