@@ -10,6 +10,8 @@ import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import { Avatar, Button, Progress } from "flowbite-react";
+import {formatPhoneE164} from "@/app/lib/utils";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
@@ -59,6 +61,10 @@ export default function CreateJobseekerProfileIntroPage(){
     const birthDateValue = fields.find(f => f.id === 'profile-creation-intro-birth-date')?.value || null;
     const birthDateISO = birthDateValue ? new Date(birthDateValue).toISOString() : null;
 
+    const countryCode = fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null;
+    const ph = fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null;
+     const formattedPhone = formatPhoneE164(countryCode?.toString(), ph?.toString())
+
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO
     const formData = {
@@ -67,8 +73,8 @@ export default function CreateJobseekerProfileIntroPage(){
           firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
           lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
           birthDate: birthDateISO,
-          phoneCountryCode: fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null,
-          phone: fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null,
+          phoneCountryCode: formattedPhone ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode : null,
+          phone: formattedPhone,
           zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
           state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
           city: '',
