@@ -3,22 +3,23 @@ import Autocomplete, { AutocompleteChangeDetails, AutocompleteChangeReason } fro
 import TextField from '@mui/material/TextField';
 import { debounce } from '@mui/material/utils';
 
-interface CachedFetches {
-  [name: string]: string[];
+interface CachedFetches<ValueType> {
+  [searchTerms: string]: ValueType[];
 }
 
-interface Props {
+interface Props<ValueType> {
   apiSearchRoute: string,
   fieldLabel: string,
   id?: string | undefined,
   maxTags?: number,
   noResultsText?: string | undefined,
-  onChange?: ((event: SyntheticEvent<Element, Event>, value: string[], reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<string> | undefined) => void) | undefined,
+  onChange?: ((event: SyntheticEvent<Element, Event>, value: ValueType[], reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<ValueType> | undefined) => void) | undefined,
   searchingText?: string | undefined,
   searchPlaceholder: string,
+  getOptionLabel: ((option: ValueType) => string) | undefined
 }
 
-export default function TagsWithAutocomplete({
+export default function TagsWithAutocomplete<ValueType>({
   apiSearchRoute,
   fieldLabel,
   id,
@@ -27,15 +28,16 @@ export default function TagsWithAutocomplete({
   onChange,
   searchingText,
   searchPlaceholder,
-}:Props) {
-  const [options, setOptions] = useState<string[]>([]);
+  getOptionLabel,
+}:Props<ValueType>) {
+  const [options, setOptions] = useState<ValueType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<ValueType[]>([]);
 
   const handleInputChange = useMemo(
     () => {
-      const cachedFetches:CachedFetches = {
-        "": []
+      const cachedFetches:CachedFetches<ValueType> = {
+        "": [] // Shows nothing when there is no search terms in the input box
       };
       
       return debounce(
@@ -47,17 +49,8 @@ export default function TagsWithAutocomplete({
             else if (newInputValue.length !== 0) {
               setLoading(true);
               const response = await fetch(`${apiSearchRoute}${encodeURIComponent(newInputValue)}`);
-              const data:string[] = await response.json();
+              const data:ValueType[] = await response.json();
               cachedFetches[newInputValue] = data; // Cache the fetch data
-
-              // Add new results into cached all results
-              if (data.length !== 0) {
-                const allResults = new Set(cachedFetches[""]);
-                for (let newResult of data) {
-                  allResults.add(newResult);
-                }
-                cachedFetches[""] = Array.from(allResults);
-              }
 
               setOptions(data); // Update the options with fetched data
               setLoading(false);
@@ -74,7 +67,6 @@ export default function TagsWithAutocomplete({
 
   return (
     <Autocomplete
-      defaultValue={[]}
       filterSelectedOptions
       id={id}
       loading={loading}
@@ -93,7 +85,7 @@ export default function TagsWithAutocomplete({
         }
       }}
       onInputChange={handleInputChange}
-      options={options}
+      options={(loading)? [] : options}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -104,12 +96,13 @@ export default function TagsWithAutocomplete({
               if (ev.repeat && ev.key === "Backspace" && (ev.target as HTMLInputElement).value === "") {
                 ev.stopPropagation();
               }
-            },
-          }}    
+            }
+          }}
           label={fieldLabel}
           placeholder={searchPlaceholder}
         />
       )}
+      getOptionLabel={getOptionLabel}
       value={selectedTags}
     />
   );

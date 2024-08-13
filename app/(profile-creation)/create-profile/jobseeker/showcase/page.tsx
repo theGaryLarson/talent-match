@@ -1,14 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, {useState} from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import Button from '@mui/material/Button';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import TextFieldWithSeparatedLabel from '@/app/ui/components/mui/TextFieldWithSeparatedLabel';
 import TextFieldWithNoLabel from '@/app/ui/components/mui/TextFieldWithNoLabel';
+import { SkillDTO } from '@/data/dtos/SkillDTO';
 
 
 export default function CreateJobseekerProfileShowcasePage(){
+  const [skills, setSkills] = useState<SkillDTO[]>([]);
+
   return(
     <main className="flex">
       <aside className="hidden lg:w-2/5 lg:block">
@@ -30,8 +33,9 @@ export default function CreateJobseekerProfileShowcasePage(){
               maxTags={5}
               searchingText="Searching..."
               noResultsText="No skills found..."
-              onChange={function(ev, val){ console.log(val); }}
+              onChange={function(ev, val){ setSkills(val) }}
               searchPlaceholder="Skill (ex: Java)"
+              getOptionLabel={(option:SkillDTO) => option.skill_name}
             />
             <p>Select your top 5 skills from your skills list</p>
 
