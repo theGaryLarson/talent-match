@@ -9,7 +9,7 @@ export async function getUser(email?: string | null): Promise<User | null> {
   console.log('getUser called with email:', email);
   if (email) {
     try {
-      const user = await prisma.contacts.findUnique({
+      const user = await prisma.users.findUnique({
         where: { email },
       });
       const emailVerification = user?.emailVerified ? user.emailVerified.toISOString() : null;
@@ -39,7 +39,7 @@ export async function getUserRole(email?: string | null): Promise<string | null>
   console.log('getUserRole called with email:', email);
   if (email) {
     try {
-      const user = await prisma.contacts.findUnique({
+      const user = await prisma.users.findUnique({
         where: { email },
       });
 
