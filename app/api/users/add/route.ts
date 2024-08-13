@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         } = body;
 
 
-        const data = await prisma.contacts.create({
+        const data = await prisma.users.create({
             data: {
                 user_id: uuidv4(),
                 first_name: firstName,
