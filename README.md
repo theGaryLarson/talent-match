@@ -2,6 +2,11 @@
 
 This repository contains the source code for the Washington Tech Workforce Coalition Tech Talent Showcase website, built with Next.js and Prisma ORM, styled with TailwindCSS. This application helps match employers with jobseekers in the tech industry.
 
+## Reference Designs
+
+- [Jobseeker-UX](https://www.figma.com/design/D8OaFqKB4FSBHTnSHo2rOj/Jobseeker-UX)
+- [Employer-Flow--MVP](https://www.figma.com/design/3e9rrmhTrz37hLaEiNmpIZ/Employer-Flow---MVP)
+
 ## Prerequisites
 
 - Node.js >= 18.17.0
