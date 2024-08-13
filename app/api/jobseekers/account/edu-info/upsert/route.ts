@@ -8,7 +8,7 @@ import {
 } from '@prisma/client';
 import {
     CertDTO,
-    CurrentGrade,
+    SchoolGradeLevel,
     DegreeType,
     EdProgram,
     EducationInfoDTO,
@@ -377,7 +377,7 @@ export async function POST(request: Request) {
                 userId: upsertedJobseeker.user_id,
                 currentEdProgram: mapToEnum(upsertedJobseeker.current_enrolled_ed_program ?? "None", EdProgram),
                 highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed ?? "None", DegreeType),
-                currentGrade: mapToEnum(upsertedJobseeker.current_grade_level ?? "None", CurrentGrade),
+                currentGrade: mapToEnum(upsertedJobseeker.current_grade_level ?? "None", SchoolGradeLevel),
                 isEnrolledEdProgram: upsertedJobseeker.is_enrolled_ed_program,
                 schools: mappedEdHistory,
                 certifications: mappedCerts,

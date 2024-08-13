@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 interface Props {
   children: React.ReactNode,
@@ -7,9 +7,8 @@ interface Props {
   className?: string,
   placeholder?: string,
   required?: boolean,
-  defaultOption?: string,
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void,
-  newselectedOption?: string
+  value?: string
 }
 
 export default function SelectOptionsWithLabel({
@@ -19,22 +18,18 @@ export default function SelectOptionsWithLabel({
   className="",
   placeholder="",
   required=false,
-  defaultOption="", // placeholder overwrites default option being selected
   onChange,
-  newselectedOption,
+  value,
 }: Props){
+  const [internalValue, setInternalValue] = useState("");
+
   return (
     <div className={"relative " + className}>
       <select
         id={id}
         name={id}
-        onChange={onChange}
-        value={newselectedOption}
-        defaultValue={
-          (placeholder !== '')?
-            ""
-          : defaultOption
-        }
+        onChange={onChange ?? ((e) => setInternalValue(e.target.value))}
+        value={value ?? internalValue}
         className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
         required={required}
       >
