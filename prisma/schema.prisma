@@ -7,6 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/////////////////////////////////////////////////////
+//////////////// Auth.js models /////////////////////
+/////////////////////////////////////////////////////
+
+model users {
+  id                 String               @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  role               String               @db.VarChar(255)
+  first_name         String?              @db.VarChar(255) // TODO: does this need to be name for auth.js
+  last_name          String?              @db.VarChar(255) // TODO: do we need to add username
+  birthdate          DateTime?            @db.DateTime
+  email              String               @unique @db.VarChar(255)
+  emailVerified      DateTime?            @map("email_verified") @db.DateTime
+  phone              String?              @db.VarChar(16)
+  gender             String?              @db.VarChar(45)
+  race               String?              @db.VarChar(45)
+  photo_url          String?              @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
+  has_agreed_terms   Boolean              @default(false) @db.Bit
+  createdAt          DateTime             @map("created_at") @db.DateTime
+  updatedAt          DateTime?            @map("updated_at") @db.DateTime
+  cfa_admin          cfa_admin[]
+  user_addresses     user_addresses[]
+  educators          educators[]
+  employers          employers[]
+  jobseekers         jobseekers[]
+  training_providers training_providers[]
+  volunteers         volunteers[]
+}
+
+/////////////////////////////////////////////////////
+////////////// End Auth.js models ///////////////////
+/////////////////////////////////////////////////////
+
 model case_mgmt {
   case_mgmt_id         String     @id(clustered: false, map: "case_mgmt_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
   jobseeker_learner_id String     @db.UniqueIdentifier
@@ -38,7 +70,7 @@ model cfa_admin {
   admin_id  String      @id(clustered: false, map: "cfa_admin_PRIMARY") @db.UniqueIdentifier
   user_id   String      @db.UniqueIdentifier
   case_mgmt case_mgmt[]
-  users     users       @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_admin_contacts1")
+  users     users       @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_admin_contacts1")
 
   @@index([user_id], map: "cfa_admin_fk_admin_contacts1_idx")
 }
@@ -117,33 +149,9 @@ model user_addresses {
   state           String? @db.VarChar(255)
   city            String? @db.VarChar(255)
   county          String? @db.VarChar(255)
-  users           users   @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_address_contacts1")
+  users           users   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_address_contacts1")
 
   @@index([user_id], map: "contact_addresses_fk_address_contacts1_idx")
-}
-
-model users {
-  user_id            String               @id(clustered: false, map: "contacts_PRIMARY") @unique(map: "contacts_user_id_UNIQUE") @db.UniqueIdentifier
-  role               String               @db.VarChar(255)
-  first_name         String?              @db.VarChar(255)
-  last_name          String?              @db.VarChar(255)
-  birthdate          DateTime?            @db.DateTime
-  email              String               @unique @db.VarChar(255)
-  emailVerified      DateTime?            @map("email_verified") @db.DateTime
-  phone              String?              @db.VarChar(16)
-  gender             String?              @db.VarChar(45)
-  race               String?              @db.VarChar(45)
-  photo_url          String?              @db.VarChar(255)
-  has_agreed_terms   Boolean              @default(false) @db.Bit
-  createdAt          DateTime             @map("created_at") @db.DateTime
-  updatedAt          DateTime?            @map("updated_at") @db.DateTime
-  cfa_admin          cfa_admin[]
-  user_addresses     user_addresses[]
-  educators          educators[]
-  employers          employers[]
-  jobseekers         jobseekers[]
-  training_providers training_providers[]
-  volunteers         volunteers[]
 }
 
 model edu_addresses {
@@ -174,7 +182,7 @@ model educators {
   educator_id        String           @id(clustered: false, map: "educators_PRIMARY") @db.UniqueIdentifier
   user_id            String           @db.UniqueIdentifier
   edu_institution_id String           @db.UniqueIdentifier
-  users              users            @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_educators_contacts1")
+  users              users            @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_educators_contacts1")
   edu_institutions   edu_institutions @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_educators_edu_institution1")
 
   @@index([user_id], map: "fk_educators_contacts1_idx")
@@ -189,7 +197,7 @@ model employers {
   job_title            String                 @db.VarChar(255)
   linkedin_url         String?                @db.VarChar(255)
   is_verified_employee Boolean                @default(false, map: "DF__employers__is_verified") @db.Bit
-  users                users                  @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_employer_user1")
+  users                users                  @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_employer_user1")
   companies            companies?             @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")
   company_addresses    company_addresses?     @relation(fields: [work_address_id], references: [company_address_id], onUpdate: NoAction, map: "fk_employers_company_addresses")
   job_postings         job_postings[]
@@ -282,7 +290,7 @@ model jobseekers {
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
   pathways                           pathways?                            @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
-  users                              users                                @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_learner_user1")
+  users                              users                                @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_learner_user1")
   jobseekers_private_data            jobseekers_private_data[]
   jobseekers_skill_gap_data          jobseekers_skill_gap_data[]
   learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
@@ -519,7 +527,7 @@ model training_providers {
   edu_institution_id   String              @db.UniqueIdentifier
   training_programs    training_programs[]
   edu_institutions     edu_institutions    @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_training_provider_edu_institution1")
-  users                users               @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_training_provider_user1")
+  users                users               @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_training_provider_user1")
 
   @@index([edu_institution_id], map: "training_providers_fk_training_provider_edu_institution1_idx")
   @@index([user_id], map: "training_providers_fk_training_provider_user1_idx")
@@ -541,7 +549,7 @@ model volunteers {
   user_id              String                 @db.UniqueIdentifier
   volunteer_type       String                 @db.NVarChar(255)
   volunteer_has_skills volunteer_has_skills[]
-  users                users                  @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_mentor_user1")
+  users                users                  @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_mentor_user1")
 
   @@index([user_id], map: "volunteers_fk_mentor_user1_idx")
 }
