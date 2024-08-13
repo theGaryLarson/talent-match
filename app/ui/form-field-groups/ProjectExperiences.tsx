@@ -3,6 +3,7 @@ import { Button } from 'flowbite-react';
 import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
 import TagsWithAutocomplete from '../components/mui/TagsWithAutocomplete';
+import { SkillDTO } from '@/data/dtos/SkillDTO';
 
 const classNamePrefix = "profile-creation-project-experience-group-";
 const classTitle = "title";
@@ -137,11 +138,12 @@ export default memo(function ProjectExperiences({
           apiSearchRoute="/api/skills/search/"
           fieldLabel="Skills/Tech stack"
           id={classNamePrefix + projectExperience.uid + "-" + classSkillsStack}
-          maxTags={5}
+          maxTags={10}
           searchingText="Searching..."
           noResultsText="No skills/tech stack found..."
           onChange={function(ev, val){ handleChange(index, classSkillsStack, val) }}
           searchPlaceholder="Skill (ex: Java)"
+          getOptionLabel={(option:SkillDTO) => option.skill_name}
         />
       </fieldset>
     ))

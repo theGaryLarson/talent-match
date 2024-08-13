@@ -2,11 +2,12 @@
 import {PrismaClient} from '@prisma/client';
 import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { SkillDTO } from '@/data/dtos/SkillDTO';
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 
-export async function searchSkills(searchTerm:string): Promise<string[]> {
+export async function searchSkills(searchTerm:string): Promise<SkillDTO[]> {
   const MAX_RESULTS = 10;
 
   if (searchTerm.length === 0) {
@@ -23,13 +24,26 @@ export async function searchSkills(searchTerm:string): Promise<string[]> {
           },
           {
             skill_name:{
-              equals: searchTerm + " (Programming Language)"
+              startsWith: searchTerm + " ("
+            }
+          },
+          {
+            skill_name:{
+              contains: "(" + searchTerm + ")"
             }
           }
         ]
       },
-      take: 2
-    })).map((val) => val.skill_name).sort();
+      take: 5
+    })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+      if (itemA.skill_name > itemB.skill_name) {
+        return 1;
+      }
+      if (itemA.skill_name < itemB.skill_name) {
+        return -1;
+      }
+      return 0;
+    });
 
     const startsWithResults = (await prisma.skills.findMany({
       where: {
@@ -49,14 +63,30 @@ export async function searchSkills(searchTerm:string): Promise<string[]> {
           {
             NOT: {
               skill_name:{
-                equals: searchTerm + " (Programming Language)"
+                startsWith: searchTerm + " ("
+              }
+            }
+          },
+          {
+            NOT: {
+              skill_name:{
+                contains: "(" + searchTerm + ")"
               }
             }
           }
         ]
       },
       take: MAX_RESULTS - exactResults.length
-    })).map((val) => val.skill_name).sort();
+    })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+      if (itemA.skill_name > itemB.skill_name) {
+        return 1;
+      }
+      if (itemA.skill_name < itemB.skill_name) {
+        return -1;
+      }
+      return 0;
+    });
+
     const containsResults =
       (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
         (await prisma.skills.findMany({
@@ -73,11 +103,26 @@ export async function searchSkills(searchTerm:string): Promise<string[]> {
                     startsWith: searchTerm
                   }
                 }
+              },
+              {
+                NOT: {
+                  skill_name:{
+                    contains: "(" + searchTerm + ")"
+                  }
+                }
               }
             ]
           },
           take: MAX_RESULTS - exactResults.length - startsWithResults.length
-        })).map((val) => val.skill_name).sort()
+        })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+          if (itemA.skill_name > itemB.skill_name) {
+            return 1;
+          }
+          if (itemA.skill_name < itemB.skill_name) {
+            return -1;
+          }
+          return 0;
+        })
       : []
     // Had to query them separately to guarantee Exact and StartsWith
     //   matches were found since I'm limiting the results, and OR
@@ -85,6 +130,7 @@ export async function searchSkills(searchTerm:string): Promise<string[]> {
     return [...exactResults, ...startsWithResults, ...containsResults];
   }
 }
+
 export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
     user_id: true,
