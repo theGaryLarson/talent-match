@@ -97,7 +97,7 @@ export const jobSeekerCardViewSelect = {
     },
     users: {
         select: {
-            user_id: true,
+            id: true,
             role: true,
             first_name: true,
             last_name: true,
@@ -159,7 +159,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
             portfolio_url: true,
             users: {
                 select: {
-                    user_id: true,
+                    id: true,
                     first_name: true,
                     last_name: true,
                     photo_url: true,
