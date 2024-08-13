@@ -4,9 +4,9 @@ import {WorkExperience} from "@prisma/client";
 export type JsIntroDTO = {
     userId: string,
     photoUrl?: string | null;
-    firstName: string;
-    lastName: string;
-    birthDate: string | Date;
+    firstName?: string | null;
+    lastName?: string | null;
+    birthDate?: string | Date | null;
     phoneCountryCode?: string | null;
     phone?: string | null;
     zipCode?: string | null;
@@ -149,7 +149,7 @@ type workExperienceDTO = {
 export type JsWorkExpDTO = {
     userId: string,
     yearsWorkExperience: string,
-    monthsInternshipExperience?: string | null, // TODO: add field to the database
+    monthsInternshipExperience?: string | null,
     isAuthorizedToWorkUsa: boolean, // TODO: encrypt
     requiresSponsorship: boolean, // TODO: encrypt
     workExperiences?: WorkExperience[]

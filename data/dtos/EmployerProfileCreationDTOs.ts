@@ -4,6 +4,7 @@ export type PostEmployerPersonalDTO = {
     lastName: string,
     birthDate: string,
     email: string,
+    phoneCountryCode?: string,
     phone?: string,
     gender: string,
     race: string,
@@ -11,11 +12,13 @@ export type PostEmployerPersonalDTO = {
 }
 
 export type ReadEmployerPersonalDTO = {
+    employerId?: string | null,
     userId?: string | null,
     firstName?: string | null,
     lastName?: string | null,
     birthDate?: string | null,
     email?: string | null,
+    phoneCountryCode?: string | null,
     phone?: string | null,
     gender?: string | null,
     race?: string | null,
@@ -30,6 +33,7 @@ export type PostEmployerWorkDTO = {
 }
 
 export type ReadEmployerWorkDTO = {
+    userId?: string | null,
     employerId?: string | null,
     currentJobTitle?: string | null,
     linkedInUrl?: string | null,
@@ -72,6 +76,7 @@ export type PostCompanyInfoDTO = {
     yearFounded: string,
     websiteUrl?: string | null,
     videoUrl?: string | null,
+    phoneCountryCode?: string | null,
     companyPhone?: string | null,
     mission?: string | null,
     vision?: string | null,
@@ -91,10 +96,43 @@ export type ReadCompanyInfoDTO = {
     yearFounded: string,
     websiteUrl?: string | null,
     videoUrl?: string | null,
+    phoneCountryCode?: string | null,
     companyPhone?: string | null,
     mission?: string | null,
     vision?: string | null,
     employeeCount: string,
     estimatedAnnualHires?: string | null,
     isApproved: boolean,
+}
+
+export type PostCompanyTestimonialsDTO = {
+    companyId: string,
+    employerId: string,
+    text: string,
+    author: string,
+}
+
+export type ReadCompanyTestimonialsDTO = {
+    testimonyId: string,
+    companyId?: string,
+    employerId?: string,
+    text?: string,
+    author?: string,
+}
+
+export type PostCompanySocialLinkDTO = {
+    companyId: string,
+    socialPlatformId: string,
+    employerId: string,
+    socialUrl: string,
+}
+
+export type ReadCompanySocialLinkDTO = {
+    companySocialId?: string,
+    socialPlatformId?: string,
+    companyId?: string,
+    employerId?: string,
+    socialUrl?: string,
+    platform?: string,
+    platformIconUrl?: string,
 }

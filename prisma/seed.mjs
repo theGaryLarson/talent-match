@@ -834,12 +834,22 @@ async function seedContactAddresses() {
 }
 
 async function seedPathways() {
-    const pathways = ["Cloud Computing", "Software Development", "Data Analytics", "Cybersecurity"]
+    const pathways = [
+        "Network and Computer Systems Administrator",
+        "Web Developer",
+        "Software Developer",
+        "Software Quality Assurance Analysts and Tester",
+        "Graphic Designer",
+        "Computer User Support Specialist"
+    ]
     console.log('Seeding Pathways...')
-    const uuids = ['0645cc89-e942-48b4-a34a-f7ad7e87dec3',
+    const uuids = [
+        '0645cc89-e942-48b4-a34a-f7ad7e87dec3',
         '79608104-d50e-4d0f-b541-2a9de7bc0f89',
         'a54f3940-301c-4e2e-85e8-bcaf244c89bb',
-        'b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009'
+        'b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009',
+        '79608104-c3ea-47b5-9bbf-6f7f8f9c6009',
+        'c45fce80-c3ea-47b5-b541-6f7f8f9c6009',
     ]
     let idx = 0
     for (const path of pathways) {
@@ -1115,7 +1125,7 @@ async function seedJobSeekersEducation() {
                 startDate: startDate,
                 gradDate: endDate,
                 degreeType: faker.helpers.arrayElement(degreeTypes),
-                major: jobseeker.is_enrolled_ed_program ? faker.helpers.arrayElement(techEdMajors).program_id : null,
+                major: jobseeker.is_enrolled_ed_program ? faker.helpers.arrayElement(techEdMajors).name: null,
                 minor: null,
                 edProgram: 'College',
                 jobseekers: {
@@ -1386,13 +1396,20 @@ async function seedCompanyAddresses() {
 async function seedCompanyTestimonials() {
     console.log(`Seeding Company Testimonials...`)
     let count = 0;
+
     const companies = await prisma.companies.findMany();
     for (const c of companies) {
+        const employer = await prisma.employers.findFirst( {
+            where: {
+                company_id: c.company_id
+            }
+        })
         for (let i = 0; i < 3; i++) {
             await prisma.company_testimonials.create({
                 data: {
                     testimonial_id: uuidv4(),
                     company_id: c.company_id,
+                    employer_id: employer.employer_id,
                     text: faker.lorem.sentences(2),
                     author: faker.person.fullName(),
                 }
@@ -1426,11 +1443,17 @@ async function seedCompanySocialLinks() {
     const platforms = await prisma.social_media_platforms.findMany();
     let count = 0;
     for (const c of companies) {
+        const employer = await prisma.employers.findFirst( {
+            where: {
+                company_id: c.company_id
+            }
+        })
         for (let i = 0; i < 3; i++) {
             let platform = platforms.pop();
             await prisma.company_social_links.create({
                 data: {
                     social_media_id: uuidv4(),
+                    employer_id: employer.employer_id,
                     company_id: c.company_id,
                     social_platform_id: platform.social_platform_id,
                     social_url: `https://www.${platform.platform.toLowerCase()}/${c.company_name.toLowerCase().replace(/[\s\W]/g, '')}`,
@@ -1455,6 +1478,11 @@ async function seedJobPostings() {
         let totalJobPostings = 0;
         for (const e of employers) {
             for (let i = 0; i < 3; i++) {
+                const companyAddresses = await prisma.company_addresses.findMany( {
+                    where: {
+                        company_id: e.company_id
+                    }
+                });
                 try {
                     // 40% chance job post is an internship
                     const isInternship = Math.random() < 0.4;
@@ -1469,6 +1497,7 @@ async function seedJobPostings() {
                             job_posting_id: uuidv4(),
                             company_id: e.company_id,
                             employer_id: e.employer_id,
+                            location_id: faker.helpers.arrayElement(companyAddresses).company_address_id,
                             job_title: faker.helpers.arrayElement(itJobTitles),
                             job_description: faker.person.jobDescriptor(),
                             is_internship: isInternship,
@@ -1487,7 +1516,7 @@ async function seedJobPostings() {
                     });
                     totalJobPostings++; // Increment the total job postings counter
                 } catch (innerError) {
-                    console.error(`Error seeding job posting for employer ${e.employer_id}:`, innerError);
+                    console.error(`Error seeding job posting for employer: ${e.employer_id}.\n`, innerError);
                 }
             }
         }
@@ -1528,10 +1557,10 @@ async function main() {
     // Employer data
     await seedIndustrySectors();
     await seedCompanies();
+    await seedEmployers();
     await seedCompanyAddresses();
     await seedCompanyTestimonials();
     await seedCompanySocialLinks();
-    await seedEmployers();
     await seedJobPostings();
     console.log(`Finished seeding ...\n`);
 }

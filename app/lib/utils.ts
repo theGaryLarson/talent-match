@@ -1,3 +1,4 @@
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 
 export const formatCurrency = (amount: number) => {
@@ -66,3 +67,23 @@ export const toMidnightUTC = (date: string): string => {
   d.setUTCHours(0, 0, 0, 0);
   return d.toISOString();
 };
+
+// Here the country code is being extracted from how its setup on the frontend.
+// We can also just store the country code on the frontend and use libphonenumber-js
+// to extract the code with getCountryCode = getCountryCallingCode(countryCode);
+export const formatPhoneE164 = (phoneCountryCode?: string | null, phone?: string | null) => {
+  const countryCodeMatch = phoneCountryCode?.match(/\+\d+(-\d+)?/);
+  const extractedCountryCode = countryCodeMatch ? countryCodeMatch[0] : null;
+  if (phone && extractedCountryCode) {
+    try {
+      const phoneNumber = parsePhoneNumberFromString(`${extractedCountryCode}${phone}`);
+      if (phoneNumber && phoneNumber.isValid()) {
+        return phoneNumber.format('E.164');
+      }
+      return null
+    } catch (e: any) {
+      console.error('Error formatting phone number:', e.message);
+    }
+  }
+
+}

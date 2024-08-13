@@ -52,7 +52,7 @@ export default function Page() {
                                         "Job search strategies and networking advice."
                                     ]}
                                     paragraph2="Still have questions? Join an information session today"
-                                    image="stock/people-using-digital-device-while-meeting 2.png"/>
+                                    image="stock/people-using-digital-device-while-meeting 2.jpg"/>
                 </div>,
         },
         {
@@ -71,7 +71,7 @@ export default function Page() {
                                         "Job search strategies and networking advice."
                                     ]}
                                     paragraph2="Still have questions? Join an information session today"
-                                    image="stock/people-using-digital-device-while-meeting 2.png"
+                                    image="stock/people-using-digital-device-while-meeting 2.jpg"
                                     imageLeft/>
                 </div>,
         },
@@ -110,15 +110,15 @@ export default function Page() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-8 flex-wrap">
                 <PhotoCardWithTitle title="Pre-Apprenticeship Program"
                                     article="WA residents, between the ages of 16-24 years old and in need of financial assistance, can apply for our Full Stack Web Development Pre-Apprenticeship program! Master in-demand coding skills & earn a certificate in 1.5 years."
-                                    imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"
+                                    imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.jpg"
                                     callToAction="Learn more & Apply"/>
                 <PhotoCardWithTitle title="Project Factory"
                                     article="Stuck between textbooks and your dream job? Project Factory bridges the gap! Our platform lets college students tackle real-world projects mentored by industry pros. Gain hands-on experience, refine in-demand skills, and build a portfolio that grabs attention. Get instant feedback, develop on real cloud infrastructure, and launch your career!"
-                                    imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"
+                                    imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.jpg"
                                     callToAction="Coming Soon"/>
                 <PhotoCardWithTitle title="Career Prep"
                                     article="Whether you are an experienced professional or a recent graduate, our Career Prep program helps you reach your full potential, no matter your experience level. We create personalized plans to guide you, with learning modules to hone your professional skills and career readiness. Complete milestones and impress employers by showcasing your achievements with TechReady badges on your Talent Portal profile."
-                                    imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.png"
+                                    imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.jpg"
                                     callToAction="Coming Soon"/>
             </div>
         </div>
@@ -163,7 +163,7 @@ export default function Page() {
 
     return (
         <div className="font-roboto">
-            <PageBanner title={"Join the Tech Talent Showcase"} bg="bg-employer-hero-1"/>
+            <PageBanner title={"Welcome to CFA’s Tech Talent Showcase"} bg="bg-jobseeker-hero-1"/>
 
             <div className="px-8 md:px-12 lg:px-16 py-16 space-y-8 container mx-auto">
                 {topBlurb}
@@ -184,7 +184,7 @@ export default function Page() {
             <BlockQuote
                 text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis no."}
                 author={"The Lorem Ipsum"}
-                imgSrc={"/cfa_images/stock/Governer Inslee.Bryan.png"}/>
+                imgSrc={"/cfa_images/stock/Governer Inslee.Bryan.jpg"}/>
 
             <div className="px-6 md:px-12 lg:px-24 py-16 space-y-8 container mx-auto">
                 <div className="space-y-6 px-4">

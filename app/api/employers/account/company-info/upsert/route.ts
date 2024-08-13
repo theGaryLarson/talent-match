@@ -5,6 +5,8 @@ import {
     PostCompanyInfoDTO, ReadCompanyInfoDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
+import {formatPhoneE164} from "@/app/lib/utils";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -23,12 +25,15 @@ export async function POST(request: Request) {
             yearFounded,
             websiteUrl,
             videoUrl,
+            phoneCountryCode,
             companyPhone,
             mission,
             vision,
             employeeCount,
             estimatedAnnualHires,
         } = body;
+
+        const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone)
         const upsertedCompany = await prisma.companies.upsert({
             where: {
                 company_id: companyId
@@ -42,7 +47,7 @@ export async function POST(request: Request) {
                 year_founded: parseInt(yearFounded, 10),
                 company_website_url: websiteUrl,
                 company_video_url: videoUrl,
-                company_phone: companyPhone,
+                company_phone: formattedPhone,
                 company_mission: mission,
                 company_vision: vision,
                 size: employeeCount,
@@ -63,7 +68,7 @@ export async function POST(request: Request) {
                 year_founded: parseInt(yearFounded, 10),
                 company_website_url: websiteUrl,
                 company_video_url: videoUrl,
-                company_phone: companyPhone,
+                company_phone: formattedPhone,
                 company_mission: mission,
                 company_vision: vision,
                 size: employeeCount,
@@ -123,7 +128,7 @@ export async function POST(request: Request) {
                     state: address.state,
                     zip_region: address.zipCode,
                     county: address.county,
-                    companies: { connect: { company_id: companyId } }
+                    companies: {connect: {company_id: companyId}}
                 },
                 select: {
                     city: true,
@@ -135,7 +140,7 @@ export async function POST(request: Request) {
         });
 
         await Promise.all(upsertPromises);
-        const updatedAddresses = await prisma.company_addresses.findMany( {
+        const updatedAddresses = await prisma.company_addresses.findMany({
             where: {
                 company_id: companyId
             },
@@ -166,6 +171,7 @@ export async function POST(request: Request) {
             yearFounded: upsertedCompany?.year_founded?.toString(),
             websiteUrl: upsertedCompany.company_website_url,
             videoUrl: upsertedCompany.company_video_url,
+            phoneCountryCode: upsertedCompany.company_phone ? parsePhoneNumberFromString(upsertedCompany?.company_phone)?.countryCallingCode : null,
             companyPhone: upsertedCompany.company_phone,
             mission: upsertedCompany.company_mission,
             vision: upsertedCompany.company_vision,

@@ -86,15 +86,15 @@ export default function Page() {
         <h1 className="text-2xl font-bold">Browse by Jobseeker Skills</h1>
         <div className='flex flex-wrap gap-4'>
         <CategoryCard
-            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
+            imgSrc={'/cfa_images/stock/SoftwareDevLink.png'}
             title={'Software Devolopment'}
             text={'Find job seekers with training and expertise in Software Devolopment'} href={'/services/employers/dashboard/listview?search=Software+Devolopment'}          />
           <CategoryCard
-            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
+            imgSrc={'/cfa_images/stock/cyberLink.png'}
             title={'Cyber Security'}
             text={'Find job seekers with training and expertise in Cyber Security.'} href={'/services/employers/dashboard/listview?search=Cyber+Security'}          />
           <CategoryCard
-            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
+            imgSrc={'/cfa_images/stock/dataLink.png'}
             title={'Data Analytics'}
             text={'Find job seekers with training and expertise in Data Analytics'} href={'/services/employers/dashboard/listview?search=Data+Analytics'}          />
         </div>
@@ -110,7 +110,7 @@ export default function Page() {
           <Image src={'/cfa_images/TWC_75x50_2024.svg'} alt={'TWC logo'} width={400} height={266}/>
         </div>
         <div className='flex flex-wrap-reverse gap-5'>
-          <Image src={'/cfa_images/stock/black-office-worker-checkered-shirt-embracing-blonde-secretary-woman-while-she-making-selfie-young-managers-international-company-having-fun-meeting 1.png'} alt={'Stock Image of office workers'} width={400} height={266}/>
+          <Image src={'/cfa_images/stock/black-office-worker-checkered-shirt-embracing-blonde-secretary-woman-while-she-making-selfie-young-managers-international-company-having-fun-meeting 1.jpg'} alt={'Stock Image of office workers'} width={400} height={266}/>
           <div className='w-6/12 space-y-8 grow'>
             <h3 className='text-xl font-bold'>About Computing for All:</h3>
             <p className='font-bold'>Computing for All is a nonprofit that has trained diverse, low-income high school and college students for more than five years. </p>

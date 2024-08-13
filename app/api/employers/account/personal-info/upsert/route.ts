@@ -2,6 +2,8 @@ import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {PostEmployerPersonalDTO, ReadEmployerPersonalDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
+import parsePhoneNumberFromString from "libphonenumber-js";
+import {formatPhoneE164} from "@/app/lib/utils";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -14,11 +16,14 @@ export async function POST(request: Request) {
             lastName,
             birthDate,
             email,
+            phoneCountryCode,
             phone,
             gender,
             race,
             photoUrl,
         } = body;
+
+        const formattedPhone = formatPhoneE164(phoneCountryCode, phone)
         const upsertedEmployer = await prisma.contacts.upsert({
             where: {
                 user_id: userId
@@ -28,7 +33,7 @@ export async function POST(request: Request) {
                 last_name: lastName,
                 birthdate: new Date(birthDate).toISOString(),
                 email: email,
-                phone: phone,
+                phone: formattedPhone,
                 gender: gender,
                 race: race,
                 photo_url: photoUrl,
@@ -41,7 +46,7 @@ export async function POST(request: Request) {
                 last_name: lastName,
                 birthdate: new Date(birthDate).toISOString(),
                 email: email,
-                phone: phone,
+                phone: formattedPhone,
                 gender: gender,
                 race: race,
                 photo_url: photoUrl,
@@ -50,11 +55,13 @@ export async function POST(request: Request) {
         })
 
         const result: ReadEmployerPersonalDTO = {
+            userId: upsertedEmployer.user_id,
             firstName: upsertedEmployer.first_name,
             lastName: upsertedEmployer.last_name,
-            birthDate: upsertedEmployer.birthdate.toISOString(),
+            birthDate: upsertedEmployer?.birthdate?.toISOString(),
             email: upsertedEmployer.email,
-            phone: upsertedEmployer.phone,
+            phoneCountryCode: upsertedEmployer?.phone ? parsePhoneNumberFromString(upsertedEmployer.phone)?.countryCallingCode : null,
+            phone: upsertedEmployer?.phone ? parsePhoneNumberFromString(upsertedEmployer.phone)?.number : null,
             gender: upsertedEmployer.gender,
             race: upsertedEmployer.race,
             photoUrl: upsertedEmployer.photo_url,
