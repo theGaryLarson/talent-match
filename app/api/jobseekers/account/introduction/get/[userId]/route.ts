@@ -16,10 +16,10 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
         // Fetch the users data
         const user = await prisma.users.findUnique({
             where: {
-                user_id: userId
+                id: userId
             },
             select: {
-                user_id: true,
+                id: true,
                 role: true,
                 first_name: true,
                 last_name: true,
@@ -74,7 +74,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         // Map the jobseeker data to JsIntroDTO
         const loadIntroPage: JsIntroDTO = {
-            userId: user.user_id,
+            userId: user.id,
             photoUrl: user.photo_url,
             firstName: user?.first_name,
             lastName: user?.last_name,
