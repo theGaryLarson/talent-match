@@ -11,11 +11,11 @@ export default async function FeaturedCandidates(){
         <JobSeekerCardView
           key={jobSeeker.jobseeker_id}
           isLarge={false}
-          name={jobSeeker.contacts.first_name + ' ' + jobSeeker.contacts.last_name}
+          name={jobSeeker.users.first_name + ' ' + jobSeeker.users.last_name}
           school={''} // TODO: needs fixed to align with array
           pathway={jobSeeker?.pathways?.pathway_title ?? ''}
           skillsList={jobSeeker?.jobseeker_has_skills}
-          pfpPicSrc={jobSeeker?.contacts?.photo_url}
+          pfpPicSrc={jobSeeker?.users?.photo_url}
           aboutMe={jobSeeker?.intro_headline} id={jobSeeker?.jobseeker_id}        />
       ))}
         
