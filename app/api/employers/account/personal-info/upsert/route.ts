@@ -24,9 +24,9 @@ export async function POST(request: Request) {
         } = body;
 
         const formattedPhone = formatPhoneE164(phoneCountryCode, phone)
-        const upsertedEmployer = await prisma.users.upsert({
+        const upsertedUser = await prisma.users.upsert({
             where: {
-                user_id: userId
+                id: userId
             },
             update: {
                 first_name: firstName,
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
                 updatedAt: new Date(),
             },
             create: {
-                user_id: userId,
+                id: userId,
                 role: 'EMPLOYER',
                 first_name: firstName,
                 last_name: lastName,
@@ -55,16 +55,16 @@ export async function POST(request: Request) {
         })
 
         const result: ReadEmployerPersonalDTO = {
-            userId: upsertedEmployer.user_id,
-            firstName: upsertedEmployer.first_name,
-            lastName: upsertedEmployer.last_name,
-            birthDate: upsertedEmployer?.birthdate?.toISOString(),
-            email: upsertedEmployer.email,
-            phoneCountryCode: upsertedEmployer?.phone ? parsePhoneNumberFromString(upsertedEmployer.phone)?.countryCallingCode : null,
-            phone: upsertedEmployer?.phone ? parsePhoneNumberFromString(upsertedEmployer.phone)?.number : null,
-            gender: upsertedEmployer.gender,
-            race: upsertedEmployer.race,
-            photoUrl: upsertedEmployer.photo_url,
+            userId: upsertedUser.id,
+            firstName: upsertedUser.first_name,
+            lastName: upsertedUser.last_name,
+            birthDate: upsertedUser?.birthdate?.toISOString(),
+            email: upsertedUser.email,
+            phoneCountryCode: upsertedUser?.phone ? parsePhoneNumberFromString(upsertedUser.phone)?.countryCallingCode : null,
+            phone: upsertedUser?.phone ? parsePhoneNumberFromString(upsertedUser.phone)?.number : null,
+            gender: upsertedUser.gender,
+            race: upsertedUser.race,
+            photoUrl: upsertedUser.photo_url,
         }
         return NextResponse.json({success:true, result}, {status: 200})
 
