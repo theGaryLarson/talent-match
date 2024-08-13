@@ -15,10 +15,10 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         const user = await prisma.users.findUnique({
             where: {
-                user_id: userId
+                id: userId
             },
             select: {
-                user_id: true,
+                id: true,
                 jobseekers: {
                     select: {
                         jobseeker_id: true,
@@ -58,7 +58,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             }));
 
             const result: JsWorkExpDTO = {
-                userId: user.user_id,
+                userId: user.id,
                 yearsWorkExperience: jobseeker.years_work_exp?.toString() ?? "0",
                 monthsInternshipExperience: jobseeker.months_internship_exp?.toString() ?? "0",
                 isAuthorizedToWorkUsa: privateData.is_authorized_to_work_in_usa,
