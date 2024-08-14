@@ -772,9 +772,9 @@ async function seedUsers(numUsers = 4) {
     if (numUsers <= 4) {
         for (let idx = 0; idx < numUsers; idx++) {
             // const hashedPassword = await bcryptjs.hash(user.password, 10);
-            await prisma.users.create({
+            await prisma.user.create({
                 data: {
-                    user_id: uuidv4(),
+                    id: uuidv4(),
                     first_name: users[idx].firstName,
                     last_name: users[idx].lastName,
                     birthdate: formatISODate(users[idx].birthDate),
@@ -793,7 +793,7 @@ async function seedUsers(numUsers = 4) {
         for (let idx = 0; idx < numUsers; idx++) {
             const fName = faker.person.firstName();
             const lName = faker.person.lastName();
-            await prisma.users.create({
+            await prisma.user.create({
                 data: {
                     id: uuidv4(),
                     first_name: fName,
@@ -815,7 +815,7 @@ async function seedUsers(numUsers = 4) {
 
 async function seedUserAddresses() {
     console.log(`Seeding User Addresses...`)
-    const users = await prisma.users.findMany();
+    const users = await prisma.user.findMany();
     for (const user of users) {
         const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
         await prisma.user_addresses.create({
@@ -992,7 +992,7 @@ async function seedSkills() {
 }
 
 async function seedJobSeekers() {
-    const jobSeekers = await prisma.users.findMany({
+    const jobSeekers = await prisma.user.findMany({
         where: {
             role: 'JOBSEEKER',
         }
@@ -1355,7 +1355,7 @@ async function seedEmployers() {
             company_id: true,
         }
     });
-    const employers = await prisma.users.findMany({
+    const employers = await prisma.user.findMany({
         where: {
             role: 'EMPLOYER',
         }
