@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         const result = await prisma.$transaction(async (prisma) => {
 
             // Upsert user
-            const user = await prisma.users.upsert({
+            const user = await prisma.user.upsert({
                 where: {id: userId},
                 update: {
                     first_name: firstName,
