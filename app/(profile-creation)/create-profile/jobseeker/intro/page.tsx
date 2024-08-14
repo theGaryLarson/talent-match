@@ -487,7 +487,7 @@ export default function CreateJobseekerProfileIntroPage(){
               />
             </div>
           </fieldset>
-          <div className="flex justify-between my-4">
+          <div className="profile-form-progress-btn-group">
             <Button pill color="gray">Cancel</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>

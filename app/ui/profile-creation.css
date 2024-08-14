@@ -29,3 +29,7 @@ h2 {
 .profile-form-section {
   @apply w-full xl:w-3/5 p-5 xl:pr-80;
 }
+
+.profile-form-progress-btn-group {
+  @apply flex justify-between my-10;
+}

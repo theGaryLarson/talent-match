@@ -226,9 +226,9 @@ export default function CreateJobseekerProfileEducationPage() {
 
     return (
         <main className="flex">
-            <aside className="hidden lg:w-2/5 lg:block">
+            <aside className="profile-form-aside">
             </aside>
-            <section className="w-full lg:w-3/5">
+            <section className="profile-form-section">
                 <ProgressBarFlat progress={2 / 6 * 100} size="sm" color="dark" className="lg:hidden"/>
                 <p>Step 2/6</p>
                 <h1>Education</h1>
@@ -281,7 +281,7 @@ export default function CreateJobseekerProfileEducationPage() {
                             Add project experience
                         </Button>
                     </fieldset>
-                    <div className="flex">
+                    <div className="profile-form-progress-btn-group">
                         <Button pill color="gray">Previous</Button>
                         <Button pill type="submit">Save and continue</Button>
                     </div>
