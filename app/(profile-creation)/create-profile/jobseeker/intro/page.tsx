@@ -452,7 +452,7 @@ export default function CreateJobseekerProfileIntroPage(){
                   {label:"Zambia +260", value:"Zambia +260"},
                   {label:"Zimbabwe +263", value:"Zimbabwe +263"},
                 ]}
-                defaultOption="United States +1"
+                // defaultOption="United States +1"
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
