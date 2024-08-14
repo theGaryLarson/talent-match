@@ -58,7 +58,7 @@ export async function GET(request: Request, {params}: {params: { userId: string 
             result.gender = user?.gender;
             result.hasReadTerms = user.has_agreed_terms;
             result.race = user.race;
-            const jobseekerDetails = user?.jobseekers[0] || null;
+            const jobseekerDetails = user?.jobseekers?.[0] || null;
             result.jobseekerId = jobseekerDetails?.jobseeker_id;
             if (jobseekerDetails.jobseekers_private_data && jobseekerDetails.jobseekers_private_data.length > 0) {
                 const privateDetails: Partial<jobseekers_private_data> = jobseekerDetails.jobseekers_private_data[0]
