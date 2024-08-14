@@ -33,3 +33,12 @@ h2 {
 .profile-form-progress-btn-group {
   @apply flex justify-between my-10;
 }
+
+.profile-form-grid {
+  @apply grid gap-6 my-3;
+}
+
+/* input[type="radio"] {
+  @apply m-3;
+  cursor: pointer;
+} */

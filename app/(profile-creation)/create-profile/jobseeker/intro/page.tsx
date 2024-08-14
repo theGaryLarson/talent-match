@@ -136,16 +136,16 @@ export default function CreateJobseekerProfileIntroPage(){
               <h2>Basic info</h2>
             </legend>
             
-            <div className="grid gap-6 my-3 md:grid-cols-2">
+            <div className="profile-form-grid md:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
               <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
             </div>
             
-            <div className="grid gap-6 my-3">
+            <div className="profile-form-grid">
               <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
             </div>
             
-            <div className="grid gap-6 my-3 md:grid-cols-2">
+            <div className="profile-form-grid md:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
@@ -209,11 +209,11 @@ export default function CreateJobseekerProfileIntroPage(){
               </SelectOptionsWithLabel>
             </div>
             
-            <div className="grid gap-6 my-3">
+            <div className="profile-form-grid">
               <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" required>Email *</InputTextWithLabel>
             </div>
 
-            <div className="grid gap-6 my-3 md:grid-cols-2">
+            <div className="profile-form-grid md:grid-cols-2">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
                 onChange={handleFieldChange}
@@ -473,7 +473,7 @@ export default function CreateJobseekerProfileIntroPage(){
             <legend>
               <h2>Intro</h2>
             </legend>            
-            <div className="grid gap-6 my-3">
+            <div className="profile-form-grid">
               <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
               <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
               <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
