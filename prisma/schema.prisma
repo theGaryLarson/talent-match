@@ -7,10 +7,107 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/////////////////////////////////////////////////////
+//////////////// Auth.js models /////////////////////
+/////////////////////////////////////////////////////
+
+model User {
+  id                 String               @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  role               String               @db.VarChar(255)
+  first_name         String?              @db.VarChar(255) // TODO: does this need to be name for auth.js
+  last_name          String?              @db.VarChar(255) // TODO: do we need to add username
+  birthdate          DateTime?            @db.DateTime
+  email              String               @unique @db.VarChar(255)
+  emailVerified      DateTime?            @map("email_verified") @db.DateTime
+  phone              String?              @db.VarChar(16)
+  gender             String?              @db.VarChar(45)
+  race               String?              @db.VarChar(45)
+  photo_url          String?              @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
+  has_agreed_terms   Boolean              @default(false) @db.Bit
+  createdAt          DateTime             @map("created_at") @db.DateTime
+  updatedAt          DateTime?            @map("updated_at") @db.DateTime
+  cfa_admin          cfa_admin[]
+  user_addresses     user_addresses[]
+  educators          educators[]
+  employers          employers[]
+  jobseekers         jobseekers[]
+  training_providers training_providers[]
+  volunteers         volunteers[]
+  Account            Account[]
+  Session            Session[]
+  // Optional for WebAuthn support
+  Authenticator      Authenticator[]
+
+  @@map("users")
+}
+
+model Account {
+  id                       String  @id @default(uuid()) @db.UniqueIdentifier
+  userId                   String  @map("user_id") @db.UniqueIdentifier
+  type                     String  @db.NVarChar(255)
+  provider                 String  @db.NVarChar(255)
+  providerAccountId        String  @map("provider_account_id") @db.NVarChar(255)
+  refresh_token            String? @db.NVarChar(MAX)
+  access_token             String? @db.NVarChar(MAX)
+  expires_at               Int?
+  token_type               String? @db.NVarChar(255)
+  scope                    String? @db.NVarChar(255)
+  id_token                 String? @db.NVarChar(MAX)
+  session_state            String? @db.NVarChar(255)
+  refresh_token_expires_in Int?
+  user                     User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.DateTime
+  updatedAt DateTime @updatedAt @db.DateTime
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.UniqueIdentifier
+  sessionToken String   @unique @db.NVarChar(255)
+  userId       String   @db.UniqueIdentifier
+  expires      DateTime @db.DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.DateTime
+  updatedAt DateTime @updatedAt @db.DateTime
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String   @db.NVarChar(255)
+  token      String   @db.NVarChar(255)
+  expires    DateTime @db.DateTime
+
+  @@unique([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialId         String  @unique @db.NVarChar(255)
+  userId               String  @db.UniqueIdentifier
+  providerAccountId    String  @db.NVarChar(255)
+  credentialPublicKey  String  @db.NVarChar(MAX)
+  counter              Int
+  credentialDeviceType String  @db.NVarChar(255)
+  credentialBackedUp   Boolean @db.Bit
+  transports           String? @db.NVarChar(255)
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialId])
+}
+
+/////////////////////////////////////////////////////
+////////////// End Auth.js models ///////////////////
+/////////////////////////////////////////////////////
+
 model case_mgmt {
-  case_mgmt_id         String     @id(clustered: false, map: "case_mgmt_PRIMARY") @default(dbgenerated("newid()")) @db.NVarChar(36)
-  jobseeker_learner_id String     @db.NVarChar(36)
-  cfa_admin_id         String     @db.NVarChar(36)
+  case_mgmt_id         String     @id(clustered: false, map: "case_mgmt_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobseeker_learner_id String     @db.UniqueIdentifier
+  cfa_admin_id         String     @db.UniqueIdentifier
   cfa_admin            cfa_admin  @relation(fields: [cfa_admin_id], references: [admin_id], onUpdate: NoAction, map: "fk_case_mgmt_admin1")
   jobseekers           jobseekers @relation(fields: [jobseeker_learner_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_case_mgmt_jobseeker1")
 
@@ -19,8 +116,8 @@ model case_mgmt {
 }
 
 model certificates {
-  certId        String     @id(clustered: false, map: "certificates_PRIMARY") @map("certification_id") @db.NVarChar(36)
-  jobSeekerId   String     @map("jobseeker_id") @db.NVarChar(36)
+  certId        String     @id(clustered: false, map: "certificates_PRIMARY") @map("certification_id") @db.UniqueIdentifier
+  jobSeekerId   String     @map("jobseeker_id") @db.UniqueIdentifier
   name          String     @db.VarChar(255)
   logoUrl       String?    @map("logo_url") @db.VarChar(255)
   issuingOrg    String     @map("issuing_org") @db.VarChar(255)
@@ -35,17 +132,17 @@ model certificates {
 }
 
 model cfa_admin {
-  admin_id  String      @id(clustered: false, map: "cfa_admin_PRIMARY") @db.NVarChar(36)
-  user_id   String      @db.NVarChar(36)
+  admin_id  String      @id(clustered: false, map: "cfa_admin_PRIMARY") @db.UniqueIdentifier
+  user_id   String      @db.UniqueIdentifier
   case_mgmt case_mgmt[]
-  contacts  contacts    @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_admin_contacts1")
+  users     User        @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_admin_contacts1")
 
   @@index([user_id], map: "cfa_admin_fk_admin_contacts1_idx")
 }
 
 model companies {
-  company_id             String                 @id(clustered: false, map: "companies_PRIMARY") @db.NVarChar(36)
-  industry_sector_id     String?                @db.VarChar(36)
+  company_id             String                 @id(clustered: false, map: "companies_PRIMARY") @db.UniqueIdentifier
+  industry_sector_id     String?                @db.UniqueIdentifier
   company_name           String                 @db.VarChar(255)
   company_logo_url       String?                @db.VarChar(255)
   about_us               String                 @db.VarChar(255)
@@ -53,7 +150,7 @@ model companies {
   year_founded           Int
   company_website_url    String?                @db.VarChar(255)
   company_video_url      String?                @db.VarChar(255)
-  company_phone          String?                @db.VarChar(15)
+  company_phone          String?                @db.VarChar(16)
   company_mission        String?                @db.VarChar(255)
   company_vision         String?                @db.VarChar(255)
   size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
@@ -70,12 +167,12 @@ model companies {
 }
 
 model company_addresses {
-  company_address_id String         @id(clustered: false, map: "company_addresses_PRIMARY") @db.VarChar(36)
-  company_id         String         @db.NVarChar(36)
-  city               String         @db.VarChar(255)
-  state              String         @db.VarChar(255)
+  company_address_id String         @id(clustered: false, map: "company_addresses_PRIMARY") @db.UniqueIdentifier
+  company_id         String         @db.UniqueIdentifier
+  city               String?        @db.VarChar(255)
+  state              String?        @db.VarChar(255)
   zip_region         String         @db.VarChar(10)
-  county             String         @db.VarChar(255)
+  county             String?        @db.VarChar(255)
   companies          companies      @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_address_company1")
   employers          employers[]
   job_postings       job_postings[]
@@ -85,10 +182,10 @@ model company_addresses {
 }
 
 model company_social_links {
-  social_media_id        String                 @id(clustered: false, map: "company_social_links_PRIMARY") @db.VarChar(36)
-  company_id             String                 @db.NVarChar(36)
-  employer_id            String                 @db.NVarChar(36)
-  social_platform_id     String                 @db.NVarChar(36)
+  social_media_id        String                 @id(clustered: false, map: "company_social_links_PRIMARY") @db.UniqueIdentifier
+  company_id             String                 @db.UniqueIdentifier
+  employer_id            String                 @db.UniqueIdentifier
+  social_platform_id     String                 @db.UniqueIdentifier
   social_url             String                 @db.VarChar(255)
   companies              companies              @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_social_media_company_company1")
   social_media_platforms social_media_platforms @relation(fields: [social_platform_id], references: [social_platform_id], onUpdate: NoAction, map: "fk_social_media_company_social_media_platform1")
@@ -99,9 +196,9 @@ model company_social_links {
 }
 
 model company_testimonials {
-  testimonial_id String    @id(clustered: false, map: "company_testimonials_PRIMARY") @db.NVarChar(36)
-  company_id     String    @db.NVarChar(36)
-  employer_id    String    @db.NVarChar(36)
+  testimonial_id String    @id(clustered: false, map: "company_testimonials_PRIMARY") @db.UniqueIdentifier
+  company_id     String    @db.UniqueIdentifier
+  employer_id    String    @db.UniqueIdentifier
   text           String    @db.VarChar(255)
   author         String    @db.VarChar(255)
   companies      companies @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_testimonials_company1")
@@ -110,45 +207,21 @@ model company_testimonials {
   @@index([company_id], map: "fk_company_testimonials_company1_idx")
 }
 
-model contact_addresses {
-  contact_address_id String   @id(clustered: false, map: "contact_addresses_PRIMARY") @db.NVarChar(36)
-  user_id            String   @unique @db.NVarChar(36)
-  zip                String   @db.NVarChar(10)
-  state              String   @db.VarChar(255)
-  city               String   @db.VarChar(255)
-  county             String   @db.VarChar(255)
-  contacts           contacts @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_address_contacts1")
+model user_addresses {
+  user_address_id String  @id(clustered: false, map: "contact_addresses_PRIMARY") @db.UniqueIdentifier
+  user_id         String  @unique @db.UniqueIdentifier
+  zip             String  @db.NVarChar(10)
+  state           String? @db.VarChar(255)
+  city            String? @db.VarChar(255)
+  county          String? @db.VarChar(255)
+  users           User    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_address_contacts1")
 
   @@index([user_id], map: "contact_addresses_fk_address_contacts1_idx")
 }
 
-model contacts {
-  user_id            String               @id(clustered: false, map: "contacts_PRIMARY") @unique(map: "contacts_user_id_UNIQUE") @db.NVarChar(36)
-  role               String               @db.VarChar(255)
-  first_name         String               @db.VarChar(255)
-  last_name          String               @db.VarChar(255)
-  birthdate          DateTime             @db.DateTime
-  email              String               @unique @db.VarChar(255)
-  emailVerified      DateTime?            @map("email_verified") @db.DateTime
-  phone              String?              @db.VarChar(15)
-  gender             String?              @db.VarChar(45)
-  race               String?              @db.VarChar(45)
-  photo_url          String?              @db.VarChar(255)
-  has_agreed_terms   Boolean              @default(false) @db.Bit
-  createdAt          DateTime             @map("created_at") @db.DateTime
-  updatedAt          DateTime?            @map("updated_at") @db.DateTime
-  cfa_admin          cfa_admin[]
-  contact_addresses  contact_addresses[]
-  educators          educators[]
-  employers          employers[]
-  jobseekers         jobseekers[]
-  training_providers training_providers[]
-  volunteers         volunteers[]
-}
-
 model edu_addresses {
-  edu_address_id     String           @id(clustered: false, map: "edu_addresses_PRIMARY") @db.VarChar(36)
-  edu_institution_id String           @db.NVarChar(36)
+  edu_address_id     String           @id(clustered: false, map: "edu_addresses_PRIMARY") @db.UniqueIdentifier
+  edu_institution_id String           @db.UniqueIdentifier
   street1            String           @db.VarChar(255)
   street2            String?          @db.VarChar(255)
   city               String           @db.VarChar(255)
@@ -160,7 +233,7 @@ model edu_addresses {
 }
 
 model edu_institutions {
-  edu_institution_id  String                 @id(clustered: false, map: "edu_institutions_PRIMARY") @unique(map: "edu_institutions_edu_institution_id_UNIQUE") @db.NVarChar(36)
+  edu_institution_id  String                 @id(clustered: false, map: "edu_institutions_PRIMARY") @unique(map: "edu_institutions_edu_institution_id_UNIQUE") @db.UniqueIdentifier
   name                String?                @unique @db.VarChar(255)
   contact_email       String?                @db.VarChar(255)
   edu_url             String?                @db.VarChar(255)
@@ -171,10 +244,10 @@ model edu_institutions {
 }
 
 model educators {
-  educator_id        String           @id(clustered: false, map: "educators_PRIMARY") @db.NVarChar(36)
-  user_id            String           @db.NVarChar(36)
-  edu_institution_id String           @db.NVarChar(36)
-  contacts           contacts         @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_educators_contacts1")
+  educator_id        String           @id(clustered: false, map: "educators_PRIMARY") @db.UniqueIdentifier
+  user_id            String           @db.UniqueIdentifier
+  edu_institution_id String           @db.UniqueIdentifier
+  users              User             @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_educators_contacts1")
   edu_institutions   edu_institutions @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_educators_edu_institution1")
 
   @@index([user_id], map: "fk_educators_contacts1_idx")
@@ -182,14 +255,14 @@ model educators {
 }
 
 model employers {
-  employer_id          String                 @id(clustered: false, map: "employers_PRIMARY") @unique(map: "employers_employer_id_UNIQUE") @db.NVarChar(36)
-  user_id              String                 @unique @db.NVarChar(36)
-  company_id           String?                @db.NVarChar(36)
+  employer_id          String                 @id(clustered: false, map: "employers_PRIMARY") @unique(map: "employers_employer_id_UNIQUE") @db.UniqueIdentifier
+  user_id              String                 @unique @db.UniqueIdentifier
+  company_id           String?                @db.UniqueIdentifier
+  work_address_id      String?                @db.UniqueIdentifier
   job_title            String                 @db.VarChar(255)
-  work_address_id      String?                @db.VarChar(36)
   linkedin_url         String?                @db.VarChar(255)
   is_verified_employee Boolean                @default(false, map: "DF__employers__is_verified") @db.Bit
-  contacts             contacts               @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_employer_user1")
+  users                User                   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_employer_user1")
   companies            companies?             @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")
   company_addresses    company_addresses?     @relation(fields: [work_address_id], references: [company_address_id], onUpdate: NoAction, map: "fk_employers_company_addresses")
   job_postings         job_postings[]
@@ -201,15 +274,15 @@ model employers {
 }
 
 model industry_sectors {
-  industry_sector_id String      @id(clustered: false, map: "industry_sectors_PRIMARY") @db.VarChar(36)
+  industry_sector_id String      @id(clustered: false, map: "industry_sectors_PRIMARY") @db.UniqueIdentifier
   sector_title       String      @db.VarChar(255)
   companies          companies[]
 }
 
 model job_listing_has_skills {
-  job_listing_has_skill_id String       @id(clustered: false, map: "job_listing_has_skills_PRIMARY") @unique(map: "job_listing_has_skills_job_listing_has_skill_category_id_UNIQUE") @db.NVarChar(36)
-  job_listing_id           String       @db.NVarChar(36)
-  skill_id                 String       @db.NVarChar(36)
+  job_listing_has_skill_id String       @id(clustered: false, map: "job_listing_has_skills_PRIMARY") @unique(map: "job_listing_has_skills_job_listing_has_skill_category_id_UNIQUE") @db.UniqueIdentifier
+  job_listing_id           String       @db.UniqueIdentifier
+  skill_id                 String       @db.UniqueIdentifier
   job_postings             job_postings @relation(fields: [job_listing_id], references: [job_posting_id], onUpdate: NoAction, map: "fk_job_listing_has_skill_category_job_listing1")
   skills                   skills       @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_job_listing_has_skill_category_skill1")
 
@@ -218,11 +291,11 @@ model job_listing_has_skills {
 }
 
 model job_postings {
-  job_posting_id         String                   @id(clustered: false, map: "job_postings_PRIMARY") @unique(map: "job_postings_job_listing_id_UNIQUE") @db.NVarChar(36)
-  company_id             String                   @db.NVarChar(36)
-  location_id            String                   @db.VarChar(36)
-  employer_id            String                   @db.NVarChar(36)
-  technology_area_id     String                   @db.NVarChar(36)
+  job_posting_id         String                   @id(clustered: false, map: "job_postings_PRIMARY") @unique(map: "job_postings_job_listing_id_UNIQUE") @db.UniqueIdentifier
+  company_id             String                   @db.UniqueIdentifier
+  location_id            String                   @db.UniqueIdentifier
+  employer_id            String                   @db.UniqueIdentifier
+  technology_area_id     String                   @db.UniqueIdentifier
   job_title              String                   @db.VarChar(255)
   job_description        String                   @db.VarChar(255)
   is_internship          Boolean                  @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
@@ -249,8 +322,8 @@ model job_postings {
 }
 
 model jobseeker_has_skills {
-  jobseeker_id String     @db.NVarChar(36)
-  skill_id     String     @db.NVarChar(36)
+  jobseeker_id String     @db.UniqueIdentifier
+  skill_id     String     @db.UniqueIdentifier
   jobseekers   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_has_skill_jobseeker1")
   skills       skills     @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_jobseeker_has_skill_skill1")
 
@@ -260,9 +333,9 @@ model jobseeker_has_skills {
 }
 
 model jobseekers {
-  jobseeker_id                       String                               @id(clustered: false, map: "jobseekers_PRIMARY") @unique(map: "jobseekers_learner_id_UNIQUE") @db.NVarChar(36)
-  user_id                            String                               @unique @db.NVarChar(36)
-  targeted_pathway                   String?                              @db.NVarChar(36)
+  jobseeker_id                       String                               @id(clustered: false, map: "jobseekers_PRIMARY") @unique(map: "jobseekers_learner_id_UNIQUE") @db.UniqueIdentifier
+  user_id                            String                               @unique @db.UniqueIdentifier
+  targeted_pathway                   String?                              @db.UniqueIdentifier
   is_enrolled_ed_program             Boolean                              @db.Bit
   highest_level_of_study_completed   String?                              @db.VarChar(255)
   current_grade_level                String?                              @db.VarChar(45)
@@ -282,7 +355,7 @@ model jobseekers {
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
   pathways                           pathways?                            @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
-  contacts                           contacts                             @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_learner_user1")
+  users                              User                                 @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_learner_user1")
   jobseekers_private_data            jobseekers_private_data[]
   jobseekers_skill_gap_data          jobseekers_skill_gap_data[]
   learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
@@ -295,9 +368,9 @@ model jobseekers {
 }
 
 model jobseekers_private_data {
-  jobseeker_private_data_id    String     @id(clustered: false, map: "jobseekers_private_data_PRIMARY") @unique(map: "jobseekers_private_data_learner_private_data_id_UNIQUE") @db.NVarChar(36)
-  jobseeker_id                 String     @unique @db.NVarChar(36)
-  ssn                          String?    @db.VarChar(255)
+  jobseeker_private_data_id    String     @id(clustered: false, map: "jobseekers_private_data_PRIMARY") @unique(map: "jobseekers_private_data_learner_private_data_id_UNIQUE") @db.UniqueIdentifier
+  jobseeker_id                 String     @unique @db.UniqueIdentifier
+  ssn                          String?    @unique @db.VarChar(255)
   is_authorized_to_work_in_usa Boolean    @default(false, map: "DF__jobseeker__is_au__3C34F16F") @db.Bit
   job_sponsorship_required     Boolean    @default(false, map: "DF__jobseeker__job_s__3D2915A8") @db.Bit
   is_veteran                   String     @default("prefer not to say", map: "DF__jobseeker__is_ve__3E1D39E1") @db.VarChar(45)
@@ -308,9 +381,9 @@ model jobseekers_private_data {
 }
 
 model jobseekers_education {
-  jobseekerEdId   String           @id @default(dbgenerated("newid()")) @map("jobseeker_ed_id") @db.NVarChar(36)
-  jobseekerId     String           @map("jobseeker_id") @db.NVarChar(36)
-  edInstitutionId String           @map("edu_institution_id") @db.NVarChar(36)
+  jobseekerEdId   String           @id @default(dbgenerated("newid()")) @map("jobseeker_ed_id") @db.UniqueIdentifier
+  jobseekerId     String           @map("jobseeker_id") @db.UniqueIdentifier
+  edInstitutionId String           @map("edu_institution_id") @db.UniqueIdentifier
   edProgram       String           @map("ed_program") @db.NVarChar(45) // high school, college, boot camp, pre-apprenticeship etc.
   edSystem        String?          @map("ed_system") @db.NVarChar(255) // entry for pre-apprenticeship ed_program
   isEnrolled      Boolean          @map("is_enrolled") @db.Bit
@@ -328,17 +401,17 @@ model jobseekers_education {
 }
 
 model jobseekers_skill_gap_data {
-  jobseeker_skill_gap_data_id String     @id(clustered: false, map: "jobseekers_skill_gap_data_PRIMARY") @unique(map: "jobseekers_skill_gap_data_learner_skill_gap_data_id_UNIQUE") @db.NVarChar(36)
-  jobseeker_id                String     @db.NVarChar(36)
+  jobseeker_skill_gap_data_id String     @id(clustered: false, map: "jobseekers_skill_gap_data_PRIMARY") @unique(map: "jobseekers_skill_gap_data_learner_skill_gap_data_id_UNIQUE") @db.UniqueIdentifier
+  jobseeker_id                String     @db.UniqueIdentifier
   jobseekers                  jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_learner_skill_gap_data_learner1")
 
   @@index([jobseeker_id], map: "jobseekers_skill_gap_data_fk_learner_skill_gap_data_learner1")
 }
 
 model learner_proj_based_tech_assessment {
-  learner_proj_based_tech_assessment_id String                      @id(clustered: false, map: "learner_proj_based_tech_assessment_PRIMARY") @unique(map: "learner_proj_based_tech_assessment_id_UNIQUE") @db.NVarChar(36)
-  jobseeker_id                          String                      @db.NVarChar(36)
-  proj_based_tech_assessment_id         String                      @db.NVarChar(36)
+  learner_proj_based_tech_assessment_id String                      @id(clustered: false, map: "learner_proj_based_tech_assessment_PRIMARY") @unique(map: "learner_proj_based_tech_assessment_id_UNIQUE") @db.UniqueIdentifier
+  jobseeker_id                          String                      @db.UniqueIdentifier
+  proj_based_tech_assessment_id         String                      @db.UniqueIdentifier
   attempt_date                          DateTime                    @db.DateTime
   has_passed                            Boolean                     @db.Bit
   proj_based_tech_assessments           proj_based_tech_assessments @relation(fields: [proj_based_tech_assessment_id], references: [proj_based_tech_assessment_id], onUpdate: NoAction, map: "fk_user_has_proj_based_tech_assessment_proj_based_tech_asse1")
@@ -349,8 +422,8 @@ model learner_proj_based_tech_assessment {
 }
 
 model pathway_has_skills {
-  pathway_id String   @db.NVarChar(36)
-  skill_id   String   @db.NVarChar(36)
+  pathway_id String   @db.UniqueIdentifier
+  skill_id   String   @db.UniqueIdentifier
   pathways   pathways @relation(fields: [pathway_id], references: [pathway_id], onUpdate: NoAction, map: "fk_Pathways_has_skill_Pathways1")
   skills     skills   @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_Pathways_has_skill_skill1")
 
@@ -360,8 +433,8 @@ model pathway_has_skills {
 }
 
 model pathway_subcategories {
-  pathway_subcategory_id     String   @db.NVarChar(36)
-  pathway_id                 String   @db.NVarChar(36)
+  pathway_subcategory_id     String   @db.UniqueIdentifier
+  pathway_id                 String   @db.UniqueIdentifier
   pw_subcategory_name        String   @db.VarChar(45)
   subcategory_assessment_url String?  @db.VarChar(255)
   pathways                   pathways @relation(fields: [pathway_id], references: [pathway_id], onUpdate: NoAction, map: "fk_pathway_subcategories_pathways1")
@@ -371,7 +444,7 @@ model pathway_subcategories {
 }
 
 model pathways {
-  pathway_id                  String                        @id(clustered: false, map: "pathways_PRIMARY") @db.NVarChar(36)
+  pathway_id                  String                        @id(clustered: false, map: "pathways_PRIMARY") @db.UniqueIdentifier
   pathway_title               String                        @unique @db.VarChar(255)
   jobseekers                  jobseekers[]
   pathway_has_skills          pathway_has_skills[]
@@ -382,10 +455,10 @@ model pathways {
 }
 
 model proj_based_tech_assessments {
-  proj_based_tech_assessment_id      String                               @id(clustered: false, map: "proj_based_tech_assessments_PRIMARY") @unique(map: "proj_based_tech_assessments_proj_based_tech_assessment_id_UNIQUE") @db.NVarChar(36)
+  proj_based_tech_assessment_id      String                               @id(clustered: false, map: "proj_based_tech_assessments_PRIMARY") @unique(map: "proj_based_tech_assessments_proj_based_tech_assessment_id_UNIQUE") @db.UniqueIdentifier
+  pathway_id                         String                               @db.UniqueIdentifier
   url                                String                               @db.VarChar(255)
   title                              String                               @db.VarChar(255)
-  pathway_id                         String                               @db.NVarChar(36)
   learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
   pathways                           pathways                             @relation(fields: [pathway_id], references: [pathway_id], onUpdate: NoAction, map: "fk_proj_based_tech_assessments_Pathways1")
 
@@ -393,8 +466,8 @@ model proj_based_tech_assessments {
 }
 
 model ProjectExperiences {
-  projectId                String               @id(clustered: false, map: "project_experiences_PRIMARY") @default(dbgenerated("newid()")) @map("proj_exp_id") @db.NVarChar(36)
-  jobseekerId              String               @map("jobseeker_id") @db.NVarChar(36)
+  projectId                String               @id(clustered: false, map: "project_experiences_PRIMARY") @default(dbgenerated("newid()")) @map("proj_exp_id") @db.UniqueIdentifier
+  jobseekerId              String               @map("jobseeker_id") @db.UniqueIdentifier
   projTitle                String               @map("project_title") @db.VarChar(255)
   projectRole              String               @map("jobseeker_role") @db.VarChar(255)
   startDate                DateTime             @map("start_date") @db.DateTime
@@ -411,8 +484,8 @@ model ProjectExperiences {
 }
 
 model project_has_skills {
-  proj_exp_id         String             @db.NVarChar(36)
-  skill_id            String             @db.NVarChar(36)
+  proj_exp_id         String             @db.UniqueIdentifier
+  skill_id            String             @db.UniqueIdentifier
   project_experiences ProjectExperiences @relation(fields: [proj_exp_id], references: [projectId], onUpdate: NoAction, map: "fk_project_experience_has_skill_project_experience1")
   skills              skills             @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_project_experience_has_skill_skill1")
 
@@ -422,8 +495,8 @@ model project_has_skills {
 }
 
 model sa_possible_answers {
-  sa_possible_answer_id String       @id(clustered: false, map: "sa_possible_answers_PRIMARY") @unique(map: "sa_possible_answers_sa_possible_answer_id_UNIQUE") @db.NVarChar(36)
-  sa_question_id        String       @db.NVarChar(36)
+  sa_possible_answer_id String       @id(clustered: false, map: "sa_possible_answers_PRIMARY") @unique(map: "sa_possible_answers_sa_possible_answer_id_UNIQUE") @db.UniqueIdentifier
+  sa_question_id        String       @db.UniqueIdentifier
   answer_text           String?      @db.VarChar(255)
   is_correct            Boolean      @default(true, map: "DF__sa_possib__is_co__1332DBDC") @db.Bit
   sa_questions          sa_questions @relation(fields: [sa_question_id], references: [sa_question_id], onUpdate: NoAction, map: "fk_sa_possilbe_answer_sa_question1")
@@ -432,8 +505,8 @@ model sa_possible_answers {
 }
 
 model sa_questions {
-  sa_question_id      String                @id(clustered: false, map: "sa_questions_PRIMARY") @unique(map: "sa_questions_sa_question_id_UNIQUE") @db.NVarChar(36)
-  self_assessment_id  String                @db.NVarChar(36)
+  sa_question_id      String                @id(clustered: false, map: "sa_questions_PRIMARY") @unique(map: "sa_questions_sa_question_id_UNIQUE") @db.UniqueIdentifier
+  self_assessment_id  String                @db.UniqueIdentifier
   question_topic      String                @db.NVarChar(255)
   question_type       String                @db.NVarChar(255)
   text                String                @db.VarChar(255)
@@ -445,25 +518,24 @@ model sa_questions {
 }
 
 model self_assessments {
-  self_assessment_id String         @id(clustered: false, map: "self_assessments_PRIMARY") @unique(map: "self_assessments_self_assessment_id_UNIQUE") @db.NVarChar(36)
-  pathway_id         String         @db.NVarChar(36)
+  self_assessment_id String         @id(clustered: false, map: "self_assessments_PRIMARY") @unique(map: "self_assessments_self_assessment_id_UNIQUE") @db.UniqueIdentifier
+  pathway_id         String         @db.UniqueIdentifier
   sa_questions       sa_questions[]
   pathways           pathways       @relation(fields: [pathway_id], references: [pathway_id], onUpdate: NoAction, map: "fk_self_assessments_Pathways1")
 
   @@index([pathway_id], map: "fk_self_assessments_Pathways1_idx")
 }
 
-//  fixme: here the uuid is generated on the database rather in code.
 model skill_subcategories {
-  skill_subcategory_id    String   @id(clustered: false, map: "skill_subcategories_PRIMARY") @unique(map: "skill_subcategories_skill_category_id_UNIQUE") @default(dbgenerated("(newid())")) @db.NVarChar(36)
+  skill_subcategory_id    String   @id(clustered: false, map: "skill_subcategories_PRIMARY") @unique(map: "skill_subcategories_skill_category_id_UNIQUE") @default(dbgenerated("(newid())")) @db.UniqueIdentifier
   subcategory_name        String   @db.VarChar(255)
   subcategory_description String   @db.VarChar(255)
   skills                  skills[]
 }
 
 model skills {
-  skill_id                    String                        @id(clustered: false, map: "skills_PRIMARY") @unique(map: "skills_skill_id_UNIQUE") @db.NVarChar(36)
-  skill_subcategory_id        String                        @db.NVarChar(36)
+  skill_id                    String                        @id(clustered: false, map: "skills_PRIMARY") @unique(map: "skills_skill_id_UNIQUE") @db.UniqueIdentifier
+  skill_subcategory_id        String                        @db.UniqueIdentifier
   skill_name                  String                        @db.VarChar(255)
   skill_info_url              String                        @default("") @db.VarChar(255)
   job_listing_has_skills      job_listing_has_skills[]
@@ -478,30 +550,22 @@ model skills {
 }
 
 model social_media_platforms {
-  social_platform_id   String                 @id(clustered: false, map: "social_media_platforms_PRIMARY") @db.NVarChar(36)
+  social_platform_id   String                 @id(clustered: false, map: "social_media_platforms_PRIMARY") @db.UniqueIdentifier
   platform             String                 @db.VarChar(45)
   social_logo_url      String                 @db.VarChar(255)
   company_social_links company_social_links[]
 }
 
 model technology_areas {
-  technology_area_id String           @id(clustered: false, map: "technology_areas_PRIMARY") @db.NVarChar(36)
+  technology_area_id String           @id(clustered: false, map: "technology_areas_PRIMARY") @db.UniqueIdentifier
   title              String           @db.VarChar(255)
   job_postings       job_postings[]
   work_experiences   WorkExperience[]
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model timestamps {
-  create_time DateTime? @default(now(), map: "DF__timestamp__creat__2739D489") @db.DateTime
-  update_time DateTime? @db.DateTime
-
-  @@ignore
-}
-
 model training_program_has_skills {
-  training_program_id String            @db.NVarChar(36)
-  skill_id            String            @db.NVarChar(36)
+  training_program_id String            @db.UniqueIdentifier
+  skill_id            String            @db.UniqueIdentifier
   skills              skills            @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_training_program_has_skills_skills1")
   training_programs   training_programs @relation(fields: [training_program_id], references: [training_program_id], onUpdate: NoAction, map: "fk_training_program_has_skills_training_program1")
 
@@ -511,9 +575,9 @@ model training_program_has_skills {
 }
 
 model training_programs {
-  training_program_id         String                        @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.NVarChar(36)
-  training_provider_id        String                        @db.NVarChar(36)
-  pathway_id                  String?                       @db.NVarChar(36)
+  training_program_id         String                        @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
+  training_provider_id        String                        @db.UniqueIdentifier
+  pathway_id                  String?                       @db.UniqueIdentifier
   training_program_has_skills training_program_has_skills[]
   pathways                    pathways?                     @relation(fields: [pathway_id], references: [pathway_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_training_program_Pathways1")
   training_providers          training_providers            @relation(fields: [training_provider_id], references: [training_provider_id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
@@ -523,21 +587,21 @@ model training_programs {
 }
 
 model training_providers {
-  training_provider_id String              @id(clustered: false, map: "training_providers_PRIMARY") @unique(map: "training_providers_training_provider_id_UNIQUE") @db.NVarChar(36)
-  user_id              String              @db.NVarChar(36)
-  edu_institution_id   String              @db.NVarChar(36)
+  training_provider_id String              @id(clustered: false, map: "training_providers_PRIMARY") @unique(map: "training_providers_training_provider_id_UNIQUE") @db.UniqueIdentifier
+  user_id              String              @db.UniqueIdentifier
+  edu_institution_id   String              @db.UniqueIdentifier
   training_programs    training_programs[]
   edu_institutions     edu_institutions    @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_training_provider_edu_institution1")
-  contacts             contacts            @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_training_provider_user1")
+  users                User                @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_training_provider_user1")
 
   @@index([edu_institution_id], map: "training_providers_fk_training_provider_edu_institution1_idx")
   @@index([user_id], map: "training_providers_fk_training_provider_user1_idx")
 }
 
 model volunteer_has_skills {
-  volunteer_skills_id String     @id(clustered: false, map: "volunteer_has_skills_PRIMARY") @db.NVarChar(36)
-  volunteer_id        String     @db.NVarChar(36)
-  skill_id            String     @db.NVarChar(36)
+  volunteer_skills_id String     @id(clustered: false, map: "volunteer_has_skills_PRIMARY") @db.UniqueIdentifier
+  volunteer_id        String     @db.UniqueIdentifier
+  skill_id            String     @db.UniqueIdentifier
   skills              skills     @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_volunteer_has_skill_skill1")
   volunteers          volunteers @relation(fields: [volunteer_id], references: [volunteer_id], onUpdate: NoAction, map: "fk_volunteer_has_skill_volunteer1")
 
@@ -546,19 +610,19 @@ model volunteer_has_skills {
 }
 
 model volunteers {
-  volunteer_id         String                 @id(clustered: false, map: "volunteers_PRIMARY") @unique(map: "volunteers_mentor_id_UNIQUE") @db.NVarChar(36)
-  user_id              String                 @db.NVarChar(36)
+  volunteer_id         String                 @id(clustered: false, map: "volunteers_PRIMARY") @unique(map: "volunteers_mentor_id_UNIQUE") @db.UniqueIdentifier
+  user_id              String                 @db.UniqueIdentifier
   volunteer_type       String                 @db.NVarChar(255)
   volunteer_has_skills volunteer_has_skills[]
-  contacts             contacts               @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_mentor_user1")
+  users                User                   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_mentor_user1")
 
   @@index([user_id], map: "volunteers_fk_mentor_user1_idx")
 }
 
 model WorkExperience {
-  workId           String           @id(clustered: false, map: "work_experiences_PRIMARY") @map("work_id") @db.NVarChar(36)
-  jobseekerId      String           @map("jobseeker_id") @db.NVarChar(36)
-  techAreaId       String           @map("technology_area_id") @db.NVarChar(36)
+  workId           String           @id(clustered: false, map: "work_experiences_PRIMARY") @map("work_id") @db.UniqueIdentifier
+  jobseekerId      String           @map("jobseeker_id") @db.UniqueIdentifier
+  techAreaId       String           @map("technology_area_id") @db.UniqueIdentifier
   company          String           @db.VarChar(255)
   isInternship     Boolean          @default(false, map: "DF__work_expe__is_in__75A278F5") @map("is_internship") @db.Bit
   jobTitle         String           @map("job_title") @db.VarChar(45)

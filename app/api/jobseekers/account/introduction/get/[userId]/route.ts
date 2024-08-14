@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import {JsIntroDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -12,25 +13,25 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
         if (!userId) {
             return NextResponse.json({error: 'User email is required'}, {status: 400});
         }
-        // Fetch the contacts data
-        const contact = await prisma.contacts.findUnique({
+        // Fetch the users data
+        const user = await prisma.user.findUnique({
             where: {
-                user_id: userId
+                id: userId
             },
             select: {
-                user_id: true,
+                id: true,
                 role: true,
                 first_name: true,
                 last_name: true,
                 birthdate: true,
                 email: true,
                 emailVerified: true,
-                phone: true, // TODO: fix with libphonenumber-js package to conform to E.164 format
+                phone: true,
                 photo_url: true,
                 createdAt: true,
-                contact_addresses: {
+                user_addresses: {
                     select: {
-                        contact_address_id: true,
+                        user_address_id: true,
                         zip: true,
                         state: true,
                         city: true,
@@ -64,27 +65,27 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                 }
             }
         });
-        if (!contact) {
+        if (!user) {
             return NextResponse.json({error: 'Jobseeker not found'}, {status: 404})
         }
 
-        const address = contact.contact_addresses && contact.contact_addresses.length > 0 ? contact.contact_addresses[0] : null;
-        const jobseeker = contact.jobseekers && contact.jobseekers.length > 0 ? contact.jobseekers[0] : null;
+        const address = user.user_addresses && user.user_addresses.length > 0 ? user.user_addresses?.[0] : null;
+        const jobseeker = user.jobseekers && user.jobseekers.length > 0 ? user.jobseekers?.[0] : null;
 
         // Map the jobseeker data to JsIntroDTO
         const loadIntroPage: JsIntroDTO = {
-            userId: contact.user_id,
-            photoUrl: contact.photo_url,
-            firstName: contact.first_name,
-            lastName: contact.last_name,
-            birthDate: contact.birthdate,
-            phoneCountryCode: contact.phone?.split('-')[0], // TODO: use libphonenumber-js parsing functions
-            phone: contact?.phone?.split('-')[1],
+            userId: user.id,
+            photoUrl: user.photo_url,
+            firstName: user?.first_name,
+            lastName: user?.last_name,
+            birthDate: user.birthdate,
+            phoneCountryCode: user.phone ? parsePhoneNumberFromString(user.phone)?.countryCallingCode : null,
+            phone: user.phone ? parsePhoneNumberFromString(user.phone)?.number : null,
             zipCode: address?.zip,
             state: address?.state,
             city: address?.city,
             county: address?.county,
-            email: contact.email,
+            email: user.email,
             introHeadline: jobseeker?.intro_headline,
             currentJobTitle: jobseeker?.current_job_title,
             resumeUrl: jobseeker?.resume_url??null,
@@ -92,11 +93,11 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         // metadata that may be needed
         const meta = {
-            emailVerified: contact.emailVerified,
-            createdAt: contact.createdAt,
+            emailVerified: user.emailVerified,
+            createdAt: user.createdAt,
             pathwayId: jobseeker?.pathways?.pathway_id,
             jobseekerId: jobseeker?.jobseeker_id,
-            contactAddressId: address?.contact_address_id,
+            contactAddressId: address?.user_address_id,
             isMarkedDeletion: jobseeker?.is_marked_deletion,
         }
         const result = {loadIntroPage, meta}

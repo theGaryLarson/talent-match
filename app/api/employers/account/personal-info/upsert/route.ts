@@ -2,6 +2,8 @@ import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {PostEmployerPersonalDTO, ReadEmployerPersonalDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
+import parsePhoneNumberFromString from "libphonenumber-js";
+import {formatPhoneE164} from "@/app/lib/utils";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -14,34 +16,37 @@ export async function POST(request: Request) {
             lastName,
             birthDate,
             email,
+            phoneCountryCode,
             phone,
             gender,
             race,
             photoUrl,
         } = body;
-        const upsertedEmployer = await prisma.contacts.upsert({
+
+        const formattedPhone = formatPhoneE164(phoneCountryCode, phone)
+        const upsertedUser = await prisma.user.upsert({
             where: {
-                user_id: userId
+                id: userId
             },
             update: {
                 first_name: firstName,
                 last_name: lastName,
                 birthdate: new Date(birthDate).toISOString(),
                 email: email,
-                phone: phone,
+                phone: formattedPhone,
                 gender: gender,
                 race: race,
                 photo_url: photoUrl,
                 updatedAt: new Date(),
             },
             create: {
-                user_id: userId,
+                id: userId,
                 role: 'EMPLOYER',
                 first_name: firstName,
                 last_name: lastName,
                 birthdate: new Date(birthDate).toISOString(),
                 email: email,
-                phone: phone,
+                phone: formattedPhone,
                 gender: gender,
                 race: race,
                 photo_url: photoUrl,
@@ -50,15 +55,16 @@ export async function POST(request: Request) {
         })
 
         const result: ReadEmployerPersonalDTO = {
-            userId: upsertedEmployer.user_id,
-            firstName: upsertedEmployer.first_name,
-            lastName: upsertedEmployer.last_name,
-            birthDate: upsertedEmployer.birthdate.toISOString(),
-            email: upsertedEmployer.email,
-            phone: upsertedEmployer.phone,
-            gender: upsertedEmployer.gender,
-            race: upsertedEmployer.race,
-            photoUrl: upsertedEmployer.photo_url,
+            userId: upsertedUser.id,
+            firstName: upsertedUser.first_name,
+            lastName: upsertedUser.last_name,
+            birthDate: upsertedUser?.birthdate?.toISOString(),
+            email: upsertedUser.email,
+            phoneCountryCode: upsertedUser?.phone ? parsePhoneNumberFromString(upsertedUser.phone)?.countryCallingCode : null,
+            phone: upsertedUser?.phone ? parsePhoneNumberFromString(upsertedUser.phone)?.number : null,
+            gender: upsertedUser.gender,
+            race: upsertedUser.race,
+            photoUrl: upsertedUser.photo_url,
         }
         return NextResponse.json({success:true, result}, {status: 200})
 

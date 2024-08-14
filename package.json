@@ -8,7 +8,8 @@
     "start": "next start",
     "seed": "node -r dotenv/config ./prisma/seed.mjs",
     "lint": "next lint",
-    "db-push": "prisma db push"
+    "db-push": "prisma db push",
+    "db-reset":"prisma migrate reset"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.1.0",
@@ -28,6 +29,7 @@
     "clsx": "^2.0.0",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.10.1",
+    "libphonenumber-js": "^1.11.5",
     "luxon": "^3.4.4",
     "mssql": "^11.0.1",
     "next": "^14.0.2",

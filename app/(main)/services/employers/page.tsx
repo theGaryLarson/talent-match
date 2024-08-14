@@ -86,15 +86,15 @@ export default function Page() {
         <h1 className="text-2xl font-bold">Browse by Jobseeker Skills</h1>
         <div className='flex flex-wrap gap-4'>
         <CategoryCard
-            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
+            imgSrc={'/cfa_images/stock/SoftwareDevLink.png'}
             title={'Software Devolopment'}
             text={'Find job seekers with training and expertise in Software Devolopment'} href={'/services/employers/dashboard/listview?search=Software+Devolopment'}          />
           <CategoryCard
-            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
+            imgSrc={'/cfa_images/stock/cyberLink.png'}
             title={'Cyber Security'}
             text={'Find job seekers with training and expertise in Cyber Security.'} href={'/services/employers/dashboard/listview?search=Cyber+Security'}          />
           <CategoryCard
-            imgSrc={'/cfa_images/stock/linkedin-sales-solutions-EI50ZDA-l8Y-unsplash.jpg'}
+            imgSrc={'/cfa_images/stock/dataLink.png'}
             title={'Data Analytics'}
             text={'Find job seekers with training and expertise in Data Analytics'} href={'/services/employers/dashboard/listview?search=Data+Analytics'}          />
         </div>

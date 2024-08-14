@@ -4,9 +4,9 @@ import {WorkExperience} from "@prisma/client";
 export type JsIntroDTO = {
     userId: string,
     photoUrl?: string | null;
-    firstName: string;
-    lastName: string;
-    birthDate: string | Date;
+    firstName?: string | null;
+    lastName?: string | null;
+    birthDate?: string | Date | null;
     phoneCountryCode?: string | null;
     phone?: string | null;
     zipCode?: string | null;
@@ -28,9 +28,9 @@ export type JsIntroPostDTO = {
     phoneCountryCode?: string | null;
     phone?: string | null;
     zipCode: string;
-    state: string;
-    city: string;
-    county: string;
+    state?: string | null;
+    city?: string  | null;
+    county?: string | null;
     email: string;
     introHeadline?: string | null;
     currentJobTitle?: string | null;
@@ -72,34 +72,55 @@ export enum DegreeType {
     DoctoralDegree = "Doctoral Degree"
 }
 
-export enum CurrentGrade {
+export enum SchoolGradeLevel {
     Freshman = "Freshman",
     Sophomore = "Sophomore",
     Junior = "Junior",
     Senior = "Senior"
 }
 
+export enum PreALevel {
+    Level1 = "Level 1",
+    Level2 = "Level 2",
+    Level3 = "Level 3",
+    Level4 = "Level 4",
+    Level5 = "Level 5",
+    Level6 = "Level 6",
+    LastMile = "Last Mile",
+}
+
 export enum EdProgram {
     None = "None",
     HighSchool = "High school",
     College = "College",
-    TrainingProgram = "Training program",
-    BootCamp = "Boot camp",
+    TrainingProgram = "Training program / Bootcamp",
     PreApprenticeship = "Pre-apprenticeship",
+    Other = "Other",
+}
+
+export enum EdSystem {
+    None = "None",
+    SystemA = "System A",
+    SystemB = "System B",
+    SystemC = "System C",
     Other = "Other",
 }
 
 export type EducationInfoDTO = {
     jobseekerEdId: string,
     edInstitutionId: string, // use name lookup to find ID.
+    edProgram?: EdProgram,
     institutionName?: string,
     isEnrolled: boolean,
     startDate: string,
     gradDate: string,
     degreeType?: DegreeType,
+    collegeProgram?: string | null,
     major?: string | null,
     minor?: string | null,
-    edProgram?: EdProgram,
+    gpa?: number | null,
+    gradeLevel?: SchoolGradeLevel | null,
+    preALevel?: PreALevel | null,
     edSystem?: string | null; // pre apprenticeship option
     description?: string | null;
 }
@@ -107,10 +128,7 @@ export type EducationInfoDTO = {
 export type JsEducationDTO = {
     userId: string,
     highestLevelOfStudy: DegreeType;
-    currentEdProgram: EdProgram // college, high school, etc.
-    currentGrade: CurrentGrade;
-    isEnrolledEdProgram: boolean;
-    schools: EducationInfoDTO[];
+    educations: EducationInfoDTO[];
     certifications: CertDTO[];
     projects: ProjectExpDTO[];
 }
@@ -131,7 +149,7 @@ type workExperienceDTO = {
 export type JsWorkExpDTO = {
     userId: string,
     yearsWorkExperience: string,
-    monthsInternshipExperience?: string | null, // TODO: add field to the database
+    monthsInternshipExperience?: string | null,
     isAuthorizedToWorkUsa: boolean, // TODO: encrypt
     requiresSponsorship: boolean, // TODO: encrypt
     workExperiences?: WorkExperience[]
@@ -156,9 +174,9 @@ export type JsDisclosuresDTO = {
     jobseekerId?: string | null, // jsDetails
     isVeteran?: string | null, // privateDetails
     hasDisability?: string | null, // privateDetails
-    gender?: string | null, // contacts.gender
-    race?: string | null, //contacts.race
-    hasReadTerms: boolean //contacts.has_read_terms
+    gender?: string | null, // users.gender
+    race?: string | null, //users.race
+    hasReadTerms: boolean //users.has_read_terms
 
 }
 
@@ -166,8 +184,8 @@ export type JsDisclosuresPostDTO = {
     userId: string,
     isVeteran: string, // jobseekers[0].jobseekers_private_data[0].is_veteran
     hasDisability: string, // jobseekers[0].jobseekers_private_data[0].has_disability
-    gender: string, // contacts.gender
-    race: string, //contacts.race
-    hasReadTerms: boolean //contacts.has_read_terms
+    gender: string, // users.gender
+    race: string, //users.race
+    hasReadTerms: boolean //users.has_read_terms
 
 }
