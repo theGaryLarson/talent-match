@@ -11,12 +11,12 @@ export default async function page({ params }: { params: { id: string } }) {
       
         <div className="flex h-[200px] items-center rounded-md border bg-white">
           <div className="flex items-center gap-5 p-4">
-            <Avatar imgsrc={jobseeker?.contacts.photo_url} scale={3}></Avatar>
+            <Avatar imgsrc={jobseeker?.users.photo_url} scale={3}></Avatar>
             <div>
               <h1 className="text-2xl font-bold">
-                {jobseeker?.contacts.first_name +
+                {jobseeker?.users.first_name +
                   ' ' +
-                  jobseeker?.contacts.last_name}
+                  jobseeker?.users.last_name}
               </h1>
               <h2>{jobseeker?.current_job_title}</h2>
               <h2>{

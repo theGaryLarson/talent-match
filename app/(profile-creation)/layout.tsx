@@ -1,6 +1,7 @@
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 
 import '@/app/ui/global.css';
+import '@/app/ui/profile-creation.css';
 import { inter } from '@/app/ui/fonts';
 import CFAProfileCreationHeader from '@/app/ui/CFAProfileCreationHeader';
 

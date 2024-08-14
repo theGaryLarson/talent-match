@@ -13,12 +13,12 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             return NextResponse.json({error: 'User ID is required'}, {status: 400});
         }
 
-        const contact = await prisma.contacts.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
-                user_id: userId
+                id: userId
             },
             select: {
-                user_id: true,
+                id: true,
                 jobseekers: {
                     select: {
                         jobseeker_id: true,
@@ -36,11 +36,11 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             }
         });
 
-        if (!contact) {
+        if (!user) {
             return NextResponse.json({error: `Record does not exist for userId: ${userId}`}, {status: 400});
         } else {
             // Assuming there is only one jobseeker per user
-            const jobseeker = contact.jobseekers[0];
+            const jobseeker = user.jobseekers?.[0];
 
             const privateData = jobseeker?.jobseekers_private_data[0]; // There's only one private data record per jobseeker
 
@@ -58,7 +58,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             }));
 
             const result: JsWorkExpDTO = {
-                userId: contact.user_id,
+                userId: user.id,
                 yearsWorkExperience: jobseeker.years_work_exp?.toString() ?? "0",
                 monthsInternshipExperience: jobseeker.months_internship_exp?.toString() ?? "0",
                 isAuthorizedToWorkUsa: privateData.is_authorized_to_work_in_usa,
