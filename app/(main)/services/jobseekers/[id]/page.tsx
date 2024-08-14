@@ -19,8 +19,10 @@ export default async function page({ params }: { params: { id: string } }) {
                   jobseeker?.users.last_name}
               </h1>
               <h2>{jobseeker?.current_job_title}</h2>
-              <h2>
-               {jobseeker?.jobseeker_education[0]?.eduInstitutions?.name + ' | ' + jobseeker?.jobseeker_education[0]?.degreeType +" | "+ jobseeker?.jobseeker_education[0].major}
+              <h2>{
+                //TODO crashes when major is undefined
+                }
+               {jobseeker?.jobseeker_education[0]?.eduInstitutions?.name + ' | ' + jobseeker?.jobseeker_education[0]?.degreeType +" | "+ jobseeker?.jobseeker_education[0].major?jobseeker?.jobseeker_education[0].major:''}
               </h2>
               <h2>
                 {jobseeker?.current_grade_level}
@@ -116,7 +118,11 @@ export default async function page({ params }: { params: { id: string } }) {
           ))}
         </div>
       </div>
-
+      <div className="space-y-4 rounded-md border p-4 bg-white">
+        <h1 className="text-2xl font-bold">Preferences</h1>
+        <p>I am looking for {jobseeker?.employment_type_sought} roles</p>
+        <p>My targeted pathway is {jobseeker?.pathways?.pathway_title}</p>
+      </div>
       <div className="space-y-4 rounded-md border p-4 bg-white">
         <h1 className="text-2xl font-bold">Resume</h1>
         {jobseeker?.resume_url ? (
