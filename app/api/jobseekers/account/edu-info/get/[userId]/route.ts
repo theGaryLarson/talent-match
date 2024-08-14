@@ -2,7 +2,6 @@ import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import {
     CertDTO,
-    SchoolGradeLevel,
     DegreeType,
     EdProgram,
     EducationInfoDTO,
