@@ -53,7 +53,7 @@ export default function AvatarUpload({
 
   return (
     <div>
-      <label className="flex p-4 hover:bg-slate-50 rounded-full">
+      <label className="flex p-4 hover:bg-slate-50 rounded-full cursor-pointer">
         <Avatar rounded 
           img={filePath}
           />
