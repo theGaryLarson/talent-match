@@ -69,8 +69,8 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             return NextResponse.json({error: 'Jobseeker not found'}, {status: 404})
         }
 
-        const address = user.user_addresses && user.user_addresses.length > 0 ? user.user_addresses[0] : null;
-        const jobseeker = user.jobseekers && user.jobseekers.length > 0 ? user.jobseekers[0] : null;
+        const address = user.user_addresses && user.user_addresses.length > 0 ? user.user_addresses?.[0] : null;
+        const jobseeker = user.jobseekers && user.jobseekers.length > 0 ? user.jobseekers?.[0] : null;
 
         // Map the jobseeker data to JsIntroDTO
         const loadIntroPage: JsIntroDTO = {
