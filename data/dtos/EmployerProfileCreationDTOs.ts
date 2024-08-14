@@ -4,6 +4,7 @@ export type PostEmployerPersonalDTO = {
     lastName: string,
     birthDate: string,
     email: string,
+    phoneCountryCode?: string,
     phone?: string,
     gender: string,
     race: string,
@@ -17,6 +18,7 @@ export type ReadEmployerPersonalDTO = {
     lastName?: string | null,
     birthDate?: string | null,
     email?: string | null,
+    phoneCountryCode?: string | null,
     phone?: string | null,
     gender?: string | null,
     race?: string | null,
@@ -48,17 +50,21 @@ export type CompanyInfoSummaryDTO = {
 
 export type ReadAddressDTO = {
     addressId?: string,
-    city?: string,
-    state?: string,
-    zipCode?: string,
-    county?: string,
+    city?: string | null,
+    state?: string | null,
+    zipCode?: string | null,
+    county?: string | null,
+    lat?: string | null,
+    lon?: string | null,
 }
 
 export type PostAddressDTO = {
     city: string,
-    state: string,
+    state?: string,
     zipCode: string,
-    county: string,
+    county?: string  | null,
+    lat?: number | null,
+    lon?: number | null,
 }
 
 export type PostCompanyInfoDTO = {
@@ -74,6 +80,7 @@ export type PostCompanyInfoDTO = {
     yearFounded: string,
     websiteUrl?: string | null,
     videoUrl?: string | null,
+    phoneCountryCode?: string | null,
     companyPhone?: string | null,
     mission?: string | null,
     vision?: string | null,
@@ -93,6 +100,7 @@ export type ReadCompanyInfoDTO = {
     yearFounded: string,
     websiteUrl?: string | null,
     videoUrl?: string | null,
+    phoneCountryCode?: string | null,
     companyPhone?: string | null,
     mission?: string | null,
     vision?: string | null,

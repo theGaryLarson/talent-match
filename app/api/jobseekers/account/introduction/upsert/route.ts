@@ -3,6 +3,8 @@ import {PrismaClient} from '@prisma/client';
 import {JsIntroDTO, JsIntroPostDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import parsePhoneNumberFromString from "libphonenumber-js";
+import {formatPhoneE164} from "@/app/lib/utils";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -29,20 +31,13 @@ export async function POST(request: Request) {
             resumeUrl,
         } = body;
 
-        // TODO: fix: install and use libphonenumber-js to handle country codes.  There is a supported React Component as well.
-        // Clean the phoneNumber to remove special characters
-        const cleanedPhoneCountryCode = phoneCountryCode?.replace(/[-\s().]/g, '')
-        const cleanedPhoneNumber = phone?.replace(/[-\s().]/g, '');
+        const formattedPhone = formatPhoneE164(phoneCountryCode, phone)
 
-        // Format the phone number in E.164 format
-        const formattedPhone = `+${cleanedPhoneCountryCode}-${cleanedPhoneNumber}`;
-
-        // Transaction to ensure atomicity
         const result = await prisma.$transaction(async (prisma) => {
 
-            // Upsert contact
-            const contact = await prisma.contacts.upsert({
-                where: {user_id: userId},
+            // Upsert user
+            const user = await prisma.user.upsert({
+                where: {id: userId},
                 update: {
                     first_name: firstName,
                     last_name: lastName,
@@ -53,7 +48,7 @@ export async function POST(request: Request) {
                     updatedAt: new Date(),
                 },
                 create: {
-                    user_id: userId,
+                    id: userId,
                     role: 'Jobseeker',
                     first_name: firstName,
                     last_name: lastName,
@@ -81,7 +76,7 @@ export async function POST(request: Request) {
 
 
             const jobseeker = await prisma.jobseekers.upsert({
-                where: {user_id: contact.user_id},
+                where: {user_id: user.id},
                 update: {
                     intro_headline: introHeadline,
                     current_job_title: currentJobTitle,
@@ -89,7 +84,7 @@ export async function POST(request: Request) {
                 },
                 create: {
                     jobseeker_id: jobseeker_id,
-                    user_id: contact.user_id,
+                    user_id: user.id,
                     targeted_pathway: undefined,
                     is_enrolled_ed_program: isEnrolledInCollege,
                     highest_level_of_study_completed: undefined,
@@ -105,17 +100,17 @@ export async function POST(request: Request) {
                     employment_type_sought: undefined,
                 },
             });
-            const existingContactAddress = await prisma.contact_addresses.findUnique({
+            const existingUserAddress = await prisma.user_addresses.findUnique({
                 where: {
-                    user_id: contact.user_id
+                    user_id: user.id
                 },
                 select: {
-                    contact_address_id: true,
+                    user_address_id: true,
                 }
             })
-            const contact_address_id = existingContactAddress?.contact_address_id || uuidv4();
-            const contactAddress = await prisma.contact_addresses.upsert({
-                where: {user_id: contact.user_id},
+            const user_address_id = existingUserAddress?.user_address_id || uuidv4();
+            const userAddress = await prisma.user_addresses.upsert({
+                where: {user_id: user.id},
                 update: {
                     zip: zipCode,
                     state,
@@ -123,8 +118,8 @@ export async function POST(request: Request) {
                     county,
                 },
                 create: {
-                    contact_address_id,
-                    user_id: contact.user_id,
+                    user_address_id: user_address_id,
+                    user_id: user.id,
                     zip: zipCode,
                     state,
                     city,
@@ -132,18 +127,18 @@ export async function POST(request: Request) {
                 }
             });
             const loadIntroPage: JsIntroDTO = {
-                userId: contact.user_id,
-                photoUrl: contact.photo_url,
-                firstName: contact.first_name,
-                lastName: contact.last_name,
-                birthDate: contact.birthdate,
-                phoneCountryCode: cleanedPhoneCountryCode,
-                phone: cleanedPhoneNumber,
-                zipCode: contactAddress.zip,
-                state: contactAddress.state,
-                city: contactAddress.city,
-                county: contactAddress.county,
-                email: contact.email,
+                userId: user.id,
+                photoUrl: user.photo_url,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                birthDate: user.birthdate,
+                phoneCountryCode: user.phone ? parsePhoneNumberFromString(user.phone)?.countryCallingCode : null,
+                phone: user.phone,
+                zipCode: userAddress.zip,
+                state: userAddress.state,
+                city: userAddress.city,
+                county: userAddress.county,
+                email: user.email,
                 introHeadline: jobseeker.intro_headline,
                 currentJobTitle: jobseeker.current_job_title,
                 resumeUrl: jobseeker?.resume_url ?? null,
@@ -151,11 +146,11 @@ export async function POST(request: Request) {
 
 
             const meta = {
-                emailVerified: contact.emailVerified,
-                createdAt: contact.createdAt,
+                emailVerified: user.emailVerified,
+                createdAt: user.createdAt,
                 pathwayId: jobseeker.targeted_pathway,
                 jobseekerId: jobseeker.jobseeker_id,
-                contactAddressId: contactAddress.contact_address_id,
+                contactAddressId: userAddress.user_address_id,
                 isMarkedDeletion: jobseeker.is_marked_deletion,
             }
             return {loadIntroPage, meta};

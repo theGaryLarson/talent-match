@@ -4,6 +4,7 @@ import {PrismaClient} from "@prisma/client";
 import {
     ReadCompanyInfoDTO,
 } from "@/data/dtos/EmployerProfileCreationDTOs";
+import parsePhoneNumberFromString from "libphonenumber-js";
 const prisma: PrismaClient = getPrismaClient();
 
 export async function GET(request: Request, { params }: { params: { companyId: string } }) {
@@ -77,6 +78,7 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             yearFounded: companyInfo?.year_founded?.toString(),
             websiteUrl: companyInfo.company_website_url,
             videoUrl: companyInfo.company_video_url,
+            phoneCountryCode: companyInfo?.company_phone ? parsePhoneNumberFromString(companyInfo?.company_phone)?.countryCallingCode : null,
             companyPhone: companyInfo.company_phone,
             mission: companyInfo.company_mission,
             vision: companyInfo.company_vision,

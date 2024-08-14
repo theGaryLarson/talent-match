@@ -7,7 +7,7 @@ export type JobSeekerCardViewDTO = {
     pathways: {
         pathway_title: string | null;
     };
-    contacts: {
+    users: {
         role: string;
         first_name: string | null;
         last_name: string | null;

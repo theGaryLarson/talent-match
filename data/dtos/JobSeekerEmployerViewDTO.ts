@@ -1,7 +1,6 @@
 import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
 
-//fixme: this type cannot be used yet because it does not align with the returned object
-type ContactDTO = {
+type UserDTO = {
     user_id: string;
     first_name: string;
     last_name: string;
@@ -41,7 +40,7 @@ export type JobSeekerEmployerViewDTO = {
     targeted_pathway: string;
     resume_url: string | null;
     portfolio_url: string;
-    contacts: ContactDTO;
+    users: UserDTO;
     work_experiences: WorkExperienceDTO[];
     edu_institutions: EducationInstitutionDTO;
     project_experiences: ProjectExperienceDTO[];

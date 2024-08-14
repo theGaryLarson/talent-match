@@ -9,7 +9,7 @@ export async function getUser(email?: string | null): Promise<User | null> {
   console.log('getUser called with email:', email);
   if (email) {
     try {
-      const user = await prisma.contacts.findUnique({
+      const user = await prisma.user.findUnique({
         where: { email },
       });
       const emailVerification = user?.emailVerified ? user.emailVerified.toISOString() : null;
@@ -17,7 +17,7 @@ export async function getUser(email?: string | null): Promise<User | null> {
       const dateUpdated = user?.updatedAt ? user.updatedAt.toISOString() : null;
       if (user) {
         return {
-          id: user.user_id,
+          id: user.id,
           name: user.first_name + ' ' + user.last_name,
           email: user.email,
           emailVerified: emailVerification,
@@ -39,7 +39,7 @@ export async function getUserRole(email?: string | null): Promise<string | null>
   console.log('getUserRole called with email:', email);
   if (email) {
     try {
-      const user = await prisma.contacts.findUnique({
+      const user = await prisma.user.findUnique({
         where: { email },
       });
 

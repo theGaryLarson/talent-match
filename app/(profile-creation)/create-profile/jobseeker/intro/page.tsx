@@ -2,15 +2,17 @@
 
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '../../../../../lib/store';
+import type { RootState } from '@/lib/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '../../../../../lib/features/profileCreation/formSlice';
+import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from "flowbite-react";
+import {formatPhoneE164} from "@/app/lib/utils";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
@@ -53,27 +55,64 @@ export default function CreateJobseekerProfileIntroPage(){
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     dispatch(submitForm());
-    router.push('/create-profile/jobseeker/education');
 
+    const birthDateValue = fields.find(f => f.id === 'profile-creation-intro-birth-date')?.value || null;
+    const birthDateISO = birthDateValue ? new Date(birthDateValue).toISOString() : null;
 
-    // Simulate a form submission
-    setTimeout(() => {
-      if (fields.every((field) => field.value !== '' && field.value !== 0)) {
-        dispatch(submitFormSuccess());
-      } else {
-        dispatch(submitFormFailure('All fields are required'));
+    const countryCode = fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null;
+    const ph = fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null;
+     const formattedPhone = formatPhoneE164(countryCode?.toString(), ph?.toString())
+
+    // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
+    //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO
+    const formData = {
+          userId: 'USER_ID_FROM_SESSION_OR_AUTH',
+          photoUrl: fields.find(f => f.id === 'profile-creation-intro-avatar')?.value || null,
+          firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
+          lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
+          birthDate: birthDateISO,
+          phoneCountryCode: formattedPhone ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode : null,
+          phone: formattedPhone,
+          zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
+          state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
+          city: '',
+          county: '',
+          email: 'USER_EMAIL_FROM_SESSION_OR_AUTH',
+          introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
+          currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
+          resumeUrl: fields.find(f => f.id === 'profile-creation-intro-resume')?.value || null,
+      };
+
+      try {
+          const response = await fetch('/api/jobseekers/account/introduction/upsert', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+              const result = await response.json();
+              dispatch(submitFormSuccess());
+              router.push('/create-profile/jobseeker/education');
+          } else {
+              const errorData = await response.json();
+              dispatch(submitFormFailure(errorData.error || 'Failed to submit the form'));
+          }
+      } catch (error) {
+          dispatch(submitFormFailure('Failed to submit the form'));
       }
-    }, 1000);
   };
 
   return(
     <main className="flex">
-      <aside className="hidden lg:w-2/5 lg:block">
+      <aside className="profile-form-aside">
       </aside>
-      <section className="w-full lg:w-3/5">
+      <section className="profile-form-section">
         <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 1/6</p>
         <h1>Intro</h1>
@@ -95,14 +134,20 @@ export default function CreateJobseekerProfileIntroPage(){
             <legend>
               <h2>Basic info</h2>
             </legend>
-            <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
-            <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
-            <div className="flex">
-              <InputTextWithLabel id="profile-creation-intro-zip-code" className="w-1/2" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
+            
+            <div className="grid gap-6 my-3 md:grid-cols-2">
+              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
+            </div>
+            
+            <div className="grid gap-6 my-3">
+              <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
+            </div>
+            
+            <div className="grid gap-6 my-3 md:grid-cols-2">
+              <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
-                className="w-1/2"
                 onChange={handleFieldChange}
                 options={[
                   {label:"Alabama", value:"AL"},
@@ -162,10 +207,14 @@ export default function CreateJobseekerProfileIntroPage(){
                 State
               </SelectOptionsWithLabel>
             </div>
-            <div className="flex">
+            
+            <div className="grid gap-6 my-3">
+              <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" required>Email *</InputTextWithLabel>
+            </div>
+
+            <div className="grid gap-6 my-3 md:grid-cols-2">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
-                className="w-1/2"
                 onChange={handleFieldChange}
                 options={[
                   {label:"Afghanistan +93", value:"Afghanistan +93"},
@@ -412,20 +461,22 @@ export default function CreateJobseekerProfileIntroPage(){
                   {label:"Zambia +260", value:"Zambia +260"},
                   {label:"Zimbabwe +263", value:"Zimbabwe +263"},
                 ]}
-                defaultOption="United States +1"
+                // defaultOption="United States +1"
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-phone-number" className="w-1/2" type="tel" placeholder="Phone number" onChange={handleFieldChange} required>Phone Number *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} required>Phone Number *</InputTextWithLabel>
             </div>
           </fieldset>
           <fieldset>
             <legend>
               <h2>Intro</h2>
-            </legend>
-            <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
-            <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
+            </legend>            
+            <div className="grid gap-6 my-3">
+              <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
+            </div>
             <div>
               Resume *
               <InputFileDropzone
@@ -436,8 +487,8 @@ export default function CreateJobseekerProfileIntroPage(){
               />
             </div>
           </fieldset>
-          <div className="flex">
-            <Button pill color="gray">Previous</Button>
+          <div className="flex justify-between my-4">
+            <Button pill color="gray">Cancel</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>
