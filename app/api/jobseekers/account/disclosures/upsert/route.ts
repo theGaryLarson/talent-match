@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         }
         const jobseekerId = jobseekerRecord.jobseeker_id
 
-        const user = await prisma.users.update({
+        const user = await prisma.user.update({
             where: {
                 id: userId
             },
