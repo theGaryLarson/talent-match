@@ -1,7 +1,8 @@
 import React, { memo, useCallback, useState } from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import {Button, Checkbox, Label, Radio} from "flowbite-react";
+import {Button, Label} from "flowbite-react";
+import {Radio, Checkbox} from "@mui/material";
 import { MdClose } from "react-icons/md";
 import { DegreeType, EdProgram, EdSystem, EducationInfoDTO, PreALevel, SchoolGradeLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 
@@ -148,26 +149,27 @@ export default memo(function Licenses({
     {
         (education[classProgramType] !== EdProgram.HighSchool) ? "" :
             <div id="profile-creation-education-high-school-fields">
-                <SelectOptionsWithLabel
-                    id="profile-creation-education-high-school-name"
-                    className="w-full"
-                    options={[
-                        {label: "School A", value: "School A"},
-                        {label: "School B", value: "School B"},
-                        {label: "School C", value: "School C"},
-                    ]}
-                    placeholder="School name"
-                    onChange={(e) => handleChange(index, classInstitutionName, e.target.value)}
-                    required
-                    value={education[classInstitutionName]}
-                >
-                    What is your school? *
-                </SelectOptionsWithLabel>
-                <div className="flex">
+                <div className="profile-form-grid">
+                    <SelectOptionsWithLabel
+                        id="profile-creation-education-high-school-name"
+                        className="w-full"
+                        options={[
+                            {label: "School A", value: "School A"},
+                            {label: "School B", value: "School B"},
+                            {label: "School C", value: "School C"},
+                        ]}
+                        placeholder="School name"
+                        onChange={(e) => handleChange(index, classInstitutionName, e.target.value)}
+                        required
+                        value={education[classInstitutionName]}
+                    >
+                        What is your school? *
+                    </SelectOptionsWithLabel>
+                </div>
+                <div className="profile-form-grid md:grid-cols-2">
                     <InputTextWithLabel
                         type="month"
                         id="profile-creation-education-high-school-starting-date"
-                        className="w-1/2"
                         value={education[classStartDate]}
                         onChange={(e) => handleChange(index, classStartDate, e.target.value)}
                         required
@@ -177,7 +179,6 @@ export default memo(function Licenses({
                     <InputTextWithLabel
                         type="month"
                         id="profile-creation-education-high-school-completion-date"
-                        className="w-1/2"
                         value={education[classEndDate]}
                         onChange={(e) => handleChange(index, classEndDate, e.target.value)}
                         required={(education[classCurrent])?false:true}
@@ -195,32 +196,34 @@ export default memo(function Licenses({
                   />
                   Current
                 </Label>
-                <SelectOptionsWithLabel
-                    id="profile-creation-education-high-school-grade"
-                    className="w-full"
-                    options={[
-                        {label: "Freshman", value: "Freshman"},
-                        {label: "Sophomore", value: "Sophomore"},
-                        {label: "Junior", value: "Junior"},
-                        {label: "Senior", value: "Senior"},
-                    ]}
-                    placeholder="Please select your current grade"
-                    onChange={(e) => handleChange(index, classGradeLevel, e.target.value)}
-                    required
-                    value={education[classGradeLevel]?.toString()}
-                >
-                    What is your grade? *
-                </SelectOptionsWithLabel>
-                <InputTextWithLabel
-                    type="number"
-                    id="profile-creation-education-high-school-gpa"
-                    className="w-full"
-                    value={education[classGPA]}
-                    onChange={(e) => handleChange(index, classGPA, e.target.value)}
-                    required
-                >
-                    What is your cumulative GPA? *
-                </InputTextWithLabel>
+                <div className="profile-form-grid">
+                    <SelectOptionsWithLabel
+                        id="profile-creation-education-high-school-grade"
+                        className="w-full"
+                        options={[
+                            {label: "Freshman", value: "Freshman"},
+                            {label: "Sophomore", value: "Sophomore"},
+                            {label: "Junior", value: "Junior"},
+                            {label: "Senior", value: "Senior"},
+                        ]}
+                        placeholder="Please select your current grade"
+                        onChange={(e) => handleChange(index, classGradeLevel, e.target.value)}
+                        required
+                        value={education[classGradeLevel]?.toString()}
+                    >
+                        What is your grade? *
+                    </SelectOptionsWithLabel>
+                    <InputTextWithLabel
+                        type="number"
+                        id="profile-creation-education-high-school-gpa"
+                        className="w-full"
+                        value={education[classGPA]}
+                        onChange={(e) => handleChange(index, classGPA, e.target.value)}
+                        required
+                    >
+                        What is your cumulative GPA? *
+                    </InputTextWithLabel>
+                </div>
             </div>
     }
     {
