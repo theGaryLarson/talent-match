@@ -9,7 +9,8 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
-import { Avatar, Button, Progress } from "flowbite-react";
+import AvatarUpload from '@/app/ui/components/AvatarUpload';
+import { Button, Progress } from "flowbite-react";
 import {formatPhoneE164} from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
 
@@ -122,14 +123,12 @@ export default function CreateJobseekerProfileIntroPage(){
             <legend>
               <h2>Avatar</h2>
             </legend>
-            <label className="flex">
-              <Avatar rounded />
-              <input type="file" accept=".svg,.png,.jpg,.jpeg,.gif,.webp" className="sr-only"/>
-              <div>
-                Upload Image
-                <p>File types: SVG, PNG, JPG, GIF, or WEBP (max. TBD MB)</p>
-              </div>
-            </label>
+            <AvatarUpload 
+              id="profile-creation-intro-avatar-upload"
+              fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
+              accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
+              maxSizeMB={5}
+            />
           </fieldset>
           <fieldset>
             <legend>
@@ -482,8 +481,9 @@ export default function CreateJobseekerProfileIntroPage(){
               Resume *
               <InputFileDropzone
                 id="profile-creation-intro-resume"
-                fileTypeText="PDF, DOC, DOCX, TXT or RTF (max. TBD MB)"
+                fileTypeText="PDF, DOC, DOCX, TXT or RTF"
                 accept=".pdf,.doc,.docx,.txt,.rtf"
+                maxSizeMB={5}
               />
             </div>
           </fieldset>

@@ -32,7 +32,7 @@ npm install
 
 If you are creating your own local MSSQL server, please follow our [instructions for setting up MSSQL](setup-MSSQL.md).
 
-Otherwise, if you're just working on the frontend, you can use our shared test MSSQL server! Create a `.env` file in the root directory of your project and add the following content:
+Otherwise, if you're just working on the frontend, you can use our shared cloud test MSSQL server! Create a `.env` file in the root directory of your project and add the following content:
 
 ```env
 # MSSQL Connection Configuration
@@ -50,9 +50,7 @@ DATABASE_URL="sqlserver://cfa-test.database.windows.net;database=Test;user=cfa;p
 AUTH_SECRET=<your generated base64 auth secret>
 ```
 
-All you need to do is generate your Base64 Auth Secret and save!
-
-Questions about this test SQL environment? Reach out to rory.hayes@computingforall.org
+All you need to do is generate your Base64 Auth Secret and save! Just keep in mind the cloud DB will go to sleep if it's inactive for a while! If you get an error connecting at the beginning of the day, just retry again in a few seconds and it should work! Questions about this test cloud SQL environment? Reach out to rory.hayes@computingforall.org
 
 ### 4. Run the Development Server
 
