@@ -14,7 +14,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             return NextResponse.json({error: 'User email is required'}, {status: 400});
         }
         // Fetch the users data
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 id: userId
             },
