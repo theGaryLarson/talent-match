@@ -40,7 +40,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             return NextResponse.json({error: `Record does not exist for userId: ${userId}`}, {status: 400});
         } else {
             // Assuming there is only one jobseeker per user
-            const jobseeker = user.jobseekers[0];
+            const jobseeker = user.jobseekers?.[0];
 
             const privateData = jobseeker?.jobseekers_private_data[0]; // There's only one private data record per jobseeker
 
