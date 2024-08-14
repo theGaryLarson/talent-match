@@ -238,22 +238,24 @@ export default function CreateJobseekerProfileEducationPage() {
                         <legend>
                             <h2>Highest Education</h2>
                         </legend>
-                        <SelectOptionsWithLabel
-                            id="profile-creation-education-highest-completed"
-                            className="w-full"
-                            options={[
+                        <div className="profile-form-grid">
+                            <SelectOptionsWithLabel
+                                id="profile-creation-education-highest-completed"
+                                className="w-full"
+                                options={[
 
-                                {label: "High school", value: "High school"},
-                                {label: "Associate's degree", value: "Associate's degree"},
-                                {label: "Bachelor's degree", value: "Bachelor's degree"},
-                                {label: "Master's degree", value: "Master's degree"},
-                                {label: "Doctoral degree", value: "Doctoral degree"},
-                            ]}
-                            placeholder="Please select"
-                            required
-                        >
-                            What is your highest completed level of study? *
-                        </SelectOptionsWithLabel>
+                                    {label: "High school", value: "High school"},
+                                    {label: "Associate's degree", value: "Associate's degree"},
+                                    {label: "Bachelor's degree", value: "Bachelor's degree"},
+                                    {label: "Master's degree", value: "Master's degree"},
+                                    {label: "Doctoral degree", value: "Doctoral degree"},
+                                ]}
+                                placeholder="Please select"
+                                required
+                            >
+                                What is your highest completed level of study? *
+                            </SelectOptionsWithLabel>
+                        </div>
                     </fieldset>
                     <fieldset>
                         <legend>
