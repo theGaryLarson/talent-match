@@ -13,7 +13,7 @@ export async function GET(request: Request, {params}: {params: { userId: string 
             return NextResponse.json({success: false, error: `A userId must be provided.`})
         }
 
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 id: userId
             },
