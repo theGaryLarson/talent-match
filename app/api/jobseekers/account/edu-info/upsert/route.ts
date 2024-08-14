@@ -8,7 +8,6 @@ import {
 } from '@prisma/client';
 import {
     CertDTO,
-    SchoolGradeLevel,
     DegreeType,
     EdProgram,
     EducationInfoDTO,
