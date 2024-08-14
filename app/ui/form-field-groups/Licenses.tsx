@@ -60,60 +60,60 @@ export default memo(function Licenses({
           <h3>License {index + 1}</h3>
           <Button onClick={() => onRemove(license.uid)} size="xs" color="dark" outline pill><MdClose className="h-5 w-5" /></Button>
         </legend>
-        <InputTextWithLabel
-          id={classNamePrefix + license.uid + "-" + classForName}
-          className="w-full"
-          placeholder="Ex: Microsoft certified network associate security"
-          onChange={(e) => handleChange(index, classForName, e.target.value)}
-          required
-          value={license[classForName]}
-        >
-          Name *
-        </InputTextWithLabel>
-        <InputTextWithLabel
-          id={classNamePrefix + license.uid + "-" + classIssuingOrg}
-          className="w-full"
-          placeholder="Ex: Microsoft"
-          onChange={(e) => handleChange(index, classIssuingOrg, e.target.value)}
-          required
-          value={license[classIssuingOrg]}
-        >
-          Issuing organization *
-        </InputTextWithLabel>
-        <InputTextWithLabel
-          id={classNamePrefix + license.uid + "-" + classCredentialId}
-          className="w-1/2"
-          onChange={(e) => handleChange(index, classCredentialId, e.target.value)}
-          value={license[classCredentialId]}
-        >
-          Credential ID
-        </InputTextWithLabel>
-        <InputTextWithLabel
-          id={classNamePrefix + license.uid + "-" + classCredentialUrl}
-          className="w-1/2"
-          onChange={(e) => handleChange(index, classCredentialUrl, e.target.value)}
-          value={license[classCredentialUrl]}
-        >
-          Credential URL
-        </InputTextWithLabel>
-        <InputTextWithLabel
-          type="month"
-          id={classNamePrefix + license.uid + "-" + classIssueDate}
-          className="w-1/2"
-          onChange={(e) => handleChange(index, classIssueDate, e.target.value)}
-          value={license[classIssueDate]}
-        >
-          Issue date
-        </InputTextWithLabel>
-        <InputTextWithLabel
-          type="month"
-          id={classNamePrefix + license.uid + "-" + classExpirationDate}
-          className="w-1/2"
-          onChange={(e) => handleChange(index, classExpirationDate, e.target.value)}
-          value={license[classExpirationDate]}
-        >
-          Expiration date
-        </InputTextWithLabel>
+        <div className="profile-form-grid">
+          <InputTextWithLabel
+            id={classNamePrefix + license.uid + "-" + classForName}
+            className="w-full"
+            placeholder="Ex: Microsoft certified network associate security"
+            onChange={(e) => handleChange(index, classForName, e.target.value)}
+            required
+            value={license[classForName]}
+          >
+            Name *
+          </InputTextWithLabel>
+          <InputTextWithLabel
+            id={classNamePrefix + license.uid + "-" + classIssuingOrg}
+            className="w-full"
+            placeholder="Ex: Microsoft"
+            onChange={(e) => handleChange(index, classIssuingOrg, e.target.value)}
+            required
+            value={license[classIssuingOrg]}
+          >
+            Issuing organization *
+          </InputTextWithLabel>
+        </div>
+        <div className="profile-form-grid md:grid-cols-2">
+          <InputTextWithLabel
+            id={classNamePrefix + license.uid + "-" + classCredentialId}
+            onChange={(e) => handleChange(index, classCredentialId, e.target.value)}
+            value={license[classCredentialId]}
+          >
+            Credential ID
+          </InputTextWithLabel>
+          <InputTextWithLabel
+            id={classNamePrefix + license.uid + "-" + classCredentialUrl}
+            onChange={(e) => handleChange(index, classCredentialUrl, e.target.value)}
+            value={license[classCredentialUrl]}
+          >
+            Credential URL
+          </InputTextWithLabel>
+          <InputTextWithLabel
+            type="month"
+            id={classNamePrefix + license.uid + "-" + classIssueDate}
+            onChange={(e) => handleChange(index, classIssueDate, e.target.value)}
+            value={license[classIssueDate]}
+          >
+            Issue date
+          </InputTextWithLabel>
+          <InputTextWithLabel
+            type="month"
+            id={classNamePrefix + license.uid + "-" + classExpirationDate}
+            onChange={(e) => handleChange(index, classExpirationDate, e.target.value)}
+            value={license[classExpirationDate]}
+          >
+            Expiration date
+          </InputTextWithLabel>
+        </div>
       </fieldset>
     ))
   );
