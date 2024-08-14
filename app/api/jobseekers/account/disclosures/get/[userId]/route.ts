@@ -13,9 +13,9 @@ export async function GET(request: Request, {params}: {params: { userId: string 
             return NextResponse.json({success: false, error: `A userId must be provided.`})
         }
 
-        const contact = await prisma.contacts.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
-                user_id: userId
+                id: userId
             },
             select: {
                 jobseekers: {
@@ -36,29 +36,29 @@ export async function GET(request: Request, {params}: {params: { userId: string 
             }
         });
 
-        if (!contact) {
+        if (!user) {
             return NextResponse.json({success: false, error: `Record not found for userId: ${userId}`}, {status: 404});
         }
 
-        if( contact.role.toLowerCase().trim() !== 'jobseeker') {
+        if( user.role.toLowerCase().trim() !== 'jobseeker') {
             return NextResponse.json({success: false, error: `UserId is not related to a jobseeker`}, {status: 404});
 
         }
 
         let result: JsDisclosuresDTO = {
-            jobseekerId: null, // contacts.jobseekers[0].jobseeker_id
-            gender: null, // contacts.gender
-            race: null, //contacts.race
-            hasReadTerms: false, //contacts
+            jobseekerId: null, // users.jobseekers[0].jobseeker_id
+            gender: null, // users.gender
+            race: null, //users.race
+            hasReadTerms: false, //users
             isVeteran: null, // jobseekers[0].jobseekers_private_data[0].is_veteran
             hasDisability: null // jobseekers[0].jobseekers_private_data[0].has_disability
         }
 
-        if (contact?.jobseekers && contact?.jobseekers.length > 0) {
-            result.gender = contact?.gender;
-            result.hasReadTerms = contact.has_agreed_terms;
-            result.race = contact.race;
-            const jobseekerDetails = contact?.jobseekers[0] || null;
+        if (user?.jobseekers && user?.jobseekers.length > 0) {
+            result.gender = user?.gender;
+            result.hasReadTerms = user.has_agreed_terms;
+            result.race = user.race;
+            const jobseekerDetails = user?.jobseekers?.[0] || null;
             result.jobseekerId = jobseekerDetails?.jobseeker_id;
             if (jobseekerDetails.jobseekers_private_data && jobseekerDetails.jobseekers_private_data.length > 0) {
                 const privateDetails: Partial<jobseekers_private_data> = jobseekerDetails.jobseekers_private_data[0]

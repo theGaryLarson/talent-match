@@ -1,3 +1,5 @@
+"use client";
+
 import {ChangeEventHandler, useState} from "react";
 
 interface Props {

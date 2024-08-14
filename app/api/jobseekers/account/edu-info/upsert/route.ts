@@ -8,7 +8,6 @@ import {
 } from '@prisma/client';
 import {
     CertDTO,
-    SchoolGradeLevel,
     DegreeType,
     EdProgram,
     EducationInfoDTO,
@@ -31,9 +30,7 @@ export async function POST(request: Request) {
         const {
             userId,
             highestLevelOfStudy,
-            currentEdProgram,
-            currentGrade,
-            schools,
+            educations,
             certifications,
             projects,
         } = body;
@@ -60,8 +57,6 @@ export async function POST(request: Request) {
                 where: {user_id: userId},
                 update: {
                     highest_level_of_study_completed: highestLevelOfStudy,
-                    current_grade_level: currentGrade,
-                    current_enrolled_ed_program: currentEdProgram,
                     is_enrolled_ed_program: isEnrolledEdProgram,
                 },
                 create: {
@@ -70,8 +65,6 @@ export async function POST(request: Request) {
                     targeted_pathway: undefined,
                     is_enrolled_ed_program: isEnrolledEdProgram,
                     highest_level_of_study_completed: highestLevelOfStudy,
-                    current_grade_level: currentGrade,
-                    current_enrolled_ed_program: currentEdProgram,
                     intern_hours_required: undefined,
                     intro_headline: undefined,
                     current_job_title: undefined,
@@ -124,7 +117,7 @@ export async function POST(request: Request) {
             });
             await Promise.all(certPromises);
 
-            const schoolPromises = schools.map(async (school: EducationInfoDTO) => {
+            const schoolPromises = educations.map(async (school: EducationInfoDTO) => {
                 let eduInstitution = await prisma.edu_institutions.findUnique({
                     where: {edu_institution_id: school.edInstitutionId}
                 });
@@ -375,11 +368,8 @@ export async function POST(request: Request) {
             // Return consistent result using JSEducationDTO
             const result: JsEducationDTO = {
                 userId: upsertedJobseeker.user_id,
-                currentEdProgram: mapToEnum(upsertedJobseeker.current_enrolled_ed_program ?? "None", EdProgram),
                 highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed ?? "None", DegreeType),
-                currentGrade: mapToEnum(upsertedJobseeker.current_grade_level ?? "None", SchoolGradeLevel),
-                isEnrolledEdProgram: upsertedJobseeker.is_enrolled_ed_program,
-                schools: mappedEdHistory,
+                educations: mappedEdHistory,
                 certifications: mappedCerts,
                 projects: mappedProjects,
             }

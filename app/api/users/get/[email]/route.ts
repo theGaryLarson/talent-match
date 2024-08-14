@@ -1,33 +1,20 @@
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {NextResponse} from "next/server";
-import {CreateUserDTO, ReadUserInfoDTO, Role} from "@/data/dtos/UserInfoDTO";
-import {v4 as uuidv4} from 'uuid';
+import {ReadUserInfoDTO, Role} from "@/data/dtos/UserInfoDTO";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function POST(request: Request) {
+export async function GET(request: Request, {params}: {params: {email: string}}) {
     try {
-        const body: CreateUserDTO = await request.json();
-        const {
-            email,
-            firstName,
-            lastName,
-            roles,
-        } = body;
+        const email = params.email;
 
-
-        const data = await prisma.contacts.create({
-            data: {
-                user_id: uuidv4(),
-                first_name: firstName,
-                last_name: lastName,
+        const data = await prisma.user.findUnique({
+            where: {
                 email: email,
-                role: roles[0].toUpperCase().trim(), // fixme: modify database to handle multiple roles.
-                createdAt: new Date(),
             },
             select: {
-                user_id: true,
+                id: true,
                 role: true,
                 jobseekers: {
                     select: {
@@ -48,14 +35,14 @@ export async function POST(request: Request) {
                 }
             }
         });
-        if (!data?.user_id) {
+        if (!data?.id) {
             return NextResponse.json({success: false, error: `User not found.`}, {status: 404})
         }
-        const responseRoles: Role[] = [];
-        responseRoles.push(data.role.toUpperCase() as Role)
-        const result: ReadUserInfoDTO = {
-            userId: data.user_id,
-            roles: responseRoles,
+        const roles: Role[] = [];
+            roles.push(data.role.toUpperCase() as Role)
+        const result: ReadUserInfoDTO  = {
+            userId: data.id,
+            roles: roles,
             jobseekerId: data.jobseekers?.[0]?.jobseeker_id || null,
             employerId: data.employers?.[0]?.employer_id || null,
             companyId: data.employers?.[0]?.company_id || null,
@@ -63,10 +50,10 @@ export async function POST(request: Request) {
             employeeIsApproved: data.employers?.[0]?.is_verified_employee || false,
 
         }
-        return NextResponse.json({success: true, result}, {status: 200});
+        return NextResponse.json({success: true,  result}, {status: 200});
 
     } catch (e: any) {
-        return NextResponse.json({error: `Failed to create user record.${e.message}`}, {status: 500});
+        return NextResponse.json({error: `Failed to read jobseeker skills: ${e.message}`}, {status: 500});
 
     } finally {
         await prisma.$disconnect()

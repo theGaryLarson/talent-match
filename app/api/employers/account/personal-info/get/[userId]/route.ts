@@ -13,9 +13,9 @@ export async function GET(request: Request, { params }: { params: { userId: stri
         if(!userId) {
             return NextResponse.json({success:false, error: `A uuidv4 userId is required.`}, {status: 400})
         }
-        const empPersonalInfo = await prisma.contacts.findUnique({
+        const empPersonalInfo = await prisma.user.findUnique({
             where: {
-                user_id: userId
+                id: userId
             }
         });
 
@@ -24,7 +24,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
         }
 
         const result: ReadEmployerPersonalDTO = {
-            userId: empPersonalInfo.user_id,
+            userId: empPersonalInfo.id,
             firstName: empPersonalInfo?.first_name,
             lastName: empPersonalInfo?.last_name,
             birthDate: empPersonalInfo?.birthdate?.toISOString(),

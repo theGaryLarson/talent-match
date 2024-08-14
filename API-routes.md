@@ -38,7 +38,7 @@ work experience. Also, it will also filter out any jobseeker accounts that have 
       "pathway_id": "01b09b15-428c-4eb8-96de-ae9933f51842",
       "pathway_title": "Cloud Computing"
     },
-    "contacts": {
+    "users": {
       "user_id": "84579f62-755f-429b-a141-60b8093b6544",
       "role": "Jobseeker",
       "first_name": "Courtney",

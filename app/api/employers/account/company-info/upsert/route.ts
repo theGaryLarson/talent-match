@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {
+    PostAddressDTO,
     PostCompanyInfoDTO, ReadCompanyInfoDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
             return NextResponse.json({success: false, error: `No company exists for companyId: ${companyId}`})
         }
 
-        const upsertPromises = companyAddresses.map((address) => {
+        const upsertPromises = companyAddresses.map((address: PostAddressDTO) => {
             return prisma.company_addresses.upsert({
                 where: {
                     company_id_city: {

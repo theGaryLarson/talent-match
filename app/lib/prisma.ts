@@ -141,9 +141,9 @@ export const jobSeekerCardViewSelect = {
             pathway_title: true,
         }
     },
-    contacts: {
+    users: {
         select: {
-            user_id: true,
+            id: true,
             role: true,
             first_name: true,
             last_name: true,
@@ -203,9 +203,9 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
             targeted_pathway: true,
             resume_url: true,
             portfolio_url: true,
-            contacts: {
+            users: {
                 select: {
-                    user_id: true,
+                    id: true,
                     first_name: true,
                     last_name: true,
                     photo_url: true,
