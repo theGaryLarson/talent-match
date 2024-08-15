@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { NextResponse } from 'next/server';
 
 export default auth((req) => {
+  console.log(req);
   const jobseekerRoutes = [
     "/services/jobseekers",
     "/services/jobseekers/[id]",
@@ -37,7 +38,7 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  const userRoles = req.auth?.roles || [];
+  const userRoles = req.auth?.user?.roles || [];
 
   // Check for jobseeker role access
   if (jobseekerRoutes.some((route) => pathname.includes(route))) {

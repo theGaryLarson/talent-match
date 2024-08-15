@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+/**import { PrismaClient } from '@prisma/client';
 import { User } from './definitions';
 import { hash } from 'bcryptjs';
 
@@ -95,3 +95,4 @@ export async function createJobseekerIfNotExists(email: string): Promise<User | 
     return null;
   }
 }
+  */
