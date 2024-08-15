@@ -1,4 +1,5 @@
 import { signOut, auth } from '@/auth';
+import { redirect } from 'next/dist/server/api-utils';
 
 export default function SignOutPage() {
   return (
