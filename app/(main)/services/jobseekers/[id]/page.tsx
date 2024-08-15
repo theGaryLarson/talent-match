@@ -18,11 +18,17 @@ export default async function page({ params }: { params: { id: string } }) {
                   ' ' +
                   jobseeker?.users.last_name}
               </h1>
+              <h2></h2>
               <h2>{jobseeker?.current_job_title}</h2>
-              <h2>{
-                //TODO crashes when major is undefined
+              <h2>
+                {
+                  jobseeker?.jobseeker_education[0] ? 
+                  (
+                    jobseeker.jobseeker_education[0].eduInstitutions?.name + ' | ' +
+                    jobseeker.jobseeker_education[0].degreeType + ' | ' +
+                    (jobseeker.jobseeker_education[0].major ? jobseeker.jobseeker_education[0].major : '')
+                  ) : ''
                 }
-               {jobseeker?.jobseeker_education[0]?.eduInstitutions?.name + ' | ' + jobseeker?.jobseeker_education[0]?.degreeType +" | "+ jobseeker?.jobseeker_education[0].major?jobseeker?.jobseeker_education[0].major:''}
               </h2>
               <h2>
                 {jobseeker?.current_grade_level}
