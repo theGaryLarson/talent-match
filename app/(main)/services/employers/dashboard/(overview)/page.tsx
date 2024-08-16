@@ -1,8 +1,7 @@
-import ArticleStub from '@/app/ui/components/ArticleStub';
+
 import BrowseByCategory from '@/app/ui/components/BrowseByCategory';
 import EmployerNameTitleTag from '@/app/ui/components/EmployerNameTitleTag';
 import FeaturedCandidates from '@/app/ui/components/FeaturedCandidates';
-import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import ScoreCard from '@/app/ui/components/ScoreCard';
 import Teaser from '@/app/ui/components/Teaser';
