@@ -31,14 +31,14 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <legend>What are you looking for?</legend>
                 {/* TODO: Pills need function to select */}
                 <div className="container">
-                  <Button pill className='custom-outline-btn inline-block m-2 mb-7'>Full-time job</Button>
-                  <Button pill className='custom-outline-btn inline-block m-2 mb-7'>Part-time job</Button>
-                  <Button pill className='custom-outline-btn inline-block m-2 mb-7'>Internship</Button>
-                  <Button pill className='custom-outline-btn inline-block m-2 mb-7'>On-campus job</Button>
+                  <Button pill className="custom-outline-btn inline-block m-2">Full-time job</Button>
+                  <Button pill className="custom-outline-btn inline-block m-2">Part-time job</Button>
+                  <Button pill className="custom-outline-btn inline-block m-2">Internship</Button>
+                  <Button pill className="custom-outline-btn inline-block m-2">On-campus job</Button>
                 </div>
               </fieldset>
               <FormControl component="fieldset">
-                <FormLabel id="profile-creation-preferences-require-role" component="legend" sx={{color:"#000000ff"}}>What is your tech role/pathway targeted?</FormLabel>
+                <FormLabel id="profile-creation-preferences-require-role" className="mt-7" component="legend" sx={{color:"#000000ff"}}>What is your tech role/pathway targeted?</FormLabel>
                 <RadioGroup
                   aria-labelledby="profile-creation-preferences-require-role"
                   defaultValue="female"
