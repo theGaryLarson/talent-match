@@ -31,10 +31,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <legend>What are you looking for?</legend>
                 {/* TODO: Pills need function to select */}
                 <div className="container">
-                  <Button pill color="gray" className='inline-block m-2 mb-7'>Full-time job</Button>
-                  <Button pill color="gray" className='inline-block m-2 mb-7'>Part-time job</Button>
-                  <Button pill color="gray" className='inline-block m-2 mb-7'>Internship</Button>
-                  <Button pill color="gray" className='inline-block m-2 mb-7'>On-campus job</Button>
+                  <Button pill className='custom-outline-btn inline-block m-2 mb-7'>Full-time job</Button>
+                  <Button pill className='custom-outline-btn inline-block m-2 mb-7'>Part-time job</Button>
+                  <Button pill className='custom-outline-btn inline-block m-2 mb-7'>Internship</Button>
+                  <Button pill className='custom-outline-btn inline-block m-2 mb-7'>On-campus job</Button>
                 </div>
               </fieldset>
               <FormControl component="fieldset">
@@ -53,7 +53,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
-            <Button pill color="gray">Previous</Button>
+            <Button pill className="custom-outline-btn">Previous</Button>
             <Button pill>Save and continue</Button>
           </div>
         </form>

@@ -91,7 +91,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
             <WorkExperiences data={data.workExperiences} onUpdate={handleUpdate} onRemove={removeWorkExperience} />
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={addNewWorkExperience}
             >
               <MdAdd className="mr-2 h-5 w-5"/>
@@ -118,7 +118,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
             <InternshipExperiences data={data.internshipExperiences} onUpdate={handleUpdate} onRemove={removeInternshipExperience} />
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={addNewInternshipExperience}
             >
               <MdAdd className="mr-2 h-5 w-5"/>
@@ -147,7 +147,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
             </div>
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button pill color="gray">Previous</Button>
+            <Button pill className="custom-outline-btn">Previous</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>

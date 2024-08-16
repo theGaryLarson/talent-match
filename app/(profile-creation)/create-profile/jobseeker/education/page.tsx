@@ -262,7 +262,7 @@ export default function CreateJobseekerProfileEducationPage() {
                             <h2>Educations</h2>
                         </legend>
                         <Educations data={data.educations} onUpdate={handleUpdate} onRemove={removeEducation} />
-                        <Button pill color="gray" onClick={addNewEducation}>
+                        <Button pill className="custom-outline-btn" onClick={addNewEducation}>
                             <MdAdd className="mr-2 h-5 w-5"/>
                             Add education
                         </Button>
@@ -270,7 +270,7 @@ export default function CreateJobseekerProfileEducationPage() {
                     <fieldset className="license-groups">
                         <legend><h2>Licenses &amp; certificates</h2></legend>
                         <Licenses data={data.licenses} onUpdate={handleUpdate} onRemove={removeLicense} />
-                        <Button pill color="gray" onClick={addNewLicense}>
+                        <Button pill className="custom-outline-btn" onClick={addNewLicense}>
                             <MdAdd className="mr-2 h-5 w-5"/>
                             Add license
                         </Button>
@@ -278,13 +278,13 @@ export default function CreateJobseekerProfileEducationPage() {
                     <fieldset className="project-experience-groups">
                         <legend><h2>Project experience</h2></legend>
                         <ProjectExperiences data={data.projectExperiences} onUpdate={handleUpdate} onRemove={removeProjectExperience} />
-                        <Button pill color="gray" onClick={addNewProjectExperience}>
+                        <Button pill className="custom-outline-btn" onClick={addNewProjectExperience}>
                             <MdAdd className="mr-2 h-5 w-5"/>
                             Add project experience
                         </Button>
                     </fieldset>
                     <div className="profile-form-progress-btn-group">
-                        <Button pill color="gray">Previous</Button>
+                        <Button pill className="custom-outline-btn">Previous</Button>
                         <Button pill type="submit">Save and continue</Button>
                     </div>
                 </form>

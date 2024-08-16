@@ -125,7 +125,7 @@ export default function CreateJobseekerProfileDisclosuresPage(){
 
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button pill color="gray">Previous</Button>
+            <Button pill className="custom-outline-btn">Previous</Button>
             <Button pill type="submit">Submit</Button>
           </div>
         </form>
