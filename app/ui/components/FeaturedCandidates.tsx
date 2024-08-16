@@ -1,4 +1,4 @@
-import JobSeekerCardView from "./JobSeekerCardView";
+import JobSeekerCardViewSmall from "./JobSeekerCardViewSmall";
 import { getAllJobSeekerCardView } from '@/app/lib/prisma';
 import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 export default async function FeaturedCandidates(){
@@ -8,9 +8,8 @@ export default async function FeaturedCandidates(){
     <h2 className="text-lg font-bold py-5">Featured candidates</h2>
       <div className="flex flex-wrap gap-5">
       {jobSeekers.map((jobSeeker) => (
-        <JobSeekerCardView
+        <JobSeekerCardViewSmall
           key={jobSeeker.jobseeker_id}
-          isLarge={false}
           name={jobSeeker.users.first_name + ' ' + jobSeeker.users.last_name}
           school={''} // TODO: needs fixed to align with array
           pathway={jobSeeker?.pathways?.pathway_title ?? ''}
