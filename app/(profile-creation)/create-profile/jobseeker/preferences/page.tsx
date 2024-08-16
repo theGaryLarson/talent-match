@@ -3,11 +3,10 @@
 import React from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
-// REVIEW: testing redux
 import type { RootState } from '../../../../../lib/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { addField, updateField } from '../../../../../lib/features/profileCreation/formSlice';
-import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import { Button } from "flowbite-react";
 
 
 export default function CreateJobseekerProfilePreferencesPage(){
@@ -15,9 +14,9 @@ export default function CreateJobseekerProfilePreferencesPage(){
   const dispatch = useDispatch();
   return(
     <main className="flex">
-      <aside className="hidden lg:w-2/5 lg:block">
+      <aside className="profile-form-aside">
       </aside>
-      <section className="w-full lg:w-3/5">
+      <section className="profile-form-section">
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
@@ -35,10 +34,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <legend>What are you looking for?</legend>
                 {/* TODO: Pills need function to select */}
                 <div className="flex">
-                  <Button variant="outlined">Full-time job</Button>
-                  <Button variant="outlined">Part-time job</Button>
-                  <Button variant="outlined">Internship</Button>
-                  <Button variant="outlined">On-campus job</Button>
+                  <Button pill color="gray">Full-time job</Button>
+                  <Button pill color="gray">Part-time job</Button>
+                  <Button pill color="gray">Internship</Button>
+                  <Button pill color="gray">On-campus job</Button>
                 </div>
               </fieldset>
               <FormControl component="fieldset">
@@ -56,9 +55,9 @@ export default function CreateJobseekerProfilePreferencesPage(){
             </div>
           </fieldset>
 
-          <div className="flex">
-            <Button variant="outlined">Previous</Button>
-            <Button variant="contained">Save and continue</Button>
+          <div className="profile-form-progress-btn-group">
+            <Button pill color="gray">Previous</Button>
+            <Button pill>Save and continue</Button>
           </div>
         </form>
       </section>
