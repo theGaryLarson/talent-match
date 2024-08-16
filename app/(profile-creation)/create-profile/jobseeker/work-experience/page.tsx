@@ -131,14 +131,14 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
             </legend>
             <p>Note: All work authentication information you provide will only be used for the purpose of verifying your qualifications for this job application and will not be disclosed to public view or any third parties without your express consent.</p>
             <div>
-              Are you authorized to work in the U.S.? *
+              <div className='mt-3'>Are you authorized to work in the U.S.? *</div>
               <RadioGroup>
                 <Label className="block"><Radio name="profile-creation-authentication-us-authorized" value="yes" required/> Yes</Label>
                 <Label className="block"><Radio name="profile-creation-authentication-us-authorized" value="no" required/> No</Label>
               </RadioGroup>
             </div>
             <div>
-              <h3>United States of America</h3>
+              <h3 className='alert-title'>United States of America</h3>
               <p>Will you, now or in the future, require sponsorship for employment visa status? *</p>
               <RadioGroup>
                 <Label className="block"><Radio name="profile-creation-authentication-require-sponsor" value="yes" required/> Yes</Label>
