@@ -17,7 +17,7 @@ export default function CreateJobseekerProfileShowcasePage(){
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={4/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+        <ProgressBarFlat progress={4/6 * 100} size="sm" className="lg:hidden"/>
         <p>Step 4/6</p>
         <h1>Showcase</h1>
         <p className='subtitle'>* Indicates a required field</p>
