@@ -8,7 +8,31 @@ export default async function page({ params }: { params: { id: string } }) {
   return (
     <main className="px-4 space-y-3 py-8 font-['Roboto'] md:px-[150px] lg:px-[200px] bg-gray-bg">
       {/* <Toggle/> */}
-      
+    {/* <div className="w-[555px] h-[228px] p-4 bg-white rounded-md shadow border justify-center items-center gap-4 inline-flex">
+    <Avatar imgsrc={jobseeker?.users.photo_url} scale={3}></Avatar>
+    <div className="justify-start items-start gap-2.5 flex" />
+    <div className="grow shrink basis-0 flex-col justify-start items-start gap-6 inline-flex">
+        <div className="flex-col justify-start items-start gap-2 flex">
+            <div className="flex-col justify-start items-start flex">
+                <div className="text-center text-black/90 text-2xl font-bold font-['Roboto'] leading-loose">{jobseeker?.users.first_name +
+                  ' ' +
+                  jobseeker?.users.last_name}</div>
+                <div className="text-center text-black/90 text-base font-normal font-['Roboto'] leading-snug">{jobseeker?.current_job_title}</div>
+            </div>
+            <div className="flex-col justify-start items-start gap-1 flex">
+                <div className="text-center text-black/90 text-base font-normal font-['Roboto'] leading-snug">{
+                  jobseeker?.jobseeker_education[0] ? 
+                  (
+                    jobseeker.jobseeker_education[0].eduInstitutions?.name
+                  ) : ''
+                }</div>
+                <div className="text-center text-black/90 text-base font-normal font-['Roboto'] leading-snug">{
+                jobseeker?.jobseeker_education[0] ?(jobseeker.jobseeker_education[0].degreeType + ' | ' +
+                    (jobseeker.jobseeker_education[0].major ? jobseeker.jobseeker_education[0].major : '')):''}</div>
+            </div>
+        </div>
+    </div>
+    </div> */}
         <div className="flex h-[200px] items-center rounded-md border bg-white">
           <div className="flex items-center gap-5 p-4">
             <Avatar imgsrc={jobseeker?.users.photo_url} scale={3}></Avatar>

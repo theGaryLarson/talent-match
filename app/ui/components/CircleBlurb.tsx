@@ -1,0 +1,56 @@
+export default function CircleBlurb(){
+    return(
+<div>
+<div className="w-[621.30px] h-[399.84px] relative">
+    <div className="w-[174px] h-[98.20px] left-0 top-[145.04px] absolute flex-col justify-start items-center gap-[21.22px] inline-flex">
+        <div className="self-stretch h-[98.20px] flex-col justify-start items-center gap-[10.61px] flex">
+            <div className="self-stretch h-[98.20px] flex-col justify-start items-center gap-[7.07px] flex">
+                <div className="flex flex-wrap justify-center gap-1 w-[130px]">
+                    <div className="p-[3.54px] bg-black/10 rounded-[88.40px] justify-start items-center flex">
+                        <div className="px-[5.30px] py-[2.65px] flex-col justify-start items-start inline-flex">
+                            <div className="text-black/90 text-[13px] font-normal font-['Roboto'] leading-[18px] tracking-tight">Svelte</div>
+                        </div>
+                    </div>
+                    <div className="p-[3.54px] bg-black/10 rounded-[88.40px] justify-start items-center flex">
+                        <div className="px-[5.30px] py-[2.65px] flex-col justify-start items-start inline-flex">
+                            <div className="text-black/90 text-[13px] font-normal font-['Roboto'] leading-[18px] tracking-tight">Express</div>
+                        </div>
+                    </div>
+                    <div className="p-[3.54px] bg-black/10 rounded-[88.40px] justify-start items-center flex">
+                        <div className="px-[5.30px] py-[2.65px] flex-col justify-start items-start inline-flex">
+                            <div className="text-black/90 text-[13px] font-normal font-['Roboto'] leading-[18px] tracking-tight">Node.js</div>
+                        </div>
+                    </div>
+                    <div className="p-[3.54px] bg-black/10 rounded-[88.40px] justify-start items-center flex">
+                        <div className="px-[5.30px] py-[2.65px] flex-col justify-start items-start inline-flex">
+                            <div className="text-black/90 text-[13px] font-normal font-['Roboto'] leading-[18px] tracking-tight">Angular</div>
+                        </div>
+                    </div>
+                    <div className="p-[3.54px] bg-black/10 rounded-[88.40px] justify-start items-center flex">
+                        <div className="px-[5.30px] py-[2.65px] flex-col justify-start items-start inline-flex">
+                            <div className="text-black/90 text-[13px] font-normal font-['Roboto'] leading-[18px] tracking-tight">React</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <img className="w-[174.25px] h-[42.92px] left-[447.05px] top-[301.44px] absolute rounded-[7.07px] shadow" src="https://via.placeholder.com/174x43" />
+    <img className="w-[377.05px] h-[377.05px] left-[132.85px] top-0 absolute rounded-full" src="https://via.placeholder.com/377x377" />
+    <div className="w-[78.67px] h-[78.67px] left-[431.23px] top-[37px] absolute">
+        <div className="w-[78.67px] h-[78.67px] left-0 top-0 absolute bg-[#047089] rounded-full" />
+    </div>
+    <img className="w-[156.23px] h-[42.92px] left-[16.33px] top-[232.38px] absolute rounded-[7.07px] shadow" src="https://via.placeholder.com/156x43" />
+    <img className="w-[221.62px] h-[42.92px] left-[320.42px] top-[356.92px] absolute rounded-[7.07px] shadow" src="https://via.placeholder.com/222x43" />
+    <div className="w-64 h-[87.61px] p-[18.81px] left-[39.28px] top-[297px] absolute bg-white rounded-[18.81px] shadow flex-col justify-start items-start gap-[22.57px] inline-flex">
+        <div className="flex-col justify-start items-start gap-[7.52px] flex">
+            <div className="flex-col justify-start items-start flex">
+                <div className="text-center text-black/90 text-[22.57px] font-bold font-['Roboto'] leading-[30.11px]">Jason Hayes</div>
+                <div className="text-center text-black/90 text-[15.05px] font-normal font-['Roboto'] leading-tight">Software developer intern at CFA</div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    );
+}
