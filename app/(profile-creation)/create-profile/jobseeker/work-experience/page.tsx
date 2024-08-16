@@ -65,7 +65,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
         <ProgressBarFlat progress={3/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 3/6</p>
         <h1>Work experience</h1>
-        <p>* Indicates a required field</p>
+        <p className='subtitle'>* Indicates a required field</p>
         <form onSubmit={(e)=>{
           e.preventDefault();
           console.log(data.workExperiences);

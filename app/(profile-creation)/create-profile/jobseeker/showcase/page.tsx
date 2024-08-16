@@ -20,7 +20,7 @@ export default function CreateJobseekerProfileShowcasePage(){
         <ProgressBarFlat progress={4/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 4/6</p>
         <h1>Showcase</h1>
-        <p>* Indicates a required field</p>
+        <p className='subtitle'>* Indicates a required field</p>
         <form>
           <fieldset>
             <legend>

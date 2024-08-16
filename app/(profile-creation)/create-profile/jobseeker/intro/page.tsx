@@ -115,7 +115,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 1/6</p>
         <h1>Intro</h1>
-        <p>* Indicates a required field</p>
+        <p className='subtitle'>* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
           <fieldset>
