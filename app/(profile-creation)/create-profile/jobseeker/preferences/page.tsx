@@ -23,21 +23,18 @@ export default function CreateJobseekerProfilePreferencesPage(){
         <ProgressBarFlat progress={5/6 * 100} size="sm" color="dark" className="lg:hidden"/>
         <p>Step 5/6</p>
         <h1>Your preferences</h1>
-        <p>* Indicates a required field</p>
+        <p className='subtitle'>* Indicates a required field</p>
         <form>
           <fieldset>
-            <legend>
-              <h2>Your Preferences</h2>
-            </legend>
             <div>
               <fieldset>
                 <legend>What are you looking for?</legend>
                 {/* TODO: Pills need function to select */}
-                <div className="flex">
-                  <Button pill color="gray">Full-time job</Button>
-                  <Button pill color="gray">Part-time job</Button>
-                  <Button pill color="gray">Internship</Button>
-                  <Button pill color="gray">On-campus job</Button>
+                <div className="container">
+                  <Button pill color="gray" className='inline-block m-2 mb-7'>Full-time job</Button>
+                  <Button pill color="gray" className='inline-block m-2 mb-7'>Part-time job</Button>
+                  <Button pill color="gray" className='inline-block m-2 mb-7'>Internship</Button>
+                  <Button pill color="gray" className='inline-block m-2 mb-7'>On-campus job</Button>
                 </div>
               </fieldset>
               <FormControl component="fieldset">

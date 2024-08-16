@@ -48,6 +48,18 @@ h2 {
   text-align: left;
 }
 
+.subtitle {
+  @apply my-3;
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 26px;
+  letter-spacing: 0.46000000834465027px;
+  text-align: left;
+  color: #00000099;
+}
+  
+
 /* input[type="radio"] {
   @apply m-3;
   cursor: pointer;
