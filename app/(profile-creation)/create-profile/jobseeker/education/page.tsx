@@ -229,7 +229,7 @@ export default function CreateJobseekerProfileEducationPage() {
             <aside className="profile-form-aside">
             </aside>
             <section className="profile-form-section">
-                <ProgressBarFlat progress={2 / 6 * 100} size="sm" className="lg:hidden"/>
+                <ProgressBarFlat progress={2 / 6 * 100} size="sm" className="xl:hidden"/>
                 <p>Step 2/6</p>
                 <h1>Education</h1>
                 <p className='subtitle'>* Indicates a required field</p>
