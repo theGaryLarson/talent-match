@@ -73,7 +73,7 @@ export default function CreateJobseekerProfileShowcasePage(){
 
             {/*
             TODO: If we change our minds and want to implement video uploads, the button needs upload function added
-            <Button pill color="gray">
+            <Button pill className="custom-outline-btn">
               <MdOutlineFileUpload className="mr-2 h-5 w-5"/>
               Upload your video
             </Button>
@@ -89,7 +89,7 @@ export default function CreateJobseekerProfileShowcasePage(){
             </div>
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button pill color="gray">Previous</Button>
+            <Button pill className="custom-outline-btn">Previous</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>

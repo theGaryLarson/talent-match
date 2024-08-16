@@ -488,7 +488,7 @@ export default function CreateJobseekerProfileIntroPage(){
             </div>
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button pill color="gray">Cancel</Button>
+            <Button pill className="custom-outline-btn">Cancel</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>
