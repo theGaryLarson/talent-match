@@ -14,7 +14,7 @@ export default function CreateJobseekerProfileDisclosuresPage(){
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={6/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+        <ProgressBarFlat progress={6/6 * 100} size="sm" className="lg:hidden"/>
         <p>Step 6/6</p>
         <h1>Voluntary Disclosures</h1>
         <p className='subtitle'>* Indicates a required field</p>
