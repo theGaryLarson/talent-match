@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server';
-import {PrismaClient, WorkExperience} from '@prisma/client';
+import {Prisma, PrismaClient, WorkExperience} from '@prisma/client';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {JsWorkExpDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
@@ -74,7 +74,6 @@ export async function POST(request: Request) {
                     });
                     createdWorkExperiences.push(updatedWorkExperience);
                 } else {
-                    const createdData = {}
                     const createdWorkExperience = await prisma.workExperience.create({
                         data: {
                             workId: workExperience.workId,
@@ -89,12 +88,12 @@ export async function POST(request: Request) {
                                 connect: {
                                     jobseeker_id: updatedJobseeker?.jobseeker_id ?? undefined,
                                 },
-                            },
-                            technology_areas: {
-                                connect: {
-                                    technology_area_id: workExperience?.techAreaId ?? undefined,
-                                },
-                            },
+                            }, // TODO: Implement when Work Experience UI can get this added in.
+                            // technology_areas: {
+                            //     connect: {
+                            //         technology_area_id: workExperience?.techAreaId ?? undefined,
+                            //     },
+                            // },
                         },
                     });
                     createdWorkExperiences.push(createdWorkExperience);
@@ -119,7 +118,19 @@ export async function POST(request: Request) {
             result
         }, {status: 200});
     } catch (e: any) {
-        console.log(e.message);
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // Handle unique constraint violation
+            if (e.code === 'P2002') {
+                console.error(e)
+                return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
+            }
+            // Handle foreign key constraint violation
+            if (e.code === 'P2025') {
+                return NextResponse.json({ error: 'Record not found for the provided ID.' }, { status: 404 });
+            }
+            // Add other specific Prisma errors as needed
+        }
+        console.error('Unexpected error:', e);
         return NextResponse.json({error: `Failed to create work experiences.\n${e.message} `}, {status: 500});
     } finally {
         await prisma.$disconnect();
