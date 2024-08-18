@@ -150,8 +150,8 @@ export type JsWorkExpDTO = {
     userId: string,
     yearsWorkExperience: string,
     monthsInternshipExperience?: string | null,
-    isAuthorizedToWorkUsa: boolean, // TODO: encrypt
-    requiresSponsorship: boolean, // TODO: encrypt
+    isAuthorizedToWorkUsa?: boolean, // TODO: encrypt
+    requiresSponsorship?: boolean, // TODO: encrypt
     workExperiences?: WorkExperience[]
 }
 
