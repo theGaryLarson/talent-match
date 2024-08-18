@@ -4,6 +4,7 @@ import { Checkbox } from '@mui/material';
 import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
 import TextareaWithLabel from '../components/TextareaWithLabel';
+import { v4 as uuidv4 } from 'uuid';
 
 const classNamePrefix = "profile-creation-internship-experience-group-";
 const classCompany = "company";
@@ -14,7 +15,7 @@ const classCurrent = "current";
 const classExperience = "experience";
 
 export interface InternshipExperienceData {
-  uid: number,
+  uid: string,
   [classCompany]: string,
   [classTitle]: string,
   [classStarts]: string,
@@ -26,7 +27,7 @@ export interface InternshipExperienceData {
 let uniqueListID = 0;
 export function defaultInternshipExperienceData() {
   return {
-    uid: uniqueListID++,
+    uid: uuidv4(),
     [classCompany]: "",
     [classTitle]: "",
     [classStarts]: "",
@@ -38,7 +39,7 @@ export function defaultInternshipExperienceData() {
 
 interface Props {
   data: InternshipExperienceData[],
-  onRemove: (uid:number) => void,
+  onRemove: (uid:string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 
