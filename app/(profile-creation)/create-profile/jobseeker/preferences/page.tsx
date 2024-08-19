@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
 // REVIEW: testing redux
-import type { RootState } from '@/lib/store';
+// import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
 import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
@@ -17,7 +17,6 @@ export default function CreateJobseekerProfilePreferencesPage(){
   // const dispatch = useDispatch();
   const [employmentType, setEmploymentType] = useState('');
   const [pathway, setPathway] = useState('');
-
   const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent) {
@@ -73,25 +72,25 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <div className="flex">
                   <Button
                       variant="outlined"
-                      onClick={ (e) => { setEmploymentType('Full-time job')} }
+                      onClick={ () => { setEmploymentType('Full-time job')} }
                   >
                     Full-time job
                   </Button>
                   <Button
                       variant="outlined"
-                      onClick={ (e) => { setEmploymentType('Part-time job')} }
+                      onClick={ () => { setEmploymentType('Part-time job')} }
                   >
                     Part-time job
                   </Button>
                   <Button
                       variant="outlined"
-                      onClick={ (e) => { setEmploymentType('Internship')} }
+                      onClick={ () => { setEmploymentType('Internship')} }
                   >
                     Internship
                   </Button>
                   <Button
                       variant="outlined"
-                      onClick={ (e) => { setEmploymentType('On-campus job')} }
+                      onClick={ () => { setEmploymentType('On-campus job')} }
                   >
                     On-campus job
                   </Button>
