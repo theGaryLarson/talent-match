@@ -142,7 +142,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       }
 
       const result = await response.json();
-      router.push('/create-profile/jobseeker/education');
+      router.push('/create-profile/jobseeker/showcase');
     } catch (error) {
       console.error('Error submitting form:', error);
       // Handle error, e.g., display an error message
