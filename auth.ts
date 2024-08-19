@@ -22,12 +22,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user }) {
       try {
         if (user && user.email) {
-          // Fetch user by email from your API
-          const fetchResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/users/get/${user.email}`);
+          const fetchResponse = await fetch(`/api/users/get/${user.email}`);
 
           if (fetchResponse.status === 404) {
-            // User does not exist, create the user
-            const createResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/users/add`, {
+            const createResponse = await fetch(`/api/users/add`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -36,7 +34,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 email: user.email,
                 firstName: user.name?.split(" ")[0] || "",
                 lastName: user.name?.split(" ")[1] || "",
-                roles: ["JOBSEEKER"],  // Default to JOBSEEKER role
+                roles: ["JOBSEEKER"],
               }),
             });
 

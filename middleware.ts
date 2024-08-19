@@ -26,7 +26,7 @@ export default auth((req) => {
 
   const pathname = req.nextUrl.pathname;
 
-  if (!req.auth && !pathname.startsWith("/signin")) {
+  if (!req.auth && !pathname.startsWith("/signin") && !pathname.startsWith("/auth")) {
     console.log("redirected to signin again");
     const loginUrl = new URL("/signin", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
