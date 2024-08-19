@@ -72,7 +72,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
     const { name, value, type } = event.target;
     setData(prevData => ({
       ...prevData,
-      [name]: type === 'radio' ? value === 'yes' : value,
+      [name]: type === 'radio' ? value === 'yes' : value,  // setting boolean values for radio type
     }));
   }, []);
 
