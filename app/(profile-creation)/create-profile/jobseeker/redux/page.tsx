@@ -455,6 +455,7 @@ export default function CreateJobseekerProfileIntroPage(){
                 id="profile-creation-intro-resume"
                 fileTypeText="PDF, DOC, DOCX, TXT or RTF (max. TBD MB)"
                 accept=".pdf,.doc,.docx,.txt,.rtf"
+                maxSizeMB={5}
               />
             </div>
           </fieldset>

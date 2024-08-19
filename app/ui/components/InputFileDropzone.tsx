@@ -1,32 +1,73 @@
 "use client";
 
-import { FileInput, Label } from "flowbite-react";
+import { ChangeEvent , useState } from 'react';
+import { Label } from "flowbite-react";
 
 interface Props {
   id: string,
   fileTypeText: string,
   accept: string,
+  maxSizeMB: number,
 }
 
 export default function InputFileDropzone({
   id,
   fileTypeText,
   accept,
+  maxSizeMB,
 }: Props) {
+  const [filesizeExceeded, setFilesizeExceeded] = useState(false);
+  const [fileSelected, setFileSelected] = useState("");
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files != null){
+      setFileSelected(event.target.files[0].name);
+      const maxSize = 1048576 * maxSizeMB;
+      if (event.target.files[0].size > maxSize){ // file is too large
+        setFilesizeExceeded(true);
+      }
+      else setFilesizeExceeded(false); // file juuuust right
+    }
+    else setFileSelected(""); // no file selected
+  }
+
+  var validFiletype = true;
+  if (fileSelected != "") {
+    const fileType = fileSelected.substring(fileSelected.lastIndexOf("."), fileSelected.length);
+    console.log(fileType)
+    validFiletype = accept.split(",").includes(fileType);
+  }
+
+  const fileTypeTextPlusSizeLimit = fileTypeText + " (max. " + maxSizeMB + " MB)";
+
+  var backgroundCSS = "border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600";
+  var svgCSS = "text-sky-500 dark:text-sky-400";
+
+  if (!validFiletype || filesizeExceeded) {
+    backgroundCSS = "border-red-300 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:bg-red-700 dark:hover:border-red-500 dark:hover:bg-red-600";
+    svgCSS = "text-red-500 dark:text-red-400";
+  } else if (fileSelected != "") {
+    svgCSS = "text-gray-500 dark:text-gray-400";
+  }
+
+  backgroundCSS = backgroundCSS.concat("flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed")
+  svgCSS = svgCSS.concat("h-8 w-8 mr-2");
+
   return (
     <div className="flex w-full items-center justify-center relative">
       <Label
         htmlFor={id}
-        className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        className={backgroundCSS}
       >
         <div className="flex flex-col items-center justify-center pb-6 pt-5">
+          <div className="flex flex-row items-center">
           <svg
-            className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+            className={svgCSS}
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 20 16"
-          >
+           >
             <path
               stroke="currentColor"
               strokeLinecap="round"
@@ -35,16 +76,23 @@ export default function InputFileDropzone({
               d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
             />
           </svg>
-          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-            <span className="font-semibold">Click to upload</span> or drag and drop
-          </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{fileTypeText}</p>
+          {fileSelected == "" && 
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="text-sky-400 underline">Click to upload</span> or drag and drop</p>}
+          {fileSelected != "" && !filesizeExceeded && validFiletype && 
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">{fileSelected}</p>}
+          {fileSelected != "" && !filesizeExceeded && !validFiletype && 
+            <p className="mb-2 text-sm text-red-500 dark:text-red-400">Unsupported file type: {fileSelected}</p>}
+          {fileSelected != "" && filesizeExceeded && 
+            <p className="mb-2 text-sm text-red-500 dark:text-red-400">File is too large: {fileSelected}</p>}
+          </div>
+          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">{fileTypeTextPlusSizeLimit}</p>
         </div>
         <input type="file"
           id={id}
           name={id}
           className="absolute top-0 left-0 w-full h-full opacity-0 block cursor-pointer"
           accept={accept}
+          onChange={handleChange}
         />
       </Label>
     </div>

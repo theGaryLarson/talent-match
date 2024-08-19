@@ -838,7 +838,7 @@ async function seedPathways() {
         "Network and Computer Systems Administrator",
         "Web Developer",
         "Software Developer",
-        "Software Quality Assurance Analysts and Tester",
+        "Software Quality Assurance Analyst and Tester",
         "Graphic Designer",
         "Computer User Support Specialist"
     ]

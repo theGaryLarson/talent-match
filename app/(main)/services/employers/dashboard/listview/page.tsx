@@ -50,12 +50,11 @@ export default function Page() {
               jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
               <JobSeekerCardView
                 key={jobSeeker.jobseeker_id}
-                isLarge={true}
                 name={jobSeeker.users.first_name + ' ' + jobSeeker.users.last_name}
                 school={jobSeeker?.jobseeker_education?.eduInstitutions?.name ?? ''}
                 pathway={jobSeeker?.pathways?.pathway_title ?? ''}
                 skillsList={jobSeeker?.jobseeker_has_skills}
-                pfpPicSrc={jobSeeker?.users?.photo_url ?? null}
+                pfpPicSrc={jobSeeker?.users?.photo_url}
                 aboutMe={jobSeeker?.intro_headline} id={jobSeeker?.jobseeker_id} />
       ))}
         </main>

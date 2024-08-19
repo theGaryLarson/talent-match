@@ -9,7 +9,8 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
-import { Avatar, Button, Progress } from "flowbite-react";
+import AvatarUpload from '@/app/ui/components/AvatarUpload';
+import { Button, Progress } from "flowbite-react";
 import {formatPhoneE164} from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
 
@@ -66,9 +67,10 @@ export default function CreateJobseekerProfileIntroPage(){
      const formattedPhone = formatPhoneE164(countryCode?.toString(), ph?.toString())
 
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
-    //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO
+    //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
-          userId: 'USER_ID_FROM_SESSION_OR_AUTH',
+         //TODO: assign existing userId if exists if not create new with uuidv4().
+          userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
           photoUrl: fields.find(f => f.id === 'profile-creation-intro-avatar')?.value || null,
           firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
           lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
@@ -79,7 +81,7 @@ export default function CreateJobseekerProfileIntroPage(){
           state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
           city: '',
           county: '',
-          email: 'USER_EMAIL_FROM_SESSION_OR_AUTH',
+          email: fields.find(f => f.id === 'profile-creation-intro-email')?.value || '',
           introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
           currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
           resumeUrl: fields.find(f => f.id === 'profile-creation-intro-resume')?.value || null,
@@ -122,31 +124,31 @@ export default function CreateJobseekerProfileIntroPage(){
             <legend>
               <h2>Avatar</h2>
             </legend>
-            <label className="flex">
-              <Avatar rounded />
-              <input type="file" accept=".svg,.png,.jpg,.jpeg,.gif,.webp" className="sr-only"/>
-              <div>
-                Upload Image
-                <p>File types: SVG, PNG, JPG, GIF, or WEBP (max. TBD MB)</p>
-              </div>
-            </label>
+            <AvatarUpload 
+              id="profile-creation-intro-avatar-upload"
+              fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
+              accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
+              maxSizeMB={5}
+            />
           </fieldset>
           <fieldset>
             <legend>
               <h2>Basic info</h2>
             </legend>
             
+
             <div className="profile-form-grid md:grid-cols-2">
-              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || ''} required>First Name *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || ''} required>Last Name *</InputTextWithLabel>
             </div>
             
             <div className="profile-form-grid">
-              <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
+              <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-birth-date')?.value || ''} required>Birth Date *</InputTextWithLabel>
             </div>
             
             <div className="profile-form-grid md:grid-cols-2">
-              <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || ''} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
+
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
                 onChange={handleFieldChange}
@@ -203,14 +205,18 @@ export default function CreateJobseekerProfileIntroPage(){
                   {label:"Wisconsin", value:"WI"},
                   {label:"Wyoming", value:"WY"},
                 ]}
+                value={fields.find(f => f.id === 'profile-creation-intro-state')?.value || ''}
                 placeholder="Please select"
+
               >
                 State
               </SelectOptionsWithLabel>
             </div>
             
+
             <div className="profile-form-grid">
-              <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" required>Email *</InputTextWithLabel>
+              <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" value={fields.find(f => f.id === 'profile-creation-intro-email')?.value || ''} required>Email *</InputTextWithLabel>
+
             </div>
 
             <div className="profile-form-grid md:grid-cols-2">
@@ -462,11 +468,11 @@ export default function CreateJobseekerProfileIntroPage(){
                   {label:"Zambia +260", value:"Zambia +260"},
                   {label:"Zimbabwe +263", value:"Zimbabwe +263"},
                 ]}
-                // defaultOption="United States +1"
+                value={fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || "United States +1"}
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} required>Phone Number *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || ''} required>Phone Number *</InputTextWithLabel>
             </div>
           </fieldset>
           <fieldset>
@@ -474,16 +480,17 @@ export default function CreateJobseekerProfileIntroPage(){
               <h2>Intro</h2>
             </legend>            
             <div className="profile-form-grid">
-              <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here" value={fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || ''}>Headlines</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here"  value={fields.find(f => f.id === 'profile-creation-intro-current-or-graduated-school')?.value || ''} required>Current School / Graduated School *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer" value={fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || ''}>Current Position</InputTextWithLabel>
             </div>
             <div>
               Resume *
               <InputFileDropzone
                 id="profile-creation-intro-resume"
-                fileTypeText="PDF, DOC, DOCX, TXT or RTF (max. TBD MB)"
+                fileTypeText="PDF, DOC, DOCX, TXT or RTF"
                 accept=".pdf,.doc,.docx,.txt,.rtf"
+                maxSizeMB={5}
               />
             </div>
           </fieldset>
