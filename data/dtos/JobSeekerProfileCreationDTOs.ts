@@ -133,17 +133,17 @@ export type JsEducationDTO = {
     projects: ProjectExpDTO[];
 }
 
-type workExperienceDTO = {
-    workExpId: string,
-    techAreaId: string,
-    company: string,
-    jobTitle: string,
-    startDate: string,
-    endDate: string,
-    isCurrent: boolean,
-    isInternship: boolean,
-    responsibility: string,
-}
+// type workExperienceDTO = {
+//     workExpId: string,
+//     techAreaId: string,
+//     company: string,
+//     jobTitle: string,
+//     startDate: string,
+//     endDate: string,
+//     isCurrent: boolean,
+//     isInternship: boolean,
+//     responsibility: string,
+// }
 
 
 export type JsWorkExpDTO = {
