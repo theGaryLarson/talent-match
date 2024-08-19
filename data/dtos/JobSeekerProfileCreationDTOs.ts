@@ -166,6 +166,7 @@ export type JsShowcaseDTO = {
 export type JsPreferencesDTO = {
     userId: string,
     targetedPathwayId?: string | null
+    targetedPathway?: string | null,
     preferredEmploymentType?: string | null,
 }
 
