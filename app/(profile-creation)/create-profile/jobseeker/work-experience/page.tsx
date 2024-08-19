@@ -84,6 +84,17 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       const { name, value, type } = event.target;
       setData((prevData) => ({
         ...prevData,
+        [name]: type === 'radio' ? value === 'yes' : value, // setting boolean values for radio type
+      }));
+    },
+    [],
+  );
+
+  const handleInputUpdate = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value, type } = event.target;
+      setData((prevData) => ({
+        ...prevData,
         [name]: type === 'radio' ? value === 'yes' : value,
       }));
     },
