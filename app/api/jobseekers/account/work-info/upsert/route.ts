@@ -126,7 +126,7 @@ export async function POST(request: Request) {
             }
             // Handle foreign key constraint violation
             if (e.code === 'P2025') {
-                return NextResponse.json({ error: 'Record not found for the provided ID.' }, { status: 404 });
+                return NextResponse.json({ error: 'No record found that matches the provided foreign key.' }, { status: 404 });
             }
             // Add other specific Prisma errors as needed
         }
