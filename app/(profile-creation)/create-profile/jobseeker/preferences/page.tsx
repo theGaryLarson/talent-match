@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
 // REVIEW: testing redux
-import type { RootState } from '@/lib/store';
+// import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
 import {
@@ -23,7 +23,6 @@ export default function CreateJobseekerProfilePreferencesPage() {
   // const dispatch = useDispatch();
   const [employmentType, setEmploymentType] = useState('');
   const [pathway, setPathway] = useState('');
-
   const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent) {
@@ -81,7 +80,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                 <div className="flex">
                   <Button
                     variant="outlined"
-                    onClick={(e) => {
+                    onClick={() => {
                       setEmploymentType('Full-time job');
                     }}
                   >
@@ -89,7 +88,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   </Button>
                   <Button
                     variant="outlined"
-                    onClick={(e) => {
+                    onClick={() => {
                       setEmploymentType('Part-time job');
                     }}
                   >
@@ -97,7 +96,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   </Button>
                   <Button
                     variant="outlined"
-                    onClick={(e) => {
+                    onClick={() => {
                       setEmploymentType('Internship');
                     }}
                   >
@@ -105,7 +104,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   </Button>
                   <Button
                     variant="outlined"
-                    onClick={(e) => {
+                    onClick={() => {
                       setEmploymentType('On-campus job');
                     }}
                   >
