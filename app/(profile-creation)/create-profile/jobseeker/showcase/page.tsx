@@ -7,10 +7,48 @@ import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import TextFieldWithSeparatedLabel from '@/app/ui/components/mui/TextFieldWithSeparatedLabel';
 import TextFieldWithNoLabel from '@/app/ui/components/mui/TextFieldWithNoLabel';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
+import {JsShowcaseDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { useRouter } from 'next/navigation';
+
 
 
 export default function CreateJobseekerProfileShowcasePage(){
   const [skills, setSkills] = useState<SkillDTO[]>([]);
+  const [portfolioUrl, setPortfolioUrl] = useState('');
+  const [portfolioPassword, setPortfolioPassword] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
+
+  const router = useRouter();
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const formData: JsShowcaseDTO = {
+      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
+      skills: skills,
+      portfolioUrl: portfolioUrl,
+      portfolioPassword: portfolioPassword,
+      video_url: videoUrl,
+    }
+
+    try {
+      const response = await fetch('/api/jobseekers/account/showcase/upsert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log(JSON.stringify(result, null ,2 ));
+      router.push('/create-profile/jobseeker/preferences');
+    } catch (e: any) {
+      //error handling
+    }
+  }
 
   return(
     <main className="flex">
@@ -21,7 +59,7 @@ export default function CreateJobseekerProfileShowcasePage(){
         <p>Step 4/6</p>
         <h1>Showcase</h1>
         <p>* Indicates a required field</p>
-        <form>
+        <form onSubmit={ handleSubmit }>
           <fieldset>
             <legend>
               <h2>Skills</h2>
@@ -44,6 +82,8 @@ export default function CreateJobseekerProfileShowcasePage(){
               label="Portfolio"
               placeholder="Url"
               fullWidth
+              value={ portfolioUrl }
+              onChange={(e) => { setPortfolioUrl(e.target.value) }}
             />
 
             <TextFieldWithSeparatedLabel
@@ -52,6 +92,8 @@ export default function CreateJobseekerProfileShowcasePage(){
               placeholder="Password"
               type="password"
               fullWidth
+              value={ portfolioPassword }
+              onChange={(e) => { setPortfolioPassword(e.target.value) }}
             />
           </fieldset>
           <fieldset>
@@ -80,6 +122,8 @@ export default function CreateJobseekerProfileShowcasePage(){
               id="profile-creation-showcase-video"
               placeholder="Upload your video url"
               fullWidth
+              value={ videoUrl }
+              onChange={(e) => { setVideoUrl(e.target.value) }}
             />
           </fieldset>
           <div className="flex">
