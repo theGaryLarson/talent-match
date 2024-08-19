@@ -3,7 +3,8 @@
 import React, { useCallback, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from "react-icons/md";
-import { Button, Label, Radio } from "flowbite-react";
+import { Button, Label } from "flowbite-react";
+import { Radio, RadioGroup } from '@mui/material';
 import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
 import WorkExperiences, { defaultWorkExperienceData, WorkExperienceData } from '@/app/ui/form-field-groups/WorkExperiences';
 import InternshipExperiences, { defaultInternshipExperienceData, InternshipExperienceData } from '@/app/ui/form-field-groups/InternshipExperiences';
@@ -137,13 +138,13 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
 
   return(
     <main className="flex">
-      <aside className="hidden lg:w-2/5 lg:block">
+      <aside className="profile-form-aside">
       </aside>
-      <section className="w-full lg:w-3/5">
-        <ProgressBarFlat progress={3/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+      <section className="profile-form-section">
+        <ProgressBarFlat progress={3/6 * 100} size="sm" className="xl:hidden"/>
         <p>Step 3/6</p>
         <h1>Work experience</h1>
-        <p>* Indicates a required field</p>
+        <p className='subtitle'>* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
           <fieldset className="work-experience-groups">
             <legend>
@@ -153,6 +154,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
               (data.workExperiences.length === 0)?
                 ""
               :
+              <div className="profile-form-grid">
                 <InputTextWithLabel
                   type="number"
                   id="profile-creation-experience-work-fulltime-years"
@@ -162,11 +164,12 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                 >
                   How many years of full-time work experience do you have (not including internship)?
                 </InputTextWithLabel>
+              </div>
             }
             <WorkExperiences data={data.workExperiences} onUpdate={handleUpdate} onRemove={removeWorkExperience} />
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={addNewWorkExperience}
             >
               <MdAdd className="mr-2 h-5 w-5"/>
@@ -181,6 +184,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
               (data.internshipExperiences.length === 0)?
                 ""
               :
+              <div className="profile-form-grid">
                 <InputTextWithLabel
                   type="number"
                   id="profile-creation-experience-internship-months"
@@ -190,11 +194,12 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                 >
                   How many months of internship work experience do you have?
                 </InputTextWithLabel>
+              </div>
             }
             <InternshipExperiences data={data.internshipExperiences} onUpdate={handleUpdate} onRemove={removeInternshipExperience} />
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={addNewInternshipExperience}
             >
               <MdAdd className="mr-2 h-5 w-5"/>
@@ -207,51 +212,55 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
             </legend>
             <p>Note: All work authentication information you provide will only be used for the purpose of verifying your qualifications for this job application and will not be disclosed to public view or any third parties without your express consent.</p>
             <div>
-              Are you authorized to work in the U.S.? *
-              <Label className="block">
-                <Radio
-                    name="isAuthorizedToWorkUsa"
-                    value="yes"
-                    checked={data.isAuthorizedToWorkUsa === true}
-                    onChange={handleInputUpdate}
-                    required
-                /> Yes
-              </Label>
-              <Label className="block">
-                <Radio
-                    name="isAuthorizedToWorkUsa"
-                    value="no"
-                    checked={data.isAuthorizedToWorkUsa === false}
-                    onChange={handleInputUpdate}
-                    required
-                /> No
-              </Label>
+              <div className='mt-3'>Are you authorized to work in the U.S.? *</div>
+              <RadioGroup>
+                <Label className="block">
+                  <Radio
+                      name="isAuthorizedToWorkUsa"
+                      value="yes"
+                      checked={data.isAuthorizedToWorkUsa === true}
+                      onChange={handleInputUpdate}
+                      required
+                  /> Yes
+                </Label>
+                <Label className="block">
+                  <Radio
+                      name="isAuthorizedToWorkUsa"
+                      value="no"
+                      checked={data.isAuthorizedToWorkUsa === false}
+                      onChange={handleInputUpdate}
+                      required
+                  /> No
+                </Label>
+              </RadioGroup>
             </div>
             <div>
-              <h3>United States of America</h3>
+              <h3 className='alert-title'>United States of America</h3>
               <p>Will you, now or in the future, require sponsorship for employment visa status? *</p>
-              <Label className="block">
-                <Radio
-                    name="requiresSponsorship"
-                    value="yes"
-                    checked={data.requiresSponsorship === true}
-                    onChange={handleInputUpdate}
-                    required
-                /> Yes
-              </Label>
-              <Label className="block">
-                <Radio
-                    name="requiresSponsorship"
-                    value="no"
-                    checked={data.requiresSponsorship === false}
-                    onChange={handleInputUpdate}
-                    required
-                /> No
-              </Label>
+              <RadioGroup>
+                <Label className="block">
+                  <Radio
+                      name="requiresSponsorship"
+                      value="yes"
+                      checked={data.requiresSponsorship === true}
+                      onChange={handleInputUpdate}
+                      required
+                  /> Yes
+                </Label>
+                <Label className="block">
+                  <Radio
+                      name="requiresSponsorship"
+                      value="no"
+                      checked={data.requiresSponsorship === false}
+                      onChange={handleInputUpdate}
+                      required
+                  /> No
+                </Label>
+              </RadioGroup>
             </div>
           </fieldset>
-          <div className="flex">
-            <Button pill color="gray">Previous</Button>
+          <div className="profile-form-progress-btn-group">
+            <Button pill className="custom-outline-btn">Previous</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>
