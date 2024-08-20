@@ -20,6 +20,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
   // const dispatch = useDispatch();
   const [employmentType, setEmploymentType] = useState('');
   const [pathway, setPathway] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent) {
@@ -41,14 +42,16 @@ export default function CreateJobseekerProfilePreferencesPage(){
         body: JSON.stringify(formData),
       });
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
+        setError(errorMessage);
+        return;
       }
 
       const result = await response.json();
       console.log(JSON.stringify(result, null ,2 ));
       router.push('/create-profile/jobseeker/disclosures');
     } catch (e: any) {
-      //error handling
+      setError(`An unexpected error occurred: ${e.message}`);
     }
   }
   return(
