@@ -72,29 +72,29 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <legend>What are you looking for?</legend>
                 <div className="container">
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
-                      variant="outlined"
                       onClick={ () => { setEmploymentType('Full-time job')} }
                   >
                     Full-time job
                   </Button>
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
-                      variant="outlined"
                       onClick={ () => { setEmploymentType('Part-time job')} }
                   >
                     Part-time job
                   </Button>
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
-                      variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
                   >
                     Internship
                   </Button>
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
-                      variant="outlined"
                       onClick={ () => { setEmploymentType('On-campus job')} }
                   >
                     On-campus job
