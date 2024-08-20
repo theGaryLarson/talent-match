@@ -835,12 +835,10 @@ async function seedUserAddresses() {
 
 async function seedPathways() {
     const pathways = [
-        "Network and Computer Systems Administrator",
-        "Web Developer",
-        "Software Developer",
-        "Software Quality Assurance Analyst and Tester",
-        "Graphic Designer",
-        "Computer User Support Specialist"
+        "Software Development",
+        "IT & Cloud Computing",
+        "Cybersecurity",
+        "Data Analytics",
     ]
     console.log('Seeding Pathways...')
     const uuids = [
@@ -987,8 +985,8 @@ async function seedSkills() {
         data: skillsToCreate
     });
 
-    console.log(`Seeded ${skillsCount} skills.\n`);
-    console.log(`Actual count of skills ${skillsData_v2.length}`);
+    console.log(`Seeded ${skillsCount} skills.`);
+    console.log(`Actual count of skills ${skillsData_v2.length}\n`);
 }
 
 async function seedJobSeekers() {
