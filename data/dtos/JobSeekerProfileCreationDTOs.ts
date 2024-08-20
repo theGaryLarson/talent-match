@@ -98,6 +98,7 @@ export enum PreALevel {
 }
 
 export enum EdProgram {
+    None = "",
     HighSchool = "High school",
     College = "College",
     TrainingProgram = "Training program / Bootcamp",
