@@ -1,14 +1,47 @@
 'use client';
 
-import React from 'react';
+import React, {useState} from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import { Button, Label, List, ListItem, Checkbox } from "flowbite-react";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import {JsDisclosuresPostDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 export default function CreateJobseekerProfileDisclosuresPage(){
+  const [veteranStatus, setVeteranStatus] = useState('')
+  const [disabilityStatus, setDisabilityStatus] = useState('');
+  const [gender, setGender] = useState('');
+  const [race, setRace] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const formData: JsDisclosuresPostDTO = {
+      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC', // TODO pull user id from nextauth session data
+      isVeteran: veteranStatus,
+      hasDisability: disabilityStatus,
+      gender: gender,
+      race: race,
+      hasReadTerms: termsAccepted,
+    }
+
+    try {
+      const response = await fetch('/api/jobseekers/account/disclosures/upsert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (e: any) {
+      // error handling
+    }
+  }
   return(
     <main className="flex">
       <aside className="hidden lg:w-2/5 lg:block">
@@ -29,14 +62,14 @@ export default function CreateJobseekerProfileDisclosuresPage(){
               id="profile-creation-disclosures-gender"
               fullWidth
               label="Gender"
-              value={""}
-              onChange={()=>{}}
+              value={gender}
+              onChange={(event)=>{setGender(event.target.value)}}
               options={[
-                {label:"Male", value:"Male"},
-                {label:"Female", value:"Female"},
-                {label:"Non-binary", value:"Non-binary"},
-                {label:"Other", value:"Other"},
-                {label:"I prefer not to say", value:"I prefer not to say"},
+                {label:"Male", value:"male"},
+                {label:"Female", value:"female"},
+                {label:"Non-binary", value:"non-binary"},
+                {label:"Other", value:"other"},
+                {label:"I prefer not to say", value:"undisclosed"},
               ]}
               placeholder="Please select"
               required
@@ -45,12 +78,12 @@ export default function CreateJobseekerProfileDisclosuresPage(){
               id="profile-creation-disclosures-veterans"
               fullWidth
               label="Veterans"
-              value={""}
-              onChange={()=>{}}
+              value={veteranStatus}
+              onChange={(event)=>{setVeteranStatus(event.target.value)}}
               options={[
-                {label:"Yes", value:"Yes"},
-                {label:"No", value:"No"},
-                {label:"I prefer not to say", value:"I prefer not to say"},
+                {label:"Yes", value:"yes"},
+                {label:"No", value:"no"},
+                {label:"I prefer not to say", value:"undisclosed"},
               ]}
               placeholder="Please select"
               required
@@ -59,12 +92,12 @@ export default function CreateJobseekerProfileDisclosuresPage(){
               id="profile-creation-disclosures-ethnicity"
               fullWidth
               label="Ethnicity"
-              value={""}
-              onChange={()=>{}}
+              value={race}
+              onChange={(event)=>{setRace(event.target.value)}}
               options={[
-                {label:"I am a person of Hispanic origin", value:"I am a person of Hispanic origin"},
-                {label:"I am NOT Hispanic", value:"I am NOT Hispanic"},
-                {label:"I prefer not to say", value:"I prefer not to say"},
+                {label:"I am a person of Hispanic origin", value:"hispanic origin"},
+                {label:"I am NOT Hispanic", value:"not hispanic"},
+                {label:"I prefer not to say", value:"undisclosed"},
               ]}
               placeholder="Please select"
               required
@@ -110,11 +143,13 @@ export default function CreateJobseekerProfileDisclosuresPage(){
               <RadioGroup
                 aria-labelledby="profile-creation-disclosures-require-disability-label"
                 defaultValue="female"
+                value={disabilityStatus}
+                onChange={(event) => setDisabilityStatus(event.target.value)}
                 name="profile-creation-disclosures-require-disability"
               >
-                <FormControlLabel value="Yes, I have a disability, or have had one in the past" control={<Radio />} label="Yes, I have a disability, or have had one in the past" />
-                <FormControlLabel value="No, I do not have a disability and have not had one in the past" control={<Radio />} label="No, I do not have a disability and have not had one in the past" />
-                <FormControlLabel value="I do not want to answer" control={<Radio />} label="I do not want to answer" />
+                <FormControlLabel value="yes" control={<Radio />} label="Yes, I have a disability, or have had one in the past" />
+                <FormControlLabel value="no" control={<Radio />} label="No, I do not have a disability and have not had one in the past" />
+                <FormControlLabel value="undisclosed" control={<Radio />} label="I do not want to answer" />
               </RadioGroup>
             </FormControl>
           </fieldset>
@@ -122,7 +157,14 @@ export default function CreateJobseekerProfileDisclosuresPage(){
             <legend>
               <h2>Terms</h2>
             </legend>
-            <Label className="block"><Checkbox name="profile-creation-disclosures-require-terms" required/> Yes, I have read and consent to the terms and conditions*</Label>
+            <Label className="block">
+              <Checkbox
+                  name="profile-creation-disclosures-require-terms"
+                  checked={termsAccepted}
+                  onChange={(event) => setTermsAccepted(event.target.checked)}
+                  required
+              /> Yes, I have read and consent to the terms and conditions*
+            </Label>
 
           </fieldset>
           <div className="flex">
