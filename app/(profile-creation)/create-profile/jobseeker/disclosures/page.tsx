@@ -8,6 +8,7 @@ import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import { Button, Label, List, ListItem, Checkbox } from "flowbite-react";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 import {JsDisclosuresPostDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { useRouter} from "next/navigation";
 
 export default function CreateJobseekerProfileDisclosuresPage(){
   const [veteranStatus, setVeteranStatus] = useState('')
@@ -15,6 +16,7 @@ export default function CreateJobseekerProfileDisclosuresPage(){
   const [gender, setGender] = useState('');
   const [race, setRace] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -38,6 +40,7 @@ export default function CreateJobseekerProfileDisclosuresPage(){
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      router.push('/create-profile/jobseeker/preferences');
     } catch (e: any) {
       // error handling
     }
@@ -51,7 +54,7 @@ export default function CreateJobseekerProfileDisclosuresPage(){
         <p>Step 6/6</p>
         <h1>Voluntary Disclosures</h1>
         <p>* Indicates a required field</p>
-        <form>
+        <form onSubmit={handleSubmit}>
           <p>
             You are invited to provide information to assist us in meeting these government reporting requirements.
             Completion of this form is completely voluntary. If you choose not to answer, you will not be subject to adverse effects. However, we encourage you to answer each question and assure you that this information is confidential. 
