@@ -8,7 +8,7 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 // import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
-import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 import { Button } from "flowbite-react";
 import { useRouter } from 'next/navigation';
 import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
