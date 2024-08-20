@@ -7,7 +7,7 @@ interface Props {
 }
 
 const customTheme: CustomFlowbiteTheme["progress"] = {
-  base: "rounded-none",
+  base: "bg-gray-200 rounded-none",
   bar: "rounded-none",
 };
 

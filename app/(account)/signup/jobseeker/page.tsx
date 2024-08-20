@@ -5,11 +5,11 @@ import {Button} from '@/app/ui/button';
 
 export default function JobseekerSignupPage(){
     return(
-      <main className="max-w-screen-lg mx-auto lg:flex">
-        <section className="w-full lg:w-1/2">
+      <main className="max-w-screen-lg mx-auto laptop:flex">
+        <section className="w-full laptop:w-1/2">
           <h1>Create a CFA account</h1>
           <p>Create a free CFA account to access job guides, 1:1 webinars, jobs &amp; opportunities.</p>
-          <div className="lg:flex">
+          <div className="laptop:flex">
             <p>Not ready to log in?</p>
             <p>
               <Link href="/">
@@ -18,7 +18,7 @@ export default function JobseekerSignupPage(){
             </p>
           </div>
         </section>
-        <section className="w-full lg:w-1/2">
+        <section className="w-full laptop:w-1/2">
           <Button>Google Sign-in Placeholder</Button>
           <DividerWithText>or</DividerWithText>
           <form>

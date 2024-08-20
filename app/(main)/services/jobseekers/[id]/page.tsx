@@ -6,7 +6,7 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
   return (
-    <main className="px-4 space-y-3 py-8 font-['Roboto'] md:px-[150px] lg:px-[200px] bg-gray-bg">
+    <main className="px-4 space-y-3 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px] bg-gray-bg">
       {/* <Toggle/> */}
       
         <div className="flex h-[200px] items-center rounded-md border bg-white">

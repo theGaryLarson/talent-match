@@ -28,7 +28,7 @@ export default function Page() {
                     <br/>
                     <strong>Enhance Your Technical Skills And Workplace Success Strategies</strong>
                     <br/><br/>
-                    <div className="grid justify-center space-y-10 lg:space-x-10 lg:space-y-0 lg:grid-cols-2">
+                    <div className="grid justify-center space-y-10 laptop:space-x-10 laptop:space-y-0 laptop:grid-cols-2">
                         <GreyBackgroundBulletPointListBlock title="Durable & Interpersonal Skills"
                                                             bulletPoints={["Metacognition", "Critical Thinking", "Character", "Creativity", "Growth Mindset", "Fortitude", "Communication", "Conflict Resolution", "Customer Service", "Mindfulness", "Collaboration", "Leadership"]}/>
                         <GreyBackgroundBulletPointListBlock title="Employability Skills"
@@ -107,7 +107,7 @@ export default function Page() {
                     Explore our programs and find the perfect fit for you.</p>
                 <p>Access diverse opportunties in the tech industry, including:</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-8 flex-wrap">
+            <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 justify-items-center gap-8 flex-wrap">
                 <PhotoCardWithTitle title="Pre-Apprenticeship Program"
                                     article="WA residents, between the ages of 16-24 years old and in need of financial assistance, can apply for our Full Stack Web Development Pre-Apprenticeship program! Master in-demand coding skills & earn a certificate in 1.5 years."
                                     imgSrc="/cfa_images/stock/christina-wocintechchat-com-bPVM4nOy0Rg-unsplash 1.jpg"
@@ -149,7 +149,7 @@ export default function Page() {
     //Card view of the career benifits
     //Uses grid that changes the number of columns based on screen size
     let benifitsCards = (
-        <div className="grid grid-cols-2 py-6 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 py-6 tablet:grid-cols-4 gap-4">
             <InfoCard title="Create Your Profile"
                       paragraph="Highlight your strengths, experience, and achievements on our Talent Portal. Build a strong foundation that gets you noticed!"/>
             <InfoCard title="Build Skills & Earn Badges"
@@ -165,10 +165,10 @@ export default function Page() {
         <div className="font-roboto">
             <PageBanner title={"Welcome to CFA’s Tech Talent Showcase"} bg="bg-jobseeker-hero-1"/>
 
-            <div className="px-8 md:px-12 lg:px-16 py-16 space-y-8 container mx-auto">
+            <div className="px-8 tablet:px-12 laptop:px-16 py-16 space-y-8 container mx-auto">
                 {topBlurb}
                 <br/>
-                <div className="lg:px-8">
+                <div className="laptop:px-8">
                     <Tabs tabs={tabs}/>
                 </div>
                 <LargeRoundedButtonCard
@@ -186,7 +186,7 @@ export default function Page() {
                 author={"The Lorem Ipsum"}
                 imgSrc={"/cfa_images/stock/Governer Inslee.Bryan.jpg"}/>
 
-            <div className="px-6 md:px-12 lg:px-24 py-16 space-y-8 container mx-auto">
+            <div className="px-6 tablet:px-12 laptop:px-24 py-16 space-y-8 container mx-auto">
                 <div className="space-y-6 px-4">
                     <p className="text-2xl">Your path to a thriving tech career starts here!</p>
 
@@ -207,7 +207,7 @@ export default function Page() {
 
                 </div>
 
-                <div className="px-8 md:px-12 lg:px-16 pt-8 pb-16 space-y-8 container mx-auto">
+                <div className="px-8 tablet:px-12 laptop:px-16 pt-8 pb-16 space-y-8 container mx-auto">
                     {benifitsList}
                     {benifitsCards}
                     <center>
@@ -245,7 +245,7 @@ function TextImageSlide({title, paragraph, list, paragraph2, image, imageLeft = 
     let imgEl = <div className="self-center"><Image width={1000} height={1000} src={`/cfa_images/${image}`} alt=""/>
     </div>;
     return (
-        <div className="flex flex-col lg:flex-row gap-4 text-left">
+        <div className="flex flex-col laptop:flex-row gap-4 text-left">
             {imageLeft && imgEl}
             <div>
                 <strong>{title}</strong>

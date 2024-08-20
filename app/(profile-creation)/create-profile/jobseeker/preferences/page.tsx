@@ -3,13 +3,16 @@
 import React, {useState} from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
+
 // REVIEW: testing redux
 // import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
-import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import { Button } from "flowbite-react";
 import { useRouter } from 'next/navigation';
 import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+
 
 
 export default function CreateJobseekerProfilePreferencesPage(){
@@ -50,45 +53,47 @@ export default function CreateJobseekerProfilePreferencesPage(){
   }
   return(
     <main className="flex">
-      <aside className="hidden lg:w-2/5 lg:block">
+      <aside className="profile-form-aside">
       </aside>
-      <section className="w-full lg:w-3/5">
+      <section className="profile-form-section">
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={5/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+        <ProgressBarFlat progress={5/6 * 100} size="sm" className="laptop:hidden"/>
         <p>Step 5/6</p>
         <h1>Your preferences</h1>
-        <p>* Indicates a required field</p>
+
+        <p className='subtitle'>* Indicates a required field</p>
         <form onSubmit={ handleSubmit }>
+
           <fieldset>
-            <legend>
-              <h2>Your Preferences</h2>
-            </legend>
             <div>
               <fieldset>
                 <legend>What are you looking for?</legend>
-                {/* TODO: Pills need function to select */}
-                <div className="flex">
+                <div className="container">
                   <Button
+                      className="custom-outline-btn inline-block m-2"
                       variant="outlined"
                       onClick={ () => { setEmploymentType('Full-time job')} }
                   >
                     Full-time job
                   </Button>
                   <Button
+                      className="custom-outline-btn inline-block m-2"
                       variant="outlined"
                       onClick={ () => { setEmploymentType('Part-time job')} }
                   >
                     Part-time job
                   </Button>
                   <Button
+                      className="custom-outline-btn inline-block m-2"
                       variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
                   >
                     Internship
                   </Button>
                   <Button
+                      className="custom-outline-btn inline-block m-2"
                       variant="outlined"
                       onClick={ () => { setEmploymentType('On-campus job')} }
                   >
@@ -103,7 +108,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 </div>
               </fieldset>
               <FormControl component="fieldset">
-                <FormLabel id="profile-creation-preferences-require-role" component="legend" sx={{color:"#000000ff"}}>What is your tech role/targeted pathway?</FormLabel>
+                <FormLabel id="profile-creation-preferences-require-role" className="mt-7" component="legend" sx={{color:"#000000ff"}}>What is your tech role/targeted pathway?</FormLabel>
                 <RadioGroup
                   aria-labelledby="profile-creation-preferences-require-role"
                   defaultValue="female"
@@ -122,10 +127,11 @@ export default function CreateJobseekerProfilePreferencesPage(){
             </div>
           </fieldset>
 
-          <div className="flex">
-            <Button variant="outlined">Previous</Button>
-            <Button variant="contained" type="submit">Save and continue</Button>
+          <div className="profile-form-progress-btn-group">
+            <Button pill className="custom-outline-btn">Previous</Button>
+            <Button pill>Save and continue</Button>
           </div>
+          
         </form>
       </section>
     </main>
