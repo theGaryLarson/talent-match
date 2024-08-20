@@ -95,6 +95,7 @@ export default function CreateJobseekerProfileShowcasePage(){
               value={ portfolioPassword }
               onChange={(e) => { setPortfolioPassword(e.target.value) }}
             />
+            </div>
           </fieldset>
           <fieldset>
           <div className="profile-form-grid">
