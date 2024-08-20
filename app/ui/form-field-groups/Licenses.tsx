@@ -2,6 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { Button } from 'flowbite-react';
 import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
+import { v4 as uuidv4 } from "uuid";
 
 const classNamePrefix = "profile-creation-license-group-";
 const classForName = "name";
@@ -12,7 +13,7 @@ const classIssueDate = "issue-date";
 const classExpirationDate = "expiration-date";
 
 export interface LicenseData {
-  "uid": number,
+  "uid": string,
   [classForName]: string,
   [classIssuingOrg]: string,
   [classCredentialId]: string,
@@ -24,7 +25,7 @@ export interface LicenseData {
 let uniqueListID = 0;
 export function defaultLicenseData() {
   return {
-    "uid": uniqueListID++,
+    "uid": uuidv4(),
     [classForName]: "",
     [classIssuingOrg]: "",
     [classCredentialId]: "",
@@ -36,7 +37,7 @@ export function defaultLicenseData() {
 
 interface Props {
   data: LicenseData[],
-  onRemove: (uid:number) => void,
+  onRemove: (uid:string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 
