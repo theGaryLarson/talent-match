@@ -233,23 +233,6 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                   /> No
                 </Label>
               </RadioGroup>
-              Are you authorized to work in the U.S.? *
-              <Label className="block">
-                <Radio
-                    name="isAuthorizedToWorkUsa"
-                    value="yes"
-                    onChange={handleInputUpdate}
-                    required
-                /> Yes
-              </Label>
-              <Label className="block">
-                <Radio
-                    name="isAuthorizedToWorkUsa"
-                    value="no"
-                    onChange={handleInputUpdate}
-                    required
-                /> No
-              </Label>
             </div>
             <div>
               <h3 className='alert-title'>United States of America</h3>
@@ -274,22 +257,6 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                   /> No
                 </Label>
               </RadioGroup>
-              <Label className="block">
-                <Radio
-                    name="requiresSponsorship"
-                    value="yes"
-                    onChange={handleInputUpdate}
-                    required
-                /> Yes
-              </Label>
-              <Label className="block">
-                <Radio
-                    name="requiresSponsorship"
-                    value="no"
-                    onChange={handleInputUpdate}
-                    required
-                /> No
-              </Label>
             </div>
           </fieldset>
           <div className="profile-form-progress-btn-group">
