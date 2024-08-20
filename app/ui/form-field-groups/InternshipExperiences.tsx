@@ -23,7 +23,6 @@ export interface InternshipExperienceData {
   [classExperience]: string,
 }
 
-let uniqueListID = 0;
 export function defaultInternshipExperienceData() {
   return {
     uid: uuidv4(),
