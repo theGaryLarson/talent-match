@@ -94,6 +94,12 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   >
                     On-campus job
                   </Button>
+                  <Button
+                      variant="outlined"
+                      onClick={ () => { setEmploymentType('Contract')} }
+                  >
+                    Contract
+                  </Button>
                 </div>
               </fieldset>
               <FormControl component="fieldset">
