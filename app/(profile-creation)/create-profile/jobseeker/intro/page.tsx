@@ -491,7 +491,9 @@ export default function CreateJobseekerProfileIntroPage(){
             </div>
           </fieldset>
           <div className="flex justify-between my-4">
-            <Button pill color="gray">Cancel</Button>
+            <Button pill color="gray" onClick={() => {
+                router.push("../../services/jobseekers")
+            }}>Cancel</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>
