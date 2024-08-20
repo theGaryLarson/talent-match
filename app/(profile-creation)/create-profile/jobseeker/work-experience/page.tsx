@@ -58,10 +58,10 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
 
   return(
     <main className="flex">
-      <aside className="hidden lg:w-2/5 lg:block">
+      <aside className="hidden laptop:w-2/5 laptop:block">
       </aside>
-      <section className="w-full lg:w-3/5">
-        <ProgressBarFlat progress={3/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+      <section className="w-full laptop:w-3/5">
+        <ProgressBarFlat progress={3/6 * 100} size="sm" color="dark" className="laptop:hidden"/>
         <p>Step 3/6</p>
         <h1>Work experience</h1>
         <p>* Indicates a required field</p>

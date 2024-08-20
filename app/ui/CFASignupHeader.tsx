@@ -7,7 +7,7 @@ import Image from 'next/image';
 export default function CFASignupHeader() {
   return (
     <header className="bg-white">
-      <nav className="mx-auto flex items-center justify-between p-6 max-w-screen-lg lg:px-8" aria-label="Global">
+      <nav className="mx-auto flex items-center justify-between p-6 max-w-screen-lg laptop:px-8" aria-label="Global">
         <div className="w-1/2">
           <Link href="/">
             <span className="sr-only">Computing For All</span>

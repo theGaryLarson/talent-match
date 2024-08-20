@@ -18,7 +18,7 @@ export default function Page() {
         title={"Welcome to CFA's Tech Talent Showcase"}
         bg="bg-employer-hero-1"
       />
-      <main className="mx-4 space-y-3 py-8 font-['Roboto'] md:mx-[150px] lg:mx-[200px]">
+      <main className="mx-4 space-y-3 py-8 font-['Roboto'] tablet:mx-[150px] laptop:mx-[200px]">
         <h1 className="text-3xl font-bold">
         Unique Access to Tech Talent
         </h1>

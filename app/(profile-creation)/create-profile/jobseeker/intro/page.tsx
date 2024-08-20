@@ -113,7 +113,7 @@ export default function CreateJobseekerProfileIntroPage(){
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+        <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="laptop:hidden"/>
         <p>Step 1/6</p>
         <h1>Intro</h1>
         <p>* Indicates a required field</p>
@@ -135,7 +135,7 @@ export default function CreateJobseekerProfileIntroPage(){
               <h2>Basic info</h2>
             </legend>
             
-            <div className="grid gap-6 my-3 md:grid-cols-2">
+            <div className="grid gap-6 my-3 tablet:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
               <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
             </div>
@@ -144,7 +144,7 @@ export default function CreateJobseekerProfileIntroPage(){
               <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
             </div>
             
-            <div className="grid gap-6 my-3 md:grid-cols-2">
+            <div className="grid gap-6 my-3 tablet:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
@@ -212,7 +212,7 @@ export default function CreateJobseekerProfileIntroPage(){
               <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" required>Email *</InputTextWithLabel>
             </div>
 
-            <div className="grid gap-6 my-3 md:grid-cols-2">
+            <div className="grid gap-6 my-3 tablet:grid-cols-2">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
                 onChange={handleFieldChange}
