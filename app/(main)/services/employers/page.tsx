@@ -87,8 +87,8 @@ export default function Page() {
         <div className='flex flex-wrap gap-4'>
         <CategoryCard
             imgSrc={'/cfa_images/stock/SoftwareDevLink.png'}
-            title={'Software Devolopment'}
-            text={'Find job seekers with training and expertise in Software Devolopment'} href={'/services/employers/dashboard/listview?search=Software+Devolopment'}          />
+            title={'Software Development'}
+            text={'Find job seekers with training and expertise in Software Development'} href={'/services/employers/dashboard/listview?search=Software Development'}          />
           <CategoryCard
             imgSrc={'/cfa_images/stock/cyberLink.png'}
             title={'Cyber Security'}

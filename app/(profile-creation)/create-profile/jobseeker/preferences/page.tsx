@@ -46,7 +46,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
 
       const result = await response.json();
       console.log(JSON.stringify(result, null ,2 ));
-      router.push('/create-profile/jobseeker/preferences');
+      router.push('/create-profile/jobseeker/disclosures');
     } catch (e: any) {
       //error handling
     }
@@ -73,31 +73,38 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <div className="container">
                   <Button
                       className="custom-outline-btn inline-block m-2"
-                      variant="outlined"
+                      // variant="outlined"
                       onClick={ () => { setEmploymentType('Full-time job')} }
                   >
                     Full-time job
                   </Button>
                   <Button
                       className="custom-outline-btn inline-block m-2"
-                      variant="outlined"
+                      // variant="outlined"
                       onClick={ () => { setEmploymentType('Part-time job')} }
                   >
                     Part-time job
                   </Button>
                   <Button
                       className="custom-outline-btn inline-block m-2"
-                      variant="outlined"
+                      // variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
                   >
                     Internship
                   </Button>
                   <Button
                       className="custom-outline-btn inline-block m-2"
-                      variant="outlined"
+                      // variant="outlined"
                       onClick={ () => { setEmploymentType('On-campus job')} }
                   >
                     On-campus job
+                  </Button>
+                  <Button
+                      className="custom-outline-btn inline-block m-2"
+                      // variant="outlined"
+                      onClick={ () => { setEmploymentType('Contract')} }
+                  >
+                    Contract
                   </Button>
                 </div>
               </fieldset>
@@ -123,7 +130,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
 
           <div className="profile-form-progress-btn-group">
             <Button pill className="custom-outline-btn">Previous</Button>
-            <Button pill>Save and continue</Button>
+            <Button pill type="submit">Save and continue</Button>
           </div>
           
         </form>

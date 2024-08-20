@@ -47,6 +47,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             const workExperiences: WorkExperience[] = jobseeker?.work_experiences.map((w) => ({
                 workId: w.workId,
                 jobseekerId: w.jobseekerId,
+                sectorId: w.sectorId,
                 company: w.company,
                 jobTitle: w.jobTitle,
                 isCurrentJob: w.isCurrentJob,

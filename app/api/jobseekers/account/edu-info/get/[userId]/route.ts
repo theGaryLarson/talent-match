@@ -2,10 +2,10 @@ import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import {
     CertDTO,
-    DegreeType,
+    HighestDegreeType,
     EdProgram,
     EducationInfoDTO,
-    JsEducationDTO, ProjectExpDTO
+    JsEducationDTO, ProjectExpDTO, CollegeDegreeType
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {mapToEnum} from "@/app/lib/utils";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
@@ -31,9 +31,9 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                 is_enrolled_ed_program: true,
                 jobseeker_education: {
                     select: {
-                        jobseekerEdId: true,
-                        edInstitutionId: true,
-                        eduInstitutions: {
+                        id: true,
+                        edProviderId: true,
+                        eduProviders: {
                             select: {
                                 name: true,
                             }
@@ -97,15 +97,15 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         // Map the jobseeker data to DTOs
         const edHistory: EducationInfoDTO[] = jobseeker.jobseeker_education.map((edu) => ({
-            jobseekerEdId: edu.jobseekerEdId,
-            edInstitutionId: edu.edInstitutionId,
-            institutionName: edu.eduInstitutions.name ?? undefined,
+            jobseekerEdId: edu.id,
+            eduProviderId: edu.edProviderId,
+            edProviderName: edu.eduProviders.name ?? undefined,
             edProgram: mapToEnum(edu.edProgram, EdProgram),
             edSystem: edu.edSystem,
             isEnrolled: edu.isEnrolled,
             startDate: edu.startDate.toISOString(),
             gradDate: edu.gradDate.toISOString(),
-            degreeType: mapToEnum(edu.degreeType ?? "None", DegreeType),
+            degreeType: mapToEnum(edu.degreeType ?? "None", CollegeDegreeType),
             major: edu?.major,
             minor: edu?.minor,
             description: edu.description
@@ -143,7 +143,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         const result: JsEducationDTO = {
             userId: jobseeker.user_id,
-            highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed ?? "None", DegreeType),
+            highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed ?? "None", HighestDegreeType),
             educations: edHistory,
             certifications: certs,
             projects: projects,

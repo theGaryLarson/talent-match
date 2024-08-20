@@ -4,6 +4,7 @@ import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
 import TagsWithAutocomplete from '../components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
+import { v4 as uuidv4 } from "uuid";
 
 const classNamePrefix = "profile-creation-project-experience-group-";
 const classTitle = "title";
@@ -16,7 +17,7 @@ const classTeamSize = "team-size";
 const classSkillsStack = "skills-stack";
 
 export interface ProjectExperienceData {
-  "uid": number,
+  "uid": string,
   [classTitle]: string,
   [classProjectRole]: string,
   [classStartingDate]: string,
@@ -30,7 +31,7 @@ export interface ProjectExperienceData {
 let uniqueListID = 0;
 export function defaultProjectExperienceData() {
   return {
-    "uid": uniqueListID++,
+    "uid": uuidv4(),
     [classTitle]: "",
     [classProjectRole]: "",
     [classStartingDate]: "",
@@ -44,7 +45,7 @@ export function defaultProjectExperienceData() {
 
 interface Props {
   data: ProjectExperienceData[],
-  onRemove: (uid:number) => void,
+  onRemove: (uid:string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 

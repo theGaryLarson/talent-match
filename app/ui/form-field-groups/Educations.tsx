@@ -4,7 +4,14 @@ import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import {Button, Label} from "flowbite-react";
 import {Radio, Checkbox} from "@mui/material";
 import { MdClose } from "react-icons/md";
-import { DegreeType, EdProgram, EdSystem, EducationInfoDTO, PreALevel, SchoolGradeLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {
+    EdProgram,
+    EdSystem,
+    PreALevel,
+    SchoolGradeLevel,
+    CollegeDegreeType
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import { v4 as uuidv4 } from 'uuid';
 
 const classNamePrefix = "profile-creation-education-group-";
 
@@ -25,14 +32,14 @@ const classDescription = "description";
 const classGPA = "gpa";
 
 export interface EducationData {
-  "uid": number,
+  "uid": string,
   [classProgramType]: EdProgram,
   [classInstitutionId]: string,
   [classInstitutionName]?: string,
   [classCurrent]: boolean,
   [classStartDate]: string,
   [classEndDate]: string,
-  [classDegreeType]?: DegreeType,
+  [classDegreeType]?: CollegeDegreeType,
   [classGradeLevel]?: SchoolGradeLevel | null,
   [classPreALevel]?: PreALevel | null,
   [classCollegeProgram]?: string | null,
@@ -43,17 +50,16 @@ export interface EducationData {
   [classGPA]?: number | null,
 }
 
-let uniqueListID = 0;
 export function defaultEducationData() {
   return {
-    "uid": uniqueListID++,
+    "uid": uuidv4(),
     [classProgramType]: EdProgram.None,
     [classInstitutionId]: "",
     [classInstitutionName]: "",
     [classCurrent]: false,
     [classStartDate]: "",
     [classEndDate]: "",
-    [classDegreeType]: DegreeType.None,
+    [classDegreeType]: CollegeDegreeType.None,
     [classGradeLevel]: null,
     [classPreALevel]: null,
     [classCollegeProgram]: "",
@@ -67,7 +73,7 @@ export function defaultEducationData() {
 
 interface Props {
   data: EducationData[],
-  onRemove: (uid:number) => void,
+  onRemove: (uid:string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 
