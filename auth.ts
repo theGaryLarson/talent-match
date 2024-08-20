@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import type { Provider } from "next-auth/providers";
+import { Role } from "./data/dtos/UserInfoDTO";
 
 const providers: Provider[] = [
   GitHub,
@@ -34,7 +35,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 email: user.email,
                 firstName: user.name?.split(" ")[0] || "",
                 lastName: user.name?.split(" ")[1] || "",
-                roles: ["JOBSEEKER"],
+                roles: [Role.JOBSEEKER],
               }),
             });
 
@@ -44,12 +45,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
 
             const { result } = await createResponse.json();
-            token.id = result.userId;
-            token.email = result.email;
+            if (token.user) {
+              token.id = result.userId;
+              token.email = result.email;
+              token.jobseekerId = result.jobseekerId || null;
+              token.employerId = result.employerId;
+              token.companyId = result.companyId;
+              token.companyIsApproved = result.companyIsApproved;
+              token.employeeIsApproved = result.employeeIsApproved;
+            }
+
           } else if (fetchResponse.ok) {
             const { result } = await fetchResponse.json();
             token.id = result.userId;
             token.email = result.email;
+            token.jobseekerId = result.jobseekerId;
+            token.employerId = result.employerId;
+            token.companyId = result.companyId;
+            token.companyIsApproved = result.companyIsApproved;
+            token.employeeIsApproved = result.employeeIsApproved;
           } else {
             console.error(`Failed to fetch user: ${fetchResponse.statusText}`);
             throw new Error(`Failed to fetch user: ${fetchResponse.statusText}`);
@@ -62,9 +76,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
+
+
+      session.user.jobseekerId = token.jobseekerId;
+      session.user.employerId = token.employerId;
+      session.user.companyId = token.companyId;
+      session.user.companyIsApproved = token.companyIsApproved;
+      session.user.employeeIsApproved = token.employeeIsApproved;
       session.user.id = token.id;
       session.user.email = token.email;
-      session.user.roles = ["JOBSEEKER"];
+      session.user.roles = [Role.JOBSEEKER];
       return session;
     },
   },
