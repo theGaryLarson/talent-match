@@ -41,7 +41,7 @@ export default function CreateJobseekerProfileDisclosuresPage(){
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      router.push('/create-profile/jobseeker/preferences');
+      router.push('../../services/jobseekers');
     } catch (e: any) {
       // error handling
     }
@@ -67,14 +67,14 @@ export default function CreateJobseekerProfileDisclosuresPage(){
                 id="profile-creation-disclosures-gender"
                 fullWidth
                 label="Gender"
-                value={""}
-                onChange={()=>{}}
+                  value={gender}
+                  onChange={(event)=>{setGender(event.target.value)}}
                 options={[
-                  {label:"Male", value:"Male"},
-                  {label:"Female", value:"Female"},
-                  {label:"Non-binary", value:"Non-binary"},
-                  {label:"Other", value:"Other"},
-                  {label:"I prefer not to say", value:"I prefer not to say"},
+                      {label:"Male", value:"male"},
+                      {label:"Female", value:"female"},
+                      {label:"Non-binary", value:"non-binary"},
+                      {label:"Other", value:"other"},
+                      {label:"I prefer not to say", value:"undisclosed"},
                 ]}
                 placeholder="Please select"
                 required
@@ -83,12 +83,12 @@ export default function CreateJobseekerProfileDisclosuresPage(){
                 id="profile-creation-disclosures-veterans"
                 fullWidth
                 label="Veterans"
-                value={""}
-                onChange={()=>{}}
+                  value={veteranStatus}
+                  onChange={(event)=>{setVeteranStatus(event.target.value)}}
                 options={[
-                  {label:"Yes", value:"Yes"},
-                  {label:"No", value:"No"},
-                  {label:"I prefer not to say", value:"I prefer not to say"},
+                      {label:"Yes", value:"yes"},
+                      {label:"No", value:"no"},
+                      {label:"I prefer not to say", value:"undisclosed"},
                 ]}
                 placeholder="Please select"
                 required
@@ -97,62 +97,17 @@ export default function CreateJobseekerProfileDisclosuresPage(){
                 id="profile-creation-disclosures-ethnicity"
                 fullWidth
                 label="Ethnicity"
-                value={""}
-                onChange={()=>{}}
+                  value={race}
+                  onChange={(event)=>{setRace(event.target.value)}}
                 options={[
-                  {label:"I am a person of Hispanic origin", value:"I am a person of Hispanic origin"},
-                  {label:"I am NOT Hispanic", value:"I am NOT Hispanic"},
-                  {label:"I prefer not to say", value:"I prefer not to say"},
+                      {label:"I am a person of Hispanic origin", value:"hispanic origin"},
+                      {label:"I am NOT Hispanic", value:"not hispanic"},
+                      {label:"I prefer not to say", value:"undisclosed"},
                 ]}
                 placeholder="Please select"
                 required
               />
             </div>
-            {/* REVIEW: These options are from dynamics, but may be deprecated? */}
-            <SelectWithLabel
-              id="profile-creation-disclosures-gender"
-              fullWidth
-              label="Gender"
-              value={gender}
-              onChange={(event)=>{setGender(event.target.value)}}
-              options={[
-                {label:"Male", value:"male"},
-                {label:"Female", value:"female"},
-                {label:"Non-binary", value:"non-binary"},
-                {label:"Other", value:"other"},
-                {label:"I prefer not to say", value:"undisclosed"},
-              ]}
-              placeholder="Please select"
-              required
-            />
-            <SelectWithLabel
-              id="profile-creation-disclosures-veterans"
-              fullWidth
-              label="Veterans"
-              value={veteranStatus}
-              onChange={(event)=>{setVeteranStatus(event.target.value)}}
-              options={[
-                {label:"Yes", value:"yes"},
-                {label:"No", value:"no"},
-                {label:"I prefer not to say", value:"undisclosed"},
-              ]}
-              placeholder="Please select"
-              required
-            />
-            <SelectWithLabel
-              id="profile-creation-disclosures-ethnicity"
-              fullWidth
-              label="Ethnicity"
-              value={race}
-              onChange={(event)=>{setRace(event.target.value)}}
-              options={[
-                {label:"I am a person of Hispanic origin", value:"hispanic origin"},
-                {label:"I am NOT Hispanic", value:"not hispanic"},
-                {label:"I prefer not to say", value:"undisclosed"},
-              ]}
-              placeholder="Please select"
-              required
-            />
           </fieldset>
           <fieldset>
             <legend>
