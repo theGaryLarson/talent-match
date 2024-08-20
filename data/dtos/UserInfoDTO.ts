@@ -6,7 +6,6 @@ export type ReadUserInfoDTO = {
     companyId?: string | null,
     companyIsApproved: boolean,
     employeeIsApproved: boolean,
-
 }
 
 export type CreateUserDTO = {

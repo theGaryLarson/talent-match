@@ -4,12 +4,16 @@
 
 h1 {
   @apply text-5xl my-2;
-
+  font-weight: 700;
+  
   /* From Figma Properties */
-  /* font-size: 48px;
-  font-weight: 400;
-  line-height: 56.02px;
-  text-align: left; */
+  /* 
+  font-size: 34px;
+  font-family: Roboto;
+  line-height: 41.99px;
+  letter-spacing: 0.25px;
+  text-align: left;
+  */
 
 }
 
@@ -29,3 +33,52 @@ h2 {
 .profile-form-section {
   @apply w-full laptop:w-3/5 p-5 laptop:pr-80;
 }
+
+.profile-form-progress-btn-group {
+  @apply flex justify-between my-10;
+}
+
+.profile-form-grid {
+  @apply grid gap-6 my-3;
+}
+
+.alert-title {
+  @apply mt-3;
+  /* font-family: Roboto; */
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.15000000596046448px;
+  text-align: left;
+}
+
+.subtitle {
+  @apply my-3;
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 26px;
+  letter-spacing: 0.46000000834465027px;
+  text-align: left;
+  color: #00000099;
+}
+  
+/* Figma Button colors */
+.custom-outline-btn {
+  color: #047F9C;
+  border-color: #047F9C;
+  background-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.custom-outline-btn:hover {
+  color: #047F9C;
+  background-color: #f3f4f6 !important;
+  border-color: #047F9C;
+}
+
+
+/* input[type="radio"] {
+  @apply m-3;
+  cursor: pointer;
+} */

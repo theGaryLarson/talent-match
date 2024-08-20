@@ -133,25 +133,25 @@ export type JsEducationDTO = {
     projects: ProjectExpDTO[];
 }
 
-type workExperienceDTO = {
-    workExpId: string,
-    techAreaId: string,
-    company: string,
-    jobTitle: string,
-    startDate: string,
-    endDate: string,
-    isCurrent: boolean,
-    isInternship: boolean,
-    responsibility: string,
-}
+// type workExperienceDTO = {
+//     workExpId: string,
+//     techAreaId: string,
+//     company: string,
+//     jobTitle: string,
+//     startDate: string,
+//     endDate: string,
+//     isCurrent: boolean,
+//     isInternship: boolean,
+//     responsibility: string,
+// }
 
 
 export type JsWorkExpDTO = {
     userId: string,
     yearsWorkExperience: string,
     monthsInternshipExperience?: string | null,
-    isAuthorizedToWorkUsa: boolean, // TODO: encrypt
-    requiresSponsorship: boolean, // TODO: encrypt
+    isAuthorizedToWorkUsa?: boolean, // TODO: encrypt
+    requiresSponsorship?: boolean, // TODO: encrypt
     workExperiences?: WorkExperience[]
 }
 
@@ -166,6 +166,7 @@ export type JsShowcaseDTO = {
 export type JsPreferencesDTO = {
     userId: string,
     targetedPathwayId?: string | null
+    targetedPathway?: string | null,
     preferredEmploymentType?: string | null,
 }
 

@@ -67,9 +67,10 @@ export default function CreateJobseekerProfileIntroPage(){
      const formattedPhone = formatPhoneE164(countryCode?.toString(), ph?.toString())
 
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
-    //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO
+    //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
-          userId: 'USER_ID_FROM_SESSION_OR_AUTH',
+         //TODO: assign existing userId if exists if not create new with uuidv4().
+          userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
           photoUrl: fields.find(f => f.id === 'profile-creation-intro-avatar')?.value || null,
           firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
           lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
@@ -80,7 +81,7 @@ export default function CreateJobseekerProfileIntroPage(){
           state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
           city: '',
           county: '',
-          email: 'USER_EMAIL_FROM_SESSION_OR_AUTH',
+          email: fields.find(f => f.id === 'profile-creation-intro-email')?.value || '',
           introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
           currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
           resumeUrl: fields.find(f => f.id === 'profile-creation-intro-resume')?.value || null,
@@ -116,7 +117,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="laptop:hidden"/>
         <p>Step 1/6</p>
         <h1>Intro</h1>
-        <p>* Indicates a required field</p>
+        <p className='subtitle'>* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
           <fieldset>
@@ -135,17 +136,18 @@ export default function CreateJobseekerProfileIntroPage(){
               <h2>Basic info</h2>
             </legend>
             
-            <div className="grid gap-6 my-3 tablet:grid-cols-2">
-              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} required>First Name *</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} required>Last Name *</InputTextWithLabel>
+            <div className="profile-form-grid md:grid-cols-2">
+              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || ''} required>First Name *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || ''} required>Last Name *</InputTextWithLabel>
             </div>
             
-            <div className="grid gap-6 my-3">
-              <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} required>Birth Date *</InputTextWithLabel>
+            <div className="profile-form-grid">
+              <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-birth-date')?.value || ''} required>Birth Date *</InputTextWithLabel>
             </div>
             
-            <div className="grid gap-6 my-3 tablet:grid-cols-2">
-              <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
+            <div className="profile-form-grid md:grid-cols-2">
+              <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || ''} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
+              
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
                 onChange={handleFieldChange}
@@ -202,17 +204,21 @@ export default function CreateJobseekerProfileIntroPage(){
                   {label:"Wisconsin", value:"WI"},
                   {label:"Wyoming", value:"WY"},
                 ]}
+                value={fields.find(f => f.id === 'profile-creation-intro-state')?.value || ''}
                 placeholder="Please select"
+
               >
                 State
               </SelectOptionsWithLabel>
             </div>
             
-            <div className="grid gap-6 my-3">
-              <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" required>Email *</InputTextWithLabel>
+
+            <div className="profile-form-grid">
+              <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" value={fields.find(f => f.id === 'profile-creation-intro-email')?.value || ''} required>Email *</InputTextWithLabel>
+
             </div>
 
-            <div className="grid gap-6 my-3 tablet:grid-cols-2">
+            <div className="profile-form-grid tablet:grid-cols-2">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
                 onChange={handleFieldChange}
@@ -461,21 +467,21 @@ export default function CreateJobseekerProfileIntroPage(){
                   {label:"Zambia +260", value:"Zambia +260"},
                   {label:"Zimbabwe +263", value:"Zimbabwe +263"},
                 ]}
-                // defaultOption="United States +1"
+                value={fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || "United States +1"}
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} required>Phone Number *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || ''} required>Phone Number *</InputTextWithLabel>
             </div>
           </fieldset>
           <fieldset>
             <legend>
               <h2>Intro</h2>
             </legend>            
-            <div className="grid gap-6 my-3">
-              <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here">Headlines</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here" required>Current School / Graduated School *</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer">Current Position</InputTextWithLabel>
+            <div className="profile-form-grid">
+              <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here" value={fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || ''}>Headlines</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here"  value={fields.find(f => f.id === 'profile-creation-intro-current-or-graduated-school')?.value || ''} required>Current School / Graduated School *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer" value={fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || ''}>Current Position</InputTextWithLabel>
             </div>
             <div>
               Resume *
@@ -487,8 +493,8 @@ export default function CreateJobseekerProfileIntroPage(){
               />
             </div>
           </fieldset>
-          <div className="flex justify-between my-4">
-            <Button pill color="gray">Cancel</Button>
+          <div className="profile-form-progress-btn-group">
+            <Button pill className="custom-outline-btn">Cancel</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>

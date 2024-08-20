@@ -226,41 +226,43 @@ export default function CreateJobseekerProfileEducationPage() {
 
     return (
         <main className="flex">
-            <aside className="hidden laptop:w-2/5 laptop:block">
+            <aside className="profile-form-aside">
             </aside>
-            <section className="w-full laptop:w-3/5">
-                <ProgressBarFlat progress={2 / 6 * 100} size="sm" color="dark" className="laptop:hidden"/>
+            <section className="profile-form-section">
+                <ProgressBarFlat progress={2 / 6 * 100} size="sm" className="laptop:hidden"/>
                 <p>Step 2/6</p>
                 <h1>Education</h1>
-                <p>* Indicates a required field</p>
+                <p className='subtitle'>* Indicates a required field</p>
                 <form onSubmit={handleSubmit}>
                     <fieldset>
                         <legend>
                             <h2>Highest Education</h2>
                         </legend>
-                        <SelectOptionsWithLabel
-                            id="profile-creation-education-highest-completed"
-                            className="w-full"
-                            options={[
+                        <div className="profile-form-grid">
+                            <SelectOptionsWithLabel
+                                id="profile-creation-education-highest-completed"
+                                className="w-full"
+                                options={[
 
-                                {label: "High school", value: "High school"},
-                                {label: "Associate's degree", value: "Associate's degree"},
-                                {label: "Bachelor's degree", value: "Bachelor's degree"},
-                                {label: "Master's degree", value: "Master's degree"},
-                                {label: "Doctoral degree", value: "Doctoral degree"},
-                            ]}
-                            placeholder="Please select"
-                            required
-                        >
-                            What is your highest completed level of study? *
-                        </SelectOptionsWithLabel>
+                                    {label: "High school", value: "High school"},
+                                    {label: "Associate's degree", value: "Associate's degree"},
+                                    {label: "Bachelor's degree", value: "Bachelor's degree"},
+                                    {label: "Master's degree", value: "Master's degree"},
+                                    {label: "Doctoral degree", value: "Doctoral degree"},
+                                ]}
+                                placeholder="Please select"
+                                required
+                            >
+                                What is your highest completed level of study? *
+                            </SelectOptionsWithLabel>
+                        </div>
                     </fieldset>
                     <fieldset>
                         <legend>
                             <h2>Educations</h2>
                         </legend>
                         <Educations data={data.educations} onUpdate={handleUpdate} onRemove={removeEducation} />
-                        <Button pill color="gray" onClick={addNewEducation}>
+                        <Button pill className="custom-outline-btn" onClick={addNewEducation}>
                             <MdAdd className="mr-2 h-5 w-5"/>
                             Add education
                         </Button>
@@ -268,7 +270,7 @@ export default function CreateJobseekerProfileEducationPage() {
                     <fieldset className="license-groups">
                         <legend><h2>Licenses &amp; certificates</h2></legend>
                         <Licenses data={data.licenses} onUpdate={handleUpdate} onRemove={removeLicense} />
-                        <Button pill color="gray" onClick={addNewLicense}>
+                        <Button pill className="custom-outline-btn" onClick={addNewLicense}>
                             <MdAdd className="mr-2 h-5 w-5"/>
                             Add license
                         </Button>
@@ -276,13 +278,13 @@ export default function CreateJobseekerProfileEducationPage() {
                     <fieldset className="project-experience-groups">
                         <legend><h2>Project experience</h2></legend>
                         <ProjectExperiences data={data.projectExperiences} onUpdate={handleUpdate} onRemove={removeProjectExperience} />
-                        <Button pill color="gray" onClick={addNewProjectExperience}>
+                        <Button pill className="custom-outline-btn" onClick={addNewProjectExperience}>
                             <MdAdd className="mr-2 h-5 w-5"/>
                             Add project experience
                         </Button>
                     </fieldset>
-                    <div className="flex">
-                        <Button pill color="gray">Previous</Button>
+                    <div className="profile-form-progress-btn-group">
+                        <Button pill className="custom-outline-btn">Previous</Button>
                         <Button pill type="submit">Save and continue</Button>
                     </div>
                 </form>

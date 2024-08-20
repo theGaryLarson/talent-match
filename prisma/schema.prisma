@@ -370,7 +370,7 @@ model jobseekers {
 model jobseekers_private_data {
   jobseeker_private_data_id    String     @id(clustered: false, map: "jobseekers_private_data_PRIMARY") @unique(map: "jobseekers_private_data_learner_private_data_id_UNIQUE") @db.UniqueIdentifier
   jobseeker_id                 String     @unique @db.UniqueIdentifier
-  ssn                          String?    @unique @db.VarChar(255)
+  ssn                          String?    @db.VarChar(255)
   is_authorized_to_work_in_usa Boolean    @default(false, map: "DF__jobseeker__is_au__3C34F16F") @db.Bit
   job_sponsorship_required     Boolean    @default(false, map: "DF__jobseeker__job_s__3D2915A8") @db.Bit
   is_veteran                   String     @default("prefer not to say", map: "DF__jobseeker__is_ve__3E1D39E1") @db.VarChar(45)
@@ -620,18 +620,18 @@ model volunteers {
 }
 
 model WorkExperience {
-  workId           String           @id(clustered: false, map: "work_experiences_PRIMARY") @map("work_id") @db.UniqueIdentifier
-  jobseekerId      String           @map("jobseeker_id") @db.UniqueIdentifier
-  techAreaId       String           @map("technology_area_id") @db.UniqueIdentifier
-  company          String           @db.VarChar(255)
-  isInternship     Boolean          @default(false, map: "DF__work_expe__is_in__75A278F5") @map("is_internship") @db.Bit
-  jobTitle         String           @map("job_title") @db.VarChar(45)
-  isCurrentJob     Boolean          @default(false, map: "DF__work_expe__is_cu__76969D2E") @map("is_current_job") @db.Bit
-  startDate        DateTime         @map("start_date") @db.DateTime
-  endDate          DateTime?        @map("end_date") @db.DateTime
-  responsibilities String           @db.NText
-  jobseekers       jobseekers       @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_work_experience_jobseeker1")
-  technology_areas technology_areas @relation(fields: [techAreaId], references: [technology_area_id], onUpdate: NoAction, map: "fk_work_experiences_technology_areas1")
+  workId           String            @id(clustered: false, map: "work_experiences_PRIMARY") @map("work_id") @db.UniqueIdentifier
+  jobseekerId      String            @map("jobseeker_id") @db.UniqueIdentifier
+  techAreaId       String?           @map("technology_area_id") @db.UniqueIdentifier
+  company          String            @db.VarChar(255)
+  isInternship     Boolean           @default(false, map: "DF__work_expe__is_in__75A278F5") @map("is_internship") @db.Bit
+  jobTitle         String            @map("job_title") @db.VarChar(45)
+  isCurrentJob     Boolean           @default(false, map: "DF__work_expe__is_cu__76969D2E") @map("is_current_job") @db.Bit
+  startDate        DateTime          @map("start_date") @db.DateTime
+  endDate          DateTime?         @map("end_date") @db.DateTime
+  responsibilities String            @db.NText
+  jobseekers       jobseekers        @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_work_experience_jobseeker1")
+  technology_areas technology_areas? @relation(fields: [techAreaId], references: [technology_area_id], onUpdate: NoAction, map: "fk_work_experiences_technology_areas1")
 
   @@index([techAreaId], map: "fk_work_experiences_technology_areas1_idx")
   @@index([jobseekerId], map: "work_experiences_fk_work_experience_jobseeker1_idx")

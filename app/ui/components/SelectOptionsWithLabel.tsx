@@ -8,7 +8,7 @@ interface Props {
   placeholder?: string,
   required?: boolean,
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void,
-  value?: string
+  value?: string | number
 }
 
 export default function SelectOptionsWithLabel({
