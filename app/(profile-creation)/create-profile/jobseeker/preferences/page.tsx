@@ -43,7 +43,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
 
       const result = await response.json();
       console.log(JSON.stringify(result, null ,2 ));
-      router.push('/create-profile/jobseeker/preferences');
+      router.push('/create-profile/jobseeker/disclosures');
     } catch (e: any) {
       //error handling
     }
