@@ -55,8 +55,8 @@ export default function CFAProfileCreationHeader() {
 
   return (
     <header className="bg-white">
-      <nav className="mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-        <div className="flex lg:flex-1">
+      <nav className="mx-auto flex items-center justify-between p-6 laptop:px-8" aria-label="Global">
+        <div className="flex laptop:flex-1">
           <Link href="/">
             <span className="sr-only">Computing For All</span>
             <Image src="/cfa_images/cfaLogoWithName.jpg" alt="Computing For All" width={110} height={31.8} />
@@ -64,7 +64,7 @@ export default function CFAProfileCreationHeader() {
         </div>
 
         {/* moble view Hamburger menu toggle */}
-        <div className="flex lg:hidden">
+        <div className="flex laptop:hidden">
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -74,7 +74,7 @@ export default function CFAProfileCreationHeader() {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        <div className="hidden laptop:flex laptop:flex-1 laptop:justify-end">
           <Link href="/logout" className="text-sm font-semibold leading-6 text-gray-900">
             Save and Log out
           </Link>
@@ -86,9 +86,9 @@ export default function CFAProfileCreationHeader() {
 
 
 
-      <Dialog className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+      <Dialog className="laptop:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <div className="fixed inset-0 z-10" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 phone:max-w-sm phone:ring-1 phone:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <Link href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Computing For All</span>

@@ -59,7 +59,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={5/6 * 100} size="sm" className="xl:hidden"/>
+        <ProgressBarFlat progress={5/6 * 100} size="sm" className="laptop:hidden"/>
         <p>Step 5/6</p>
         <h1>Your preferences</h1>
 

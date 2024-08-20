@@ -4,7 +4,7 @@ export default function BrowseByCategory(){
     return(
         <div>
             <h3 className="font-bold text-lg">Browse by Category</h3>
-            <div className="grid grid-cols-2 gap-5 py-5 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-5 py-5 tablet:grid-cols-4">
             <Link href={""}>Cloud Computing</Link>
             <Link href={""}>Cyber Security</Link>
             <Link href={""}>Data Analyst</Link>

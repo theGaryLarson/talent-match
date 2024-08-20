@@ -114,7 +114,7 @@ export default function CreateJobseekerProfileIntroPage(){
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={1/6 * 100} size="sm" className="xl:hidden"/>
+        <ProgressBarFlat progress={1/6 * 100} size="sm" color="dark" className="laptop:hidden"/>
         <p>Step 1/6</p>
         <h1>Intro</h1>
         <p className='subtitle'>* Indicates a required field</p>
@@ -136,7 +136,6 @@ export default function CreateJobseekerProfileIntroPage(){
               <h2>Basic info</h2>
             </legend>
             
-
             <div className="profile-form-grid md:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || ''} required>First Name *</InputTextWithLabel>
               <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || ''} required>Last Name *</InputTextWithLabel>
@@ -148,7 +147,7 @@ export default function CreateJobseekerProfileIntroPage(){
             
             <div className="profile-form-grid md:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || ''} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
-
+              
               <SelectOptionsWithLabel
                 id="profile-creation-intro-state"
                 onChange={handleFieldChange}
@@ -219,7 +218,7 @@ export default function CreateJobseekerProfileIntroPage(){
 
             </div>
 
-            <div className="profile-form-grid md:grid-cols-2">
+            <div className="profile-form-grid tablet:grid-cols-2">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
                 onChange={handleFieldChange}

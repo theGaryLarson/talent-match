@@ -8,7 +8,7 @@ import Teaser from '@/app/ui/components/Teaser';
 //employer dashboard
 export default async function Page() {
   return (
-    <main className="space-y-3 py-8 mx-4 md:mx-[150px] lg:mx-[200px] font-['Roboto']">
+    <main className="space-y-3 py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px] font-['Roboto']">
       <EmployerNameTitleTag name={'Damien Cruz'} title={'Programming Instructor'} company={'Computing For All'}/>
       <div className="flex flex-wrap justify-between gap-5">
         {<ScoreCard title="Saved Candidates" val={3} />} 
@@ -17,7 +17,7 @@ export default async function Page() {
       </div>
      
       <div className='flex justify-center'>
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 tablet:grid-cols-1 laptop:grid-cols-2 laptop:grid-cols-3 gap-5">
         <Teaser
           isLarge={true}
           title={'Become a Mentor'}

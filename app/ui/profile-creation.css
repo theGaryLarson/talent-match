@@ -27,11 +27,11 @@ h2 {
 }
 
 .profile-form-aside {
-  @apply hidden xl:w-2/5 lg:block xl:pl-80;
+  @apply hidden laptop:w-2/5 laptop:block laptop:pl-80;
 }
 
 .profile-form-section {
-  @apply w-full xl:w-3/5 p-5 xl:pr-80;
+  @apply w-full laptop:w-3/5 p-5 laptop:pr-80;
 }
 
 .profile-form-progress-btn-group {
