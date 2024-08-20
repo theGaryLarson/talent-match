@@ -117,12 +117,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   value={ pathway }
                   onChange = { (e) => { setPathway(e.target.value) } }
                 >
-                  <FormControlLabel value="Software Developer" control={<Radio />} label="Software Developer" />
-                  <FormControlLabel value="Web Developer" control={<Radio />} label="Web Developer" />
-                  <FormControlLabel value="Software Quality Assurance Analyst and Tester" control={<Radio />} label="Software Quality Assurance Analyst and Tester" />
-                  <FormControlLabel value="Network and Computer Systems Administrator" control={<Radio />} label="Network and Computer Systems Administrator" />
-                  <FormControlLabel value="Computer User Support Specialist" control={<Radio />} label="Computer User Support Specialist" />
-                  <FormControlLabel value="Graphic Designer" control={<Radio />} label="Graphic Designer" />
+                  <FormControlLabel value="Software Development" control={<Radio />} label="Software Development" />
+                  <FormControlLabel value="IT & Cloud Computing" control={<Radio />} label="IT & Cloud Computing" />
+                  <FormControlLabel value="Cybersecurity" control={<Radio />} label="Cybersecurity" />
+                  <FormControlLabel value="Data Analytics" control={<Radio />} label="Data Analytics" />
                 </RadioGroup>
               </FormControl>
             </div>
