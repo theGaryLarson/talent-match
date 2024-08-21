@@ -17,7 +17,7 @@ export default async function Page() {
       </div>
      
       <div className='flex justify-center'>
-      <div className="grid grid-cols-1 tablet:grid-cols-1 laptop:grid-cols-2 laptop:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 gap-5">
         <Teaser
           isLarge={true}
           title={'Become a Mentor'}
@@ -48,7 +48,7 @@ export default async function Page() {
         }
         buttonContent={'Search For talent'}
       />
-      <FeaturedCandidates/>
+      <FeaturedCandidates maxCandidates={3} />
       <BrowseByCategory/>
        {/* <ArticleStub
         isPhotoFirst={true}
