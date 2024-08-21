@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function CircleBlurb(){
     return(
 <div>
@@ -35,7 +37,7 @@ export default function CircleBlurb(){
             </div>
         </div>
     </div>
-    <img className="w-[377.05px] h-[377.05px] left-[132.85px] top-0 absolute rounded-full" src="https://via.placeholder.com/377x377" />
+    <Image className="left-[132.85px] top-0 absolute rounded-full" width={377} height={377} src="/cfa_images/stock/2DAvatar.png" alt={""} />
     <span className="w-[156.23px] h-[42.92px] left-[16.33px] top-[232.38px] absolute rounded-[7.07px] shadow flex items-center justify-center bg-white border border-black">ADD PROJECTS</span>
     <span className="w-[174.25px] h-[42.92px] left-[447.05px] top-[301.44px] absolute rounded-[7.07px] shadow flex items-center justify-center bg-white border border-black">ADD CERTIFICATES</span>
     

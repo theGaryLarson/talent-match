@@ -44,8 +44,8 @@ export default function TimeLine() {
         <path
           d="M2.09863 1.9519L2.09863 889.119"
           stroke="url(#paint0_linear_1533_7034)"
-          stroke-width="3"
-          stroke-linecap="round"
+          strokeWidth="3"
+          strokeLinecap="round"
         />
         <defs>
           <linearGradient
@@ -56,8 +56,8 @@ export default function TimeLine() {
             y2="1060.45"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#C4EBF3" stop-opacity="0.5" />
-            <stop offset="0.618334" stop-color="#047F9C" />
+            <stop stopColor="#C4EBF3" stopOpacity="0.5" />
+            <stop offset="0.618334" stopColor="#047F9C" />
           </linearGradient>
         </defs>
       </svg>
