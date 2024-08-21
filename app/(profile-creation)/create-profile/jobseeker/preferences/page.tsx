@@ -52,14 +52,14 @@ export default function CreateJobseekerProfilePreferencesPage(){
     }
   }
   return(
-    <main className="flex">
+    <main className="flex justify-center">
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={5/6 * 100} size="sm" className="xl:hidden"/>
+        <ProgressBarFlat progress={5/6 * 100} size="sm"/>
         <p>Step 5/6</p>
         <h1>Your preferences</h1>
 
