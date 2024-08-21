@@ -110,11 +110,11 @@ export default function CreateJobseekerProfileIntroPage(){
   };
 
   return(
-    <main className="flex">
+    <main className="flex justify-center">
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={1/6 * 100} size="sm" className="xl:hidden"/>
+        <ProgressBarFlat progress={1/6 * 100} size="sm"/>
         <p>Step 1/6</p>
         <h1>Intro</h1>
         <p className='subtitle'>* Indicates a required field</p>

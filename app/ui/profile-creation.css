@@ -27,11 +27,13 @@ h2 {
 }
 
 .profile-form-aside {
-  @apply hidden xl:w-2/5 lg:block xl:pl-80;
+  /* TODO: removed from MVP, on reimplement review xl:w-2/5 lg:block xl:pl-80 */
+  @apply hidden;
 }
 
 .profile-form-section {
-  @apply w-full xl:w-3/5 p-5 xl:pr-80;
+  /* TODO: removed from MVP, on reimplement review xl:w-3/5 p-5 xl:pr-80*/
+  @apply w-full py-10 px-3 xl:px-52 xl:max-w-7xl;
 }
 
 .profile-form-progress-btn-group {
