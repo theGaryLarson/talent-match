@@ -62,10 +62,18 @@ export type ProjectExpDTO = {
     skills: SkillDTO[],
 }
 
-export enum DegreeType {
+export enum HighestDegreeType {
     None = "None",
     HighSchool = "High School",
     Certification = "Certification",
+    AssociatesDegree = "Associate's Degree",
+    BachelorsDegree = "Bachelor's Degree",
+    MastersDegree = "Master's Degree",
+    DoctoralDegree = "Doctoral Degree"
+}
+
+export enum CollegeDegreeType {
+    None = "None",
     AssociatesDegree = "Associate's Degree",
     BachelorsDegree = "Bachelor's Degree",
     MastersDegree = "Master's Degree",
@@ -90,7 +98,7 @@ export enum PreALevel {
 }
 
 export enum EdProgram {
-    None = "None",
+    None = "",
     HighSchool = "High school",
     College = "College",
     TrainingProgram = "Training program / Bootcamp",
@@ -108,15 +116,16 @@ export enum EdSystem {
 
 export type EducationInfoDTO = {
     jobseekerEdId: string,
-    edInstitutionId: string, // use name lookup to find ID.
+    eduProviderId: string, // use name lookup to find ID.
+    edProviderName?: string,
     edProgram?: EdProgram,
-    institutionName?: string,
     isEnrolled: boolean,
     startDate: string,
     gradDate: string,
-    degreeType?: DegreeType,
-    collegeProgram?: string | null,
-    major?: string | null,
+    degreeType?: CollegeDegreeType,
+    collegeProgram?: string | null, // fixme: change to Program of Study
+    isTechnicalDegree?: boolean,
+    major?: string | null, // program for other optional EdProgram
     minor?: string | null,
     gpa?: number | null,
     gradeLevel?: SchoolGradeLevel | null,
@@ -127,7 +136,7 @@ export type EducationInfoDTO = {
 
 export type JsEducationDTO = {
     userId: string,
-    highestLevelOfStudy: DegreeType;
+    highestLevelOfStudy: HighestDegreeType;
     educations: EducationInfoDTO[];
     certifications: CertDTO[];
     projects: ProjectExpDTO[];

@@ -20,6 +20,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
   // const dispatch = useDispatch();
   const [employmentType, setEmploymentType] = useState('');
   const [pathway, setPathway] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent) {
@@ -41,14 +42,16 @@ export default function CreateJobseekerProfilePreferencesPage(){
         body: JSON.stringify(formData),
       });
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
+        setError(errorMessage);
+        return;
       }
 
       const result = await response.json();
       console.log(JSON.stringify(result, null ,2 ));
-      router.push('/create-profile/jobseeker/preferences');
+      router.push('/create-profile/jobseeker/disclosures');
     } catch (e: any) {
-      //error handling
+      setError(`An unexpected error occurred: ${e.message}`);
     }
   }
   return(
@@ -74,6 +77,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   <Button
                       pill
                       className="custom-outline-btn inline-block m-2"
+                      // variant="outlined"
                       onClick={ () => { setEmploymentType('Full-time job')} }
                   >
                     Full-time job
@@ -81,6 +85,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   <Button
                       pill
                       className="custom-outline-btn inline-block m-2"
+                      // variant="outlined"
                       onClick={ () => { setEmploymentType('Part-time job')} }
                   >
                     Part-time job
@@ -88,6 +93,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   <Button
                       pill
                       className="custom-outline-btn inline-block m-2"
+                      // variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
                   >
                     Internship
@@ -95,9 +101,17 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   <Button
                       pill
                       className="custom-outline-btn inline-block m-2"
+                      // variant="outlined"
                       onClick={ () => { setEmploymentType('On-campus job')} }
                   >
                     On-campus job
+                  </Button>
+                  <Button
+                      className="custom-outline-btn inline-block m-2"
+                      // variant="outlined"
+                      onClick={ () => { setEmploymentType('Contract')} }
+                  >
+                    Contract
                   </Button>
                 </div>
               </fieldset>
@@ -110,12 +124,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   value={ pathway }
                   onChange = { (e) => { setPathway(e.target.value) } }
                 >
-                  <FormControlLabel value="Software Developer" control={<Radio />} label="Software Developer" />
-                  <FormControlLabel value="Web Developer" control={<Radio />} label="Web Developer" />
-                  <FormControlLabel value="Software Quality Assurance Analyst and Tester" control={<Radio />} label="Software Quality Assurance Analyst and Tester" />
-                  <FormControlLabel value="Network and Computer Systems Administrator" control={<Radio />} label="Network and Computer Systems Administrator" />
-                  <FormControlLabel value="Computer User Support Specialist" control={<Radio />} label="Computer User Support Specialist" />
-                  <FormControlLabel value="Graphic Designer" control={<Radio />} label="Graphic Designer" />
+                  <FormControlLabel value="Software Development" control={<Radio />} label="Software Development" />
+                  <FormControlLabel value="IT & Cloud Computing" control={<Radio />} label="IT & Cloud Computing" />
+                  <FormControlLabel value="Cybersecurity" control={<Radio />} label="Cybersecurity" />
+                  <FormControlLabel value="Data Analytics" control={<Radio />} label="Data Analytics" />
                 </RadioGroup>
               </FormControl>
             </div>
@@ -123,7 +135,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
 
           <div className="profile-form-progress-btn-group">
             <Button pill className="custom-outline-btn">Previous</Button>
-            <Button pill>Save and continue</Button>
+            <Button pill type="submit">Save and continue</Button>
           </div>
           
         </form>

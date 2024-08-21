@@ -31,10 +31,10 @@ export function CardsSkeleton() {
 
 export function RevenueChartSkeleton() {
   return (
-    <div className={`${shimmer} relative w-full overflow-hidden md:col-span-4`}>
+    <div className={`${shimmer} relative w-full overflow-hidden tablet:col-span-4`}>
       <div className="mb-4 h-8 w-36 rounded-md bg-gray-100" />
       <div className="rounded-xl bg-gray-100 p-4">
-        <div className="mt-0 grid h-[410px] grid-cols-12 items-end gap-2 rounded-md bg-white p-4 sm:grid-cols-13 md:gap-4" />
+        <div className="mt-0 grid h-[410px] grid-cols-12 items-end gap-2 rounded-md bg-white p-4 phone:grid-cols-13 tablet:gap-4" />
         <div className="flex items-center pb-2 pt-6">
           <div className="h-5 w-5 rounded-full bg-gray-200" />
           <div className="ml-2 h-4 w-20 rounded-md bg-gray-200" />
@@ -62,7 +62,7 @@ export function InvoiceSkeleton() {
 export function LatestInvoicesSkeleton() {
   return (
     <div
-      className={`${shimmer} relative flex w-full flex-col overflow-hidden md:col-span-4`}
+      className={`${shimmer} relative flex w-full flex-col overflow-hidden tablet:col-span-4`}
     >
       <div className="mb-4 h-8 w-36 rounded-md bg-gray-100" />
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-100 p-4">
@@ -88,13 +88,13 @@ export default function DashboardSkeleton() {
       <div
         className={`${shimmer} relative mb-4 h-8 w-36 overflow-hidden rounded-md bg-gray-100`}
       />
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 phone:grid-cols-2 laptop:grid-cols-4">
         <CardSkeleton />
         <CardSkeleton />
         <CardSkeleton />
         <CardSkeleton />
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
+      <div className="mt-6 grid grid-cols-1 gap-6 tablet:grid-cols-4 laptop:grid-cols-8">
         <RevenueChartSkeleton />
         <LatestInvoicesSkeleton />
       </div>
@@ -167,8 +167,8 @@ export function InvoicesTableSkeleton() {
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
+        <div className="rounded-lg bg-gray-50 p-2 tablet:pt-0">
+          <div className="tablet:hidden">
             <InvoicesMobileSkeleton />
             <InvoicesMobileSkeleton />
             <InvoicesMobileSkeleton />
@@ -176,10 +176,10 @@ export function InvoicesTableSkeleton() {
             <InvoicesMobileSkeleton />
             <InvoicesMobileSkeleton />
           </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
+          <table className="hidden min-w-full text-gray-900 tablet:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                <th scope="col" className="px-4 py-5 font-medium phone:pl-6">
                   Customer
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
@@ -196,7 +196,7 @@ export function InvoicesTableSkeleton() {
                 </th>
                 <th
                   scope="col"
-                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                  className="relative pb-4 pl-3 pr-6 pt-2 phone:pr-6"
                 >
                   <span className="sr-only">Edit</span>
                 </th>

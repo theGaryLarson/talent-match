@@ -9,6 +9,13 @@ const config: Config = {
     flowbite.content(),
   ],
   theme: {
+    screens: {
+      'phone': '430px',
+      'sm-tablet': '600px',
+      'tablet': '904px',
+      'laptop': '1240px',
+      'desktop': '1440px',
+    },
     extend: {
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',

@@ -34,6 +34,8 @@ h2 {
 .profile-form-section {
   /* TODO: removed from MVP, on reimplement review xl:w-3/5 p-5 xl:pr-80*/
   @apply w-full py-10 px-3 xl:px-52 xl:max-w-7xl;
+  /*   @apply hidden laptop:w-2/5 laptop:block laptop:pl-80; */
+  /*   @apply w-full laptop:w-3/5 p-5 laptop:pr-80; */
 }
 
 .profile-form-progress-btn-group {

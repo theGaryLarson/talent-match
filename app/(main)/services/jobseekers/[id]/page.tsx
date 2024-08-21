@@ -6,7 +6,7 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
   return (
-    <main className="px-4 space-y-3 py-8 font-['Roboto'] md:px-[150px] lg:px-[200px] bg-gray-bg">
+    <main className="px-4 space-y-3 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px] bg-gray-bg">
       {/* <Toggle/> */}
       
         <div className="flex h-[200px] items-center rounded-md border bg-white">
@@ -24,7 +24,7 @@ export default async function page({ params }: { params: { id: string } }) {
                 {
                   jobseeker?.jobseeker_education[0] ? 
                   (
-                    jobseeker.jobseeker_education[0].eduInstitutions?.name + ' | ' +
+                    jobseeker.jobseeker_education[0].eduProviders?.name + ' | ' +
                     jobseeker.jobseeker_education[0].degreeType + ' | ' +
                     (jobseeker.jobseeker_education[0].major ? jobseeker.jobseeker_education[0].major : '')
                   ) : ''
@@ -71,9 +71,9 @@ export default async function page({ params }: { params: { id: string } }) {
         <h1 className="text-2xl font-bold">Education</h1>
         {jobseeker?.jobseeker_education.map((education) => {
           return (
-            <div key={education.edInstitutionId} className="rounded-md border p-4 bg-gray-bg">
+            <div key={education.id} className="rounded-md border p-4 bg-gray-bg">
               <h3 className="font-bold">
-                {education.eduInstitutions.name}
+                {education.eduProviders.name}
               </h3>
               <p>{education.degreeType} in {education.major}</p>
               <span className='flex gap-1'>

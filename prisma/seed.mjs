@@ -835,12 +835,10 @@ async function seedUserAddresses() {
 
 async function seedPathways() {
     const pathways = [
-        "Network and Computer Systems Administrator",
-        "Web Developer",
-        "Software Developer",
-        "Software Quality Assurance Analyst and Tester",
-        "Graphic Designer",
-        "Computer User Support Specialist"
+        "Software Development",
+        "IT & Cloud Computing",
+        "Cybersecurity",
+        "Data Analytics",
     ]
     console.log('Seeding Pathways...')
     const uuids = [
@@ -866,11 +864,11 @@ async function seedPathways() {
 
 async function seedTechnologyAreas() {
     console.log('Seeding Technology Areas...')
-    for (const techArea of itOccupationTechnologyAreas) {
+    for (const area of itOccupationTechnologyAreas) {
         await prisma.technology_areas.create({
             data: {
-                technology_area_id: techArea.id,
-                title: techArea.name,
+                id: area.id,
+                title: area.name,
             }
         });
     }
@@ -882,22 +880,22 @@ async function seedEduInstitutions() {
     console.log('Seeding Education Institutions...');
     for (let i = 0; i < 10; i++) {  // Generate 10 mock institutions
         institutions.push({
-            edu_institution_id: uuidv4(),
+            id: uuidv4(),
             name: faker.company.name(),
             contact_email: faker.internet.email(),
             edu_url: faker.internet.url(),
         });
     }
-    institutions.push({
-        edu_institution_id: uuidv4(),
-        name: 'Not in list',
-        contact_email: '',
-        edu_url: '',
-
-    })
+    // institutions.push({
+    //     id: uuidv4(),
+    //     name: 'Not in list',
+    //     contact_email: '',
+    //     edu_url: '',
+    //
+    // })
 
     for (const institution of institutions) {
-        await prisma.edu_institutions.create({
+        await prisma.edu_providers.create({
             data: institution,
         });
     }
@@ -906,9 +904,9 @@ async function seedEduInstitutions() {
 
 async function SeedEduAddresses() {
     console.log(`Seeding Institution Addresses...`);
-    const edInstitutions = await prisma.edu_institutions.findMany({
+    const edInstitutions = await prisma.edu_providers.findMany({
         select: {
-            edu_institution_id: true,
+            id: true,
             name: true, // needed to filter out the unknown. In case a jobseeker does not enter an institution.
         }
     });
@@ -918,7 +916,7 @@ async function SeedEduAddresses() {
             const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
             return {
                 edu_address_id: uuidv4(),
-                edu_institution_id: institution.edu_institution_id,
+                edu_provider_id: institution.id,
                 street1: faker.location.streetAddress(),
                 street2: faker.location.secondaryAddress(),
                 city: faker.location.city(),
@@ -987,8 +985,8 @@ async function seedSkills() {
         data: skillsToCreate
     });
 
-    console.log(`Seeded ${skillsCount} skills.\n`);
-    console.log(`Actual count of skills ${skillsData_v2.length}`);
+    console.log(`Seeded ${skillsCount} skills.`);
+    console.log(`Actual count of skills ${skillsData_v2.length}\n`);
 }
 
 async function seedJobSeekers() {
@@ -1101,9 +1099,9 @@ async function seedJobSeekersEducation() {
     let edCount = 0;
     const jobseekers = await prisma.jobseekers.findMany();
 
-    const edInstitutions = await prisma.edu_institutions.findMany({
+    const edProviders = await prisma.edu_providers.findMany({
         select: {
-            edu_institution_id: true,
+            id: true,
         }
     });
 
@@ -1116,11 +1114,11 @@ async function seedJobSeekersEducation() {
 
 
         for (let i = 0; i < numEntries; i++) {
-            const edInstitutionId = faker.helpers.arrayElement(edInstitutions).edu_institution_id;
+            const edProviderId = faker.helpers.arrayElement(edProviders).id;
             const startDate = faker.date.past({years: 15});
             const endDate = faker.date.between({from: startDate, to: new Date()});
             const jobseekerEducationData = {
-                jobseekerEdId: uuidv4(),
+                id: uuidv4(),
                 isEnrolled: false, // Set to false initially
                 startDate: startDate,
                 gradDate: endDate,
@@ -1133,9 +1131,9 @@ async function seedJobSeekersEducation() {
                         jobseeker_id: jobseeker.jobseeker_id,
                     }
                 },
-                eduInstitutions: {
+                eduProviders: {
                     connect: {
-                        edu_institution_id: edInstitutionId,
+                        id: edProviderId,
 
                     }
                 }
@@ -1153,11 +1151,16 @@ async function seedJobSeekersEducation() {
 async function seedWorkExperiences() {
     try {
         const jobseekers = await prisma.jobseekers.findMany();
-        const techAreas = await prisma.technology_areas.findMany({
+        const industry_sectors = await prisma.industry_sectors.findMany({
             select: {
-                technology_area_id: true,
+                industry_sector_id: true,
             }
         });
+        const tech_areas = await prisma.technology_areas.findMany({
+            select: {
+                id: true,
+            }
+        })
         console.log('Seeding work experiences...')
         let workExpCount = 0;
         const promises = jobseekers.map(js => {
@@ -1171,7 +1174,8 @@ async function seedWorkExperiences() {
                     data: {
                         workId: uuidv4(),
                         jobseekerId: js.jobseeker_id,
-                        techAreaId: faker.helpers.arrayElement(techAreas).technology_area_id,
+                        techAreaId: faker.helpers.arrayElement(tech_areas).id,
+                        sectorId: faker.helpers.arrayElement(industry_sectors).industry_sector_id,
                         company: faker.company.name(),
                         isInternship: faker.datatype.boolean(),
                         jobTitle: faker.person.jobTitle(),
@@ -1469,11 +1473,16 @@ async function seedJobPostings() {
     try {
         console.log(`Seeding Job Postings...`);
         const employers = await prisma.employers.findMany();
-        const techArea = await prisma.technology_areas.findMany({
+        const techAreas = await prisma.technology_areas.findMany({
             select: {
-                technology_area_id: true,
+                id: true,
             }
         });
+        const sectors =  await prisma.industry_sectors.findMany({
+            select: {
+                industry_sector_id: true,
+            }
+        })
 
         let totalJobPostings = 0;
         for (const e of employers) {
@@ -1498,11 +1507,13 @@ async function seedJobPostings() {
                             company_id: e.company_id,
                             employer_id: e.employer_id,
                             location_id: faker.helpers.arrayElement(companyAddresses).company_address_id,
+                            sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
+                            tech_area_id: faker.helpers.arrayElement(techAreas).id,
                             job_title: faker.helpers.arrayElement(itJobTitles),
                             job_description: faker.person.jobDescriptor(),
                             is_internship: isInternship,
                             is_paid: isPaid,
-                            employment_type: faker.helpers.arrayElement(['full-time', 'part-time', 'contract']),
+                            employment_type: faker.helpers.arrayElement(['Full-time job', 'Part-time job', 'Internship', 'On-campus job', 'Contract']),
                             location: faker.helpers.arrayElement(['on-site', 'remote', 'hybrid']),
                             salary_range: isPaid > 0 ? generateCompensation(isInternship) : 'unpaid internship',
                             county: regionInfo.county,
@@ -1511,7 +1522,6 @@ async function seedJobPostings() {
                             unpublish_date: faker.date.future(),
                             job_post_url: faker.internet.url(),
                             assessment_url: faker.internet.url(),
-                            technology_area_id: faker.helpers.arrayElement(techArea).technology_area_id,
                         }
                     });
                     totalJobPostings++; // Increment the total job postings counter
@@ -1535,6 +1545,7 @@ async function main() {
     console.log(`Start seeding ...\n`);
     await seedPathways();
     await seedTechnologyAreas();
+    await seedIndustrySectors();
     await seedSubcategories();
     await seedSkills();
     await seedSocialMediaPlatforms();
@@ -1555,7 +1566,6 @@ async function main() {
     // TODO: add pathway subcategories (i.e. Software Dev consists of Web Dev, Mobile Dev etc.)
     // TODO: associate skills with a pathway
     // Employer data
-    await seedIndustrySectors();
     await seedCompanies();
     await seedEmployers();
     await seedCompanyAddresses();

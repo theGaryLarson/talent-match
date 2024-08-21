@@ -80,10 +80,11 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    const workExperiences = data.workExperiences.map(workExp => ({
+    const workExperiences = data.workExperiences?.map(workExp => ({
       workId: workExp.uid,
       jobseekerId: 'A5505276-65F4-40F9-BD1B-E063B8C6B6D0', // TODO: jobseeker_id should be pulled from nextauth session data
-      techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance etc.)
+      techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose tech area (i.e. Cloud Computing, Database Management, Cybersecurity, etc.)
+      sectorId: null,  // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
       company: workExp.company,
       isInternship: false,
       jobTitle: workExp.title,
@@ -93,10 +94,11 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
       responsibilities: workExp.experience,
     }));
 
-    const internshipExperiences = data.internshipExperiences.map(internshipExp => ({
+    const internshipExperiences = data.internshipExperiences?.map(internshipExp => ({
       workId: internshipExp.uid,
       jobseekerId: 'A5505276-65F4-40F9-BD1B-E063B8C6B6D0', // TODO: jobseeker_id should be pulled from nextauth session data
       techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose sector
+      sectorId: null,  // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
       company: internshipExp.company,
       isInternship: true,
       jobTitle: internshipExp.title,
@@ -218,7 +220,6 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                   <Radio
                       name="isAuthorizedToWorkUsa"
                       value="yes"
-                      checked={data.isAuthorizedToWorkUsa === true}
                       onChange={handleInputUpdate}
                       required
                   /> Yes
@@ -227,7 +228,6 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                   <Radio
                       name="isAuthorizedToWorkUsa"
                       value="no"
-                      checked={data.isAuthorizedToWorkUsa === false}
                       onChange={handleInputUpdate}
                       required
                   /> No

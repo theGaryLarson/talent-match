@@ -152,13 +152,13 @@ export const jobSeekerCardViewSelect = {
     },
     jobseeker_education: {
         select: {
-            eduInstitutions: {
+            eduProviders: {
                 select: {
-                    edu_institution_id: true,
+                    id: true,
                     name: true,
                 },
             },
-            jobseekerEdId: true,
+            id: true,
             edProgram: true,
             isEnrolled: true,
             startDate: true,
@@ -215,12 +215,12 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
             },
             jobseeker_education: {
                 select: {
-                    eduInstitutions: {
+                    eduProviders: {
                         select: {
                             name: true,
                         }
                     },
-                    edInstitutionId: true,
+                    id: true,
                     edProgram: true,
                     edSystem: true,
                     isEnrolled: true,
