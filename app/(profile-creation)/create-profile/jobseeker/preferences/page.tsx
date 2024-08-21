@@ -55,14 +55,14 @@ export default function CreateJobseekerProfilePreferencesPage(){
     }
   }
   return(
-    <main className="flex">
+    <main className="flex justify-center">
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={5/6 * 100} size="sm" className="laptop:hidden"/>
+        <ProgressBarFlat progress={5/6 * 100} size="sm"/>
         <p>Step 5/6</p>
         <h1>Your preferences</h1>
 
@@ -75,6 +75,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <legend>What are you looking for?</legend>
                 <div className="container">
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Full-time job')} }
@@ -82,6 +83,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                     Full-time job
                   </Button>
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Part-time job')} }
@@ -89,6 +91,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                     Part-time job
                   </Button>
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
@@ -96,6 +99,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                     Internship
                   </Button>
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('On-campus job')} }

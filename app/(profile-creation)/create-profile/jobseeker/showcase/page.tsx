@@ -51,11 +51,11 @@ export default function CreateJobseekerProfileShowcasePage(){
   }
 
   return(
-    <main className="flex">
+    <main className="flex justify-center">
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={4/6 * 100} size="sm" className="laptop:hidden"/>
+        <ProgressBarFlat progress={4/6 * 100} size="sm"/>
         <p>Step 4/6</p>
         <h1>Showcase</h1>
         <p className='subtitle'>* Indicates a required field</p>
