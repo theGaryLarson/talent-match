@@ -43,11 +43,11 @@ export default function Page() {
   }, [loadJobSeekers]);
 
     return (
-        <main className="space-y-8 px-[200px] py-16">
-            <h1 className="text-2xl">Search Results</h1>
+        <main className="space-y-8 p-6 tablet:w-full tablet:p-5 laptop:px-[200px] py-16">
+            <h1 className="text-2xl">{searchParams.get('search') || ''} Search Results</h1>
               <SearchBar />
               {loading?<div className='w-full h-full text-center text-3xl'>Loading...</div>:        
-              jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
+              <div className="m-6 space-y-2">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
               <JobSeekerCardView
                 key={jobSeeker.jobseeker_id}
                 name={jobSeeker.users.first_name + ' ' + jobSeeker.users.last_name}
@@ -55,8 +55,10 @@ export default function Page() {
                 pathway={jobSeeker?.pathways?.pathway_title ?? ''}
                 skillsList={jobSeeker?.jobseeker_has_skills}
                 pfpPicSrc={jobSeeker?.users?.photo_url}
-                aboutMe={jobSeeker?.intro_headline} id={jobSeeker?.jobseeker_id} />
-      ))}
+                aboutMe={jobSeeker?.intro_headline} 
+                id={jobSeeker?.jobseeker_id} 
+                forceSmall={false} />
+      ))}</div>}
         </main>
   );
 }

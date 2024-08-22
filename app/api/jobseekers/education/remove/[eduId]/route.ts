@@ -10,7 +10,7 @@ export async function DELETE(request: Request, {params}: {params: {eduId: string
         eduId = params.eduId;
         const deletedEntry: jobseekers_education = await prisma.jobseekers_education.delete({
             where: {
-                jobseekerEdId: eduId,
+                id: eduId,
             }
         });
         return NextResponse.json({ success: true, result: deletedEntry });

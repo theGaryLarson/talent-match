@@ -8,33 +8,49 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
     try {
         const body: JsPreferencesDTO = await request.json();
-        const {userId, preferredEmploymentType, targetedPathwayId } = body;
+        const {
+            userId,
+            preferredEmploymentType,
+            targetedPathwayId,
+            targetedPathway
+        } = body;
 
-        if (!userId && (!preferredEmploymentType || !targetedPathwayId)) {
-            return NextResponse.json({error: 'Invalid input. Requires userId and preferredEmploymentType and/or targetedPathwayId'}, {status: 400});
+        if (!userId && (!preferredEmploymentType || !targetedPathway)) {
+            return NextResponse.json({error: 'Invalid input. Requires userId and preferredEmploymentType and/or targetedPathway'}, {status: 400});
+        }
+        let pw = null;
+        if (!targetedPathwayId && targetedPathway) {
+            pw = await prisma.pathways.findUnique({
+                where: {
+                    pathway_title: targetedPathway,
+                }
+            })
+
+            if (!pw) {
+                return NextResponse.json({error: `No record exists for pathway : ${targetedPathway}.`}, {status: 404});
+            }
         }
 
-            const upsertedPreferences = await prisma.jobseekers.update({
-
-                where: {user_id: userId},
-                data: {
-                    user_id: userId,
-                    employment_type_sought: preferredEmploymentType,
-                    targeted_pathway: targetedPathwayId
-                },
-                select: {
-                    user_id: true,
-                    targeted_pathway: true,
-                    employment_type_sought: true,
-                    pathways: {
-                        select: {
-                            pathway_title: true
-                        }
+        const upsertedPreferences = await prisma.jobseekers.update({
+            where: {user_id: userId},
+            data: {
+                user_id: userId,
+                employment_type_sought: preferredEmploymentType,
+                targeted_pathway: targetedPathwayId || pw?.pathway_id,
+            },
+            select: {
+                user_id: true,
+                targeted_pathway: true,
+                employment_type_sought: true,
+                pathways: {
+                    select: {
+                        pathway_title: true
                     }
                 }
+            }
 
-            });
-        const result: JsPreferencesDTO & {targetedPathway?: string | null} ={
+        });
+        const result: JsPreferencesDTO = {
             userId: upsertedPreferences.user_id,
             targetedPathwayId: upsertedPreferences.targeted_pathway,
             targetedPathway: upsertedPreferences.pathways?.pathway_title,

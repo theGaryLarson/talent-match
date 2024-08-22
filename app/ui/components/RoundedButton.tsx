@@ -4,14 +4,14 @@ export default function RoundedButton(props: { content: string, link:string, inv
   return (
     props.invertColor?<Link
       href={props.link}
-      className="box-border inline-block w-fit rounded-full bg-blue-background px-14 py-3 text-white hover:bg-blue-400"
+      className="box-border inline-block w-fit rounded-full bg-blue-background px-10 py-3 text-white hover:bg-blue-400"
     >
       <strong>{props.content}</strong>
     </Link>
     :
     <Link
       href={props.link}
-      className="box-border border inline-block w-fit rounded-full bg-white px-14 py-3 text-blue-text hover:bg-gray-200"
+      className="box-border border inline-block w-fit rounded-full bg-white px-10 py-3 text-blue-text hover:bg-gray-200"
     >
       <strong>{props.content}</strong>
     </Link>

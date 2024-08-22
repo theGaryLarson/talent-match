@@ -3,21 +3,34 @@
 import React, { useCallback, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from "react-icons/md";
-import { Button, Label, Radio } from "flowbite-react";
+import { Button, Label } from "flowbite-react";
+import { Radio, RadioGroup } from '@mui/material';
 import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
 import WorkExperiences, { defaultWorkExperienceData, WorkExperienceData } from '@/app/ui/form-field-groups/WorkExperiences';
 import InternshipExperiences, { defaultInternshipExperienceData, InternshipExperienceData } from '@/app/ui/form-field-groups/InternshipExperiences';
+import {JsWorkExpDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { useRouter } from 'next/navigation';
+
 
 interface Data {
+  yearsWorkExperience: string | number,
+  monthsInternshipExperience: string | number,
   workExperiences: WorkExperienceData[],
-  internshipExperiences: InternshipExperienceData[],
+  internshipExperiences: WorkExperienceData[],
+  isAuthorizedToWorkUsa?: boolean,
+  requiresSponsorship?: boolean,
 }
 
 export default function CreateJobseekerProfileWorkExperiencePage(){
   const [data, setData] = useState<Data>({
+    yearsWorkExperience: '',
+    monthsInternshipExperience: '',
     workExperiences: [],
     internshipExperiences: [],
+    isAuthorizedToWorkUsa: true,
+    requiresSponsorship: false,
   });
+  const router = useRouter();
 
   function addNewWorkExperience() {
     const newWorkExperienceData = defaultWorkExperienceData();
@@ -27,7 +40,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
     });
   }
 
-  function removeWorkExperience(byUid : number) {
+  function removeWorkExperience(byUid : string) {
     setData({
       ...data,
       workExperiences: data.workExperiences.filter(({uid}) => (uid !== byUid))
@@ -35,14 +48,14 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
   }
 
   function addNewInternshipExperience() {
-    const newInternshipExperienceData = defaultInternshipExperienceData();
+    const newInternshipExperienceData = defaultWorkExperienceData();
     setData({
       ...data,
       internshipExperiences: [...data.internshipExperiences, newInternshipExperienceData]
     });
   }
 
-  function removeInternshipExperience(byUid : number) {
+  function removeInternshipExperience(byUid : string) {
     setData({
       ...data,
       internshipExperiences: data.internshipExperiences.filter(({uid}) => (uid !== byUid))
@@ -56,20 +69,85 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
     }));
   }, []);
 
+  const handleInputUpdate = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type } = event.target;
+    setData(prevData => ({
+      ...prevData,
+      [name]: type === 'radio' ? value === 'yes' : value,  // setting boolean values for radio type
+    }));
+  }, []);
+
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const workExperiences = data.workExperiences?.map(workExp => ({
+      workId: workExp.uid,
+      jobseekerId: 'A5505276-65F4-40F9-BD1B-E063B8C6B6D0', // TODO: jobseeker_id should be pulled from nextauth session data
+      techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose tech area (i.e. Cloud Computing, Database Management, Cybersecurity, etc.)
+      sectorId: null,  // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
+      company: workExp.company,
+      isInternship: false,
+      jobTitle: workExp.title,
+      isCurrentJob: workExp.current,
+      startDate: new Date(workExp.starts),
+      endDate: workExp.current ? null : new Date(workExp.ends),
+      responsibilities: workExp.experience,
+    }));
+
+    const internshipExperiences = data.internshipExperiences?.map(internshipExp => ({
+      workId: internshipExp.uid,
+      jobseekerId: 'A5505276-65F4-40F9-BD1B-E063B8C6B6D0', // TODO: jobseeker_id should be pulled from nextauth session data
+      techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose sector
+      sectorId: null,  // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
+      company: internshipExp.company,
+      isInternship: true,
+      jobTitle: internshipExp.title,
+      isCurrentJob: internshipExp.current,
+      startDate: new Date(internshipExp.starts),
+      endDate: internshipExp.current ? null : new Date(internshipExp.ends),
+      responsibilities: internshipExp.experience,
+    }));
+    const formData: JsWorkExpDTO = {
+      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC', // TODO: user.id should be pulled from nextauth session data
+      yearsWorkExperience: data.yearsWorkExperience.toString(), // Replace with actual calculation
+      monthsInternshipExperience: data.monthsInternshipExperience.toString(), // Replace with actual calculation
+      isAuthorizedToWorkUsa: data.isAuthorizedToWorkUsa,
+      requiresSponsorship: data.requiresSponsorship,
+      workExperiences: [...workExperiences, ...internshipExperiences]
+    };
+
+    try {
+      const response = await fetch('/api/jobseekers/account/work-info/upsert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      router.push('/create-profile/jobseeker/showcase');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      // Handle error, e.g., display an error message
+    }
+  }
+
+
   return(
-    <main className="flex">
-      <aside className="hidden lg:w-2/5 lg:block">
+    <main className="flex justify-center">
+      <aside className="profile-form-aside">
       </aside>
-      <section className="w-full lg:w-3/5">
-        <ProgressBarFlat progress={3/6 * 100} size="sm" color="dark" className="lg:hidden"/>
+      <section className="profile-form-section">
+        <ProgressBarFlat progress={3/6 * 100} size="sm"/>
         <p>Step 3/6</p>
         <h1>Work experience</h1>
-        <p>* Indicates a required field</p>
-        <form onSubmit={(e)=>{
-          e.preventDefault();
-          console.log(data.workExperiences);
-          console.log(data.internshipExperiences);
-        }}>
+        <p className='subtitle'>* Indicates a required field</p>
+        <form onSubmit={handleSubmit}>
           <fieldset className="work-experience-groups">
             <legend>
               <h2>Work experience</h2>
@@ -78,17 +156,22 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
               (data.workExperiences.length === 0)?
                 ""
               :
+              <div className="profile-form-grid">
                 <InputTextWithLabel
                   type="number"
                   id="profile-creation-experience-work-fulltime-years"
+                  name="yearsWorkExperience"
+                  value={data.yearsWorkExperience}
+                  onChange={handleInputUpdate}
                 >
                   How many years of full-time work experience do you have (not including internship)?
                 </InputTextWithLabel>
+              </div>
             }
             <WorkExperiences data={data.workExperiences} onUpdate={handleUpdate} onRemove={removeWorkExperience} />
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={addNewWorkExperience}
             >
               <MdAdd className="mr-2 h-5 w-5"/>
@@ -103,17 +186,22 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
               (data.internshipExperiences.length === 0)?
                 ""
               :
+              <div className="profile-form-grid">
                 <InputTextWithLabel
                   type="number"
-                  id="profile-creation-experience-internship-years"
+                  id="profile-creation-experience-internship-months"
+                  name="monthsInternshipExperience"
+                  onChange={handleInputUpdate}
+                  value={data.monthsInternshipExperience}
                 >
-                  How many years of internship work experience do you have?
+                  How many months of internship work experience do you have?
                 </InputTextWithLabel>
+              </div>
             }
             <InternshipExperiences data={data.internshipExperiences} onUpdate={handleUpdate} onRemove={removeInternshipExperience} />
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={addNewInternshipExperience}
             >
               <MdAdd className="mr-2 h-5 w-5"/>
@@ -126,19 +214,53 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
             </legend>
             <p>Note: All work authentication information you provide will only be used for the purpose of verifying your qualifications for this job application and will not be disclosed to public view or any third parties without your express consent.</p>
             <div>
-              Are you authorized to work in the U.S.? *
-              <Label className="block"><Radio name="profile-creation-authentication-us-authorized" value="yes" required/> Yes</Label>
-              <Label className="block"><Radio name="profile-creation-authentication-us-authorized" value="no" required/> No</Label>
+              <div className='mt-3'>Are you authorized to work in the U.S.? *</div>
+              <RadioGroup>
+                <Label className="block">
+                  <Radio
+                      name="isAuthorizedToWorkUsa"
+                      value="yes"
+                      onChange={handleInputUpdate}
+                      required
+                  /> Yes
+                </Label>
+                <Label className="block">
+                  <Radio
+                      name="isAuthorizedToWorkUsa"
+                      value="no"
+                      onChange={handleInputUpdate}
+                      required
+                  /> No
+                </Label>
+              </RadioGroup>
             </div>
             <div>
-              <h3>United States of America</h3>
+              <h3 className='alert-title'>United States of America</h3>
               <p>Will you, now or in the future, require sponsorship for employment visa status? *</p>
-              <Label className="block"><Radio name="profile-creation-authentication-require-sponsor" value="yes" required/> Yes</Label>
-              <Label className="block"><Radio name="profile-creation-authentication-require-sponsor" value="no" required/> No</Label>
+              <RadioGroup>
+                <Label className="block">
+                  <Radio
+                      name="requiresSponsorship"
+                      value="yes"
+                      checked={data.requiresSponsorship === true}
+                      onChange={handleInputUpdate}
+                      required
+                  /> Yes
+                </Label>
+                <Label className="block">
+                  <Radio
+                      name="requiresSponsorship"
+                      value="no"
+                      checked={data.requiresSponsorship === false}
+                      onChange={handleInputUpdate}
+                      required
+                  /> No
+                </Label>
+              </RadioGroup>
             </div>
           </fieldset>
-          <div className="flex">
-            <Button pill color="gray">Previous</Button>
+          <div className="profile-form-progress-btn-group">
+            <Button pill className="custom-outline-btn">Previous</Button>
             <Button pill type="submit">Save and continue</Button>
           </div>
         </form>

@@ -42,7 +42,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             return NextResponse.json({error: `Jobseeker record not found for id: ${jobseekerId}`}, {status: 400});
         }
 
-        const result: JsPreferencesDTO & {targetedPathway?: string} ={
+        const result: JsPreferencesDTO = {
             userId: preferences.user_id,
             targetedPathwayId: preferences.targeted_pathway,
             targetedPathway: preferences.pathways?.pathway_title,

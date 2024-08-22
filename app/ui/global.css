@@ -16,3 +16,8 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.REPLACE-BEFORE-RELEASE {
+  @apply text-fuchsia-500 font-bold;
+  @apply bg-gradient-to-r from-fuchsia-300 via-slate-400 via-50% to-fuchsia-300;
+}
