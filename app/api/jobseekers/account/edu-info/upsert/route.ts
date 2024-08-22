@@ -124,7 +124,7 @@ export async function POST(request: Request) {
                 if (!eduInstitution) {
                     await prisma.edu_providers.create({
                         data: {
-                            id: school.eduProviderId,
+                            id: school.eduProviderId ? school.eduProviderId : uuidv4(),
                             name: school.edProviderName,
                             contact_email: null,
                             edu_url: null,
