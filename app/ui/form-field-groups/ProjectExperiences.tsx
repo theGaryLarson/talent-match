@@ -145,6 +145,7 @@ export default memo(function ProjectExperiences({
             onChange={function(ev, val){ handleChange(index, classSkillsStack, val) }}
             searchPlaceholder="Skill (ex: Java)"
             getOptionLabel={(option:SkillDTO) => option.skill_name}
+            getOptionLink={(option:SkillDTO) => option.skill_info_url}
           />
         </div>
       </fieldset>

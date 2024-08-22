@@ -2,6 +2,8 @@ import React, { SyntheticEvent, useMemo, useState } from 'react';
 import Autocomplete, { AutocompleteChangeDetails, AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { debounce } from '@mui/material/utils';
+import { Chip } from '@mui/material';
+import clsx from 'clsx';
 
 interface CachedFetches<ValueType> {
   [searchTerms: string]: ValueType[];
@@ -13,10 +15,11 @@ interface Props<ValueType> {
   id?: string | undefined,
   maxTags?: number,
   noResultsText?: string | undefined,
-  onChange?: ((event: SyntheticEvent<Element, Event>, value: ValueType[], reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<ValueType> | undefined) => void) | undefined,
+  onChange?: ((event: SyntheticEvent<Element, Event>, value: (string | ValueType)[], reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<string | ValueType> | undefined) => void) | undefined,
   searchingText?: string | undefined,
   searchPlaceholder: string,
   getOptionLabel: ((option: ValueType) => string) | undefined
+  getOptionLink?: ((option: ValueType) => string) | undefined
 }
 
 export default function TagsWithAutocomplete<ValueType>({
@@ -29,6 +32,7 @@ export default function TagsWithAutocomplete<ValueType>({
   searchingText,
   searchPlaceholder,
   getOptionLabel,
+  getOptionLink,
 }:Props<ValueType>) {
   const [options, setOptions] = useState<ValueType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -67,7 +71,10 @@ export default function TagsWithAutocomplete<ValueType>({
 
   return (
     <Autocomplete
+      autoComplete
+      autoSelect
       filterSelectedOptions
+      freeSolo
       id={id}
       loading={loading}
       loadingText={searchingText}
@@ -75,13 +82,15 @@ export default function TagsWithAutocomplete<ValueType>({
       noOptionsText={noResultsText}
       onChange={(ev, val, reason, details) => {
         // Disallow change event if max tags has been violated
-        if (maxTags !== -1 && val.length > maxTags) {
+        //   or if an item not in the options was entered
+        if ((maxTags !== -1 && val.length > maxTags)
+            || !val.every(item => typeof item !== "string")) {
           ev.stopPropagation();
         }
         // Propagate the event if it's valid
         else {
-          setSelectedTags(val);
-          onChange && onChange(ev, val, reason, details);
+          setSelectedTags(val as ValueType[]);
+          onChange && onChange(ev, val as ValueType[], reason, details);
         }
       }}
       onInputChange={handleInputChange}
@@ -102,7 +111,31 @@ export default function TagsWithAutocomplete<ValueType>({
           placeholder={searchPlaceholder}
         />
       )}
-      getOptionLabel={getOptionLabel}
+      renderTags={(value: readonly (string | ValueType)[], getTagProps) =>
+        value.map((option: string | ValueType, index: number) => {
+          const { key, ...tagProps } = getTagProps({ index });
+          const link = (getOptionLink && getOptionLink(option as ValueType)) ?? "#";
+          const label = (typeof option === "string")? option : getOptionLabel && getOptionLabel(option);
+          if (link !== "#") {
+            return (
+              <Chip label={<a href={link} target="_blank" className={clsx('text-cyan-700', 'hover:underline', 'decoration-dotted', 'decoration-cyan-700')}>{label}</a>} key={key} {...tagProps} />
+            );
+          }
+          else {
+            return (
+              <Chip label={label} key={key} {...tagProps} />
+            );
+          }
+        })}
+      getOptionLabel={(option: string | ValueType) => {
+        if (typeof option === "string") {
+          return option;
+        }
+        else if (getOptionLabel) {
+          return getOptionLabel(option as ValueType);
+        }
+        return "";
+      }}
       value={selectedTags}
     />
   );
