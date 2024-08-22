@@ -9,7 +9,7 @@ import {
 import {
     CertDTO,
     HighestDegreeType,
-    EdProgram,
+    EduProgramType,
     EducationInfoDTO,
     JsEducationDTO,
     ProjectExpDTO, CollegeDegreeType
@@ -320,12 +320,13 @@ export async function POST(request: Request) {
             const mappedEdHistory: EducationInfoDTO[] = upsertedSchools.map((jsEdu) => ({
                 jobseekerEdId: jsEdu.id,
                 eduProviderId: jsEdu.edProviderId,
-                edProgram: mapToEnum(jsEdu.edProgram, EdProgram),
+                edProgram: mapToEnum(jsEdu.edProgram, EduProgramType),
                 edSystem: jsEdu.edSystem,
                 isEnrolled: jsEdu.isEnrolled,
                 startDate: jsEdu.startDate.toISOString(),
                 gradDate: jsEdu.gradDate.toISOString(),
-                degreeType: mapToEnum(jsEdu.degreeType ?? "None", CollegeDegreeType),
+                degreeType: mapToEnum(jsEdu.degreeType ?? "None", CollegeDegreeType) ??
+                            mapToEnum(jsEdu.degreeType ?? "None", HighSchoolDegreeType),
                 major: jsEdu?.major,
                 minor: jsEdu?.minor,
                 description: jsEdu.description
