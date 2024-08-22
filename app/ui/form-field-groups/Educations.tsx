@@ -53,7 +53,7 @@ export interface EducationData {
 export function defaultEducationData() {
   return {
     "uid": uuidv4(),
-    [classProgramType]: EdProgram.None,
+    [classProgramType]: EdProgram.Unselected,
     [classInstitutionId]: "",
     [classInstitutionName]: "",
     [classCurrent]: false,
