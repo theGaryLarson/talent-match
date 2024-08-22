@@ -163,6 +163,102 @@ const techEdMajors = [
     {name: "Technical Studies in IT", program_id: uuidv4()}
 ];
 
+const highSchools = [
+    "Alan T. Sugiyama High School",
+    "Ballard High School",
+    "Bellevue",
+    "Bellevue Digital Discovery",
+    "Big Picture School",
+    "Bridges Transition",
+    "Chief Sealth International High School",
+    "Cleveland High School",
+    "Franklin High School",
+    "Garfield High School",
+    "Hazen High School",
+    "Ingraham High School",
+    "Interagency Detention School",
+    "Interagency Open Doors",
+    "Interagency Programs",
+    "Interlake",
+    "International School",
+    "Lincoln High School",
+    "Lindbergh High School",
+    "Middle College High School",
+    "Nathan Hale High School",
+    "Newport",
+    "Nova High School",
+    "Private School Servicea",
+    "Rainier Beach High School",
+    "Renton High School",
+    "Roosevelt High School",
+    "Sammamish",
+    "Seattle World School",
+    "The Center School",
+    "West Seattle High School",
+    "Yakima High School"
+];
+
+const colleges = [
+    "Bates Technical College",
+    "Bellevue College",
+    "Bellingham Technical College",
+    "Big Bend Community College",
+    "Cascadia College",
+    "Centralia College",
+    "Clark College",
+    "Clover Park Technical College",
+    "Columbia Basin College, Pasco",
+    "Columbia Basin College, Richland",
+    "Edmonds College",
+    "Everett Community College",
+    "Green River College, Auburn",
+    "Green River College, Enumclaw",
+    "Green River College, Kent",
+    "Hack Reactor",
+    "Highline College, Des Moines",
+    "Highline College, Federal Way",
+    "Lake Washington Institute of Technology, Redmond",
+    "Lake Washington Institute of Technology, Kirkland",
+    "Lower Columbia College",
+    "North Seattle College",
+    "Olympic College, Bremerton",
+    "Olympic College, Poulsbo",
+    "Olympic College, Shelton",
+    "Peninsula College, Port Angeles",
+    "Peninsula College, Port Townsend",
+    "Peninsula College, Forks",
+    "Pierce College",
+    "Renton Technical College",
+    "Seattle Central College",
+    "San Jose State University",
+    "Saint Martins University",
+    "Seattle Pacific University",
+    "Shoreline Community College",
+    "Skagit Valley College",
+    "South Puget Sound Community College, Olympia",
+    "South Puget Sound Community College, Lacey",
+    "South Seattle College",
+    "Spokane Community College",
+    "Spokane Falls Community College",
+    "Tacoma Community College",
+    "Tufts University",
+    "Walla Walla Community College",
+    "Washington State University",
+    "Wenatchee Valley College, Wenatchee",
+    "Wenatchee Valley College, Omak",
+    "Whatcom College",
+    "Whatcom Community College",
+    "Yakima Valley College, Yakima",
+    "Yakima Valley College, Grandview",
+    "University of Washington, Tacoma",
+    "University of Washington",
+    "University of Washington, Bothell",
+    "Vancouver Island University",
+    "Seattle University"
+];
+
+
+
 const itOccupationTechnologyAreas = [
     { id: "f18b7623-60ba-4a5b-a0a4-6cb588bdf6db", name: "Cybersecurity" },
     { id: "7e3b01fc-7c6a-4baf-b755-e47b07ad9191", name: "Cloud Computing" },
@@ -683,6 +779,18 @@ const frontendProjectSkills = [
     },
 ];
 
+const racesAndEthnicities = [
+    "White",
+    "Black or African American",
+    "American Indian or Alaska Native",
+    "Asian",
+    "Native Hawaiian or Other Pacific Islander",
+    "Hispanic or Latino",
+    "Middle Eastern or North African",
+    "Mixed Race",
+    "Other"
+];
+
 /////////////////////////////////////////////////
 ////////////   helper functions  ////////////////
 /////////////////////////////////////////////////
@@ -749,24 +857,11 @@ function getRandomUserPhoto() {
     return `https://randomuser.me/api/portraits/${gender}/${number}.jpg`;
 }
 
-const racesAndEthnicities = [
-    "White",
-    "Black or African American",
-    "American Indian or Alaska Native",
-    "Asian",
-    "Native Hawaiian or Other Pacific Islander",
-    "Hispanic or Latino",
-    "Middle Eastern or North African",
-    "Mixed Race",
-    "Other"
-];
 
 /////////////////////////////////////////////////
 /////////////   seed functions  /////////////////
 /////////////////////////////////////////////////
 
-
-///////        Employer Data      ///////////////
 async function seedUsers(numUsers = 4) {
     console.log('Seeding Users...')
     if (numUsers <= 4) {
@@ -875,31 +970,31 @@ async function seedTechnologyAreas() {
     console.log(`Seeded ${itOccupationTechnologyAreas.length} technology areas.\n`)
 }
 
-async function seedEduInstitutions() {
-    const institutions = [];
-    console.log('Seeding Education Institutions...');
-    for (let i = 0; i < 10; i++) {  // Generate 10 mock institutions
-        institutions.push({
-            id: uuidv4(),
-            name: faker.company.name(),
-            contact_email: faker.internet.email(),
-            edu_url: faker.internet.url(),
+async function seedEduProviders() {
+    try {
+        // Insert high schools
+        const highSchoolResult = await prisma.edu_providers.createMany({
+            data: highSchools.map(school => ({
+                name: school,
+                edu_type: "High school"
+            })),
         });
-    }
-    // institutions.push({
-    //     id: uuidv4(),
-    //     name: 'Not in list',
-    //     contact_email: '',
-    //     edu_url: '',
-    //
-    // })
 
-    for (const institution of institutions) {
-        await prisma.edu_providers.create({
-            data: institution,
+        // Insert colleges
+        const collegeResult = await prisma.edu_providers.createMany({
+            data: colleges.map(college => ({
+                name: college,
+                edu_type: "College"
+            })),
         });
+
+        console.log(`Seeded ${highSchoolResult.count} High schools.`);
+        console.log(`Seeded ${collegeResult.count} Colleges.`);
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
     }
-    console.log(`Seeded ${institutions.length} institutions.\n`);
 }
 
 async function SeedEduAddresses() {
@@ -1313,8 +1408,6 @@ async function seedJobSeekerCertificates() {
     }
 }
 
-////////////// Employer Data  ///////////////////
-
 async function seedIndustrySectors() {
     console.log(`Seeding Industry Sectors...`)
     for (const sector of industrySectors) {
@@ -1539,19 +1632,21 @@ async function seedJobPostings() {
     }
 }
 
+
+
 /////////////////////////////////////////////////
 
 async function main() {
     console.log(`Start seeding ...\n`);
-    await seedPathways();
-    await seedTechnologyAreas();
-    await seedIndustrySectors();
-    await seedSubcategories();
-    await seedSkills();
-    await seedSocialMediaPlatforms();
+    await seedPathways(); // use in production
+    await seedTechnologyAreas(); // use in production
+    await seedIndustrySectors(); // use in production
+    await seedSubcategories(); // use in production
+    await seedSkills(); // use in production
+    await seedSocialMediaPlatforms(); // use in production
     await seedUsers(500);
     await seedUserAddresses();
-    await seedEduInstitutions();
+    await seedEduProviders(); // use in production
     await SeedEduAddresses();
     await seedJobSeekers();
     await seedJobSeekersPrivateData();
@@ -1566,7 +1661,7 @@ async function main() {
     // TODO: add pathway subcategories (i.e. Software Dev consists of Web Dev, Mobile Dev etc.)
     // TODO: associate skills with a pathway
     // Employer data
-    await seedCompanies();
+    await seedCompanies(); // TODO: get a list of companies to use in production
     await seedEmployers();
     await seedCompanyAddresses();
     await seedCompanyTestimonials();
