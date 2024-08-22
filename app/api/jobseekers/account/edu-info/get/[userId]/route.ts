@@ -2,8 +2,8 @@ import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import {
     CertDTO,
-    DegreeType,
-    EdProgram,
+    HighestDegreeType,
+    EduProgramType,
     EducationInfoDTO,
     JsEducationDTO, ProjectExpDTO
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
@@ -100,12 +100,12 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             jobseekerEdId: edu.jobseekerEdId,
             edInstitutionId: edu.edInstitutionId,
             institutionName: edu.eduInstitutions.name ?? undefined,
-            edProgram: mapToEnum(edu.edProgram, EdProgram),
+            edProgram: mapToEnum(edu.edProgram, EduProgramType),
             edSystem: edu.edSystem,
             isEnrolled: edu.isEnrolled,
             startDate: edu.startDate.toISOString(),
             gradDate: edu.gradDate.toISOString(),
-            degreeType: mapToEnum(edu.degreeType ?? "None", DegreeType),
+            degreeType: mapToEnum(edu.degreeType ?? "None", HighestDegreeType),
             major: edu?.major,
             minor: edu?.minor,
             description: edu.description
@@ -143,7 +143,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         const result: JsEducationDTO = {
             userId: jobseeker.user_id,
-            highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed ?? "None", DegreeType),
+            highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed ?? "None", HighestDegreeType),
             educations: edHistory,
             certifications: certs,
             projects: projects,

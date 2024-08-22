@@ -8,12 +8,13 @@ import {MdAdd} from "react-icons/md";
 import {Button, Label, Radio} from "flowbite-react";
 import {
     CertDTO,
-    SchoolGradeLevel,
-    DegreeType,
-    EdProgram,
+    HighestDegreeType,
+    EduProgramType,
     EducationInfoDTO,
     JsEducationDTO,
-    ProjectExpDTO
+    ProjectExpDTO,
+    PreAEduSystem,
+    CollegeDegreeType
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
 import {SkillDTO} from "@/data/dtos/SkillDTO";
@@ -79,7 +80,7 @@ export default function CreateJobseekerProfileEducationPage() {
     });
   }
 
-  function removeEducation(byUid: number) {
+  function removeEducation(byUid: string) {
     setData({
       ...data,
       educations: data.educations.filter(({uid}) => (uid !== byUid))
@@ -115,12 +116,12 @@ export default function CreateJobseekerProfileEducationPage() {
                 jobseekerEdId: '53d66079-60e2-46a2-9214-e86e2f766734', // not being applied can remove
                 edInstitutionId: 'School A',
                 institutionName: 'North Seattle College',
-                edProgram: EdProgram.College,
+                edProgram: EduProgramType.College,
                 edSystem: undefined,
                 isEnrolled: true,
                 startDate: new Date('2024-12-1').toISOString(),
                 gradDate: new Date('2028-7-1').toISOString(),
-                degreeType: DegreeType.BachelorsDegree,
+                degreeType: CollegeDegreeType.BachelorsDegree,
                 major: 'Computer Science',
                 minor: 'Mathematics',
                 description: 'Studied various computer science topics and applied them in practical projects.'
@@ -129,12 +130,12 @@ export default function CreateJobseekerProfileEducationPage() {
                 jobseekerEdId: 'dc9fb674-1e7c-46c3-a3d2-5bc72e5dd4c6', // not being applied can remove
                 edInstitutionId: 'School B',
                 institutionName: 'CFA PAP',
-                edProgram: EdProgram.PreApprenticeship,
-                edSystem: 'System ABC',
+                edProgram: EduProgramType.PreApprenticeship,
+                edSystem: PreAEduSystem.Other,
                 isEnrolled: true,
                 startDate: new Date('2022-6-1').toISOString(),
                 gradDate: new Date('2028-6-1').toISOString(),
-                degreeType: DegreeType.None,
+                degreeType: null,
                 major: undefined,
                 minor: undefined,
                 description: 'Studied various computer science topics and applied them in practical projects.'
@@ -241,14 +242,11 @@ export default function CreateJobseekerProfileEducationPage() {
                         <SelectOptionsWithLabel
                             id="profile-creation-education-highest-completed"
                             className="w-full"
-                            options={[
-
-                                {label: "High school", value: "High school"},
-                                {label: "Associate's degree", value: "Associate's degree"},
-                                {label: "Bachelor's degree", value: "Bachelor's degree"},
-                                {label: "Master's degree", value: "Master's degree"},
-                                {label: "Doctoral degree", value: "Doctoral degree"},
-                            ]}
+                            options={(Object.values(HighestDegreeType) as string[]).filter(
+                                value => (value !== "Certification")
+                            ).map(
+                                value => ({label: value, value})
+                            )}
                             placeholder="Please select"
                             required
                         >

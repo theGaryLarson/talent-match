@@ -62,72 +62,80 @@ export type ProjectExpDTO = {
     skills: SkillDTO[],
 }
 
-export enum DegreeType {
-    None = "None",
+export enum HighestDegreeType {
+    PrimaryEducation = "Primary Education",
     HighSchool = "High School",
-    Certification = "Certification",
+    Associates = "Associates",
+    Bachelors = "Bachelors",
+    Masters = "Masters",
+    GED = "GED",
+    VocationalQualification = "Vocational Qualification / Certification",
+    NoFormalEducation = "No Formal Education"
+}
+
+export enum CollegeDegreeType {
     AssociatesDegree = "Associate's Degree",
     BachelorsDegree = "Bachelor's Degree",
     MastersDegree = "Master's Degree",
     DoctoralDegree = "Doctoral Degree"
 }
 
-export enum SchoolGradeLevel {
-    Freshman = "Freshman",
-    Sophomore = "Sophomore",
-    Junior = "Junior",
-    Senior = "Senior"
+export enum HighSchoolDegreeType {
+    HighSchool = "High School",
+    GED = "GED"
 }
 
-export enum PreALevel {
-    Level1 = "Level 1",
-    Level2 = "Level 2",
-    Level3 = "Level 3",
-    Level4 = "Level 4",
-    Level5 = "Level 5",
-    Level6 = "Level 6",
-    LastMile = "Last Mile",
+export enum GradePointAverage {
+    APlus =  "A+\t97-100%\t4.0",
+    A =      "A\t93-96%\t4.0",
+    AMinus = "A-\t90-92%\t3.7",
+    BPlus =  "B+\t87-89%\t3.3",
+    B =      "B\t83-86%\t3.0",
+    BMinus = "B-\t80-82%\t2.7",
+    CPlus =  "C+\t77-79%\t2.3",
+    C =      "C\t73-76%\t2.0",
+    CMinus = "C-\t70-72%\t1.7",
+    DPlus =  "D+\t67-69%\t1.3",
+    D =      "D\t65-66%\t1.0",
+    F =      "F\tBelow 65%\t0.0",
 }
 
-export enum EdProgram {
-    None = "None",
-    HighSchool = "High school",
+export enum EduProgramType {
+    Unselected = "Unselected",
+    HighSchool = "High School",
     College = "College",
-    TrainingProgram = "Training program / Bootcamp",
-    PreApprenticeship = "Pre-apprenticeship",
-    Other = "Other",
+    TrainingProgram = "Training Program / Bootcamp",
+    PreApprenticeship = "Pre-Apprenticeship",
+    Other = "Other"
 }
 
-export enum EdSystem {
-    None = "None",
-    SystemA = "System A",
-    SystemB = "System B",
-    SystemC = "System C",
+export enum PreAEduSystem {
+    HighSchool = "High School",
+    College = "College",
     Other = "Other",
 }
 
 export type EducationInfoDTO = {
     jobseekerEdId: string,
-    edInstitutionId: string, // use name lookup to find ID.
-    edProgram?: EdProgram,
-    institutionName?: string,
+    edProgram: EduProgramType,
+    institutionName: string,
     isEnrolled: boolean,
     startDate: string,
     gradDate: string,
-    degreeType?: DegreeType,
-    collegeProgram?: string | null,
+    degreeType?: CollegeDegreeType | HighSchoolDegreeType | null,
+    edInstitutionId?: string | null, // use name lookup to find ID.
+    institutionProgramId?: string | null,
+    institutionProgramName?: string | null,
     major?: string | null,
     minor?: string | null,
-    gpa?: number | null,
-    gradeLevel?: SchoolGradeLevel | null,
-    preALevel?: PreALevel | null,
-    edSystem?: string | null; // pre apprenticeship option
+    gpa?: GradePointAverage | null,
+    edSystem?: PreAEduSystem | null;
     description?: string | null;
 }
 
 export type JsEducationDTO = {
     userId: string,
-    highestLevelOfStudy: DegreeType;
+    highestLevelOfStudy: HighestDegreeType;
     educations: EducationInfoDTO[];
     certifications: CertDTO[];
     projects: ProjectExpDTO[];

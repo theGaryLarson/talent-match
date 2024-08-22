@@ -8,8 +8,8 @@ import {
 } from '@prisma/client';
 import {
     CertDTO,
-    DegreeType,
-    EdProgram,
+    HighestDegreeType,
+    EduProgramType,
     EducationInfoDTO,
     JsEducationDTO,
     ProjectExpDTO
@@ -320,12 +320,12 @@ export async function POST(request: Request) {
             const mappedEdHistory: EducationInfoDTO[] = upsertedSchools.map((edu) => ({
                 jobseekerEdId: edu.jobseekerEdId,
                 edInstitutionId: edu.edInstitutionId,
-                edProgram: mapToEnum(edu.edProgram, EdProgram),
+                edProgram: mapToEnum(edu.edProgram, EduProgramType),
                 edSystem: edu.edSystem,
                 isEnrolled: edu.isEnrolled,
                 startDate: edu.startDate.toISOString(),
                 gradDate: edu.gradDate.toISOString(),
-                degreeType: mapToEnum(edu.degreeType ?? "None", DegreeType),
+                degreeType: mapToEnum(edu.degreeType ?? "None", HighestDegreeType),
                 major: edu?.major,
                 minor: edu?.minor,
                 description: edu.description
@@ -368,7 +368,7 @@ export async function POST(request: Request) {
             // Return consistent result using JSEducationDTO
             const result: JsEducationDTO = {
                 userId: upsertedJobseeker.user_id,
-                highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed ?? "None", DegreeType),
+                highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed ?? "None", HighestDegreeType),
                 educations: mappedEdHistory,
                 certifications: mappedCerts,
                 projects: mappedProjects,
