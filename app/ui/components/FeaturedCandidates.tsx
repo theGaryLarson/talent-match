@@ -1,7 +1,5 @@
 import JobSeekerCardView from "./JobSeekerCardView";
 import { getAllJobSeekerCardView } from '@/app/lib/prisma';
-import { JobSeekerCardViewDTO } from "@/data/dtos/JobSeekerCardViewDTO";
-import jobseekerSlice from "@/lib/features/profileCreation/jobseekerSlice";
 
 export default async function FeaturedCandidates({ maxCandidates }: { maxCandidates: number | null}) {
   var jobSeekers = await getAllJobSeekerCardView();
@@ -12,7 +10,7 @@ export default async function FeaturedCandidates({ maxCandidates }: { maxCandida
 
   return (
     <div>
-      <h2 className="text-lg font-bold py-5">Featured candidates</h2>
+      <h2 className="text-lg font-bold py-5">Featured Candidates</h2>
       <div className="grid laptop:grid-cols-3 gap-2">
         {jobSeekers.map((jobSeeker) => (
           <JobSeekerCardView

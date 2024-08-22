@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import Avatar from './Avatar';
 import Pill from './Pill';
 import RoundedButton from './RoundedButton';
@@ -30,10 +29,9 @@ export default function JobSeekerCardView({
   const firstNSkills: SkillDTO[] = skillsList
     .slice(0, 5)
     .map((item: JobseekerSkillDTO) => item.skills);
-  // TODO: compute + display extra skills count
 
   return (
-    <div className="relative w-fit gap-10 rounded-lg border p-6">
+    <div className="relative w-fit rounded-lg border p-4 sm-tablet:p-6">
 
       {/* picture and name */}
       <div className="flex-col items-start space-y-2">
@@ -45,7 +43,7 @@ export default function JobSeekerCardView({
       <div>
         <div className="pt-4 space-y-2">
           <h3><span className="font-bold">{pathway}</span></h3>
-          <h4>{school} test school</h4>
+          <h4 className="replace-before-release">{school}Test School</h4>
           <p>{aboutMe}</p>
         </div>
         <div className="pt-4 space-x-2">
@@ -60,7 +58,7 @@ export default function JobSeekerCardView({
 
           {/* view profile */}
           {forceSmall ?
-            <div className="absolute top-20 right-6 w-fit">
+            <div className="absolute top-20 right-2 w-fit">
               <RoundedButton
                 content={'View Profile'}
                 link={'/services/jobseekers/' + id}
@@ -68,7 +66,7 @@ export default function JobSeekerCardView({
               />
             </div>
             :
-            <div className="absolute top-20 right-6 tablet:static tablet:flex tablet:pt-2 tablet:justify-end">
+            <div className="absolute top-20 right-2 tablet:static tablet:flex tablet:pt-2 tablet:justify-end">
               <RoundedButton
                 content={'View Profile'}
                 link={'/services/jobseekers/' + id}
