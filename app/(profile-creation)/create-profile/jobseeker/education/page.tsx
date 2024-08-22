@@ -225,11 +225,11 @@ export default function CreateJobseekerProfileEducationPage() {
     // }
 
     return (
-        <main className="flex justify-center">
-            <aside className="profile-form-aside">
+        <main className="flex">
+            <aside className="hidden lg:w-2/5 lg:block">
             </aside>
-            <section className="profile-form-section">
-                <ProgressBarFlat progress={2 / 6 * 100} size="sm"/>
+            <section className="w-full lg:w-3/5">
+                <ProgressBarFlat progress={2 / 6 * 100} size="sm" color="dark" className="lg:hidden"/>
                 <p>Step 2/6</p>
                 <h1>Education</h1>
                 <p>* Indicates a required field</p>
