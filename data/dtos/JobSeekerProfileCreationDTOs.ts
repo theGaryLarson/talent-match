@@ -63,7 +63,7 @@ export type ProjectExpDTO = {
 }
 
 export enum HighestDegreeType {
-    None = "None",
+    Unselected = "Unselected",
     HighSchool = "High School",
     Certification = "Certification",
     AssociatesDegree = "Associate's Degree",
@@ -98,7 +98,7 @@ export enum PreALevel {
 }
 
 export enum EdProgram {
-    None = "",
+    Unselected = "Unselected",
     HighSchool = "High school",
     College = "College",
     TrainingProgram = "Training program / Bootcamp",
@@ -107,7 +107,7 @@ export enum EdProgram {
 }
 
 export enum EdSystem {
-    None = "None",
+    Unselected = "Unselected",
     SystemA = "System A",
     SystemB = "System B",
     SystemC = "System C",
