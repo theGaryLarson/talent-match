@@ -60,9 +60,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section main-content">
-      <div className='canvas-container'>
         <Confetti />
-      </div>
         <h1>Congrats to complete your profile, Qian!</h1>
 
         <p className='subtitle-congrats'>Let's kickstart your career journey!</p>

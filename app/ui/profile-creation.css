@@ -91,16 +91,6 @@ h2 {
   border-color: #047F9C;
 }
 
-.canvas-container {
-  position: absolute;
-  margin: 0 auto;
-  top: 0;
-  left: 0;
-  width: inherit;
-  height: 100vh;
-  z-index: -1; /* This positions the canvas behind other content */
-}
-
 .main-content {
   position: relative;
   z-index: 1; /* Ensure content appears above the canvas */

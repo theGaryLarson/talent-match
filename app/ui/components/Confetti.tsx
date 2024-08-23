@@ -1,10 +1,10 @@
+"use client";
+
 import React, { useEffect, useRef } from 'react';
 
 const TWO_PI = Math.PI * 2;
 const HALF_PI = Math.PI * 0.5;
 
-const viewWidth =  window.innerWidth; // 768 window.innerWidth does not quite work
-const viewHeight = window.innerHeight; // 400
 const timeStep = 1 / 60;
 
 class Point {
@@ -83,92 +83,6 @@ class Particle {
   }
 }
 
-class Loader {
-  x: number;
-  y: number;
-  r: number;
-  private _progress: number;
-  complete: boolean;
-
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-
-    this.r = 24;
-    this._progress = 0;
-
-    this.complete = false;
-  }
-
-  reset() {
-    this._progress = 0;
-    this.complete = false;
-  }
-
-  set progress(p: number) {
-    this._progress = p < 0 ? 0 : p > 1 ? 1 : p;
-
-    this.complete = this._progress === 1;
-  }
-
-  get progress() {
-    return this._progress;
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = '#000';
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, -HALF_PI, TWO_PI * this._progress - HALF_PI);
-    ctx.lineTo(this.x, this.y);
-    ctx.closePath();
-    ctx.fill();
-  }
-}
-
-// pun intended
-class Exploader {
-  x: number;
-  y: number;
-  startRadius: number;
-  time: number;
-  duration: number;
-  progress: number;
-  complete: boolean;
-
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-
-    this.startRadius = 24;
-
-    this.time = 0;
-    this.duration = 0.4;
-    this.progress = 0;
-
-    this.complete = false;
-  }
-
-  reset() {
-    this.time = 0;
-    this.progress = 0;
-    this.complete = false;
-  }
-
-  update() {
-    this.time = Math.min(this.duration, this.time + timeStep);
-    this.progress = Ease.inBack(this.time, 0, 1, this.duration);
-
-    this.complete = this.time === this.duration;
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = '#000';
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.startRadius * (1 - this.progress), 0, TWO_PI);
-    ctx.fill();
-  }
-}
-
 const Ease = {
   inCubic(t: number, b: number, c: number, d: number) {
     t /= d;
@@ -203,60 +117,38 @@ function cubeBezier(p0: Point, c0: Point, c1: Point, p1: Point, t: number): Poin
 const Confetti: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particles = useRef<Particle[]>([]);
-  const loader = useRef<Loader>();
-  const exploader = useRef<Exploader>();
-  const phase = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d')!;
-    initDrawingCanvas(ctx);
+    initDrawingCanvas(ctx, canvas.clientWidth, canvas.clientHeight);
 
     const loop = () => {
       update();
-      draw(ctx);
+      draw(ctx, canvas.clientWidth, canvas.clientHeight);
 
-      if (phase.current === 0 && loader.current?.complete) {
-        phase.current = 1;
-      } else if (phase.current === 1 && exploader.current?.complete) {
-        phase.current = 2;
-      } else if (phase.current === 2 && checkParticlesComplete()) {
+      if (checkParticlesComplete()) {
         // reset
-        return
-        // phase.current = 0;
-        // loader.current?.reset();
-        // exploader.current?.reset();
-        // particles.current.length = 0;
-        // createParticles();
+        return;
       }
 
       requestAnimationFrame(loop);
     };
 
     loop();
+
+    function initDrawingCanvas(ctx: CanvasRenderingContext2D, viewWidth, viewHeight) {
+      const canvas = canvasRef.current!;
+      canvas.width = viewWidth;
+      canvas.height = viewHeight;
+  
+      createParticles(viewWidth, viewHeight);
+    }
   }, []);
 
-  const initDrawingCanvas = (ctx: CanvasRenderingContext2D) => {
-    const canvas = canvasRef.current!;
-    canvas.width = viewWidth;
-    canvas.height = viewHeight;
-
-    createLoader();
-    createExploader();
-    createParticles();
-  };
-
-  const createLoader = () => {
-    loader.current = new Loader(viewWidth * 0.5, viewHeight * 0.5);
-  };
-
-  const createExploader = () => {
-    exploader.current = new Exploader(viewWidth * 0.5, viewHeight * 0.5);
-  };
-
-  const createParticles = () => {
+  const createParticles = (viewWidth, viewHeight) => {
     particles.current = [];
     for (let i = 0; i < 128; i++) {
       const p0 = new Point(viewWidth * 0.5, viewHeight * 0.5);
@@ -269,40 +161,26 @@ const Confetti: React.FC = () => {
   };
 
   const update = () => {
-    switch (phase.current) {
-      case 0:
-        if (loader.current) loader.current.progress += 1 / 45;
-        break;
-      case 1:
-        if (exploader.current) exploader.current.update();
-        break;
-      case 2:
-        particles.current.forEach((p) => p.update());
-        break;
-    }
+    particles.current.forEach((p) => p.update());
   };
 
-  const draw = (ctx: CanvasRenderingContext2D) => {
+  const draw = (ctx: CanvasRenderingContext2D, viewWidth, viewHeight) => {
     ctx.clearRect(0, 0, viewWidth, viewHeight);
-
-    switch (phase.current) {
-      case 0:
-        loader.current?.draw(ctx);
-        break;
-      case 1:
-        exploader.current?.draw(ctx);
-        break;
-      case 2:
-        particles.current.forEach((p) => p.draw(ctx));
-        break;
-    }
+    particles.current.forEach((p) => p.draw(ctx));
   };
 
   const checkParticlesComplete = () => {
     return particles.current.every((p) => p.complete);
   };
 
-  return <canvas ref={canvasRef} id="drawing_canvas" />;
+  return <canvas ref={canvasRef} style={{
+    position: 'fixed',
+    height: '150vh',
+    width: '100vw',
+    top: '-50vh',
+    left: 0,
+    pointerEvents: 'none'
+  }} />;
 };
 
 export default Confetti;
