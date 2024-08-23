@@ -7,22 +7,23 @@ export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
   return (
     <main className="px-4 space-y-3 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px] bg-gray-bg">
-      {/* <Toggle/> */}
-
-      <div className="flex h-[200px] items-center rounded-md border bg-white">
-        <div className="flex items-center gap-5 p-4">
-          <Avatar imgsrc={jobseeker?.users.photo_url} scale={3}></Avatar>
-          <div>
-            <h1 className="text-2xl font-bold">
-              {jobseeker?.users.first_name +
-                ' ' +
-                jobseeker?.users.last_name}
-            </h1>
-            <h2></h2>
-            <h2>{jobseeker?.current_job_title}</h2>
-            <h2>
-              {
-                jobseeker?.jobseeker_education[0] ?
+      {
+    //TODO add years work expernce "2YRS" 
+    }
+        <div className="flex h-[200px] items-center rounded-md border bg-white">
+          <div className="flex items-center gap-5 p-4">
+            <Avatar imgsrc={jobseeker?.users.photo_url} scale={3}></Avatar>
+            <div>
+              <h1 className="text-2xl font-bold">
+                {jobseeker?.users.first_name +
+                  ' ' +
+                  jobseeker?.users.last_name}
+              </h1>
+              <h2></h2>
+              <h2>{jobseeker?.current_job_title}</h2>
+              <h2>
+                {
+                  jobseeker?.jobseeker_education[0] ? 
                   (
                     jobseeker.jobseeker_education[0].eduProviders?.name + ' | ' +
                     jobseeker.jobseeker_education[0].degreeType + ' | ' +
