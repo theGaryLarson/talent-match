@@ -1,5 +1,4 @@
-import { AcademicCapIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 export default function Avatar({imgsrc, scale}:{imgsrc?:string|null; scale?:number}){
     let size = 85;
