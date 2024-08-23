@@ -110,7 +110,7 @@ export default async function page({ params }: { params: { id: string } }) {
         </div>
         <div className='w-[350px] space-y-3 grow-[2]'>
           <div className="space-y-4 rounded-md border p-4 bg-white">
-            <h1 className="text-2xl font-bold">Skills</h1>
+            <h1 id="skills" className="text-2xl font-bold">Skills</h1>
             <div className="flex flex-wrap gap-4">
               <Skills
                 skillsList={jobseeker?.jobseeker_has_skills.map((item: JobseekerSkillDTO) => item.skills)}

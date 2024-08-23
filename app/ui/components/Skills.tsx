@@ -31,7 +31,7 @@ export default function Skills({ skillsList, maxNumSkills, jobseekerID }: {
                 <Pill
                     key={"leftoverSkills"}
                     text={"+" + leftoverSkillsCount}
-                    href={'/services/jobseekers/' + jobseekerID}
+                    href={'/services/jobseekers/' + jobseekerID + "#skills"}
                     grayscale={true}
                 />
                 : ""
