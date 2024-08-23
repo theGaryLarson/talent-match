@@ -3,7 +3,7 @@ import {PrismaClient} from '@prisma/client';
 import {
     CertDTO,
     HighestDegreeType,
-    EdProgram,
+    EduProgramType,
     EducationInfoDTO,
     JsEducationDTO, ProjectExpDTO, CollegeDegreeType
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
@@ -100,12 +100,13 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             jobseekerEdId: edu.id,
             eduProviderId: edu.edProviderId,
             edProviderName: edu.eduProviders.name ?? undefined,
-            edProgram: mapToEnum(edu.edProgram, EdProgram),
+            edProgram: mapToEnum(edu.edProgram, EduProgramType),
             edSystem: edu.edSystem,
             isEnrolled: edu.isEnrolled,
             startDate: edu.startDate.toISOString(),
             gradDate: edu.gradDate.toISOString(),
-            degreeType: mapToEnum(edu.degreeType ?? "None", CollegeDegreeType),
+            degreeType: mapToEnum(edu.degreeType ?? "None", CollegeDegreeType) ??
+                        mapToEnum(edu.degreeType ?? "None", HighSchoolDegreeType),
             major: edu?.major,
             minor: edu?.minor,
             description: edu.description
