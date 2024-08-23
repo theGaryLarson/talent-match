@@ -1,8 +1,10 @@
 
-import {PrismaClient} from '@prisma/client';
-import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
+import { PrismaClient } from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { SkillDTO } from '@/data/dtos/SkillDTO';
+import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
+import { EducationProviderProgramDTO } from '@/data/dtos/EducationProviderProgramDTO';
+import { v4 as uuidv4 } from 'uuid';
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -131,6 +133,242 @@ export async function searchSkills(searchTerm:string): Promise<SkillDTO[]> {
   }
 }
 
+export async function searchEduProviders(searchTerm:string): Promise<EducationProviderDTO[]> {
+  const MAX_RESULTS = 10;
+  if (searchTerm.length === 0) {
+    return [];
+  }
+  else {
+    const exactResults = (await prisma.edu_institutions.findMany({
+      where: {
+        name:{
+          equals: searchTerm
+        }
+      },
+      take: 1
+    })).map(institution => ({
+      edu_institution_id: institution.edu_institution_id,
+      name: institution.name
+    }));
+
+    const startsWithResults = (await prisma.edu_institutions.findMany({
+      where: {
+        AND: [
+          {
+            name:{
+              startsWith: searchTerm
+            }
+          },
+          {
+            NOT: {
+              name:{
+                equals: searchTerm
+              }
+            }
+          }
+        ]
+      },
+      take: MAX_RESULTS - exactResults.length
+    })).sort((itemA : EducationProviderDTO, itemB : EducationProviderDTO) => {
+      const itemAName = itemA.name ?? "ZZZZZ";
+      const itemBName = itemB.name ?? "ZZZZZ";
+      if (itemAName > itemBName) {
+        return 1;
+      }
+      if (itemAName < itemBName) {
+        return -1;
+      }
+      return 0;
+    }).map(institution => ({
+      edu_institution_id: institution.edu_institution_id,
+      name: institution.name
+    }));
+
+    const containsResults =
+      (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
+        (await prisma.edu_institutions.findMany({
+          where: {
+            AND: [
+              {
+                name: {
+                  contains: searchTerm
+                }
+              },
+              {
+                NOT: {
+                  name: {
+                    startsWith: searchTerm
+                  }
+                }
+              }
+            ]
+          },
+          take: MAX_RESULTS - exactResults.length - startsWithResults.length
+        })).sort((itemA : EducationProviderDTO, itemB : EducationProviderDTO) => {
+          const itemAName = itemA.name ?? "ZZZZZ";
+          const itemBName = itemB.name ?? "ZZZZZ";
+          if (itemAName > itemBName) {
+            return 1;
+          }
+          if (itemAName < itemBName) {
+            return -1;
+          }
+          return 0;
+        }).map(institution => ({
+          edu_institution_id: institution.edu_institution_id,
+          name: institution.name
+        }))
+      : []
+    // Had to query them separately to guarantee Exact and StartsWith
+    //   matches were found since I'm limiting the results, and OR
+    //   clauses do not guarantee results in the order of the filters
+    return [...exactResults, ...startsWithResults, ...containsResults];
+  }
+}
+
+export async function searchEduProviderHighSchoolPrograms(searchTerm:string): Promise<EducationProviderProgramDTO[]> {
+  return [
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Computer Support",
+    },
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Cyber Security",
+    },
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Software Developer",
+    },
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Data Analyst",
+    }
+  ];
+}
+
+export async function searchEduProviderCollegePrograms(searchTerm:string): Promise<EducationProviderProgramDTO[]> {
+  return [
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Application Development",
+    },
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Computer Science",
+    },
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Cyber Security",
+    },
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Data Analyst",
+    },
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Software Design",
+    },
+  ];
+}
+
+export async function searchEduProviderPreApprenticeshipPrograms(searchTerm:string): Promise<EducationProviderProgramDTO[]> {
+  return [
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "Software Development",
+    },
+    {
+      edu_provider_program_id: uuidv4(),
+      edu_provider_program_name: "IT Support",
+    },
+  ];
+}
+
+// export async function searchEduProviderPrograms(searchTerm:string): Promise<training_programs[]> {
+//   const MAX_RESULTS = 10;
+//   if (searchTerm.length === 0) {
+//     return [];
+//   }
+//   else {
+//     const exactResults = (await prisma.training_programs.findMany({
+//       where: {
+//         name:{
+//           equals: searchTerm
+//         }
+//       },
+//       take: 1
+//     }));
+
+//     const startsWithResults = (await prisma.training_programs.findMany({
+//       where: {
+//         AND: [
+//           {
+//             name:{
+//               startsWith: searchTerm
+//             }
+//           },
+//           {
+//             NOT: {
+//               name:{
+//                 equals: searchTerm
+//               }
+//             }
+//           }
+//         ]
+//       },
+//       take: MAX_RESULTS - exactResults.length
+//     })).sort((itemA : training_programs, itemB : training_programs) => {
+//       const itemAName = itemA.name ?? "ZZZZZ";
+//       const itemBName = itemB.name ?? "ZZZZZ";
+//       if (itemAName > itemBName) {
+//         return 1;
+//       }
+//       if (itemAName < itemBName) {
+//         return -1;
+//       }
+//       return 0;
+//     });
+
+//     const containsResults =
+//       (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
+//         (await prisma.training_programs.findMany({
+//           where: {
+//             AND: [
+//               {
+//                 name: {
+//                   contains: searchTerm
+//                 }
+//               },
+//               {
+//                 NOT: {
+//                   name: {
+//                     startsWith: searchTerm
+//                   }
+//                 }
+//               }
+//             ]
+//           },
+//           take: MAX_RESULTS - exactResults.length - startsWithResults.length
+//         })).sort((itemA : training_programs, itemB : training_programs) => {
+//           const itemAName = itemA.name ?? "ZZZZZ";
+//           const itemBName = itemB.name ?? "ZZZZZ";
+//           if (itemAName > itemBName) {
+//             return 1;
+//           }
+//           if (itemAName < itemBName) {
+//             return -1;
+//           }
+//           return 0;
+//         })
+//       : []
+//     // Had to query them separately to guarantee Exact and StartsWith
+//     //   matches were found since I'm limiting the results, and OR
+//     //   clauses do not guarantee results in the order of the filters
+//     return [...exactResults, ...startsWithResults, ...containsResults];
+//   }
+// }
+
 export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
     user_id: true,
@@ -152,6 +390,9 @@ export const jobSeekerCardViewSelect = {
     },
     jobseeker_education: {
         select: {
+            where: {
+              isEnrolled: true,
+            },
             eduProviders: {
                 select: {
                     id: true,

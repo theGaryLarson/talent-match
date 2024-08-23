@@ -7,11 +7,13 @@ import {MdAdd} from "react-icons/md";
 import {Button} from "flowbite-react";
 import {
     CertDTO,
-    EdProgram,
+    HighestDegreeType,
+    EduProgramType,
     EducationInfoDTO,
     JsEducationDTO,
-    PreALevel,
-    ProjectExpDTO, CollegeDegreeType
+    ProjectExpDTO,
+    PreAEduSystem,
+    CollegeDegreeType
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
 import {SkillDTO} from "@/data/dtos/SkillDTO";
@@ -23,6 +25,8 @@ import ProjectExperiences, {
     defaultProjectExperienceData,
     ProjectExperienceData
 } from '@/app/ui/form-field-groups/ProjectExperiences';
+
+import dayjs, { Dayjs } from 'dayjs';
 
 interface Data {
     projectExperiences: ProjectExperienceData[],
@@ -241,14 +245,11 @@ export default function CreateJobseekerProfileEducationPage() {
                         <SelectOptionsWithLabel
                             id="profile-creation-education-highest-completed"
                             className="w-full"
-                            options={[
-
-                                {label: "High school", value: "High school"},
-                                {label: "Associate's degree", value: "Associate's degree"},
-                                {label: "Bachelor's degree", value: "Bachelor's degree"},
-                                {label: "Master's degree", value: "Master's degree"},
-                                {label: "Doctoral degree", value: "Doctoral degree"},
-                            ]}
+                            options={(Object.values(HighestDegreeType) as string[]).filter(
+                                value => (value !== "Certification")
+                            ).map(
+                                value => ({label: value, value})
+                            )}
                             placeholder="Please select"
                             required
                         >

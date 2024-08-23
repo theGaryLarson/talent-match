@@ -8,49 +8,53 @@ import Teaser from '@/app/ui/components/Teaser';
 //employer dashboard
 export default async function Page() {
   return (
-    <main className="space-y-3 py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px] font-['Roboto']">
-      <EmployerNameTitleTag name={'Damien Cruz'} title={'Programming Instructor'} company={'Computing For All'}/>
-      <div className="flex flex-wrap justify-between gap-5">
-        {<ScoreCard title="Saved Candidates" val={3} />} 
+    <main className="space-y-3 py-8 mx-4 tablet:mx-[50px] tablet:mx-[100px] desktop:mx-[200px] font-['Roboto']">
+      <EmployerNameTitleTag name={'Damien Cruz'} title={'Programming Instructor'} company={'Computing For All'} />
+      <div className="flex flex-wrap justify-center tablet:justify-between gap-5">
+        {<ScoreCard title="Saved Candidates" val={3} />}
         {<ScoreCard title="Job Applications " val={5} />}
         {<ScoreCard title="Direct Messages" val={1} />}
       </div>
-     
-      <div className='flex justify-center'>
-      <div className="grid grid-cols-1 tablet:grid-cols-1 laptop:grid-cols-2 laptop:grid-cols-3 gap-5">
-        <Teaser
-          isLarge={true}
-          title={'Become a Mentor'}
-          text={
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+
+      <div className='flex justify-center pt-10'>
+        <div className="grid grid-cols-1 sm-tablet:grid-cols-2 laptop:grid-cols-3 gap-5">
+          <Teaser
+            isLarge={true}
+            title={'Become a Mentor'}
+            text={
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+            }
+          />
+          <Teaser
+            isLarge={true}
+            title={'Create a Job Posting'}
+            text={
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elitr derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
+            }
+          />
+          <Teaser
+            isLarge={true}
+            title={'Create an Assessment'}
+            text={
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut fugito aliqua. ed do eiusmod tempor incididunt '
+            }
+          />
+        </div>
+      </div>
+      <div className="pt-10">
+        <LargeRoundedButtonCard
+          title={'Ready to Hire'}
+          blurb={
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
           }
-        />
-        <Teaser
-          isLarge={true}
-          title={'Create a Job Posting'}
-          text={
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elitr derp sigma you lost the game incididunt ut labore et dolore magna fugito aliqua. ed do eiusmod tempor incididunt '
-          }
-        />
-        <Teaser
-          isLarge={true}
-          title={'Create an Assessment'}
-          text={
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor derp sigma you lost the game incididunt ut fugito aliqua. ed do eiusmod tempor incididunt '
-          }
+          buttonContent={'Search For talent'}
         />
       </div>
+      <div className="pt-10 pb-10">
+        <FeaturedCandidates maxCandidates={3} />
       </div>
-      <LargeRoundedButtonCard
-        title={'Ready to Hire'}
-        blurb={
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
-        }
-        buttonContent={'Search For talent'}
-      />
-      <FeaturedCandidates/>
-      <BrowseByCategory/>
-       {/* <ArticleStub
+      <BrowseByCategory />
+      {/* <ArticleStub
         isPhotoFirst={true}
         imagesrc={
           '/cfa_images/stock/people-using-digital-device-while-meeting 2.jpg'
