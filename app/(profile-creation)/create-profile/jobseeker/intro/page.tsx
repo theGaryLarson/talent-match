@@ -13,11 +13,14 @@ import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from "flowbite-react";
 import {formatPhoneE164} from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
 
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
@@ -59,8 +62,7 @@ export default function CreateJobseekerProfileIntroPage(){
     e.preventDefault();
     dispatch(submitForm());
 
-    const birthDateValue = fields.find(f => f.id === 'profile-creation-intro-birth-date')?.value || null;
-    const birthDateISO = birthDateValue ? new Date(birthDateValue).toISOString() : null;
+    const birthDateISO = birthdate ? birthdate.toISOString() : null;
 
     const countryCode = fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null;
     const ph = fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null;
@@ -142,7 +144,7 @@ export default function CreateJobseekerProfileIntroPage(){
             </div>
             
             <div className="profile-form-grid">
-              <InputTextWithLabel type="date" id="profile-creation-intro-birth-date" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-birth-date')?.value || ''} required>Birth Date *</InputTextWithLabel>
+              <DatePicker label="Birth Date *" value={birthdate} onChange={setBirthdate} />
             </div>
             
             <div className="profile-form-grid md:grid-cols-2">

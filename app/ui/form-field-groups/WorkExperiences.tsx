@@ -5,6 +5,8 @@ import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
 import TextareaWithLabel from '../components/TextareaWithLabel';
 import {v4 as uuidv4} from 'uuid';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 const classNamePrefix = "profile-creation-work-experience-group-";
 const classCompany = "company";
@@ -18,20 +20,19 @@ export interface WorkExperienceData {
   uid: string,
   [classCompany]: string,
   [classTitle]: string,
-  [classStarts]: string,
-  [classEnds]: string,
+  [classStarts]: Dayjs,
+  [classEnds]: Dayjs,
   [classCurrent]: boolean,
   [classExperience]: string,
 }
 
-let uniqueListID = 0;
 export function defaultWorkExperienceData() : WorkExperienceData {
   return {
     uid: uuidv4(),
     [classCompany]: "",
     [classTitle]: "",
-    [classStarts]: "",
-    [classEnds]: "",
+    [classStarts]: null,
+    [classEnds]: null,
     [classCurrent]: false,
     [classExperience]: "",
   }
@@ -85,25 +86,18 @@ export default memo(function WorkExperiences({
           </InputTextWithLabel>
         </div>
         <div className="profile-form-grid md:grid-cols-2">
-          <InputTextWithLabel
-            type="month"
-            id={classNamePrefix + workExperience.uid + "-" + classStarts}
-            onChange={(e) => handleChange(index, classStarts, e.target.value)}
-            required
-            value={workExperience[classStarts]}
-          >
-            Starts *
-          </InputTextWithLabel>
-          <InputTextWithLabel
-            type="month"
-            id={classNamePrefix + workExperience.uid + "-" + classEnds}
-            onChange={(e) => handleChange(index, classEnds, e.target.value)}
-            required={(workExperience[classCurrent])?false:true}
-            disabled={(workExperience[classCurrent])?true:false}
-            value={workExperience[classEnds]}
-          >
-            Ends *
-          </InputTextWithLabel>
+          <DatePicker
+              label={'Starts *'}
+              views={['month', 'year']}
+              value={workExperience[classStarts] || null}
+              onChange={(val) => handleChange(index, classStarts, val)}
+          />
+          <DatePicker
+              label={'Ends *'}
+              views={['month', 'year']}
+              value={workExperience[classEnds] || null}
+              onChange={(val) => handleChange(index, classEnds, val)}
+          />
         </div>
         <Label>
           <Checkbox
