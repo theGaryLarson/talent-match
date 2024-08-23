@@ -714,6 +714,118 @@ const industrySectors = [
     "Utilities",
 ];
 
+const programs = [
+    "AOS - Computer Applications Software Support",
+    "Application Development",
+    "Associate in Computer Science DTA/MRP",
+    "Bachelor of Applied Science - Cyber Security & Forensics",
+    "Bachelor of Applied Science - Cybersecurity",
+    "Bachelor of Applied Science - Data Analytics",
+    "Bachelor of Applied Science - Data Management and Analysis",
+    "Bachelor of Applied Science - Information Technology: Application Development",
+    "Bachelor of Applied Science - Information Technology: Computing and Software Development",
+    "Bachelor of Applied Science - Information Technology: Networking-Systems",
+    "Bachelor of Applied Science - IT Networking - Cybersecurity",
+    "Bachelor of Applied Science - IT Networking: Information Systems and Technology",
+    "Bachelor of Applied Science - Information Technology",
+    "Bachelor of Applied Science - Information Technology: Networking",
+    "Bachelor of Applied Science - Application Development",
+    "Bachelor of Applied Science - Computer Network Engineering",
+    "Bachelor of Applied Science - Cyber Security",
+    "Bachelor of Applied Science - Information Systems",
+    "Bachelor of Applied Science - Information Systems & Technology",
+    "Bachelor of Applied Science - Information Technology: Cybersecurity and Networking",
+    "Bachelor of Applied Science-Information Technology: Software Development",
+    "Bachelor of Science Computer Science",
+    "Business Applications Specialist",
+    "Business Technology",
+    "Cloud Network Technology",
+    "Computer Applications Technology",
+    "Computer Information Systems",
+    "Computer Network Engineering",
+    "Computer Network Engineering (JBLM)",
+    "Computer Networking",
+    "Computer Programming",
+    "Computer Science",
+    "Computer Science DTA/MRP",
+    "Computer Security and Network Technology",
+    "Computer Support Specialist",
+    "Computer Technology - Network Administration",
+    "Computing and Software Development",
+    "Computer Support",
+    "Cyber Defense and Digital Forensics",
+    "Cyber Security",
+    "Cybersecurity & Computer Forensics",
+    "Cybersecurity and Network Administration",
+    "Cybersecurity and Networking",
+    "Data Analyst",
+    "Data Analysis and Software Development",
+    "Database Administrator",
+    "Database Management & Design",
+    "Design",
+    "Digital Design",
+    "Digital Entertainment Design & Production",
+    "Digital Forensics and Investigations",
+    "Digital Media Arts",
+    "Graphic Design and Web Design",
+    "Info Tech - Network Administrator",
+    "Info Tech - Support Specialist",
+    "Info Tech - Web Technologist",
+    "Information Systems",
+    "Information Systems Project Coordinator",
+    "Information Tech Systems",
+    "Information Technology",
+    "Information Technology - General",
+    "Information Technology - Interactive Web Design",
+    "Information Technology - Networking (IT-NW)",
+    "Information Technology - Security (IT-SEC)",
+    "Information Technology - Software Development (IT-SW)",
+    "Information Technology - Support Specialist",
+    "Information Technology Computer Support",
+    "Information Technology Specialist",
+    "Information Technology Systems",
+    "Information Technology Systems Administration",
+    "Information Technology: Application Development",
+    "Information Technology: Application Development-Mobile Platforms",
+    "IT Support",
+    "IT Support Technician",
+    "IT Systems Specialist",
+    "Microsoft Technologies",
+    "Mobile Technology Expert",
+    "Multimedia & Interactive Technology-Web Designer",
+    "Multimedia & Interactive Technology-Web Developer",
+    "Multimedia Communications",
+    "Multimedia Communications - Graphics",
+    "Network Administrator",
+    "Network and Server Administration Specialist",
+    "Network Design & Administration",
+    "Network Infrastructure Technology (NIT)",
+    "Network Operations & Systems Security",
+    "Network Security Engineer",
+    "Network Services and Computing Systems",
+    "Network Technologies",
+    "Network Technology and Administration",
+    "Networking",
+    "Networking and Cyber Security",
+    "Online Marketing & Social Media Architect",
+    "Programming",
+    "Programming and IT Support",
+    "Programming and Software Development",
+    "Software Design",
+    "Software Development",
+    "Systems Administration",
+    "User-Centered Design",
+    "Visual Communications",
+    "Web Application and Cloud Developer",
+    "Web Applications Programming Technology - Programming Emphasis",
+    "Web Applications Programming Technology - Web Emphasis",
+    "Web Design",
+    "Web Developer",
+    "Web Development",
+    "XR (Extended Reality) Development"
+];
+
+
 const itJobTitles = [
     "Software Engineer",
     "Data Scientist",
@@ -972,6 +1084,7 @@ async function seedTechnologyAreas() {
 
 async function seedEduProviders() {
     try {
+        console.log('Seeding Education Providers...')
         // Insert high schools
         const highSchoolResult = await prisma.edu_providers.createMany({
             data: highSchools.map(school => ({
@@ -989,7 +1102,24 @@ async function seedEduProviders() {
         });
 
         console.log(`Seeded ${highSchoolResult.count} High schools.`);
-        console.log(`Seeded ${collegeResult.count} Colleges.`);
+        console.log(`Seeded ${collegeResult.count} Colleges.\n`);
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+async function seedPrograms() {
+    try {
+        console.log('Seeding Provider Programs...')
+        // Insert high schools
+        const programsResult = await prisma.programs.createMany({
+            data: programs.map(program => ({
+                title: program,
+            })),
+        });
+        console.log(`Seeded ${programsResult.count} provider programs.\n`);
     } catch (error) {
         console.error('Error inserting data:', error);
     } finally {
@@ -1646,6 +1776,7 @@ async function main() {
     await seedSocialMediaPlatforms(); // use in production
     await seedUsers(500);
     await seedUserAddresses();
+    await seedPrograms();
     await seedEduProviders(); // use in production
     await SeedEduAddresses();
     await seedJobSeekers();
