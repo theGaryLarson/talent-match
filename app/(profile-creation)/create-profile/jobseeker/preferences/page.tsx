@@ -107,6 +107,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                     On-campus job
                   </Button>
                   <Button
+                      pill
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Contract')} }
