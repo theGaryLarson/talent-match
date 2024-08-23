@@ -78,7 +78,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                       pill
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
-                      onClick={ () => { setEmploymentType('Full-time job')} }
+                      onClick={ () => { setEmploymentType('Full-time')} }
                   >
                     Full-time job
                   </Button>
@@ -86,7 +86,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
                       pill
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
-                      onClick={ () => { setEmploymentType('Part-time job')} }
+                      onClick={ () => { setEmploymentType('Part-time')} }
                   >
                     Part-time job
                   </Button>
@@ -102,16 +102,9 @@ export default function CreateJobseekerProfilePreferencesPage(){
                       pill
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
-                      onClick={ () => { setEmploymentType('On-campus job')} }
+                      onClick={ () => { setEmploymentType('On-campus')} }
                   >
                     On-campus job
-                  </Button>
-                  <Button
-                      className="custom-outline-btn inline-block m-2"
-                      // variant="outlined"
-                      onClick={ () => { setEmploymentType('Contract')} }
-                  >
-                    Contract
                   </Button>
                 </div>
               </fieldset>

@@ -233,10 +233,12 @@ model edu_addresses {
 }
 
 model edu_providers {
-  id                  String                 @id(clustered: false, map: "edu_providers_PRIMARY") @unique(map: "edu_providers_id_UNIQUE") @db.UniqueIdentifier
+  id                  String                 @id(clustered: false, map: "edu_providers_PRIMARY") @unique(map: "edu_providers_id_UNIQUE") @default(dbgenerated("newid()")) @db.UniqueIdentifier
   name                String?                @unique @db.VarChar(255)
   contact_email       String?                @db.VarChar(255)
   edu_url             String?                @db.VarChar(255)
+  edu_type            String?                @db.VarChar(50)
+  isAdminReviewed     Boolean                @default(false) @db.Bit
   edu_addresses       edu_addresses[]
   educators           educators[]
   jobseeker_education jobseekers_education[]
@@ -355,6 +357,9 @@ model jobseekers {
   video_url                          String?                              @db.VarChar(255)
   employment_type_sought             String?                              @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
   is_marked_deletion                 DateTime?                            @db.DateTime
+  pool1                              Boolean                              @default(false) @db.Bit
+  pool2                              Boolean                              @default(false) @db.Bit
+  pool3                              Boolean                              @default(false) @db.Bit
   case_mgmt                          case_mgmt[]
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
@@ -587,8 +592,14 @@ model provider_programs {
   pathways                    pathways?                     @relation(fields: [pathway_id], references: [pathway_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_training_program_Pathways1")
   edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
 
-  @@index([pathway_id], map: "training_programs_fk_training_program_Pathways1_idx")
   @@index([edu_provider_id], map: "training_programs_fk_training_program_training_provider1_idx")
+  @@index([pathway_id], map: "training_programs_fk_training_program_Pathways1_idx")
+}
+
+// // TODO: Add a general list of programs to use as a drop down educators can associate these with their programs and provide more detail in the provider_programs table.
+model programs {
+  id    String @id @unique(map: "programs_id_UNIQUE") @default(uuid()) @db.UniqueIdentifier
+  title String @db.NVarChar(255)
 }
 
 model volunteer_has_skills {

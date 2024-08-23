@@ -163,6 +163,102 @@ const techEdMajors = [
     {name: "Technical Studies in IT", program_id: uuidv4()}
 ];
 
+const highSchools = [
+    "Alan T. Sugiyama High School",
+    "Ballard High School",
+    "Bellevue",
+    "Bellevue Digital Discovery",
+    "Big Picture School",
+    "Bridges Transition",
+    "Chief Sealth International High School",
+    "Cleveland High School",
+    "Franklin High School",
+    "Garfield High School",
+    "Hazen High School",
+    "Ingraham High School",
+    "Interagency Detention School",
+    "Interagency Open Doors",
+    "Interagency Programs",
+    "Interlake",
+    "International School",
+    "Lincoln High School",
+    "Lindbergh High School",
+    "Middle College High School",
+    "Nathan Hale High School",
+    "Newport",
+    "Nova High School",
+    "Private School Servicea",
+    "Rainier Beach High School",
+    "Renton High School",
+    "Roosevelt High School",
+    "Sammamish",
+    "Seattle World School",
+    "The Center School",
+    "West Seattle High School",
+    "Yakima High School"
+];
+
+const colleges = [
+    "Bates Technical College",
+    "Bellevue College",
+    "Bellingham Technical College",
+    "Big Bend Community College",
+    "Cascadia College",
+    "Centralia College",
+    "Clark College",
+    "Clover Park Technical College",
+    "Columbia Basin College, Pasco",
+    "Columbia Basin College, Richland",
+    "Edmonds College",
+    "Everett Community College",
+    "Green River College, Auburn",
+    "Green River College, Enumclaw",
+    "Green River College, Kent",
+    "Hack Reactor",
+    "Highline College, Des Moines",
+    "Highline College, Federal Way",
+    "Lake Washington Institute of Technology, Redmond",
+    "Lake Washington Institute of Technology, Kirkland",
+    "Lower Columbia College",
+    "North Seattle College",
+    "Olympic College, Bremerton",
+    "Olympic College, Poulsbo",
+    "Olympic College, Shelton",
+    "Peninsula College, Port Angeles",
+    "Peninsula College, Port Townsend",
+    "Peninsula College, Forks",
+    "Pierce College",
+    "Renton Technical College",
+    "Seattle Central College",
+    "San Jose State University",
+    "Saint Martins University",
+    "Seattle Pacific University",
+    "Shoreline Community College",
+    "Skagit Valley College",
+    "South Puget Sound Community College, Olympia",
+    "South Puget Sound Community College, Lacey",
+    "South Seattle College",
+    "Spokane Community College",
+    "Spokane Falls Community College",
+    "Tacoma Community College",
+    "Tufts University",
+    "Walla Walla Community College",
+    "Washington State University",
+    "Wenatchee Valley College, Wenatchee",
+    "Wenatchee Valley College, Omak",
+    "Whatcom College",
+    "Whatcom Community College",
+    "Yakima Valley College, Yakima",
+    "Yakima Valley College, Grandview",
+    "University of Washington, Tacoma",
+    "University of Washington",
+    "University of Washington, Bothell",
+    "Vancouver Island University",
+    "Seattle University"
+];
+
+
+
 const itOccupationTechnologyAreas = [
     { id: "f18b7623-60ba-4a5b-a0a4-6cb588bdf6db", name: "Cybersecurity" },
     { id: "7e3b01fc-7c6a-4baf-b755-e47b07ad9191", name: "Cloud Computing" },
@@ -618,6 +714,118 @@ const industrySectors = [
     "Utilities",
 ];
 
+const programs = [
+    "AOS - Computer Applications Software Support",
+    "Application Development",
+    "Associate in Computer Science DTA/MRP",
+    "Bachelor of Applied Science - Cyber Security & Forensics",
+    "Bachelor of Applied Science - Cybersecurity",
+    "Bachelor of Applied Science - Data Analytics",
+    "Bachelor of Applied Science - Data Management and Analysis",
+    "Bachelor of Applied Science - Information Technology: Application Development",
+    "Bachelor of Applied Science - Information Technology: Computing and Software Development",
+    "Bachelor of Applied Science - Information Technology: Networking-Systems",
+    "Bachelor of Applied Science - IT Networking - Cybersecurity",
+    "Bachelor of Applied Science - IT Networking: Information Systems and Technology",
+    "Bachelor of Applied Science - Information Technology",
+    "Bachelor of Applied Science - Information Technology: Networking",
+    "Bachelor of Applied Science - Application Development",
+    "Bachelor of Applied Science - Computer Network Engineering",
+    "Bachelor of Applied Science - Cyber Security",
+    "Bachelor of Applied Science - Information Systems",
+    "Bachelor of Applied Science - Information Systems & Technology",
+    "Bachelor of Applied Science - Information Technology: Cybersecurity and Networking",
+    "Bachelor of Applied Science-Information Technology: Software Development",
+    "Bachelor of Science Computer Science",
+    "Business Applications Specialist",
+    "Business Technology",
+    "Cloud Network Technology",
+    "Computer Applications Technology",
+    "Computer Information Systems",
+    "Computer Network Engineering",
+    "Computer Network Engineering (JBLM)",
+    "Computer Networking",
+    "Computer Programming",
+    "Computer Science",
+    "Computer Science DTA/MRP",
+    "Computer Security and Network Technology",
+    "Computer Support Specialist",
+    "Computer Technology - Network Administration",
+    "Computing and Software Development",
+    "Computer Support",
+    "Cyber Defense and Digital Forensics",
+    "Cyber Security",
+    "Cybersecurity & Computer Forensics",
+    "Cybersecurity and Network Administration",
+    "Cybersecurity and Networking",
+    "Data Analyst",
+    "Data Analysis and Software Development",
+    "Database Administrator",
+    "Database Management & Design",
+    "Design",
+    "Digital Design",
+    "Digital Entertainment Design & Production",
+    "Digital Forensics and Investigations",
+    "Digital Media Arts",
+    "Graphic Design and Web Design",
+    "Info Tech - Network Administrator",
+    "Info Tech - Support Specialist",
+    "Info Tech - Web Technologist",
+    "Information Systems",
+    "Information Systems Project Coordinator",
+    "Information Tech Systems",
+    "Information Technology",
+    "Information Technology - General",
+    "Information Technology - Interactive Web Design",
+    "Information Technology - Networking (IT-NW)",
+    "Information Technology - Security (IT-SEC)",
+    "Information Technology - Software Development (IT-SW)",
+    "Information Technology - Support Specialist",
+    "Information Technology Computer Support",
+    "Information Technology Specialist",
+    "Information Technology Systems",
+    "Information Technology Systems Administration",
+    "Information Technology: Application Development",
+    "Information Technology: Application Development-Mobile Platforms",
+    "IT Support",
+    "IT Support Technician",
+    "IT Systems Specialist",
+    "Microsoft Technologies",
+    "Mobile Technology Expert",
+    "Multimedia & Interactive Technology-Web Designer",
+    "Multimedia & Interactive Technology-Web Developer",
+    "Multimedia Communications",
+    "Multimedia Communications - Graphics",
+    "Network Administrator",
+    "Network and Server Administration Specialist",
+    "Network Design & Administration",
+    "Network Infrastructure Technology (NIT)",
+    "Network Operations & Systems Security",
+    "Network Security Engineer",
+    "Network Services and Computing Systems",
+    "Network Technologies",
+    "Network Technology and Administration",
+    "Networking",
+    "Networking and Cyber Security",
+    "Online Marketing & Social Media Architect",
+    "Programming",
+    "Programming and IT Support",
+    "Programming and Software Development",
+    "Software Design",
+    "Software Development",
+    "Systems Administration",
+    "User-Centered Design",
+    "Visual Communications",
+    "Web Application and Cloud Developer",
+    "Web Applications Programming Technology - Programming Emphasis",
+    "Web Applications Programming Technology - Web Emphasis",
+    "Web Design",
+    "Web Developer",
+    "Web Development",
+    "XR (Extended Reality) Development"
+];
+
+
 const itJobTitles = [
     "Software Engineer",
     "Data Scientist",
@@ -681,6 +889,18 @@ const frontendProjectSkills = [
         skill_name: '.NET Assemblies',
         skill_info_url: 'https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X',
     },
+];
+
+const racesAndEthnicities = [
+    "White",
+    "Black or African American",
+    "American Indian or Alaska Native",
+    "Asian",
+    "Native Hawaiian or Other Pacific Islander",
+    "Hispanic or Latino",
+    "Middle Eastern or North African",
+    "Mixed Race",
+    "Other"
 ];
 
 /////////////////////////////////////////////////
@@ -749,24 +969,11 @@ function getRandomUserPhoto() {
     return `https://randomuser.me/api/portraits/${gender}/${number}.jpg`;
 }
 
-const racesAndEthnicities = [
-    "White",
-    "Black or African American",
-    "American Indian or Alaska Native",
-    "Asian",
-    "Native Hawaiian or Other Pacific Islander",
-    "Hispanic or Latino",
-    "Middle Eastern or North African",
-    "Mixed Race",
-    "Other"
-];
 
 /////////////////////////////////////////////////
 /////////////   seed functions  /////////////////
 /////////////////////////////////////////////////
 
-
-///////        Employer Data      ///////////////
 async function seedUsers(numUsers = 4) {
     console.log('Seeding Users...')
     if (numUsers <= 4) {
@@ -875,31 +1082,49 @@ async function seedTechnologyAreas() {
     console.log(`Seeded ${itOccupationTechnologyAreas.length} technology areas.\n`)
 }
 
-async function seedEduInstitutions() {
-    const institutions = [];
-    console.log('Seeding Education Institutions...');
-    for (let i = 0; i < 10; i++) {  // Generate 10 mock institutions
-        institutions.push({
-            id: uuidv4(),
-            name: faker.company.name(),
-            contact_email: faker.internet.email(),
-            edu_url: faker.internet.url(),
+async function seedEduProviders() {
+    try {
+        console.log('Seeding Education Providers...')
+        // Insert high schools
+        const highSchoolResult = await prisma.edu_providers.createMany({
+            data: highSchools.map(school => ({
+                name: school,
+                edu_type: "High school"
+            })),
         });
-    }
-    // institutions.push({
-    //     id: uuidv4(),
-    //     name: 'Not in list',
-    //     contact_email: '',
-    //     edu_url: '',
-    //
-    // })
 
-    for (const institution of institutions) {
-        await prisma.edu_providers.create({
-            data: institution,
+        // Insert colleges
+        const collegeResult = await prisma.edu_providers.createMany({
+            data: colleges.map(college => ({
+                name: college,
+                edu_type: "College"
+            })),
         });
+
+        console.log(`Seeded ${highSchoolResult.count} High schools.`);
+        console.log(`Seeded ${collegeResult.count} Colleges.\n`);
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
     }
-    console.log(`Seeded ${institutions.length} institutions.\n`);
+}
+
+async function seedPrograms() {
+    try {
+        console.log('Seeding Provider Programs...')
+        // Insert high schools
+        const programsResult = await prisma.programs.createMany({
+            data: programs.map(program => ({
+                title: program,
+            })),
+        });
+        console.log(`Seeded ${programsResult.count} provider programs.\n`);
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
 }
 
 async function SeedEduAddresses() {
@@ -1313,8 +1538,6 @@ async function seedJobSeekerCertificates() {
     }
 }
 
-////////////// Employer Data  ///////////////////
-
 async function seedIndustrySectors() {
     console.log(`Seeding Industry Sectors...`)
     for (const sector of industrySectors) {
@@ -1539,19 +1762,22 @@ async function seedJobPostings() {
     }
 }
 
+
+
 /////////////////////////////////////////////////
 
 async function main() {
     console.log(`Start seeding ...\n`);
-    await seedPathways();
-    await seedTechnologyAreas();
-    await seedIndustrySectors();
-    await seedSubcategories();
-    await seedSkills();
-    await seedSocialMediaPlatforms();
+    await seedPathways(); // use in production
+    await seedTechnologyAreas(); // use in production
+    await seedIndustrySectors(); // use in production
+    await seedSubcategories(); // use in production
+    await seedSkills(); // use in production
+    await seedSocialMediaPlatforms(); // use in production
     await seedUsers(500);
     await seedUserAddresses();
-    await seedEduInstitutions();
+    await seedPrograms();
+    await seedEduProviders(); // use in production
     await SeedEduAddresses();
     await seedJobSeekers();
     await seedJobSeekersPrivateData();
@@ -1566,7 +1792,7 @@ async function main() {
     // TODO: add pathway subcategories (i.e. Software Dev consists of Web Dev, Mobile Dev etc.)
     // TODO: associate skills with a pathway
     // Employer data
-    await seedCompanies();
+    await seedCompanies(); // TODO: get a list of companies to use in production
     await seedEmployers();
     await seedCompanyAddresses();
     await seedCompanyTestimonials();
