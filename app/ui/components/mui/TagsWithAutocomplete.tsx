@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useMemo, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useMemo, useState } from 'react';
 import Autocomplete, { AutocompleteChangeDetails, AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { debounce } from '@mui/material/utils';
@@ -16,7 +16,8 @@ interface Props<ValueType> {
   onChange?: ((event: SyntheticEvent<Element, Event>, value: ValueType[], reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<ValueType> | undefined) => void) | undefined,
   searchingText?: string | undefined,
   searchPlaceholder: string,
-  getOptionLabel: ((option: ValueType) => string) | undefined
+  getOptionLabel: ((option: ValueType) => string) | undefined,
+  initialTags?: string[]
 }
 
 export default function TagsWithAutocomplete<ValueType>({
@@ -29,19 +30,20 @@ export default function TagsWithAutocomplete<ValueType>({
   searchingText,
   searchPlaceholder,
   getOptionLabel,
-}:Props<ValueType>) {
+  initialTags,
+}: Props<ValueType>) {
   const [options, setOptions] = useState<ValueType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedTags, setSelectedTags] = useState<ValueType[]>([]);
 
   const handleInputChange = useMemo(
     () => {
-      const cachedFetches:CachedFetches<ValueType> = {
+      const cachedFetches: CachedFetches<ValueType> = {
         "": [] // Shows nothing when there is no search terms in the input box
       };
-      
+
       return debounce(
-        async (event:SyntheticEvent<Element, Event>, newInputValue:string) => {
+        async (event: SyntheticEvent<Element, Event>, newInputValue: string) => {
           try {
             if (cachedFetches.hasOwnProperty(newInputValue)) {
               setOptions(cachedFetches[newInputValue]); // Update the options with cached fetch data instead of hitting API again
@@ -49,7 +51,7 @@ export default function TagsWithAutocomplete<ValueType>({
             else if (newInputValue.length !== 0) {
               setLoading(true);
               const response = await fetch(`${apiSearchRoute}${encodeURIComponent(newInputValue)}`);
-              const data:ValueType[] = await response.json();
+              const data: ValueType[] = await response.json();
               cachedFetches[newInputValue] = data; // Cache the fetch data
 
               setOptions(data); // Update the options with fetched data
@@ -64,6 +66,24 @@ export default function TagsWithAutocomplete<ValueType>({
     },
     [apiSearchRoute, setLoading, setOptions]
   );
+
+  async function initTags() {
+    var initTagsToSelect: ValueType[] = [];
+    if (initialTags != null) {
+      for (var i = 0; i < initialTags.length; i++) {
+        const response = await fetch(`${apiSearchRoute}${initialTags[i]}`);
+        const data: ValueType[] = await response.json();
+        if (data.length > 0) initTagsToSelect.push(data[0]);
+      }
+      setSelectedTags(initTagsToSelect);
+    }
+  }
+
+  // Load the init tags once on init
+  useEffect(() => {
+    initTags();
+  }, []);
+
 
   return (
     <Autocomplete
@@ -85,7 +105,7 @@ export default function TagsWithAutocomplete<ValueType>({
         }
       }}
       onInputChange={handleInputChange}
-      options={(loading)? [] : options}
+      options={(loading) ? [] : options}
       renderInput={(params) => (
         <TextField
           {...params}
