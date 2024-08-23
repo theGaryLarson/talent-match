@@ -49,7 +49,7 @@ export default function JobSeekerCardView({
         <div className="pt-4">
           <Skills
             skillsList={skills}
-            maxNumSkills={4}
+            maxNumSkills={5}
             jobseekerID={id}
           />
 
