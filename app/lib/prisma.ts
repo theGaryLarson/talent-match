@@ -152,6 +152,9 @@ export const jobSeekerCardViewSelect = {
     },
     jobseeker_education: {
         select: {
+            where: {
+              isEnrolled: true,
+            },
             eduProviders: {
                 select: {
                     id: true,
