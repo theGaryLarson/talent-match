@@ -1,9 +1,9 @@
 'use client'
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
-import SearchBar from '@/app/ui/components/SearchBar';
 import {JobSeekerCardViewDTO} from "@/data/dtos/JobSeekerCardViewDTO";
 import {useCallback, useEffect, useState} from 'react'
-import { useSearchParams } from 'next/navigation';
+import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
+import { SkillDTO } from '@/data/dtos/SkillDTO';
 
 async function fetchFilteredJobSeekerCardView(skills: string[] = [], yearsWorkExp: number = 0): Promise<JobSeekerCardViewDTO[]> {
   const response = await fetch('/api/jobseekers/query', {
@@ -21,12 +21,11 @@ async function fetchFilteredJobSeekerCardView(skills: string[] = [], yearsWorkEx
 export default function Page() {
   const [jobseekers, setJobSeekers] = useState<JobSeekerCardViewDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const searchParams = useSearchParams();
-  const search = searchParams.get('search') || '';
+  const [searchParams, setSearchParams] = useState<SkillDTO[]>([]);
   const loadJobSeekers = useCallback(async () => {
     setLoading(true);
     try {
-      const skills = search ? search.split(',') : [];
+      const skills = searchParams.map(((skill) => skill.skill_name));
       const data = await fetchFilteredJobSeekerCardView(skills, 0);
       setJobSeekers(data);
     } catch (error) {
@@ -34,7 +33,7 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }, [search]);
+  }, [searchParams]);
 
   useEffect(() => {
     (async () => {
@@ -43,11 +42,24 @@ export default function Page() {
   }, [loadJobSeekers]);
 
     return (
-        <main className="space-y-8 p-6 tablet:w-full tablet:p-5 laptop:px-[200px] py-16">
-            <h1 className="text-2xl">{searchParams.get('search') || ''} Search Results</h1>
-              <SearchBar />
+        <main className="m-6 space-y-8 p-6 tablet:w-full tablet:p-5 laptop:px-[200px] py-16">
+            <h1 className="text-2xl font-bold">{searchParams.map(((skill) => skill.skill_name)).toString() || ''} Search Results</h1>
+              {/* Search Bar */}
+              <TagsWithAutocomplete
+                apiSearchRoute="/api/skills/search/"
+                fieldLabel="Select up to 5 skills to search"
+                id="employer-listview-skills"
+                maxTags={5}
+                searchingText="Searching..."
+                noResultsText="No skills found..."
+                onChange={function(ev, val){ setSearchParams(val) }}
+                searchPlaceholder="Skill (ex: Java)"
+                getOptionLabel={(option:SkillDTO) => option.skill_name}
+              />
+
+              {/* Loading or display results */}
               {loading?<div className='w-full h-full text-center text-3xl'>Loading...</div>:        
-              <div className="m-6 space-y-2">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
+              <div className="space-y-4">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
               <JobSeekerCardView
                 key={jobSeeker.jobseeker_id}
                 name={jobSeeker.users.first_name + ' ' + jobSeeker.users.last_name}

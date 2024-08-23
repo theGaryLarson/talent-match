@@ -104,6 +104,20 @@ export default function TagsWithAutocomplete<ValueType>({
       )}
       getOptionLabel={getOptionLabel}
       value={selectedTags}
+      sx={{
+        "& .MuiChip-filled": {
+          backgroundColor: "rgb(8 145 178)",
+          color: "#FFFFFF",
+          fontFamily: '__Inter_36bd41',
+          fontStyle: "normal",
+          fontSize: "1rem",
+          letterSpacing: "-0.03em",
+          height: "auto",
+          '&:hover': {
+            backgroundColor: "rgb(14 116 144)",
+          },
+        },
+      }}
     />
   );
 }
