@@ -76,7 +76,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <div className="container">
                   <Button
                       pill
-                      className="custom-outline-btn inline-block m-2"
+                      className={`custom-outline-btn inline-block m-2 ${
+                          (employmentType !== 'Full-time')? ''
+                            : 'selected'
+                        }`}
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Full-time')} }
                   >
@@ -84,7 +87,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   </Button>
                   <Button
                       pill
-                      className="custom-outline-btn inline-block m-2"
+                      className={`custom-outline-btn inline-block m-2 ${
+                          (employmentType !== 'Part-time')? ''
+                            : 'selected'
+                        }`}
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Part-time')} }
                   >
@@ -92,7 +98,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   </Button>
                   <Button
                       pill
-                      className="custom-outline-btn inline-block m-2"
+                      className={`custom-outline-btn inline-block m-2 ${
+                          (employmentType !== 'Internship')? ''
+                            : 'selected'
+                        }`}
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
                   >
@@ -100,7 +109,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   </Button>
                   <Button
                       pill
-                      className="custom-outline-btn inline-block m-2"
+                      className={`custom-outline-btn inline-block m-2 ${
+                          (employmentType !== 'On-campus')? ''
+                            : 'selected'
+                        }`}
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('On-campus')} }
                   >
