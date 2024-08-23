@@ -105,18 +105,21 @@ export default function TagsWithAutocomplete<ValueType>({
       getOptionLabel={getOptionLabel}
       value={selectedTags}
       sx={{
+        // Try my best to override Mui style defaults to make the skills match our style
         "& .MuiChip-filled": {
           backgroundColor: "rgb(8 145 178)",
           color: "#FFFFFF",
-          fontFamily: '__Inter_36bd41',
+          fontFamily: '__Inter_36bd41', // What are the chances this works forever? 😅
           fontStyle: "normal",
           fontSize: "1rem",
-          letterSpacing: "-0.03em",
+          letterSpacing: "0em",
           height: "auto",
           '&:hover': {
             backgroundColor: "rgb(14 116 144)",
           },
         },
+        // I can't for the life of me find a way to override the X to be white
+        // MuiButton hover keeps getting applied last...
       }}
     />
   );
