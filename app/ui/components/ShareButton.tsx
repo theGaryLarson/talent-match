@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Popover from '@mui/material/Popover';
@@ -17,9 +19,12 @@ export default function ShareMenu({ href }: { href: string }) {
         setAnchorEl(null);
     };
 
-    var url = window.location.protocol + "//" + window.location.hostname;
-    if (window.location.port != "") url += ":" + window.location.port;
-    url += href;
+    var url = "";
+    if (typeof window !== "undefined") {
+        url = window.location.protocol + "//" + window.location.hostname;
+        if (window.location.port != "") url += ":" + window.location.port;
+        url += href;
+    }
 
     function copyLink() {
         navigator.clipboard.writeText(url);
