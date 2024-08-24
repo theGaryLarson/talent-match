@@ -141,22 +141,21 @@ export default function CreateJobseekerProfileEducationPage() {
 
         const educations: EducationInfoDTO[] = data.educations.map((ed: EducationData) => ({
             jobseekerEdId: ed.uid,
-            eduProviderId: ed.edInstitutionId || '',
+            eduProviderId: ed.edProviderId || '',
             edProgram: ed.edProgram,
-            edProviderName: ed.institutionName || '',
+            edProviderName: ed.edProviderName || '',
             isEnrolled: ed.isEnrolled,
             startDate: ed.startDate,
             gradDate: ed.gradDate,
             degreeType: ed.degreeType || undefined,
-            collegeProgram: ed.collegeProgram || null,
-            // isTechnicalDegree: ed.isTechnicalDegree || false, // TODO: Add isTechnicalDegree to Educations.tsx so we can filter by completed Technical Degrees
-            major: ed.major || null,
-            minor: ed.minor || null,
+            collegeProgram: ed.institutionProgram || null, // TODO rename: Schema to just program
+            /*major: ed.major || null,*/ // fixme: replaced with program
+            /*minor: ed.minor || null,*/ // fixme: replaced with program
             gpa: ed.gpa || null,
-            gradeLevel: ed.schoolGradeLevel || null,
-            preALevel: ed.preALevel || null,
+            /*gradeLevel: ed.schoolGradeLevel || null,*/ // fixme: remove from schema
             edSystem: ed.edSystem || null,
             description: ed.description || null,
+            isTechnicalDegree: ed.isTechDegree || false,
         }));
 
         const certifications: CertDTO[] = data.licenses.map((cert: LicenseData) => ({
