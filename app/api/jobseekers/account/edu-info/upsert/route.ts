@@ -12,7 +12,7 @@ import {
     EduProgramType,
     EducationInfoDTO,
     JsEducationDTO,
-    ProjectExpDTO, CollegeDegreeType
+    ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
                 const existingEducation = await prisma.jobseekers_education.findFirst({
                     where: {
                         jobseekerId: jobseekerId,
-                        edProviderId: school.eduProviderId,
+                        eduProviderId: school.eduProviderId,
                         startDate: {
                             equals: toMidnightUTC(school.startDate)
                         },
@@ -319,14 +319,15 @@ export async function POST(request: Request) {
             // Map the school data to DTO
             const mappedEdHistory: EducationInfoDTO[] = upsertedSchools.map((jsEdu) => ({
                 jobseekerEdId: jsEdu.id,
-                eduProviderId: jsEdu.edProviderId,
                 edProgram: mapToEnum(jsEdu.edProgram, EduProgramType),
+                eduProviderId: jsEdu.eduProviderId,
                 edSystem: jsEdu.edSystem,
                 isEnrolled: jsEdu.isEnrolled,
                 startDate: jsEdu.startDate.toISOString(),
                 gradDate: jsEdu.gradDate.toISOString(),
                 degreeType: mapToEnum(jsEdu.degreeType ?? "None", CollegeDegreeType) ??
                             mapToEnum(jsEdu.degreeType ?? "None", HighSchoolDegreeType),
+                eduProviderProgramId: jsEdu.edProgram,
                 major: jsEdu?.major,
                 minor: jsEdu?.minor,
                 description: jsEdu.description
