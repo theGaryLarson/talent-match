@@ -120,14 +120,14 @@ export enum PreAEduSystem {
 export type EducationInfoDTO = {
     jobseekerEdId: string,
     edProgram?: EduProgramType,
-    edProviderId?: string | null, // use name lookup to find ID.
+    eduProviderId?: string, // use name lookup to find ID.
     edProviderName: string,
     isEnrolled: boolean,
     startDate: string,
     gradDate: string,
     degreeType?: CollegeDegreeType | HighSchoolDegreeType | null,
-    edProviderProgramId?: string | null,
-    edProviderProgramName?: string | null,
+    eduProviderProgramId?: string | null,
+    eduProviderProgramName?: string | null,
     major?: string | null, // program for other optional EdProgram
     minor?: string | null,
     gpa?: GradePointAverage | null,
