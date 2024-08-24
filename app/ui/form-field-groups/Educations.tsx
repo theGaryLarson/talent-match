@@ -16,6 +16,8 @@ import {edu_providers, educators, provider_programs} from '@prisma/client';
 import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
 import {EducationProviderDTO} from '@/data/dtos/EducationProviderDTO';
 import {GeneralProgramDTO} from '@/data/dtos/GeneralProgramDTO';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 import {v4 as uuidv4} from 'uuid';
 
 const classNamePrefix = "profile-creation-education-group-";
@@ -45,8 +47,8 @@ export interface EducationData {
     [classProgramType]: EduProgramType,
     [classInstitutionName]: string,
     [classCurrent]: boolean,
-    [classStartDate]: string,
-    [classEndDate]: string,
+    [classStartDate]: Dayjs | null,
+    [classEndDate]: Dayjs | null,
     // [classGradeLevel]: string,
     [classInstitution]?: EducationProviderDTO | null,
     [classInstitutionId]?: string | null,
@@ -70,8 +72,8 @@ export function defaultEducationData() {
         [classInstitutionId]: null,
         [classInstitutionName]: "",
         [classCurrent]: false,
-        [classStartDate]: "",
-        [classEndDate]: "",
+        [classStartDate]: null,
+        [classEndDate]: null,
         [classDegreeType]: null,
         // [classGradeLevel]: null,
         // [classPreALevel]: null,
@@ -225,24 +227,18 @@ export default memo(function Educations({
                                 </SelectOptionsWithLabel>
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-high-school-starting-date"
-                                    value={education[classStartDate]}
-                                    onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                                    required
-                                >
-                                    Starting date *
-                                </InputTextWithLabel>
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-high-school-completion-date"
-                                    value={education[classEndDate]}
-                                    onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                                    required
-                                >
-                                    Completion date *
-                                </InputTextWithLabel>
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                />
                             </div>
                             <Label>
                                 <Checkbox
@@ -310,24 +306,18 @@ export default memo(function Educations({
                                 </SelectOptionsWithLabel>
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-college-starting-date"
-                                    value={education[classStartDate]}
-                                    onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                                    required
-                                >
-                                    Starting date *
-                                </InputTextWithLabel>
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-college-completion-date"
-                                    value={education[classEndDate]}
-                                    onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                                    required
-                                >
-                                    Completion date *
-                                </InputTextWithLabel>
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                />
                             </div>
                             <Label>
                                 <Checkbox
@@ -371,24 +361,18 @@ export default memo(function Educations({
                                 />
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-training-program-starting-date"
-                                    value={education[classStartDate]}
-                                    onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                                    required
-                                >
-                                    Starting date *
-                                </InputTextWithLabel>
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-training-program-completion-date"
-                                    value={education[classEndDate]}
-                                    onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                                    required
-                                >
-                                    Completion date *
-                                </InputTextWithLabel>
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                />
                             </div>
                             <Label>
                                 <Checkbox
@@ -456,24 +440,18 @@ export default memo(function Educations({
                                 />
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-preapprenticeship-starting-date"
-                                    value={education[classStartDate]}
-                                    onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                                    required
-                                >
-                                    Starting date *
-                                </InputTextWithLabel>
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-preapprenticeship-completion-date"
-                                    value={education[classEndDate]}
-                                    onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                                    required
-                                >
-                                    Completion date *
-                                </InputTextWithLabel>
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                />
                             </div>
                             <Label>
                                 <Checkbox
@@ -517,24 +495,18 @@ export default memo(function Educations({
                                 />
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-other-starting-date"
-                                    value={education[classStartDate]}
-                                    onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                                    required
-                                >
-                                    Starting date *
-                                </InputTextWithLabel>
-                                <InputTextWithLabel
-                                    type="month"
-                                    id="profile-creation-education-other-completion-date"
-                                    value={education[classEndDate]}
-                                    onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                                    required
-                                >
-                                    Completion date *
-                                </InputTextWithLabel>
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                />
                             </div>
                             <Label>
                                 <Checkbox

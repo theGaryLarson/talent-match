@@ -2,9 +2,10 @@ import Avatar from './Avatar';
 import RoundedButton from './RoundedButton';
 import Skills from './Skills';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { BookmarkIcon, ShareIcon } from '@heroicons/react/24/outline';
+import { BookmarkIcon } from '@heroicons/react/24/outline';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import { JobSeekerCardViewDTO } from '@/data/dtos/JobSeekerCardViewDTO';
+import ShareButton from './ShareButton';
 
 export default function JobSeekerCardView({
   name,
@@ -29,7 +30,7 @@ export default function JobSeekerCardView({
   const skills: SkillDTO[] = skillsList.map((item: JobseekerSkillDTO) => item.skills);
 
   return (
-    <div className="relative w-fit rounded-lg border p-4 sm-tablet:p-6">
+    <div className="relative w-fit rounded-lg border border-2 border-cyan-600 p-4 sm-tablet:p-6">
 
       {/* picture and name */}
       <div className="flex-col items-start space-y-2">
@@ -75,10 +76,12 @@ export default function JobSeekerCardView({
       </div>
 
       {/* share and bookmark */}
-      <div className="absolute top-6 right-6 gap-4">
+      <div className="absolute top-5 right-5">
         <div className="flex flex-row space-x-6 text-cyan-600">
-          <ShareIcon className="h-10 w-10" />
-          <BookmarkIcon className="h-10 w-10" />
+          <ShareButton href={'/services/jobseekers/' + id} />
+          <div className="p-2 rounded-full hover:bg-slate-200">
+            <BookmarkIcon className="h-10 w-10 stroke-2 REPLACE-BEFORE-RELEASE" />
+          </div>
         </div>
       </div>
 
