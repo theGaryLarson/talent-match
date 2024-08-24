@@ -31,7 +31,7 @@ model User {
   educators        educators[]
   employers        employers[]
   jobseekers       jobseekers[]
-  // training_providers training_providers[]
+  eduProviders     edu_providers[]
   volunteers       volunteers[]
   Account          Account[]
   Session          Session[]
@@ -243,6 +243,8 @@ model edu_providers {
   educators           educators[]
   jobseeker_education jobseekers_education[]
   training_programs   provider_programs[]
+  User                User?                  @relation(fields: [userId], references: [id])
+  userId              String?                @db.UniqueIdentifier
 }
 
 model educators {
@@ -390,24 +392,24 @@ model jobseekers_private_data {
 }
 
 model jobseekers_education {
-  id           String        @id @default(dbgenerated("newid()")) @map("jobseeker_ed_id") @db.UniqueIdentifier
-  jobseekerId  String        @map("jobseeker_id") @db.UniqueIdentifier
-  edProviderId String        @map("edu_provider_id") @db.UniqueIdentifier
-  edProgram    String        @map("ed_program") @db.NVarChar(45) // high school, college, boot camp, pre-apprenticeship etc.
-  edSystem     String?       @map("ed_system") @db.NVarChar(255) // entry for pre-apprenticeship ed_program
-  isTechDegree Boolean?      @default(false) @map("is_tech_degree") @db.Bit
-  isEnrolled   Boolean       @map("is_enrolled") @db.Bit
-  startDate    DateTime      @map("start_date") @db.Date
-  gradDate     DateTime      @map("graduation_date") @db.Date
-  degreeType   String?       @map("degree_type") @db.NVarChar(45) // Cert, AAS, BAS etc.
-  major        String?       @db.NVarChar(45) // name of college program
-  minor        String?       @db.NVarChar(45)
-  description  String?       @db.NText
-  jobseekers   jobseekers    @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_education_jobseeker1")
-  eduProviders edu_providers @relation(fields: [edProviderId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_edu_institution1")
+  id            String        @id @default(dbgenerated("newid()")) @map("jobseeker_ed_id") @db.UniqueIdentifier
+  jobseekerId   String        @map("jobseeker_id") @db.UniqueIdentifier
+  eduProviderId String        @map("edu_provider_id") @db.UniqueIdentifier
+  edProgram     String        @map("ed_program") @db.NVarChar(45) // high school, college, boot camp, pre-apprenticeship etc.
+  edSystem      String?       @map("ed_system") @db.NVarChar(255) // entry for pre-apprenticeship ed_program
+  isTechDegree  Boolean?      @default(false) @map("is_tech_degree") @db.Bit
+  isEnrolled    Boolean       @map("is_enrolled") @db.Bit
+  startDate     DateTime      @map("start_date") @db.Date
+  gradDate      DateTime      @map("graduation_date") @db.Date
+  degreeType    String?       @map("degree_type") @db.NVarChar(45) // Cert, AAS, BAS etc.
+  major         String?       @db.NVarChar(45) // name of college program
+  minor         String?       @db.NVarChar(45)
+  description   String?       @db.NText
+  jobseekers    jobseekers    @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_education_jobseeker1")
+  eduProviders  edu_providers @relation(fields: [eduProviderId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_edu_institution1")
 
   @@index([jobseekerId], map: "fk_jobseeker_education_jobseeker1_idx")
-  @@index([edProviderId], map: "fk_jobseeker_education_edu_institution1_idx")
+  @@index([eduProviderId], map: "fk_jobseeker_education_edu_institution1_idx")
 }
 
 model jobseekers_skill_gap_data {
