@@ -123,8 +123,8 @@ model certificates {
   issuingOrg    String     @map("issuing_org") @db.VarChar(255)
   credentialId  String?    @map("credential_id") @db.VarChar(255)
   credentialUrl String?    @map("credential_url") @db.VarChar(255)
-  issueDate     DateTime   @map("issue_date") @db.DateTime
-  expiryDate    DateTime   @map("expiration_date") @db.DateTime
+  issueDate     DateTime?  @map("issue_date") @db.DateTime
+  expiryDate    DateTime?  @map("expiration_date") @db.DateTime
   description   String?    @db.NText
   jobseekers    jobseekers @relation(fields: [jobSeekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_certificates_jobseeker1")
 
@@ -402,7 +402,7 @@ model jobseekers_education {
   startDate     DateTime      @map("start_date") @db.Date
   gradDate      DateTime      @map("graduation_date") @db.Date
   degreeType    String?       @map("degree_type") @db.NVarChar(45) // Cert, AAS, BAS etc.
-  major         String?       @db.NVarChar(45) // name of college program
+  program       String?       @map("major") @db.NVarChar(45) // name of college program
   minor         String?       @db.NVarChar(45)
   description   String?       @db.NText
   jobseekers    jobseekers    @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_education_jobseeker1")
