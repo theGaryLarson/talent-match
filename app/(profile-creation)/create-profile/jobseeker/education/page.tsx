@@ -175,6 +175,8 @@ export default function CreateJobseekerProfileEducationPage() {
 
             const data = await res.json();
             setResponse(data);
+
+            router.push("/create-profile/jobseeker/work-experience");
         } catch (err: any) {
             setError(err.message);
         }
