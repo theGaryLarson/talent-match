@@ -41,7 +41,7 @@ export default function CreateJobseekerProfileEducationPage() {
     });
     const router = useRouter();
     const [response, setResponse] = useState(null);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
 
     function addNewLicense() {
@@ -168,7 +168,9 @@ export default function CreateJobseekerProfileEducationPage() {
             });
 
             if (!res.ok) {
-                throw new Error('Network response was not ok');
+                const errorMessage = await res.text();  // Get the error message from the response
+                setError(`Failed to save data:\n${errorMessage}`);
+                return;  // Exit the function if the response is not ok
             }
 
             const data = await res.json();
