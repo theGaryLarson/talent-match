@@ -108,6 +108,7 @@ const subcategoriesData = [
     {skill_category: 'Wireless Technologies'},
 ]; // Lightcast IT subcategories data
 
+// replaced with real data from Dynamics (programs table)
 const techEdMajors = [
     {name: "None", program_id: uuidv4()},
     {name: "Computer Science", program_id: uuidv4()},
@@ -718,7 +719,7 @@ const programs = [
     "AOS - Computer Applications Software Support",
     "Application Development",
     "Associate in Computer Science DTA/MRP",
-    "Bachelor of Applied Science - Cyber Security & Forensics",
+    "Bachelor of Applied Science - Cybersecurity & Forensics",
     "Bachelor of Applied Science - Cybersecurity",
     "Bachelor of Applied Science - Data Analytics",
     "Bachelor of Applied Science - Data Management and Analysis",
@@ -731,7 +732,6 @@ const programs = [
     "Bachelor of Applied Science - Information Technology: Networking",
     "Bachelor of Applied Science - Application Development",
     "Bachelor of Applied Science - Computer Network Engineering",
-    "Bachelor of Applied Science - Cyber Security",
     "Bachelor of Applied Science - Information Systems",
     "Bachelor of Applied Science - Information Systems & Technology",
     "Bachelor of Applied Science - Information Technology: Cybersecurity and Networking",
@@ -754,7 +754,7 @@ const programs = [
     "Computing and Software Development",
     "Computer Support",
     "Cyber Defense and Digital Forensics",
-    "Cyber Security",
+    "Cybersecurity",
     "Cybersecurity & Computer Forensics",
     "Cybersecurity and Network Administration",
     "Cybersecurity and Networking",
@@ -806,7 +806,7 @@ const programs = [
     "Network Technologies",
     "Network Technology and Administration",
     "Networking",
-    "Networking and Cyber Security",
+    "Networking and Cybersecurity",
     "Online Marketing & Social Media Architect",
     "Programming",
     "Programming and IT Support",
@@ -1229,9 +1229,9 @@ async function seedJobSeekers() {
     console.log('Seeding jobseekers...')
     for (const jobSeeker of jobSeekers) {
         const isEnrolledEdProgram = Math.random() < 0.6; // 60% chance of being enrolled in ed program.
-        const edProgram = isEnrolledEdProgram ? faker.helpers.arrayElement(edPrograms) : 'None';
+        const edLevel = isEnrolledEdProgram ? faker.helpers.arrayElement(edPrograms) : 'None';
         let currentJobTitle;
-        if (isEnrolledEdProgram && edProgram !== 'None') {
+        if (isEnrolledEdProgram && edLevel !== 'None') {
             currentJobTitle = Math.random() < 0.4 ? faker.person.jobTitle() : 'Student';
         } else {
             currentJobTitle = faker.person.jobTitle();
@@ -1242,9 +1242,9 @@ async function seedJobSeekers() {
             targeted_pathway: faker.helpers.arrayElement(pathways).pathway_id,
             is_enrolled_ed_program: isEnrolledEdProgram,
             highest_level_of_study_completed: faker.helpers.arrayElement(['None', 'High School', 'Certification', 'Associate\'s Degree', 'Bachelor\'s Degree', 'Master\'s Degree', 'Doctoral Degree']),
-            current_grade_level: edProgram === 'High school' || edProgram === 'College' ? faker.helpers.arrayElement(['freshman', 'sophomore', 'junior', 'senior']) : undefined,
-            current_enrolled_ed_program: edProgram,
-            intern_hours_required: edProgram === 'College' || edProgram === 'Pre-apprenticeship' ? faker.number.int({
+            current_grade_level: edLevel === 'High school' || edLevel === 'College' ? faker.helpers.arrayElement(['freshman', 'sophomore', 'junior', 'senior']) : undefined,
+            current_enrolled_ed_program: edLevel,
+            intern_hours_required: edLevel === 'College' || edLevel === 'Pre-apprenticeship' ? faker.number.int({
                 min: 75,
                 max: 300
             }) : 0,
@@ -1325,12 +1325,17 @@ async function seedJobSeekersEducation() {
     const jobseekers = await prisma.jobseekers.findMany();
 
     const edProviders = await prisma.edu_providers.findMany({
+        where: {
+            edu_type: "College"
+        },
         select: {
             id: true,
+            edu_type: true,
         }
     });
 
     console.log('Seeding jobseeker education...');
+    const programs = await prisma.programs.findMany();
     for (const jobseeker of jobseekers) {
         const numEntries = jobseeker.is_enrolled_ed_program ? faker.number.int({
             min: 1,
@@ -1348,9 +1353,7 @@ async function seedJobSeekersEducation() {
                 startDate: startDate,
                 gradDate: endDate,
                 degreeType: faker.helpers.arrayElement(degreeTypes),
-                major: jobseeker.is_enrolled_ed_program ? faker.helpers.arrayElement(techEdMajors).name: null,
-                minor: null,
-                edProgram: 'College',
+                edLevel: 'College',
                 jobseekers: {
                     connect: {
                         jobseeker_id: jobseeker.jobseeker_id,
@@ -1360,6 +1363,11 @@ async function seedJobSeekersEducation() {
                     connect: {
                         id: edProviderId,
 
+                    }
+                },
+                programs: {
+                    connect: {
+                        id: faker.helpers.arrayElement(programs).id,
                     }
                 }
             };
@@ -1776,7 +1784,7 @@ async function main() {
     await seedSocialMediaPlatforms(); // use in production
     await seedUsers(500);
     await seedUserAddresses();
-    await seedPrograms();
+    await seedPrograms(); // use in production
     await seedEduProviders(); // use in production
     await SeedEduAddresses();
     await seedJobSeekers();

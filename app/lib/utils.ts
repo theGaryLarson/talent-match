@@ -57,13 +57,15 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
-export const mapToEnum = (value: string, enumType: any): any => {
+export const mapToEnum = (value: string | null, enumType: any): any => {
+  if (value == null) return null;
   const enumValues = Object.values(enumType);
   return enumValues.includes(value) ? value : null;
 }
 
-export const toMidnightUTC = (date: string): string => {
+export const normalizeDate = (date: string): string => {
   const d = new Date(date);
+  d.setUTCDate(1);
   d.setUTCHours(0, 0, 0, 0);
   return d.toISOString();
 };

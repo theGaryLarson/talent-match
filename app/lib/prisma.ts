@@ -1,9 +1,9 @@
 
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient, programs} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
-import { EducationProviderProgramDTO } from '@/data/dtos/EducationProviderProgramDTO';
+import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { v4 as uuidv4 } from 'uuid';
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
@@ -139,19 +139,19 @@ export async function searchEduProviders(searchTerm:string): Promise<EducationPr
     return [];
   }
   else {
-    const exactResults = (await prisma.edu_institutions.findMany({
+    const exactResults = (await prisma.edu_providers.findMany({
       where: {
         name:{
           equals: searchTerm
         }
       },
       take: 1
-    })).map(institution => ({
-      edu_institution_id: institution.edu_institution_id,
-      name: institution.name
+    })).map(eduProvider => ({
+      id: eduProvider.id,
+      name: eduProvider.name
     }));
 
-    const startsWithResults = (await prisma.edu_institutions.findMany({
+    const startsWithResults = (await prisma.edu_providers.findMany({
       where: {
         AND: [
           {
@@ -179,14 +179,14 @@ export async function searchEduProviders(searchTerm:string): Promise<EducationPr
         return -1;
       }
       return 0;
-    }).map(institution => ({
-      edu_institution_id: institution.edu_institution_id,
-      name: institution.name
+    }).map(eduProvider => ({
+      id: eduProvider.id,
+      name: eduProvider.name
     }));
 
     const containsResults =
       (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
-        (await prisma.edu_institutions.findMany({
+        (await prisma.edu_providers.findMany({
           where: {
             AND: [
               {
@@ -214,9 +214,9 @@ export async function searchEduProviders(searchTerm:string): Promise<EducationPr
             return -1;
           }
           return 0;
-        }).map(institution => ({
-          edu_institution_id: institution.edu_institution_id,
-          name: institution.name
+        }).map(eduProvider => ({
+          id: eduProvider.id,
+          name: eduProvider.name
         }))
       : []
     // Had to query them separately to guarantee Exact and StartsWith
@@ -226,148 +226,101 @@ export async function searchEduProviders(searchTerm:string): Promise<EducationPr
   }
 }
 
-export async function searchEduProviderHighSchoolPrograms(searchTerm:string): Promise<EducationProviderProgramDTO[]> {
-  return [
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Computer Support",
-    },
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Cyber Security",
-    },
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Software Developer",
-    },
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Data Analyst",
-    }
-  ];
+export async function searchEduProviderHighSchoolPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
+  return searchPrograms(searchTerm);
 }
 
-export async function searchEduProviderCollegePrograms(searchTerm:string): Promise<EducationProviderProgramDTO[]> {
-  return [
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Application Development",
-    },
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Computer Science",
-    },
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Cyber Security",
-    },
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Data Analyst",
-    },
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Software Design",
-    },
-  ];
+export async function searchEduProviderCollegePrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
+  return searchPrograms(searchTerm);
 }
 
-export async function searchEduProviderPreApprenticeshipPrograms(searchTerm:string): Promise<EducationProviderProgramDTO[]> {
-  return [
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "Software Development",
-    },
-    {
-      edu_provider_program_id: uuidv4(),
-      edu_provider_program_name: "IT Support",
-    },
-  ];
+export async function searchEduProviderPreApprenticeshipPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
+    return searchPrograms(searchTerm);
 }
 
-// export async function searchEduProviderPrograms(searchTerm:string): Promise<training_programs[]> {
-//   const MAX_RESULTS = 10;
-//   if (searchTerm.length === 0) {
-//     return [];
-//   }
-//   else {
-//     const exactResults = (await prisma.training_programs.findMany({
-//       where: {
-//         name:{
-//           equals: searchTerm
-//         }
-//       },
-//       take: 1
-//     }));
+export async function searchPrograms(searchTerm:string): Promise<programs[]> {
+  const MAX_RESULTS = 10;
+  if (searchTerm.length === 0) {
+    return [];
+  }
+  else {
+    const exactResults = (await prisma.programs.findMany({
+      where: {
+          title:{
+          equals: searchTerm
+        }
+      },
+      take: 1
+    }));
 
-//     const startsWithResults = (await prisma.training_programs.findMany({
-//       where: {
-//         AND: [
-//           {
-//             name:{
-//               startsWith: searchTerm
-//             }
-//           },
-//           {
-//             NOT: {
-//               name:{
-//                 equals: searchTerm
-//               }
-//             }
-//           }
-//         ]
-//       },
-//       take: MAX_RESULTS - exactResults.length
-//     })).sort((itemA : training_programs, itemB : training_programs) => {
-//       const itemAName = itemA.name ?? "ZZZZZ";
-//       const itemBName = itemB.name ?? "ZZZZZ";
-//       if (itemAName > itemBName) {
-//         return 1;
-//       }
-//       if (itemAName < itemBName) {
-//         return -1;
-//       }
-//       return 0;
-//     });
+    const startsWithResults = (await prisma.programs.findMany({
+      where: {
+        AND: [
+          {
+            title:{
+              startsWith: searchTerm
+            }
+          },
+          {
+            NOT: {
+                title:{
+                equals: searchTerm
+              }
+            }
+          }
+        ]
+      },
+      take: MAX_RESULTS - exactResults.length
+    })).sort((itemA : programs, itemB : programs) => {
+      const itemAName = itemA.title ?? "ZZZZZ";
+      const itemBName = itemB.title ?? "ZZZZZ";
+      if (itemAName > itemBName) {
+        return 1;
+      }
+      if (itemAName < itemBName) {
+        return -1;
+      }
+      return 0;
+    });
 
-//     const containsResults =
-//       (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
-//         (await prisma.training_programs.findMany({
-//           where: {
-//             AND: [
-//               {
-//                 name: {
-//                   contains: searchTerm
-//                 }
-//               },
-//               {
-//                 NOT: {
-//                   name: {
-//                     startsWith: searchTerm
-//                   }
-//                 }
-//               }
-//             ]
-//           },
-//           take: MAX_RESULTS - exactResults.length - startsWithResults.length
-//         })).sort((itemA : training_programs, itemB : training_programs) => {
-//           const itemAName = itemA.name ?? "ZZZZZ";
-//           const itemBName = itemB.name ?? "ZZZZZ";
-//           if (itemAName > itemBName) {
-//             return 1;
-//           }
-//           if (itemAName < itemBName) {
-//             return -1;
-//           }
-//           return 0;
-//         })
-//       : []
-//     // Had to query them separately to guarantee Exact and StartsWith
-//     //   matches were found since I'm limiting the results, and OR
-//     //   clauses do not guarantee results in the order of the filters
-//     return [...exactResults, ...startsWithResults, ...containsResults];
-//   }
-// }
+    const containsResults =
+      (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
+        (await prisma.programs.findMany({
+          where: {
+            AND: [
+              {
+                  title: {
+                  contains: searchTerm
+                }
+              },
+              {
+                NOT: {
+                    title: {
+                    startsWith: searchTerm
+                  }
+                }
+              }
+            ]
+          },
+          take: MAX_RESULTS - exactResults.length - startsWithResults.length
+        })).sort((itemA : programs, itemB : programs) => {
+          const itemAName = itemA.title ?? "ZZZZZ";
+          const itemBName = itemB.title ?? "ZZZZZ";
+          if (itemAName > itemBName) {
+            return 1;
+          }
+          if (itemAName < itemBName) {
+            return -1;
+          }
+          return 0;
+        })
+      : []
+    // Had to query them separately to guarantee Exact and StartsWith
+    //   matches were found since I'm limiting the results, and OR
+    //   clauses do not guarantee results in the order of the filters
+    return [...exactResults, ...startsWithResults, ...containsResults];
+  }
+}
 
 export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
@@ -390,9 +343,6 @@ export const jobSeekerCardViewSelect = {
     },
     jobseeker_education: {
         select: {
-            where: {
-              isEnrolled: true,
-            },
             eduProviders: {
                 select: {
                     id: true,
@@ -400,12 +350,17 @@ export const jobSeekerCardViewSelect = {
                 },
             },
             id: true,
-            edProgram: true,
+            edLevel: true,
             isEnrolled: true,
             startDate: true,
             gradDate: true,
             degreeType: true,
-            major: true,
+            programs: {
+                select: {
+                    id: true,
+                    title: true,
+                }
+            }
         },
     },
     jobseeker_has_skills: {
@@ -462,13 +417,18 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                         }
                     },
                     id: true,
-                    edProgram: true,
-                    edSystem: true,
+                    edLevel: true,
+                    preAppEdSystem: true,
                     isEnrolled: true,
                     startDate: true,
                     gradDate: true,
                     degreeType: true,
-                    major: true,
+                    programs: {
+                        select: {
+                            id: true,
+                            title: true,
+                        }
+                    },
                     minor: true,
                     description: true,
                 }

@@ -51,7 +51,7 @@ export default function Page() {
               <JobSeekerCardView
                 key={jobSeeker.jobseeker_id}
                 name={jobSeeker.users.first_name + ' ' + jobSeeker.users.last_name}
-                school={jobSeeker?.jobseeker_education?.eduInstitutions?.name ?? ''}
+                school={jobSeeker?.jobseeker_education?.eduProviders?.name ?? ''}
                 pathway={jobSeeker?.pathways?.pathway_title ?? ''}
                 skillsList={jobSeeker?.jobseeker_has_skills}
                 pfpPicSrc={jobSeeker?.users?.photo_url}

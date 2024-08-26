@@ -3,9 +3,9 @@ import {PrismaClient} from '@prisma/client';
 import {
     CertDTO,
     HighestDegreeType,
-    EduProgramType,
-    EducationInfoDTO,
-    JsEducationDTO, ProjectExpDTO, CollegeDegreeType
+    EducationLevel,
+    JsEducationInfoDTO,
+    JsEducationPageDTO, ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem, GradePointAverage
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {mapToEnum} from "@/app/lib/utils";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
@@ -32,20 +32,19 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                 jobseeker_education: {
                     select: {
                         id: true,
-                        edProviderId: true,
+                        eduProviderId: true,
                         eduProviders: {
                             select: {
                                 name: true,
                             }
                         },
-                        edProgram: true,
-                        edSystem: true,
+                        edLevel: true,
+                        preAppEdSystem: true,
                         isEnrolled: true,
                         startDate: true,
                         gradDate: true,
                         degreeType: true,
-                        major: true,
-                        minor: true,
+                        gpa:true,
                         description: true,
                     }
                 },
@@ -90,25 +89,24 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                 },
             },
         });
-
+        console.log(JSON.stringify(jobseeker, null, 2));
         if (!jobseeker) {
             return NextResponse.json({error: 'Jobseeker not found'}, {status: 404});
         }
 
         // Map the jobseeker data to DTOs
-        const edHistory: EducationInfoDTO[] = jobseeker.jobseeker_education.map((edu) => ({
-            jobseekerEdId: edu.id,
-            eduProviderId: edu.edProviderId,
+        const edHistory: JsEducationInfoDTO[] = jobseeker.jobseeker_education.map((edu) => ({
+            id: edu.id,
+            edLevel: mapToEnum(edu.edLevel, EducationLevel),
+            edProviderId: edu.eduProviderId,
             edProviderName: edu.eduProviders.name ?? undefined,
-            edProgram: mapToEnum(edu.edProgram, EduProgramType),
-            edSystem: edu.edSystem,
+            preAppEdSystem: mapToEnum(edu?.preAppEdSystem, PreAEduSystem),
             isEnrolled: edu.isEnrolled,
             startDate: edu.startDate.toISOString(),
             gradDate: edu.gradDate.toISOString(),
-            degreeType: mapToEnum(edu.degreeType ?? "None", CollegeDegreeType) ??
-                        mapToEnum(edu.degreeType ?? "None", HighSchoolDegreeType),
-            major: edu?.major,
-            minor: edu?.minor,
+            degreeType: mapToEnum(edu.degreeType, CollegeDegreeType) ||
+                        mapToEnum(edu.degreeType, HighSchoolDegreeType),
+            gpa: mapToEnum(edu.gpa, GradePointAverage),
             description: edu.description
 
         }));
@@ -120,8 +118,8 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             issuingOrg: cert.issuingOrg,
             credentialId: cert.credentialId,
             credentialUrl: cert.credentialUrl,
-            issueDate: cert.issueDate.toISOString(),
-            expiryDate: cert.issueDate.toISOString(),
+            issueDate: cert?.issueDate?.toISOString(),
+            expiryDate: cert?.issueDate?.toISOString(),
             description: cert.description,
         }));
 
@@ -142,7 +140,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             })),
         }));
 
-        const result: JsEducationDTO = {
+        const result: JsEducationPageDTO = {
             userId: jobseeker.user_id,
             highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed ?? "None", HighestDegreeType),
             educations: edHistory,

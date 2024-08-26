@@ -20,8 +20,8 @@ export interface LicenseData {
   [classIssuingOrg]: string,
   [classCredentialId]: string,
   [classCredentialUrl]: string,
-  [classIssueDate]: Dayjs | null,
-  [classExpirationDate]: Dayjs | null,
+  [classIssueDate]: Dayjs | null, // fixme: why does this have to have the option of null. This allows null entries in certificates table and it doesn't make sense to allow null values.
+  [classExpirationDate]: Dayjs | null, // fixme: why do this have to have the option of null?
 }
 
 export function defaultLicenseData() {
