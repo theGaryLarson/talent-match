@@ -19,32 +19,38 @@ async function fetchFilteredJobSeekerCardView(skills: string[] = [], yearsWorkEx
   }
   return response.json();
 }
+
 export default function Page() {
   const [jobseekers, setJobSeekers] = useState<JobSeekerCardViewDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [skillsList, setSkillsList] = useState<string[]>();
 
-  const pathname = usePathname()
-  const router = useRouter()
+  const pathname = usePathname();
+  const router = useRouter();
 
   const queryParams = useSearchParams();
   const setQueryParam = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(queryParams.toString());
-      params.set(name, value);
-      router.push(pathname + '?' + params.toString());
+      if (params.get(name) != value) {
+        params.set(name, value);
+        router.push(pathname + '?' + params.toString());
+      }
       return;
     },
     [queryParams]);
 
+  function getSkillsParam() {
+    const initSkills: string | null = queryParams.get('skills');
+    var skills: string[] = [];
+    if (initSkills != null && initSkills.length > 0) skills = decodeURIComponent(initSkills).split(",");
+    return skills;
+  }
+
   const execQuery = useCallback(async () => {
     setLoading(true);
     try {
-      // Assemble our skills array from URL params
-      const skillsParam: string | null = queryParams.get('skills');
-      var skills: string[] = [];
-      if (skillsParam != null) skills = decodeURIComponent(skillsParam).split(",");
-
-      const data = await fetchFilteredJobSeekerCardView(skills, 0);
+      const data = await fetchFilteredJobSeekerCardView(skillsList, 0);
       setJobSeekers(data);
     } catch (error) {
       console.error('Error fetching job seekers:', error);
@@ -52,14 +58,15 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [skillsList]);
 
-  // Load the query once on page load
-  useEffect(() => {
-    (async () => {
-      await execQuery();
-    })();
-  }, []);
+  useEffect(() => { // execute a new query when skills change
+    if (skillsList == undefined) setSkillsList(getSkillsParam()); // on initial load, get the skills param from URL
+    else {
+      console.log("skill changed, new query: " + skillsList)
+      execQuery();
+    }
+  }, [skillsList]);
 
   return (
     <main className="m-6 space-y-8 p-6 laptop:px-[200px] py-16">
@@ -73,18 +80,14 @@ export default function Page() {
         searchingText="Searching..."
         noResultsText="No skills found..."
         onChange={function (ev, val) {
-          const newSkills = encodeURIComponent(val.map(((skill) => skill.skill_name)).toString() || '');
-          if (queryParams.get('skills') == newSkills ){
-            // do nothing, synthetic change to init tags
-          }
-          else {
-            setQueryParam('skills', newSkills);
-            execQuery();
-          }
+          const newVal = (val as SkillDTO[]).map((skill) => skill.skill_name);
+          setQueryParam('skills', encodeURIComponent(newVal.toString()));
+          setSkillsList(newVal);
         }}
         searchPlaceholder="Skill (ex: Java)"
-        getOptionLabel={(option: SkillDTO) => option.skill_name}
-        initialTags={decodeURIComponent(queryParams.get('skills')?? '').split(",")}
+        getTagLabel={(option: SkillDTO) => option.skill_name}
+        getTagLink={(option: SkillDTO) => option.skill_info_url}
+        initialTags={getSkillsParam()}
       />
 
       <h1 className="text-2xl font-bold">Search results:</h1>
