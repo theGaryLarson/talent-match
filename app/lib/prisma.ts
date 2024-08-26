@@ -343,9 +343,6 @@ export const jobSeekerCardViewSelect = {
     },
     jobseeker_education: {
         select: {
-            where: {
-              isEnrolled: true,
-            },
             eduProviders: {
                 select: {
                     id: true,
@@ -353,12 +350,17 @@ export const jobSeekerCardViewSelect = {
                 },
             },
             id: true,
-            edProgram: true,
+            edLevel: true,
             isEnrolled: true,
             startDate: true,
             gradDate: true,
             degreeType: true,
-            major: true,
+            programs: {
+                select: {
+                    id: true,
+                    title: true,
+                }
+            }
         },
     },
     jobseeker_has_skills: {
@@ -415,13 +417,18 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                         }
                     },
                     id: true,
-                    edProgram: true,
-                    edSystem: true,
+                    edLevel: true,
+                    preAppEdSystem: true,
                     isEnrolled: true,
                     startDate: true,
                     gradDate: true,
                     degreeType: true,
-                    major: true,
+                    programs: {
+                        select: {
+                            id: true,
+                            title: true,
+                        }
+                    },
                     minor: true,
                     description: true,
                 }
