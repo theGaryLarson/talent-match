@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useState} from 'react';
+import React, {memo, useCallback} from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import {Button, Label} from "flowbite-react";
@@ -7,58 +7,58 @@ import {MdClose} from "react-icons/md";
 import {
     CollegeDegreeType,
     HighSchoolDegreeType,
-    EduProgramType,
+    EducationLevel,
     PreAEduSystem,
-    EducationInfoDTO,
+    JsEducationInfoDTO,
     GradePointAverage
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {edu_providers, educators, provider_programs} from '@prisma/client';
 import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
 import {EducationProviderDTO} from '@/data/dtos/EducationProviderDTO';
 import {GeneralProgramDTO} from '@/data/dtos/GeneralProgramDTO';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import dayjs, {Dayjs} from 'dayjs';
 import {v4 as uuidv4} from 'uuid';
 
 const classNamePrefix = "profile-creation-education-group-";
 
-const classProgramType = "edProgram";
-const classInstitution = "edInstitution"; // fixme edProviderObject
-const classInstitutionId = "edProviderId";
-const classInstitutionName = "edProviderName";
-const classCurrent = "isEnrolled";
+const classEdLevel = "edLevel";
+const classEdProviderObject = "edProviderObject"; // fixme edProviderObject
+const classEdProviderId = "edProviderId";
+const classEdProviderName = "edProviderName";
+const classIsCurrent = "isEnrolled";
 const classStartDate = "startDate";
 const classEndDate = "gradDate";
 const classDegreeType = "degreeType";
 // const classGradeLevel = "schoolGradeLevel"; no longer needed as an input
-const classPreALevel = "preALevel";
-const classInstitutionProgram = "institutionProgram";  // fixme: rename to programId
-const classInstitutionProgramName = "institutionProgramName";
-const classInstitutionProgramId = "institutionProgramId";
-const classMajor = "major";
-const classMinor = "minor";
-const classEdSystem = "edSystem";
+// const classPreALevel = "preALevel";
+const classProgramObject = "programObject";  // fixme: rename to programId
+const classProgramName = "programName";
+const classProgramId = "programId";
+// const classMajor = "major";
+// const classMinor = "minor";
+const classPreAppEdSystem = "preAppEdSystem";
 const classDescription = "description";
 const classGPA = "gpa";
 const classIsTechDegree = "isTechDegree";
 
 export interface EducationData {
     "uid": string,
-    [classProgramType]: EduProgramType,
-    [classInstitutionName]: string,
-    [classCurrent]: boolean,
+    [classEdLevel]: EducationLevel,
+    [classEdProviderName]: string,
+    [classIsCurrent]: boolean,
     [classStartDate]: Dayjs | null,
     [classEndDate]: Dayjs | null,
     // [classGradeLevel]: string,
-    [classInstitution]?: EducationProviderDTO | null,
-    [classInstitutionId]?: string | null,
+    [classEdProviderObject]?: EducationProviderDTO | null,
+    [classEdProviderId]?: string | null,
     [classDegreeType]?: CollegeDegreeType | HighSchoolDegreeType | null,
-    [classInstitutionProgram]?: GeneralProgramDTO | null,
-    [classInstitutionProgramName]?: string | null,
-    [classInstitutionProgramId]?: string | null,
-    // [classMajor]?: string | null, //TODO:  replaced with college program
+    [classProgramObject]?: GeneralProgramDTO | null,
+    [classProgramName]?: string | null,
+    [classProgramId]?: string | null,
+    // [classMajor]?: string | null, //TODO:  replaced with program
     // [classMinor]?: string | null,
-    [classEdSystem]?: PreAEduSystem | null,
+    [classPreAppEdSystem]?: PreAEduSystem | null,
     [classDescription]?: string | null,
     [classGPA]?: GradePointAverage | null,
     [classIsTechDegree]?: boolean,
@@ -67,22 +67,22 @@ export interface EducationData {
 export function defaultEducationData() {
     return {
         "uid": uuidv4(),
-        [classProgramType]: EduProgramType.Unselected,
-        [classInstitution]: null,
-        [classInstitutionId]: null,
-        [classInstitutionName]: "",
-        [classCurrent]: false,
+        [classEdLevel]: EducationLevel.Unselected,
+        [classEdProviderObject]: null,
+        [classEdProviderId]: null,
+        [classEdProviderName]: "",
+        [classIsCurrent]: false,
         [classStartDate]: null,
         [classEndDate]: null,
         [classDegreeType]: null,
         // [classGradeLevel]: null,
         // [classPreALevel]: null,
-        [classInstitutionProgram]: null,
-        [classInstitutionProgramId]: null,
-        [classInstitutionProgramName]: null,
+        [classProgramObject]: null,
+        [classProgramId]: null,
+        [classProgramName]: null,
         // [classMajor]: "",
         // [classMinor]: "",
-        [classEdSystem]: null,
+        [classPreAppEdSystem]: null,
         [classDescription]: "",
         [classGPA]: null,
         [classIsTechDegree]: undefined,
@@ -104,21 +104,21 @@ export default memo(function Educations({
         const changedEducations: EducationData[] = [...data];
         const updatedEducation = changedEducations[index];
         updatedEducation[key] = value;
-        if (key === classInstitution) {
+        if (key === classEdProviderObject) {
             if (typeof value === "string") {
-                updatedEducation[classInstitutionName] = value;
-                updatedEducation[classInstitutionId] = uuidv4();
+                updatedEducation[classEdProviderName] = value;
+                updatedEducation[classEdProviderId] = uuidv4();
             } else if (value) {
-                updatedEducation[classInstitutionName] = value.name;
-                updatedEducation[classInstitutionId] = value.edu_institution_id;
+                updatedEducation[classEdProviderName] = value.name;
+                updatedEducation[classEdProviderId] = value.id;
             }
-        } else if (key === classInstitutionProgram) {
+        } else if (key === classProgramObject) {
             if (typeof value === "string") {
-                updatedEducation[classInstitutionProgramName] = value;
-                updatedEducation[classInstitutionProgramId] = uuidv4();
+                updatedEducation[classProgramName] = value;
+                updatedEducation[classProgramId] = uuidv4();
             } else if (value) {
-                updatedEducation[classInstitutionProgramName] = value.edu_provider_program_name;
-                updatedEducation[classInstitutionProgramId] = value.edu_provider_program_id;
+                updatedEducation[classProgramName] = value.title;
+                updatedEducation[classProgramId] = value.id;
             }
         }
         onUpdate('educations', changedEducations);
@@ -138,56 +138,56 @@ export default memo(function Educations({
                     <Label className="block">
                         <Radio
                             name="profile-creation-education-currently-enrolled"
-                            checked={education[classProgramType] === EduProgramType.HighSchool}
-                            onChange={(e) => handleChange(index, classProgramType, e.target.value)}
+                            checked={education[classEdLevel] === EducationLevel.HighSchool}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
                             required
-                            value={EduProgramType.HighSchool}
+                            value={EducationLevel.HighSchool}
                         />
                         High school
                     </Label>
                     <Label className="block">
                         <Radio
                             name="profile-creation-education-currently-enrolled"
-                            checked={education[classProgramType] === EduProgramType.College}
-                            onChange={(e) => handleChange(index, classProgramType, e.target.value)}
+                            checked={education[classEdLevel] === EducationLevel.College}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
                             required
-                            value={EduProgramType.College}
+                            value={EducationLevel.College}
                         />
                         College
                     </Label>
                     <Label className="block">
                         <Radio
                             name="profile-creation-education-currently-enrolled"
-                            checked={education[classProgramType] === EduProgramType.TrainingProgram}
-                            onChange={(e) => handleChange(index, classProgramType, e.target.value)}
+                            checked={education[classEdLevel] === EducationLevel.TrainingProgram}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
                             required
-                            value={EduProgramType.TrainingProgram}
+                            value={EducationLevel.TrainingProgram}
                         />
                         Training program / Bootcamp
                     </Label>
                     <Label className="block">
                         <Radio
                             name="profile-creation-education-currently-enrolled"
-                            checked={education[classProgramType] === EduProgramType.PreApprenticeship}
-                            onChange={(e) => handleChange(index, classProgramType, e.target.value)}
+                            checked={education[classEdLevel] === EducationLevel.PreApprenticeship}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
                             required
-                            value={EduProgramType.PreApprenticeship}
+                            value={EducationLevel.PreApprenticeship}
                         />
                         Pre-apprenticeship
                     </Label>
                     <Label className="block">
                         <Radio
                             name="profile-creation-education-currently-enrolled"
-                            checked={education[classProgramType] === EduProgramType.Other}
-                            onChange={(e) => handleChange(index, classProgramType, e.target.value)}
+                            checked={education[classEdLevel] === EducationLevel.Other}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
                             required
-                            value={EduProgramType.Other}
+                            value={EducationLevel.Other}
                         />
                         Other
                     </Label>
                 </div>
                 {
-                    (education[classProgramType] !== EduProgramType.HighSchool) ? "" :
+                    (education[classEdLevel] !== EducationLevel.HighSchool) ? "" :
                         <div id="profile-creation-education-high-school-fields">
                             <div className="profile-form-grid">
                                 <TextFieldWithAutocomplete
@@ -196,8 +196,8 @@ export default memo(function Educations({
                                     id="profile-creation-education-high-school-name"
                                     searchingText="Searching..."
                                     noResultsText="No education providers found..."
-                                    value={education[classInstitution] ?? ""}
-                                    onChange={(e, val) => handleChange(index, classInstitution, val)}
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
                                     searchPlaceholder="High school name"
                                     getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
                                 />
@@ -207,8 +207,8 @@ export default memo(function Educations({
                                     id="profile-creation-education-high-school-program"
                                     searchingText="Searching..."
                                     noResultsText="No education provider programs found..."
-                                    value={education[classInstitutionProgram] ?? ""}
-                                    onChange={(e, val) => handleChange(index, classInstitutionProgram, val)}
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
                                     searchPlaceholder="Program name"
                                     getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
                                 />
@@ -231,25 +231,27 @@ export default memo(function Educations({
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
                                 <DatePicker
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
                                 />
                             </div>
                             <Label>
                                 <Checkbox
-                                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                                    checked={education[classCurrent]}
-                                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
                                 />
                                 Current
                             </Label>
                             <div className="profile-form-grid">
+                                {/*// fixme: My thoughts are this could just be a number entry constrained between 1 and 4.
+                                  //  Also, the percentage thresholds for GPA vary from institution to institution.*/}
                                 <SelectOptionsWithLabel
                                     id="profile-creation-education-high-school-gpa"
                                     className="w-full"
@@ -266,7 +268,7 @@ export default memo(function Educations({
                         </div>
                 }
                 {
-                    (education[classProgramType] !== EduProgramType.College) ? "" :
+                    (education[classEdLevel] !== EducationLevel.College) ? "" :
                         <div id="profile-creation-education-college-fields">
                             <div className="profile-form-grid">
                                 <TextFieldWithAutocomplete
@@ -275,8 +277,8 @@ export default memo(function Educations({
                                     id="profile-creation-education-college-name"
                                     searchingText="Searching..."
                                     noResultsText="No education providers found..."
-                                    value={education[classInstitution] ?? ""}
-                                    onChange={(e, val) => handleChange(index, classInstitution, val)}
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
                                     searchPlaceholder="College name"
                                     getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
                                 />
@@ -286,8 +288,8 @@ export default memo(function Educations({
                                     id="profile-creation-education-college-program"
                                     searchingText="Searching..."
                                     noResultsText="No education provider programs found..."
-                                    value={education[classInstitutionProgram] ?? ""}
-                                    onChange={(e, val) => handleChange(index, classInstitutionProgram, val)}
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
                                     searchPlaceholder="Program name"
                                     getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
                                 />
@@ -310,21 +312,21 @@ export default memo(function Educations({
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
                                 <DatePicker
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
                                 />
                             </div>
                             <Label>
                                 <Checkbox
-                                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                                    checked={education[classCurrent]}
-                                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
                                 />
                                 Current
                             </Label>
@@ -345,7 +347,7 @@ export default memo(function Educations({
                         </div>
                 }
                 {
-                    (education[classProgramType] !== EduProgramType.TrainingProgram) ? "" :
+                    (education[classEdLevel] !== EducationLevel.TrainingProgram) ? "" :
                         <div id="profile-creation-education-training-program-fields">
                             <div className="profile-form-grid">
                                 <TextFieldWithAutocomplete
@@ -354,8 +356,8 @@ export default memo(function Educations({
                                     id="profile-creation-education-training-program-name"
                                     searchingText="Searching..."
                                     noResultsText="No education providers found..."
-                                    value={education[classInstitution] ?? ""}
-                                    onChange={(e, val) => handleChange(index, classInstitution, val)}
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
                                     searchPlaceholder="Training program name"
                                     getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
                                 />
@@ -365,21 +367,21 @@ export default memo(function Educations({
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
                                 <DatePicker
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
                                 />
                             </div>
                             <Label>
                                 <Checkbox
-                                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                                    checked={education[classCurrent]}
-                                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
                                 />
                                 Current
                             </Label>
@@ -400,17 +402,17 @@ export default memo(function Educations({
                         </div>
                 }
                 {
-                    (education[classProgramType] !== EduProgramType.PreApprenticeship) ? "" :
+                    (education[classEdLevel] !== EducationLevel.PreApprenticeship) ? "" :
                         <div id="profile-creation-education-preapprenticeship-fields">
                             <div className="profile-form-grid">
                                 <TextFieldWithAutocomplete
                                     apiSearchRoute="/api/edu-providers/search/"
-                                    fieldLabel="What is your pre-apprenticeship provider? *"
+                                    fieldLabel="Who is your pre-apprenticeship provider? *"
                                     id="profile-creation-education-preapprenticeship-name"
                                     searchingText="Searching..."
                                     noResultsText="No education providers found..."
-                                    value={education[classInstitution] ?? ""}
-                                    onChange={(e, val) => handleChange(index, classInstitution, val)}
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
                                     searchPlaceholder="Pre-apprenticeship name (e.g.: Computing for All)"
                                     getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
                                 />
@@ -421,9 +423,9 @@ export default memo(function Educations({
                                         value => ({label: value, value})
                                     )}
                                     placeholder="Education system"
-                                    onChange={(e) => handleChange(index, classEdSystem, e.target.value)}
+                                    onChange={(e) => handleChange(index, classPreAppEdSystem, e.target.value)}
                                     required
-                                    value={education[classEdSystem]?.toString()}
+                                    value={education[classPreAppEdSystem]?.toString()}
                                 >
                                     What is your education system? *
                                 </SelectOptionsWithLabel>
@@ -433,8 +435,8 @@ export default memo(function Educations({
                                     id="profile-creation-education-preapprenticeship-program"
                                     searchingText="Searching..."
                                     noResultsText="No education provider programs found..."
-                                    value={education[classInstitutionProgram] ?? ""}
-                                    onChange={(e, val) => handleChange(index, classInstitutionProgram, val)}
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
                                     searchPlaceholder="Program name"
                                     getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
                                 />
@@ -444,21 +446,21 @@ export default memo(function Educations({
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
                                 <DatePicker
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
                                 />
                             </div>
                             <Label>
                                 <Checkbox
-                                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                                    checked={education[classCurrent]}
-                                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
                                 />
                                 Current
                             </Label>
@@ -479,7 +481,7 @@ export default memo(function Educations({
                         </div>
                 }
                 {
-                    (education[classProgramType] !== EduProgramType.Other) ? "" :
+                    (education[classEdLevel] !== EducationLevel.Other) ? "" :
                         <div id="profile-creation-education-other-fields">
                             <div className="profile-form-grid">
                                 <TextFieldWithAutocomplete
@@ -488,8 +490,8 @@ export default memo(function Educations({
                                     id="profile-creation-education-other-recent-school"
                                     searchingText="Searching..."
                                     noResultsText="No education providers found..."
-                                    value={education[classInstitution] ?? ""}
-                                    onChange={(e, val) => handleChange(index, classInstitution, val)}
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
                                     searchPlaceholder="School name"
                                     getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
                                 />
@@ -499,21 +501,21 @@ export default memo(function Educations({
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classStartDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
                                 <DatePicker
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
-                                    onChange={(val: Dayjs) => handleChange(index, classEndDate, val)}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
                                 />
                             </div>
                             <Label>
                                 <Checkbox
-                                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                                    checked={education[classCurrent]}
-                                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
                                 />
                                 Current
                             </Label>
