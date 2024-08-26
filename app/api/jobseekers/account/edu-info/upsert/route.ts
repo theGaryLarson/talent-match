@@ -17,7 +17,7 @@ import {
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {mapToEnum} from "@/app/lib/utils";
-import {toMidnightUTC} from "@/app/lib/utils";
+import {normalizeDate} from "@/app/lib/utils";
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
 
@@ -179,8 +179,8 @@ export async function POST(request: Request) {
                             edLevel: edEntry.edLevel ?? "None",
                             preAppEdSystem: edEntry.preAppEdSystem,
                             isEnrolled: edEntry.isEnrolled,
-                            startDate: toMidnightUTC(edEntry?.startDate),
-                            gradDate: toMidnightUTC(edEntry?.gradDate),
+                            startDate: normalizeDate(edEntry?.startDate),
+                            gradDate: normalizeDate(edEntry?.gradDate),
                             degreeType: edEntry.degreeType,
                             gpa: edEntry.gpa,
                             description: edEntry.description,
