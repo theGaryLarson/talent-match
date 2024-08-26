@@ -78,8 +78,8 @@ export default function CreateJobseekerProfileShowcasePage(){
                 noResultsText="No skills found..."
                 onChange={function(ev, val){ if (val.every(skill => typeof skill !== "string")) { setSkills(val as SkillDTO[]) } }}
                 searchPlaceholder="Skill (ex: Java)"
-                getOptionLabel={(option:SkillDTO) => option.skill_name}
-                getOptionLink={(option:SkillDTO) => option.skill_info_url}
+                getTagLabel={(option:SkillDTO) => option.skill_name}
+                getTagLink={(option:SkillDTO) => option.skill_info_url}
               />
               <p>Select your top 5 skills from your skills list</p>
 
