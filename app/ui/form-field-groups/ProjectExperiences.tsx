@@ -27,7 +27,7 @@ export interface ProjectExperienceData {
   [classReferenceUrl]: string,
   [classDescription]: string,
   [classTeamSize]: number | string,
-  [classSkillsStack]: string,
+  [classSkillsStack]: SkillDTO[],
 }
 
 export function defaultProjectExperienceData() {
@@ -40,7 +40,7 @@ export function defaultProjectExperienceData() {
     [classReferenceUrl]: "",
     [classDescription]: "",
     [classTeamSize]: "",
-    [classSkillsStack]: "",
+    [classSkillsStack]: [],
   }
 }
 
