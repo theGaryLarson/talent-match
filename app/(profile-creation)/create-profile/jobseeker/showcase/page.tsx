@@ -17,6 +17,7 @@ export default function CreateJobseekerProfileShowcasePage(){
   const [portfolioUrl, setPortfolioUrl] = useState('');
   const [portfolioPassword, setPortfolioPassword] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -38,8 +39,11 @@ export default function CreateJobseekerProfileShowcasePage(){
         },
         body: JSON.stringify(formData),
       });
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorMessage: string = await response.text();  // Get the error message from the response
+        setError(`Failed to save data: ${errorMessage}`);
+        return;  // Exit the function if the response is not ok
       }
 
       const result = await response.json();
