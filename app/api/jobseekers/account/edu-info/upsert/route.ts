@@ -9,10 +9,10 @@ import {
 import {
     CertDTO,
     HighestDegreeType,
-    EduProgramType,
-    EducationInfoDTO,
-    JsEducationDTO,
-    ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType
+    EducationLevel,
+    JsEducationInfoDTO,
+    JsEducationPageDTO,
+    ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
@@ -25,7 +25,7 @@ const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
-        const body: JsEducationDTO = await request.json();
+        const body: JsEducationPageDTO = await request.json();
 
         const {
             userId,
@@ -89,8 +89,8 @@ export async function POST(request: Request) {
                     issuingOrg: cert.issuingOrg,
                     credentialId: cert.credentialId,
                     credentialUrl: cert.credentialUrl,
-                    issueDate: new Date(cert.issueDate).toISOString(),
-                    expiryDate: new Date(cert.expiryDate).toISOString(),
+                    issueDate: cert.issueDate ? new Date(cert.issueDate).toISOString() : undefined,
+                    expiryDate: cert.expiryDate ? new Date(cert.expiryDate).toISOString() : undefined,
                     description: cert.description,
                 };
 
@@ -117,68 +117,73 @@ export async function POST(request: Request) {
             });
             await Promise.all(certPromises);
 
-            const schoolPromises = educations.map(async (school: EducationInfoDTO) => {
-                let eduInstitution = await prisma.edu_providers.findUnique({
-                    where: {id: school.eduProviderId}
+            const schoolPromises = educations.map(async (edEntry: JsEducationInfoDTO) => {
+                // Check and create edu_provider if not exists
+                let eduProvider = await prisma.edu_providers.findUnique({
+                    where: { id: edEntry.edProviderId }
                 });
-                if (!eduInstitution) {
+
+                if (!eduProvider) {
+                    console.log(`Creating edu_provider with id: ${edEntry.edProviderId}`);
                     await prisma.edu_providers.create({
                         data: {
-                            id: school.eduProviderId,
-                            name: school.edProviderName,
+                            id: edEntry.edProviderId,
+                            name: edEntry.edProviderName,
                             contact_email: null,
                             edu_url: null,
+                            isAdminReviewed: false,
                         }
                     });
+                } else {
+                    console.log(`edu_provider with id: ${edEntry.edProviderId} already exists.`);
                 }
 
-                const existingEducation = await prisma.jobseekers_education.findFirst({
+                // TODO: fix to use id to find whether to update or create the existing jobseekers_education record.
+                const existingJobseekerEducation = await prisma.jobseekers_education.findUnique({
                     where: {
-                        jobseekerId: jobseekerId,
-                        eduProviderId: school.eduProviderId,
-                        startDate: {
-                            equals: toMidnightUTC(school.startDate)
-                        },
-                        gradDate: {
-                            equals: toMidnightUTC(school.gradDate)
-                        }
+                        id: edEntry.id,
+                    },
+                    include: {
+                        programs: true,
                     }
                 });
-                if (existingEducation) {
-                    school.jobseekerEdId = existingEducation.id;
-                }
+
                 // Build update object and filter undefined values
-                const eduUpdateData: Partial<EducationInfoDTO> = {
-                    jobseekerEdId: school.jobseekerEdId,
-                    edProgram: school.edProgram,
-                    edSystem: school.edSystem,
-                    isEnrolled: school.isEnrolled,
-                    startDate: new Date(school.startDate).toISOString(),
-                    gradDate: new Date(school.gradDate).toISOString(),
-                    degreeType: school.degreeType,
-                    major: school.major,
-                    minor: school.minor,
-                    description: school.description,
+                const eduUpdateData: Partial<JsEducationInfoDTO> = {
+                    id: edEntry.id,
+                    edLevel: edEntry.edLevel,
+                    preAppEdSystem: edEntry.preAppEdSystem || undefined,
+                    isEnrolled: edEntry.isEnrolled,
+                    startDate: new Date(edEntry.startDate).toISOString(),
+                    gradDate: new Date(edEntry.gradDate).toISOString(),
+                    degreeType: edEntry.degreeType,
+                    programId: edEntry.programId,
+                    gpa: edEntry.gpa,
+                    description: edEntry.description,
                 };
-                if (existingEducation) {
+
+                if (existingJobseekerEducation) {
                     const updatedEducation = await prisma.jobseekers_education.update({
-                        where: {id: existingEducation.id},
-                        data: eduUpdateData
+                        where: { id: existingJobseekerEducation.id },
+                        data: eduUpdateData,
+                        include: {
+                            programs: true, // Include the related program information
+                            eduProviders: true,
+                        }
                     });
                     upsertedSchools.push(updatedEducation);
                 } else {
                     const createdEducation = await prisma.jobseekers_education.create({
                         data: {
-                            id: school.jobseekerEdId,
-                            edProgram: school.edProgram ?? "None",
-                            edSystem: school.edSystem,
-                            isEnrolled: school.isEnrolled,
-                            startDate: new Date(school.startDate).toISOString(),
-                            gradDate: new Date(school.gradDate).toISOString(),
-                            degreeType: school.degreeType,
-                            major: school.major,
-                            minor: school.minor,
-                            description: school.description,
+                            id: edEntry.id,
+                            edLevel: edEntry.edLevel ?? "None",
+                            preAppEdSystem: edEntry.preAppEdSystem,
+                            isEnrolled: edEntry.isEnrolled,
+                            startDate: toMidnightUTC(edEntry?.startDate),
+                            gradDate: toMidnightUTC(edEntry?.gradDate),
+                            degreeType: edEntry.degreeType,
+                            gpa: edEntry.gpa,
+                            description: edEntry.description,
                             jobseekers: {
                                 connect: {
                                     jobseeker_id: jobseekerId,
@@ -186,14 +191,24 @@ export async function POST(request: Request) {
                             },
                             eduProviders: {
                                 connect: {
-                                    id: school.eduProviderId
+                                    id: edEntry.edProviderId
+                                }
+                            },
+                            programs: {
+                                connect: {
+                                    id: edEntry.programId,
                                 }
                             }
+                        },
+                        include: {
+                            programs: true, // Include the related program information
+                            eduProviders: true,
                         }
                     });
                     upsertedSchools.push(createdEducation);
                 }
             });
+
             await Promise.all(schoolPromises);
 
             const projPromises = projects.map(async (proj: ProjectExpDTO) => {
@@ -230,12 +245,12 @@ export async function POST(request: Request) {
                 const updateProjectData: Partial<ProjectExperiences> = {
                     projTitle: proj.projTitle,
                     projectRole: proj.projectRole,
-                    startDate: new Date(proj.startDate),
-                    completionDate: new Date(proj.completionDate),
+                    startDate: proj?.startDate ? new Date(proj.startDate.toString()) : undefined,
+                    completionDate: proj?.completionDate ? new Date(proj.completionDate.toString()) : undefined,
                     problemSolvedDescription: proj.problemSolvedDescription,
                     teamSize: parseInt(proj.teamSize, 10),
                     repoUrl: proj?.repoUrl,
-                    demoUrl: proj?.demoUrl,
+                    demoUrl: proj?.videoDemoUrl,
 
                 };
                 if (existingProject) {
@@ -276,12 +291,12 @@ export async function POST(request: Request) {
                             projectId: proj.projectId,
                             projTitle: proj.projTitle,
                             projectRole: proj.projectRole,
-                            startDate: new Date(proj.startDate),
-                            completionDate: new Date(proj.completionDate),
+                            startDate: proj?.startDate ? new Date(proj.startDate.toString()) : '', //fixme: determine why Dayjs | null has to be a thing
+                            completionDate: proj?.completionDate ? new Date(proj.completionDate.toString()) : '', //fixme: determine why Dayjs | null has to be a thing
                             problemSolvedDescription: proj.problemSolvedDescription,
                             teamSize: parseInt(proj.teamSize, 10),
                             repoUrl: proj?.repoUrl,
-                            demoUrl: proj?.demoUrl,
+                            demoUrl: proj?.videoDemoUrl,
                             jobseekers: {
                                 connect: {
                                     jobseeker_id: jobseekerId,
@@ -306,8 +321,8 @@ export async function POST(request: Request) {
                                         }
                                     }
                                 },
-                            },
-                        },
+                            }
+                        }
                     });
                     upsertedProjects.push(createdProject);
 
@@ -315,21 +330,22 @@ export async function POST(request: Request) {
             });
             await Promise.all(projPromises);
 
-
             // Map the school data to DTO
-            const mappedEdHistory: EducationInfoDTO[] = upsertedSchools.map((jsEdu) => ({
-                jobseekerEdId: jsEdu.id,
-                edProgram: mapToEnum(jsEdu.edProgram, EduProgramType),
-                eduProviderId: jsEdu.eduProviderId,
-                edSystem: jsEdu.edSystem,
+            const mappedEdHistory: JsEducationInfoDTO[] = upsertedSchools.map((jsEdu: any ) => ({
+                id: jsEdu.id,
+                edLevel: mapToEnum(jsEdu.edLevel, EducationLevel),
+                edProviderId: jsEdu.eduProviderId,
+                eduProviderName: undefined,
                 isEnrolled: jsEdu.isEnrolled,
+                isTechDegree: jsEdu.isTechDegree,
                 startDate: jsEdu.startDate.toISOString(),
                 gradDate: jsEdu.gradDate.toISOString(),
                 degreeType: mapToEnum(jsEdu.degreeType ?? "None", CollegeDegreeType) ??
                             mapToEnum(jsEdu.degreeType ?? "None", HighSchoolDegreeType),
-                eduProviderProgramId: jsEdu.edProgram,
-                major: jsEdu?.major,
-                minor: jsEdu?.minor,
+                programId: jsEdu.programs?.id || null,
+                programName: jsEdu.programs?.title || null,
+                gpa: jsEdu.gpa,
+                preAppEdSystem: jsEdu.edSystem ? mapToEnum(jsEdu.edSystem, PreAEduSystem) : undefined,
                 description: jsEdu.description
             }));
 
@@ -341,8 +357,8 @@ export async function POST(request: Request) {
                 issuingOrg: cert.issuingOrg,
                 credentialId: cert.credentialId,
                 credentialUrl: cert.credentialUrl,
-                issueDate: cert.issueDate.toISOString(),
-                expiryDate: cert.issueDate.toISOString(),
+                issueDate: cert?.issueDate?.toISOString(),
+                expiryDate: cert?.issueDate?.toISOString(),
                 description: cert.description,
             }));
 
@@ -357,20 +373,20 @@ export async function POST(request: Request) {
                     projectId: proj.projectId,
                     projTitle: proj.projTitle,
                     projectRole: proj.projectRole,
-                    startDate: proj.startDate.toISOString(),
-                    completionDate: proj.completionDate.toISOString(),
+                    startDate: proj.startDate,
+                    completionDate: proj.completionDate,
                     problemSolvedDescription: proj.problemSolvedDescription,
                     teamSize: proj.teamSize.toString(),
                     repoUrl: proj.repoUrl,
-                    demoUrl: proj.demoUrl,
+                    videoDemoUrl: proj.demoUrl,
                     skills: skills
                 };
             });
 
             // Return consistent result using JSEducationDTO
-            const result: JsEducationDTO = {
+            const result: JsEducationPageDTO = {
                 userId: upsertedJobseeker.user_id,
-                highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed ?? "None", HighestDegreeType),
+                highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed, HighestDegreeType),
                 educations: mappedEdHistory,
                 certifications: mappedCerts,
                 projects: mappedProjects,
