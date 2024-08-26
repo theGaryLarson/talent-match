@@ -2,6 +2,7 @@
 
 import React, {useState} from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
+import Confetti from '@/app/ui/components/Confetti';
 
 
 // REVIEW: testing redux
@@ -58,16 +59,14 @@ export default function CreateJobseekerProfilePreferencesPage(){
     <main className="flex justify-center">
       <aside className="profile-form-aside">
       </aside>
-      <section className="profile-form-section">
-        {/* TODO: Comment/Uncomment test script below for viewing */}
-        {/* <h1>Data on Another Page</h1>
-        <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={5/6 * 100} size="sm"/>
-        <p>Step 5/6</p>
-        <h1>Your preferences</h1>
+      <section className="profile-form-section main-content">
+        <Confetti />
+        <h1>Congrats to complete your profile, Qian!</h1>
 
-        <p className='subtitle'>* Indicates a required field</p>
-        <form onSubmit={ handleSubmit }>
+        <p className='subtitle-congrats'>Let's kickstart your career journey!</p>
+        <Button pill type="submit">Get Started</Button>
+
+        {/* <form onSubmit={ handleSubmit }>
 
           <fieldset>
             <div>
@@ -76,32 +75,23 @@ export default function CreateJobseekerProfilePreferencesPage(){
                 <div className="container">
                   <Button
                       pill
-                      className={`custom-outline-btn inline-block m-2 ${
-                          (employmentType !== 'Full-time')? ''
-                            : 'selected'
-                        }`}
+                      className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
-                      onClick={ () => { setEmploymentType('Full-time')} }
+                      onClick={ () => { setEmploymentType('Full-time job')} }
                   >
                     Full-time job
                   </Button>
                   <Button
                       pill
-                      className={`custom-outline-btn inline-block m-2 ${
-                          (employmentType !== 'Part-time')? ''
-                            : 'selected'
-                        }`}
+                      className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
-                      onClick={ () => { setEmploymentType('Part-time')} }
+                      onClick={ () => { setEmploymentType('Part-time job')} }
                   >
                     Part-time job
                   </Button>
                   <Button
                       pill
-                      className={`custom-outline-btn inline-block m-2 ${
-                          (employmentType !== 'Internship')? ''
-                            : 'selected'
-                        }`}
+                      className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
                   >
@@ -109,14 +99,18 @@ export default function CreateJobseekerProfilePreferencesPage(){
                   </Button>
                   <Button
                       pill
-                      className={`custom-outline-btn inline-block m-2 ${
-                          (employmentType !== 'On-campus')? ''
-                            : 'selected'
-                        }`}
+                      className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
-                      onClick={ () => { setEmploymentType('On-campus')} }
+                      onClick={ () => { setEmploymentType('On-campus job')} }
                   >
                     On-campus job
+                  </Button>
+                  <Button
+                      className="custom-outline-btn inline-block m-2"
+                      // variant="outlined"
+                      onClick={ () => { setEmploymentType('Contract')} }
+                  >
+                    Contract
                   </Button>
                 </div>
               </fieldset>
@@ -143,7 +137,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
             <Button pill type="submit">Save and continue</Button>
           </div>
           
-        </form>
+        </form> */}
       </section>
     </main>
   );
