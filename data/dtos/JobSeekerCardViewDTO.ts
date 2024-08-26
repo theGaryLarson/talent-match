@@ -14,7 +14,7 @@ export type JobSeekerCardViewDTO = {
         photo_url: string | null;
     } ;
     jobseeker_education: {
-        eduInstitutions: {
+        eduProviders: {
             name: string | null;
         } | null;
         edProgram: string | null;
@@ -24,5 +24,9 @@ export type JobSeekerCardViewDTO = {
         degreeType: string | null;
         major: string | null;
     } | null;
+    program: {
+        id: string | null,
+        title: string | null,
+    }
     jobseeker_has_skills: JobseekerSkillDTO[];
 };
