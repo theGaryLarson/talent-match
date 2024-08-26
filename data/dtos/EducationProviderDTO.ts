@@ -1,4 +1,4 @@
 export type EducationProviderDTO = {
-  edu_institution_id: string,
+  id: string,
   name: string | null,
 }

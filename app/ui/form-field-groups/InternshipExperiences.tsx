@@ -5,6 +5,8 @@ import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
 import TextareaWithLabel from '../components/TextareaWithLabel';
 import { v4 as uuidv4 } from 'uuid';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 const classNamePrefix = "profile-creation-internship-experience-group-";
 const classCompany = "company";
@@ -18,8 +20,8 @@ export interface InternshipExperienceData {
   uid: string,
   [classCompany]: string,
   [classTitle]: string,
-  [classStarts]: string,
-  [classEnds]: string,
+  [classStarts]: Dayjs | null,
+  [classEnds]: Dayjs | null,
   [classCurrent]: boolean,
   [classExperience]: string,
 }
@@ -29,8 +31,8 @@ export function defaultInternshipExperienceData() {
     uid: uuidv4(),
     [classCompany]: "",
     [classTitle]: "",
-    [classStarts]: "",
-    [classEnds]: "",
+    [classStarts]: null,
+    [classEnds]: null,
     [classCurrent]: false,
     [classExperience]: "",
   }
@@ -84,25 +86,18 @@ export default memo(function InternshipExperiences({
           </InputTextWithLabel>
         </div>
         <div className="profile-form-grid md:grid-cols-2">
-          <InputTextWithLabel
-            type="month"
-            id={classNamePrefix + internshipExperience.uid + "-" + classStarts}
-            onChange={(e) => handleChange(index, classStarts, e.target.value)}
-            required
-            value={internshipExperience[classStarts]}
-          >
-            Starts *
-          </InputTextWithLabel>
-          <InputTextWithLabel
-            type="month"
-            id={classNamePrefix + internshipExperience.uid + "-" + classEnds}
-            onChange={(e) => handleChange(index, classEnds, e.target.value)}
-            required={(internshipExperience[classCurrent])?false:true}
-            disabled={(internshipExperience[classCurrent])?true:false}
-            value={internshipExperience[classEnds]}
-          >
-            Ends *
-          </InputTextWithLabel>
+          <DatePicker
+              label={'Starts *'}
+              views={['month', 'year']}
+              value={internshipExperience[classStarts] || null}
+              onChange={(val) => handleChange(index, classStarts, val)}
+          />
+          <DatePicker
+              label={'Ends *'}
+              views={['month', 'year']}
+              value={internshipExperience[classEnds] || null}
+              onChange={(val) => handleChange(index, classEnds, val)}
+          />
         </div>
         <Label>
           <Checkbox

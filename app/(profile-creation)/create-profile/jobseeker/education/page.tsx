@@ -8,12 +8,12 @@ import {Button} from "flowbite-react";
 import {
     CertDTO,
     HighestDegreeType,
-    EduProgramType,
-    EducationInfoDTO,
-    JsEducationDTO,
+    EducationLevel,
+    JsEducationInfoDTO,
+    JsEducationPageDTO,
     ProjectExpDTO,
     PreAEduSystem,
-    CollegeDegreeType
+    CollegeDegreeType, GradePointAverage
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
 import {SkillDTO} from "@/data/dtos/SkillDTO";
@@ -25,6 +25,7 @@ import ProjectExperiences, {
     defaultProjectExperienceData,
     ProjectExperienceData
 } from '@/app/ui/form-field-groups/ProjectExperiences';
+import {mapToEnum} from "@/app/lib/utils";
 
 interface Data {
     projectExperiences: ProjectExperienceData[],
@@ -39,11 +40,8 @@ export default function CreateJobseekerProfileEducationPage() {
         educations: [],
     });
     const router = useRouter();
-
-    const [startDate, setStartDate] = useState("");
-    const [completionDate, setCompletionDate] = useState("");
     const [response, setResponse] = useState(null);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
 
     function addNewLicense() {
@@ -102,61 +100,26 @@ export default function CreateJobseekerProfileEducationPage() {
         event.preventDefault();
         const form = event.currentTarget as HTMLFormElement;
 
-        const formDataObj = new FormData(form);
-        console.log(data.licenses);
-        console.log(data.projectExperiences);
-        console.log("ARRAY: ", Array.from(formDataObj.entries()));
+        // const formDataObj = new FormData(form);
+        // console.log(data.licenses);
+        // console.log(data.projectExperiences);
+        // console.log("ARRAY: ", Array.from(formDataObj.entries()));
 
-        const startDateWithDay = `${startDate}-01`
-        const completionDateWithDay = `${completionDate}-01`
-        console.log('Date:', new Date('2024-12-1').toISOString());
-
-        // Mock data for projects
-        const mockProjects: ProjectExpDTO[] = [
-            {
-                projectId: uuidv4(),
-                projTitle: 'Web Development Project',
-                projectRole: 'backend dev',
-                startDate: '2022-01-01',
-                completionDate: '2022-06-01',
-                problemSolvedDescription: 'Developed a web application using React and Node.js.',
-                teamSize: '8',
-                demoUrl: 'https:///www.demo.url',
-                repoUrl: 'https://www.repo.url',
-                skills: [
-                    {
-                        skill_id: '356e0040-8400-49a0-b772-6f6475776612',
-                        skill_name: 'JavaScript',
-                        skill_info_url: 'https://lightcast.io/open-skills/skills/KS1200771D9CR9LB4MWW/javascript-programming-language'
-
-                    },
-                    {
-                        skill_id: '38943cce-679d-408f-9fb1-6d054012e54f',
-                        skill_name: '.NET Assemblies',
-                        skill_info_url: 'https://lightcast.io/open-skills/skills/KS126XS6CQCFGC3NG79X'
-                    }
-                ] as SkillDTO[]
-            }
-        ];
-
-        const educations: EducationInfoDTO[] = data.educations.map((ed: EducationData) => ({
-            jobseekerEdId: ed.uid,
-            eduProviderId: ed.edInstitutionId || '',
-            edProgram: ed.edProgram,
-            edProviderName: ed.institutionName || '',
+        const educations: JsEducationInfoDTO[] = data.educations.map((ed: EducationData) => ({
+            id: ed.uid,
+            edProviderId: ed?.edProviderObject?.id || ed?.edProviderId!,
+            edLevel: ed.edLevel,
+            edProviderName: ed?.edProviderObject?.name || ed?.edProviderName,
             isEnrolled: ed.isEnrolled,
-            startDate: ed.startDate,
-            gradDate: ed.gradDate,
+            startDate: ed.startDate?.toISOString() || '',
+            gradDate: ed.gradDate?.toISOString()  || '',
             degreeType: ed.degreeType || undefined,
-            collegeProgram: ed.collegeProgram || null,
-            // isTechnicalDegree: ed.isTechnicalDegree || false, // TODO: Add isTechnicalDegree to Educations.tsx so we can filter by completed Technical Degrees
-            major: ed.major || null,
-            minor: ed.minor || null,
-            gpa: ed.gpa || null,
-            gradeLevel: ed.schoolGradeLevel || null,
-            preALevel: ed.preALevel || null,
-            edSystem: ed.edSystem || null,
+            programId: ed?.programObject?.id || ed?.programId!, // Note: no rel with provider_programs pulled from a separate programs table.
+            programName: ed?.programObject?.title || ed.programName,
+            gpa: ed?.gpa ? mapToEnum(ed.gpa, GradePointAverage ) : null,
+            preAppEdSystem: ed.preAppEdSystem || null,
             description: ed.description || null,
+            isTechnicalDegree: ed.isTechDegree || false,
         }));
 
         const certifications: CertDTO[] = data.licenses.map((cert: LicenseData) => ({
@@ -166,39 +129,37 @@ export default function CreateJobseekerProfileEducationPage() {
             issuingOrg: cert["issuing-org"],
             credentialId: cert["credential-id"],
             credentialUrl: cert["credential-url"],
-            issueDate: cert["issue-date"],
-            expiryDate: cert["expiration-date"],
+            issueDate: cert["issue-date"]?.toISOString() || '',
+            expiryDate: cert["expiration-date"]?.toISOString() || '',
             description: undefined,
         }));
 
-        //TODO: Get projects and skills loading correctly
+        const projects: ProjectExpDTO[]  = data.projectExperiences.map((proj: ProjectExperienceData) => ({
+            projectId: proj.uid,
+            projTitle: proj.title,
+            projectRole: proj["project-role"],
+            startDate: proj["starting-date"]?.toISOString() || null,
+            completionDate: proj["completion-date"]?.toISOString() || null,
+            problemSolvedDescription: proj["description"],
+            teamSize: proj["team-size"].toString(),
+            repoUrl: proj["reference-url"],
+            videoDemoUrl: undefined,
+            skills: proj["skills-stack"]
+        }))
 
-        // const projects: ProjectExpDTO  = data.projectExperiences.map((proj: ProjectExperienceData) => ({
-        //     projectId: proj.uid,
-        //     projTitle: proj.title,
-        //     projectRole: proj["project-role"],
-        //     startDate: proj["starting-date"],
-        //     completionDate: proj["completion-date"],
-        //     teamSize: proj["team-size"],
-        //     repoUrl: proj["reference-url"],
-        //     demoUrl: undefined,
-        //     skills: proj["skills-stack"]
-        //
-        // }))
-
-        const formData: JsEducationDTO = {
+        const formData: JsEducationPageDTO = {
             userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC', // fixme: access user id from nextauth session
             highestLevelOfStudy: form['profile-creation-education-highest-completed'].value,
             educations: educations,
             certifications: certifications,
-            projects: mockProjects,
+            projects: projects,
         };
         console.log(formData)
         await handleApiCall(formData);
     };
-    const handleApiCall = async (formData: JsEducationDTO) => {
+    const handleApiCall = async (formData: JsEducationPageDTO) => {
         try {
-            const res = await fetch('/api/jobseekers/create-edu', {
+            const res = await fetch('/api/jobseekers/account/edu-info/upsert', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -207,7 +168,9 @@ export default function CreateJobseekerProfileEducationPage() {
             });
 
             if (!res.ok) {
-                throw new Error('Network response was not ok');
+                const errorMessage = await res.text();  // Get the error message from the response
+                setError(`Failed to save data:\n${errorMessage}`);
+                return;  // Exit the function if the response is not ok
             }
 
             const data = await res.json();
@@ -216,15 +179,6 @@ export default function CreateJobseekerProfileEducationPage() {
             setError(err.message);
         }
     };
-    // const setFieldOfStudy = (currentEdProgram: string, form: HTMLFormElement) => {
-    //     if (eduProgram === 'None' || eduProgram === 'High School') {
-    //         return undefined
-    //     }
-    //     return form[`profile-creation-education-${currentEdProgram.toLowerCase().trim()}-program`].value
-    // }
-    // const setHighestLevelOfStudy = (eduProgram: string, form: HTMLFormElement) => {
-
-    // }
 
     return (
         <main className="flex justify-center">
@@ -244,7 +198,7 @@ export default function CreateJobseekerProfileEducationPage() {
                             id="profile-creation-education-highest-completed"
                             className="w-full"
                             options={(Object.values(HighestDegreeType) as string[]).filter(
-                                value => (value !== "Certification")
+                                value => (value !== "Vocational Qualification / Certification")
                             ).map(
                                 value => ({label: value, value})
                             )}

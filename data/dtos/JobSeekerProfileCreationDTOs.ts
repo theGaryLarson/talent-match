@@ -44,8 +44,8 @@ export type CertDTO = {
     issuingOrg: string,
     credentialId?: string | null,
     credentialUrl?: string | null,
-    issueDate: string,
-    expiryDate: string,
+    issueDate?: string,
+    expiryDate?: string,
     description?: string | null,
 }
 
@@ -53,12 +53,12 @@ export type ProjectExpDTO = {
     projectId: string,
     projTitle: string,
     projectRole: string,
-    startDate: string,
-    completionDate: string,
+    startDate: string | null,
+    completionDate: string | null,
     problemSolvedDescription: string,
     teamSize: string,
     repoUrl?: string | null,
-    demoUrl?: string | null,
+    videoDemoUrl?: string | null,
     skills: SkillDTO[],
 }
 
@@ -74,7 +74,6 @@ export enum HighestDegreeType {
 }
 
 export enum CollegeDegreeType {
-    None = "None",
     AssociatesDegree = "Associate's Degree",
     BachelorsDegree = "Bachelor's Degree",
     MastersDegree = "Master's Degree",
@@ -83,10 +82,12 @@ export enum CollegeDegreeType {
 
 export enum HighSchoolDegreeType {
     None = "None",
-    HighSchool = "High School",
+    HighSchool = "Diploma",
     GED = "GED"
 }
 
+// fixme: My thoughts are this could just be a number entry constrained between 0.0 and 4.0
+//  Also, the percentage thresholds and letter grading mapping to GPA vary from institution to institution.
 export enum GradePointAverage {
     APlus =  "A+\t97-100%\t4.0",
     A =      "A\t93-96%\t4.0",
@@ -102,8 +103,8 @@ export enum GradePointAverage {
     F =      "F\tBelow 65%\t0.0",
 }
 
-export enum EduProgramType {
-    Unselected = "Unselected",
+export enum EducationLevel {
+    Unselected = "",
     HighSchool = "High School",
     College = "College",
     TrainingProgram = "Training Program / Bootcamp",
@@ -117,28 +118,28 @@ export enum PreAEduSystem {
     Other = "Other",
 }
 
-export type EducationInfoDTO = {
-    jobseekerEdId: string,
-    edProgram?: EduProgramType,
-    edProviderId?: string | null, // use name lookup to find ID.
-    edProviderName: string,
+export type JsEducationInfoDTO = {
+    id: string,
+    edLevel?: EducationLevel,
+    edProviderId?: string, // use name lookup to find ID.
+    edProviderName?: string,
+    preAppEdSystem: PreAEduSystem | null;
     isEnrolled: boolean,
     startDate: string,
     gradDate: string,
     degreeType?: CollegeDegreeType | HighSchoolDegreeType | null,
-    edProviderProgramId?: string | null,
-    edProviderProgramName?: string | null,
-    major?: string | null, // program for other optional EdProgram
-    minor?: string | null,
+    programId?: string,
+    programName?: string | null,
+    // major?: string | null, // program for other optional EdProgram
+    // minor?: string | null,
     gpa?: GradePointAverage | null,
-    edSystem?: PreAEduSystem | null;
     description?: string | null;
 }
 
-export type JsEducationDTO = {
+export type JsEducationPageDTO = {
     userId: string,
     highestLevelOfStudy: HighestDegreeType;
-    educations: EducationInfoDTO[];
+    educations: JsEducationInfoDTO[];
     certifications: CertDTO[];
     projects: ProjectExpDTO[];
 }
