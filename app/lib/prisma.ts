@@ -231,11 +231,11 @@ export async function searchEduProviderHighSchoolPrograms(searchTerm:string): Pr
 }
 
 export async function searchEduProviderCollegePrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
-  return searchPrograms(searchTerm);;
+  return searchPrograms(searchTerm);
 }
 
 export async function searchEduProviderPreApprenticeshipPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
-    return searchPrograms(searchTerm);;
+    return searchPrograms(searchTerm);
 }
 
 export async function searchPrograms(searchTerm:string): Promise<programs[]> {
