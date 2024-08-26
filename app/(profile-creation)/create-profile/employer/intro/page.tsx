@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
+import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
@@ -21,6 +22,9 @@ export default function CreateJobseekerProfileIntroPage(){
   const dispatch = useDispatch();
   const router = useRouter();
   const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
+  const [gender, setGender] = useState('');
+  const [race, setRace] = useState('');
+
 
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
@@ -79,18 +83,20 @@ export default function CreateJobseekerProfileIntroPage(){
           birthDate: birthDateISO,
           phoneCountryCode: formattedPhone ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode : null,
           phone: formattedPhone,
-          zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
-          state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
-          city: '',
-          county: '',
+          // zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
+          // state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
+          // city: '',
+          // county: '',
           email: fields.find(f => f.id === 'profile-creation-intro-email')?.value || '',
-          introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
-          currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
-          resumeUrl: fields.find(f => f.id === 'profile-creation-intro-resume')?.value || null,
+          // introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
+          // currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
+          // resumeUrl: fields.find(f => f.id === 'profile-creation-intro-resume')?.value || null,
+          gender: gender,
+          race: race,
       };
 
       try {
-          const response = await fetch('/api/jobseekers/account/introduction/upsert', {
+          const response = await fetch('/api/employers/account/personal-info/upsert', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -118,13 +124,13 @@ export default function CreateJobseekerProfileIntroPage(){
       <section className="profile-form-section">
         <ProgressBarFlat progress={1/6 * 100} size="sm"/>
         <p>Step 1/6</p>
-        <h1>Intro</h1>
+        <h1>Your Personal Info</h1>
         <p className='subtitle'>* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Avatar</h2>
+              <h2>Your Photo <span>(optional)</span></h2>
             </legend>
             <AvatarUpload 
               id="profile-creation-intro-avatar-upload"
@@ -134,20 +140,20 @@ export default function CreateJobseekerProfileIntroPage(){
             />
           </fieldset>
           <fieldset>
-            <legend>
+            {/* <legend>
               <h2>Basic info</h2>
-            </legend>
+            </legend> */}
             
             <div className="profile-form-grid md:grid-cols-2">
-              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="Your first name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || ''} required>First Name *</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Your last name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || ''} required>Last Name *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="First name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || ''} required>First Name *</InputTextWithLabel>
+              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Last name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || ''} required>Last Name *</InputTextWithLabel>
             </div>
             
             <div className="profile-form-grid">
-              <DatePicker label="Birth Date *" value={birthdate} onChange={setBirthdate} />
+              <DatePicker label="Birthdate *" value={birthdate} onChange={setBirthdate} />
             </div>
             
-            <div className="profile-form-grid md:grid-cols-2">
+            {/* <div className="profile-form-grid md:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || ''} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
               
               <SelectOptionsWithLabel
@@ -212,7 +218,7 @@ export default function CreateJobseekerProfileIntroPage(){
               >
                 State
               </SelectOptionsWithLabel>
-            </div>
+            </div> */}
             
 
             <div className="profile-form-grid">
@@ -220,7 +226,7 @@ export default function CreateJobseekerProfileIntroPage(){
 
             </div>
 
-            <div className="profile-form-grid tablet:grid-cols-2">
+            <div className="profile-form-grid">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
                 onChange={handleFieldChange}
@@ -474,27 +480,48 @@ export default function CreateJobseekerProfileIntroPage(){
                 Country Phone Code *
               </SelectOptionsWithLabel>
               <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || ''} required>Phone Number *</InputTextWithLabel>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>
-              <h2>Intro</h2>
-            </legend>            
-            <div className="profile-form-grid">
-              <InputTextWithLabel id="profile-creation-intro-headlines" onChange={handleFieldChange} placeholder="Type here" value={fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || ''}>Headlines</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-current-or-graduated-school" onChange={handleFieldChange} placeholder="Type here"  value={fields.find(f => f.id === 'profile-creation-intro-current-or-graduated-school')?.value || ''} required>Current School / Graduated School *</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-current-position" onChange={handleFieldChange} placeholder="e.g., Software Developer" value={fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || ''}>Current Position</InputTextWithLabel>
-            </div>
-            <div>
-              Resume *
-              <InputFileDropzone
-                id="profile-creation-intro-resume"
-                fileTypeText="PDF, DOC, DOCX, TXT or RTF"
-                accept=".pdf,.doc,.docx,.txt,.rtf"
-                maxSizeMB={5}
+            
+              <SelectWithLabel
+                id="profile-creation-disclosures-gender"
+                fullWidth
+                label="Gender"
+                  value={gender}
+                  onChange={(event)=>{setGender(event.target.value)}}
+                options={[
+                      {label:"Male", value:"male"},
+                      {label:"Female", value:"female"},
+                      {label:"Non-binary", value:"non-binary"},
+                      {label:"Other", value:"other"},
+                      {label:"I prefer not to say", value:"undisclosed"},
+                ]}
+                placeholder="Please select"
+                required
               />
+
+              <SelectWithLabel
+                id="profile-creation-disclosures-race"
+                fullWidth
+                label="Race"
+                  value={race}
+                  onChange={(event)=>{setRace(event.target.value)}}
+                options={[
+                  {label:"Asian", value:"asian"},
+                  {label:"Black or African American", value:"black-african-american"},
+                  {label:"White or Caucasian", value:"white-caucasian"},
+                  {label:"Native Hawaiian or Pacific Islander", value:"native-hawaiian-pacific-islander"},
+                  {label:"American Indian or Alaska Native", value:"american-indian-alaska-native"},
+                  {label:"Multi-racial", value:"multi-racial"},
+                  {label:"Other", value:"other"},                 
+                  {label:"I prefer not to say", value:"undisclosed"},
+                ]}
+                placeholder="Please select"
+                required
+              />
+            
             </div>
+            
           </fieldset>
+          
           <div className="profile-form-progress-btn-group">
             <Button pill className="custom-outline-btn">Cancel</Button>
             <Button pill type="submit">Save and continue</Button>
