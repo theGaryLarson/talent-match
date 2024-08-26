@@ -108,6 +108,7 @@ const subcategoriesData = [
     {skill_category: 'Wireless Technologies'},
 ]; // Lightcast IT subcategories data
 
+// replaced with real data from Dynamics (programs table)
 const techEdMajors = [
     {name: "None", program_id: uuidv4()},
     {name: "Computer Science", program_id: uuidv4()},
