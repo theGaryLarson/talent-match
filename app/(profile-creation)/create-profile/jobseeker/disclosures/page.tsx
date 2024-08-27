@@ -41,7 +41,7 @@ export default function CreateJobseekerProfileDisclosuresPage(){
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      router.push('../../services/jobseekers');
+      router.push('/create-profile/jobseeker/congratulations');
     } catch (e: any) {
       // error handling
     }
