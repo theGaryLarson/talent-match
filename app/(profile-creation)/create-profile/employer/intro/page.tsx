@@ -83,15 +83,8 @@ export default function CreateJobseekerProfileIntroPage(){
           birthDate: birthDateISO,
           phoneCountryCode: formattedPhone ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode : null,
           phone: formattedPhone,
-          // zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
-          // state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
-          // city: '',
-          // county: '',
           email: fields.find(f => f.id === 'profile-creation-intro-email')?.value || '',
-          // introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
-          // currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
-          // resumeUrl: fields.find(f => f.id === 'profile-creation-intro-resume')?.value || null,
-          gender: gender,
+          gender: gender, // OR? fields.find(f => f.id === 'profile-creation-intro-gender')?.value || null,
           race: race,
       };
 
@@ -140,10 +133,6 @@ export default function CreateJobseekerProfileIntroPage(){
             />
           </fieldset>
           <fieldset>
-            {/* <legend>
-              <h2>Basic info</h2>
-            </legend> */}
-            
             <div className="profile-form-grid md:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="First name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || ''} required>First Name *</InputTextWithLabel>
               <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Last name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || ''} required>Last Name *</InputTextWithLabel>
@@ -152,74 +141,6 @@ export default function CreateJobseekerProfileIntroPage(){
             <div className="profile-form-grid">
               <DatePicker label="Birthdate *" value={birthdate} onChange={setBirthdate} />
             </div>
-            
-            {/* <div className="profile-form-grid md:grid-cols-2">
-              <InputTextWithLabel id="profile-creation-intro-zip-code" placeholder="Zipcode" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || ''} required pattern="\d{5}(-\d{4})?">Zip Code *</InputTextWithLabel>
-              
-              <SelectOptionsWithLabel
-                id="profile-creation-intro-state"
-                onChange={handleFieldChange}
-                options={[
-                  {label:"Alabama", value:"AL"},
-                  {label:"Alaska", value:"AK"},
-                  {label:"Arizona", value:"AZ"},
-                  {label:"Arkansas", value:"AR"},
-                  {label:"California", value:"CA"},
-                  {label:"Colorado", value:"CO"},
-                  {label:"Connecticut", value:"CT"},
-                  {label:"Delaware", value:"DE"},
-                  {label:"District of Columbia", value:"DC"},
-                  {label:"Florida", value:"FL"},
-                  {label:"Georgia", value:"GA"},
-                  {label:"Hawaii", value:"HI"},
-                  {label:"Idaho", value:"ID"},
-                  {label:"Illinois", value:"IL"},
-                  {label:"Indiana", value:"IN"},
-                  {label:"Iowa", value:"IA"},
-                  {label:"Kansas", value:"KS"},
-                  {label:"Kentucky", value:"KY"},
-                  {label:"Louisiana", value:"LA"},
-                  {label:"Maine", value:"ME"},
-                  {label:"Maryland", value:"MD"},
-                  {label:"Massachusetts", value:"MA"},
-                  {label:"Michigan", value:"MI"},
-                  {label:"Minnesota", value:"MN"},
-                  {label:"Mississippi", value:"MS"},
-                  {label:"Missouri", value:"MO"},
-                  {label:"Montana", value:"MT"},
-                  {label:"Nebraska", value:"NE"},
-                  {label:"Nevada", value:"NV"},
-                  {label:"New Hampshire", value:"NH"},
-                  {label:"New Jersey", value:"NJ"},
-                  {label:"New Mexico", value:"NM"},
-                  {label:"New York", value:"NY"},
-                  {label:"North Carolina", value:"NC"},
-                  {label:"North Dakota", value:"ND"},
-                  {label:"Ohio", value:"OH"},
-                  {label:"Oklahoma", value:"OK"},
-                  {label:"Oregon", value:"OR"},
-                  {label:"Pennsylvania", value:"PA"},
-                  {label:"Rhode Island", value:"RI"},
-                  {label:"South Carolina", value:"SC"},
-                  {label:"South Dakota", value:"SD"},
-                  {label:"Tennessee", value:"TN"},
-                  {label:"Texas", value:"TX"},
-                  {label:"Utah", value:"UT"},
-                  {label:"Vermont", value:"VT"},
-                  {label:"Virginia", value:"VA"},
-                  {label:"Washington", value:"WA"},
-                  {label:"West Virginia", value:"WV"},
-                  {label:"Wisconsin", value:"WI"},
-                  {label:"Wyoming", value:"WY"},
-                ]}
-                value={fields.find(f => f.id === 'profile-creation-intro-state')?.value || ''}
-                placeholder="Please select"
-
-              >
-                State
-              </SelectOptionsWithLabel>
-            </div> */}
-            
 
             <div className="profile-form-grid">
               <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" value={fields.find(f => f.id === 'profile-creation-intro-email')?.value || ''} required>Email *</InputTextWithLabel>
@@ -482,7 +403,7 @@ export default function CreateJobseekerProfileIntroPage(){
               <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || ''} required>Phone Number *</InputTextWithLabel>
             
               <SelectWithLabel
-                id="profile-creation-disclosures-gender"
+                id="profile-creation-intro-gender"
                 fullWidth
                 label="Gender"
                   value={gender}
@@ -499,7 +420,7 @@ export default function CreateJobseekerProfileIntroPage(){
               />
 
               <SelectWithLabel
-                id="profile-creation-disclosures-race"
+                id="profile-creation-intro-race"
                 fullWidth
                 label="Race"
                   value={race}
