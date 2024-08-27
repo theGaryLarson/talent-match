@@ -62,23 +62,16 @@ export default function CreateJobseekerProfileIntroPage(){
     e.preventDefault();
     dispatch(submitForm());
 
-    const birthDateISO = birthdate ? birthdate.toISOString() : null;
-
-    const countryCode = fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null;
-    const ph = fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null;
-     const formattedPhone = formatPhoneE164(countryCode?.toString(), ph?.toString())
-
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
-         //TODO: assign existing userId if exists if not create new with uuidv4().
           userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
           photoUrl: fields.find(f => f.id === 'profile-creation-intro-avatar')?.value || null,
           firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
           lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
-          birthDate: birthDateISO,
-          phoneCountryCode: formattedPhone ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode : null,
-          phone: formattedPhone,
+          birthDate: birthdate ? birthdate.toISOString() : null,
+          phoneCountryCode: fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null,
+          phone: fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null,
           zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
           state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
           city: '',
