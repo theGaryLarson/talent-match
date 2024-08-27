@@ -81,18 +81,18 @@ export default function CreateJobseekerProfileIntroPage(){
           industry_sector: fields.find(f => f.id === 'profile-creation-company-industry')?.value || null,
           company_name: fields.find(f => f.id === 'profile-creation-company-name')?.value || null,
           company_logo_url: fields.find(f => f.id === 'profile-creation-company-logo')?.value || null,
-          // about_us: 
+          // about_us: // on about page
           company_email: fields.find(f => f.id === 'profile-creation-company-email')?.value || '',
           year_founded: year_founded,
-          company_website_url: true,
-          company_video_url: true,
+          company_website_url: fields.find(f => f.id === 'profile-creation-company-website')?.value || null,
+          // company_video_url: // on video page
           compnay_phone: formattedPhone,
-          // company_mission: 
-          // company_vision: 
-          size: true,
-          estimated_annual_hires: true,
-          // is_approved: 
-          // company_addresses: 
+          // company_mission: // on mission page
+          // company_vision: // REVIEW: MISSING?
+          size: fields.find(f => f.id === 'profile-creation-company-size')?.value || '',
+          estimated_annual_hires: fields.find(f => f.id === 'profile-creation-company-annual-hire')?.value || '',
+          // is_approved: // REVIEW: MISSING?
+          // company_addresses: // REVIEW: MISSING?
       };
 
       try {
