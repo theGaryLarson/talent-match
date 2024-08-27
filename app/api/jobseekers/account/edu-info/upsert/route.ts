@@ -117,28 +117,28 @@ export async function POST(request: Request) {
             });
             await Promise.all(certPromises);
 
+            // fixme: ensure all eduProviders exist then map over them.
             const schoolPromises = educations.map(async (edEntry: JsEducationInfoDTO) => {
                 // Check and create edu_provider if not exists
-                let eduProvider = await prisma.edu_providers.findUnique({
-                    where: { id: edEntry.edProviderId }
-                });
+                // let eduProvider = await prisma.edu_providers.findUnique({
+                //     where: { id: edEntry.edProviderId }
+                // });
+                //
+                // if (!eduProvider) {
+                //     console.log(`Creating edu_provider with id: ${edEntry.edProviderId}`);
+                //     await prisma.edu_providers.create({
+                //         data: {
+                //             id: edEntry.edProviderId,
+                //             name: edEntry.edProviderName,
+                //             contact_email: null,
+                //             edu_url: null,
+                //             isAdminReviewed: false,
+                //         }
+                //     });
+                // } else {
+                //     console.log(`edu_provider with id: ${edEntry.edProviderId} already exists.`);
+                // }
 
-                if (!eduProvider) {
-                    console.log(`Creating edu_provider with id: ${edEntry.edProviderId}`);
-                    await prisma.edu_providers.create({
-                        data: {
-                            id: edEntry.edProviderId,
-                            name: edEntry.edProviderName,
-                            contact_email: null,
-                            edu_url: null,
-                            isAdminReviewed: false,
-                        }
-                    });
-                } else {
-                    console.log(`edu_provider with id: ${edEntry.edProviderId} already exists.`);
-                }
-
-                // TODO: fix to use id to find whether to update or create the existing jobseekers_education record.
                 const existingJobseekerEducation = await prisma.jobseekers_education.findUnique({
                     where: {
                         id: edEntry.id,
@@ -148,21 +148,21 @@ export async function POST(request: Request) {
                     }
                 });
 
-                // Build update object and filter undefined values
-                const eduUpdateData: Partial<JsEducationInfoDTO> = {
-                    id: edEntry.id,
-                    edLevel: edEntry.edLevel,
-                    preAppEdSystem: edEntry.preAppEdSystem || undefined,
-                    isEnrolled: edEntry.isEnrolled,
-                    startDate: new Date(edEntry.startDate).toISOString(),
-                    gradDate: new Date(edEntry.gradDate).toISOString(),
-                    degreeType: edEntry.degreeType,
-                    programId: edEntry.programId,
-                    gpa: edEntry.gpa,
-                    description: edEntry.description,
-                };
-
                 if (existingJobseekerEducation) {
+                    // Build update object and filter undefined values
+                    const eduUpdateData: Partial<JsEducationInfoDTO> = {
+                        id: edEntry.id,
+                        edLevel: edEntry.edLevel,
+                        preAppEdSystem: edEntry.preAppEdSystem || undefined,
+                        isEnrolled: edEntry.isEnrolled,
+                        startDate: new Date(edEntry.startDate).toISOString(),
+                        gradDate: new Date(edEntry.gradDate).toISOString(),
+                        degreeType: edEntry.degreeType,
+                        programId: edEntry.programId,
+                        gpa: edEntry.gpa,
+                        description: edEntry.description,
+                    };
+
                     const updatedEducation = await prisma.jobseekers_education.update({
                         where: { id: existingJobseekerEducation.id },
                         data: eduUpdateData,
@@ -171,7 +171,9 @@ export async function POST(request: Request) {
                             eduProviders: true,
                         }
                     });
+
                     upsertedSchools.push(updatedEducation);
+
                 } else {
                     const createdEducation = await prisma.jobseekers_education.create({
                         data: {
