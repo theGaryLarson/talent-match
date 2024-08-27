@@ -106,7 +106,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <p className='subtitle'>* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
-        What is your company mission *
+        Tell us about your company *
         <div className="profile-form-grid md:grid-cols-2">
 
         <fieldset>
@@ -117,7 +117,7 @@ export default function CreateJobseekerProfileIntroPage(){
               required
               value={fields.find(f => f.id === 'profile-creation-company-about')?.value || ''}
               >
-              {/* What is your company mission * */}
+              {/* Tell us about your company * */}
             </TextareaWithLabel>
         </fieldset>
         </div>
