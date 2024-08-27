@@ -250,20 +250,20 @@ export default memo(function Educations({
                                 Current
                             </Label>
                             <div className="profile-form-grid">
-                                {/*// fixme: My thoughts are this could just be a number entry constrained between 1 and 4.
-                                  //  Also, the percentage thresholds for GPA vary from institution to institution.*/}
-                                <SelectOptionsWithLabel
-                                    id="profile-creation-education-high-school-gpa"
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-high-school-gpa"}
+                                    type="number"
                                     className="w-full"
-                                    options={(Object.values(GradePointAverage) as string[]).map(
-                                        value => ({label: value, value})
-                                    )}
-                                    placeholder="Choose nearest grade"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
                                     onChange={(e) => handleChange(index, classGPA, e.target.value)}
-                                    value={education[classGPA] as string}
+                                    required
+                                    value={education[classGPA]}
                                 >
                                     What is your grade?
-                                </SelectOptionsWithLabel>
+                                </InputTextWithLabel>
                             </div>
                         </div>
                 }
@@ -331,18 +331,20 @@ export default memo(function Educations({
                                 Current
                             </Label>
                             <div className="profile-form-grid">
-                                <SelectOptionsWithLabel
-                                    id="profile-creation-education-college-gpa"
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-college-gpa"}
+                                    type="number"
                                     className="w-full"
-                                    options={(Object.values(GradePointAverage) as string[]).map(
-                                        value => ({label: value, value})
-                                    )}
-                                    placeholder="Choose nearest grade"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
                                     onChange={(e) => handleChange(index, classGPA, e.target.value)}
-                                    value={education[classGPA] as string}
+                                    required
+                                    value={education[classGPA]}
                                 >
                                     What is your grade?
-                                </SelectOptionsWithLabel>
+                                </InputTextWithLabel>
                             </div>
                         </div>
                 }
@@ -352,14 +354,25 @@ export default memo(function Educations({
                             <div className="profile-form-grid">
                                 <TextFieldWithAutocomplete
                                     apiSearchRoute="/api/edu-providers/search/"
-                                    fieldLabel="What is your training program? *"
-                                    id="profile-creation-education-training-program-name"
+                                    fieldLabel="Who is your training provider? *"
+                                    id="profile-creation-education-training-provider-name"
                                     searchingText="Searching..."
                                     noResultsText="No education providers found..."
                                     value={education[classEdProviderObject] ?? ""}
                                     onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
-                                    searchPlaceholder="Training program name"
+                                    searchPlaceholder="Training provider name"
                                     getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
+                                />
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/programs/training-programs/search/"
+                                    fieldLabel="What is your training program? *"
+                                    id="profile-creation-education-training-provider-program-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education provider programs found..."
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
+                                    searchPlaceholder="Training program name"
+                                    getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
                                 />
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
@@ -386,18 +399,20 @@ export default memo(function Educations({
                                 Current
                             </Label>
                             <div className="profile-form-grid">
-                                <SelectOptionsWithLabel
-                                    id="profile-creation-education-training-program-gpa"
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-training-program-gpa"}
+                                    type="number"
                                     className="w-full"
-                                    options={(Object.values(GradePointAverage) as string[]).map(
-                                        value => ({label: value, value})
-                                    )}
-                                    placeholder="Choose nearest grade"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
                                     onChange={(e) => handleChange(index, classGPA, e.target.value)}
-                                    value={education[classGPA] as string}
+                                    required
+                                    value={education[classGPA]}
                                 >
                                     What is your grade?
-                                </SelectOptionsWithLabel>
+                                </InputTextWithLabel>
                             </div>
                         </div>
                 }
@@ -465,18 +480,20 @@ export default memo(function Educations({
                                 Current
                             </Label>
                             <div className="profile-form-grid">
-                                <SelectOptionsWithLabel
-                                    id="profile-creation-education-preapprenticeship-gpa"
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-preapprenticeship-gpa"}
+                                    type="number"
                                     className="w-full"
-                                    options={(Object.values(GradePointAverage) as string[]).map(
-                                        value => ({label: value, value})
-                                    )}
-                                    placeholder="Choose nearest grade"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
                                     onChange={(e) => handleChange(index, classGPA, e.target.value)}
-                                    value={education[classGPA] as string}
+                                    required
+                                    value={education[classGPA]}
                                 >
-                                    What is your grade? *
-                                </SelectOptionsWithLabel>
+                                    What is your grade?
+                                </InputTextWithLabel>
                             </div>
                         </div>
                 }
@@ -486,14 +503,25 @@ export default memo(function Educations({
                             <div className="profile-form-grid">
                                 <TextFieldWithAutocomplete
                                     apiSearchRoute="/api/edu-providers/search/"
-                                    fieldLabel="If education program is other, specify"
-                                    id="profile-creation-education-other-recent-school"
+                                    fieldLabel="Who is your education provider? *"
+                                    id="profile-creation-education-other-provider-name"
                                     searchingText="Searching..."
                                     noResultsText="No education providers found..."
                                     value={education[classEdProviderObject] ?? ""}
                                     onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
-                                    searchPlaceholder="School name"
+                                    searchPlaceholder="Education provider name"
                                     getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
+                                />
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/programs/other/search/"
+                                    fieldLabel="What is your education provider's program? *"
+                                    id="profile-creation-education-other-provider-program-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education provider programs found..."
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
+                                    searchPlaceholder="Education provider program name"
+                                    getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
                                 />
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
@@ -520,18 +548,20 @@ export default memo(function Educations({
                                 Current
                             </Label>
                             <div className="profile-form-grid">
-                                <SelectOptionsWithLabel
-                                    id="profile-creation-education-other-gpa"
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-other-gpa"}
+                                    type="number"
                                     className="w-full"
-                                    options={(Object.values(GradePointAverage) as string[]).map(
-                                        value => ({label: value, value})
-                                    )}
-                                    placeholder="Choose nearest grade"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
                                     onChange={(e) => handleChange(index, classGPA, e.target.value)}
-                                    value={education[classGPA] as string}
+                                    required
+                                    value={education[classGPA]}
                                 >
                                     What is your grade?
-                                </SelectOptionsWithLabel>
+                                </InputTextWithLabel>
                             </div>
                         </div>
                 }
