@@ -46,7 +46,10 @@ export default async function page({ params }: { params: { id: string } }) {
           </div>
 
           <div className="space-y-4 rounded-md border p-4 bg-white">
+            <div className='flex items-center justify-between'>
             <h1 className="text-2xl font-bold">Work Experience</h1>
+            <h1 className='font-bold text-2xl'>{jobseeker?.years_work_exp}Y</h1>
+            </div>
             {jobseeker?.work_experiences.map((experience) => (
               <div key={experience.workId} className="rounded-md border p-4 bg-gray-bg">
                 <h2 className="text-xl font-bold">
