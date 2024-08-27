@@ -1349,7 +1349,7 @@ async function seedJobSeekersEducation() {
             const endDate = faker.date.between({from: startDate, to: new Date()});
             const jobseekerEducationData = {
                 id: uuidv4(),
-                isEnrolled: false, // Set to false initially
+                isEnrolled: Boolean(faker.number.int({ min: 0, max: 1})),
                 startDate: startDate,
                 gradDate: endDate,
                 degreeType: faker.helpers.arrayElement(degreeTypes),
