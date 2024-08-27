@@ -89,8 +89,8 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
       isInternship: false,
       jobTitle: workExp.title,
       isCurrentJob: workExp.current,
-      startDate: new Date(workExp.starts),
-      endDate: workExp.current ? null : new Date(workExp.ends),
+      startDate: new Date(workExp.starts.toISOString()),
+      endDate: workExp.current ? null : new Date(workExp.ends.toISOString()),
       responsibilities: workExp.experience,
     }));
 
@@ -103,8 +103,8 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
       isInternship: true,
       jobTitle: internshipExp.title,
       isCurrentJob: internshipExp.current,
-      startDate: new Date(internshipExp.starts),
-      endDate: internshipExp.current ? null : new Date(internshipExp.ends),
+      startDate: new Date(internshipExp.starts.toISOString()),
+      endDate: internshipExp.current ? null : new Date(internshipExp.ends.toISOString()),
       responsibilities: internshipExp.experience,
     }));
     const formData: JsWorkExpDTO = {
