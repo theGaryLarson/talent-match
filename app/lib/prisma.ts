@@ -238,6 +238,14 @@ export async function searchEduProviderPreApprenticeshipPrograms(searchTerm:stri
     return searchPrograms(searchTerm);
 }
 
+export async function searchEduProviderOtherPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
+    return searchPrograms(searchTerm);
+}
+
+export async function searchEduProviderTrainingProviderPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
+    return searchPrograms(searchTerm);
+}
+
 export async function searchPrograms(searchTerm:string): Promise<programs[]> {
   const MAX_RESULTS = 10;
   if (searchTerm.length === 0) {
