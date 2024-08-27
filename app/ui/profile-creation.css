@@ -66,6 +66,16 @@ h2 {
   text-align: left;
   color: #00000099;
 }
+
+.subtitle-congrats {
+  @apply mt-5 mb-5;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+  letter-spacing: 0.46000000834465027px;
+  text-align: left;
+  color: #00000099;
+}
   
 /* Figma Button colors */
 .custom-outline-btn {
@@ -75,14 +85,21 @@ h2 {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
+.custom-outline-btn.selected, .custom-outline-btn:hover.selected {
+  background-color: #047F9C!important;
+  color: #fff;
+  border-color: #000000;
+}
+
 .custom-outline-btn:hover {
   color: #047F9C;
   background-color: #f3f4f6 !important;
   border-color: #047F9C;
 }
 
-
-/* input[type="radio"] {
-  @apply m-3;
-  cursor: pointer;
-} */
+.main-content {
+  position: relative;
+  z-index: 1; /* Ensure content appears above the canvas */
+  /* Add padding or margin as needed */
+  padding: 20px;
+}

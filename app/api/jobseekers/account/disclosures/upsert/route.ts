@@ -21,6 +21,7 @@ export async function POST(request: Request) {
             return NextResponse.json({success: false, error: `A userId must be provided.`})
         }
 
+        // use this to get jobseeker id by user id.
         const jobseekerRecord = await prisma.jobseekers.findUnique({
             where: {
                 user_id: userId

@@ -35,6 +35,7 @@ export async function POST(request: Request) {
         } = body;
 
         const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone)
+        // fixme: account for companies that don't exist and create a companies record marking isApproved false.
         const upsertedCompany = await prisma.companies.upsert({
             where: {
                 company_id: companyId

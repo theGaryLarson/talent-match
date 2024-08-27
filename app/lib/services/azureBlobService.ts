@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 import path from "path";
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') }); // fixme: make sure path is correct ../../../../
 console.log("Connection String:", process.env.AZURE_STORAGE_CONNECTION_STRING);
 
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING!;

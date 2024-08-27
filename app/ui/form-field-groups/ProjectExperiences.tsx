@@ -27,7 +27,7 @@ export interface ProjectExperienceData {
   [classReferenceUrl]: string,
   [classDescription]: string,
   [classTeamSize]: number | string,
-  [classSkillsStack]: string,
+  [classSkillsStack]: SkillDTO[],
 }
 
 export function defaultProjectExperienceData() {
@@ -40,7 +40,7 @@ export function defaultProjectExperienceData() {
     [classReferenceUrl]: "",
     [classDescription]: "",
     [classTeamSize]: "",
-    [classSkillsStack]: "",
+    [classSkillsStack]: [],
   }
 }
 
@@ -128,7 +128,7 @@ export default memo(function ProjectExperiences({
           </InputTextWithLabel>
         </div>
         <div className="profile-form-grid">
-          <TagsWithAutocomplete
+          <TagsWithAutocomplete<SkillDTO>
             apiSearchRoute="/api/skills/search/"
             fieldLabel="Skills/Tech stack"
             id={classNamePrefix + projectExperience.uid + "-" + classSkillsStack}
@@ -137,10 +137,10 @@ export default memo(function ProjectExperiences({
             noResultsText="No skills/tech stack found..."
             onChange={function(ev, val){ handleChange(index, classSkillsStack, val) }}
             searchPlaceholder="Skill (ex: Java)"
-            getOptionLabel={(option:SkillDTO) => option.skill_name}
-            getOptionLink={(option:SkillDTO) => option.skill_info_url}
+            getTagLabel={(option:SkillDTO) => option.skill_name}
+            getTagLink={(option:SkillDTO) => option.skill_info_url}
           />
-        </div>
+        </div>F
       </fieldset>
     ))
   );

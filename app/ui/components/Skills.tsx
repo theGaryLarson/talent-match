@@ -11,9 +11,9 @@ export default function Skills({ skillsList, maxNumSkills, jobseekerID }: {
 
     var leftoverSkillsCount = 0;
     if (maxNumSkills != 0 // 0 indicates show all skills
-        && skillsList.length > maxNumSkills + 1) { // avoid a leftover of "+1" skill
-            leftoverSkillsCount = skillsList.length - maxNumSkills;
-            skillsList = skillsList.slice(0, maxNumSkills);
+        && skillsList.length > maxNumSkills) { // avoid a leftover of "+1" skill
+            leftoverSkillsCount = skillsList.length - maxNumSkills + 1;
+            skillsList = skillsList.slice(0, maxNumSkills - 1);
     }
 
     return (
