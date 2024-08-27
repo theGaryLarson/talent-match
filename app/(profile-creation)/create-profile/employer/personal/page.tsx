@@ -123,7 +123,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Your Photo <span>(optional)</span></h2>
+              <h2>Your Photo <span className="subtitle-optional">(optional)</span></h2>
             </legend>
             <AvatarUpload 
               id="profile-creation-intro-avatar-upload"
