@@ -108,7 +108,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <div className="profile-form-grid">
         <h2>Add a Video to Your Company Profile</h2>
         <p>Adding a company video can make a significant impact on your recruitment efforts. By showcasing your unique culture, values, and work environment, you can:</p>
-        <ul className='list-disc list-inside'>
+        <ul className='list-disc list-inside spaced-lists'>
           <li>  
           <b>Stand out from the competition:</b> A company video helps your profile stand out among other employers, making you more memorable to potential candidates.
           </li>

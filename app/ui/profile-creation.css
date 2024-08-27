@@ -103,3 +103,7 @@ h2 {
   /* Add padding or margin as needed */
   padding: 20px;
 }
+
+.spaced-lists > li {
+  @apply mb-5;
+}
