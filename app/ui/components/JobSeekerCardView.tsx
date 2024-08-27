@@ -27,6 +27,26 @@ export default function JobSeekerCardView({
   // Extract the first few skills from the jobseeker_has_skills array
   const skills: SkillDTO[] = jobseeker["jobseeker_has_skills"].map((item: JobseekerSkillDTO) => item.skills);
 
+  // Decide what school to show
+  var i = 0;
+  var school = "";
+  while (jobseeker?.jobseeker_education[i] != null){
+    if (jobseeker?.jobseeker_education[i].isEnrolled){
+      // Prioritize school info if enrolled
+      school = jobseeker.jobseeker_education[i].eduProviders?.name + ' | ' +
+      jobseeker.jobseeker_education[i].degreeType +
+      (jobseeker.jobseeker_education[i].major ? + ' | ' + jobseeker.jobseeker_education[i].major : '');
+      break;
+    }
+    i++;
+  }
+  // Else display the first school info
+  if (school == "" && jobseeker.jobseeker_education[0] != null){
+    school = jobseeker.jobseeker_education[0].eduProviders?.name + ' | ' +
+      jobseeker.jobseeker_education[0].degreeType +
+      (jobseeker.jobseeker_education[0].major ? + ' | ' + jobseeker.jobseeker_education[0].major : '');
+  }
+
   const cardViewClasses = "relative w-fit rounded-lg border border-2 border-cyan-600 p-4 sm-tablet:p-6";
   return (
     <div className={forceSmall ? cardViewClasses : cardViewClasses + " tablet:flex tablet:flex-row"}>
@@ -48,15 +68,7 @@ export default function JobSeekerCardView({
       <div>
         <div className="pt-4 space-y-2">
           <h3><span className="font-bold">{pathway}</span></h3>
-
-          {/* TODO: parse this information to account for isEnrolled */}
-          <h4>{jobseeker?.jobseeker_education[0] ?
-            (
-              jobseeker.jobseeker_education[0].eduProviders?.name + ' | ' +
-              jobseeker.jobseeker_education[0].degreeType +
-              (jobseeker.jobseeker_education[0].major ? + ' | ' + jobseeker.jobseeker_education[0].major : '')
-            ) : ''
-          }</h4>
+          <h4 className="italic">{school}</h4>
           <p>{aboutMe}</p>
         </div>
         {/* skills */}
