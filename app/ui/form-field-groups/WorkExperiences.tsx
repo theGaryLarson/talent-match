@@ -4,9 +4,9 @@ import { Checkbox } from '@mui/material';
 import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
 import TextareaWithLabel from '../components/TextareaWithLabel';
-import {v4 as uuidv4} from 'uuid';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { v4 as uuidv4 } from 'uuid';
 import dayjs, { Dayjs } from 'dayjs';
+import DatePickerDayjs from '../components/mui/DatePickerDayjs';
 
 const classNamePrefix = "profile-creation-work-experience-group-";
 const classCompany = "company";
@@ -26,7 +26,7 @@ export interface WorkExperienceData {
   [classExperience]: string,
 }
 
-export function defaultWorkExperienceData() : WorkExperienceData {
+export function defaultWorkExperienceData(): WorkExperienceData {
   return {
     uid: uuidv4(),
     [classCompany]: "",
@@ -40,7 +40,7 @@ export function defaultWorkExperienceData() : WorkExperienceData {
 
 interface Props {
   data: WorkExperienceData[],
-  onRemove: (uid:string) => void,
+  onRemove: (uid: string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 
@@ -48,9 +48,9 @@ export default memo(function WorkExperiences({
   data,
   onRemove,
   onUpdate,
-}:Props) {
-  const handleChange = useCallback(<K extends keyof WorkExperienceData>(index:number, key:K, value:any) => {
-    const changedWorkExperiences:WorkExperienceData[] = [...data];
+}: Props) {
+  const handleChange = useCallback(<K extends keyof WorkExperienceData>(index: number, key: K, value: any) => {
+    const changedWorkExperiences: WorkExperienceData[] = [...data];
     const updatedWorkExperience = changedWorkExperiences[index];
     updatedWorkExperience[key] = value;
     onUpdate('workExperiences', changedWorkExperiences);
@@ -86,17 +86,17 @@ export default memo(function WorkExperiences({
           </InputTextWithLabel>
         </div>
         <div className="profile-form-grid md:grid-cols-2">
-          <DatePicker
-              label={'Starts *'}
-              views={['month', 'year']}
-              value={workExperience[classStarts] || null}
-              onChange={(val) => handleChange(index, classStarts, val)}
+          <DatePickerDayjs
+            label={'Starts *'}
+            views={['month', 'year']}
+            value={workExperience[classStarts] || null}
+            onChange={(val) => handleChange(index, classStarts, val)}
           />
-          <DatePicker
-              label={'Ends *'}
-              views={['month', 'year']}
-              value={workExperience[classEnds] || null}
-              onChange={(val) => handleChange(index, classEnds, val)}
+          <DatePickerDayjs
+            label={'Ends *'}
+            views={['month', 'year']}
+            value={workExperience[classEnds] || null}
+            onChange={(val) => handleChange(index, classEnds, val)}
           />
         </div>
         <Label>
