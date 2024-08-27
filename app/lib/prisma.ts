@@ -438,6 +438,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                         }
                     },
                     minor: true,
+                    major: true,
                     description: true,
                 }
             },
