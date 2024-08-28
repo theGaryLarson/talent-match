@@ -4,9 +4,9 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Image from 'next/image';
 
-export default function CFASignupHeader() {
+export default function CFASignupHeader({className}:{className?:string}) {
   return (
-    <header className="bg-white">
+    <header className={"bg-white " + className}>
       <nav className="mx-auto flex items-center justify-between p-6 max-w-screen-lg laptop:px-8" aria-label="Global">
         <div className="w-1/2">
           <Link href="/">
