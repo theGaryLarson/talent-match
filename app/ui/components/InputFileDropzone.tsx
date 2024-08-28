@@ -8,6 +8,8 @@ interface Props {
   fileTypeText: string,
   accept: string,
   maxSizeMB: number,
+  userId: string,
+  onDocUpload: (url: string)  => void;
 }
 
 export default function InputFileDropzone({
@@ -15,23 +17,60 @@ export default function InputFileDropzone({
   fileTypeText,
   accept,
   maxSizeMB,
+    userId,
+    onDocUpload
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
   const [fileSelected, setFileSelected] = useState("");
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files != null){
-      setFileSelected(event.target.files[0].name);
+  const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files != null) {
+      const file = event.target.files[0];
+      setFileSelected(file.name);
       const maxSize = 1048576 * maxSizeMB;
-      if (event.target.files[0].size > maxSize){ // file is too large
+      if (file.size > maxSize) { // file is too large
         setFilesizeExceeded(true);
+      } else setFilesizeExceeded(false); // file juuuust right
+
+      try {
+        // Convert file to buffer
+        const fileBuffer = await file.arrayBuffer();
+        const fileBufferView = Array.from(new Uint8Array(fileBuffer)); // Convert to array for JSON serialization
+
+        // Prepare the payload
+        const payload = {
+          file: fileBufferView,
+          fileName: file.name,
+          userId: userId,
+        };
+
+        // Make a POST request to the API route
+        const response = await fetch('/api/jobseekers/resume/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        // Check if the upload was successful
+        if (response.ok) {
+          const result = await response.json();
+          onDocUpload(result.imageUrl); // Return the image URL to the parent component
+        } else {
+          const errorData = await response.json();
+          setUploadError(errorData.error || 'Failed to upload image');
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        setUploadError("Failed to upload image. Please try again.");
       }
-      else setFilesizeExceeded(false); // file juuuust right
-    }
-    else setFileSelected(""); // no file selected
+
+    } else setFileSelected(""); // no file selected
   }
 
-  var validFiletype = true;
+  let validFiletype = true;
   if (fileSelected != "") {
     const fileType = fileSelected.substring(fileSelected.lastIndexOf("."), fileSelected.length);
     console.log(fileType)
@@ -40,8 +79,8 @@ export default function InputFileDropzone({
 
   const fileTypeTextPlusSizeLimit = fileTypeText + " (max. " + maxSizeMB + " MB)";
 
-  var backgroundCSS = "border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600";
-  var svgCSS = "text-sky-500 dark:text-sky-400";
+  let backgroundCSS = "border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600";
+  let svgCSS = "text-sky-500 dark:text-sky-400";
 
   if (!validFiletype || filesizeExceeded) {
     backgroundCSS = "border-red-300 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:bg-red-700 dark:hover:border-red-500 dark:hover:bg-red-600";

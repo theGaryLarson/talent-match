@@ -133,7 +133,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
       router.push('/create-profile/jobseeker/showcase');
     } catch (error) {
       console.error('Error submitting form:', error);
-      // Handle error, e.g., display an error message
+      // TODO: Handle error, e.g., display an error message
     }
   }
 

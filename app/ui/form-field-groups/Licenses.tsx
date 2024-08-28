@@ -3,8 +3,8 @@ import { Button } from 'flowbite-react';
 import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
 import { v4 as uuidv4 } from "uuid";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import DatePickerDayjs from '../components/mui/DatePickerDayjs';
 
 const classNamePrefix = "profile-creation-license-group-";
 const classForName = "name";
@@ -38,7 +38,7 @@ export function defaultLicenseData() {
 
 interface Props {
   data: LicenseData[],
-  onRemove: (uid:string) => void,
+  onRemove: (uid: string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 
@@ -46,9 +46,9 @@ export default memo(function Licenses({
   data,
   onRemove,
   onUpdate,
-}:Props) {
-  const handleChange = useCallback(<K extends keyof LicenseData>(index:number, key:K, value:any) => {
-    const changedLicenses:LicenseData[] = [...data];
+}: Props) {
+  const handleChange = useCallback(<K extends keyof LicenseData>(index: number, key: K, value: any) => {
+    const changedLicenses: LicenseData[] = [...data];
     const updatedLicense = changedLicenses[index];
     updatedLicense[key] = value;
     onUpdate('licenses', changedLicenses);
@@ -99,17 +99,17 @@ export default memo(function Licenses({
           >
             Credential URL
           </InputTextWithLabel>
-          <DatePicker
-              label={'Issue date'}
-              views={['month', 'year']}
-              value={license[classIssueDate] || null}
-              onChange={(val) => handleChange(index, classIssueDate, val)}
+          <DatePickerDayjs
+            label={'Issue date'}
+            views={['month', 'year']}
+            value={license[classIssueDate] || null}
+            onChange={(val) => handleChange(index, classIssueDate, val)}
           />
-          <DatePicker
-              label={'Expiration date'}
-              views={['month', 'year']}
-              value={license[classExpirationDate] || null}
-              onChange={(val) => handleChange(index, classExpirationDate, val)}
+          <DatePickerDayjs
+            label={'Expiration date'}
+            views={['month', 'year']}
+            value={license[classExpirationDate] || null}
+            onChange={(val) => handleChange(index, classExpirationDate, val)}
           />
         </div>
       </fieldset>
