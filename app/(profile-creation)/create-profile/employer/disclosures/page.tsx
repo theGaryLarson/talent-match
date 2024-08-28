@@ -129,10 +129,12 @@ export default function CreateJobseekerProfileIntroPage(){
         <div className="profile-form-grid md:grid-cols-2">
 
         <fieldset>
-          <InputTextWithLabel id="profile-creation-company-name" placeholder="Microsoft" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-name')?.value || ''} required>Label</InputTextWithLabel>
-          <InputTextWithLabel id="profile-creation-company-job-title" placeholder="Job Title" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-job-title')?.value || ''} required>Label</InputTextWithLabel>
-          <InputTextWithLabel id="profile-creation-company-work-location" placeholder="Work Location" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-work-location')?.value || ''} required>Label</InputTextWithLabel>
-          <InputTextWithLabel id="profile-creation-company-linkedin" placeholder="www.linkedin.com/username" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-linkedin')?.value || ''} required>Label</InputTextWithLabel>
+        <div className="profile-form-grid">
+          <InputTextWithLabel id="profile-creation-company-name" placeholder="Microsoft" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-name')?.value || ''} required>Company Name</InputTextWithLabel>
+          <InputTextWithLabel id="profile-creation-company-job-title" placeholder="Job Title" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-job-title')?.value || ''} required>Job Title *</InputTextWithLabel>
+          <InputTextWithLabel id="profile-creation-company-work-location" placeholder="Work Location" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-work-location')?.value || ''} required>Work Location *</InputTextWithLabel>
+          <InputTextWithLabel id="profile-creation-company-linkedin" placeholder="www.linkedin.com/username" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-linkedin')?.value || ''} required>LinkedIn URL *</InputTextWithLabel>
+        </div>
         </fieldset>
         </div>
           
