@@ -124,7 +124,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <div className="profile-form-grid md:grid-cols-2">
 
         <fieldset>
-          <InputTextWithLabel id="profile-creation-company-video" placeholder="Youtube link url" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-video')?.value || ''} required></InputTextWithLabel>
+          <InputTextWithLabel id="profile-creation-company-video" placeholder="Youtube link url" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-video')?.value || ''} required>Youtube Link</InputTextWithLabel>
         </fieldset>
         </div>
           
