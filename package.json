@@ -19,6 +19,7 @@
     "@emotion/styled": "^11.11.5",
     "@headlessui/react": "^2.0.3",
     "@heroicons/react": "^2.0.18",
+    "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.1",
     "@mui/material-nextjs": "^5.16.1",
     "@mui/x-date-pickers": "^7.13.0",

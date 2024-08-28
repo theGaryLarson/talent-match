@@ -16,7 +16,8 @@ import {formatPhoneE164} from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { Label } from "flowbite-react";
-import { Checkbox, Snackbar, SnackbarContent } from '@mui/material';
+import { Checkbox, Snackbar, SnackbarContent, Typography, IconButton } from '@mui/material';
+import { CheckCircleOutline, Close } from '@mui/icons-material';
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
@@ -131,7 +132,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <p className='subtitle'>* Indicates a required field</p>
 
         {/* REVIEW: Snackbar implementation started here */}
-        {/* <Button onClick={handleClick}>Open Snackbar</Button> */}
+        <Button onClick={handleClick}>Open Snackbar</Button>
         <Snackbar
           open={open}
           autoHideDuration={6000}
@@ -143,13 +144,32 @@ export default function CreateJobseekerProfileIntroPage(){
           }}
         >
           <SnackbarContent
-          message="Autofill completed!"
+          message={
+            <div style={{ display: 'flex'}}>
+              <CheckCircleOutline style={{ marginRight: 16 }} />
+              <div>
+                <Typography variant="body1" style={{ display: 'inline'}}>Autofill completed!</Typography>
+                <Typography variant="body2">Please review the information we filled in for you step by step.</Typography> 
+              </div>
+            </div>
+          }
           sx={{
             backgroundColor: "#2E7D32", // Success color
-            justifyContent: 'center',
+            justifyContent: 'left',
             width: '100%',
             boxSizing: 'border-box',
           }}
+          action={
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+              sx={{ position: 'absolute', top: 8, right: 8 }}
+            >
+              <Close />
+            </IconButton>
+          }
         />
         </Snackbar>
         <form onSubmit={handleSubmit}>
