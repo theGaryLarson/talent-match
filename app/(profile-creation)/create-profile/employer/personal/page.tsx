@@ -22,8 +22,8 @@ export default function CreateJobseekerProfileIntroPage(){
   const dispatch = useDispatch();
   const router = useRouter();
   const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
-  const [gender, setGender] = useState('');
-  const [race, setRace] = useState('');
+  // const [gender, setGender] = useState('');
+  // const [race, setRace] = useState('');
 
 
   const [newFieldId, setNewFieldId] = useState('');
@@ -84,8 +84,8 @@ export default function CreateJobseekerProfileIntroPage(){
           phoneCountryCode: formattedPhone ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode : null,
           phone: formattedPhone,
           email: fields.find(f => f.id === 'profile-creation-intro-email')?.value || '',
-          gender: gender, // OR? fields.find(f => f.id === 'profile-creation-intro-gender')?.value || null,
-          race: race,
+          // gender: gender, // OR? fields.find(f => f.id === 'profile-creation-intro-gender')?.value || null,
+          // race: race,
       };
 
       try {
@@ -402,7 +402,7 @@ export default function CreateJobseekerProfileIntroPage(){
               </SelectOptionsWithLabel>
               <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || ''} required>Phone Number *</InputTextWithLabel>
             
-              <SelectWithLabel
+              {/* <SelectWithLabel
                 id="profile-creation-intro-gender"
                 fullWidth
                 label="Gender"
@@ -417,9 +417,9 @@ export default function CreateJobseekerProfileIntroPage(){
                 ]}
                 placeholder="Please select"
                 required
-              />
+              /> */}
 
-              <SelectWithLabel
+              {/* <SelectWithLabel
                 id="profile-creation-intro-race"
                 fullWidth
                 label="Race"
@@ -437,7 +437,7 @@ export default function CreateJobseekerProfileIntroPage(){
                 ]}
                 placeholder="Please select"
                 required
-              />
+              /> */}
             
             </div>
             
