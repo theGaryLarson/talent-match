@@ -16,7 +16,7 @@ import {formatPhoneE164} from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { Label } from "flowbite-react";
-import { Checkbox } from '@mui/material';
+import { Checkbox, Snackbar, SnackbarContent } from '@mui/material';
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
@@ -102,6 +102,22 @@ export default function CreateJobseekerProfileIntroPage(){
       }
   };
 
+    const [open, setOpen] = useState<boolean>(false);
+  
+    const handleClick = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = (
+      event?: React.SyntheticEvent | Event,
+      reason?: string
+    ) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpen(false);
+    };
+  
   return(
     <main className="flex justify-center">
       <aside className="profile-form-aside">
@@ -114,6 +130,28 @@ export default function CreateJobseekerProfileIntroPage(){
         <h1>Professional Info and Disclosures</h1>
         <p className='subtitle'>* Indicates a required field</p>
 
+        {/* REVIEW: Snackbar implementation started here */}
+        {/* <Button onClick={handleClick}>Open Snackbar</Button> */}
+        <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          sx={{
+            width: '100%', // Make Snackbar take full container width
+            maxWidth: '48rem', // Override default maxWidth, 48rem = max-w-3xl
+          }}
+        >
+          <SnackbarContent
+          message="Autofill completed!"
+          sx={{
+            backgroundColor: "#2E7D32", // Success color
+            justifyContent: 'center',
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        />
+        </Snackbar>
         <form onSubmit={handleSubmit}>
 
         <fieldset>
