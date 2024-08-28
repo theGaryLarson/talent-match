@@ -92,7 +92,7 @@ export default function CreateJobseekerProfileIntroPage(){
           if (response.ok) {
               const result = await response.json();
               dispatch(submitFormSuccess());
-              router.push('/create-profile/jobseeker/education');
+              router.push('/create-profile/employer/congratulations');
           } else {
               const errorData = await response.json();
               dispatch(submitFormFailure(errorData.error || 'Failed to submit the form'));
@@ -115,7 +115,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <p className='subtitle'>* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
-          
+
         <fieldset>
         <div className="profile-form-grid">
           <InputTextWithLabel id="profile-creation-company-name" placeholder="Microsoft" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-name')?.value || ''} required>Company Name</InputTextWithLabel>

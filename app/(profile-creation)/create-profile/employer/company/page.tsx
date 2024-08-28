@@ -68,7 +68,7 @@ export default function CreateJobseekerProfileIntroPage(){
 
     const countryCode = fields.find(f => f.id === 'profile-creation-company-country-phone-code')?.value || null;
     const ph = fields.find(f => f.id === 'profile-creation-company-phone-number')?.value || null;
-     const formattedPhone = formatPhoneE164(countryCode?.toString(), ph?.toString())
+    const formattedPhone = formatPhoneE164(countryCode?.toString(), ph?.toString())
 
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
@@ -107,7 +107,7 @@ export default function CreateJobseekerProfileIntroPage(){
           if (response.ok) {
               const result = await response.json();
               dispatch(submitFormSuccess());
-              router.push('/create-profile/jobseeker/education');
+              router.push('/create-profile/employer/about');
           } else {
               const errorData = await response.json();
               dispatch(submitFormFailure(errorData.error || 'Failed to submit the form'));
@@ -191,7 +191,6 @@ export default function CreateJobseekerProfileIntroPage(){
                   // {label:"501-1000", value:"501-1000"},
                   // {label:"1001-5000", value:"1001-5000"},
                   // {label:"5000+", value:"5000+"},
-
                 ]}
                 placeholder="Please select"
                 value={fields.find(f => f.id === 'profile-creation-company-size')?.value}

@@ -83,7 +83,7 @@ export default function CreateJobseekerProfileIntroPage(){
           if (response.ok) {
               const result = await response.json();
               dispatch(submitFormSuccess());
-              router.push('/create-profile/jobseeker/education');
+              router.push('/create-profile/employer/disclosures');
           } else {
               const errorData = await response.json();
               dispatch(submitFormFailure(errorData.error || 'Failed to submit the form'));
