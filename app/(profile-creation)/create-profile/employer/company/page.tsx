@@ -171,7 +171,7 @@ export default function CreateJobseekerProfileIntroPage(){
           </fieldset>
           <fieldset>
           <h2>Basic Info</h2>
-          <div className="profile-form-grid">
+          <div className="profile-form-grid tablet:grid-cols-2">
             <InputTextWithLabel id="profile-creation-company-website" placeholder="www.company.com" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-website')?.value || ''} required>Company Website *</InputTextWithLabel>
             <InputTextWithLabel type="email" id="profile-creation-company-email" placeholder="hello@company.com" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-email')?.value || ''} required>Company Email *</InputTextWithLabel>
             <InputTextWithLabel type="tel" id="profile-creation-company-phone" onChange={handleFieldChange} placeholder="(555) 123-4567" value={fields.find(f => f.id === 'profile-creation-company-phone')?.value || ''} required>Company Phone Number *</InputTextWithLabel>
@@ -197,7 +197,7 @@ export default function CreateJobseekerProfileIntroPage(){
               >
                 Company Size *
             </SelectOptionsWithLabel>
-            <InputTextWithLabel id="profile-creation-company-annual-hire" placeholder="15" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-annual-hire')?.value || ''} required>Predicted Annual Hire *</InputTextWithLabel>
+            <InputTextWithLabel id="profile-creation-company-annual-hire" placeholder="100" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-annual-hire')?.value || ''} required>Predicted Annual Hire *</InputTextWithLabel>
           </div>
 
           </fieldset>
