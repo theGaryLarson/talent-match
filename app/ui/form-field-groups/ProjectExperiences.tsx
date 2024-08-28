@@ -140,7 +140,7 @@ export default memo(function ProjectExperiences({
             getTagLabel={(option: SkillDTO) => option.skill_name}
             getTagLink={(option: SkillDTO) => option.skill_info_url}
           />
-        </div>F
+        </div>
       </fieldset>
     ))
   );
