@@ -170,6 +170,7 @@ export default function CreateJobseekerProfileIntroPage(){
             />
           </fieldset>
           <fieldset>
+          <h2>Basic Info</h2>
           <div className="profile-form-grid">
             <InputTextWithLabel id="profile-creation-company-website" placeholder="www.company.com" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-website')?.value || ''} required>Company Website *</InputTextWithLabel>
             <InputTextWithLabel type="email" id="profile-creation-company-email" placeholder="hello@company.com" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-email')?.value || ''} required>Company Email *</InputTextWithLabel>
@@ -178,7 +179,25 @@ export default function CreateJobseekerProfileIntroPage(){
           </div>
 
           <div className="profile-form-grid tablet:grid-cols-2">
-            <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel>
+            {/* <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel> */}
+            <SelectOptionsWithLabel
+                id="profile-creation-company-size"
+                onChange={handleFieldChange}
+                options={[
+                  // {label:"1-10", value:"1-10"},
+                  // {label:"11-50", value:"11-50"},
+                  // {label:"51-200", value:"51-200"},
+                  // {label:"201-500", value:"201-500"},
+                  // {label:"501-1000", value:"501-1000"},
+                  // {label:"1001-5000", value:"1001-5000"},
+                  // {label:"5000+", value:"5000+"},
+
+                ]}
+                placeholder="Please select"
+                value={fields.find(f => f.id === 'profile-creation-company-size')?.value}
+              >
+                Company Size *
+            </SelectOptionsWithLabel>
             <InputTextWithLabel id="profile-creation-company-annual-hire" placeholder="15" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-annual-hire')?.value || ''} required>Predicted Annual Hire *</InputTextWithLabel>
           </div>
 
