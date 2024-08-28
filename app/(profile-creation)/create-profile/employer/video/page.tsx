@@ -106,7 +106,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <p className='subtitle'>* Indicates a required field</p>
 
         <div className="profile-form-grid">
-        <h2>Add a Video to Your Company Profile</h2>
+        <h2>Add a video to your Company Profile</h2>
         <p>Adding a company video can make a significant impact on your recruitment efforts. By showcasing your unique culture, values, and work environment, you can:</p>
         <ul className='list-disc list-inside spaced-lists'>
           <li>  
