@@ -18,6 +18,7 @@ import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { Label } from "flowbite-react";
 import { Checkbox, Snackbar, SnackbarContent, Typography, IconButton } from '@mui/material';
 import { CheckCircleOutline, Close } from '@mui/icons-material';
+import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
@@ -132,8 +133,9 @@ export default function CreateJobseekerProfileIntroPage(){
         <p className='subtitle'>* Indicates a required field</p>
 
         {/* REVIEW: Snackbar implementation started here */}
-        <Button onClick={handleClick}>Open Snackbar</Button>
-        <Snackbar
+        {/* <Button onClick={handleClick}>Open Snackbar</Button> */}
+
+        {/* <Snackbar
           open={open}
           autoHideDuration={6000}
           onClose={handleClose}
@@ -171,7 +173,23 @@ export default function CreateJobseekerProfileIntroPage(){
             </IconButton>
           }
         />
-        </Snackbar>
+        </Snackbar> */}
+        
+        <SnackbarWithIcon
+          open={open}
+          onClose={handleClose}
+          icon={<CheckCircleOutline style={{ marginRight: 16 }} />}
+          message={
+            <div>
+              <Typography variant="body1" style={{ marginBottom: 4 }}>
+                Autofill completed!
+              </Typography>
+              <Typography variant="body2">
+                All changes have been saved.
+              </Typography>
+            </div>
+          }
+        />
         <form onSubmit={handleSubmit}>
 
         <fieldset>
