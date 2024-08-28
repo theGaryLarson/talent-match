@@ -15,11 +15,14 @@ import { Button, Progress } from "flowbite-react";
 import {formatPhoneE164} from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
+import { Label } from "flowbite-react";
+import { Checkbox } from '@mui/material';
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
@@ -71,9 +74,10 @@ export default function CreateJobseekerProfileIntroPage(){
           job_title: fields.find(f => f.id === 'profile-creation-company-job-title')?.value || null,
           linkedin_url: fields.find(f => f.id === 'profile-creation-company-linkedin')?.value || null,
           
-          // NOTE: These are not in the DTO? work-location the correct endpoint?
+          // NOTE: These may not be in the DTO? work-location the correct endpoint?
           company_name: fields.find(f => f.id === 'profile-creation-company-name')?.value || null,
           work_location: fields.find(f => f.id === 'profile-creation-company-work-location')?.value || null,
+          hasReadTerms: termsAccepted,
       };
 
       try {
@@ -110,33 +114,29 @@ export default function CreateJobseekerProfileIntroPage(){
         <h1>Professional Info and Disclosures</h1>
         <p className='subtitle'>* Indicates a required field</p>
 
-        <div className="profile-form-grid">
-        <h2>Add a Video to Your Company Profile</h2>
-        <p>Adding a company video can make a significant impact on your recruitment efforts. By showcasing your unique culture, values, and work environment, you can:</p>
-        <ul className='list-disc list-inside spaced-lists'>
-          <li>  
-          <b>Stand out from the competition:</b> A company video helps your profile stand out among other employers, making you more memorable to potential candidates.
-          </li>
-          <li>
-          <b>Attract top talent:</b> Showcase your company culture and values to attract the best candidates who align with your mission and vision.
-          </li>
-          <li>
-          <b>Create a positive first impression:</b> A well-crafted video can leave a lasting impression on potential employees, making them more likely to apply for a job at your company.
-          </li>
-        </ul>
-        </div>
         <form onSubmit={handleSubmit}>
-        <div className="profile-form-grid md:grid-cols-2">
-
+          
         <fieldset>
         <div className="profile-form-grid">
           <InputTextWithLabel id="profile-creation-company-name" placeholder="Microsoft" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-name')?.value || ''} required>Company Name</InputTextWithLabel>
+          <h2>Last thing...</h2>
           <InputTextWithLabel id="profile-creation-company-job-title" placeholder="Job Title" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-job-title')?.value || ''} required>Job Title *</InputTextWithLabel>
           <InputTextWithLabel id="profile-creation-company-work-location" placeholder="Work Location" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-work-location')?.value || ''} required>Work Location *</InputTextWithLabel>
           <InputTextWithLabel id="profile-creation-company-linkedin" placeholder="www.linkedin.com/username" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-linkedin')?.value || ''} required>LinkedIn URL *</InputTextWithLabel>
         </div>
         </fieldset>
-        </div>
+
+        <legend>
+          <h2>Terms</h2>
+        </legend>
+          <Label className="block">
+            <Checkbox
+                name="profile-creation-disclosures-require-terms"
+                checked={termsAccepted}
+                onChange={(event) => setTermsAccepted(event.target.checked)}
+                required
+            /> Yes, I have read and consent to the terms and conditions*
+          </Label>
           
           <div className="profile-form-progress-btn-group">
             <Button pill className="custom-outline-btn">Cancel</Button>
