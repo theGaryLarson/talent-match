@@ -118,10 +118,24 @@ export default function CreateJobseekerProfileIntroPage(){
 
         <fieldset>
         <div className="profile-form-grid">
-          <InputTextWithLabel id="profile-creation-company-name" placeholder="Microsoft" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-name')?.value || ''} required>Company Name</InputTextWithLabel>
+          {/* This field will be automated */}
+          <InputTextWithLabel id="profile-creation-company-name" placeholder="Automated" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-name')?.value || ''} required>Company Name</InputTextWithLabel>
+          {/* <SelectOptionsWithLabel
+              id="profile-creation-company-name"
+              onChange={handleFieldChange}
+              options={[
+                {label:"Amazon", value:"Amazon"},
+                {label:"Google", value:"Google"},
+                {label:"Microsoft", value:"Microsoft"},
+              ]}
+              placeholder="Please select"
+              value={fields.find(f => f.id === 'profile-creation-company-name')?.value}
+            >
+              Company Name *
+          </SelectOptionsWithLabel> */}
           <h2>Last thing...</h2>
           <InputTextWithLabel id="profile-creation-company-job-title" placeholder="Job Title" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-job-title')?.value || ''} required>Job Title *</InputTextWithLabel>
-          <InputTextWithLabel id="profile-creation-company-work-location" placeholder="Work Location" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-work-location')?.value || ''} required>Work Location *</InputTextWithLabel>
+          <InputTextWithLabel id="profile-creation-company-work-location" placeholder="Seattle, WA" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-work-location')?.value || ''} required>Work Location *</InputTextWithLabel>
           <InputTextWithLabel id="profile-creation-company-linkedin" placeholder="www.linkedin.com/username" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-linkedin')?.value || ''} required>LinkedIn URL *</InputTextWithLabel>
         </div>
         </fieldset>
@@ -135,7 +149,7 @@ export default function CreateJobseekerProfileIntroPage(){
                 checked={termsAccepted}
                 onChange={(event) => setTermsAccepted(event.target.checked)}
                 required
-            /> Yes, I have read and consent to the terms and conditions*
+            /> By signing up you agree to our terms of use. *
           </Label>
           
           <div className="profile-form-progress-btn-group">
