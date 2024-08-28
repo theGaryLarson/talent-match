@@ -102,17 +102,18 @@ export default function CreateJobseekerProfileIntroPage(){
       <section className="profile-form-section">
         <ProgressBarFlat progress={4/6 * 100} size="sm"/>
         <p>Step 4/6</p>
-        <h1>Company Mission</h1>
+        <h1>Company Info</h1>
         <p className='subtitle'>* Indicates a required field</p>
+        <h2>Mission</h2>
 
         <form onSubmit={handleSubmit}>
         What is your company mission *
-        <div className="profile-form-grid md:grid-cols-2">
+        <div className="profile-form-grid">
 
         <fieldset>
           <TextareaWithLabel
               id="profile-creation-company-mission"
-              placeholder="Our mission is to empower every person and every organization on the planet to achieve more."
+              placeholder="About your company mission"
               rows="16"
               required
               value={fields.find(f => f.id === 'profile-creation-company-about')?.value || ''}

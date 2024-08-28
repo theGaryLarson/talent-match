@@ -108,7 +108,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <h2>About</h2>
         <form onSubmit={handleSubmit}>
         Tell us about your company *
-        <div className="profile-form-grid md:grid-cols-2">
+        <div className="profile-form-grid">
 
         <fieldset>
           <TextareaWithLabel
