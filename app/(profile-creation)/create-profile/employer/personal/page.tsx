@@ -133,7 +133,7 @@ export default function CreateJobseekerProfileIntroPage(){
             />
           </fieldset>
           <fieldset>
-            <div className="profile-form-grid md:grid-cols-2">
+            <div className="profile-form-grid tablet:grid-cols-2">
               <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="First name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || ''} required>First Name *</InputTextWithLabel>
               <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Last name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || ''} required>Last Name *</InputTextWithLabel>
             </div>
