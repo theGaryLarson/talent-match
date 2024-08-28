@@ -1,9 +1,9 @@
-import React, {memo, useCallback} from 'react';
+import React, { memo, useCallback } from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import {Button, Label} from "flowbite-react";
-import {Radio, Checkbox} from "@mui/material";
-import {MdClose} from "react-icons/md";
+import { Button, Label } from "flowbite-react";
+import { Radio, Checkbox } from "@mui/material";
+import { MdClose } from "react-icons/md";
 import {
     CollegeDegreeType,
     HighSchoolDegreeType,
@@ -12,13 +12,13 @@ import {
     JsEducationInfoDTO,
     GradePointAverage
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import {edu_providers, educators, provider_programs} from '@prisma/client';
+import { edu_providers, educators, provider_programs } from '@prisma/client';
 import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
-import {EducationProviderDTO} from '@/data/dtos/EducationProviderDTO';
-import {GeneralProgramDTO} from '@/data/dtos/GeneralProgramDTO';
-import {DatePicker} from '@mui/x-date-pickers/DatePicker';
-import dayjs, {Dayjs} from 'dayjs';
-import {v4 as uuidv4} from 'uuid';
+import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
+import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
+import dayjs, { Dayjs } from 'dayjs';
+import { v4 as uuidv4 } from 'uuid';
+import DatePickerDayjs from '../components/mui/DatePickerDayjs';
 
 const classNamePrefix = "profile-creation-education-group-";
 
@@ -96,10 +96,10 @@ interface Props {
 }
 
 export default memo(function Educations({
-                                            data,
-                                            onRemove,
-                                            onUpdate,
-                                        }: Props) {
+    data,
+    onRemove,
+    onUpdate,
+}: Props) {
     const handleChange = useCallback(<K extends keyof EducationData>(index: number, key: K, value: any) => {
         const changedEducations: EducationData[] = [...data];
         const updatedEducation = changedEducations[index];
@@ -130,7 +130,7 @@ export default memo(function Educations({
                 <legend className="w-full flex justify-between">
                     <h3>Education {index + 1}</h3>
                     <Button onClick={() => onRemove(education.uid)} size="xs" color="dark" outline pill><MdClose
-                        className="h-5 w-5"/></Button>
+                        className="h-5 w-5" /></Button>
                 </legend>
 
                 <div>
@@ -216,7 +216,7 @@ export default memo(function Educations({
                                     id="profile-creation-education-high-school-degree"
                                     className="w-full"
                                     options={(Object.values(HighSchoolDegreeType) as string[]).map(
-                                        value => ({label: value, value})
+                                        value => ({ label: value, value })
                                     )}
                                     placeholder="Degree type"
                                     onChange={(e) => handleChange(index, classDegreeType, e.target.value)}
@@ -227,13 +227,13 @@ export default memo(function Educations({
                                 </SelectOptionsWithLabel>
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
                                     onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
@@ -297,7 +297,7 @@ export default memo(function Educations({
                                     id="profile-creation-education-college-degree"
                                     className="w-full"
                                     options={(Object.values(CollegeDegreeType) as string[]).map(
-                                        value => ({label: value, value})
+                                        value => ({ label: value, value })
                                     )}
                                     placeholder="Degree type"
                                     onChange={(e) => handleChange(index, classDegreeType, e.target.value)}
@@ -308,13 +308,13 @@ export default memo(function Educations({
                                 </SelectOptionsWithLabel>
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
                                     onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
@@ -376,13 +376,13 @@ export default memo(function Educations({
                                 />
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
                                     onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
@@ -435,7 +435,7 @@ export default memo(function Educations({
                                     id="profile-creation-education-preapprenticeship-system"
                                     className="w-full"
                                     options={(Object.values(PreAEduSystem) as string[]).map(
-                                        value => ({label: value, value})
+                                        value => ({ label: value, value })
                                     )}
                                     placeholder="Education system"
                                     onChange={(e) => handleChange(index, classPreAppEdSystem, e.target.value)}
@@ -457,13 +457,13 @@ export default memo(function Educations({
                                 />
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
                                     onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}
@@ -525,13 +525,13 @@ export default memo(function Educations({
                                 />
                             </div>
                             <div className="profile-form-grid md:grid-cols-2">
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Starting date *'}
                                     views={['month', 'year']}
                                     value={education[classStartDate] || null}
                                     onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
                                 />
-                                <DatePicker
+                                <DatePickerDayjs
                                     label={'Completion date *'}
                                     views={['month', 'year']}
                                     value={education[classEndDate] || null}

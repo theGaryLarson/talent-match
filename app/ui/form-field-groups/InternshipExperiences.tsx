@@ -5,8 +5,8 @@ import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
 import TextareaWithLabel from '../components/TextareaWithLabel';
 import { v4 as uuidv4 } from 'uuid';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
+import DatePickerDayjs from '../components/mui/DatePickerDayjs';
 
 const classNamePrefix = "profile-creation-internship-experience-group-";
 const classCompany = "company";
@@ -40,7 +40,7 @@ export function defaultInternshipExperienceData() {
 
 interface Props {
   data: InternshipExperienceData[],
-  onRemove: (uid:string) => void,
+  onRemove: (uid: string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 
@@ -48,9 +48,9 @@ export default memo(function InternshipExperiences({
   data,
   onRemove,
   onUpdate,
-}:Props){
-  const handleChange = useCallback(<K extends keyof InternshipExperienceData>(index:number, key:K, value:any) => {
-    const changedInternshipExperiences:InternshipExperienceData[] = [...data];
+}: Props) {
+  const handleChange = useCallback(<K extends keyof InternshipExperienceData>(index: number, key: K, value: any) => {
+    const changedInternshipExperiences: InternshipExperienceData[] = [...data];
     const updatedInternshipExperience = changedInternshipExperiences[index];
     updatedInternshipExperience[key] = value;
     onUpdate('internshipExperiences', changedInternshipExperiences);
@@ -86,17 +86,17 @@ export default memo(function InternshipExperiences({
           </InputTextWithLabel>
         </div>
         <div className="profile-form-grid md:grid-cols-2">
-          <DatePicker
-              label={'Starts *'}
-              views={['month', 'year']}
-              value={internshipExperience[classStarts] || null}
-              onChange={(val) => handleChange(index, classStarts, val)}
+          <DatePickerDayjs
+            label={'Starts *'}
+            views={['month', 'year']}
+            value={internshipExperience[classStarts] || null}
+            onChange={(val) => handleChange(index, classStarts, val)}
           />
-          <DatePicker
-              label={'Ends *'}
-              views={['month', 'year']}
-              value={internshipExperience[classEnds] || null}
-              onChange={(val) => handleChange(index, classEnds, val)}
+          <DatePickerDayjs
+            label={'Ends *'}
+            views={['month', 'year']}
+            value={internshipExperience[classEnds] || null}
+            onChange={(val) => handleChange(index, classEnds, val)}
           />
         </div>
         <Label>
