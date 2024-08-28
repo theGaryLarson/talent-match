@@ -56,7 +56,7 @@ const config: Config = {
       backgroundImage: {
         'services-hero': "url('/cfa_images/stock/people-using-digital-device-while-meeting 1.jpg')",
         'employer-hero-1': "url('/cfa_images/stock/AdobeStock_816883006_forweb 1.png')",
-        'jobseeker-hero-1': "url('/cfa_images/stock/AdobeStock_224404447.png')",
+        'jobseeker-hero-1': "url('/cfa_images/stock/Above Fold.png')",
         'blue-square': "url('/blue-bullet.png')",
         'quote': "url('/cfa_images/stock/quote-bg-1.jpg')"
       },
