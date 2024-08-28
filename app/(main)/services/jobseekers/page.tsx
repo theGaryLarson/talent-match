@@ -1,6 +1,7 @@
 import PageBanner from '@/app/ui/components/PageBannner';
 import CircleBlurb from '@/app/ui/components/CircleBlurb';
 import TimeLine from '@/app/ui/components/TimeLine';
+import BottomFoldJobSeeker from '@/app/ui/components/BottomFoldJobseeker';
 
 /**
  * @returns Job seeker landing page
@@ -28,12 +29,14 @@ export default function Page() {
           job candidate in today’s digital world
         </div>
         <br />
-        <CircleBlurb />
+        <CircleBlurb/>
         <div className="text-center"><span className="text-[#014260] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">Career </span><span className="text-[#047f9c] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">Portal</span></div>
         <div className="text-center text-[#0f1728] text-2xl font-normal font-['Roboto'] leading-relaxed">Our Career Portal is designed to help you position yourself as a top job candidate in today’s digital world</div>
         <br/>
         <TimeLine/>
+        
       </div>
+      <BottomFoldJobSeeker/>
     </div>
   );
 }
