@@ -76,6 +76,16 @@ h2 {
   text-align: left;
   color: #00000099;
 }
+
+.subtitle-optional {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 19.2px;
+  letter-spacing: 0.15000000596046448px;
+  text-align: left;  
+  color: #00000099;
+}
   
 /* Figma Button colors */
 .custom-outline-btn {
