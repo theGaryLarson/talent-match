@@ -102,9 +102,10 @@ export default function CreateJobseekerProfileIntroPage(){
       <section className="profile-form-section">
         <ProgressBarFlat progress={3/6 * 100} size="sm"/>
         <p>Step 3/6</p>
-        <h1>About Us</h1>
+        <h1>Company Info</h1>
         <p className='subtitle'>* Indicates a required field</p>
 
+        <h2>About</h2>
         <form onSubmit={handleSubmit}>
         Tell us about your company *
         <div className="profile-form-grid md:grid-cols-2">
@@ -112,7 +113,7 @@ export default function CreateJobseekerProfileIntroPage(){
         <fieldset>
           <TextareaWithLabel
               id="profile-creation-company-about"
-              placeholder="At Microsoft we are dedicated to advancing human and organizational achievement."
+              placeholder="About your company"
               rows="16"
               required
               value={fields.find(f => f.id === 'profile-creation-company-about')?.value || ''}
