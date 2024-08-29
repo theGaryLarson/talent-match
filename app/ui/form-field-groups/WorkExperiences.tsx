@@ -31,8 +31,8 @@ export function defaultWorkExperienceData(): WorkExperienceData {
     uid: uuidv4(),
     [classCompany]: "",
     [classTitle]: "",
-    [classStarts]: null,
-    [classEnds]: null,
+    [classStarts]: dayjs(null),
+    [classEnds]: dayjs(null),
     [classCurrent]: false,
     [classExperience]: "",
   }
