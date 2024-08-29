@@ -99,7 +99,7 @@ export default async function page({ params }: { params: { id: string } }) {
                     <path fillRule="evenodd" clipRule="evenodd" d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z" fill="#047089" />
                   </svg>
                   <p className='text-xs'>
-                    {monthNames[experience.startDate.getMonth()]} {experience.startDate.getFullYear()} - {experience.completionDate ? monthNames[experence.completionDate.getMonth()] + " " + experence.completionDate.getFullYear() : "Present"}
+                    {monthNames[experience.startDate.getMonth()]} {experience.startDate.getFullYear()} - {experience.completionDate ? monthNames[experience.completionDate.getMonth()] + " " + experience.completionDate.getFullYear() : "Present"}
                   </p>
                 </span>
                 <p>{experience.problemSolvedDescription}</p>
