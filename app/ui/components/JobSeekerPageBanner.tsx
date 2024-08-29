@@ -13,15 +13,15 @@ export default function JobSeekerPageBanner({
   return (
     <div
       className={
-        ' h-[615px] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px] content-center bg-jobseeker-hero-1 bg-cover bg-center' +
+        'h-[680px] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px] content-center bg-jobseeker-hero-1 bg-cover bg-center' +
         bg
       }
     >
-      <div className="inline-flex h-[336px] w-[557px] flex-col items-start justify-start gap-4">
+      <div className="inline-flex h-[336px] max-w-[557px] flex-col items-start justify-start gap-4">
         <div className="self-stretch font-['Roboto'] text-6xl font-normal capitalize leading-[66px] text-white">
           Showcase your skills and get discovered by employers
         </div>
-        <div className="w-[540.10px] font-['Roboto'] text-2xl font-normal leading-relaxed text-white">
+        <div className="max-w-[540.10px] font-['Roboto'] text-2xl font-normal leading-relaxed text-white">
           Stand Out and Unlock New Opportunities
         </div>
         <div className="flex flex-col items-start justify-start">
