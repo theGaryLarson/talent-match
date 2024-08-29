@@ -14,7 +14,10 @@ import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from "flowbite-react";
 import {formatPhoneE164} from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
-import { DatePicker, DateView } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker, DateView } from '@mui/x-date-pickers';
+import { Snackbar, SnackbarContent, Typography, IconButton } from '@mui/material';
+import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
+
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
@@ -23,6 +26,8 @@ export default function CreateJobseekerProfileIntroPage(){
   const [year_founded, setYearFounded] = useState<DateView | null>('year');
   const [gender, setGender] = useState('');
   const [race, setRace] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
 
 
   const [newFieldId, setNewFieldId] = useState('');
@@ -60,6 +65,11 @@ export default function CreateJobseekerProfileIntroPage(){
       setNewFieldOptions([]);
     }
   };
+
+  const handleImageUpload = (url: string) => {
+    // Update the local state with the uploaded image URL
+    setAvatarUrl(url);
+};
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -117,6 +127,22 @@ export default function CreateJobseekerProfileIntroPage(){
       }
   };
 
+  const [open, setOpen] = useState<boolean>(false);
+  
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   return(
     <main className="flex justify-center">
       <aside className="profile-form-aside">
@@ -126,6 +152,24 @@ export default function CreateJobseekerProfileIntroPage(){
         <p>Step 2/6</p>
         <h1>Company Info</h1>
         <p className='subtitle'>* Indicates a required field</p>
+        
+        {/* TODO: Snackbar needs to be tied to autofill function, can be shown below */}
+        {/* <Button onClick={handleClick}>Test Button Open Snackbar</Button> */}
+        <SnackbarWithIcon
+          open={open}
+          onClose={handleClose}
+          variant="success"
+          message={
+            <div>
+              <Typography variant="body1">
+                Autofill completed!
+              </Typography>
+              <Typography variant="body2">
+                All changes have been saved.
+              </Typography>
+            </div>
+          }
+        />
 
         <form onSubmit={handleSubmit}>
           <div className="profile-form-grid md:grid-cols-2">
@@ -167,6 +211,11 @@ export default function CreateJobseekerProfileIntroPage(){
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
+
+              //These 2 props were not originally needed on component?, copying over from intro page
+              userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
+              onImageUpload={handleImageUpload}
+
             />
           </fieldset>
           <fieldset>
