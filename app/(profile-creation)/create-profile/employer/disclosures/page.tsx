@@ -133,23 +133,23 @@ export default function CreateJobseekerProfileIntroPage(){
         <p className='subtitle'>* Indicates a required field</p>
 
         {/* TODO: Snackbar needs to be tied to autofill function */}
-        {/* <Button onClick={handleClick}>Test Button Open Snackbar</Button> */}
-        
+        <Button onClick={handleClick}>Test Button Open Snackbar</Button>
         <SnackbarWithIcon
           open={open}
           onClose={handleClose}
-          variant="success"
+          variant="alert"
           message={
             <div>
               <Typography variant="body1">
-                Autofill completed!
+                Must agree to terms!
               </Typography>
               <Typography variant="body2">
-                All changes have been saved.
+                To finish creating your company profile, you must agree to the terms.
               </Typography>
             </div>
           }
         />
+
         <form onSubmit={handleSubmit}>
 
         <fieldset>

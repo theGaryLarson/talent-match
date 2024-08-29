@@ -2,20 +2,13 @@
 
 import {ChangeEventHandler, useState} from "react";
 import { Snackbar, SnackbarContent, Typography, IconButton } from '@mui/material';
-// import CloseIcon from '@mui/icons-material/Close';
-// import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
-// import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-
 import { Close as CloseIcon, CheckCircleOutline as CheckCircleOutlineIcon, ErrorOutline as ErrorOutlineIcon } from '@mui/icons-material';
-
-// import { green } from '@mui/material/colors';
 
 interface SnackbarWithIconProps {
     open: boolean;
     onClose: (event?: React.SyntheticEvent | Event, reason?: string) => void;
     variant: 'success' | 'alert';
     message: React.ReactNode;
-    // icon: React.ReactElement;
     autoHideDuration?: number;
     anchorOrigin?: { vertical: 'top' | 'bottom'; horizontal: 'left' | 'center' | 'right' };
 }
@@ -24,9 +17,8 @@ const SnackbarWithIcon: React.FC<SnackbarWithIconProps> = ({
     open,
     onClose,
     message,
-    // icon,
     variant,
-    autoHideDuration = 600000, // NOTE: adjust time here, added time for testing
+    autoHideDuration = 6000,
     anchorOrigin = { vertical: 'top', horizontal: 'center' },
 }) => {
     const icon = variant === 'success' ? <CheckCircleOutlineIcon /> : <ErrorOutlineIcon />;
