@@ -1,15 +1,22 @@
-import { BlobServiceClient, BlockBlobClient } from "@azure/storage-blob";
-import { v4 as uuidv4 } from 'uuid';
+import {
+    BlobServiceClient,
+    BlockBlobClient, ContainerSASPermissions,
+    generateBlobSASQueryParameters, SASProtocol,
+    StorageSharedKeyCredential
+} from "@azure/storage-blob";
 
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING!;
 const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
 
 const containerName = "career-services";
-const avatarPrefix = 'avatar';
-const resumePrefix = "resume";
-
 const docFileExtensionsAllowed = ['.pdf', '.doc', '.docx', '.txt', '.rtf'];
 const imagFileExtensionsAllowed = ['.svg', '.png', '.jpg', '.jpeg', '.gif', '.webp'];
+
+// Enum to define possible prefixes for different types of files
+enum FilePrefix {
+    Avatar = 'avatar',
+    Resume = 'resume',
+}
 
 // needed to map the correct content-type property based on file extension
 const contentTypeMap: { [key: string]: string } = {
@@ -28,10 +35,26 @@ const contentTypeMap: { [key: string]: string } = {
     '.webp': 'image/webp',
 };
 
-// Method to get a BlockBlobClient for a specific container and blob name
-function getBlockBlobClient(containerName: string, blobName: string): BlockBlobClient {
-    const containerClient = blobServiceClient.getContainerClient(containerName);
-    return containerClient.getBlockBlobClient(blobName);
+// Refactored uploadDocument method using the generalized uploadFile function
+export async function uploadResume(file: Buffer, fileName: string, userId: string): Promise<string> {
+    return await uploadFile(file, fileName, userId, FilePrefix.Resume, docFileExtensionsAllowed);
+}
+
+// Refactored method to get a link to the resume, accepting any allowed file extension
+export async function getResumeUrl(userId: string): Promise<string | null> {
+    const blobPrefix = `${userId}/${FilePrefix.Resume}`;  // Common prefix for resumes
+    return await getBlobUrlWithSas(containerName, blobPrefix);
+}
+
+// Refactored uploadAvatar method using the generalized uploadFile function
+export async function uploadAvatar(file: Buffer, fileName: string, userId: string): Promise<string> {
+    return await uploadFile(file, fileName, userId, FilePrefix.Avatar, imagFileExtensionsAllowed);
+}
+
+// Refactored method to get a link to the avatar image
+export async function getAvatarUrl(userId: string): Promise<string | null> {
+    const blobPrefix = `${userId}/${FilePrefix.Avatar}`;  // Common prefix for avatars
+    return await getBlobUrlWithSas(containerName, blobPrefix);
 }
 
 // this will delete existing blobs with the same prefix to avoid storing multiple files with different file extensions.
@@ -47,22 +70,21 @@ async function deleteExistingBlobs(containerName: string, prefix: string) {
     }
 }
 
-// Method to upload a PDF
-export async function uploadDocument(file: Buffer, fileName: string, userId: string): Promise<string> {
+// Generalized Method to upload a file to Azure Blob Storage
+async function uploadFile(file: Buffer, fileName: string, userId: string, prefix: FilePrefix, allowedExtensions: string[]): Promise<string> {
     const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
 
     // Check if the file extension is allowed
-    if (!docFileExtensionsAllowed.includes(fileExtension)) {
+    if (!allowedExtensions.includes(fileExtension)) {
         throw new Error(`Unsupported file type: ${fileExtension}`);
     }
 
     // Get the content type based on the file extension
     const contentType = contentTypeMap[fileExtension];
-    const blobName = `${userId}/${resumePrefix}${fileExtension}`;  // Use a unique identifier for the filename
+    const blobName = `${userId}/${prefix}${fileExtension}`;  // Use a unique identifier for the filename
 
-    // Delete any existing images with the same prefix
-    const prefix = `${userId}/${resumePrefix}`;
-    await deleteExistingBlobs(containerName, prefix);
+    // Delete any existing files with the same prefix
+    await deleteExistingBlobs(containerName, `${userId}/${prefix}`);
 
     const blockBlobClient = getBlockBlobClient(containerName, blobName);
 
@@ -70,62 +92,24 @@ export async function uploadDocument(file: Buffer, fileName: string, userId: str
         // Upload the file with the appropriate content type
         await blockBlobClient.uploadData(file, {
             blobHTTPHeaders: {
-                blobContentType: contentType,  // Set the content type for the document
+                blobContentType: contentType,  // Set the content type for the file
             },
         });
-        return blockBlobClient.url;  // Return the URL of the uploaded document
+        return blockBlobClient.url;  // Return the URL of the uploaded file
     } catch (error) {
-        console.error("Error uploading document:", error);
-        throw new Error("Failed to upload document");
+        console.error("Error uploading file:", error);
+        throw new Error("Failed to upload file");
     }
 }
 
-
-
-// Method to upload an Image
-export async function uploadAvatar(file: Buffer, fileName: string, userId: string): Promise<string> {
-    const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
-
-    // Check if the file extension is allowed
-    if (!imagFileExtensionsAllowed.includes(fileExtension)) {
-        throw new Error(`Unsupported file type: ${fileExtension}`);
-    }
-
-    const contentType = contentTypeMap[fileExtension];
-    const blobName = `${userId}/${avatarPrefix}${fileExtension}`;  // Use a unique identifier for the filename
-
-    // Delete any existing images with the same prefix
-    const prefix = `${userId}/${avatarPrefix}`;
-    await deleteExistingBlobs(containerName, prefix);
-
-    const blockBlobClient = getBlockBlobClient(containerName, blobName);
-
-    try {
-        await blockBlobClient.uploadData(file, {
-            blobHTTPHeaders: {
-                blobContentType: contentType,  // Set the content type for the image
-            },
-        });
-        return blockBlobClient.url;  // Return the URL of the uploaded image
-    } catch (error) {
-        console.error("Error uploading image:", error);
-        throw new Error("Failed to upload image");
-    }
+// Method to get a BlockBlobClient for a specific container and blob name
+function getBlockBlobClient(containerName: string, blobName: string): BlockBlobClient {
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    return containerClient.getBlockBlobClient(blobName);
 }
 
-// Method to get a link to the resume PDF
-export function getResumeUrl(userId: string): string {
-    const blobName = `${userId}/${resumePrefix}${userId}.pdf`; // Match the blobName pattern used in uploadPdf
-    const blockBlobClient = getBlockBlobClient(containerName, blobName);
-
-    return blockBlobClient.url;  // Return the URL of the resume
-}
-
-// Method to get a link to the avatar image
-export async function getAvatarUrl(userId: string): Promise<string | null> {
-    const containerName = "career-services";
-    const blobPrefix = `${userId}/${avatarPrefix}`; // This is the common prefix for the filename
-
+// Generalized Method to get the URL of a blob with a specific prefix
+async function getBlobUrlWithSas(containerName: string, blobPrefix: string): Promise<string | null> {
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING!);
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
@@ -134,14 +118,36 @@ export async function getAvatarUrl(userId: string): Promise<string | null> {
         for await (const blob of containerClient.listBlobsFlat({ prefix: blobPrefix })) {
             // If a matching blob is found, return the URL
             const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-            return blockBlobClient.url;  // Return the full URL of the blob
+            const sasToken = generateSasToken(containerName, blob.name);
+            return `${blockBlobClient.url}${sasToken}`;  // Return the full URL of the blob with SAS token
         }
 
         // If no matching blob is found, return null or handle accordingly
         return null;
 
     } catch (error) {
-        console.error("Error retrieving image link:", error);
-        throw new Error("Failed to retrieve image link");
+        console.error("Error retrieving blob link:", error);
+        throw new Error("Failed to retrieve blob link");
     }
 }
+
+// Generate SAS Token for a specific blob
+function generateSasToken(containerName: string, blobName: string): string {
+    const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+    const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
+    const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+
+    const sasOptions = {
+        containerName,
+        blobName,
+        permissions: ContainerSASPermissions.parse("r"), // Read-only permissions
+        expiresOn: new Date(new Date().valueOf() + 1800 * 1000), // Expires in 30 minutes
+        protocol: SASProtocol.Https,
+    };
+
+    // Generate SAS token
+    const sasToken = generateBlobSASQueryParameters(sasOptions, sharedKeyCredential).toString();
+
+    return sasToken;
+}
+

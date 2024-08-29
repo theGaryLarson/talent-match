@@ -13,14 +13,15 @@ import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from "flowbite-react";
 import {formatPhoneE164} from "@/app/lib/utils";
-import parsePhoneNumberFromString from "libphonenumber-js";
-import { DatePicker, DateView } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [year_founded, setYearFounded] = useState<DateView | null>('year');
+  const [year_founded, setYearFounded] = useState<Dayjs | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [gender, setGender] = useState('');
   const [race, setRace] = useState('');
 
@@ -61,6 +62,11 @@ export default function CreateJobseekerProfileIntroPage(){
     }
   };
 
+    const handleImageUpload = (url: string) => {
+        // Update the local state with the uploaded image URL
+        setLogoUrl(url);
+    };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     dispatch(submitForm());
@@ -80,7 +86,7 @@ export default function CreateJobseekerProfileIntroPage(){
           // industry_sector_id: true,
           industry_sector: fields.find(f => f.id === 'profile-creation-company-industry')?.value || null,
           company_name: fields.find(f => f.id === 'profile-creation-company-name')?.value || null,
-          company_logo_url: fields.find(f => f.id === 'profile-creation-company-logo')?.value || null,
+          company_logo_url: logoUrl,
           // about_us: // on about page
           company_email: fields.find(f => f.id === 'profile-creation-company-email')?.value || '',
           year_founded: year_founded,
@@ -167,6 +173,8 @@ export default function CreateJobseekerProfileIntroPage(){
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
+              userId='99E52D83-CC98-46AF-B62A-58124ABEBBDC' // use companyId here
+              onImageUpload={handleImageUpload}
             />
           </fieldset>
           <fieldset>

@@ -363,7 +363,7 @@ export const jobSeekerCardViewSelect = {
             startDate: true,
             gradDate: true,
             degreeType: true,
-            programs: {
+            program: {
                 select: {
                     id: true,
                     title: true,
@@ -397,6 +397,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
             jobseeker_id: jobSeekerId,
         },
         select: {
+            jobseeker_id: true,
             intro_headline:true,
             video_url:true,
             current_job_title: true,
@@ -421,6 +422,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                 select: {
                     eduProviders: {
                         select: {
+                            id: true,
                             name: true,
                         }
                     },
@@ -431,7 +433,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                     startDate: true,
                     gradDate: true,
                     degreeType: true,
-                    programs: {
+                    program: {
                         select: {
                             id: true,
                             title: true,
@@ -501,11 +503,11 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 
 // intended for use with the search bar. Currently, supports searching by combinations of skills and work experience.
 // If skills is [] or contains empty strings [''] will disregard and only focus on work experience.
-// If work experience is not a query parameter it should be set to 0
+// If work experience is not a query parameter it will be set to 0
 export async function getFilteredJobSeekerCardView(skills: string[] = [], yearsWorkExp: number = 0) {
     // Normalize skills array
     const normalizedSkills = skills.filter(skill => skill && skill.trim() !== '');
-
+    // TODO: add other options from Jobseeker ListView
     // Construct the AND conditions array
     const andConditions: any[] = [];
 

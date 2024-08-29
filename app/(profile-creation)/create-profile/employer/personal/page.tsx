@@ -22,6 +22,7 @@ export default function CreateJobseekerProfileIntroPage(){
   const dispatch = useDispatch();
   const router = useRouter();
   const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   // const [gender, setGender] = useState('');
   // const [race, setRace] = useState('');
 
@@ -62,6 +63,10 @@ export default function CreateJobseekerProfileIntroPage(){
     }
   };
 
+    const handleAvatarUpload = (url: string) => {
+        // Update the local state with the uploaded image URL
+        setAvatarUrl(url);
+    };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     dispatch(submitForm());
@@ -76,8 +81,8 @@ export default function CreateJobseekerProfileIntroPage(){
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
          //TODO: assign existing userId if exists if not create new with uuidv4().
-          userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
-          photoUrl: fields.find(f => f.id === 'profile-creation-intro-avatar')?.value || null,
+          userId: '99E52D83-CC98-46AF-B62A-58124ABEBBDC',
+          photoUrl: avatarUrl || null,
           firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
           lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
           birthDate: birthDateISO,
@@ -130,6 +135,8 @@ export default function CreateJobseekerProfileIntroPage(){
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
+              userId='99E52D83-CC98-46AF-B62A-58124ABEBBDC'
+              onImageUpload={handleAvatarUpload}
             />
           </fieldset>
           <fieldset>
