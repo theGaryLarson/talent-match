@@ -2,14 +2,20 @@
 
 import {ChangeEventHandler, useState} from "react";
 import { Snackbar, SnackbarContent, Typography, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { green } from '@mui/material/colors';
+// import CloseIcon from '@mui/icons-material/Close';
+// import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
+// import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+
+import { Close as CloseIcon, CheckCircleOutline as CheckCircleOutlineIcon, ErrorOutline as ErrorOutlineIcon } from '@mui/icons-material';
+
+// import { green } from '@mui/material/colors';
 
 interface SnackbarWithIconProps {
     open: boolean;
     onClose: (event?: React.SyntheticEvent | Event, reason?: string) => void;
+    variant: 'success' | 'alert';
     message: React.ReactNode;
-    icon: React.ReactElement;
+    // icon: React.ReactElement;
     autoHideDuration?: number;
     anchorOrigin?: { vertical: 'top' | 'bottom'; horizontal: 'left' | 'center' | 'right' };
 }
@@ -18,10 +24,13 @@ const SnackbarWithIcon: React.FC<SnackbarWithIconProps> = ({
     open,
     onClose,
     message,
-    icon,
-    autoHideDuration = 6000,
+    // icon,
+    variant,
+    autoHideDuration = 600000, // NOTE: adjust time here, added time for testing
     anchorOrigin = { vertical: 'top', horizontal: 'center' },
 }) => {
+    const icon = variant === 'success' ? <CheckCircleOutlineIcon /> : <ErrorOutlineIcon />;
+    const backgroundColor = variant === 'success' ? "#2E7D32" : "#D32F2F";
     return (
         <Snackbar
         open={open}
@@ -35,7 +44,7 @@ const SnackbarWithIcon: React.FC<SnackbarWithIconProps> = ({
         >
         <SnackbarContent
             sx={{
-            backgroundColor: green[600],
+            backgroundColor,
             width: '100%',
             boxSizing: 'border-box',
             padding: '16px',
@@ -44,7 +53,7 @@ const SnackbarWithIcon: React.FC<SnackbarWithIconProps> = ({
             position: 'relative',
             }}
             message={
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="snackbar-message">
                 {icon}
                 <div>
                 {message}

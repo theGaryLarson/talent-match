@@ -17,7 +17,7 @@ import parsePhoneNumberFromString from "libphonenumber-js";
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { Label } from "flowbite-react";
 import { Checkbox, Snackbar, SnackbarContent, Typography, IconButton } from '@mui/material';
-import { CheckCircleOutline, Close } from '@mui/icons-material';
+
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 
 export default function CreateJobseekerProfileIntroPage(){
@@ -132,56 +132,16 @@ export default function CreateJobseekerProfileIntroPage(){
         <h1>Professional Info and Disclosures</h1>
         <p className='subtitle'>* Indicates a required field</p>
 
-        {/* REVIEW: Snackbar implementation started here */}
-        {/* <Button onClick={handleClick}>Open Snackbar</Button> */}
-
-        {/* <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          sx={{
-            width: '100%', // Make Snackbar take full container width
-            maxWidth: '48rem', // Override default maxWidth, 48rem = max-w-3xl
-          }}
-        >
-          <SnackbarContent
-          message={
-            <div style={{ display: 'flex'}}>
-              <CheckCircleOutline style={{ marginRight: 16 }} />
-              <div>
-                <Typography variant="body1" style={{ display: 'inline'}}>Autofill completed!</Typography>
-                <Typography variant="body2">Please review the information we filled in for you step by step.</Typography> 
-              </div>
-            </div>
-          }
-          sx={{
-            backgroundColor: "#2E7D32", // Success color
-            justifyContent: 'left',
-            width: '100%',
-            boxSizing: 'border-box',
-          }}
-          action={
-            <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={handleClose}
-              sx={{ position: 'absolute', top: 8, right: 8 }}
-            >
-              <Close />
-            </IconButton>
-          }
-        />
-        </Snackbar> */}
+        {/* TODO: Snackbar needs to be tied to autofill function */}
+        {/* <Button onClick={handleClick}>Test Button Open Snackbar</Button> */}
         
         <SnackbarWithIcon
           open={open}
           onClose={handleClose}
-          icon={<CheckCircleOutline style={{ marginRight: 16 }} />}
+          variant="success"
           message={
             <div>
-              <Typography variant="body1" style={{ marginBottom: 4 }}>
+              <Typography variant="body1">
                 Autofill completed!
               </Typography>
               <Typography variant="body2">
