@@ -150,7 +150,7 @@ model companies {
   year_founded           Int
   company_website_url    String?                @db.VarChar(255)
   company_video_url      String?                @db.VarChar(255)
-  company_phone          String?                @db.VarChar(16)
+  company_phone          String?                @db.VarChar(16) // TODO: default phoneCountryCode to 'United States +1 in page.tsx'
   company_mission        String?                @db.VarChar(255)
   company_vision         String?                @db.VarChar(255)
   size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
@@ -409,7 +409,7 @@ model jobseekers_education {
   description    String?       @db.NText
   jobseekers     jobseekers    @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_education_jobseeker1")
   eduProviders   edu_providers @relation(fields: [eduProviderId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_edu_institution1")
-  programs       programs?     @relation(fields: [programId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_programs1")
+  program        programs?     @relation(fields: [programId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_programs1")
 
   @@index([jobseekerId], map: "fk_jobseeker_education_jobseeker1_idx")
   @@index([eduProviderId], map: "fk_jobseeker_education_edu_institution1_idx")
