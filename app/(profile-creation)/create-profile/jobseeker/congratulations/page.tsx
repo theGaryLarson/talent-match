@@ -63,7 +63,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
         <Confetti />
         <h1>Congrats to complete your profile, Qian!</h1>
 
-        <p className='subtitle-congrats'>Let's kickstart your career journey!</p>
+        <p className='subtitle-congrats'>{`Let's kickstart your career journey!`}</p>
         <Button pill type="submit">Get Started</Button>
 
         {/* <form onSubmit={ handleSubmit }>
