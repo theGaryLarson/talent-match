@@ -16,13 +16,16 @@ import {formatPhoneE164} from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { Label } from "flowbite-react";
-import { Checkbox } from '@mui/material';
+import { Checkbox, Snackbar, SnackbarContent, Typography, IconButton } from '@mui/material';
+
+import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
   const router = useRouter();
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
@@ -62,46 +65,59 @@ export default function CreateJobseekerProfileIntroPage(){
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if(!termsAccepted) {
+      setOpen(true);
+    }
     dispatch(submitForm());
 
 
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
-         //TODO: assign existing userId if exists if not create new with uuidv4().
-          userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
+        //TODO: assign existing userId if exists if not create new with uuidv4().
+        userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
 
-          job_title: fields.find(f => f.id === 'profile-creation-company-job-title')?.value || null,
-          linkedin_url: fields.find(f => f.id === 'profile-creation-company-linkedin')?.value || null,
-          
-          // NOTE: These may not be in the DTO? work-location the correct endpoint?
-          company_name: fields.find(f => f.id === 'profile-creation-company-name')?.value || null,
-          work_location: fields.find(f => f.id === 'profile-creation-company-work-location')?.value || null,
-          hasReadTerms: termsAccepted,
-      };
+        job_title: fields.find(f => f.id === 'profile-creation-company-job-title')?.value || null,
+        linkedin_url: fields.find(f => f.id === 'profile-creation-company-linkedin')?.value || null,
+        
+        // NOTE: These may not be in the DTO? work-location the correct endpoint?
+        company_name: fields.find(f => f.id === 'profile-creation-company-name')?.value || null,
+        work_location: fields.find(f => f.id === 'profile-creation-company-work-location')?.value || null,
+        hasReadTerms: termsAccepted,
+    };
 
-      try {
-          const response = await fetch('/api/employers/account/work-location/upsert', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(formData),
-          });
+    try {
+        const response = await fetch('/api/employers/account/work-location/upsert', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
 
-          if (response.ok) {
-              const result = await response.json();
-              dispatch(submitFormSuccess());
-              router.push('/create-profile/employer/congratulations');
-          } else {
-              const errorData = await response.json();
-              dispatch(submitFormFailure(errorData.error || 'Failed to submit the form'));
-          }
-      } catch (error) {
-          dispatch(submitFormFailure('Failed to submit the form'));
-      }
+        if (response.ok) {
+            const result = await response.json();
+            dispatch(submitFormSuccess());
+            router.push('/create-profile/employer/congratulations');
+        } else {
+            const errorData = await response.json();
+            dispatch(submitFormFailure(errorData.error || 'Failed to submit the form'));
+        }
+    } catch (error) {
+        dispatch(submitFormFailure('Failed to submit the form'));
+    }
   };
-
+  
+    const handleClose = (
+      event?: React.SyntheticEvent | Event,
+      reason?: string
+    ) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpen(false);
+    };
+  
   return(
     <main className="flex justify-center">
       <aside className="profile-form-aside">
@@ -113,6 +129,22 @@ export default function CreateJobseekerProfileIntroPage(){
         <p>Step 6/6</p>
         <h1>Professional Info and Disclosures</h1>
         <p className='subtitle'>* Indicates a required field</p>
+
+        <SnackbarWithIcon
+          open={open}
+          onClose={handleClose}
+          variant="alert"
+          message={
+            <div>
+              <Typography variant="body1">
+                Must agree to terms!
+              </Typography>
+              <Typography variant="body2">
+                To finish creating your company profile, you must agree to the terms.
+              </Typography>
+            </div>
+          }
+        />
 
         <form onSubmit={handleSubmit}>
 
@@ -148,7 +180,7 @@ export default function CreateJobseekerProfileIntroPage(){
                 name="profile-creation-disclosures-require-terms"
                 checked={termsAccepted}
                 onChange={(event) => setTermsAccepted(event.target.checked)}
-                required
+                
             /> By signing up you agree to our terms of use. *
           </Label>
           
