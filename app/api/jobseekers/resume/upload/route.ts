@@ -1,7 +1,7 @@
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { uploadDocument } from "@/app/lib/services/azureBlobService";
+import { uploadResume } from "@/app/lib/services/azureBlobService";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         const fileBuffer = Buffer.from(new Uint8Array(file));
 
         // Upload the image using the Azure Blob Storage service
-        const imageUrl = await uploadDocument(fileBuffer, fileName, userId);
+        const imageUrl = await uploadResume(fileBuffer, fileName, userId);
 
         return NextResponse.json({ success: true, imageUrl }, { status: 200 });
     } catch (e: any) {

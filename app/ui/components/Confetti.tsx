@@ -139,7 +139,7 @@ const Confetti: React.FC = () => {
 
     loop();
 
-    function initDrawingCanvas(ctx: CanvasRenderingContext2D, viewWidth, viewHeight) {
+    function initDrawingCanvas(ctx: CanvasRenderingContext2D, viewWidth: number, viewHeight: number) {
       const canvas = canvasRef.current!;
       canvas.width = viewWidth;
       canvas.height = viewHeight;
@@ -148,7 +148,7 @@ const Confetti: React.FC = () => {
     }
   }, []);
 
-  const createParticles = (viewWidth, viewHeight) => {
+  const createParticles = (viewWidth: number, viewHeight: number) => {
     particles.current = [];
     for (let i = 0; i < 128; i++) {
       const p0 = new Point(viewWidth * 0.5, viewHeight * 0.5);
@@ -164,7 +164,7 @@ const Confetti: React.FC = () => {
     particles.current.forEach((p) => p.update());
   };
 
-  const draw = (ctx: CanvasRenderingContext2D, viewWidth, viewHeight) => {
+  const draw = (ctx: CanvasRenderingContext2D, viewWidth: number, viewHeight: number) => {
     ctx.clearRect(0, 0, viewWidth, viewHeight);
     particles.current.forEach((p) => p.draw(ctx));
   };
