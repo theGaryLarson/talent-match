@@ -144,7 +144,7 @@ export async function POST(request: Request) {
                         id: edEntry.id,
                     },
                     include: {
-                        programs: true,
+                        program: true,
                     }
                 });
 
@@ -167,7 +167,7 @@ export async function POST(request: Request) {
                         where: { id: existingJobseekerEducation.id },
                         data: eduUpdateData,
                         include: {
-                            programs: true, // Include the related program information
+                            program: true, // Include the related program information
                             eduProviders: true,
                         }
                     });
@@ -196,14 +196,14 @@ export async function POST(request: Request) {
                                     id: edEntry.edProviderId
                                 }
                             },
-                            programs: {
+                            program: {
                                 connect: {
                                     id: edEntry.programId,
                                 }
                             }
                         },
                         include: {
-                            programs: true, // Include the related program information
+                            program: true, // Include the related program information
                             eduProviders: true,
                         }
                     });
