@@ -20,9 +20,9 @@ export default function ProfileCreationLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-US">
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
           <AppRouterCacheProvider>
-            <CFAProfileCreationHeader/>
+            <CFAProfileCreationHeader />
             <StoreProvider>
               {children}
             </StoreProvider>

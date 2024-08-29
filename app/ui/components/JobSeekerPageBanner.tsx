@@ -1,0 +1,38 @@
+import Link from 'next/link';
+import RoundedButton from './RoundedButton';
+
+export default function JobSeekerPageBanner({
+  title,
+  bg,
+}: {
+  title: string;
+  bg: string;
+}) {
+  
+  //h-[615px] content-center bg-jobseeker-hero-1 bg-cover bg-center p-4 text-white bg-blend-darken tablet:p-10 laptop:h-[854px] laptop:p-20
+  return (
+    <div
+      className={
+        ' h-[615px] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px] content-center bg-jobseeker-hero-1 bg-cover bg-center' +
+        bg
+      }
+    >
+      <div className="inline-flex h-[336px] w-[557px] flex-col items-start justify-start gap-4">
+        <div className="self-stretch font-['Roboto'] text-6xl font-normal capitalize leading-[66px] text-white">
+          Showcase your skills and get discovered by employers
+        </div>
+        <div className="w-[540.10px] font-['Roboto'] text-2xl font-normal leading-relaxed text-white">
+          Stand Out and Unlock New Opportunities
+        </div>
+        <div className="flex flex-col items-start justify-start">
+          <div className="relative h-6 w-px" />
+        </div>
+        <Link href='/signup' className="inline-flex items-center justify-center gap-2 rounded-[100px] border border-white px-6 py-2.5 hover:invert">
+          <div className="text-center font-['Roboto'] text-base font-medium leading-tight tracking-tight text-white">
+            Create Profile
+          </div>
+        </Link>
+      </div>
+    </div>
+  );
+}

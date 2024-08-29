@@ -8,7 +8,7 @@ export default async function page({ params }: { params: { id: string } }) {
   return (
     <main className="px-4 space-y-3 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px] bg-gray-bg">
       {
-    //TODO add years work expernce "2YRS" 
+    // TODO: add years work experience "2YRS"
     }
         <div className="flex h-[200px] items-center rounded-md border bg-white">
           <div className="flex items-center gap-5 p-4">
@@ -26,8 +26,8 @@ export default async function page({ params }: { params: { id: string } }) {
                   jobseeker?.jobseeker_education[0] ? 
                   (
                     jobseeker.jobseeker_education[0].eduProviders?.name + ' | ' +
-                    jobseeker.jobseeker_education[0].degreeType + ' | ' +
-                    (jobseeker.jobseeker_education[0].major ? jobseeker.jobseeker_education[0].major : '')
+                    jobseeker.jobseeker_education[0].degreeType + ' | '
+                    + (jobseeker?.jobseeker_education[0]?.program?.title ? jobseeker.jobseeker_education[0].program.title : '')
                   ) : ''
               }
             </h2>
@@ -46,7 +46,10 @@ export default async function page({ params }: { params: { id: string } }) {
           </div>
 
           <div className="space-y-4 rounded-md border p-4 bg-white">
+            <div className='flex items-center justify-between'>
             <h1 className="text-2xl font-bold">Work Experience</h1>
+            <h1 className='font-bold text-2xl'>{jobseeker?.years_work_exp}Y</h1>
+            </div>
             {jobseeker?.work_experiences.map((experience) => (
               <div key={experience.workId} className="rounded-md border p-4 bg-gray-bg">
                 <h2 className="text-xl font-bold">
@@ -73,7 +76,7 @@ export default async function page({ params }: { params: { id: string } }) {
                   <h3 className="font-bold">
                     {education.eduProviders.name}
                   </h3>
-                  <p>{education.degreeType} in {education.major}</p>
+                  <p>{education?.program?.title} | {education.degreeType}s</p>
                   <span className='flex gap-1'>
                     <svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path fillRule="evenodd" clipRule="evenodd" d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z" fill="#047089" />
@@ -88,18 +91,21 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="space-y-4 rounded-md border p-4 bg-white">
             <h1 className="text-2xl font-bold ">Projects</h1>
 
-            {jobseeker?.project_experiences.map((experence) => (
-              <div className="rounded-md border p-4 bg-gray-bg" key={experence.projectId}>
-                <h2 className="text-xl">{experence.projTitle}</h2>
-                <p className="text-sm">
-                  {experence.startDate.toLocaleDateString() +
-                    ' - ' +
-                    experence.completionDate.toLocaleDateString()}
-                </p>
-                <p>{experence.problemSolvedDescription}</p>
-                {experence.demoUrl ? (
-                  <a target="_blank" href={experence.demoUrl}>
-                    {experence.demoUrl}
+            {jobseeker?.project_experiences.map((experience) => (
+              <div className="rounded-md border p-4 bg-gray-bg" key={experience.projectId}>
+                <h2 className="text-xl">{experience.projTitle}</h2>
+                <span className='flex gap-1'>
+                  <svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z" fill="#047089" />
+                  </svg>
+                  <p className='text-xs'>
+                    {monthNames[experience.startDate.getMonth()]} {experience.startDate.getFullYear()} - {experience.completionDate ? monthNames[experience.completionDate.getMonth()] + " " + experience.completionDate.getFullYear() : "Present"}
+                  </p>
+                </span>
+                <p>{experience.problemSolvedDescription}</p>
+                {experience.demoUrl ? (
+                  <a target="_blank" href={experience.demoUrl}>
+                    {experience.demoUrl}
                   </a>
                 ) : (
                   ''

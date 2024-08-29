@@ -53,7 +53,7 @@ export async function POST(request: Request) {
                     first_name: firstName,
                     last_name: lastName,
                     birthdate: birthDate,
-                    phone,
+                    phone: formattedPhone,
                     email,
                     gender: undefined,
                     race: undefined,
@@ -72,8 +72,8 @@ export async function POST(request: Request) {
             });
 
             const jobseeker_id = js?.jobseeker_id || uuidv4();
-            const isEnrolledInCollege = js?.is_enrolled_ed_program || false;
 
+            const isEnrolledInCollege = js?.is_enrolled_ed_program || false;
 
             const jobseeker = await prisma.jobseekers.upsert({
                 where: {user_id: user.id},

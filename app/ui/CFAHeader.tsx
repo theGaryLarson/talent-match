@@ -35,14 +35,23 @@ function classNames(...classes: string[]) {
 
 export default function CFAHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [headerTW, setHeaderTW] = useState('')
   const pathname = usePathname()
   useEffect(() => {
     // Do something here...
+    setMobileMenuOpen(false)
+    if(pathname == '/services/jobseekers'){
+      setHeaderTW('w-full z-10 absolute text-white')
+    }else{
+      setHeaderTW('bg-white')
+    }
   }, [pathname])
-
+  console.log(pathname)
 
   return (
-    <header className="bg-white" >
+    
+    <header className={headerTW} >
+      { }
       <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"></link>
       <nav className="mx-auto flex items-center justify-between p-4 laptop:px-8" aria-label="Global">
         <div className="flex laptop:flex-1">
@@ -56,7 +65,7 @@ export default function CFAHeader() {
         <div className="flex laptop:hidden">
           <button
             type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5"
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className="sr-only">Open main menu</span>
@@ -66,9 +75,9 @@ export default function CFAHeader() {
     
         <PopoverGroup className="hidden laptop:flex laptop:gap-x-12" >
           <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 ">
+            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6   ">
               For Students
-              <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+              <ChevronDownIcon className="h-5 w-5 flex-none" aria-hidden="true" />
             </PopoverButton>
 
             <Transition
@@ -84,7 +93,7 @@ export default function CFAHeader() {
               {({ close }) => (
                 <><div className="p-4" onMouseLeave={()=>{close()}}>
                     {forStudentsDropDownInfo.map((item) => (
-                    <Link key={item.name} href={item.href} className="block font-semibold text-gray-900" onClick={()=>{close()}}>
+                    <Link key={item.name} href={item.href} className="block font-semibold  text-black" onClick={()=>{close()}}>
                       <div
                         
                         className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
@@ -114,7 +123,7 @@ export default function CFAHeader() {
           <Link
             key={link.name}
             href={link.href}
-            className="text-sm font-semibold leading-6 text-gray-900"
+            className="text-sm font-semibold leading-6  "
           >
           {link.name}
           </Link>
@@ -126,7 +135,7 @@ export default function CFAHeader() {
         
 
         <div className="hidden laptop:flex laptop:flex-1 laptop:justify-end">
-          <Link href="/services/employers/dashboard" className="text-sm font-semibold leading-6 text-gray-900">
+          <Link href="/services/employers/dashboard" className="text-sm font-semibold leading-6  ">
             My Dashboard 
           </Link>
         </div>
@@ -170,7 +179,7 @@ export default function CFAHeader() {
                 <Disclosure as="div" className="-mx-3">
                   {({ open }) => (
                     <>
-                      <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                      <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7   hover:bg-gray-50">
                         For Students
                         <ChevronDownIcon
                           className={classNames(open ? 'rotate-180' : '', 'h-5 w-5 flex-none')}
@@ -183,7 +192,7 @@ export default function CFAHeader() {
                             key={item.name}
                             as={Link}
                             href={item.href}
-                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7   hover:bg-gray-50"
                             onClick={()=>{setMobileMenuOpen(false)}}
                           >
                             {item.name}
@@ -199,7 +208,7 @@ export default function CFAHeader() {
                             <Link
                             key={link.name}
                             href={link.href}
-                            className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                            className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7   hover:bg-gray-50"
                             >
                             {link.name}
                             </Link>
@@ -210,7 +219,7 @@ export default function CFAHeader() {
               <div className="py-6">
                 <Link
                   href="/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7   hover:bg-gray-50"
                 >
                   Log in/Sign up
                 </Link>
