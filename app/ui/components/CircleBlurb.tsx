@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function CircleBlurb(){
     return(
 <div>
-<div className="w-[621.30px] h-[399.84px] relative">
+<div className="w-[621.30px] h-[399.84px] relative scale-50 sm-tablet:scale-100">
     <div className="w-[174px] h-[98.20px] left-0 top-[145.04px] absolute flex-col justify-start items-center gap-[21.22px] inline-flex">
         <div className="self-stretch h-[98.20px] flex-col justify-start items-center gap-[10.61px] flex">
             <div className="self-stretch h-[98.20px] flex-col justify-start items-center gap-[7.07px] flex">

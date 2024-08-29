@@ -5,8 +5,8 @@ import InputTextWithLabel from '../components/InputTextWithLabel';
 import TagsWithAutocomplete from '../components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { v4 as uuidv4 } from "uuid";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
-import DatePickerDayjs from '../components/mui/DatePickerDayjs';
 
 const classNamePrefix = "profile-creation-project-experience-group-";
 const classTitle = "title";
@@ -46,7 +46,7 @@ export function defaultProjectExperienceData() {
 
 interface Props {
   data: ProjectExperienceData[],
-  onRemove: (uid: string) => void,
+  onRemove: (uid:string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 
@@ -54,9 +54,9 @@ export default memo(function ProjectExperiences({
   data,
   onRemove,
   onUpdate,
-}: Props) {
-  const handleChange = useCallback(<K extends keyof ProjectExperienceData>(index: number, key: K, value: any) => {
-    const changedProjectExperiences: ProjectExperienceData[] = [...data];
+}:Props) {
+  const handleChange = useCallback(<K extends keyof ProjectExperienceData>(index:number, key:K, value:any) => {
+    const changedProjectExperiences:ProjectExperienceData[] = [...data];
     const updatedProjectExperience = changedProjectExperiences[index];
     updatedProjectExperience[key] = value;
     onUpdate('projectExperiences', changedProjectExperiences);
@@ -92,17 +92,17 @@ export default memo(function ProjectExperiences({
           </InputTextWithLabel>
         </div>
         <div className="profile-form-grid md:grid-cols-2">
-          <DatePickerDayjs
-            label={'Starting date *'}
-            views={['month', 'year']}
-            value={projectExperience[classStartingDate] || null}
-            onChange={(val) => handleChange(index, classStartingDate, val)}
+          <DatePicker
+              label={'Starting date *'}
+              views={['month', 'year']}
+              value={projectExperience[classStartingDate] || null}
+              onChange={(val) => handleChange(index, classStartingDate, val)}
           />
-          <DatePickerDayjs
-            label={'Completion date *'}
-            views={['month', 'year']}
-            value={projectExperience[classCompletionDate] || null}
-            onChange={(val) => handleChange(index, classCompletionDate, val)}
+          <DatePicker
+              label={'Completion date *'}
+              views={['month', 'year']}
+              value={projectExperience[classCompletionDate] || null}
+              onChange={(val) => handleChange(index, classCompletionDate, val)}
           />
           <InputTextWithLabel
             id={classNamePrefix + projectExperience.uid + "-" + classReferenceUrl}
@@ -135,12 +135,12 @@ export default memo(function ProjectExperiences({
             maxTags={10}
             searchingText="Searching..."
             noResultsText="No skills/tech stack found..."
-            onChange={function (ev, val) { handleChange(index, classSkillsStack, val) }}
+            onChange={function(ev, val){ handleChange(index, classSkillsStack, val) }}
             searchPlaceholder="Skill (ex: Java)"
-            getTagLabel={(option: SkillDTO) => option.skill_name}
-            getTagLink={(option: SkillDTO) => option.skill_info_url}
+            getTagLabel={(option:SkillDTO) => option.skill_name}
+            getTagLink={(option:SkillDTO) => option.skill_info_url}
           />
-        </div>F
+        </div>
       </fieldset>
     ))
   );

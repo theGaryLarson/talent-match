@@ -11,9 +11,10 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from "flowbite-react";
-import { Dayjs } from 'dayjs';
-import DatePickerDayjs from '@/app/ui/components/mui/DatePickerDayjs';
-
+import { formatPhoneE164 } from "@/app/lib/utils";
+import parsePhoneNumberFromString from "libphonenumber-js";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 export default function CreateJobseekerProfileIntroPage() {
   const { fields, isSubmitting, error }: FormState = useSelector((state: RootState) => state.form);
@@ -58,15 +59,15 @@ export default function CreateJobseekerProfileIntroPage() {
     }
   };
 
-    const handleImageUpload = (url: string) => {
-        // Update the local state with the uploaded image URL
-        setAvatarUrl(url);
-    };
+  const handleImageUpload = (url: string) => {
+    // Update the local state with the uploaded image URL
+    setAvatarUrl(url);
+  };
 
-    const handleResumeUpload = (url: string) => {
-        // Update the local state with the uploaded image URL
-        setResumeUrl(url);
-    };
+  const handleResumeUpload = (url: string) => {
+    // Update the local state with the uploaded image URL
+    setResumeUrl(url);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -75,22 +76,22 @@ export default function CreateJobseekerProfileIntroPage() {
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
-          userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
-          photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
-          firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
-          lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
-          birthDate: birthdate ? birthdate.toISOString() : null,
-          phoneCountryCode: fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null,
-          phone: fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null,
-          zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
-          state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
-          city: '',
-          county: '',
-          email: fields.find(f => f.id === 'profile-creation-intro-email')?.value || '',
-          introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
-          currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
-          resumeUrl: resumeUrl,
-      };
+      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
+      photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
+      firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
+      lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
+      birthDate: birthdate ? birthdate.toISOString() : null,
+      phoneCountryCode: fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || null,
+      phone: fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || null,
+      zipCode: fields.find(f => f.id === 'profile-creation-intro-zip-code')?.value || null,
+      state: fields.find(f => f.id === 'profile-creation-intro-state')?.value || null,
+      city: '',
+      county: '',
+      email: fields.find(f => f.id === 'profile-creation-intro-email')?.value || '',
+      introHeadline: fields.find(f => f.id === 'profile-creation-intro-headlines')?.value || null,
+      currentJobTitle: fields.find(f => f.id === 'profile-creation-intro-current-position')?.value || null,
+      resumeUrl: resumeUrl,
+    };
 
     try {
       const response = await fetch('/api/jobseekers/account/introduction/upsert', {
@@ -149,7 +150,7 @@ export default function CreateJobseekerProfileIntroPage() {
             </div>
 
             <div className="profile-form-grid">
-              <DatePickerDayjs label="Birth Date *" value={birthdate} onChange={setBirthdate} />
+              <DatePicker label="Birth Date *" value={birthdate} onChange={setBirthdate} />
             </div>
 
             <div className="profile-form-grid md:grid-cols-2">

@@ -50,7 +50,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
 
       const result = await response.json();
       console.log(JSON.stringify(result, null ,2 ));
-      router.push('/services/jobseekers');
+      router.push('/services/employers');
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
@@ -61,9 +61,9 @@ export default function CreateJobseekerProfilePreferencesPage(){
       </aside>
       <section className="profile-form-section main-content">
         <Confetti />
-        <h1>Congrats on completing your profile, Qian!</h1>
+        <h1>Congrats on completing your profile, Katherine!</h1>
 
-        <p className='subtitle-congrats'>{`Let's kickstart your career journey!`}</p>
+        <p className='subtitle-congrats'>Let's kickstart your candidate search journey!</p>
         <Button pill type="submit">Get Started</Button>
 
         {/* <form onSubmit={ handleSubmit }>
