@@ -28,23 +28,24 @@ export default function JobSeekerCardView({
   const skills: SkillDTO[] = jobseeker["jobseeker_has_skills"].map((item: JobseekerSkillDTO) => item.skills);
 
   // Decide what school to show
-  var i = 0;
-  var school = "";
-  while (jobseeker?.jobseeker_education[i] != null){
-    if (jobseeker?.jobseeker_education[i].isEnrolled){
-      // Prioritize school info if enrolled
-      school = jobseeker.jobseeker_education[i].eduProviders?.name + ' | ' +
-      jobseeker.jobseeker_education[i].degreeType +
-      (jobseeker.jobseeker_education[i].major ? + ' | ' + jobseeker.jobseeker_education[i].major : '');
-      break;
+  let school = "";
+
+  if (jobseeker?.jobseeker_education && jobseeker.jobseeker_education.length > 0) {
+    // Check if the jobseeker is currently enrolled in any education program
+    const enrolledEducation = jobseeker.jobseeker_education.find((edu) => edu.isEnrolled);
+
+    if (enrolledEducation) {
+      // If there is an enrolled program, prioritize that
+      school = (enrolledEducation.eduProviders?.name || '') + ' | ' +
+          (enrolledEducation?.degreeType || '') +
+          (enrolledEducation.program?.title ? ' | ' + enrolledEducation?.program?.title : '');
+    } else {
+      // If no enrolled program is found, show the first available education
+      const firstEducation = jobseeker.jobseeker_education[0];
+      school = (firstEducation.eduProviders?.name || '') + ' | ' +
+          (firstEducation?.degreeType || '') +
+          (firstEducation?.program?.title ? ' | ' + firstEducation.program.title : '');
     }
-    i++;
-  }
-  // Else display the first school info
-  if (school == "" && jobseeker.jobseeker_education[0] != null){
-    school = jobseeker.jobseeker_education[0].eduProviders?.name + ' | ' +
-      jobseeker.jobseeker_education[0].degreeType +
-      (jobseeker.jobseeker_education[0].major ? + ' | ' + jobseeker.jobseeker_education[0].major : '');
   }
 
   const cardViewClasses = "relative w-fit rounded-lg border border-2 border-cyan-600 p-4 sm-tablet:p-6";

@@ -17,13 +17,15 @@ import parsePhoneNumberFromString from "libphonenumber-js";
 import { DatePicker, DateView } from '@mui/x-date-pickers';
 import { Snackbar, SnackbarContent, Typography, IconButton } from '@mui/material';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
+import dayjs, { Dayjs } from 'dayjs';
 
 
 export default function CreateJobseekerProfileIntroPage(){
   const { fields, isSubmitting, error } : FormState = useSelector((state: RootState) => state.form);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [year_founded, setYearFounded] = useState<DateView | null>('year');
+  const [year_founded, setYearFounded] = useState<Dayjs | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [gender, setGender] = useState('');
   const [race, setRace] = useState('');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -66,10 +68,11 @@ export default function CreateJobseekerProfileIntroPage(){
     }
   };
 
-  const handleImageUpload = (url: string) => {
-    // Update the local state with the uploaded image URL
-    setAvatarUrl(url);
-};
+
+    const handleImageUpload = (url: string) => {
+        // Update the local state with the uploaded image URL
+        setLogoUrl(url);
+    };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -90,7 +93,7 @@ export default function CreateJobseekerProfileIntroPage(){
           // industry_sector_id: true,
           industry_sector: fields.find(f => f.id === 'profile-creation-company-industry')?.value || null,
           company_name: fields.find(f => f.id === 'profile-creation-company-name')?.value || null,
-          company_logo_url: fields.find(f => f.id === 'profile-creation-company-logo')?.value || null,
+          company_logo_url: logoUrl,
           // about_us: // on about page
           company_email: fields.find(f => f.id === 'profile-creation-company-email')?.value || '',
           year_founded: year_founded,
@@ -211,11 +214,8 @@ export default function CreateJobseekerProfileIntroPage(){
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
-
-              //These 2 props were not originally needed on component?, copying over from intro page
-              userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
+              userId='99E52D83-CC98-46AF-B62A-58124ABEBBDC' // use companyId here
               onImageUpload={handleImageUpload}
-
             />
           </fieldset>
           <fieldset>

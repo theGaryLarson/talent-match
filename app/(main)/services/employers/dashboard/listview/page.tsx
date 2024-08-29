@@ -217,7 +217,7 @@ export default function Page() {
         <div className="space-y-4">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
           <JobSeekerCardView
             key={jobSeeker.jobseeker_id}
-            name={jobSeeker.users.first_name + ' ' + jobSeeker.users.last_name}
+            name={jobSeeker?.users?.first_name + ' ' + jobSeeker?.users?.last_name}
             pathway={jobSeeker?.pathways?.pathway_title ?? ''}
             jobseeker={jobSeeker}
             pfpPicSrc={jobSeeker?.users?.photo_url}
