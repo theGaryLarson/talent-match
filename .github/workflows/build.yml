@@ -21,7 +21,7 @@ jobs:
         run: npm install  # Install project dependencies.
 
       - name: Set up environment variable
-        run: echo "AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" | tee -a $GITHUB_ENV
+        run: printf "AZURE_STORAGE_CONNECTION_STRING=%s\n" "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" >> $GITHUB_ENV
 
 
       - name: Run Build
