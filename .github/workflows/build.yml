@@ -28,4 +28,4 @@ jobs:
         run: npm run build  # Run the build script.
 
       # - name: Run Tests
-      #   run: npm test  # (Optional) Run tests if you have them.
+      #   run: npm test  # (Optional) Run tests if you have them
