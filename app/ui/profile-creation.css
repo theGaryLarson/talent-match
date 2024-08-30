@@ -134,7 +134,6 @@ h2 {
   font-size: 0.875rem;
   line-height: 1.25rem;
   border-radius: 0.5rem;
-  /* color: red; */
 }
 
 
@@ -142,6 +141,8 @@ h2 {
   @apply text-sm text-gray-500;
 }
 
-/* .year-picker > label {
-    padding: 12px;  
-}  */
+.date-picker > div > input, .year-picker > div > input {
+  @apply pt-2 pb-5;
+  /* padding-top: 11px;
+  padding-bottom: 16px; */
+}
