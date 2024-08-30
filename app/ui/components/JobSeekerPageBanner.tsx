@@ -1,20 +1,13 @@
 import Link from 'next/link';
 import RoundedButton from './RoundedButton';
 
-export default function JobSeekerPageBanner({
-  title,
-  bg,
-}: {
-  title: string;
-  bg: string;
-}) {
+export default function JobSeekerPageBanner() {
   
-  //h-[615px] content-center bg-jobseeker-hero-1 bg-cover bg-center p-4 text-white bg-blend-darken tablet:p-10 laptop:h-[854px] laptop:p-20
+  //h-[615px] content-center bg-jobseeker-hero-1 bg-cover bg-center p-4 text-white bg-blend-darken tablet:p-10 laptop:h-[854px] laptop:p-20 bg-gradient-to-r from-purple-500 to-blue-500
   return (
     <div
       className={
-        'h-[680px] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px] content-center bg-jobseeker-hero-1 bg-cover bg-center' +
-        bg
+        'h-[680px] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px] content-center bg-jobseeker-hero-1 bg-cover bg-center'
       }
     >
       <div className="inline-flex h-[336px] max-w-[557px] flex-col items-start justify-start gap-4">
