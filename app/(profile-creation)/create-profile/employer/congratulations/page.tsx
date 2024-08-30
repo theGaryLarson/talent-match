@@ -50,7 +50,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
 
       const result = await response.json();
       console.log(JSON.stringify(result, null ,2 ));
-      router.push('/services/employers');
+      router.push('/services/employers/dashboard');
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
