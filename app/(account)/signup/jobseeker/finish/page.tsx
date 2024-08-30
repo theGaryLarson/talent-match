@@ -3,6 +3,7 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import Link from 'next/link';
 import {Button} from '@/app/ui/button';
 import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
+import Image from 'next/image';
 
 export default function JobseekerSignupFinishPage(){
     return(
@@ -54,6 +55,7 @@ export default function JobseekerSignupFinishPage(){
           </form>
           
         </section>
+        <Image src='/cfa_images/signup/jobseeker-vector.png' width={1092} height={1040} className='pt-16 h-1/2 hidden sm-tablet:block laptop:hidden' alt='Art of jobseeker'/>
       </main>
     );
 }
