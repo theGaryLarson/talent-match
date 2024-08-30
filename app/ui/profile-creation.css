@@ -137,6 +137,7 @@ h2 {
   /* color: red; */
 }
 
-.date-picker > label {
+.phone-code > div > select, .date-picker > label {
   @apply text-sm text-gray-500;
 }
+
