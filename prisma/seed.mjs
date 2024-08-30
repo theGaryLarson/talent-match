@@ -1365,7 +1365,7 @@ async function seedJobSeekersEducation() {
 
                     }
                 },
-                programs: {
+                program: {
                     connect: {
                         id: faker.helpers.arrayElement(programs).id,
                     }
