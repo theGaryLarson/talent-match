@@ -130,14 +130,18 @@ h2 {
   margin-bottom: 4px;
 } */
 
-.date-picker > div {
+.year-picker > div, .date-picker > div {
   font-size: 0.875rem;
   line-height: 1.25rem;
   border-radius: 0.5rem;
   /* color: red; */
 }
 
-.phone-code > div > select, .date-picker > label {
+
+.year-picker > label, .phone-code > div > select, .date-picker > label {
   @apply text-sm text-gray-500;
 }
 
+/* .year-picker > label {
+    padding: 12px;  
+}  */

@@ -224,7 +224,7 @@ export default function CreateJobseekerProfileIntroPage(){
             <InputTextWithLabel id="profile-creation-company-website" placeholder="www.company.com" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-website')?.value || ''} required>Company Website *</InputTextWithLabel>
             <InputTextWithLabel type="email" id="profile-creation-company-email" placeholder="hello@company.com" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-email')?.value || ''} required>Company Email *</InputTextWithLabel>
             <InputTextWithLabel type="tel" id="profile-creation-company-phone" onChange={handleFieldChange} placeholder="(555) 123-4567" value={fields.find(f => f.id === 'profile-creation-company-phone')?.value || ''} required>Company Phone Number *</InputTextWithLabel>
-            <DatePicker label={"Year Founded *"} views={['year']} onChange={setYearFounded} />
+            <DatePicker label={"Year Founded *"} views={['year']} onChange={setYearFounded} className="year-picker" />
           </div>
 
           <div className="profile-form-grid tablet:grid-cols-2">

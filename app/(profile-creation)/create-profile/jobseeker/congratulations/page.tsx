@@ -24,10 +24,12 @@ export default function CreateJobseekerProfilePreferencesPage(){
   const [error, setError] = useState('');
   const router = useRouter();
 
+  const tempId = '87E52D83-CC98-46AF-B62A-58124ABEBBDC'; // TODO: grab user.id from nextauth session
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const formData: JsPreferencesDTO = {
-      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC', // TODO: grab user.id from nextauth session
+      userId: tempId,
       targetedPathwayId: null,
       targetedPathway: pathway,
       preferredEmploymentType: employmentType,
@@ -50,7 +52,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
 
       const result = await response.json();
       console.log(JSON.stringify(result, null ,2 ));
-      router.push('/services/jobseekers');
+      router.push(`/services/jobseekers/${tempId}`);
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
@@ -64,7 +66,9 @@ export default function CreateJobseekerProfilePreferencesPage(){
         <h1>Congrats on completing your profile, Qian!</h1>
 
         <p className='subtitle-congrats'>{`Let's kickstart your career journey!`}</p>
-        <Button pill type="submit">Get Started</Button>
+        <form onSubmit={ handleSubmit }>
+          <Button pill type="submit">Get Started</Button>
+        </form>
 
         {/* <form onSubmit={ handleSubmit }>
 
