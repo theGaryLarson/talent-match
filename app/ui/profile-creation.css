@@ -142,7 +142,5 @@ h2 {
 }
 
 .date-picker > div > input, .year-picker > div > input {
-  @apply pt-2 pb-5;
-  /* padding-top: 11px;
-  padding-bottom: 16px; */
+  height: 14px;
 }
