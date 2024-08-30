@@ -565,3 +565,8 @@ export async function getFilteredJobSeekerCardView(skills: string[] = [], yearsW
 export async function getJobSeekerCardViewByWorkExperience() {
 
 }
+
+export async function getIndustrySectors() {
+  const industrySectors = await prisma.industry_sectors.findMany();
+  return industrySectors;
+}
