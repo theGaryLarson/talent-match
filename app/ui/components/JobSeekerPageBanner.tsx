@@ -7,10 +7,10 @@ export default function JobSeekerPageBanner() {
   return (
     <div
       className={
-        'h-[680px] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px] content-center bg-jobseeker-hero-1 bg-cover bg-center'
+        'h-[750px] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px] content-center bg-jobseeker-hero-1 bg-cover bg-center'
       }
     >
-      <div className="inline-flex h-[336px] max-w-[557px] flex-col items-start justify-start gap-4">
+      <div className="inline-flex  max-w-[557px] flex-col items-start justify-start gap-4">
         <div className="self-stretch font-['Roboto'] text-6xl font-normal capitalize leading-[66px] text-white">
           Showcase your skills and get discovered by employers
         </div>
