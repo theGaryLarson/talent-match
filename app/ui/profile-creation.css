@@ -117,3 +117,15 @@ h2 {
 .spaced-lists > li {
   @apply mb-5;
 }
+
+.snackbar-message {
+  display: flex;
+}
+
+.snackbar-message > svg {
+  margin-right: 16px;
+}
+/* 
+.snackbar-message > div > div + p {
+  margin-bottom: 4px;
+} */
