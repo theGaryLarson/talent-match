@@ -146,17 +146,13 @@ export default function CreateJobseekerProfileIntroPage(){
             </div>
             
             <div className="profile-form-grid">
-              <DatePicker label="Birthdate *" value={birthdate} onChange={setBirthdate} />
-            </div>
+              <DatePicker label="Birthdate *" value={birthdate} onChange={setBirthdate} className="date-picker"/>
 
-            <div className="profile-form-grid">
               <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" value={fields.find(f => f.id === 'profile-creation-intro-email')?.value || ''} required>Email *</InputTextWithLabel>
 
-            </div>
-
-            <div className="profile-form-grid">
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
+                className="phone-code"
                 onChange={handleFieldChange}
                 options={[
                   {label:"Afghanistan +93", value:"Afghanistan +93"},
