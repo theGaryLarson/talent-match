@@ -1,7 +1,10 @@
-import React, { SyntheticEvent, useMemo, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useMemo, useState } from 'react';
 import Autocomplete, { AutocompleteChangeDetails, AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { debounce } from '@mui/material/utils';
+import { Chip } from '@mui/material';
+import clsx from 'clsx';
+import { inter } from '@/app/ui/fonts';
 
 interface CachedFetches<ValueType> {
   [searchTerms: string]: ValueType[];
@@ -13,10 +16,12 @@ interface Props<ValueType> {
   id?: string | undefined,
   maxTags?: number,
   noResultsText?: string | undefined,
-  onChange?: ((event: SyntheticEvent<Element, Event>, value: ValueType[], reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<ValueType> | undefined) => void) | undefined,
+  onChange?: ((event: SyntheticEvent<Element, Event>, value: (string | ValueType)[], reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<string | ValueType> | undefined) => void) | undefined,
   searchingText?: string | undefined,
   searchPlaceholder: string,
-  getOptionLabel: ((option: ValueType) => string) | undefined
+  getTagLabel: ((option: ValueType) => string) | undefined,
+  getTagLink?: ((option: ValueType) => string) | undefined,
+  initialTags?: string[],
 }
 
 export default function TagsWithAutocomplete<ValueType>({
@@ -28,20 +33,22 @@ export default function TagsWithAutocomplete<ValueType>({
   onChange,
   searchingText,
   searchPlaceholder,
-  getOptionLabel,
-}:Props<ValueType>) {
+  getTagLabel,
+  getTagLink,
+  initialTags,
+}: Props<ValueType>) {
   const [options, setOptions] = useState<ValueType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedTags, setSelectedTags] = useState<ValueType[]>([]);
 
   const handleInputChange = useMemo(
     () => {
-      const cachedFetches:CachedFetches<ValueType> = {
+      const cachedFetches: CachedFetches<ValueType> = {
         "": [] // Shows nothing when there is no search terms in the input box
       };
-      
+
       return debounce(
-        async (event:SyntheticEvent<Element, Event>, newInputValue:string) => {
+        async (event: SyntheticEvent<Element, Event>, newInputValue: string) => {
           try {
             if (cachedFetches.hasOwnProperty(newInputValue)) {
               setOptions(cachedFetches[newInputValue]); // Update the options with cached fetch data instead of hitting API again
@@ -49,7 +56,7 @@ export default function TagsWithAutocomplete<ValueType>({
             else if (newInputValue.length !== 0) {
               setLoading(true);
               const response = await fetch(`${apiSearchRoute}${encodeURIComponent(newInputValue)}`);
-              const data:ValueType[] = await response.json();
+              const data: ValueType[] = await response.json();
               cachedFetches[newInputValue] = data; // Cache the fetch data
 
               setOptions(data); // Update the options with fetched data
@@ -65,9 +72,30 @@ export default function TagsWithAutocomplete<ValueType>({
     [apiSearchRoute, setLoading, setOptions]
   );
 
+  async function initTags() {
+    var initTagsToSelect: ValueType[] = [];
+    if (initialTags != null) {
+      for (var i = 0; i < initialTags.length; i++) {
+        const response = await fetch(`${apiSearchRoute}${initialTags[i]}`);
+        const data: ValueType[] = await response.json();
+        if (data.length > 0) initTagsToSelect.push(data[0]);
+      }
+      setSelectedTags(initTagsToSelect);
+    }
+  }
+
+  // Load the init tags once on init
+  useEffect(() => {
+    initTags();
+  }, []);
+
+
   return (
     <Autocomplete
+      autoComplete
+      autoSelect
       filterSelectedOptions
+      freeSolo
       id={id}
       loading={loading}
       loadingText={searchingText}
@@ -75,17 +103,19 @@ export default function TagsWithAutocomplete<ValueType>({
       noOptionsText={noResultsText}
       onChange={(ev, val, reason, details) => {
         // Disallow change event if max tags has been violated
-        if (maxTags !== -1 && val.length > maxTags) {
+        //   or if an item not in the options was entered
+        if ((maxTags !== -1 && val.length > maxTags)
+          || !val.every(item => typeof item !== "string")) {
           ev.stopPropagation();
         }
         // Propagate the event if it's valid
         else {
-          setSelectedTags(val);
-          onChange && onChange(ev, val, reason, details);
+          setSelectedTags(val as ValueType[]);
+          onChange && onChange(ev, val as ValueType[], reason, details);
         }
       }}
       onInputChange={handleInputChange}
-      options={(loading)? [] : options}
+      options={(loading) ? [] : options}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -102,8 +132,50 @@ export default function TagsWithAutocomplete<ValueType>({
           placeholder={searchPlaceholder}
         />
       )}
-      getOptionLabel={getOptionLabel}
+      // ChipProps={root=""}
+      renderTags={(value: readonly (string | ValueType)[], getTagProps) =>
+        value.map((option: string | ValueType, index: number) => {
+          const { key, ...tagProps } = getTagProps({ index });
+          var link = (getTagLink && getTagLink(option as ValueType)) ?? "javascript:;";
+          const label = (typeof option === "string") ? option : getTagLabel && getTagLabel(option);
+          var target = (link == "javascript:;" ? "_self" : "_blank");
+          return (
+            <Chip label={
+              <a href={link} target={target} className={
+                clsx(`${inter.className} antialiased`, 'text-white', 'text-base')
+              }>
+                {label}
+              </a>
+            }
+            deleteIcon={ // make the delete X white
+              <svg className="fill-white hover:fill-gray-300 w-5 inline-block"
+                focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CancelIcon">
+                <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"></path>
+              </svg>
+            }
+            key={key}
+            {...tagProps}
+            />);
+        })}
+      getOptionLabel={(option: string | ValueType) => {
+        if (typeof option === "string") {
+          return option;
+        }
+        else if (getTagLabel) {
+          return getTagLabel(option as ValueType);
+        }
+        return "";
+      }}
       value={selectedTags}
+      sx={{ // Couldn't find a better way to change the background color ¯\_ (ツ)_/¯
+        "& .MuiChip-filled": {
+          backgroundColor: "rgb(8, 145, 178)",
+          height: "auto",
+          '&:hover': {
+            backgroundColor: "rgb(14, 116, 144)",
+          },
+        },
+      }}
     />
   );
 }

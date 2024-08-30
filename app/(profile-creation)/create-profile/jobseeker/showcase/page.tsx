@@ -17,6 +17,7 @@ export default function CreateJobseekerProfileShowcasePage(){
   const [portfolioUrl, setPortfolioUrl] = useState('');
   const [portfolioPassword, setPortfolioPassword] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -38,8 +39,11 @@ export default function CreateJobseekerProfileShowcasePage(){
         },
         body: JSON.stringify(formData),
       });
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorMessage: string = await response.text();  // Get the error message from the response
+        setError(`Failed to save data: ${errorMessage}`);
+        return;  // Exit the function if the response is not ok
       }
 
       const result = await response.json();
@@ -51,14 +55,14 @@ export default function CreateJobseekerProfileShowcasePage(){
   }
 
   return(
-    <main className="flex">
+    <main className="flex justify-center">
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={4/6 * 100} size="sm" className="xl:hidden"/>
+        <ProgressBarFlat progress={4/6 * 100} size="sm"/>
         <p>Step 4/6</p>
         <h1>Showcase</h1>
-        <p>* Indicates a required field</p>
+        <p className='subtitle'>* Indicates a required field</p>
         <form onSubmit={ handleSubmit }>
           <fieldset>
             <legend>
@@ -72,9 +76,10 @@ export default function CreateJobseekerProfileShowcasePage(){
                 maxTags={5}
                 searchingText="Searching..."
                 noResultsText="No skills found..."
-                onChange={function(ev, val){ setSkills(val) }}
+                onChange={function(ev, val){ if (val.every(skill => typeof skill !== "string")) { setSkills(val as SkillDTO[]) } }}
                 searchPlaceholder="Skill (ex: Java)"
-                getOptionLabel={(option:SkillDTO) => option.skill_name}
+                getTagLabel={(option:SkillDTO) => option.skill_name}
+                getTagLink={(option:SkillDTO) => option.skill_info_url}
               />
               <p>Select your top 5 skills from your skills list</p>
 
@@ -86,7 +91,6 @@ export default function CreateJobseekerProfileShowcasePage(){
               value={ portfolioUrl }
               onChange={(e) => { setPortfolioUrl(e.target.value) }}
             />
-
             <TextFieldWithSeparatedLabel
               id="profile-creation-showcase-password"
               label="Password if it is applicable"
@@ -96,6 +100,7 @@ export default function CreateJobseekerProfileShowcasePage(){
               value={ portfolioPassword }
               onChange={(e) => { setPortfolioPassword(e.target.value) }}
             />
+            </div>
           </fieldset>
           <fieldset>
           <div className="profile-form-grid">

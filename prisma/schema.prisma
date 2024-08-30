@@ -12,31 +12,31 @@ datasource db {
 /////////////////////////////////////////////////////
 
 model User {
-  id                 String               @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  role               String               @db.VarChar(255)
-  first_name         String?              @db.VarChar(255) // TODO: does this need to be name for auth.js
-  last_name          String?              @db.VarChar(255) // TODO: do we need to add username
-  birthdate          DateTime?            @db.DateTime
-  email              String               @unique @db.VarChar(255)
-  emailVerified      DateTime?            @map("email_verified") @db.DateTime
-  phone              String?              @db.VarChar(16)
-  gender             String?              @db.VarChar(45)
-  race               String?              @db.VarChar(45)
-  photo_url          String?              @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
-  has_agreed_terms   Boolean              @default(false) @db.Bit
-  createdAt          DateTime             @map("created_at") @db.DateTime
-  updatedAt          DateTime?            @map("updated_at") @db.DateTime
-  cfa_admin          cfa_admin[]
-  user_addresses     user_addresses[]
-  educators          educators[]
-  employers          employers[]
-  jobseekers         jobseekers[]
-  training_providers training_providers[]
-  volunteers         volunteers[]
-  Account            Account[]
-  Session            Session[]
+  id               String           @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  role             String           @db.VarChar(255)
+  first_name       String?          @db.VarChar(255) // TODO: does this need to be name for auth.js
+  last_name        String?          @db.VarChar(255) // TODO: do we need to add username
+  birthdate        DateTime?        @db.DateTime
+  email            String           @unique @db.VarChar(255)
+  emailVerified    DateTime?        @map("email_verified") @db.DateTime
+  phone            String?          @db.VarChar(16)
+  gender           String?          @db.VarChar(45)
+  race             String?          @db.VarChar(45)
+  photo_url        String?          @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
+  has_agreed_terms Boolean          @default(false) @db.Bit
+  createdAt        DateTime         @map("created_at") @db.DateTime
+  updatedAt        DateTime?        @map("updated_at") @db.DateTime
+  cfa_admin        cfa_admin[]
+  user_addresses   user_addresses[]
+  educators        educators[]
+  employers        employers[]
+  jobseekers       jobseekers[]
+  eduProviders     edu_providers[]
+  volunteers       volunteers[]
+  Account          Account[]
+  Session          Session[]
   // Optional for WebAuthn support
-  Authenticator      Authenticator[]
+  Authenticator    Authenticator[]
 
   @@map("users")
 }
@@ -123,8 +123,8 @@ model certificates {
   issuingOrg    String     @map("issuing_org") @db.VarChar(255)
   credentialId  String?    @map("credential_id") @db.VarChar(255)
   credentialUrl String?    @map("credential_url") @db.VarChar(255)
-  issueDate     DateTime   @map("issue_date") @db.DateTime
-  expiryDate    DateTime   @map("expiration_date") @db.DateTime
+  issueDate     DateTime?  @map("issue_date") @db.DateTime
+  expiryDate    DateTime?  @map("expiration_date") @db.DateTime
   description   String?    @db.NText
   jobseekers    jobseekers @relation(fields: [jobSeekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_certificates_jobseeker1")
 
@@ -150,7 +150,7 @@ model companies {
   year_founded           Int
   company_website_url    String?                @db.VarChar(255)
   company_video_url      String?                @db.VarChar(255)
-  company_phone          String?                @db.VarChar(16)
+  company_phone          String?                @db.VarChar(16) // TODO: default phoneCountryCode to 'United States +1 in page.tsx'
   company_mission        String?                @db.VarChar(255)
   company_vision         String?                @db.VarChar(255)
   size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
@@ -220,38 +220,42 @@ model user_addresses {
 }
 
 model edu_addresses {
-  edu_address_id     String           @id(clustered: false, map: "edu_addresses_PRIMARY") @db.UniqueIdentifier
-  edu_institution_id String           @db.UniqueIdentifier
-  street1            String           @db.VarChar(255)
-  street2            String?          @db.VarChar(255)
-  city               String           @db.VarChar(255)
-  state              String           @db.VarChar(255)
-  zip                String           @db.VarChar(10)
-  edu_institutions   edu_institutions @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_edu_address_edu_institution1")
+  edu_address_id  String        @id(clustered: false, map: "edu_addresses_PRIMARY") @db.UniqueIdentifier
+  edu_provider_id String        @db.UniqueIdentifier
+  street1         String        @db.VarChar(255)
+  street2         String?       @db.VarChar(255)
+  city            String        @db.VarChar(255)
+  state           String        @db.VarChar(255)
+  zip             String        @db.VarChar(10)
+  edu_providers   edu_providers @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_edu_address_edu_institution1")
 
-  @@index([edu_institution_id], map: "edu_addresses_fk_edu_address_edu_institution1_idx")
+  @@index([edu_provider_id], map: "edu_addresses_fk_edu_address_edu_institution1_idx")
 }
 
-model edu_institutions {
-  edu_institution_id  String                 @id(clustered: false, map: "edu_institutions_PRIMARY") @unique(map: "edu_institutions_edu_institution_id_UNIQUE") @db.UniqueIdentifier
+model edu_providers {
+  id                  String                 @id(clustered: false, map: "edu_providers_PRIMARY") @unique(map: "edu_providers_id_UNIQUE") @default(dbgenerated("newid()")) @db.UniqueIdentifier
   name                String?                @unique @db.VarChar(255)
   contact_email       String?                @db.VarChar(255)
   edu_url             String?                @db.VarChar(255)
+  edu_type            String?                @db.VarChar(50)
+  isAdminReviewed     Boolean                @default(false) @db.Bit
   edu_addresses       edu_addresses[]
   educators           educators[]
-  training_providers  training_providers[]
   jobseeker_education jobseekers_education[]
+  training_programs   provider_programs[]
+  User                User?                  @relation(fields: [userId], references: [id])
+  userId              String?                @db.UniqueIdentifier
 }
 
 model educators {
-  educator_id        String           @id(clustered: false, map: "educators_PRIMARY") @db.UniqueIdentifier
-  user_id            String           @db.UniqueIdentifier
-  edu_institution_id String           @db.UniqueIdentifier
-  users              User             @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_educators_contacts1")
-  edu_institutions   edu_institutions @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_educators_edu_institution1")
+  educator_id      String        @id(clustered: false, map: "educators_PRIMARY") @db.UniqueIdentifier
+  user_id          String        @db.UniqueIdentifier
+  edu_providers_id String        @db.UniqueIdentifier
+  users            User          @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_educators_contacts1")
+  edu_providers    edu_providers @relation(fields: [edu_providers_id], references: [id], onUpdate: NoAction, map: "fk_educators_edu_institution1")
 
   @@index([user_id], map: "fk_educators_contacts1_idx")
-  @@index([edu_institution_id], map: "fk_educators_edu_institution1_idx")
+  @@index([edu_providers_id], map: "fk_educators_edu_institution1_idx")
 }
 
 model employers {
@@ -274,9 +278,11 @@ model employers {
 }
 
 model industry_sectors {
-  industry_sector_id String      @id(clustered: false, map: "industry_sectors_PRIMARY") @db.UniqueIdentifier
-  sector_title       String      @db.VarChar(255)
+  industry_sector_id String           @id(clustered: false, map: "industry_sectors_PRIMARY") @db.UniqueIdentifier
+  sector_title       String           @db.VarChar(255)
   companies          companies[]
+  WorkExperience     WorkExperience[]
+  job_postings       job_postings[]
 }
 
 model job_listing_has_skills {
@@ -295,7 +301,8 @@ model job_postings {
   company_id             String                   @db.UniqueIdentifier
   location_id            String                   @db.UniqueIdentifier
   employer_id            String                   @db.UniqueIdentifier
-  technology_area_id     String                   @db.UniqueIdentifier
+  tech_area_id           String?                  @db.UniqueIdentifier
+  sector_id              String?                  @db.UniqueIdentifier
   job_title              String                   @db.VarChar(255)
   job_description        String                   @db.VarChar(255)
   is_internship          Boolean                  @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
@@ -312,13 +319,14 @@ model job_postings {
   job_listing_has_skills job_listing_has_skills[]
   companies              companies                @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_job_postings_companies1")
   employers              employers                @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, map: "fk_job_postings_employers1")
-  technology_areas       technology_areas         @relation(fields: [technology_area_id], references: [technology_area_id], onUpdate: NoAction, map: "fk_job_postings_technology_areas1")
+  techArea               technology_areas?        @relation(fields: [tech_area_id], references: [id], onUpdate: NoAction, map: "fk_job_postings_technology_areas1")
   company_addresses      company_addresses        @relation(fields: location_id, references: [company_address_id], onUpdate: NoAction, map: "fk_job_postings_company_addresses1")
+  industry_sectors       industry_sectors?        @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, map: "fk_job_postings_industry_sectors1")
 
   @@index([location_id], map: "fk_job_postings_company_addresses1_idx")
   @@index([company_id], map: "fk_job_postings_companies1_idx")
   @@index([employer_id], map: "fk_job_postings_employers1_idx")
-  @@index([technology_area_id], map: "fk_job_postings_technology_areas1_idx")
+  @@index([tech_area_id], map: "fk_job_postings_technology_areas1_idx")
 }
 
 model jobseeker_has_skills {
@@ -351,6 +359,9 @@ model jobseekers {
   video_url                          String?                              @db.VarChar(255)
   employment_type_sought             String?                              @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
   is_marked_deletion                 DateTime?                            @db.DateTime
+  pool1                              Boolean                              @default(false) @db.Bit
+  pool2                              Boolean                              @default(false) @db.Bit
+  pool3                              Boolean                              @default(false) @db.Bit
   case_mgmt                          case_mgmt[]
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
@@ -381,23 +392,27 @@ model jobseekers_private_data {
 }
 
 model jobseekers_education {
-  jobseekerEdId   String           @id @default(dbgenerated("newid()")) @map("jobseeker_ed_id") @db.UniqueIdentifier
-  jobseekerId     String           @map("jobseeker_id") @db.UniqueIdentifier
-  edInstitutionId String           @map("edu_institution_id") @db.UniqueIdentifier
-  edProgram       String           @map("ed_program") @db.NVarChar(45) // high school, college, boot camp, pre-apprenticeship etc.
-  edSystem        String?          @map("ed_system") @db.NVarChar(255) // entry for pre-apprenticeship ed_program
-  isEnrolled      Boolean          @map("is_enrolled") @db.Bit
-  startDate       DateTime         @map("start_date") @db.Date
-  gradDate        DateTime         @map("graduation_date") @db.Date
-  degreeType      String?          @map("degree_type") @db.NVarChar(45) // Cert, AAS, BAS etc.
-  major           String?          @db.NVarChar(45) // name of college program
-  minor           String?          @db.NVarChar(45)
-  description     String?          @db.NText
-  jobseekers      jobseekers       @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_education_jobseeker1")
-  eduInstitutions edu_institutions @relation(fields: [edInstitutionId], references: [edu_institution_id], onUpdate: NoAction, map: "fk_jobseeker_education_edu_institution1")
+  id             String        @id @default(dbgenerated("newid()")) @map("jobseeker_ed_id") @db.UniqueIdentifier
+  jobseekerId    String        @map("jobseeker_id") @db.UniqueIdentifier
+  eduProviderId  String        @map("edu_provider_id") @db.UniqueIdentifier
+  programId      String?       @map("program_id") @db.UniqueIdentifier
+  edLevel        String        @map("ed_program") @db.NVarChar(45) // high school, college, boot camp, pre-apprenticeship etc.
+  preAppEdSystem String?       @map("ed_system") @db.NVarChar(255) // entry for pre-apprenticeship ed_program
+  isTechDegree   Boolean?      @default(false) @map("is_tech_degree") @db.Bit
+  isEnrolled     Boolean       @map("is_enrolled") @db.Bit
+  startDate      DateTime      @map("start_date") @db.Date
+  gradDate       DateTime      @map("graduation_date") @db.Date
+  degreeType     String?       @map("degree_type") @db.NVarChar(45) // Cert, AAS, BAS etc.
+  major          String?       @db.NVarChar(45) // name of college program //TODO: remove from table
+  minor          String?       @db.NVarChar(45) // TODO: remove from table
+  gpa            String?       @db.NVarChar(45)
+  description    String?       @db.NText
+  jobseekers     jobseekers    @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_education_jobseeker1")
+  eduProviders   edu_providers @relation(fields: [eduProviderId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_edu_institution1")
+  program        programs?     @relation(fields: [programId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_programs1")
 
   @@index([jobseekerId], map: "fk_jobseeker_education_jobseeker1_idx")
-  @@index([edInstitutionId], map: "fk_jobseeker_education_edu_institution1_idx")
+  @@index([eduProviderId], map: "fk_jobseeker_education_edu_institution1_idx")
 }
 
 model jobseekers_skill_gap_data {
@@ -451,7 +466,7 @@ model pathways {
   pathway_subcategories       pathway_subcategories[]
   proj_based_tech_assessments proj_based_tech_assessments[]
   self_assessments            self_assessments[]
-  training_programs           training_programs[]
+  training_programs           provider_programs[]
 }
 
 model proj_based_tech_assessments {
@@ -543,7 +558,7 @@ model skills {
   pathway_has_skills          pathway_has_skills[]
   project_has_skills          project_has_skills[]
   skill_subcategories         skill_subcategories           @relation(fields: [skill_subcategory_id], references: [skill_subcategory_id], onUpdate: NoAction, map: "fk_skill_skill_category")
-  training_program_has_skills training_program_has_skills[]
+  provider_program_has_skills provider_program_has_skills[]
   volunteer_has_skills        volunteer_has_skills[]
 
   @@index([skill_subcategory_id], map: "skills_fk_skill_skill_category_idx")
@@ -557,45 +572,40 @@ model social_media_platforms {
 }
 
 model technology_areas {
-  technology_area_id String           @id(clustered: false, map: "technology_areas_PRIMARY") @db.UniqueIdentifier
-  title              String           @db.VarChar(255)
-  job_postings       job_postings[]
-  work_experiences   WorkExperience[]
+  id               String           @id(clustered: false, map: "technology_areas_PRIMARY") @db.UniqueIdentifier
+  title            String           @db.VarChar(255)
+  job_postings     job_postings[]
+  work_experiences WorkExperience[]
 }
 
-model training_program_has_skills {
+model provider_program_has_skills {
   training_program_id String            @db.UniqueIdentifier
   skill_id            String            @db.UniqueIdentifier
   skills              skills            @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_training_program_has_skills_skills1")
-  training_programs   training_programs @relation(fields: [training_program_id], references: [training_program_id], onUpdate: NoAction, map: "fk_training_program_has_skills_training_program1")
+  provider_programs   provider_programs @relation(fields: [training_program_id], references: [training_program_id], onUpdate: NoAction, map: "fk_training_program_has_skills_training_program1")
 
   @@id([training_program_id, skill_id], map: "training_program_has_skills_PRIMARY", clustered: false)
   @@index([skill_id], map: "fk_training_program_has_skills_skills1_idx")
   @@index([training_program_id], map: "fk_training_program_has_skills_training_program1_idx")
 }
 
-model training_programs {
+model provider_programs {
   training_program_id         String                        @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
-  training_provider_id        String                        @db.UniqueIdentifier
+  edu_provider_id             String                        @db.UniqueIdentifier
   pathway_id                  String?                       @db.UniqueIdentifier
-  training_program_has_skills training_program_has_skills[]
+  provider_program_has_skills provider_program_has_skills[]
   pathways                    pathways?                     @relation(fields: [pathway_id], references: [pathway_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_training_program_Pathways1")
-  training_providers          training_providers            @relation(fields: [training_provider_id], references: [training_provider_id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
+  edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
 
+  @@index([edu_provider_id], map: "training_programs_fk_training_program_training_provider1_idx")
   @@index([pathway_id], map: "training_programs_fk_training_program_Pathways1_idx")
-  @@index([training_provider_id], map: "training_programs_fk_training_program_training_provider1_idx")
 }
 
-model training_providers {
-  training_provider_id String              @id(clustered: false, map: "training_providers_PRIMARY") @unique(map: "training_providers_training_provider_id_UNIQUE") @db.UniqueIdentifier
-  user_id              String              @db.UniqueIdentifier
-  edu_institution_id   String              @db.UniqueIdentifier
-  training_programs    training_programs[]
-  edu_institutions     edu_institutions    @relation(fields: [edu_institution_id], references: [edu_institution_id], onUpdate: NoAction, map: "fk_training_provider_edu_institution1")
-  users                User                @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_training_provider_user1")
-
-  @@index([edu_institution_id], map: "training_providers_fk_training_provider_edu_institution1_idx")
-  @@index([user_id], map: "training_providers_fk_training_provider_user1_idx")
+// // TODO: Add a general list of programs to use as a drop down educators can associate these with their programs and provide more detail in the provider_programs table.
+model programs {
+  id                   String                 @id @unique(map: "programs_id_UNIQUE") @default(uuid()) @db.UniqueIdentifier
+  title                String                 @db.NVarChar(255)
+  jobseekers_education jobseekers_education[]
 }
 
 model volunteer_has_skills {
@@ -622,7 +632,8 @@ model volunteers {
 model WorkExperience {
   workId           String            @id(clustered: false, map: "work_experiences_PRIMARY") @map("work_id") @db.UniqueIdentifier
   jobseekerId      String            @map("jobseeker_id") @db.UniqueIdentifier
-  techAreaId       String?           @map("technology_area_id") @db.UniqueIdentifier
+  techAreaId       String?           @map("tech_area_id") @db.UniqueIdentifier
+  sectorId         String?           @map("sector_id") @db.UniqueIdentifier
   company          String            @db.VarChar(255)
   isInternship     Boolean           @default(false, map: "DF__work_expe__is_in__75A278F5") @map("is_internship") @db.Bit
   jobTitle         String            @map("job_title") @db.VarChar(45)
@@ -631,8 +642,10 @@ model WorkExperience {
   endDate          DateTime?         @map("end_date") @db.DateTime
   responsibilities String            @db.NText
   jobseekers       jobseekers        @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_work_experience_jobseeker1")
-  technology_areas technology_areas? @relation(fields: [techAreaId], references: [technology_area_id], onUpdate: NoAction, map: "fk_work_experiences_technology_areas1")
+  techArea         technology_areas? @relation(fields: [techAreaId], references: [id], onUpdate: NoAction, map: "fk_work_experiences_technology_areas1")
+  industrySector   industry_sectors? @relation(fields: [sectorId], references: [industry_sector_id], onUpdate: NoAction, map: "fk_work_eperiences_industry_sectors1")
 
+  @@index([sectorId], map: "fk_work_experience_jobseeker1_idx")
   @@index([techAreaId], map: "fk_work_experiences_technology_areas1_idx")
   @@index([jobseekerId], map: "work_experiences_fk_work_experience_jobseeker1_idx")
   @@map("work_experiences")

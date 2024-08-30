@@ -1,545 +1,571 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, {memo, useCallback} from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import {Button, Label} from "flowbite-react";
 import {Radio, Checkbox} from "@mui/material";
-import { MdClose } from "react-icons/md";
-import { DegreeType, EdProgram, EdSystem, EducationInfoDTO, PreALevel, SchoolGradeLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {MdClose} from "react-icons/md";
+import {
+    CollegeDegreeType,
+    HighSchoolDegreeType,
+    EducationLevel,
+    PreAEduSystem,
+    JsEducationInfoDTO,
+    GradePointAverage
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {edu_providers, educators, provider_programs} from '@prisma/client';
+import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
+import {EducationProviderDTO} from '@/data/dtos/EducationProviderDTO';
+import {GeneralProgramDTO} from '@/data/dtos/GeneralProgramDTO';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import dayjs, {Dayjs} from 'dayjs';
+import {v4 as uuidv4} from 'uuid';
 
 const classNamePrefix = "profile-creation-education-group-";
 
-const classProgramType = "edProgram";
-const classInstitutionId = "edInstitutionId";
-const classInstitutionName = "institutionName";
-const classCurrent = "isEnrolled";
+const classEdLevel = "edLevel";
+const classEdProviderObject = "edProviderObject"; // fixme edProviderObject
+const classEdProviderId = "edProviderId";
+const classEdProviderName = "edProviderName";
+const classIsCurrent = "isEnrolled";
 const classStartDate = "startDate";
 const classEndDate = "gradDate";
 const classDegreeType = "degreeType";
-const classGradeLevel = "schoolGradeLevel";
-const classPreALevel = "preALevel";
-const classCollegeProgram = "collegeProgram";
-const classMajor = "major";
-const classMinor = "minor";
-const classEdSystem = "edSystem";
+// const classGradeLevel = "schoolGradeLevel"; no longer needed as an input
+// const classPreALevel = "preALevel";
+const classProgramObject = "programObject";  // fixme: rename to programId
+const classProgramName = "programName";
+const classProgramId = "programId";
+// const classMajor = "major";
+// const classMinor = "minor";
+const classPreAppEdSystem = "preAppEdSystem";
 const classDescription = "description";
 const classGPA = "gpa";
+const classIsTechDegree = "isTechDegree";
 
 export interface EducationData {
-  "uid": number,
-  [classProgramType]: EdProgram,
-  [classInstitutionId]: string,
-  [classInstitutionName]?: string,
-  [classCurrent]: boolean,
-  [classStartDate]: string,
-  [classEndDate]: string,
-  [classDegreeType]?: DegreeType,
-  [classGradeLevel]?: SchoolGradeLevel | null,
-  [classPreALevel]?: PreALevel | null,
-  [classCollegeProgram]?: string | null,
-  [classMajor]?: string | null,
-  [classMinor]?: string | null,
-  [classEdSystem]?: EdSystem | null,
-  [classDescription]?: string | null,
-  [classGPA]?: number | null,
+    "uid": string,
+    [classEdLevel]: EducationLevel,
+    [classEdProviderName]: string,
+    [classIsCurrent]: boolean,
+    [classStartDate]: Dayjs | null,
+    [classEndDate]: Dayjs | null,
+    // [classGradeLevel]: string,
+    [classEdProviderObject]?: EducationProviderDTO | null,
+    [classEdProviderId]?: string | null,
+    [classDegreeType]?: CollegeDegreeType | HighSchoolDegreeType | null,
+    [classProgramObject]?: GeneralProgramDTO | null,
+    [classProgramName]?: string | null,
+    [classProgramId]?: string | null,
+    // [classMajor]?: string | null, //TODO:  replaced with program
+    // [classMinor]?: string | null,
+    [classPreAppEdSystem]?: PreAEduSystem | null,
+    [classDescription]?: string | null,
+    [classGPA]?: GradePointAverage | null,
+    [classIsTechDegree]?: boolean,
 }
 
-let uniqueListID = 0;
 export function defaultEducationData() {
-  return {
-    "uid": uniqueListID++,
-    [classProgramType]: EdProgram.None,
-    [classInstitutionId]: "",
-    [classInstitutionName]: "",
-    [classCurrent]: false,
-    [classStartDate]: "",
-    [classEndDate]: "",
-    [classDegreeType]: DegreeType.None,
-    [classGradeLevel]: null,
-    [classPreALevel]: null,
-    [classCollegeProgram]: "",
-    [classMajor]: "",
-    [classMinor]: "",
-    [classEdSystem]: null,
-    [classDescription]: "",
-    [classGPA]: null,
-  }
+    return {
+        "uid": uuidv4(),
+        [classEdLevel]: EducationLevel.Unselected,
+        [classEdProviderObject]: null,
+        [classEdProviderId]: null,
+        [classEdProviderName]: "",
+        [classIsCurrent]: false,
+        [classStartDate]: null,
+        [classEndDate]: null,
+        [classDegreeType]: null,
+        // [classGradeLevel]: null,
+        // [classPreALevel]: null,
+        [classProgramObject]: null,
+        [classProgramId]: null,
+        [classProgramName]: null,
+        // [classMajor]: "",
+        // [classMinor]: "",
+        [classPreAppEdSystem]: null,
+        [classDescription]: "",
+        [classGPA]: null,
+        [classIsTechDegree]: undefined,
+    }
 }
 
 interface Props {
-  data: EducationData[],
-  onRemove: (uid:number) => void,
-  onUpdate: (key: string, value: any) => void,
+    data: EducationData[],
+    onRemove: (uid: string) => void,
+    onUpdate: (key: string, value: any) => void,
 }
 
-export default memo(function Licenses({
-  data,
-  onRemove,
-  onUpdate,
-}:Props) {
-  const [eduProgram, setEduProgram] = useState("");
+export default memo(function Educations({
+                                            data,
+                                            onRemove,
+                                            onUpdate,
+                                        }: Props) {
+    const handleChange = useCallback(<K extends keyof EducationData>(index: number, key: K, value: any) => {
+        const changedEducations: EducationData[] = [...data];
+        const updatedEducation = changedEducations[index];
+        updatedEducation[key] = value;
+        if (key === classEdProviderObject) {
+            if (typeof value === "string") {
+                updatedEducation[classEdProviderName] = value;
+                updatedEducation[classEdProviderId] = uuidv4();
+            } else if (value) {
+                updatedEducation[classEdProviderName] = value.name;
+                updatedEducation[classEdProviderId] = value.id;
+            }
+        } else if (key === classProgramObject) {
+            if (typeof value === "string") {
+                updatedEducation[classProgramName] = value;
+                updatedEducation[classProgramId] = uuidv4();
+            } else if (value) {
+                updatedEducation[classProgramName] = value.title;
+                updatedEducation[classProgramId] = value.id;
+            }
+        }
+        onUpdate('educations', changedEducations);
+    }, [data, onUpdate]);
 
-  const handleChange = useCallback(<K extends keyof EducationData>(index:number, key:K, value:any) => {
-    const changedEducations:EducationData[] = [...data];
-    const updatedEducation = changedEducations[index];
-    updatedEducation[key] = value;
-    onUpdate('educations', changedEducations);
-  }, [data, onUpdate]);
+    return (
+        data.map((education, index) => (
+            <fieldset key={classNamePrefix + education.uid + "-key"}>
+                <legend className="w-full flex justify-between">
+                    <h3>Education {index + 1}</h3>
+                    <Button onClick={() => onRemove(education.uid)} size="xs" color="dark" outline pill><MdClose
+                        className="h-5 w-5"/></Button>
+                </legend>
 
-  return (
-    data.map((education, index) => (
-      <fieldset key={classNamePrefix + education.uid + "-key"}>
-        <legend className="w-full flex justify-between">
-          <h3>Education {index + 1}</h3>
-          <Button onClick={() => onRemove(education.uid)} size="xs" color="dark" outline pill><MdClose className="h-5 w-5" /></Button>
-        </legend>
-        
-        <div>
-            What type of program is this education? *
-            <Label className="block">
-                <Radio
-                    name="profile-creation-education-currently-enrolled"
-                    checked={education[classProgramType] === EdProgram.HighSchool}
-                    onChange={(e) => handleChange(index, classProgramType, e.target.value)}
-                    required
-                    value={EdProgram.HighSchool}
-                />
-                High school
-            </Label>
-            <Label className="block">
-                <Radio
-                    name="profile-creation-education-currently-enrolled"
-                    checked={education[classProgramType] === EdProgram.College}
-                    onChange={(e) => handleChange(index, classProgramType, e.target.value)}
-                    required
-                    value={EdProgram.College}
-                />
-                College
-            </Label>
-            <Label className="block">
-                <Radio
-                    name="profile-creation-education-currently-enrolled"
-                    checked={education[classProgramType] === EdProgram.TrainingProgram}
-                    onChange={(e) => handleChange(index, classProgramType, e.target.value)}
-                    required
-                    value={EdProgram.TrainingProgram}
-                />
-                Training program / Bootcamp
-            </Label>
-            <Label className="block">
-                <Radio
-                    name="profile-creation-education-currently-enrolled"
-                    checked={education[classProgramType] === EdProgram.PreApprenticeship}
-                    onChange={(e) => handleChange(index, classProgramType, e.target.value)}
-                    required
-                    value={EdProgram.PreApprenticeship}
-                />
-                Pre-apprenticeship
-            </Label>
-            <Label className="block">
-                <Radio
-                    name="profile-creation-education-currently-enrolled"
-                    checked={education[classProgramType] === EdProgram.Other}
-                    onChange={(e) => handleChange(index, classProgramType, e.target.value)}
-                    required
-                    value={EdProgram.Other}
-                />
-                Other
-            </Label>
-        </div>
-    {
-        (education[classProgramType] !== EdProgram.HighSchool) ? "" :
-            <div id="profile-creation-education-high-school-fields">
-                <div className="profile-form-grid">
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-high-school-name"
-                        className="w-full"
-                        options={[
-                            {label: "School A", value: "School A"},
-                            {label: "School B", value: "School B"},
-                            {label: "School C", value: "School C"},
-                        ]}
-                        placeholder="School name"
-                        onChange={(e) => handleChange(index, classInstitutionName, e.target.value)}
-                        required
-                        value={education[classInstitutionName]}
-                    >
-                        What is your school? *
-                    </SelectOptionsWithLabel>
+                <div>
+                    What type of program is this education? *
+                    <Label className="block">
+                        <Radio
+                            name="profile-creation-education-currently-enrolled"
+                            checked={education[classEdLevel] === EducationLevel.HighSchool}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
+                            required
+                            value={EducationLevel.HighSchool}
+                        />
+                        High school
+                    </Label>
+                    <Label className="block">
+                        <Radio
+                            name="profile-creation-education-currently-enrolled"
+                            checked={education[classEdLevel] === EducationLevel.College}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
+                            required
+                            value={EducationLevel.College}
+                        />
+                        College
+                    </Label>
+                    <Label className="block">
+                        <Radio
+                            name="profile-creation-education-currently-enrolled"
+                            checked={education[classEdLevel] === EducationLevel.TrainingProgram}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
+                            required
+                            value={EducationLevel.TrainingProgram}
+                        />
+                        Training program / Bootcamp
+                    </Label>
+                    <Label className="block">
+                        <Radio
+                            name="profile-creation-education-currently-enrolled"
+                            checked={education[classEdLevel] === EducationLevel.PreApprenticeship}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
+                            required
+                            value={EducationLevel.PreApprenticeship}
+                        />
+                        Pre-apprenticeship
+                    </Label>
+                    <Label className="block">
+                        <Radio
+                            name="profile-creation-education-currently-enrolled"
+                            checked={education[classEdLevel] === EducationLevel.Other}
+                            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
+                            required
+                            value={EducationLevel.Other}
+                        />
+                        Other
+                    </Label>
                 </div>
-                <div className="profile-form-grid md:grid-cols-2">
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-high-school-starting-date"
-                        value={education[classStartDate]}
-                        onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                        required
-                    >
-                        Starting date *
-                    </InputTextWithLabel>
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-high-school-completion-date"
-                        value={education[classEndDate]}
-                        onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                        required={(education[classCurrent])?false:true}
-                        disabled={(education[classCurrent])?true:false}
-                    >
-                        Completion date *
-                    </InputTextWithLabel>
-                </div>
-                <Label>
-                  <Checkbox
-                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                    checked={education[classCurrent]}
-                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
-                  />
-                  Current
-                </Label>
-                <div className="profile-form-grid">
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-high-school-grade"
-                        className="w-full"
-                        options={[
-                            {label: "Freshman", value: "Freshman"},
-                            {label: "Sophomore", value: "Sophomore"},
-                            {label: "Junior", value: "Junior"},
-                            {label: "Senior", value: "Senior"},
-                        ]}
-                        placeholder="Please select your current grade"
-                        onChange={(e) => handleChange(index, classGradeLevel, e.target.value)}
-                        required
-                        value={education[classGradeLevel]?.toString()}
-                    >
-                        What is your grade? *
-                    </SelectOptionsWithLabel>
-                    <InputTextWithLabel
-                        type="number"
-                        id="profile-creation-education-high-school-gpa"
-                        className="w-full"
-                        value={education[classGPA]}
-                        onChange={(e) => handleChange(index, classGPA, e.target.value)}
-                        required
-                    >
-                        What is your cumulative GPA? *
-                    </InputTextWithLabel>
-                </div>
-            </div>
-    }
-    {
-        (education[classProgramType] !== EdProgram.College) ? "" :
-            <div id="profile-creation-education-college-fields">
-                <div className="profile-form-grid">
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-college-name"
-                        className="w-full"
-                        options={[
-                            {label: "School A", value: "School A"},
-                            {label: "School B", value: "School B"},
-                            {label: "School C", value: "School C"},
-                        ]}
-                        placeholder="School name"
-                        onChange={(e) => handleChange(index, classInstitutionName, e.target.value)}
-                        required
-                        value={education[classInstitutionName]}
-                    >
-                        What is your school? *
-                    </SelectOptionsWithLabel>
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-college-program"
-                        className="w-full"
-                        options={[
-                            {label: "Program A", value: "Program A"},
-                            {label: "Program B", value: "Program B"},
-                            {label: "Program C", value: "Program C"},
-                        ]}
-                        placeholder="Program"
-                        onChange={(e) => handleChange(index, classProgramType, e.target.value)}
-                        required
-                        value={education[classProgramType]}
-                    >
-                        What is your program? *
-                    </SelectOptionsWithLabel>
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-college-degree"
-                        className="w-full"
-                        options={[
-                            {label: "Degree A", value: "Degree A"},
-                            {label: "Degree B", value: "Degree B"},
-                            {label: "Degree C", value: "Degree C"},
-                        ]}
-                        placeholder="Degree type"
-                        onChange={(e) => handleChange(index, classDegreeType, e.target.value)}
-                        required
-                        value={education[classDegreeType]}
-                    >
-                        What is your degree type? *
-                    </SelectOptionsWithLabel>
-                </div>
-                <div className="profile-form-grid md:grid-cols-2">
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-college-starting-date"
-                        value={education[classStartDate]}
-                        onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                        required
-                    >
-                        Starting date *
-                    </InputTextWithLabel>
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-college-completion-date"
-                        value={education[classEndDate]}
-                        onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                        required={(education[classCurrent])?false:true}
-                        disabled={(education[classCurrent])?true:false}
-                    >
-                        Completion date *
-                    </InputTextWithLabel>
-                </div>
-                <Label>
-                  <Checkbox
-                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                    checked={education[classCurrent]}
-                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
-                  />
-                  Current
-                </Label>
-
-                <div className="profile-form-grid md:grid-cols-2">
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-college-grade"
-                        className="w-full"
-                        options={[
-                            {label: "Freshman", value: "Freshman"},
-                            {label: "Sophomore", value: "Sophomore"},
-                            {label: "Junior", value: "Junior"},
-                            {label: "Senior", value: "Senior"},
-                        ]}
-                        placeholder="Please select your current grade"
-                        onChange={(e) => handleChange(index, classGradeLevel, e.target.value)}
-                        required
-                        value={education[classGradeLevel]?.toString()}
-                    >
-                        What is your grade? *
-                    </SelectOptionsWithLabel>
-                    <InputTextWithLabel
-                        type="number"
-                        id="profile-creation-education-college-gpa"
-                        className="w-full"
-                        value={education[classGPA]}
-                        onChange={(e) => handleChange(index, classGPA, e.target.value)}
-                        required
-                    >
-                        What is your cumulative GPA? *
-                    </InputTextWithLabel>
-                </div>
-            </div>
-    }
-    {
-        (education[classProgramType] !== EdProgram.TrainingProgram) ? "" :
-            <div id="profile-creation-education-training-program-fields">
-                <div className="profile-form-grid">
-                    <InputTextWithLabel
-                        id="profile-creation-education-training-program-name"
-                        placeholder="Training program name"
-                        className="w-full"
-                        value={education[classInstitutionName]}
-                        onChange={(e) => handleChange(index, classInstitutionName, e.target.value)}
-                        required
-                    >
-                        What is your Training program *
-                    </InputTextWithLabel>
-                </div>
-                <div className="profile-form-grid md:grid-cols-2">
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-training-program-starting-date"
-                        value={education[classStartDate]}
-                        onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                        required
-                    >
-                        Starting date *
-                    </InputTextWithLabel>
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-training-program-completion-date"
-                        value={education[classEndDate]}
-                        onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                        required={(education[classCurrent])?false:true}
-                        disabled={(education[classCurrent])?true:false}
-                    >
-                        Completion date *
-                    </InputTextWithLabel>
-                </div>
-                <Label>
-                  <Checkbox
-                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                    checked={education[classCurrent]}
-                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
-                  />
-                  Current
-                </Label>
-            </div>
-    }
-    {
-        (education[classProgramType] !== EdProgram.PreApprenticeship) ? "" :
-            <div id="profile-creation-education-preapprenticeship-fields">
-                <div className="profile-form-grid">
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-preapprenticeship-system"
-                        className="w-full"
-                        options={[
-                            {label: "System A", value: "System A"},
-                            {label: "System B", value: "System B"},
-                            {label: "System C", value: "System C"},
-                        ]}
-                        placeholder="Education system"
-                        onChange={(e) => handleChange(index, classEdSystem, e.target.value)}
-                        required
-                        value={education[classEdSystem]?.toString()}
-                    >
-                        What is your education system? *
-                    </SelectOptionsWithLabel>
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-preapprenticeship-program"
-                        className="w-full"
-                        options={[
-                            {label: "Program A", value: "Program A"},
-                            {label: "Program B", value: "Program B"},
-                            {label: "Program C", value: "Program C"},
-                        ]}
-                        placeholder="Program"
-                        onChange={(e) => handleChange(index, classProgramType, e.target.value)}
-                        required
-                        value={education[classProgramType]}
-                    >
-                        What is your program? *
-                    </SelectOptionsWithLabel>
-                </div>
-                <div className="profile-form-grid md:grid-cols-2">
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-preapprenticeship-starting-date"
-                        value={education[classStartDate]}
-                        onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                        required
-                    >
-                        Starting date *
-                    </InputTextWithLabel>
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-preapprenticeship-completion-date"
-                        value={education[classEndDate]}
-                        onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                        required={(education[classCurrent])?false:true}
-                        disabled={(education[classCurrent])?true:false}
-                    >
-                        Completion date *
-                    </InputTextWithLabel>
-                </div>
-                <Label>
-                  <Checkbox
-                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                    checked={education[classCurrent]}
-                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
-                  />
-                  Current
-                </Label>
-
-                <div className="profile-form-grid">
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-preapprenticeship-grade"
-                        className="w-full"
-                        options={[
-                            {label: "Level 1", value: "Level 1"},
-                            {label: "Level 2", value: "Level 2"},
-                            {label: "Level 3", value: "Level 3"},
-                            {label: "Level 4", value: "Level 4"},
-                            {label: "Level 5", value: "Level 5"},
-                            {label: "Level 6", value: "Level 6"},
-                            {label: "Last Mile", value: "Last Mile"},
-                        ]}
-                        placeholder="Please select your current grade"
-                        onChange={(e) => handleChange(index, classPreALevel, e.target.value)}
-                        required
-                        value={education[classPreALevel]?.toString()}
-                    >
-                        What is your grade? *
-                    </SelectOptionsWithLabel>
-                </div>
-            </div>
-    }
-    {
-        (education[classProgramType] !== EdProgram.Other) ? "" :
-            <div id="profile-creation-education-other-fields">
-                <div className="profile-form-grid">
-                    <InputTextWithLabel
-                        id="profile-creation-education-other-name"
-                        className="w-full"
-                        placeholder="e.g., Not enrolled"
-                        required
-                    >
-                        If education program is other, specify *
-                    </InputTextWithLabel>
-                    <InputTextWithLabel
-                        id="profile-creation-education-other-recent-school"
-                        className="w-full"
-                        placeholder="School name"
-                        required
-                    >
-                        What is your recent school? *
-                    </InputTextWithLabel>
-                    <SelectOptionsWithLabel
-                        id="profile-creation-education-other-degree-type"
-                        className="w-full"
-                        options={[
-                            {label: "Degree type A", value: "Degree type A"},
-                            {label: "Degree type B", value: "Degree type B"},
-                            {label: "Degree type C", value: "Degree type C"},
-                        ]}
-                        placeholder="Degree type"
-                        required
-                    >
-                        What is your degree type? *
-                    </SelectOptionsWithLabel>
-                </div>
-                <div className="profile-form-grid md:grid-cols-2">
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-other-starting-date"
-                        value={education[classStartDate]}
-                        onChange={(e) => handleChange(index, classStartDate, e.target.value)}
-                        required
-                    >
-                        Starting date *
-                    </InputTextWithLabel>
-                    <InputTextWithLabel
-                        type="month"
-                        id="profile-creation-education-other-completion-date"
-                        value={education[classEndDate]}
-                        onChange={(e) => handleChange(index, classEndDate, e.target.value)}
-                        required={(education[classCurrent])?false:true}
-                        disabled={(education[classCurrent])?true:false}
-                    >
-                        Completion date *
-                    </InputTextWithLabel>
-                </div>
-                <Label>
-                  <Checkbox
-                    id={classNamePrefix + education.uid + "-" + classCurrent}
-                    name={classNamePrefix + education.uid + "-" + classCurrent}
-                    checked={education[classCurrent]}
-                    onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
-                  />
-                  Current
-                </Label>
-            </div>
-    }
-      </fieldset>
-    ))
-  );
+                {
+                    (education[classEdLevel] !== EducationLevel.HighSchool) ? "" :
+                        <div id="profile-creation-education-high-school-fields">
+                            <div className="profile-form-grid">
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/search/"
+                                    fieldLabel="What is your high school? *"
+                                    id="profile-creation-education-high-school-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education providers found..."
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
+                                    searchPlaceholder="High school name"
+                                    getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
+                                />
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/programs/high-school/search/"
+                                    fieldLabel="What is your program? *"
+                                    id="profile-creation-education-high-school-program"
+                                    searchingText="Searching..."
+                                    noResultsText="No education provider programs found..."
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
+                                    searchPlaceholder="Program name"
+                                    getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+                                />
+                                <SelectOptionsWithLabel
+                                    id="profile-creation-education-high-school-degree"
+                                    className="w-full"
+                                    options={(Object.values(HighSchoolDegreeType) as string[]).map(
+                                        value => ({label: value, value})
+                                    )}
+                                    placeholder="Degree type"
+                                    onChange={(e) => handleChange(index, classDegreeType, e.target.value)}
+                                    required
+                                    value={education[classDegreeType] as string}
+                                >
+                                    What is your degree type? *
+                                </SelectOptionsWithLabel>
+                            </div>
+                            <div className="profile-form-grid md:grid-cols-2">
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
+                                />
+                            </div>
+                            <Label>
+                                <Checkbox
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
+                                />
+                                Current
+                            </Label>
+                            <div className="profile-form-grid">
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-high-school-gpa"}
+                                    type="number"
+                                    className="w-full"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
+                                    onChange={(e) => handleChange(index, classGPA, e.target.value)}
+                                    required
+                                    value={education[classGPA]}
+                                >
+                                    What is your grade?
+                                </InputTextWithLabel>
+                            </div>
+                        </div>
+                }
+                {
+                    (education[classEdLevel] !== EducationLevel.College) ? "" :
+                        <div id="profile-creation-education-college-fields">
+                            <div className="profile-form-grid">
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/search/"
+                                    fieldLabel="What is your college? *"
+                                    id="profile-creation-education-college-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education providers found..."
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
+                                    searchPlaceholder="College name"
+                                    getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
+                                />
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/programs/college/search/"
+                                    fieldLabel="What is your program? *"
+                                    id="profile-creation-education-college-program"
+                                    searchingText="Searching..."
+                                    noResultsText="No education provider programs found..."
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
+                                    searchPlaceholder="Program name"
+                                    getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+                                />
+                                <SelectOptionsWithLabel
+                                    id="profile-creation-education-college-degree"
+                                    className="w-full"
+                                    options={(Object.values(CollegeDegreeType) as string[]).map(
+                                        value => ({label: value, value})
+                                    )}
+                                    placeholder="Degree type"
+                                    onChange={(e) => handleChange(index, classDegreeType, e.target.value)}
+                                    required
+                                    value={education[classDegreeType] as string}
+                                >
+                                    What is your degree type? *
+                                </SelectOptionsWithLabel>
+                            </div>
+                            <div className="profile-form-grid md:grid-cols-2">
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
+                                />
+                            </div>
+                            <Label>
+                                <Checkbox
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
+                                />
+                                Current
+                            </Label>
+                            <div className="profile-form-grid">
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-college-gpa"}
+                                    type="number"
+                                    className="w-full"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
+                                    onChange={(e) => handleChange(index, classGPA, e.target.value)}
+                                    required
+                                    value={education[classGPA]}
+                                >
+                                    What is your grade?
+                                </InputTextWithLabel>
+                            </div>
+                        </div>
+                }
+                {
+                    (education[classEdLevel] !== EducationLevel.TrainingProgram) ? "" :
+                        <div id="profile-creation-education-training-program-fields">
+                            <div className="profile-form-grid">
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/search/"
+                                    fieldLabel="Who is your training provider? *"
+                                    id="profile-creation-education-training-provider-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education providers found..."
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
+                                    searchPlaceholder="Training provider name"
+                                    getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
+                                />
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/programs/training-programs/search/"
+                                    fieldLabel="What is your training program? *"
+                                    id="profile-creation-education-training-provider-program-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education provider programs found..."
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
+                                    searchPlaceholder="Training program name"
+                                    getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+                                />
+                            </div>
+                            <div className="profile-form-grid md:grid-cols-2">
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
+                                />
+                            </div>
+                            <Label>
+                                <Checkbox
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
+                                />
+                                Current
+                            </Label>
+                            <div className="profile-form-grid">
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-training-program-gpa"}
+                                    type="number"
+                                    className="w-full"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
+                                    onChange={(e) => handleChange(index, classGPA, e.target.value)}
+                                    required
+                                    value={education[classGPA]}
+                                >
+                                    What is your grade?
+                                </InputTextWithLabel>
+                            </div>
+                        </div>
+                }
+                {
+                    (education[classEdLevel] !== EducationLevel.PreApprenticeship) ? "" :
+                        <div id="profile-creation-education-preapprenticeship-fields">
+                            <div className="profile-form-grid">
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/search/"
+                                    fieldLabel="Who is your pre-apprenticeship provider? *"
+                                    id="profile-creation-education-preapprenticeship-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education providers found..."
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
+                                    searchPlaceholder="Pre-apprenticeship name (e.g.: Computing for All)"
+                                    getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
+                                />
+                                <SelectOptionsWithLabel
+                                    id="profile-creation-education-preapprenticeship-system"
+                                    className="w-full"
+                                    options={(Object.values(PreAEduSystem) as string[]).map(
+                                        value => ({label: value, value})
+                                    )}
+                                    placeholder="Education system"
+                                    onChange={(e) => handleChange(index, classPreAppEdSystem, e.target.value)}
+                                    required
+                                    value={education[classPreAppEdSystem]?.toString()}
+                                >
+                                    What is your education system? *
+                                </SelectOptionsWithLabel>
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/programs/pre-apprenticeship/search/"
+                                    fieldLabel="What is your program? *"
+                                    id="profile-creation-education-preapprenticeship-program"
+                                    searchingText="Searching..."
+                                    noResultsText="No education provider programs found..."
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
+                                    searchPlaceholder="Program name"
+                                    getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+                                />
+                            </div>
+                            <div className="profile-form-grid md:grid-cols-2">
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
+                                />
+                            </div>
+                            <Label>
+                                <Checkbox
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
+                                />
+                                Current
+                            </Label>
+                            <div className="profile-form-grid">
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-preapprenticeship-gpa"}
+                                    type="number"
+                                    className="w-full"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
+                                    onChange={(e) => handleChange(index, classGPA, e.target.value)}
+                                    required
+                                    value={education[classGPA]}
+                                >
+                                    What is your grade?
+                                </InputTextWithLabel>
+                            </div>
+                        </div>
+                }
+                {
+                    (education[classEdLevel] !== EducationLevel.Other) ? "" :
+                        <div id="profile-creation-education-other-fields">
+                            <div className="profile-form-grid">
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/search/"
+                                    fieldLabel="Who is your education provider? *"
+                                    id="profile-creation-education-other-provider-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education providers found..."
+                                    value={education[classEdProviderObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classEdProviderObject, val)}
+                                    searchPlaceholder="Education provider name"
+                                    getOptionLabel={(option: EducationProviderDTO) => option.name ?? ''}
+                                />
+                                <TextFieldWithAutocomplete
+                                    apiSearchRoute="/api/edu-providers/programs/other/search/"
+                                    fieldLabel="What is your education provider's program? *"
+                                    id="profile-creation-education-other-provider-program-name"
+                                    searchingText="Searching..."
+                                    noResultsText="No education provider programs found..."
+                                    value={education[classProgramObject] ?? ""}
+                                    onChange={(e, val) => handleChange(index, classProgramObject, val)}
+                                    searchPlaceholder="Education provider program name"
+                                    getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+                                />
+                            </div>
+                            <div className="profile-form-grid md:grid-cols-2">
+                                <DatePicker
+                                    label={'Starting date *'}
+                                    views={['month', 'year']}
+                                    value={education[classStartDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classStartDate, val)}
+                                />
+                                <DatePicker
+                                    label={'Completion date *'}
+                                    views={['month', 'year']}
+                                    value={education[classEndDate] || null}
+                                    onChange={(val: Dayjs | null) => handleChange(index, classEndDate, val)}
+                                />
+                            </div>
+                            <Label>
+                                <Checkbox
+                                    id={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    name={classNamePrefix + education.uid + "-" + classIsCurrent}
+                                    checked={education[classIsCurrent]}
+                                    onChange={(e) => handleChange(index, classIsCurrent, e.target.checked)}
+                                />
+                                Current
+                            </Label>
+                            <div className="profile-form-grid">
+                                <InputTextWithLabel
+                                    id={"profile-creation-education-other-gpa"}
+                                    type="number"
+                                    className="w-full"
+                                    placeholder="Your GPA (ex: 4.0)"
+                                    min="1.0"
+                                    max="4.0"
+                                    step="0.01"
+                                    onChange={(e) => handleChange(index, classGPA, e.target.value)}
+                                    required
+                                    value={education[classGPA]}
+                                >
+                                    What is your grade?
+                                </InputTextWithLabel>
+                            </div>
+                        </div>
+                }
+            </fieldset>
+        ))
+    );
 });

@@ -44,8 +44,8 @@ export type CertDTO = {
     issuingOrg: string,
     credentialId?: string | null,
     credentialUrl?: string | null,
-    issueDate: string,
-    expiryDate: string,
+    issueDate?: string,
+    expiryDate?: string,
     description?: string | null,
 }
 
@@ -53,82 +53,93 @@ export type ProjectExpDTO = {
     projectId: string,
     projTitle: string,
     projectRole: string,
-    startDate: string,
-    completionDate: string,
+    startDate: string | null,
+    completionDate: string | null,
     problemSolvedDescription: string,
     teamSize: string,
     repoUrl?: string | null,
-    demoUrl?: string | null,
+    videoDemoUrl?: string | null,
     skills: SkillDTO[],
 }
 
-export enum DegreeType {
-    None = "None",
+export enum HighestDegreeType {
+    PrimaryEducation = "Primary Education",
     HighSchool = "High School",
-    Certification = "Certification",
+    Associates = "Associates",
+    Bachelors = "Bachelors",
+    Masters = "Masters",
+    GED = "GED",
+    VocationalQualification = "Vocational Qualification / Certification",
+    NoFormalEducation = "No Formal Education"
+}
+
+export enum CollegeDegreeType {
     AssociatesDegree = "Associate's Degree",
     BachelorsDegree = "Bachelor's Degree",
     MastersDegree = "Master's Degree",
     DoctoralDegree = "Doctoral Degree"
 }
 
-export enum SchoolGradeLevel {
-    Freshman = "Freshman",
-    Sophomore = "Sophomore",
-    Junior = "Junior",
-    Senior = "Senior"
-}
-
-export enum PreALevel {
-    Level1 = "Level 1",
-    Level2 = "Level 2",
-    Level3 = "Level 3",
-    Level4 = "Level 4",
-    Level5 = "Level 5",
-    Level6 = "Level 6",
-    LastMile = "Last Mile",
-}
-
-export enum EdProgram {
+export enum HighSchoolDegreeType {
     None = "None",
-    HighSchool = "High school",
+    HighSchool = "Diploma",
+    GED = "GED"
+}
+
+// fixme: My thoughts are this could just be a number entry constrained between 0.0 and 4.0
+//  Also, the percentage thresholds and letter grading mapping to GPA vary from institution to institution.
+export enum GradePointAverage {
+    APlus =  "A+\t97-100%\t4.0",
+    A =      "A\t93-96%\t4.0",
+    AMinus = "A-\t90-92%\t3.7",
+    BPlus =  "B+\t87-89%\t3.3",
+    B =      "B\t83-86%\t3.0",
+    BMinus = "B-\t80-82%\t2.7",
+    CPlus =  "C+\t77-79%\t2.3",
+    C =      "C\t73-76%\t2.0",
+    CMinus = "C-\t70-72%\t1.7",
+    DPlus =  "D+\t67-69%\t1.3",
+    D =      "D\t65-66%\t1.0",
+    F =      "F\tBelow 65%\t0.0",
+}
+
+export enum EducationLevel {
+    Unselected = "",
+    HighSchool = "High School",
     College = "College",
-    TrainingProgram = "Training program / Bootcamp",
-    PreApprenticeship = "Pre-apprenticeship",
+    TrainingProgram = "Training Program / Bootcamp",
+    PreApprenticeship = "Pre-Apprenticeship",
+    Other = "Other"
+}
+
+export enum PreAEduSystem {
+    HighSchool = "High School",
+    College = "College",
     Other = "Other",
 }
 
-export enum EdSystem {
-    None = "None",
-    SystemA = "System A",
-    SystemB = "System B",
-    SystemC = "System C",
-    Other = "Other",
-}
-
-export type EducationInfoDTO = {
-    jobseekerEdId: string,
-    edInstitutionId: string, // use name lookup to find ID.
-    edProgram?: EdProgram,
-    institutionName?: string,
+export type JsEducationInfoDTO = {
+    id: string,
+    edLevel?: EducationLevel,
+    edProviderId?: string, // use name lookup to find ID.
+    edProviderName?: string,
+    preAppEdSystem: PreAEduSystem | null;
     isEnrolled: boolean,
     startDate: string,
     gradDate: string,
-    degreeType?: DegreeType,
-    collegeProgram?: string | null,
-    major?: string | null,
-    minor?: string | null,
-    gpa?: number | null,
-    gradeLevel?: SchoolGradeLevel | null,
-    preALevel?: PreALevel | null,
-    edSystem?: string | null; // pre apprenticeship option
+    degreeType?: CollegeDegreeType | HighSchoolDegreeType | null,
+    programId?: string,
+    programName?: string | null,
+    // major?: string | null, // program for other optional EdProgram
+    // minor?: string | null,
+    gpa?: GradePointAverage | null,
     description?: string | null;
 }
 
-export type JsEducationDTO = {
+export type JsEducationPageDTO = {
     userId: string,
-    highestLevelOfStudy: DegreeType;
-    educations: EducationInfoDTO[];
+    highestLevelOfStudy: HighestDegreeType;
+    educations: JsEducationInfoDTO[];
     certifications: CertDTO[];
     projects: ProjectExpDTO[];
 }

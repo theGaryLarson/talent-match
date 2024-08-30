@@ -2,6 +2,9 @@ import React, { memo, useCallback } from 'react';
 import { Button } from 'flowbite-react';
 import { MdClose } from "react-icons/md";
 import InputTextWithLabel from '../components/InputTextWithLabel';
+import { v4 as uuidv4 } from "uuid";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 const classNamePrefix = "profile-creation-license-group-";
 const classForName = "name";
@@ -12,31 +15,30 @@ const classIssueDate = "issue-date";
 const classExpirationDate = "expiration-date";
 
 export interface LicenseData {
-  "uid": number,
+  "uid": string,
   [classForName]: string,
   [classIssuingOrg]: string,
   [classCredentialId]: string,
   [classCredentialUrl]: string,
-  [classIssueDate]: string,
-  [classExpirationDate]: string,
+  [classIssueDate]: Dayjs | null, // fixme: why does this have to have the option of null. This allows null entries in certificates table and it doesn't make sense to allow null values.
+  [classExpirationDate]: Dayjs | null, // fixme: why do this have to have the option of null?
 }
 
-let uniqueListID = 0;
 export function defaultLicenseData() {
   return {
-    "uid": uniqueListID++,
+    "uid": uuidv4(),
     [classForName]: "",
     [classIssuingOrg]: "",
     [classCredentialId]: "",
     [classCredentialUrl]: "",
-    [classIssueDate]: "",
-    [classExpirationDate]: "",
+    [classIssueDate]: null,
+    [classExpirationDate]: null,
   }
 }
 
 interface Props {
   data: LicenseData[],
-  onRemove: (uid:number) => void,
+  onRemove: (uid:string) => void,
   onUpdate: (key: string, value: any) => void,
 }
 
@@ -97,22 +99,18 @@ export default memo(function Licenses({
           >
             Credential URL
           </InputTextWithLabel>
-          <InputTextWithLabel
-            type="month"
-            id={classNamePrefix + license.uid + "-" + classIssueDate}
-            onChange={(e) => handleChange(index, classIssueDate, e.target.value)}
-            value={license[classIssueDate]}
-          >
-            Issue date
-          </InputTextWithLabel>
-          <InputTextWithLabel
-            type="month"
-            id={classNamePrefix + license.uid + "-" + classExpirationDate}
-            onChange={(e) => handleChange(index, classExpirationDate, e.target.value)}
-            value={license[classExpirationDate]}
-          >
-            Expiration date
-          </InputTextWithLabel>
+          <DatePicker
+              label={'Issue date'}
+              views={['month', 'year']}
+              value={license[classIssueDate] || null}
+              onChange={(val) => handleChange(index, classIssueDate, val)}
+          />
+          <DatePicker
+              label={'Expiration date'}
+              views={['month', 'year']}
+              value={license[classExpirationDate] || null}
+              onChange={(val) => handleChange(index, classExpirationDate, val)}
+          />
         </div>
       </fieldset>
     ))
