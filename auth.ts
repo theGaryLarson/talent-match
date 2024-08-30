@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 // import Google from "next-auth/providers/google";
-import Microsoft from "next-auth/providers/microsoft-entra-id";
+// import Microsoft from "next-auth/providers/microsoft-entra-id";
 // import LinkedIn from "next-auth/providers/linkedin";
 import type { Provider } from "next-auth/providers";
 import { Role } from "./data/dtos/UserInfoDTO";
@@ -9,7 +9,7 @@ import { Role } from "./data/dtos/UserInfoDTO";
 const providers: Provider[] = [
   GitHub,
  // Google,
-  Microsoft,
+ // Microsoft,
  // LinkedIn
 ]
 
