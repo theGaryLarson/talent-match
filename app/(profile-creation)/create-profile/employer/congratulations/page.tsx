@@ -24,6 +24,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
   const [error, setError] = useState('');
   const router = useRouter();
 
+  function handleClick() {
+    router.push('/services/employers/dashboard');
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const formData: JsPreferencesDTO = {
@@ -64,7 +68,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
         <h1>Congrats on completing your profile, Katherine!</h1>
 
         <p className='subtitle-congrats'>{"Let's kickstart your candidate search journey!"}</p>
-        <Button pill type="submit">Get Started</Button>
+        <Button pill onClick={handleClick}>Get Started</Button>
 
         {/* <form onSubmit={ handleSubmit }>
 

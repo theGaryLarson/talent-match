@@ -26,6 +26,10 @@ export default function CreateJobseekerProfilePreferencesPage(){
 
   const tempId = '87E52D83-CC98-46AF-B62A-58124ABEBBDC'; // TODO: grab user.id from nextauth session
 
+  function handleClick() {
+    router.push(`/services/jobseekers/${tempId}`);
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const formData: JsPreferencesDTO = {
@@ -66,9 +70,7 @@ export default function CreateJobseekerProfilePreferencesPage(){
         <h1>Congrats on completing your profile, Qian!</h1>
 
         <p className='subtitle-congrats'>{`Let's kickstart your career journey!`}</p>
-        <form onSubmit={ handleSubmit }>
-          <Button pill type="submit">Get Started</Button>
-        </form>
+        <Button pill onClick={handleClick}>Get Started</Button>
 
         {/* <form onSubmit={ handleSubmit }>
 
