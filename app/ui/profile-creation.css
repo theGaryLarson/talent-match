@@ -129,3 +129,14 @@ h2 {
 .snackbar-message > div > div + p {
   margin-bottom: 4px;
 } */
+
+.date-picker > div {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-radius: 0.5rem;
+  /* color: red; */
+}
+
+.date-picker > label {
+  @apply text-sm text-gray-500;
+}
