@@ -18,16 +18,16 @@ jobs:
           node-version: '22.0.0'
 
       - name: Set up environment variable
-        run: echo "AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" >> $GITHUB_ENV
+        run: echo "AZURE_STORAGE_CONNECTION_STRING='${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}'" >> $GITHUB_ENV
 
       - name: Install Dependencies
         run: npm install  # Install project dependencies.
 
       - name: Run Build
         env:
-          AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          AZURE_STORAGE_NAME: ${{ secrets.AZURE_STORAGE_NAME }}
+          AZURE_STORAGE_ACCOUNT_KEY: "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}"
+          AZURE_STORAGE_CONNECTION_STRING: "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"
+          AZURE_STORAGE_NAME: "${{ secrets.AZURE_STORAGE_NAME }}"
         run: npm run build  # Run the build script.
 
       # - name: Run Tests
