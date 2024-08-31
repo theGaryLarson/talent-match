@@ -25,6 +25,7 @@ jobs:
           AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
           AZURE_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=https;AccountName=mockStorageName;AccountKey=U29tZUF6dXJlTW9ja0tleQ==;EndpointSuffix=core.windows.net"
           AZURE_STORAGE_NAME: ${{ secrets.AZURE_STORAGE_NAME }}
+          DATABASE_URL: "sqlserver://cfa-test.database.windows.net;database=Mock;user=mockUser;password=mockPass123;encrypt=true;trustServerCertificate=true"
         run: npm run build  # Run the build script.
 
       # - name: Run Tests
