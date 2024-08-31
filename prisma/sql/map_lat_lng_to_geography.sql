@@ -1,6 +1,12 @@
 BEGIN TRY
     BEGIN TRANSACTION;
 
+    -- Drop the index on lat/lng columns
+    IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'postal_code_lat_lng_idx' AND object_id = OBJECT_ID('postal_geo_data'))
+        BEGIN
+            DROP INDEX postal_code_lat_lng_idx ON postal_geo_data;
+        END
+
     -- Add the new GEOGRAPHY column
     ALTER TABLE postal_geo_data
         ADD location GEOGRAPHY;
