@@ -168,17 +168,6 @@ async function getBlobUrl(containerName: string, blobPrefix: string): Promise<st
     }
 }
 
-// Function to convert current time to UTC formatted string for Azure SAS token
-function formatDateToUTC(date: Date): string {
-    return date.toISOString().replace(/\.\d{3}Z$/, 'Z'); // Format to remove milliseconds
-}
-// Generate SAS Token for a specific blob
-function generateDateWithoutMilliseconds(date: Date): Date {
-    const formattedDate = new Date(date);
-    formattedDate.setMilliseconds(0);  // Remove milliseconds
-    return formattedDate;
-}
-
 function generateBlobSasToken(containerName: string, blobName: string): string {
     const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
     const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
