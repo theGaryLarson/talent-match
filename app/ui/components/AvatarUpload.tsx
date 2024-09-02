@@ -92,7 +92,7 @@ export default function AvatarUpload({
 
   // it was getting late and playing around. Feel free to implement this however you find best :)
   const imageProps: AvatarImageProps = {
-    className: "w-16 h-16 rounded-full object-cover", // Ensure the image is a perfect circle
+    className: "w-20 h-20 rounded-full object-cover", // Ensure the image is a perfect circle
     "data-testid": "avatar-image",
   };
 
@@ -105,7 +105,7 @@ export default function AvatarUpload({
           img={(props) => (
               <img src={filePath} alt="Uploaded Avatar" {...props} {...imageProps} />
           )}
-          className="w-16 h-16 flex-shrink-0"
+          className="w-20 h-20 flex-shrink-0"
           />
         <input type="file"
           id={id}
