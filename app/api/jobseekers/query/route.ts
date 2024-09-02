@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
     const { skills = [], yearsWorkExp = 0 } = await request.json();
-
+    // TODO: industry, education level, years experiences, zip code
     const normalizedSkills: string[] = skills.filter((skill: string) => skill && skill.trim() !== '');
 
     const andConditions: any[] = [];
