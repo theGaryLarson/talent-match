@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  // previewFeatures = ["typedSql"]
 }
 
 datasource db {
@@ -239,6 +240,7 @@ model edu_providers {
   edu_url             String?                @db.VarChar(255)
   edu_type            String?                @db.VarChar(50)
   isAdminReviewed     Boolean                @default(false) @db.Bit
+  isCoalitionMember   Boolean                @default(false) @db.Bit
   edu_addresses       edu_addresses[]
   educators           educators[]
   jobseeker_education jobseekers_education[]
@@ -649,4 +651,19 @@ model WorkExperience {
   @@index([techAreaId], map: "fk_work_experiences_technology_areas1_idx")
   @@index([jobseekerId], map: "work_experiences_fk_work_experience_jobseeker1_idx")
   @@map("work_experiences")
+}
+
+model PostalGeoData {
+  zip       String @id(clustered: false, map: "postal_codes_PRIMARY")
+  city      String @db.NVarChar(100)
+  county    String @db.NVarChar(100)
+  stateCode String @map("state_code") @db.VarChar(2)
+  state     String @db.NVarChar(100)
+  // lat and lng will be replaced with GEOGRAPHY type and dropped using raw sql as Prisma ORM does not support GEO type
+  // Justification: Will leverage optimized spatial calculations in MS SQL for within radius feature.
+  lat       Float
+  lng       Float
+
+  @@index([lat, lng], map: "postal_code_lat_lng_idx")
+  @@map("postal_geo_data")
 }

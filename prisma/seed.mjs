@@ -3,11 +3,18 @@ import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
 import getPrismaClient from '../app/lib/prismaClient.mjs'
+import fs from 'fs';
+import csv from 'csv-parser';
+import { fileURLToPath } from 'url';
+import path from "node:path";
 
 
 faker.seed(123); // set seed so generated data is deterministic
 const prisma = getPrismaClient();
 
+// Get the current directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /////////////////////////////////////////////////
 ////// Arrays to simulate realistic data ////////
@@ -1770,6 +1777,51 @@ async function seedJobPostings() {
     }
 }
 
+async function importPostalGeoData(filePath) {
+    const postalCodes = [];
+
+    console.log('Seeding PostalGeoData...');
+    fs.createReadStream(path.resolve(__dirname, filePath))
+        .pipe(csv())
+        .on('data', (row) => {
+            const postalCode = {
+                zip: row.zip.toString().padStart(5, '0'),
+                city: row.city,
+                county: row.county_name,
+                stateCode: row.state_id,
+                state: row.state_name,
+                lat: parseFloat(row.lat),
+                lng: parseFloat(row.lng),
+            };
+            postalCodes.push(postalCode);
+        })
+        .on('end', async () => {
+            console.log('CSV file successfully processed. Inserting data into the database...');
+
+            try {
+                for (const postalCode of postalCodes) {
+                    await prisma.postalGeoData.upsert({
+                        where: { zip: postalCode.zip },
+                        update: {
+                            city: postalCode.city,
+                            county: postalCode.county,
+                            stateCode: postalCode.stateCode,
+                            state: postalCode.state,
+                            lat: postalCode.lat,
+                            lng: postalCode.lng,
+                        },
+                        create: postalCode,
+                    });
+                }
+                console.log(`Seeded ${postalCodes.length} unique Postal Codes\n`);
+                console.log(`Finished seeding ...\n`);
+            } catch (error) {
+                console.error('Error handling data:', error);
+            } finally {
+                await prisma.$disconnect();
+            }
+        });
+}
 
 
 /////////////////////////////////////////////////
@@ -1806,7 +1858,8 @@ async function main() {
     await seedCompanyTestimonials();
     await seedCompanySocialLinks();
     await seedJobPostings();
-    console.log(`Finished seeding ...\n`);
+    await importPostalGeoData("../data/talent_finder_zips.csv");
+
 }
 
 main()
