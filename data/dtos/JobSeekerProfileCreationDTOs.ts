@@ -128,10 +128,8 @@ export type JsEducationInfoDTO = {
     startDate: string,
     gradDate: string,
     degreeType?: CollegeDegreeType | HighSchoolDegreeType | null,
-    programId?: string,
-    programName?: string | null,
-    // major?: string | null, // program for other optional EdProgram
-    // minor?: string | null,
+    programId: string,
+    programName: string,
     gpa?: GradePointAverage | null,
     description?: string | null;
 }
