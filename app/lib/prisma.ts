@@ -1,5 +1,5 @@
 
-import {PrismaClient, programs} from '@prisma/client';
+import {edu_providers, PostalGeoData, PrismaClient, programs, skills} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
@@ -9,223 +9,85 @@ import { v4 as uuidv4 } from 'uuid';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 
-export async function searchSkills(searchTerm:string): Promise<SkillDTO[]> {
-  const MAX_RESULTS = 10;
+type SearchOptions<T> = {
+    searchTerm: string;
+    entity: keyof PrismaClient;
+    fields: (keyof T)[];
+    maxResults: number;
+    exactMatchOnly?: boolean;
+    sortField?: keyof T;
+};
 
-  if (searchTerm.length === 0) {
-    return [];
-  }
-  else {
-    const exactResults = (await prisma.skills.findMany({
-      where: {
-        OR: [
-          {
-            skill_name:{
-              equals: searchTerm
-            }
-          },
-          {
-            skill_name:{
-              startsWith: searchTerm + " ("
-            }
-          },
-          {
-            skill_name:{
-              contains: "(" + searchTerm + ")"
-            }
-          }
-        ]
-      },
-      take: 5
-    })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
-      if (itemA.skill_name > itemB.skill_name) {
-        return 1;
-      }
-      if (itemA.skill_name < itemB.skill_name) {
-        return -1;
-      }
-      return 0;
-    });
-
-    const startsWithResults = (await prisma.skills.findMany({
-      where: {
-        AND: [
-          {
-            skill_name:{
-              startsWith: searchTerm
-            }
-          },
-          {
-            NOT: {
-              skill_name:{
-                equals: searchTerm
-              }
-            }
-          },
-          {
-            NOT: {
-              skill_name:{
-                startsWith: searchTerm + " ("
-              }
-            }
-          },
-          {
-            NOT: {
-              skill_name:{
-                contains: "(" + searchTerm + ")"
-              }
-            }
-          }
-        ]
-      },
-      take: MAX_RESULTS - exactResults.length
-    })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
-      if (itemA.skill_name > itemB.skill_name) {
-        return 1;
-      }
-      if (itemA.skill_name < itemB.skill_name) {
-        return -1;
-      }
-      return 0;
-    });
-
-    const containsResults =
-      (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
-        (await prisma.skills.findMany({
-          where: {
-            AND: [
-              {
-                skill_name: {
-                  contains: searchTerm
-                }
-              },
-              {
-                NOT: {
-                  skill_name: {
-                    startsWith: searchTerm
-                  }
-                }
-              },
-              {
-                NOT: {
-                  skill_name:{
-                    contains: "(" + searchTerm + ")"
-                  }
-                }
-              }
-            ]
-          },
-          take: MAX_RESULTS - exactResults.length - startsWithResults.length
-        })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
-          if (itemA.skill_name > itemB.skill_name) {
-            return 1;
-          }
-          if (itemA.skill_name < itemB.skill_name) {
-            return -1;
-          }
-          return 0;
-        })
-      : []
-    // Had to query them separately to guarantee Exact and StartsWith
-    //   matches were found since I'm limiting the results, and OR
-    //   clauses do not guarantee results in the order of the filters
-    return [...exactResults, ...startsWithResults, ...containsResults];
-  }
+// Utility function for sorting by name
+function sortByName<T>(array: T[], field: keyof T): T[] {
+    return array.sort((a, b) => (a[field] as string).localeCompare(b[field] as string));
 }
 
-export async function searchEduProviders(searchTerm:string): Promise<EducationProviderDTO[]> {
-  const MAX_RESULTS = 10;
-  if (searchTerm.length === 0) {
-    return [];
-  }
-  else {
-    const exactResults = (await prisma.edu_providers.findMany({
-      where: {
-        name:{
-          equals: searchTerm
-        }
-      },
-      take: 1
-    })).map(eduProvider => ({
-      id: eduProvider.id,
-      name: eduProvider.name
+// Generic search function with sorting
+async function genericSearch<T>({ searchTerm, entity, fields, maxResults, exactMatchOnly, sortField }: SearchOptions<T>): Promise<T[]> {
+    if (!searchTerm.length) return [];
+
+    // Assert the correct type for `prisma[entity]` as any model type
+    const model = prisma[entity] as any; // Type assertion to any model type
+
+    const sortResults = (results: T[]): T[] => {
+        if (!sortField) return results; // If no sort field is provided, return unsorted
+        return sortByName(results, sortField); // Use utility function to sort
+    };
+
+    const exactResults = sortResults(await model.findMany({
+        where: {
+            OR: fields.map(field => ({ [field]: { equals: searchTerm } }))
+        },
+        take: exactMatchOnly ? maxResults : 5
     }));
 
-    const startsWithResults = (await prisma.edu_providers.findMany({
-      where: {
-        AND: [
-          {
-            name:{
-              startsWith: searchTerm
-            }
-          },
-          {
-            NOT: {
-              name:{
-                equals: searchTerm
-              }
-            }
-          }
-        ]
-      },
-      take: MAX_RESULTS - exactResults.length
-    })).sort((itemA : EducationProviderDTO, itemB : EducationProviderDTO) => {
-      const itemAName = itemA.name ?? "ZZZZZ";
-      const itemBName = itemB.name ?? "ZZZZZ";
-      if (itemAName > itemBName) {
-        return 1;
-      }
-      if (itemAName < itemBName) {
-        return -1;
-      }
-      return 0;
-    }).map(eduProvider => ({
-      id: eduProvider.id,
-      name: eduProvider.name
-    }));
+    if (exactMatchOnly) return exactResults;
 
-    const containsResults =
-      (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
-        (await prisma.edu_providers.findMany({
-          where: {
+    const startsWithResults = sortResults(await model.findMany({
+        where: {
             AND: [
-              {
-                name: {
-                  contains: searchTerm
-                }
-              },
-              {
-                NOT: {
-                  name: {
-                    startsWith: searchTerm
-                  }
-                }
-              }
+                ...fields.map(field => ({ [field]: { startsWith: searchTerm } })),
+                ...fields.map(field => ({ [field]: { not: { equals: searchTerm } } }))
             ]
-          },
-          take: MAX_RESULTS - exactResults.length - startsWithResults.length
-        })).sort((itemA : EducationProviderDTO, itemB : EducationProviderDTO) => {
-          const itemAName = itemA.name ?? "ZZZZZ";
-          const itemBName = itemB.name ?? "ZZZZZ";
-          if (itemAName > itemBName) {
-            return 1;
-          }
-          if (itemAName < itemBName) {
-            return -1;
-          }
-          return 0;
-        }).map(eduProvider => ({
-          id: eduProvider.id,
-          name: eduProvider.name
+        },
+        take: maxResults - exactResults.length
+    }));
+
+    const containsResults = exactResults.length + startsWithResults.length < maxResults
+        ? sortResults(await model.findMany({
+            where: {
+                AND: [
+                    ...fields.map(field => ({ [field]: { contains: searchTerm } })),
+                    ...fields.map(field => ({ [field]: { not: { startsWith: searchTerm } } }))
+                ]
+            },
+            take: maxResults - exactResults.length - startsWithResults.length
         }))
-      : []
-    // Had to query them separately to guarantee Exact and StartsWith
-    //   matches were found since I'm limiting the results, and OR
-    //   clauses do not guarantee results in the order of the filters
+        : [];
+
     return [...exactResults, ...startsWithResults, ...containsResults];
-  }
+}
+// Specialized search functions
+export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
+    return genericSearch<skills>({
+        searchTerm,
+        entity: 'skills',
+        fields: ['skill_name'],
+        maxResults: 15,
+        sortField: 'skill_name' // Sort by skill_name
+    });
 }
 
+export async function searchEduProviders(searchTerm: string): Promise<EducationProviderDTO[]> {
+    return genericSearch<edu_providers>({
+        searchTerm,
+        entity: 'edu_providers',
+        fields: ['name'],
+        maxResults: 10,
+        sortField: 'name' // Sort by name
+    }).then(results => results.map(provider => ({ id: provider.id, name: provider.name })));
+}
 export async function searchEduProviderHighSchoolPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
   return searchPrograms(searchTerm);
 }
@@ -246,90 +108,25 @@ export async function searchEduProviderTrainingProviderPrograms(searchTerm:strin
     return searchPrograms(searchTerm);
 }
 
-export async function searchPrograms(searchTerm:string): Promise<programs[]> {
-  const MAX_RESULTS = 10;
-  if (searchTerm.length === 0) {
-    return [];
-  }
-  else {
-    const exactResults = (await prisma.programs.findMany({
-      where: {
-          title:{
-          equals: searchTerm
-        }
-      },
-      take: 1
-    }));
-
-    const startsWithResults = (await prisma.programs.findMany({
-      where: {
-        AND: [
-          {
-            title:{
-              startsWith: searchTerm
-            }
-          },
-          {
-            NOT: {
-                title:{
-                equals: searchTerm
-              }
-            }
-          }
-        ]
-      },
-      take: MAX_RESULTS - exactResults.length
-    })).sort((itemA : programs, itemB : programs) => {
-      const itemAName = itemA.title ?? "ZZZZZ";
-      const itemBName = itemB.title ?? "ZZZZZ";
-      if (itemAName > itemBName) {
-        return 1;
-      }
-      if (itemAName < itemBName) {
-        return -1;
-      }
-      return 0;
+export async function searchPrograms(searchTerm: string): Promise<GeneralProgramDTO[]> {
+    return genericSearch<programs>({
+        searchTerm,
+        entity: 'programs',
+        fields: ['title'],
+        maxResults: 10,
+        sortField: 'title' // Sort by title
     });
-
-    const containsResults =
-      (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
-        (await prisma.programs.findMany({
-          where: {
-            AND: [
-              {
-                  title: {
-                  contains: searchTerm
-                }
-              },
-              {
-                NOT: {
-                    title: {
-                    startsWith: searchTerm
-                  }
-                }
-              }
-            ]
-          },
-          take: MAX_RESULTS - exactResults.length - startsWithResults.length
-        })).sort((itemA : programs, itemB : programs) => {
-          const itemAName = itemA.title ?? "ZZZZZ";
-          const itemBName = itemB.title ?? "ZZZZZ";
-          if (itemAName > itemBName) {
-            return 1;
-          }
-          if (itemAName < itemBName) {
-            return -1;
-          }
-          return 0;
-        })
-      : []
-    // Had to query them separately to guarantee Exact and StartsWith
-    //   matches were found since I'm limiting the results, and OR
-    //   clauses do not guarantee results in the order of the filters
-    return [...exactResults, ...startsWithResults, ...containsResults];
-  }
 }
 
+export async function searchPostalGeoData(postalCode: string): Promise<PostalGeoData[]> {
+    return genericSearch<PostalGeoData>({
+        searchTerm: postalCode,
+        entity: 'postalGeoData',
+        fields: ['zip'],
+        maxResults: 10,
+        sortField: 'zip' // Sort by zip
+    });
+}
 export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
     user_id: true,
