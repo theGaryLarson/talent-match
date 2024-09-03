@@ -5,13 +5,14 @@ import GitHub from "next-auth/providers/github";
 // import LinkedIn from "next-auth/providers/linkedin";
 import type { Provider } from "next-auth/providers";
 import { Role } from "./data/dtos/UserInfoDTO";
+import { createUser, getUserByEmail } from "./app/lib/user";
 
 const providers: Provider[] = [
   GitHub,
- // Google,
- // Microsoft,
- // LinkedIn
-]
+  // Google,
+  // Microsoft,
+  // LinkedIn
+];
 
 export const providerMap = providers.map((provider) => {
   if (typeof provider === "function") {
@@ -28,64 +29,56 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       try {
-        console.log("GOT TO LINE 31");
         if (user && user.email) {
           let fetchResponse;
           let createResponse;
 
           try {
-            fetchResponse = await fetch(`/api/users/get/${user.email}`);
-          } catch (error) {
-            console.log("KEITH LOOK HERE" + fetchResponse);
+            fetchResponse = await getUserByEmail(user.email);
 
-            createResponse = await fetch(`/api/users/add`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
+            if (!fetchResponse) {
+              const userData = {
                 email: user.email,
                 firstName: user.name?.split(" ")[0] || "",
                 lastName: user.name?.split(" ")[1] || "",
                 roles: [Role.JOBSEEKER],
-              }),
-            });
+              };
 
-            if (createResponse && !createResponse.ok) {
-              console.error(`Failed to create user: ${createResponse.statusText}`);
-              throw new Error(`Failed to create user: ${createResponse.statusText}`);
+              createResponse = await createUser(userData);
+
+              if (!createResponse) {
+                console.error('Failed to create user');
+                throw new Error('Failed to create user');
+              }
+
+              console.log('User created successfully:', createResponse);
+
+              token.id = createResponse.userId;
+              token.email = createResponse.email;
+              token.jobseekerId = createResponse.jobseekerId || null;
+              token.employerId = createResponse.employerId;
+              token.companyId = createResponse.companyId;
+              token.companyIsApproved = createResponse.companyIsApproved;
+              token.employeeIsApproved = createResponse.employeeIsApproved;
+            } else {
+              token.id = fetchResponse.userId;
+              token.email = fetchResponse.email;
+              token.jobseekerId = fetchResponse.jobseekerId;
+              token.employerId = fetchResponse.employerId;
+              token.companyId = fetchResponse.companyId;
+              token.companyIsApproved = fetchResponse.companyIsApproved;
+              token.employeeIsApproved = fetchResponse.employeeIsApproved;
             }
-
-            const { result } = await createResponse.json();
-            if (token.user) {
-              token.id = result.userId;
-              token.email = result.email;
-              token.jobseekerId = result.jobseekerId || null;
-              token.employerId = result.employerId;
-              token.companyId = result.companyId;
-              token.companyIsApproved = result.companyIsApproved;
-              token.employeeIsApproved = result.employeeIsApproved;
-            }
-          }
-
-          if (fetchResponse && fetchResponse.ok) {
-            const { result } = await fetchResponse.json();
-            token.id = result.userId;
-            token.email = result.email;
-            token.jobseekerId = result.jobseekerId;
-            token.employerId = result.employerId;
-            token.companyId = result.companyId;
-            token.companyIsApproved = result.companyIsApproved;
-            token.employeeIsApproved = result.employeeIsApproved;
-          } else {
-            console.error(`Failed to fetch user: ${fetchResponse?.statusText}`);
-            throw new Error(`Failed to fetch user: ${fetchResponse?.statusText}`);
+          } catch (error) {
+            console.error('Error during user fetch/create:', error);
+            throw new Error('Failed to handle user authentication');
           }
         }
       } catch (error) {
         console.error('Error in JWT callback:', error);
         throw new Error('Failed to handle user authentication');
       }
+
       return token;
     },
     async session({ session, token }) {
