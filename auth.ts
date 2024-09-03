@@ -28,11 +28,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       try {
+        console.log("GOT TO LINE 31");
         if (user && user.email) {
-          const fetchResponse = await fetch(`/api/users/get/${user.email}`);
+          let fetchResponse;
+          let createResponse;
 
-          if (fetchResponse.status === 404) {
-            const createResponse = await fetch(`/api/users/add`, {
+          try {
+            fetchResponse = await fetch(`/api/users/get/${user.email}`);
+          } catch (error) {
+            console.log("KEITH LOOK HERE" + fetchResponse);
+
+            createResponse = await fetch(`/api/users/add`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -45,7 +51,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               }),
             });
 
-            if (!createResponse.ok) {
+            if (createResponse && !createResponse.ok) {
               console.error(`Failed to create user: ${createResponse.statusText}`);
               throw new Error(`Failed to create user: ${createResponse.statusText}`);
             }
@@ -60,8 +66,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               token.companyIsApproved = result.companyIsApproved;
               token.employeeIsApproved = result.employeeIsApproved;
             }
+          }
 
-          } else if (fetchResponse.ok) {
+          if (fetchResponse && fetchResponse.ok) {
             const { result } = await fetchResponse.json();
             token.id = result.userId;
             token.email = result.email;
@@ -71,8 +78,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             token.companyIsApproved = result.companyIsApproved;
             token.employeeIsApproved = result.employeeIsApproved;
           } else {
-            console.error(`Failed to fetch user: ${fetchResponse.statusText}`);
-            throw new Error(`Failed to fetch user: ${fetchResponse.statusText}`);
+            console.error(`Failed to fetch user: ${fetchResponse?.statusText}`);
+            throw new Error(`Failed to fetch user: ${fetchResponse?.statusText}`);
           }
         }
       } catch (error) {
@@ -82,8 +89,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-
-
       session.user.jobseekerId = token.jobseekerId;
       session.user.employerId = token.employerId;
       session.user.companyId = token.companyId;
