@@ -1,6 +1,6 @@
 export default function BottomFoldJobSeeker() {
   return (
-    <div className="inline-flex h-[579px] w-full flex-col justify-center bg-gradient-to-bl from-[#01171c] to-[#01171c] phone:p-[16px] tablet:p-[100px]">
+    <div className="bg-jobseeker-bottom-1 bg-cover bg-right desktop:bg-top inline-flex h-[579px] w-full flex-col justify-center bg-gradient-to-bl from-[#01171c] to-[#01171c] phone:p-[16px] tablet:p-[100px]">
       <div className="flex h-[294px] flex-col items-start justify-start gap-4">
         <div className="self-stretch font-['Roboto'] text-6xl font-normal leading-[66px] text-white tablet:w-[378px]">
           Stand Out and Unlock New Opportunities
