@@ -3,8 +3,6 @@ import {PrismaClient} from "@prisma/client";
 import {NextResponse} from "next/server";
 import {getUserByEmail} from "@/app/lib/user";
 
-const prisma: PrismaClient = getPrismaClient();
-
 export async function GET(request: Request, {params}: {params: {email: string}}) {
     try {
         const { email } = params;

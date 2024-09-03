@@ -1,8 +1,7 @@
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {NextResponse} from "next/server";
-import {CreateUserDTO, ReadUserInfoDTO, Role} from "@/data/dtos/UserInfoDTO";
-import {v4 as uuidv4} from 'uuid';
+import {CreateUserDTO } from "@/data/dtos/UserInfoDTO";
 import {createUser} from "@/app/lib/user";
 
 const prisma: PrismaClient = getPrismaClient();
