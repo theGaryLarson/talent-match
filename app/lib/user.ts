@@ -69,3 +69,59 @@ export async function createUser(userData: CreateUserDTO): Promise<ReadUserInfoD
         await prisma.$disconnect();
     }
 }
+
+export async function getUserByEmail(email: string): Promise<ReadUserInfoDTO | null> {
+    try {
+        const data = await prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+            select: {
+                id: true,
+                role: true,
+                jobseekers: {
+                    select: {
+                        jobseeker_id: true,
+                    }
+                },
+                employers: {
+                    select: {
+                        employer_id: true,
+                        company_id: true,
+                        is_verified_employee: true,
+                        companies: {
+                            select: {
+                                is_approved: true,
+                            }
+                        }
+                    },
+                }
+            }
+        });
+
+        if (!data?.id) {
+            return null;
+        }
+
+        const roles: Role[] = [];
+        roles.push(data.role.toUpperCase() as Role);
+
+        const result: ReadUserInfoDTO = {
+            userId: data.id,
+            roles: roles,
+            email: email,
+            jobseekerId: data.jobseekers?.[0]?.jobseeker_id || null,
+            employerId: data.employers?.[0]?.employer_id || null,
+            companyId: data.employers?.[0]?.company_id || null,
+            companyIsApproved: data.employers?.[0]?.companies?.is_approved || false,
+            employeeIsApproved: data.employers?.[0]?.is_verified_employee || false,
+        };
+
+        return result;
+
+    } catch (e: any) {
+        throw new Error(`Failed to read jobseeker skills: ${e.message}`);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
