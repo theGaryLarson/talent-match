@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { NextResponse } from 'next/server';
+import { Role } from "./data/dtos/UserInfoDTO";
 
 export default auth((req) => {
   console.log(req);
@@ -11,10 +12,11 @@ export default auth((req) => {
     "/create-profile/jobseeker/complete",
     "/create-profile/jobseeker/disclosures",
     "/create-profile/jobseeker/education",
-    "/create-profile/jobseeker/intro",
+    "/create-profile/jobseeker/introduction",
     "/create-profile/jobseeker/preferences",
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
+    "/cfa_images/"
   ];
 
   const employerRoutes = [
@@ -26,7 +28,7 @@ export default auth((req) => {
 
   const pathname = req.nextUrl.pathname;
 
-  if (!req.auth && !pathname.startsWith("/signin") && !pathname.startsWith("/auth")) {
+  if (!req.auth && !pathname.startsWith("/signin")) {
     console.log("redirected to signin again");
     const loginUrl = new URL("/signin", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
@@ -42,7 +44,7 @@ export default auth((req) => {
 
   // Check for jobseeker role access
   if (jobseekerRoutes.some((route) => pathname.includes(route))) {
-    if (!userRoles.includes("jobseeker")) {
+    if (!userRoles.includes(Role.JOBSEEKER)) {
       console.log("Access denied: User is not a jobseeker");
       const loginUrl = new URL("/", req.nextUrl.origin);
       return NextResponse.redirect(loginUrl);
@@ -52,7 +54,7 @@ export default auth((req) => {
 
   // Check for employer role access
   if (employerRoutes.some((route) => pathname.includes(route))) {
-    if (!userRoles.includes("employer")) {
+    if (!userRoles.includes(Role.EMPLOYER)) {
       console.log("Access denied: User is not an employer");
       const loginUrl = new URL("/", req.nextUrl.origin);
       return NextResponse.redirect(loginUrl);
