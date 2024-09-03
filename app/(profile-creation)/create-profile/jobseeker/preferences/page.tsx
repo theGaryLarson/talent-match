@@ -14,6 +14,12 @@ import { useRouter } from 'next/navigation';
 import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 
+export default function CreateJobseekerProfilePreferencesPage() {
+  // const { fields } = useSelector((state: RootState) => state.form);
+  // const dispatch = useDispatch();
+  const [employmentType, setEmploymentType] = useState('');
+  const [pathway, setPathway] = useState('');
+  const router = useRouter();
 
 export default function CreateJobseekerProfilePreferencesPage(){
   // const { fields } = useSelector((state: RootState) => state.form);

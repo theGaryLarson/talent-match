@@ -1,7 +1,5 @@
-'use client';
-
 import CfaLogo from '@/app/ui/CFALogo';
-import LoginForm from '@/app/ui/login-form';
+import { signIn } from '@/auth';
 
 export default function LoginPage() {
   return (
@@ -12,7 +10,14 @@ export default function LoginPage() {
             <CfaLogo />
           </div>
         </div>
-        <LoginForm />
+        <form
+          action={async () => {
+            'use server';
+            await signIn('github');
+          }}
+        >
+          <button type="submit">Signin with GitHub</button>
+        </form>
       </div>
     </main>
   );

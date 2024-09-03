@@ -1,6 +1,7 @@
 export type ReadUserInfoDTO = {
     userId: string,
     roles: Role[],
+    email: string,
     jobseekerId?: string | null,
     employerId?: string | null,
     companyId?: string | null,

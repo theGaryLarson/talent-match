@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+/**import { PrismaClient } from '@prisma/client';
 import { User } from './definitions';
+import { hash } from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -53,3 +54,45 @@ export async function getUserRole(email?: string | null): Promise<string | null>
   }
   return null;
 }
+
+
+export async function createJobseekerIfNotExists(email: string): Promise<User | null> {
+  // Check if the user already exists
+  const existingUser = await prisma.contacts.findUnique({
+    where: { email },
+  });
+
+
+  if (existingUser) {
+    if (existingUser.password === null) {
+      const updatedUser = await prisma.contacts.update({
+        where: { email },
+        data: {
+          updatedAt: new Date(),
+        },
+      });
+        return updatedUser;
+    }
+    return existingUser;
+  }
+  try {
+
+    const newUser = await prisma.contacts.create({
+      data: {
+        email,
+        role: 'JOBSEEKER',
+        name: '',
+        emailVerified: null,
+        image: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    return newUser;
+  } catch (error) {
+    console.error('Error creating user:', error);
+    return null;
+  }
+}
+  */

@@ -117,27 +117,11 @@ export async function POST(request: Request) {
             });
             await Promise.all(certPromises);
 
-            // fixme: ensure all eduProviders exist then map over them.
+            // create the entry for edu_provider if it doesn't exist before mapping over them.
+            await ensureEduProvidersExist(educations);
+            await ensureProgramsExist(educations);
+
             const schoolPromises = educations.map(async (edEntry: JsEducationInfoDTO) => {
-                // Check and create edu_provider if not exists
-                // let eduProvider = await prisma.edu_providers.findUnique({
-                //     where: { id: edEntry.edProviderId }
-                // });
-                //
-                // if (!eduProvider) {
-                //     console.log(`Creating edu_provider with id: ${edEntry.edProviderId}`);
-                //     await prisma.edu_providers.create({
-                //         data: {
-                //             id: edEntry.edProviderId,
-                //             name: edEntry.edProviderName,
-                //             contact_email: null,
-                //             edu_url: null,
-                //             isAdminReviewed: false,
-                //         }
-                //     });
-                // } else {
-                //     console.log(`edu_provider with id: ${edEntry.edProviderId} already exists.`);
-                // }
 
                 const existingJobseekerEducation = await prisma.jobseekers_education.findUnique({
                     where: {
@@ -344,8 +328,8 @@ export async function POST(request: Request) {
                 gradDate: jsEdu.gradDate.toISOString(),
                 degreeType: mapToEnum(jsEdu.degreeType ?? "None", CollegeDegreeType) ??
                             mapToEnum(jsEdu.degreeType ?? "None", HighSchoolDegreeType),
-                programId: jsEdu.programs?.id || null,
-                programName: jsEdu.programs?.title || null,
+                programId: jsEdu.program?.id || null,
+                programName: jsEdu.program?.title || null,
                 gpa: jsEdu.gpa,
                 preAppEdSystem: jsEdu.edSystem ? mapToEnum(jsEdu.edSystem, PreAEduSystem) : undefined,
                 description: jsEdu.description
@@ -407,3 +391,67 @@ export async function POST(request: Request) {
         await prisma.$disconnect();
     }
 }
+
+async function ensureEduProvidersExist(educations: JsEducationInfoDTO[]) {
+    const processedProviders = new Set(); // To avoid redundant checks and creations
+
+    for (const edEntry of educations) {
+        const { edProviderId, edProviderName } = edEntry;
+
+        // Skip if we've already processed this provider ID
+        if (processedProviders.has(edProviderId)) continue;
+
+        // Check if the edu_provider exists
+        let eduProvider = await prisma.edu_providers.findUnique({
+            where: { id: edProviderId },
+        });
+
+        // If edu_provider does not exist, create a new one
+        if (!eduProvider) {
+            await prisma.edu_providers.create({
+                data: {
+                    id: edProviderId,
+                    name: edProviderName,
+                    contact_email: null,
+                    edu_url: null,
+                    isAdminReviewed: false,
+                },
+            });
+        } else {
+            console.log(`edu_provider with id: ${edProviderId} already exists.`);
+        }
+
+        // Mark this provider as processed
+        processedProviders.add(edProviderId);
+    }
+}
+
+async function ensureProgramsExist(educations: JsEducationInfoDTO[]) {
+    const processedPrograms = new Set(); // To avoid redundant checks and creations
+
+    for (const edEntry of educations) {
+        const { programId, programName } = edEntry;
+
+        // Skip if we've already processed this program ID
+        if (processedPrograms.has(programId) || !programId) continue;
+
+        // Check if the program exists
+        let program = await prisma.programs.findUnique({
+            where: { id: programId },
+        });
+
+        // If program does not exist, create a new one
+        if (!program) {
+            await prisma.programs.create({
+                data: {
+                    id: programId,
+                    title: programName,  // Provide a fallback title if not available
+                },
+            });
+        }
+
+        // Mark this program as processed
+        processedPrograms.add(programId);
+    }
+}
+

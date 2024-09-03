@@ -1,7 +1,7 @@
 import {
+    BlobSASPermissions,
     BlobServiceClient,
-    BlockBlobClient,
-    ContainerSASPermissions,
+    BlockBlobClient, ContainerSASPermissions,
     generateBlobSASQueryParameters,
     SASProtocol,
     StorageSharedKeyCredential
@@ -141,6 +141,7 @@ async function getBlobUrlWithSas(containerName: string, blobPrefix: string): Pro
 
         // If no matching blob is found, return null or handle accordingly
         return null;
+
     } catch (error) {
         console.error("Error retrieving blob link:", error);
         throw new Error("Failed to retrieve blob link");
@@ -167,37 +168,24 @@ async function getBlobUrl(containerName: string, blobPrefix: string): Promise<st
     }
 }
 
-// Function to convert current time to UTC formatted string for Azure SAS token
-function formatDateToUTC(date: Date): string {
-    return date.toISOString().replace(/\.\d{3}Z$/, 'Z'); // Format to remove milliseconds
-}
-// Generate SAS Token for a specific blob
-function generateDateWithoutMilliseconds(date: Date): Date {
-    const formattedDate = new Date(date);
-    formattedDate.setMilliseconds(0);  // Remove milliseconds
-    return formattedDate;
-}
-
 function generateBlobSasToken(containerName: string, blobName: string): string {
     const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
     const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
     const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
 
-    // Set start time to 5 minutes ago and expiry to 24 hours later
-    const startsOn = generateDateWithoutMilliseconds(new Date(new Date().getTime() - 5 * 60 * 1000));  // 5 minutes ago
-    const expiresOn = generateDateWithoutMilliseconds(new Date(new Date().getTime() + 24 * 60 * 60 * 1000));  // 24 hours later
+    const startsOn = new Date(new Date(Date.now() - 15 * 60 * 1000).toISOString().split('.')[0] + 'Z');
+    const expiresOn = new Date(new Date(Date.now() + 15 * 60 * 1000).toISOString().split('.')[0] + 'Z');
+    console.log('startsOn', startsOn);
+    console.log('expiresOn', expiresOn)
 
-    console.log("Starts On (UTC):", startsOn.toISOString());
-    console.log("Expires On (UTC):", expiresOn.toISOString());
-
-    // Define SAS options with Date objects directly
     const sasOptions = {
         containerName,
         blobName,
-        permissions: ContainerSASPermissions.parse("r"), // Read-only permissions
-        startsOn: startsOn,  // Use Date object without milliseconds
-        expiresOn: expiresOn,  // Use Date object without milliseconds
+        permissions: BlobSASPermissions.parse("r"), // Read-only permissions for a blob
+        startsOn: new Date(new Date(Date.now() - 15 * 60 * 1000).toISOString().split('.')[0] + 'Z'), // Start time is 5 minutes before now, without milliseconds
+        expiresOn: new Date(new Date(Date.now() + 15 * 60 * 1000).toISOString().split('.')[0] + 'Z'), // Expires 10 minutes from now without milliseconds
         protocol: SASProtocol.Https, // HTTPS only
+        resource: "b",
         version: "2022-11-02", // Set the service version to match Azure
     };
 

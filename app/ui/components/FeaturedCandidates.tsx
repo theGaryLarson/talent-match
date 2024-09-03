@@ -1,4 +1,4 @@
-import JobSeekerCardView from "./JobSeekerCardView";
+import JobSeekerCardViewSmall from "./JobSeekerCardViewSmall";
 import { getAllJobSeekerCardView } from '@/app/lib/prisma';
 
 export default async function FeaturedCandidates({ maxCandidates }: { maxCandidates: number | null }) {
