@@ -44,6 +44,12 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                         startDate: true,
                         gradDate: true,
                         degreeType: true,
+                        program: {
+                          select: {
+                              id: true,
+                              title: true,
+                          }
+                        },
                         gpa:true,
                         description: true,
                     }
@@ -98,14 +104,16 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
         const edHistory: JsEducationInfoDTO[] = jobseeker.jobseeker_education.map((edu) => ({
             id: edu.id,
             edLevel: mapToEnum(edu.edLevel, EducationLevel),
-            edProviderId: edu.eduProviderId,
-            edProviderName: edu.eduProviders.name ?? undefined,
+            edProviderId: edu.eduProviderId!, //these should always exist on an entry
+            edProviderName: edu.eduProviders.name! ?? undefined, //these should always exist on an entry
             preAppEdSystem: mapToEnum(edu?.preAppEdSystem, PreAEduSystem),
             isEnrolled: edu.isEnrolled,
             startDate: edu.startDate.toISOString(),
             gradDate: edu.gradDate.toISOString(),
             degreeType: mapToEnum(edu.degreeType, CollegeDegreeType) ||
                         mapToEnum(edu.degreeType, HighSchoolDegreeType),
+            programId: edu?.program?.id!, //these should always exist on an entry
+            programName: edu?.program?.title!, //these should always exist on an entry
             gpa: mapToEnum(edu.gpa, GradePointAverage),
             description: edu.description
 
