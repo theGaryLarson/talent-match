@@ -73,6 +73,18 @@ export enum HighestDegreeType {
     NoFormalEducation = "No Formal Education"
 }
 
+// Rank mapping for the enum to use with jobseekers/query
+export const educationRank: Record<HighestDegreeType, number> = {
+    [HighestDegreeType.NoFormalEducation]: 0,
+    [HighestDegreeType.PrimaryEducation]: 1,
+    [HighestDegreeType.GED]: 2,
+    [HighestDegreeType.HighSchool]: 3,
+    [HighestDegreeType.VocationalQualification]: 4,
+    [HighestDegreeType.Associates]: 5,
+    [HighestDegreeType.Bachelors]: 6,
+    [HighestDegreeType.Masters]: 7,
+};
+
 export enum CollegeDegreeType {
     AssociatesDegree = "Associate's Degree",
     BachelorsDegree = "Bachelor's Degree",
