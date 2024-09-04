@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from 'react';
 const TWO_PI = Math.PI * 2;
 const HALF_PI = Math.PI * 0.5;
 
-const timeStep = 1 / 60;
+const timeStep = 1 / 120;
 
 class Point {
   x: number;

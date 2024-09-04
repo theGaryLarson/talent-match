@@ -129,3 +129,18 @@ h2 {
 .snackbar-message > div > div + p {
   margin-bottom: 4px;
 } */
+
+.year-picker > div, .date-picker > div {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-radius: 0.5rem;
+}
+
+
+.year-picker > label, .phone-code > div > select, .date-picker > label {
+  @apply text-sm text-gray-500 pt-1;
+}
+
+.date-picker > div > input, .year-picker > div > input {
+  height: 14px;
+}
