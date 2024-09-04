@@ -7,9 +7,14 @@ import TextareaWithLabel from '../components/TextareaWithLabel';
 import {v4 as uuidv4} from 'uuid';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import SelectAutoload from '../components/mui/SelectAutoload';
+import { IndustrySectorDTO } from '@/data/dtos/IndustrySectorDTO';
+import { TechnologyAreaDTO } from '@/data/dtos/TechnologyAreaDTO';
 
 const classNamePrefix = "profile-creation-work-experience-group-";
 const classCompany = "company";
+const classCompanyIndustry = "industry";
+const classCompanyTechArea = "technologyarea";
 const classTitle = "title";
 const classStarts = "starts";
 const classEnds = "ends";
@@ -19,6 +24,8 @@ const classExperience = "experience";
 export interface WorkExperienceData {
   uid: string,
   [classCompany]: string,
+  [classCompanyIndustry]: string,
+  [classCompanyTechArea]: string,
   [classTitle]: string,
   [classStarts]: Dayjs,
   [classEnds]: Dayjs,
@@ -30,6 +37,8 @@ export function defaultWorkExperienceData() : WorkExperienceData {
   return {
     uid: uuidv4(),
     [classCompany]: "",
+    [classCompanyIndustry]: "",
+    [classCompanyTechArea]: "",
     [classTitle]: "",
     [classStarts]: dayjs(null),
     [classEnds]: dayjs(null),
@@ -74,6 +83,26 @@ export default memo(function WorkExperiences({
           >
             Company *
           </InputTextWithLabel>
+          <SelectAutoload
+            id={classNamePrefix + workExperience.uid + "-" + classCompanyIndustry}
+            apiAutoloadRoute="/api/employers/industry-sectors"
+            label="Industry Sector *"
+            getOptionLabel={(option:IndustrySectorDTO) => option.sector_title}
+            placeholder="Your company's industry sector"
+            onChange={(e) => handleChange(index, classCompanyIndustry, e.target.value)}
+            required
+            value={workExperience[classCompanyIndustry]}
+          />
+          <SelectAutoload
+            id={classNamePrefix + workExperience.uid + "-" + classCompanyTechArea}
+            apiAutoloadRoute="/api/employers/technology-areas"
+            label="Technology Area *"
+            getOptionLabel={(option:TechnologyAreaDTO) => option.title}
+            placeholder="Your company's technology area"
+            onChange={(e) => handleChange(index, classCompanyTechArea, e.target.value)}
+            required
+            value={workExperience[classCompanyTechArea]}
+          />
           <InputTextWithLabel
             id={classNamePrefix + workExperience.uid + "-" + classTitle}
             className="w-full"
@@ -89,13 +118,13 @@ export default memo(function WorkExperiences({
           <DatePicker
               label={'Starts *'}
               views={['month', 'year']}
-              value={workExperience[classStarts] || null}
+              value={(workExperience[classStarts]?.isValid())? workExperience[classStarts] : null}
               onChange={(val) => handleChange(index, classStarts, val)}
           />
           <DatePicker
               label={'Ends *'}
               views={['month', 'year']}
-              value={workExperience[classEnds] || null}
+              value={(workExperience[classEnds]?.isValid())? workExperience[classEnds] : null}
               onChange={(val) => handleChange(index, classEnds, val)}
           />
         </div>

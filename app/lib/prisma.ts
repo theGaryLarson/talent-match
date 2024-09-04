@@ -391,6 +391,23 @@ export async function getJobSeekerCardViewByWorkExperience() {
 }
 
 export async function getIndustrySectors() {
-  const industrySectors = await prisma.industry_sectors.findMany();
+  const industrySectors = await prisma.industry_sectors.findMany({
+    where: {},
+    select: {
+        industry_sector_id: true,
+        sector_title: true,
+    }
+  });
   return industrySectors;
+}
+
+export async function getTechnologyAreas() {
+  const technologyAreas = await prisma.technology_areas.findMany({
+    where: {},
+    select: {
+        id: true,
+        title: true,
+    }
+  });
+  return technologyAreas;
 }
