@@ -131,6 +131,7 @@ export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
     user_id: true,
     intro_headline: true,
+    years_work_exp: true, // added this to the select statement as it is something that can be filtered. Probably should get some UX feedback regarding if it should be viewable in the card.
     pathways: {
         select: {
             pathway_id: true,
@@ -180,6 +181,32 @@ export const jobSeekerCardViewSelect = {
         },
     },
 };
+
+export const jobseekerQueryTestSelect = {
+    jobseeker_id: true,
+    user_id: true,
+    years_work_exp: true,
+    users: {
+        select: {
+            user_addresses: {
+                select: {
+                    zip: true,
+                }
+            }
+        },
+    },
+    work_experiences: {
+        select: {
+            industrySector: {
+                select: {
+                    industry_sector_id: true,
+                    sector_title: true,
+                }
+            }
+        }
+    },
+    highest_level_of_study_completed: true
+}
 
 export async function getAllJobSeekerCardView() {
     const jobSeekerCardViews = await prisma.jobseekers.findMany({

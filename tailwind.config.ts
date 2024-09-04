@@ -56,8 +56,7 @@ const config: Config = {
       backgroundImage: {
         'services-hero': "url('/cfa_images/stock/people-using-digital-device-while-meeting 1.jpg')",
         'employer-hero-1': "url('/cfa_images/stock/AdobeStock_816883006_forweb 1.png')",
-        'jobseeker-hero-1': "linear-gradient(to left,#01161b00, #01161b88), url('/cfa_images/stock/Above Fold.png')",
-        'jobseeker-bottom-1':"url('/cfa_images/stock/59dfec5cf3bb750f6868c1291599a4ed.jpeg')",
+        'jobseeker-hero-1': "url('/cfa_images/stock/Above Fold.png')",
         'blue-square': "url('/blue-bullet.png')",
         'quote': "url('/cfa_images/stock/quote-bg-1.jpg')"
       },
