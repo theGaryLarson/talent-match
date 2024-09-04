@@ -1,3 +1,5 @@
+-- noinspection SqlDropIndexedColumnForFile
+
 BEGIN TRY
     BEGIN TRANSACTION;
 
