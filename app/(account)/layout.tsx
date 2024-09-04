@@ -10,7 +10,7 @@ export default function AccountLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}><CFASignupHeader/>{children}</body>
+      <body className={`${inter.className} antialiased`}>{children}</body>
     </html>
   );
 }

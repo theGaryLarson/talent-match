@@ -15,8 +15,6 @@ export default function LoginPage() {
         </div>
         <LoginForm />
       </div>
-      
-      <footer className='absolute bottom-0 w-full laptop:hidden'><CFAFooter></CFAFooter></footer>
     </main>
   );
 }

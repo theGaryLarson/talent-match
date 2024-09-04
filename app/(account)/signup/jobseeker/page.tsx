@@ -4,9 +4,14 @@ import Link from 'next/link';
 import {Button} from '@/app/ui/button';
 import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
 import Image from 'next/image';
+import CFAFooter from '@/app/ui/CFAFooter';
+import CFASignupHeader from '@/app/ui/CFASignupHeader';
 
 export default function JobseekerSignupPage(){
     return(
+      <>
+      <CFASignupHeader className='laptop:hidden'/>
+
       <main className="max-w-screen-sm-tablet mx-auto laptop:flex laptop:flex-row laptop:gap-8 laptop:max-w-full">
         <CFASignupPrompt/>
         <section className="px-8 w-full laptop:pt-24">
@@ -20,5 +25,8 @@ export default function JobseekerSignupPage(){
         </section>
         <Image src='/cfa_images/signup/jobseeker-vector.png' width={1092} height={1040} className='pt-16 h-1/2 hidden sm-tablet:block laptop:hidden' alt='Art of jobseeker'/>
       </main>
+      
+      <footer className='absolute w-full bottom-0 sm-tablet:hidden'><CFAFooter></CFAFooter></footer>
+      </>
     );
 }

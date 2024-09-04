@@ -19,7 +19,7 @@ export default function CFASignupHeader({className}:{className?:string}) {
         </div>
         <Button href={`/login`} className='bg-primary-600 rounded-full'>Sign In</Button>
       </nav>
-      <Divider className='hidden sm-tablet:visible'/>
+      <Divider className='hidden sm-tablet:block'/>
     </header>
   )
 }

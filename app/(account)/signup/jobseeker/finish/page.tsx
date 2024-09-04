@@ -5,22 +5,17 @@ import {Button} from '@/app/ui/button';
 import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
 import Image from 'next/image';
 import CFAFooter from '@/app/ui/CFAFooter';
+import CFASignupHeader from '@/app/ui/CFASignupHeader';
 
 export default function JobseekerSignupFinishPage(){
     return(
-      <main className="max-w-screen-sm-tablet mx-auto sm-tablet:flex sm-tablet:flex-row sm-tablet:gap-8 sm-tablet:max-w-full">
+      <>
+      <CFASignupHeader/>
+
+      <main className="max-w-screen-sm-tablet mx-auto laptop:flex laptop:flex-row laptop:gap-8 laptop:max-w-full">
         <CFASignupPrompt/>
         <section className="px-8 mx-auto w-full laptop:pt-24 ">
-          {/* <DividerWithText>or</DividerWithText> */}
           <form className='flex flex-col gap-4 laptop:max-w-screen-sm-tablet mx-auto'>
-            {/* <div className="flex justify-between">
-              <InputTextWithLabel id="form-signup-first-name">First Name *</InputTextWithLabel>
-              <InputTextWithLabel id="form-signup-last-name">Last Name *</InputTextWithLabel>
-            </div>
-            <InputTextWithLabel type="email" id="form-signup-email">Email *</InputTextWithLabel>
-            <InputTextWithLabel type="password" id="form-signup-password">Password *</InputTextWithLabel>
-            <InputTextWithLabel type="password" id="form-signup-password">Confirm Password *</InputTextWithLabel>
-            <InputTextWithLabel id="form-signup-password">Country/Region of Residence *</InputTextWithLabel> */}
             <fieldset className='flex flex-col gap-4'>
               <legend>What best describes you currently?</legend>
               <div>
@@ -58,5 +53,8 @@ export default function JobseekerSignupFinishPage(){
         </section>
         <Image src='/cfa_images/signup/jobseeker-vector.png' width={1092} height={1040} className='pt-16 h-1/2 hidden sm-tablet:block laptop:hidden' alt='Art of jobseeker'/>
       </main>
+      
+      <footer className='pt-8 sm-tablet:hidden'><CFAFooter></CFAFooter></footer>
+      </>
     );
 }

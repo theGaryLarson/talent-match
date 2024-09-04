@@ -8,7 +8,7 @@ interface Props {
 
 export default function CFASignupFooter ({className = ''}:Props) {
     return (
-        <section className={"flex flex-col justify-between px-8 w-full h-full laptop:h-screen laptop:text-center laptop:bg-gray-50 laptop:pt-32" + className}>
+        <section className={"flex flex-col justify-between px-8 w-full h-full laptop:h-screen laptop:text-center laptop:bg-gray-50 laptop:pt-28" + className}>
             <div className='flex flex-col gap-4 py-4 mx-auto laptop:max-w-[390px] laptop:gap-6'>
                 <h1 className='text-[34px] leading-[42px] text-center'>Create a CFA account</h1>
                 <p className=''>Create a free CFA account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)</p>

@@ -5,12 +5,16 @@ import { Button } from 'flowbite-react';
 import Link from 'next/link';
 import DividerWithText from '@/app/ui/components/DividerWithText';
 import Image from 'next/image'
+import CFAFooter from '@/app/ui/CFAFooter';
+import CFASignupHeader from '@/app/ui/CFASignupHeader';
 
 export default function SignupPage() {
   const [choice, setChoice] = useState("");
   const checkIcon = <Image src='/cfa_images/signup/check-mark.png' width={22} height={22} alt='Green checkmark' className='inline mr-2'/>
 
   return (
+    <>
+    <CFASignupHeader/>
     <main className='flex flex-col py-8 gap-9'>
       <h1 className='text-4xl text-center'>Create account</h1>
       <fieldset className='flex flex-col gap-8 justify-center items-center sm-tablet:flex-row'>
@@ -50,5 +54,7 @@ export default function SignupPage() {
       </div>
       
     </main>
+    <footer className='sm-tablet:absolute sm-tablet:bottom-0 sm-tablet:w-full'><CFAFooter></CFAFooter></footer>
+    </>
   );
 };
