@@ -15,7 +15,7 @@ export default function JobseekerSignupPage(){
       <main className="max-w-screen-sm-tablet mx-auto laptop:flex laptop:flex-row laptop:gap-8 laptop:max-w-full">
         <CFASignupPrompt/>
         <section className="px-8 w-full laptop:pt-24">
-          <Button className='w-full'>Google Sign-in Placeholder</Button>
+          <Button className='w-full'>GitHub Sign-in Placeholder</Button>
           <DividerWithText className='py-8'>or</DividerWithText>
           <div className='text-center flex flex-col gap-2'>
             <p>Already have a CFA account?</p>

@@ -14,7 +14,7 @@ export default function CFASignupHeader({className}:{className?:string}) {
         <div className="w-1/2">
           <Link href="/">
             <span className="sr-only">Computing For All</span>
-            <Image src="/cfa_images/TWC_75x50_2024.svg" alt="Computing For All" width={110} height={31.8} />
+            <Image src='/cfa_images/TWC_75x50_2024.svg' alt="Computing For All" width={75} height={50} priority/>
           </Link>
         </div>
         <Button href={`/login`} className='bg-primary-600 rounded-full'>Sign In</Button>

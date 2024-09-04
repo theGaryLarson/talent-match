@@ -16,7 +16,10 @@ export default auth((req) => {
     "/create-profile/jobseeker/preferences",
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
-    "/cfa_images/"
+    "/cfa_images/",
+    "/signup/",
+    "/signup/jobseeker/",
+    "/signup/jobseeker/finish",
   ];
 
   const employerRoutes = [
@@ -27,6 +30,8 @@ export default auth((req) => {
   ];
 
   const pathname = req.nextUrl.pathname;
+
+  
 
   if (!req.auth && !pathname.startsWith("/signin")) {
     console.log("redirected to signin again");
@@ -41,6 +46,12 @@ export default auth((req) => {
   }
 
   const userRoles = req.auth?.user?.roles || [];
+
+  if (userRoles.includes(Role.NONE)) {
+    console.log("redirected to account data creation");
+    const loginUrl = new URL("/signup", req.nextUrl.origin);
+    return NextResponse.redirect(loginUrl);
+  }
 
   // Check for jobseeker role access
   if (jobseekerRoutes.some((route) => pathname.includes(route))) {
