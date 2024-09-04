@@ -124,9 +124,7 @@ creates or updates all the data in entire introduction page._
   "email": "gary@computingforall.org",
   "introHeadline": "Aspiring Software Developer",
   "currentJobTitle": "Junior Developer",
-  "resumeUrl": https
-  :
-  ///example.com/resume.pdf"
+  "resumeUrl": "https://example.com/resume.pdf"
 }
 
 
@@ -155,9 +153,7 @@ creates or updates all the data in entire introduction page._
       "email": "gary@computingforall.org",
       "introHeadline": "Aspiring Software Developer",
       "currentJobTitle": "Junior Developer",
-      "resumeUrl": https
-      :
-      ///example.com/resume.pdf"
+      "resumeUrl": "https://example.com/resume.pdf"
     },
     "meta": {
       "emailVerified": null,
@@ -205,9 +201,7 @@ data._
       "email": "gary@computingforall.org",
       "introHeadline": "Aspiring Software Developer",
       "currentJobTitle": "Junior Developer",
-      "resumeUrl": https
-      :
-      ///example.com/resume.pdf"
+      "resumeUrl": "https://example.com/resume.pdf"
     },
     "meta": {
       "emailVerified": null,
