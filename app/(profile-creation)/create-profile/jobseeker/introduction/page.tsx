@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, {ChangeEvent, FormEvent, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import type { RootState } from '@/lib/store';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,6 +15,7 @@ import { formatPhoneE164 } from "@/app/lib/utils";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import {getSession} from "next-auth/react";
 
 export default function CreateJobseekerProfileIntroPage() {
   const { fields, isSubmitting, error }: FormState = useSelector((state: RootState) => state.form);
@@ -29,6 +30,16 @@ export default function CreateJobseekerProfileIntroPage() {
   const [newFieldType, setNewFieldType] = useState<'text' | 'email' | 'number' | 'select' | 'radio'>('text');
   const [newFieldValue, setNewFieldValue] = useState('');
   const [newFieldOptions, setNewFieldOptions] = useState<{ value: string | number; label: string }[]>([]);
+  const [session, setSession] = useState<any>(null); // State to hold session data
+
+    useEffect(() => {
+        async function fetchSession() {
+            const sessionData = await getSession();
+            console.log("Session Data: ", sessionData); // Log session data
+            setSession(sessionData); // Set session data to state
+        }
+        fetchSession();
+    }, []);
 
   const handleFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -76,7 +87,7 @@ export default function CreateJobseekerProfileIntroPage() {
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
-      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
+      userId: session.user.id,
       photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
       firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
       lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
