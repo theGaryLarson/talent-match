@@ -2,9 +2,12 @@ import { getJobSeekerEmployerView } from '@/app/lib/prisma';
 import Avatar from '@/app/ui/components/Avatar';
 import Skills from '@/app/ui/components/Skills';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
+import { auth } from '@/auth';
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
+  const session = await auth()
+  console.log(session)
   return (
     <main className="px-4 space-y-3 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px] bg-gray-bg">
       {
