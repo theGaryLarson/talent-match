@@ -147,9 +147,6 @@ export default function CreateJobseekerProfileIntroPage() {
       } catch (error) {
           dispatch(submitFormFailure('Failed to submit the form'));
       }
-    } catch (error) {
-      dispatch(submitFormFailure('Failed to submit the form'));
-    }
   };
 
   return(
