@@ -1,7 +1,6 @@
-import { NextAuthConfig, Session } from 'next-auth';
+/**import { NextAuthConfig, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import { User, Account, Profile } from 'next-auth';
-import { getUser, getUserRole } from './app/lib/data';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcryptjs from 'bcryptjs';
 
@@ -12,7 +11,6 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User | null; account?: Account | null; profile?: Profile; isNewUser?: boolean }): Promise<JWT> {
       if (user) {
-        const role = await getUserRole(user.email);
         token.role = role || 'guest';
       }
       return token;
@@ -49,3 +47,4 @@ export const authConfig: NextAuthConfig = {
     // }),
   ],
 };
+*/

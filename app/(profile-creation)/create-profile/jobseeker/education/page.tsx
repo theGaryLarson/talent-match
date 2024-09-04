@@ -190,7 +190,7 @@ export default function CreateJobseekerProfileEducationPage() {
                 <ProgressBarFlat progress={2 / 6 * 100} size="sm"/>
                 <p>Step 2/6</p>
                 <h1>Education</h1>
-                <p>* Indicates a required field</p>
+                <p className='subtitle'>* Indicates a required field</p>
                 <form onSubmit={handleSubmit}>
                     <fieldset>
                         <legend>

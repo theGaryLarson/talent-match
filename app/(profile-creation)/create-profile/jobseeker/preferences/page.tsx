@@ -13,8 +13,6 @@ import { Button } from "flowbite-react";
 import { useRouter } from 'next/navigation';
 import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
-
-
 export default function CreateJobseekerProfilePreferencesPage(){
   // const { fields } = useSelector((state: RootState) => state.form);
   // const dispatch = useDispatch();

@@ -21,7 +21,7 @@ interface Data {
   requiresSponsorship?: boolean,
 }
 
-export default function CreateJobseekerProfileWorkExperiencePage(){
+export default function CreateJobseekerProfileWorkExperiencePage() {
   const [data, setData] = useState<Data>({
     yearsWorkExperience: '',
     monthsInternshipExperience: '',
@@ -36,14 +36,14 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
     const newWorkExperienceData = defaultWorkExperienceData();
     setData({
       ...data,
-      workExperiences: [...data.workExperiences, newWorkExperienceData]
+      workExperiences: [...data.workExperiences, newWorkExperienceData],
     });
   }
 
   function removeWorkExperience(byUid : string) {
     setData({
       ...data,
-      workExperiences: data.workExperiences.filter(({uid}) => (uid !== byUid))
+      workExperiences: data.workExperiences.filter(({ uid }) => uid !== byUid),
     });
   }
 
@@ -51,21 +51,26 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
     const newInternshipExperienceData = defaultWorkExperienceData();
     setData({
       ...data,
-      internshipExperiences: [...data.internshipExperiences, newInternshipExperienceData]
+      internshipExperiences: [
+        ...data.internshipExperiences,
+        newInternshipExperienceData,
+      ],
     });
   }
 
   function removeInternshipExperience(byUid : string) {
     setData({
       ...data,
-      internshipExperiences: data.internshipExperiences.filter(({uid}) => (uid !== byUid))
+      internshipExperiences: data.internshipExperiences.filter(
+        ({ uid }) => uid !== byUid,
+      ),
     });
   }
 
-  const handleUpdate = useCallback((key:string, value:any) => {
-    setData(prevData => ({
+  const handleUpdate = useCallback((key: string, value: any) => {
+    setData((prevData) => ({
       ...prevData,
-      [key]: value
+      [key]: value,
     }));
   }, []);
 
@@ -164,7 +169,8 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
                   value={data.yearsWorkExperience}
                   onChange={handleInputUpdate}
                 >
-                  How many years of full-time work experience do you have (not including internship)?
+                  How many years of full-time work experience do you have (not
+                  including internship)?
                 </InputTextWithLabel>
               </div>
             }
@@ -174,7 +180,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
               className="custom-outline-btn"
               onClick={addNewWorkExperience}
             >
-              <MdAdd className="mr-2 h-5 w-5"/>
+              <MdAdd className="mr-2 h-5 w-5" />
               Add work experience
             </Button>
           </fieldset>
@@ -204,7 +210,7 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
               className="custom-outline-btn"
               onClick={addNewInternshipExperience}
             >
-              <MdAdd className="mr-2 h-5 w-5"/>
+              <MdAdd className="mr-2 h-5 w-5" />
               Add internship experience
             </Button>
           </fieldset>
@@ -212,7 +218,12 @@ export default function CreateJobseekerProfileWorkExperiencePage(){
             <legend>
               <h2>Authentication</h2>
             </legend>
-            <p>Note: All work authentication information you provide will only be used for the purpose of verifying your qualifications for this job application and will not be disclosed to public view or any third parties without your express consent.</p>
+            <p>
+              Note: All work authentication information you provide will only be
+              used for the purpose of verifying your qualifications for this job
+              application and will not be disclosed to public view or any third
+              parties without your express consent.
+            </p>
             <div>
               <div className='mt-3'>Are you authorized to work in the U.S.? *</div>
               <RadioGroup>

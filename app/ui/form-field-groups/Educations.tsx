@@ -54,7 +54,7 @@ export interface EducationData {
     [classEdProviderId]?: string | null,
     [classDegreeType]?: CollegeDegreeType | HighSchoolDegreeType | null,
     [classProgramObject]?: GeneralProgramDTO | null,
-    [classProgramName]?: string | null,
+    [classProgramName]: string,
     [classProgramId]?: string | null,
     // [classMajor]?: string | null, //TODO:  replaced with program
     // [classMinor]?: string | null,
@@ -79,7 +79,7 @@ export function defaultEducationData() {
         // [classPreALevel]: null,
         [classProgramObject]: null,
         [classProgramId]: null,
-        [classProgramName]: null,
+        [classProgramName]: "",
         // [classMajor]: "",
         // [classMinor]: "",
         [classPreAppEdSystem]: null,
