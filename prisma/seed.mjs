@@ -3,11 +3,17 @@ import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
 import getPrismaClient from '../app/lib/prismaClient.mjs'
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import path from "node:path";
 
 
 faker.seed(123); // set seed so generated data is deterministic
 const prisma = getPrismaClient();
 
+// Get the current directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /////////////////////////////////////////////////
 ////// Arrays to simulate realistic data ////////
@@ -108,61 +114,61 @@ const subcategoriesData = [
     {skill_category: 'Wireless Technologies'},
 ]; // Lightcast IT subcategories data
 
-// replaced with real data from Dynamics (programs table)
-const techEdMajors = [
-    {name: "None", program_id: uuidv4()},
-    {name: "Computer Science", program_id: uuidv4()},
-    {name: "Information Technology", program_id: uuidv4()},
-    {name: "Software Engineering", program_id: uuidv4()},
-    {name: "Cybersecurity", program_id: uuidv4()},
-    {name: "Data Science", program_id: uuidv4()},
-    {name: "Artificial Intelligence", program_id: uuidv4()},
-    {name: "Network Administration", program_id: uuidv4()},
-    {name: "Cloud Computing", program_id: uuidv4()},
-    {name: "Mobile Application Development", program_id: uuidv4()},
-    {name: "Web Development", program_id: uuidv4()},
-    {name: "Database Management", program_id: uuidv4()},
-    {name: "Game Development", program_id: uuidv4()},
-    {name: "Digital Forensics", program_id: uuidv4()},
-    {name: "IT Project Management", program_id: uuidv4()},
-    {name: "Systems Analysis", program_id: uuidv4()},
-    {name: "Computer Engineering", program_id: uuidv4()},
-    {name: "Robotics", program_id: uuidv4()},
-    {name: "Embedded Systems", program_id: uuidv4()},
-    {name: "Computer Graphics", program_id: uuidv4()},
-    {name: "Information Systems", program_id: uuidv4()},
-    {name: "Business Information Technology", program_id: uuidv4()},
-    {name: "Health Informatics", program_id: uuidv4()},
-    {name: "Human-Computer Interaction", program_id: uuidv4()},
-    {name: "Augmented Reality Development", program_id: uuidv4()},
-    {name: "Virtual Reality Development", program_id: uuidv4()},
-    {name: "Blockchain Technology", program_id: uuidv4()},
-    {name: "Machine Learning", program_id: uuidv4()},
-    {name: "Big Data Analytics", program_id: uuidv4()},
-    {name: "IT Support Specialist", program_id: uuidv4()},
-    {name: "DevOps Engineering", program_id: uuidv4()},
-    {name: "IT Networking", program_id: uuidv4()},
-    {name: "Software Quality Assurance", program_id: uuidv4()},
-    {name: "Ethical Hacking", program_id: uuidv4()},
-    {name: "Programming Languages", program_id: uuidv4()},
-    {name: "Technical Writing", program_id: uuidv4()},
-    {name: "IT Entrepreneurship", program_id: uuidv4()},
-    {name: "IT Consulting", program_id: uuidv4()},
-    {name: "Geographic Information Systems (GIS)", program_id: uuidv4()},
-    {name: "Bioinformatics", program_id: uuidv4()},
-    {name: "Quantum Computing", program_id: uuidv4()},
-    {name: "Computer and Network Security", program_id: uuidv4()},
-    {name: "Multimedia Technology", program_id: uuidv4()},
-    {name: "Internet of Things (IoT)", program_id: uuidv4()},
-    {name: "Artificial Intelligence and Machine Learning", program_id: uuidv4()},
-    {name: "IT Service Management", program_id: uuidv4()},
-    {name: "Information Assurance", program_id: uuidv4()},
-    {name: "Software Architecture", program_id: uuidv4()},
-    {name: "Mobile and Web Design", program_id: uuidv4()},
-    {name: "Technology Management", program_id: uuidv4()},
-    {name: "Computer Systems Technology", program_id: uuidv4()},
-    {name: "Technical Studies in IT", program_id: uuidv4()}
-];
+// // replaced with real data from Dynamics (programs table)
+// const techEdMajors = [
+//     {name: "None", program_id: uuidv4()},
+//     {name: "Computer Science", program_id: uuidv4()},
+//     {name: "Information Technology", program_id: uuidv4()},
+//     {name: "Software Engineering", program_id: uuidv4()},
+//     {name: "Cybersecurity", program_id: uuidv4()},
+//     {name: "Data Science", program_id: uuidv4()},
+//     {name: "Artificial Intelligence", program_id: uuidv4()},
+//     {name: "Network Administration", program_id: uuidv4()},
+//     {name: "Cloud Computing", program_id: uuidv4()},
+//     {name: "Mobile Application Development", program_id: uuidv4()},
+//     {name: "Web Development", program_id: uuidv4()},
+//     {name: "Database Management", program_id: uuidv4()},
+//     {name: "Game Development", program_id: uuidv4()},
+//     {name: "Digital Forensics", program_id: uuidv4()},
+//     {name: "IT Project Management", program_id: uuidv4()},
+//     {name: "Systems Analysis", program_id: uuidv4()},
+//     {name: "Computer Engineering", program_id: uuidv4()},
+//     {name: "Robotics", program_id: uuidv4()},
+//     {name: "Embedded Systems", program_id: uuidv4()},
+//     {name: "Computer Graphics", program_id: uuidv4()},
+//     {name: "Information Systems", program_id: uuidv4()},
+//     {name: "Business Information Technology", program_id: uuidv4()},
+//     {name: "Health Informatics", program_id: uuidv4()},
+//     {name: "Human-Computer Interaction", program_id: uuidv4()},
+//     {name: "Augmented Reality Development", program_id: uuidv4()},
+//     {name: "Virtual Reality Development", program_id: uuidv4()},
+//     {name: "Blockchain Technology", program_id: uuidv4()},
+//     {name: "Machine Learning", program_id: uuidv4()},
+//     {name: "Big Data Analytics", program_id: uuidv4()},
+//     {name: "IT Support Specialist", program_id: uuidv4()},
+//     {name: "DevOps Engineering", program_id: uuidv4()},
+//     {name: "IT Networking", program_id: uuidv4()},
+//     {name: "Software Quality Assurance", program_id: uuidv4()},
+//     {name: "Ethical Hacking", program_id: uuidv4()},
+//     {name: "Programming Languages", program_id: uuidv4()},
+//     {name: "Technical Writing", program_id: uuidv4()},
+//     {name: "IT Entrepreneurship", program_id: uuidv4()},
+//     {name: "IT Consulting", program_id: uuidv4()},
+//     {name: "Geographic Information Systems (GIS)", program_id: uuidv4()},
+//     {name: "Bioinformatics", program_id: uuidv4()},
+//     {name: "Quantum Computing", program_id: uuidv4()},
+//     {name: "Computer and Network Security", program_id: uuidv4()},
+//     {name: "Multimedia Technology", program_id: uuidv4()},
+//     {name: "Internet of Things (IoT)", program_id: uuidv4()},
+//     {name: "Artificial Intelligence and Machine Learning", program_id: uuidv4()},
+//     {name: "IT Service Management", program_id: uuidv4()},
+//     {name: "Information Assurance", program_id: uuidv4()},
+//     {name: "Software Architecture", program_id: uuidv4()},
+//     {name: "Mobile and Web Design", program_id: uuidv4()},
+//     {name: "Technology Management", program_id: uuidv4()},
+//     {name: "Computer Systems Technology", program_id: uuidv4()},
+//     {name: "Technical Studies in IT", program_id: uuidv4()}
+// ];
 
 const highSchools = [
     "Alan T. Sugiyama High School",
@@ -1210,8 +1216,7 @@ async function seedSkills() {
         data: skillsToCreate
     });
 
-    console.log(`Seeded ${skillsCount} skills.`);
-    console.log(`Actual count of skills ${skillsData_v2.length}\n`);
+    console.log(`Seeded ${skillsCount} skills.\n`);
 }
 
 async function seedJobSeekers() {
@@ -1770,6 +1775,42 @@ async function seedJobPostings() {
     }
 }
 
+async function seedPostalGeoData(jsonFilePath, logFrequency=10, batchSize=1000) {
+    console.log('Seeding Postal Geo Data (zip, city, state, stateId, geographic coords)...');
+
+    const jsonData = JSON.parse(fs.readFileSync(path.resolve(__dirname, jsonFilePath), 'utf-8'));
+
+    let totalInserted = 0;
+    let batchCount = 0;
+
+    // Function to process each batch
+    const processBatch = async (batch) => {
+        try {
+            const result = await prisma.postalGeoData.createMany({
+                data: batch
+            });
+            const insertedCount = result.count || batch.length; // Get inserted count, fallback to batch length
+            totalInserted += insertedCount; // Increment the total inserted count
+        } catch (error) {
+            console.error('Error inserting batch:', error);
+        }
+    };
+
+    // Process data in batches
+    for (let i = 0; i < jsonData.length; i += batchSize) {
+        const batch = jsonData.slice(i, i + batchSize);
+        await processBatch(batch);
+        batchCount++;
+        // Log every `logFrequency` batches
+        if (batchCount % logFrequency === 0) {
+            console.log(`\tInserted ${batchCount * batchSize} records so far...`);
+        }
+    }
+
+    // Report total inserted records
+    console.log(`Seeded ${totalInserted} postalGeoData records in total.\n`);
+    await prisma.$disconnect();
+}
 
 
 /////////////////////////////////////////////////
@@ -1782,7 +1823,7 @@ async function main() {
     await seedSubcategories(); // use in production
     await seedSkills(); // use in production
     await seedSocialMediaPlatforms(); // use in production
-    await seedUsers(500);
+    await seedUsers(250);
     await seedUserAddresses();
     await seedPrograms(); // use in production
     await seedEduProviders(); // use in production
@@ -1806,7 +1847,9 @@ async function main() {
     await seedCompanyTestimonials();
     await seedCompanySocialLinks();
     await seedJobPostings();
-    console.log(`Finished seeding ...\n`);
+    await seedPostalGeoData("../data/postal_geo_data.json");
+    console.log("Finished seeding.\n")
+
 }
 
 main()
