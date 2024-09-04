@@ -4,10 +4,11 @@ import Link from 'next/link';
 import {Button} from '@/app/ui/button';
 import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
 import Image from 'next/image';
+import CFAFooter from '@/app/ui/CFAFooter';
 
 export default function JobseekerSignupFinishPage(){
     return(
-      <main className="max-w-screen-sm-tablet mx-auto laptop:flex laptop:flex-row laptop:gap-8 laptop:max-w-full">
+      <main className="max-w-screen-sm-tablet mx-auto sm-tablet:flex sm-tablet:flex-row sm-tablet:gap-8 sm-tablet:max-w-full">
         <CFASignupPrompt/>
         <section className="px-8 mx-auto w-full laptop:pt-24 ">
           {/* <DividerWithText>or</DividerWithText> */}

@@ -11,7 +11,7 @@ export default function SignupPage() {
   const checkIcon = <Image src='/cfa_images/signup/check-mark.png' width={22} height={22} alt='Green checkmark' className='inline mr-2'/>
 
   return (
-    <main className='flex flex-col gap-9'>
+    <main className='flex flex-col py-8 gap-9'>
       <h1 className='text-4xl text-center'>Create account</h1>
       <fieldset className='flex flex-col gap-8 justify-center items-center sm-tablet:flex-row'>
         <legend className='text-center pb-4'>Select your role first</legend>
@@ -41,11 +41,10 @@ export default function SignupPage() {
             <p className='text-center'>{choice === 'jobseeker' && checkIcon}A job candidate</p>
           </label>
         </div>
-        
       </fieldset>
-      <Button disabled={choice === ""} href={`/signup/${choice}`} className='mx-auto w-fit mt-5 rounded-3xl'>Continue</Button>
+      <Button disabled={choice === ""} href={`/signup/${choice}`} className='mx-auto w-fit mt-4 rounded-3xl'>Continue</Button>
       
-      <div className='flex flex-col gap-4 text-center mx-auto'>
+      <div className='flex flex-col gap-4 mb-4 text-center mx-auto'>
         <DividerWithText>or</DividerWithText>
         <p>Already have a CFA account? <Link className='text-blue-500' href="/login">Login</Link></p>
       </div>
