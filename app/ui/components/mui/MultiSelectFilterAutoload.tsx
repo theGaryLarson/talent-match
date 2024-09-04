@@ -1,0 +1,93 @@
+import * as React from 'react';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
+
+interface Props<ValueType> {
+  id: string,
+  apiAutoloadRoute: string,
+  label: string,
+  value: string[],
+  onChange: ((event: SelectChangeEvent<string[]>) => void),
+  placeholder?: string | undefined,
+  getOptionLabel: ((option:ValueType) => string),
+  [key: string]: any,
+}
+  
+export default function MultipleSelectFilterAutoload<ValueType>({
+  id,
+  apiAutoloadRoute,
+  label,
+  value,
+  onChange,
+  placeholder,
+  getOptionLabel,
+  ...rest
+}:Props<ValueType>) {
+  const [filter, setFilter] = React.useState<string[]>([]);
+  const [options, setOptions] = React.useState<ValueType[]>([]);
+  const [formattedLabel, setFormattedLabel] = React.useState<string>(label);
+  const [loading, setLoading] = React.useState(false);
+
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
+    const {
+      target: { value },
+    } = event;
+
+    setFilter(typeof value === 'string' ? value.split(',') : value);
+    onChange(event);
+  };
+
+  // Load the inital filter values
+  React.useEffect(() => {
+    const autoload = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(apiAutoloadRoute);
+        const data: ValueType[] = await response.json();
+
+        setOptions(data); // Update the options with fetched data
+
+        if (value?.length !== 0) {
+          setFilter(value);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    autoload();
+  }, []);
+
+  React.useEffect(() => {
+    setFormattedLabel(label + " (" + filter.length + ")");
+  }, [filter, label]);
+
+  return (
+    <div className="flex flex-1 px-1">
+      <FormControl className="flex flex-1">
+        <InputLabel className="text-sm relative top-2 left-0">{formattedLabel}</InputLabel>
+        <Select
+          className="rounded-full h-7 flex"
+          multiple
+          value={filter}
+          onChange={handleChange}
+          input={<OutlinedInput />}
+          renderValue={(selected) => label + " (" + selected.length + ")"}
+          {...rest}
+        >
+          {options.map((option) => (
+            <MenuItem key={getOptionLabel(option)} value={getOptionLabel(option)}>
+              <Checkbox checked={filter.indexOf(getOptionLabel(option)) !== -1} />
+              <ListItemText primary={getOptionLabel(option)} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
+  );
+}
