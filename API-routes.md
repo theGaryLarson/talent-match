@@ -111,7 +111,7 @@ creates or updates all the data in entire introduction page._
 ```json
 {
   "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
-  "photoUrl": "http://example.com/photo.jpg",
+  "photoUrl": "https://example.com/photo.jpg",
   "firstName": "Gary",
   "lastName": "Larson",
   "birthDate": "2000-01-01T00:00:00.000Z",
@@ -124,7 +124,9 @@ creates or updates all the data in entire introduction page._
   "email": "gary@computingforall.org",
   "introHeadline": "Aspiring Software Developer",
   "currentJobTitle": "Junior Developer",
-  "resumeUrl": "http://example.com/resume.pdf"
+  "resumeUrl": https
+  :
+  ///example.com/resume.pdf"
 }
 
 
@@ -140,7 +142,7 @@ creates or updates all the data in entire introduction page._
   "result": {
     "loadIntroPage": {
       "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
-      "photoUrl": "http://example.com/photo.jpg",
+      "photoUrl": "https://example.com/photo.jpg",
       "firstName": "Gary",
       "lastName": "Larson",
       "birthDate": "2000-01-01T00:00:00.000Z",
@@ -153,7 +155,9 @@ creates or updates all the data in entire introduction page._
       "email": "gary@computingforall.org",
       "introHeadline": "Aspiring Software Developer",
       "currentJobTitle": "Junior Developer",
-      "resumeUrl": "http://example.com/resume.pdf"
+      "resumeUrl": https
+      :
+      ///example.com/resume.pdf"
     },
     "meta": {
       "emailVerified": null,
@@ -188,7 +192,7 @@ data._
   "result": {
     "loadIntroPage": {
       "userId": "ae80e273-2975-4703-a894-f3c1e01428fd",
-      "photoUrl": "http://example.com/photo.jpg",
+      "photoUrl": "https://example.com/photo.jpg",
       "firstName": "Gary",
       "lastName": "Larson",
       "birthDate": "2000-01-01T00:00:00.000Z",
@@ -201,7 +205,9 @@ data._
       "email": "gary@computingforall.org",
       "introHeadline": "Aspiring Software Developer",
       "currentJobTitle": "Junior Developer",
-      "resumeUrl": "http://example.com/resume.pdf"
+      "resumeUrl": https
+      :
+      ///example.com/resume.pdf"
     },
     "meta": {
       "emailVerified": null,
