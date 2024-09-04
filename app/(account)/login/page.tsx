@@ -1,6 +1,4 @@
 'use client';
-
-import CFAFooter from '@/app/ui/CFAFooter';
 import CfaLogo from '@/app/ui/CFALogo';
 import { signIn } from '@/auth';
 
