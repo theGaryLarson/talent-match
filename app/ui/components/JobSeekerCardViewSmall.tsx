@@ -53,6 +53,7 @@ export default function JobSeekerCardViewSmall({
             key={pill?.skill_id}
             text={pill?.skill_name}
             href={pill?.skill_info_url}
+            grayscale={false}
           />
         ))}
       </div>
