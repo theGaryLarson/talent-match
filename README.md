@@ -4,8 +4,8 @@ This repository contains the source code for the Washington Tech Workforce Coali
 
 ## Reference Designs
 
-- [Jobseeker-UX](https://www.figma.com/design/D8OaFqKB4FSBHTnSHo2rOj/Jobseeker-UX)
-- [Employer-Flow--MVP](https://www.figma.com/design/3e9rrmhTrz37hLaEiNmpIZ/Employer-Flow---MVP)
+- [Jobseeker-UX](https://www.figma.com/design/g54drsZOvLMZNvrAIrpJkH/MVP-R2-09%2F10?node-id=20-13140&node-type=SECTION&t=fBQRgvGKBt9RLMPO-0)
+- [Employer-Flow--MVP](https://www.figma.com/design/g54drsZOvLMZNvrAIrpJkH/MVP-R2-09%2F10?node-id=1-285&node-type=CANVAS&t=1e2jUf2kdpkjDTUi-0)
 
 ## Prerequisites
 
