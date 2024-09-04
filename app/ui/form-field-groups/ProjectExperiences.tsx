@@ -123,7 +123,7 @@ export default memo(function ProjectExperiences({
             noResultsText="No skills/tech stack found..."
             onChange={function(ev, val){ handleChange(index, classSkillsStack, val) }}
             searchPlaceholder="Skill (ex: Java)"
-            getOptionLabel={(option:SkillDTO) => option.skill_name}
+            getTagLabel={(option:SkillDTO) => option.skill_name}
           />
         </div>
         <div className="profile-form-grid md:grid-cols-2">
