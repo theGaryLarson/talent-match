@@ -15,7 +15,7 @@ export default async function page({ params }: { params: { id: string } }) {
     }
         <div className="flex h-[200px] items-center rounded-md border bg-white">
           <div className="flex items-center gap-5 p-4">
-            <Avatar imgsrc={jobseeker?.users.photo_url} scale={3}></Avatar>
+            <Avatar imgsrc={jobseeker?.users.photo_url} scale={1.5}></Avatar>
             <div>
               <h1 className="text-2xl font-bold">
                 {jobseeker?.users.first_name +
