@@ -12,6 +12,7 @@ import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mu
 import { Button } from "flowbite-react";
 import { useRouter } from 'next/navigation';
 import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import {useSession} from 'next-auth/react';
 
 export default function CreateJobseekerProfilePreferencesPage(){
   // const { fields } = useSelector((state: RootState) => state.form);
@@ -20,11 +21,12 @@ export default function CreateJobseekerProfilePreferencesPage(){
   const [pathway, setPathway] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const formData: JsPreferencesDTO = {
-      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC', // TODO: grab user.id from nextauth session
+      userId: session?.user.id!,
       targetedPathwayId: null,
       targetedPathway: pathway,
       preferredEmploymentType: employmentType,
