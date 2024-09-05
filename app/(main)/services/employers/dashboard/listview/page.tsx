@@ -1,13 +1,15 @@
 'use client'
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import { JobSeekerCardViewDTO } from "@/data/dtos/JobSeekerCardViewDTO";
-import { useCallback, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import SortDropdown from '@/app/ui/components/mui/SortDropdown';
 import MultiSelectFilter from '@/app/ui/components/mui/MultiSelectFilter';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
+import { IndustrySectorDTO } from '@/data/dtos/IndustrySectorDTO';
+import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
 
 async function fetchFilteredJobSeekerCardView(
   skills: string[] = [],
@@ -102,6 +104,13 @@ export default function Page() {
     else execQuery();
   }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
 
+  const newFilterOnChange = (paramName: string, stateSetter:Dispatch<SetStateAction<string[] | undefined>>) => (
+    (event:SelectChangeEvent<string[]>) => { 
+      setQueryParam(paramName, encodeURIComponent((typeof event.target.value === 'string')? event.target.value : event.target.value.join(",")));
+      stateSetter((typeof event.target.value === 'string') ? event.target.value.split(',') : event.target.value);
+     }
+  );
+
   return (
     <main className="m-6 space-y-8 p-6 laptop:px-[200px] py-16">
       <h1 className="text-2xl font-bold">{skillsList?.toString()} Search Results</h1>
@@ -127,22 +136,14 @@ export default function Page() {
 
       <div className="flex flex-row flex-wrap">
         {/* Filters */}
-        <MultiSelectFilter
+        <MultipleSelectFilterAutoload
           id="jobseeker-listview-industry"
           label="Industry"
+          apiAutoloadRoute="/api/employers/industry-sectors"
           value={getArrayParam("industry")}
-          onChange={(event) => { 
-            setQueryParam('industry', encodeURIComponent(event.target.value.toString()));
-            setIndustry(event.target.value as string[]);
-           }}
-          options={[ // TODO: grab valid options from database
-            { label: "Male", value: "male" },
-            { label: "Female", value: "female" },
-            { label: "Non-binary", value: "non-binary" },
-            { label: "Other", value: "other" },
-            { label: "I prefer not to say", value: "undisclosed" },
-          ]}
-        ></MultiSelectFilter>
+          onChange={newFilterOnChange("industry", setIndustry)}
+          getOptionLabel={(option: IndustrySectorDTO) => option.sector_title}
+        />
 
         <MultiSelectFilter
           id="jobseeker-listview-edulevel"

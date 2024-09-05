@@ -8,7 +8,7 @@ export default function TimeLine() {
               Get Discovered
             </div>
           </div>
-          <div className="absolute left-0 top-[592.07px] inline-flex h-[140px] w-[432px] flex-col items-center justify-start rounded-[20px] bg-[#047f9c] p-[50px]">
+          <div className="absolute left-0 top-[592.07px] inline-flex flex-col items-center justify-start rounded-[20px] bg-[#047f9c] p-[50px]">
             <div className="self-stretch text-center font-['Roboto'] text-4xl font-normal leading-10 text-white">
               Showcase Strengths
             </div>
@@ -108,7 +108,7 @@ export default function TimeLine() {
       </div>
 
       {/*Moble view*/}
-      <div className="tablet:hidden inline-flex h-[342px] flex-col items-start justify-start gap-[30px] px-4">
+      <div className="tablet:hidden inline-flex h-[342px] flex-col items-start justify-start gap-[30px]">
         <div className="flex h-[59px] flex-col items-center justify-start self-stretch rounded-[20px] px-8">
           <div className="inline-flex items-center justify-center gap-2">
             <div className="flex items-center justify-center rounded-[90px] border bg-[#f6f6f6] p-2.5">
@@ -162,7 +162,7 @@ export default function TimeLine() {
                 3
               </div>
             </div>
-            <div className="flex items-center justify-center rounded-[90px] bg-[#047f9c] px-5 py-[5px]">
+            <div className="flex items-center justify-center rounded-[90px] bg-[#047f9c] px-4 py-[5px]">
               <div className="font-['Roboto'] text-xl font-normal leading-snug text-white">
                 Showcase Strengths
               </div>
