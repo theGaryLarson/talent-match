@@ -139,43 +139,44 @@ export default memo(function ProjectExperiences({
               value={projectExperience[classCompletionDate] || null}
               onChange={(val) => handleChange(index, classCompletionDate, val)}
           />
-          <InputTextWithLabel
-            id={classNamePrefix + projectExperience.uid + "-" + classReferenceUrl}
-            onChange={(e) => handleChange(index, classReferenceUrl, e.target.value)}
-            value={projectExperience[classReferenceUrl]}
-          >
-            Reference url
-          </InputTextWithLabel>
-          <InputTextWithLabel
-            id={classNamePrefix + projectExperience.uid + "-" + classDescription}
-            onChange={(e) => handleChange(index, classDescription, e.target.value)}
-            value={projectExperience[classDescription]}
-          >
-            Description/Problem solved
-          </InputTextWithLabel>
-          <InputTextWithLabel
-            type="number"
-            id={classNamePrefix + projectExperience.uid + "-" + classTeamSize}
-            onChange={(e) => handleChange(index, classTeamSize, e.target.value)}
-            value={projectExperience[classTeamSize]}
-          >
-            Team Size
-          </InputTextWithLabel>
+          {/*These were duplicated but wasn't sure if there were subtle changes that the dev wanted to look at*/}
+          {/*<InputTextWithLabel*/}
+          {/*  id={classNamePrefix + projectExperience.uid + "-" + classReferenceUrl}*/}
+          {/*  onChange={(e) => handleChange(index, classReferenceUrl, e.target.value)}*/}
+          {/*  value={projectExperience[classReferenceUrl]}*/}
+          {/*>*/}
+          {/*  Reference url*/}
+          {/*</InputTextWithLabel>*/}
+          {/*<InputTextWithLabel*/}
+          {/*  id={classNamePrefix + projectExperience.uid + "-" + classDescription}*/}
+          {/*  onChange={(e) => handleChange(index, classDescription, e.target.value)}*/}
+          {/*  value={projectExperience[classDescription]}*/}
+          {/*>*/}
+          {/*  Description/Problem solved*/}
+          {/*</InputTextWithLabel>*/}
+          {/*<InputTextWithLabel*/}
+          {/*  type="number"*/}
+          {/*  id={classNamePrefix + projectExperience.uid + "-" + classTeamSize}*/}
+          {/*  onChange={(e) => handleChange(index, classTeamSize, e.target.value)}*/}
+          {/*  value={projectExperience[classTeamSize]}*/}
+          {/*>*/}
+          {/*  Team Size*/}
+          {/*</InputTextWithLabel>*/}
         </div>
-        <div className="profile-form-grid">
-          <TagsWithAutocomplete<SkillDTO>
-            apiSearchRoute="/api/skills/search/"
-            fieldLabel="Skills/Tech stack"
-            id={classNamePrefix + projectExperience.uid + "-" + classSkillsStack}
-            maxTags={10}
-            searchingText="Searching..."
-            noResultsText="No skills/tech stack found..."
-            onChange={function(ev, val){ handleChange(index, classSkillsStack, val) }}
-            searchPlaceholder="Skill (ex: Java)"
-            getTagLabel={(option:SkillDTO) => option.skill_name}
-            getTagLink={(option:SkillDTO) => option.skill_info_url}
-          />
-        </div>
+        {/*<div className="profile-form-grid">*/}
+        {/*  <TagsWithAutocomplete<SkillDTO>*/}
+        {/*    apiSearchRoute="/api/skills/search/"*/}
+        {/*    fieldLabel="Skills/Tech stack"*/}
+        {/*    id={classNamePrefix + projectExperience.uid + "-" + classSkillsStack}*/}
+        {/*    maxTags={10}*/}
+        {/*    searchingText="Searching..."*/}
+        {/*    noResultsText="No skills/tech stack found..."*/}
+        {/*    onChange={function(ev, val){ handleChange(index, classSkillsStack, val) }}*/}
+        {/*    searchPlaceholder="Skill (ex: Java)"*/}
+        {/*    getTagLabel={(option:SkillDTO) => option.skill_name}*/}
+        {/*    getTagLink={(option:SkillDTO) => option.skill_info_url}*/}
+        {/*  />*/}
+        {/*</div>*/}
       </fieldset>
     ))
   );
