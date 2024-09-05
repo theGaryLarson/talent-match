@@ -30,7 +30,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
   const { data: session, status } = useSession();
 
   function handleClick() {
-    router.push(`/services/jobseekers/${session?.user.id!}`);
+    router.push(`/services/jobseekers/${session?.user.jobseekerId!}`);
   }
   const firstName = session?.user?.name?.split(' ')[0];
   return (
