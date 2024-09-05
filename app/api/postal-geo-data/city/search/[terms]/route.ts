@@ -2,7 +2,7 @@ import { searchPostalGeoData } from '@/app/lib/prisma';
 
 export async function GET(req: Request, { params }: { params: { terms: string } }) {
     const terms = decodeURIComponent(params.terms);
-    const searchResults = await searchPostalGeoData(terms, 'zip');
+    const searchResults = await searchPostalGeoData(terms, 'city');
 
     return Response.json(
         searchResults,
