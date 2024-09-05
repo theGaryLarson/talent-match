@@ -26,7 +26,8 @@ export async function POST(request: Request) {
                 where: {user_id: userId},
                 data: {
                     years_work_exp: yearsWorkExperience ? parseInt(yearsWorkExperience, 10) : undefined,
-                    months_internship_exp: monthsInternshipExperience ? parseInt(monthsInternshipExperience, 10): undefined
+                    months_internship_exp: monthsInternshipExperience ? parseInt(monthsInternshipExperience, 10): undefined,
+                    updatedAt: new Date(),
                 },
             });
 

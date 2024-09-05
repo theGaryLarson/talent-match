@@ -9,6 +9,7 @@ import TextFieldWithNoLabel from '@/app/ui/components/mui/TextFieldWithNoLabel';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import {JsShowcaseDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { useRouter } from 'next/navigation';
+import {useSession} from 'next-auth/react'
 
 
 
@@ -18,13 +19,14 @@ export default function CreateJobseekerProfileShowcasePage(){
   const [portfolioPassword, setPortfolioPassword] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { data: session, status } = useSession();
 
   const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const formData: JsShowcaseDTO = {
-      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
+      userId: session?.user.id!,
       skills: skills,
       portfolioUrl: portfolioUrl,
       portfolioPassword: portfolioPassword,

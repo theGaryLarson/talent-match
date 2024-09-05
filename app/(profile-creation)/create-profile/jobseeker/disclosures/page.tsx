@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
@@ -9,6 +9,7 @@ import {JsDisclosuresPostDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { useRouter} from "next/navigation";
 import { Button, Label, List, ListItem } from "flowbite-react";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Checkbox } from '@mui/material';
+import { useSession } from 'next-auth/react';
 
 
 export default function CreateJobseekerProfileDisclosuresPage(){
@@ -18,11 +19,17 @@ export default function CreateJobseekerProfileDisclosuresPage(){
   const [race, setRace] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const router = useRouter();
+  const {data: session, status } = useSession();
+  const [ sessionData, setSessionData ] = useState(null);;
+
+  useEffect(() => {
+    console.log(JSON.stringify(session,null, 2));
+  }, [session])
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const formData: JsDisclosuresPostDTO = {
-      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC', // TODO pull user id from nextauth session data
+      userId: session?.user.id!,
       isVeteran: veteranStatus,
       hasDisability: disabilityStatus,
       gender: gender,

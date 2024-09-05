@@ -1,76 +1,49 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import Confetti from '@/app/ui/components/Confetti';
-
 
 // REVIEW: testing redux
 // import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
-import { Button } from "flowbite-react";
+import {
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+} from '@mui/material';
+import { Button } from 'flowbite-react';
 import { useRouter } from 'next/navigation';
-import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { JsPreferencesDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import { useSession } from 'next-auth/react';
 
-
-
-export default function CreateJobseekerProfilePreferencesPage(){
+export default function CreateJobseekerProfilePreferencesPage() {
   // const { fields } = useSelector((state: RootState) => state.form);
   // const dispatch = useDispatch();
   const [employmentType, setEmploymentType] = useState('');
   const [pathway, setPathway] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-
-  const tempId = '87E52D83-CC98-46AF-B62A-58124ABEBBDC'; // TODO: grab user.id from nextauth session
+  const { data: session, status } = useSession();
 
   function handleClick() {
-    router.push(`/services/jobseekers/${tempId}`);
+    router.push(`/services/jobseekers/${session?.user.jobseekerId!}`);
   }
-
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    const formData: JsPreferencesDTO = {
-      userId: tempId,
-      targetedPathwayId: null,
-      targetedPathway: pathway,
-      preferredEmploymentType: employmentType,
-
-    }
-
-    try {
-      const response = await fetch('/api/jobseekers/account/preferences/upsert', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) {
-        const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
-        setError(errorMessage);
-        return;
-      }
-
-      const result = await response.json();
-      console.log(JSON.stringify(result, null ,2 ));
-      router.push(`/services/jobseekers/${tempId}`);
-    } catch (e: any) {
-      setError(`An unexpected error occurred: ${e.message}`);
-    }
-  }
-  return(
+  const firstName = session?.user?.name?.split(' ')[0];
+  return (
     <main className="flex justify-center">
-      <aside className="profile-form-aside">
-      </aside>
+      <aside className="profile-form-aside"></aside>
       <section className="profile-form-section main-content">
         <Confetti />
-        <h1>Congrats on completing your profile, Qian!</h1>
+        <h1>Congrats on completing your profile, {firstName}!</h1>
 
-        <p className='subtitle-congrats'>{`Let's kickstart your career journey!`}</p>
-        <Button pill onClick={handleClick}>Get Started</Button>
+        <p className="subtitle-congrats">{`Let's kickstart your career journey!`}</p>
+        <Button pill onClick={handleClick}>
+          Get Started
+        </Button>
 
         {/* <form onSubmit={ handleSubmit }>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from "react-icons/md";
 import { Button, Label } from "flowbite-react";
@@ -10,6 +10,9 @@ import WorkExperiences, { defaultWorkExperienceData, WorkExperienceData } from '
 import InternshipExperiences, { defaultInternshipExperienceData, InternshipExperienceData } from '@/app/ui/form-field-groups/InternshipExperiences';
 import {JsWorkExpDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { useRouter } from 'next/navigation';
+import {useSession} from "next-auth/react";
+import {initializeForm} from "@/lib/features/profileCreation/formSlice";
+
 
 
 interface Data {
@@ -22,15 +25,22 @@ interface Data {
 }
 
 export default function CreateJobseekerProfileWorkExperiencePage() {
+  const { data: session, status } = useSession();
   const [data, setData] = useState<Data>({
     yearsWorkExperience: '',
     monthsInternshipExperience: '',
     workExperiences: [],
     internshipExperiences: [],
-    isAuthorizedToWorkUsa: true,
-    requiresSponsorship: false,
+    isAuthorizedToWorkUsa: undefined,
+    requiresSponsorship: undefined,
   });
+
   const router = useRouter();
+
+
+  useEffect(() => {
+    console.log("Current Session Data:", session); // Log current session data to see if jobseekerId is available
+  }, [session]);
 
   function addNewWorkExperience() {
     const newWorkExperienceData = defaultWorkExperienceData();
@@ -85,9 +95,13 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (!session?.user?.jobseekerId) {
+      console.log('No jobseeker record has been created for user');
+      return
+    }
     const workExperiences = data.workExperiences?.map(workExp => ({
       workId: workExp.uid,
-      jobseekerId: 'A5505276-65F4-40F9-BD1B-E063B8C6B6D0', // TODO: jobseeker_id should be pulled from nextauth session data
+      jobseekerId: session.user.jobseekerId!,
       techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose tech area (i.e. Cloud Computing, Database Management, Cybersecurity, etc.)
       sectorId: null,  // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
       company: workExp.company,
@@ -101,7 +115,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
 
     const internshipExperiences = data.internshipExperiences?.map(internshipExp => ({
       workId: internshipExp.uid,
-      jobseekerId: '98efbb19-2f8b-4e08-b179-d1a287ccf710'.toUpperCase(), // TODO: jobseeker_id should be pulled from nextauth session data
+      jobseekerId: session.user.jobseekerId!,
       techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose sector
       sectorId: null,  // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
       company: internshipExp.company,
@@ -113,7 +127,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       responsibilities: internshipExp.experience,
     }));
     const formData: JsWorkExpDTO = {
-      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC', // TODO: user.id should be pulled from nextauth session data
+      userId: session.user.id!,
       yearsWorkExperience: data.yearsWorkExperience.toString(), // Replace with actual calculation
       monthsInternshipExperience: data.monthsInternshipExperience.toString(), // Replace with actual calculation
       isAuthorizedToWorkUsa: data.isAuthorizedToWorkUsa,
