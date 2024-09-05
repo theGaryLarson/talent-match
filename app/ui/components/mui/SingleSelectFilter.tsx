@@ -17,7 +17,7 @@ interface Props {
     [key: string]: any,
   }
   
-  export default function MultipleSelectCheckmarks({
+  export default function SingleSelectCheckmarks({
     id,
     options,
     label,
@@ -27,7 +27,7 @@ interface Props {
     ...rest
   }:Props) {
   const [filter, setFilter] = React.useState<string[]>([]);
-  const [formattedLabel, setFormattedLabel] = React.useState<string>(label);
+  // const [formattedLabel, setFormattedLabel] = React.useState<string>(label);
 
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
@@ -43,25 +43,22 @@ interface Props {
     if (value?.length > 0) setFilter(value);
   }, []);
 
-  React.useEffect(() => {
-    setFormattedLabel(label + " (" + filter.length + ")");
-  }, [filter]);
+  // React.useEffect(() => {
+  //   setFormattedLabel(label + " (" + filter.length + ")");
+  // }, [filter]);
 
   return (
     <div className="flex flex-1 px-1">
       <FormControl className="flex flex-1">
-        <InputLabel className="text-sm relative top-2 left-0">{formattedLabel}</InputLabel>
+        <InputLabel className="text-sm relative top-2 left-0">{label}</InputLabel>
         <Select
           className="rounded-full h-7 flex"
-          multiple
           value={filter}
           onChange={handleChange}
           input={<OutlinedInput />}
-          renderValue={(selected) => selected.join(', ')}
         >
           {options.map((option) => (
             <MenuItem key={option.label} value={option.value}>
-              <Checkbox checked={filter.indexOf(option.value) > -1} />
               <ListItemText primary={option.label} />
             </MenuItem>
           ))}

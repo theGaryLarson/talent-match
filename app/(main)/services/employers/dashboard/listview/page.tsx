@@ -1,4 +1,5 @@
 'use client'
+import '@/app/ui/listview.css';
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import { JobSeekerCardViewDTO } from "@/data/dtos/JobSeekerCardViewDTO";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
@@ -7,23 +8,38 @@ import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import SortDropdown from '@/app/ui/components/mui/SortDropdown';
 import MultiSelectFilter from '@/app/ui/components/mui/MultiSelectFilter';
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
+import Pagination from '@mui/material/Pagination';
+import SingleSelectFilter from '@/app/ui/components/mui/SingleSelectFilter';
 import { IndustrySectorDTO } from '@/data/dtos/IndustrySectorDTO';
 import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
+import { SelectChangeEvent } from '@mui/material/Select';
+import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
+import { PostalGeoDataDTO } from '@/data/dtos/PostalGeoDataDTO';
+import TextField from '@mui/material/TextField';
+
+const resultsPerPage = 50;
 
 async function fetchFilteredJobSeekerCardView(
   skills: string[] = [],
-  yearsWorkExp: number = 0,
-  page: number = 0,
+  industry: string[] = [],
+  eduLevel: string = "",
+  yearsWorkExp: string = "0",
+  zipCode: string = "",
+  sortBy: string = "newest",
+  maxResults: number = resultsPerPage,
+  page: number = 1,
 ): Promise<JobSeekerCardViewDTO[]> {
+  var workExp = 0;
+  if (yearsWorkExp != "") workExp = Number.parseInt(yearsWorkExp);
   const response = await fetch('/api/jobseekers/query', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ skills, yearsWorkExp })
+    body: JSON.stringify({ skills, industry, eduLevel, workExp, zipCode, sortBy, maxResults, page })
   });
   if (!response.ok) {
+    // TODO: display error
     throw new Error('Failed to fetch data');
   }
   return response.json();
@@ -37,13 +53,17 @@ export default function Page() {
   // Query data
   const [skillsList, setSkillsList] = useState<string[]>();
   const [industry, setIndustry] = useState<string[]>();
-  const [eduLevel, setEduLevel] = useState<string[]>();
-  const [yearsExp, setYearsExp] = useState<string[]>();
-  const [zipCode, setZipCode] = useState<string[]>();
+  const [eduLevel, setEduLevel] = useState<string>();
+  const [yearsExp, setYearsExp] = useState<string>();
+  const [zipCode, setZipCode] = useState<string>();
 
   // Query sorting/limits
   const [sortBy, setSortBy] = useState<string>();
   const [page, setPage] = useState<number>();
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setQueryParam('page', encodeURIComponent(value.toString()));
+    setPage(value);
+  };
 
   // GET parameter helpers
   const pathname = usePathname();
@@ -71,7 +91,8 @@ export default function Page() {
   function getArrayParam(param: string) {
     const retrievedParam: string | null = queryParams.get(param);
     var result: string[] = [];
-    if (retrievedParam != null && retrievedParam.length > 0) result = decodeURIComponent(retrievedParam).split(",");
+    if (retrievedParam != null && retrievedParam.length > 0)
+      result = decodeURIComponent(retrievedParam).split(",");
     return result;
   }
 
@@ -79,7 +100,7 @@ export default function Page() {
   const execQuery = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchFilteredJobSeekerCardView(skillsList, 0);
+      const data = await fetchFilteredJobSeekerCardView(skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, resultsPerPage, page);
       setJobSeekers(data);
     } catch (error) {
       console.error('Error fetching job seekers:', error);
@@ -87,28 +108,28 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }, [skillsList]);
-
-  useEffect(() => {
-    // on initial load, get the params from URL
-    if (skillsList == undefined) setSkillsList(getArrayParam("skills"));
-    if (industry == undefined) setIndustry(getArrayParam("industry"));
-    if (eduLevel == undefined) setEduLevel(getArrayParam("edulevel"));
-    if (yearsExp == undefined) setYearsExp(getArrayParam("yearsexp"));
-    if (zipCode == undefined) setZipCode(getArrayParam("zipcode"));
-
-    if (sortBy == undefined) setSortBy(getParam("sort") != "" ? getParam("sort") : "newest");
-    if (page == undefined) setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
-
-    // any other change after init load should execute a new query
-    else execQuery();
   }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
 
-  const newFilterOnChange = (paramName: string, stateSetter:Dispatch<SetStateAction<string[] | undefined>>) => (
-    (event:SelectChangeEvent<string[]>) => { 
-      setQueryParam(paramName, encodeURIComponent((typeof event.target.value === 'string')? event.target.value : event.target.value.join(",")));
+  useEffect(() => {
+    // on initial page load, get the params from URL if they exist
+    if (skillsList == undefined && industry == undefined && eduLevel == undefined &&
+      yearsExp == undefined && zipCode == undefined && sortBy == undefined && page == undefined) {
+      setSkillsList(getArrayParam("skills"));
+      setIndustry(getArrayParam("industry"));
+      setEduLevel(getParam("edulevel"));
+      setYearsExp(getParam("yearsexp"));
+      setZipCode(getParam("zipcode"));
+      setSortBy(getParam("sort") != "" ? getParam("sort") : "newest");
+      setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
+    }
+    else execQuery(); // any other change after initial load should execute a new query
+  }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
+
+  const newFilterOnChange = (paramName: string, stateSetter: Dispatch<SetStateAction<string[] | undefined>>) => (
+    (event: SelectChangeEvent<string[]>) => {
+      setQueryParam(paramName, encodeURIComponent((typeof event.target.value === 'string') ? event.target.value : event.target.value.join(",")));
       stateSetter((typeof event.target.value === 'string') ? event.target.value.split(',') : event.target.value);
-     }
+    }
   );
 
   return (
@@ -134,8 +155,10 @@ export default function Page() {
         initialTags={getArrayParam("skills")}
       />
 
+      {/* Filters */}
       <div className="flex flex-row flex-wrap">
-        {/* Filters */}
+
+        {/* Industry */}
         <MultipleSelectFilterAutoload
           id="jobseeker-listview-industry"
           label="Industry"
@@ -145,64 +168,95 @@ export default function Page() {
           getOptionLabel={(option: IndustrySectorDTO) => option.sector_title}
         />
 
-        <MultiSelectFilter
+        {/* Education Level */}
+        <SingleSelectFilter
           id="jobseeker-listview-edulevel"
           label="Education Level"
           value={getArrayParam("edulevel")}
-          onChange={(event) => { 
+          onChange={(event) => {
             setQueryParam('edulevel', encodeURIComponent(event.target.value.toString()));
-            setEduLevel(event.target.value as string[]);
-           }}
-          options={[ // TODO: grab valid options from database
-            { label: "Male", value: "male" },
-            { label: "Female", value: "female" },
-            { label: "Non-binary", value: "non-binary" },
-            { label: "Other", value: "other" },
-            { label: "I prefer not to say", value: "undisclosed" },
+            setEduLevel(event.target.value as string);
+          }}
+          options={[
+            { label: "Any", value: "Any" },
+            { label: "Doctorate", value: "Doctorate" },
+            { label: "Master's Degree", value: "Masters" },
+            { label: "Bachelor's Degree", value: "Bachelors" },
+            { label: "Associate's Degree", value: "Associates" },
+            { label: "Vocational Qualification / Certification", value: "VocationalQualification" },
+            { label: "High School Diploma", value: "HighSchool" },
+            { label: "GED", value: "GED" },
+            { label: "Primary Education", value: "PrimaryEducation" },
+            { label: "No Formal Education", value: "NoFormalEducation" },
           ]}
-        ></MultiSelectFilter>
+        ></SingleSelectFilter>
 
-        <MultiSelectFilter
+        {/* Years of Experience */}
+        <SingleSelectFilter
           id="jobseeker-listview-yearsexp"
-          label="Years Experience"
+          label="Years of Experience"
           value={getArrayParam("yearsexp")}
-          onChange={(event) => { 
+          onChange={(event) => {
             setQueryParam('yearsexp', encodeURIComponent(event.target.value.toString()));
-            setYearsExp(event.target.value as string[]);
-           }}
-          options={[ // TODO: grab valid options from database
-            { label: "Male", value: "male" },
-            { label: "Female", value: "female" },
-            { label: "Non-binary", value: "non-binary" },
-            { label: "Other", value: "other" },
-            { label: "I prefer not to say", value: "undisclosed" },
+            setYearsExp(event.target.value as string);
+          }}
+          options={[
+            { label: "Any", value: "0" },
+            { label: "Less than a year", value: "1" },
+            { label: "1-2 years", value: "2" },
+            { label: "3-4 years", value: "3" },
+            { label: "5 or more years", value: "4" },
           ]}
-        ></MultiSelectFilter>
+        ></SingleSelectFilter>
 
-        <MultiSelectFilter
-          id="jobseeker-listview-zipcode"
-          label="Zip/Postal Code"
-          value={getArrayParam("zipcode")}
-          onChange={(event) => { 
-            setQueryParam('zipcode', encodeURIComponent(event.target.value.toString()));
-            setZipCode(event.target.value as string[]);
-           }}
-          options={[ // TODO: grab valid options from database
-            { label: "Male", value: "male" },
-            { label: "Female", value: "female" },
-            { label: "Non-binary", value: "non-binary" },
-            { label: "Other", value: "other" },
-            { label: "I prefer not to say", value: "undisclosed" },
-          ]}
-        ></MultiSelectFilter>
+        {/* Zip Code */}
+        <div className="flex flex-1">
+          <TextField
+            className="zipcode-field"
+            autoComplete='off'
+            label="Zip Code (Full/Partial)"
+            id="outlined-size-small"
+            defaultValue={getParam("zipcode")}
+            size="small"
+            onChange={(event) => {
+              if (!isNaN(Number(event.target.value))) { // is it purely numeric chars?
+                if(event.target.value.length <= 5) { // and not longer than 5 chars?
+                  setQueryParam('zipcode', event.target.value);
+                  setZipCode(event.target.value);
+                }
+                else { // truncate
+                  event.target.value = Number.parseInt(event.target.value.slice(0, 5)).toString();
+                }
+              } 
+              else { // erase non-numeric chars
+                const closestInt = Number.parseInt(event.target.value);
+                event.target.value = (isNaN(closestInt) ? "" : closestInt.toString());
+              }
+            }}
+            sx={{
+              "& .MuiInputBase-root": {
+                borderRadius: "9999px",
+                height: "1.75rem",
+              },
+              "& .MuiInputLabel-root": {
+                fontSize: "0.875rem",
+                lineHeight: "1.25rem",
+                top: "15px",
+                left: "14px",
+              },
+            }}
+          />
+        </div>
+      </div>
 
+      <div className="float-right pb-4">
         {/* Sorting */}
         <SortDropdown
-        className="float-right"
+          className="float-right"
           id="jobseeker-listview-sort"
           label="Sort by:"
           value={getParam("sort")}
-          onChange={(event) => { 
+          onChange={(event) => {
             setQueryParam('sort', event.target.value);
             setSortBy(event.target.value);
           }}
@@ -212,6 +266,7 @@ export default function Page() {
           ]}
         />
       </div>
+
 
       {/* Loading or display results */}
       {loading ? <div className='w-full h-full text-center text-3xl'>Loading...</div> :
@@ -227,7 +282,10 @@ export default function Page() {
             forceSmall={false} />
         ))}</div>}
 
-        {/* TODO: Add pagination */}
+      <div className="flex justify-center">
+        {/* TODO: Would be nice to have a "Showing 1-100 of 4,321 results" blurb here */}
+        <Pagination count={Math.ceil(jobseekers.length / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} />
+      </div>
     </main>
   );
 }
