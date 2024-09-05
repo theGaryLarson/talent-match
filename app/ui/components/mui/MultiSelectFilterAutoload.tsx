@@ -77,7 +77,7 @@ export default function MultipleSelectFilterAutoload<ValueType>({
           value={filter}
           onChange={handleChange}
           input={<OutlinedInput />}
-          renderValue={(selected) => label + " (" + selected.length + ")"}
+          renderValue={(selected) => selected.join(', ')}
           {...rest}
         >
           {options.map((option) => (

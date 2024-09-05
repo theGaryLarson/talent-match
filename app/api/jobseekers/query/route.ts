@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import {jobSeekerCardViewSelect, jobseekerQueryTestSelect} from "@/app/lib/prisma";
+import {jobSeekerCardViewSelect} from "@/app/lib/prisma";
 import {educationRank} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import {HighestDegreeType} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
@@ -9,10 +9,13 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
     const {
         skills = [],
+        industrySector  = [],
+        educationLevel = [],
         yearsWorkExp = 0,
-        zipCode = undefined,
-        industrySector  = undefined,
-        educationLevel = undefined,
+        zipCode = "undefined",
+        sortBy = "newest",
+        maxResults = 50,
+        page = 1,
     } = await request.json();
 
     const normalizedSkills: string[] = skills.filter((skill: string) => skill && skill.trim() !== '');
@@ -33,7 +36,7 @@ export async function POST(request: Request) {
                             skill_name: {
                                 in: normalizedSkills,
                             },
-                        },
+                        }, 
                     },
                 },
             },
@@ -63,7 +66,7 @@ export async function POST(request: Request) {
     });
 
     // Industry Sector Filtering
-    if (industrySector) {
+    if (industrySector.length > 0) {
         andConditions.push({
             work_experiences: {
                 some: {
@@ -76,7 +79,7 @@ export async function POST(request: Request) {
     }
 
     // Education Level Filtering
-    if (educationLevel) {
+    if (educationLevel.length > 0) {
         const minRank: number = educationRank[educationLevel as HighestDegreeType];
         andConditions.push({
             highest_level_of_study_completed: {
@@ -104,7 +107,8 @@ export async function POST(request: Request) {
 
     const filteredJobSeekers = await prisma.jobseekers.findMany({
         where: andConditions.length > 0 ? { AND: andConditions } : undefined,
-        select:  jobSeekerCardViewSelect // for testing queries use jobseekerQueryTestSelect
+        select:  jobSeekerCardViewSelect, // for testing queries use jobseekerQueryTestSelect
+        // orderBy: { users }
     });
 
     return NextResponse.json(filteredJobSeekers);

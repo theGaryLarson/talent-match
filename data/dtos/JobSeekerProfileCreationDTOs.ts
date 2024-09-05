@@ -68,6 +68,7 @@ export enum HighestDegreeType {
     Associates = "Associates",
     Bachelors = "Bachelors",
     Masters = "Masters",
+    Doctorate = "Doctorate",
     GED = "GED",
     VocationalQualification = "Vocational Qualification / Certification",
     NoFormalEducation = "No Formal Education"
@@ -83,6 +84,7 @@ export const educationRank: Record<HighestDegreeType, number> = {
     [HighestDegreeType.Associates]: 5,
     [HighestDegreeType.Bachelors]: 6,
     [HighestDegreeType.Masters]: 7,
+    [HighestDegreeType.Doctorate]: 8,
 };
 
 export enum CollegeDegreeType {
