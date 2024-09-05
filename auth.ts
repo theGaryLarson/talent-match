@@ -27,8 +27,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: true,
   providers,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       try {
+        if (trigger === "update" && session?.jobseekerId) {
+          // Handle dynamic updates to the jobseekerId
+          token.jobseekerId = session.jobseekerId;
+        }
         if (user && user.email) {
           let fetchResponse;
           let createResponse;
