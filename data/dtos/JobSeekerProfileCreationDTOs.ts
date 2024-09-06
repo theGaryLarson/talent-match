@@ -148,6 +148,7 @@ export type JsEducationInfoDTO = {
 
 export type JsEducationPageDTO = {
     userId: string,
+    jobseekerId?: string,
     highestLevelOfStudy: HighestDegreeType;
     educations: JsEducationInfoDTO[];
     certifications: CertDTO[];

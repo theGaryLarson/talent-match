@@ -104,7 +104,7 @@ export async function POST(request: Request) {
 
     const filteredJobSeekers = await prisma.jobseekers.findMany({
         where: andConditions.length > 0 ? { AND: andConditions } : undefined,
-        select:  jobSeekerCardViewSelect // for testing queries use jobseekerQueryTestSelect
+        select:  jobSeekerCardViewSelect // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
     });
 
     return NextResponse.json(filteredJobSeekers);

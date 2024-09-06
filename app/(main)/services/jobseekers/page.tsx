@@ -1,4 +1,3 @@
-import PageBanner from '@/app/ui/components/PageBannner';
 import CircleBlurb from '@/app/ui/components/CircleBlurb';
 import TimeLine from '@/app/ui/components/TimeLine';
 import BottomFoldJobSeeker from '@/app/ui/components/BottomFoldJobseeker';
@@ -10,7 +9,7 @@ import JobSeekerPageBanner from '@/app/ui/components/JobSeekerPageBanner';
 export default function Page() {
   return (
     <div className="font-roboto">
-      <JobSeekerPageBanner title={''} bg={''}/>
+      <JobSeekerPageBanner />
       <div className="container mx-auto flex flex-col items-center space-y-8 px-8 py-16 md:px-12 lg:px-16">
         <div className="text-center">
           <span className="font-['Roboto'] text-6xl font-normal leading-[66px] text-[#014260]">

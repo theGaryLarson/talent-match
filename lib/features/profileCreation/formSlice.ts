@@ -32,10 +32,9 @@ export const formSlice = createSlice({
     initialState,
 
     reducers: {
-        initializeForm: (state, action: PayloadAction<FormState>) => {
-            action.payload.fields.forEach(field => state.fields.push(field));
-            state.isSubmitting = action.payload.isSubmitting;
-            state.error = action.payload.error;
+        initializeForm: (state, action: PayloadAction<FormField[]>) => { // Payload is now an array of FormField
+            state.fields = action.payload; // Directly replace the fields array
+            // No need to set isSubmitting or error in this reducer
         },
         addField: (state, action: PayloadAction<{ id: string; label: string; value: string | number; type: 'text' | 'email' | 'number' | 'select' | 'radio'; options?: { value: string | number; label: string }[] }>) => {
             state.fields.push({
