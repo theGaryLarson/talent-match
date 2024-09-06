@@ -19,7 +19,6 @@ export default auth((req) => {
     "/cfa_images/",
     "/signup/",
     "/signup/jobseeker/",
-    "/signup/jobseeker/finish",
   ];
 
   const employerRoutes = [
@@ -39,18 +38,22 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (req.auth && pathname === "/signin") {
+  const userRoles = req.auth?.user?.roles || [];
+
+  if (req.auth && pathname === "/signin" && !userRoles.includes(Role.NONE)) {
     console.log("logged in, redirecting to dashboard");
     const loginUrl = new URL("/", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
   }
 
-  const userRoles = req.auth?.user?.roles || [];
-
-  if (userRoles.includes(Role.NONE)) {
+  if (req.auth && userRoles.includes(Role.NONE) && pathname !== "/signup") {
     console.log("redirected to account data creation");
     const loginUrl = new URL("/signup", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (req.auth && userRoles.includes(Role.NONE) && pathname === "/signup") {
+    return NextResponse.next();
   }
 
   // Check for jobseeker role access

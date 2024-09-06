@@ -41,7 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 email: user.email,
                 firstName: user.name?.split(" ")[0] || "",
                 lastName: user.name?.split(" ")[1] || "",
-                roles: [Role.JOBSEEKER],
+                roles: [Role.NONE],
               };
 
               createResponse = await createUser(userData);
@@ -89,7 +89,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.employeeIsApproved = token.employeeIsApproved;
       session.user.id = token.id;
       session.user.email = token.email;
-      session.user.roles = [Role.JOBSEEKER];
+      session.user.roles = [Role.NONE];
       return session;
     },
   },
