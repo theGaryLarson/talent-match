@@ -14,9 +14,14 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  Checkbox,
+  Checkbox, 
+  Snackbar, 
+  SnackbarContent, 
+  Typography, 
+  IconButton
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
+import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 
 export default function CreateJobseekerProfileDisclosuresPage() {
   const [veteranStatus, setVeteranStatus] = useState('');
@@ -27,9 +32,13 @@ export default function CreateJobseekerProfileDisclosuresPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [sessionData, setSessionData] = useState(null);
+  const [open, setOpen] = useState<boolean>(false);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if(!termsAccepted) {
+      setOpen(true);
+    }
     if (!session || !session.user?.id) {
       console.error('User session is not available.');
       return;
@@ -62,12 +71,40 @@ export default function CreateJobseekerProfileDisclosuresPage() {
       // error handling
     }
   }
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
         <ProgressBarFlat progress={(6 / 6) * 100} size="sm" />
         <p>Step 6/6</p>
+
+        <SnackbarWithIcon
+          open={open}
+          onClose={handleClose}
+          variant="alert"
+          message={
+            <div>
+              <Typography variant="body1">
+                Must agree to terms!
+              </Typography>
+              <Typography variant="body2">
+                To finish creating your profile, you must agree to the terms.
+              </Typography>
+            </div>
+          }
+        />
+
         <h1>Voluntary Disclosures</h1>
         <p className="subtitle">* Indicates a required field</p>
         <p>* Indicates a required field</p>
@@ -243,7 +280,6 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 name="profile-creation-disclosures-require-terms"
                 checked={termsAccepted}
                 onChange={(event) => setTermsAccepted(event.target.checked)}
-                required
               />{' '}
               Yes, I have read and consent to the terms and conditions*
             </Label>
