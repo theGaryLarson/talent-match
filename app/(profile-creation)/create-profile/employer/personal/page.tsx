@@ -18,9 +18,9 @@ import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
-import { Button, Progress } from "flowbite-react";
-import {formatPhoneE164} from "@/app/lib/utils";
-import parsePhoneNumberFromString from "libphonenumber-js";
+import { Button, Progress } from 'flowbite-react';
+import { formatPhoneE164 } from '@/app/lib/utils';
+import parsePhoneNumberFromString from 'libphonenumber-js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -34,7 +34,6 @@ export default function CreateJobseekerProfileIntroPage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   // const [gender, setGender] = useState('');
   // const [race, setRace] = useState('');
-
 
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
@@ -90,10 +89,10 @@ export default function CreateJobseekerProfileIntroPage() {
     }
   };
 
-    const handleAvatarUpload = (url: string) => {
-        // Update the local state with the uploaded image URL
-        setAvatarUrl(url);
-    };
+  const handleAvatarUpload = (url: string) => {
+    // Update the local state with the uploaded image URL
+    setAvatarUrl(url);
+  };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     dispatch(submitForm());
@@ -114,75 +113,131 @@ export default function CreateJobseekerProfileIntroPage() {
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
-         //TODO: assign existing userId if exists if not create new with uuidv4().
-          userId: '99E52D83-CC98-46AF-B62A-58124ABEBBDC',
-          photoUrl: avatarUrl || null,
-          firstName: fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || null,
-          lastName: fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || null,
-          birthDate: birthDateISO,
-          phoneCountryCode: formattedPhone ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode : null,
-          phone: formattedPhone,
-          email: fields.find(f => f.id === 'profile-creation-intro-email')?.value || '',
-          // gender: gender, // OR? fields.find(f => f.id === 'profile-creation-intro-gender')?.value || null,
-          // race: race,
-      };
+      //TODO: assign existing userId if exists if not create new with uuidv4().
+      userId: '99E52D83-CC98-46AF-B62A-58124ABEBBDC',
+      photoUrl: avatarUrl || null,
+      firstName:
+        fields.find((f) => f.id === 'profile-creation-intro-first-name')
+          ?.value || null,
+      lastName:
+        fields.find((f) => f.id === 'profile-creation-intro-last-name')
+          ?.value || null,
+      birthDate: birthDateISO,
+      phoneCountryCode: formattedPhone
+        ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode
+        : null,
+      phone: formattedPhone,
+      email:
+        fields.find((f) => f.id === 'profile-creation-intro-email')?.value ||
+        '',
+      // gender: gender, // OR? fields.find(f => f.id === 'profile-creation-intro-gender')?.value || null,
+      // race: race,
+    };
 
-      try {
-          const response = await fetch('/api/employers/account/personal-info/upsert', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(formData),
-          });
+    try {
+      const response = await fetch(
+        '/api/employers/account/personal-info/upsert',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        },
+      );
 
-          if (response.ok) {
-              const result = await response.json();
-              dispatch(submitFormSuccess());
-              router.push('/create-profile/employer/company');
-          } else {
-              const errorData = await response.json();
-              dispatch(submitFormFailure(errorData.error || 'Failed to submit the form'));
-          }
-      } catch (error) {
-          dispatch(submitFormFailure('Failed to submit the form'));
+      if (response.ok) {
+        const result = await response.json();
+        dispatch(submitFormSuccess());
+        router.push('/create-profile/employer/company');
+      } else {
+        const errorData = await response.json();
+        dispatch(
+          submitFormFailure(errorData.error || 'Failed to submit the form'),
+        );
       }
+    } catch (error) {
+      dispatch(submitFormFailure('Failed to submit the form'));
+    }
   };
 
-  return(
+  return (
     <main className="flex justify-center">
-      <aside className="profile-form-aside">
-      </aside>
+      <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={1/6 * 100} size="sm"/>
+        <ProgressBarFlat progress={(1 / 6) * 100} size="sm" />
         <p>Step 1/6</p>
         <h1>Your Personal Info</h1>
-        <p className='subtitle'>* Indicates a required field</p>
+        <p className="subtitle">* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Your Photo <span className="subtitle-optional">(optional)</span></h2>
+              <h2>
+                Your Photo <span className="subtitle-optional">(optional)</span>
+              </h2>
             </legend>
             <AvatarUpload
               id="profile-creation-intro-avatar-upload"
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
-              userId='99E52D83-CC98-46AF-B62A-58124ABEBBDC'
+              userId="99E52D83-CC98-46AF-B62A-58124ABEBBDC" // fixme: use userId
               onImageUpload={handleAvatarUpload}
+              initialImageUrl={''}
             />
           </fieldset>
           <fieldset>
             <div className="profile-form-grid tablet:grid-cols-2">
-              <InputTextWithLabel id="profile-creation-intro-first-name" placeholder="First name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-first-name')?.value || ''} required>First Name *</InputTextWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-last-name" placeholder="Last name" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-last-name')?.value || ''} required>Last Name *</InputTextWithLabel>
+              <InputTextWithLabel
+                id="profile-creation-intro-first-name"
+                placeholder="First name"
+                onChange={handleFieldChange}
+                value={
+                  fields.find(
+                    (f) => f.id === 'profile-creation-intro-first-name',
+                  )?.value || ''
+                }
+                required
+              >
+                First Name *
+              </InputTextWithLabel>
+              <InputTextWithLabel
+                id="profile-creation-intro-last-name"
+                placeholder="Last name"
+                onChange={handleFieldChange}
+                value={
+                  fields.find(
+                    (f) => f.id === 'profile-creation-intro-last-name',
+                  )?.value || ''
+                }
+                required
+              >
+                Last Name *
+              </InputTextWithLabel>
             </div>
-            
-            <div className="profile-form-grid">
-              <DatePicker label="Birthdate *" value={birthdate} onChange={setBirthdate} className="date-picker"/>
 
-              <InputTextWithLabel type="email" id="profile-creation-intro-email" onChange={handleFieldChange} placeholder="example@example.com" value={fields.find(f => f.id === 'profile-creation-intro-email')?.value || ''} required>Email *</InputTextWithLabel>
+            <div className="profile-form-grid">
+              <DatePicker
+                label="Birthdate *"
+                value={birthdate}
+                onChange={setBirthdate}
+                className="date-picker"
+              />
+
+              <InputTextWithLabel
+                type="email"
+                id="profile-creation-intro-email"
+                onChange={handleFieldChange}
+                placeholder="example@example.com"
+                value={
+                  fields.find((f) => f.id === 'profile-creation-intro-email')
+                    ?.value || ''
+                }
+                required
+              >
+                Email *
+              </InputTextWithLabel>
 
               <SelectOptionsWithLabel
                 id="profile-creation-intro-country-phone-code"
@@ -541,12 +596,29 @@ export default function CreateJobseekerProfileIntroPage() {
                   { label: 'Zambia +260', value: 'Zambia +260' },
                   { label: 'Zimbabwe +263', value: 'Zimbabwe +263' },
                 ]}
-                value={fields.find(f => f.id === 'profile-creation-intro-country-phone-code')?.value || "United States +1"}
+                value={
+                  fields.find(
+                    (f) => f.id === 'profile-creation-intro-country-phone-code',
+                  )?.value || 'United States +1'
+                }
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
-              <InputTextWithLabel id="profile-creation-intro-phone-number" type="tel" placeholder="Phone number" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-intro-phone-number')?.value || ''} required>Phone Number *</InputTextWithLabel>
-            
+              <InputTextWithLabel
+                id="profile-creation-intro-phone-number"
+                type="tel"
+                placeholder="Phone number"
+                onChange={handleFieldChange}
+                value={
+                  fields.find(
+                    (f) => f.id === 'profile-creation-intro-phone-number',
+                  )?.value || ''
+                }
+                required
+              >
+                Phone Number *
+              </InputTextWithLabel>
+
               {/* <SelectWithLabel
                 id="profile-creation-intro-gender"
                 fullWidth
@@ -583,14 +655,16 @@ export default function CreateJobseekerProfileIntroPage() {
                 placeholder="Please select"
                 required
               /> */}
-            
             </div>
-            
           </fieldset>
-          
+
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">Cancel</Button>
-            <Button pill type="submit">Save and continue</Button>
+            <Button pill className="custom-outline-btn">
+              Cancel
+            </Button>
+            <Button pill type="submit">
+              Save and continue
+            </Button>
           </div>
         </form>
       </section>

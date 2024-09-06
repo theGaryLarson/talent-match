@@ -33,9 +33,10 @@ import ProjectExperiences, {
   ProjectExperienceData,
 } from '@/app/ui/form-field-groups/ProjectExperiences';
 import { mapToEnum } from '@/app/lib/utils';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 
 import { initializeForm } from '@/lib/features/profileCreation/formSlice';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 
 interface Data {
   projectExperiences: ProjectExperienceData[];
@@ -53,17 +54,7 @@ export default function CreateJobseekerProfileEducationPage() {
   const router = useRouter();
   const [response, setResponse] = useState(null);
   const [error, setError] = useState<string | null>(null);
-
-  const updateJobseekerId = async (newJobseekerId: string) => {
-    try {
-      await update({
-        jobseekerId: newJobseekerId, // Trigger 'update' for jwt callback
-      });
-    } catch (error) {
-      console.error('Failed to update session:', error);
-    }
-  };
-
+  const updateSessionProperties = useUpdateSession();
   function addNewLicense() {
     const newLicenseData = defaultLicenseData();
     setData({
@@ -123,6 +114,11 @@ export default function CreateJobseekerProfileEducationPage() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!session || !session.user.id) {
+      console.error('User session is not available.');
+      return;
+    }
+    const userId = session.user.id;
     const form = event.currentTarget as HTMLFormElement;
 
     const educations: JsEducationInfoDTO[] = data.educations.map(
@@ -174,7 +170,7 @@ export default function CreateJobseekerProfileEducationPage() {
     );
 
     const formData: JsEducationPageDTO = {
-      userId: session?.user?.id!,
+      userId: userId,
       highestLevelOfStudy:
         form['profile-creation-education-highest-completed'].value,
       educations: educations,
@@ -205,9 +201,10 @@ export default function CreateJobseekerProfileEducationPage() {
       console.log(JSON.stringify(data, null, 2));
       // Update session with new jobseekerId
       if (session) {
-        // console.log('Updating session with jobseekerId:', data.result.jobseekerId);
-        await updateJobseekerId(data.result.jobseekerId);
-        // console.log('Session after update:', await getSession());
+        await updateSessionProperties({
+          jobseekerId: data.result.jobseekerId,
+        });
+        console.log('Session after update:', await getSession());
       }
 
       router.push('/create-profile/jobseeker/work-experience');
