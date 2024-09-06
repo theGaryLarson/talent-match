@@ -21,7 +21,7 @@ export default function SortDropdown({
   ...rest
 }:Props) {
   return (
-    <FormControl className="">
+    <FormControl size="small">
       <InputLabel id={id + "-label"}>{label}</InputLabel>
       <Select
         className="shadow-transparent border-none"

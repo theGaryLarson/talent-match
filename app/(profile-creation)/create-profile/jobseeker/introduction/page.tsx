@@ -24,6 +24,7 @@ import parsePhoneNumberFromString from 'libphonenumber-js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 
 export default function CreateJobseekerProfileIntroPage() {
   const { fields, isSubmitting, error }: FormState = useSelector(
@@ -44,46 +45,51 @@ export default function CreateJobseekerProfileIntroPage() {
   const [newFieldOptions, setNewFieldOptions] = useState<
     { value: string | number; label: string }[]
   >([]);
-  const { data: session, status } = useSession(); // Use useSession hook to get session and status
+  const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
+  const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      const { name, email } = session.user;
-      const [firstName, lastName] = name?.split(' ') || ['', ''];
-      console.log(JSON.stringify(session, null, 2));
-      // Prepare the fields array with session data
-      const initialFields = [
-        {
-          id: 'profile-creation-intro-first-name',
-          label: 'First Name',
-          value: firstName || '',
-          type: 'text' as const,
-        },
-        {
-          id: 'profile-creation-intro-last-name',
-          label: 'Last Name',
-          value: lastName || '',
-          type: 'text' as const,
-        },
-        {
-          id: 'profile-creation-intro-email',
-          label: 'Email',
-          value: email || '',
-          type: 'email' as const,
-          options: [],
-        },
-        {
-          id: 'profile-creation-intro-country-phone-code',
-          label: 'Country Phone Code',
-          value: 'United States +1',
-          type: 'select' as const,
-        },
-      ];
+    const initializeFormFields = async () => {
+      if (status === 'authenticated' && session?.user) {
+        const { firstName, lastName, email } = session.user;
+        const initialFields = [
+          {
+            id: 'profile-creation-intro-first-name',
+            label: 'First Name',
+            value: firstName || '',
+            type: 'text' as const,
+          },
+          {
+            id: 'profile-creation-intro-last-name',
+            label: 'Last Name',
+            value: lastName || '',
+            type: 'text' as const,
+          },
+          {
+            id: 'profile-creation-intro-email',
+            label: 'Email',
+            value: email || '',
+            type: 'email' as const,
+            options: [],
+          },
+          {
+            id: 'profile-creation-intro-country-phone-code',
+            label: 'Country Phone Code',
+            value: 'United States +1',
+            type: 'select' as const,
+          },
+        ];
 
-      // Dispatch action to initialize fields in Redux state
-      dispatch(initializeForm(initialFields));
-    }
-  }, [status, session, dispatch]); // Add status and session as dependencies
+        // Dispatch action to initialize fields in Redux state
+        dispatch(initializeForm(initialFields));
+        if (session?.user?.image) {
+          setAvatarUrl(session.user.image);
+        }
+      }
+    };
+
+    initializeFormFields();
+  }, [status, session, dispatch, update]); // Add update to dependencies
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -129,8 +135,12 @@ export default function CreateJobseekerProfileIntroPage() {
   };
 
   const handleImageUpload = (url: string) => {
-    // Update the local state with the uploaded image URL
-    setAvatarUrl(url);
+    updateSessionProperties({
+      image: url,
+    }).then(() => {
+      // Update the local state with the uploaded image URL
+      setAvatarUrl(url);
+    });
   };
 
   const handleResumeUpload = (url: string) => {
@@ -144,7 +154,17 @@ export default function CreateJobseekerProfileIntroPage() {
       console.error('User session is not available.');
       return;
     }
+
     dispatch(submitForm());
+
+    // Extract firstName, lastName, and name from Redux state fields
+    const firstName =
+      fields.find((f) => f.id === 'profile-creation-intro-first-name')?.value ||
+      '';
+    const lastName =
+      fields.find((f) => f.id === 'profile-creation-intro-last-name')?.value ||
+      '';
+    const name = `${firstName} ${lastName}`;
 
     const formData = {
       userId: session.user.id,
@@ -197,6 +217,14 @@ export default function CreateJobseekerProfileIntroPage() {
       if (response.ok) {
         const result = await response.json();
         dispatch(submitFormSuccess());
+
+        // Update session properties using the custom hook
+        await updateSessionProperties({
+          firstName,
+          lastName,
+          name,
+        });
+
         router.push('/create-profile/jobseeker/education');
       } else {
         const errorData = await response.json();
@@ -228,8 +256,9 @@ export default function CreateJobseekerProfileIntroPage() {
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
-              userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
+              userId={session?.user?.id!}
               onImageUpload={handleImageUpload}
+              initialImageUrl={session?.user?.image || ''}
             />
           </fieldset>
           <fieldset>
