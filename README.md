@@ -38,6 +38,11 @@ Otherwise, if you're just working on the frontend, you can use our shared cloud 
 # Dev Test Azure DB
 DATABASE_URL="sqlserver://cfa-reactdb.database.windows.net;database=dev;user=talentfinder;password=CFA2024@Next.js;encrypt=true;trustServerCertificate=true"
 
+# Azure Services - Blob Storage
+AZURE_STORAGE_CONNECTION_STRING="DefaultEndpointsProtocol=https;AccountName=careerservicesstorage;AccountKey=Y81x4YjIyS2W2fhIR6sW/05Lom1hTgyhBhYAvDFKcxf7GYE7Fxo3D+JfMRoHShpT5XAKbi4Vjuuc+AStdQgGjA==;EndpointSuffix=core.windows.net"
+AZURE_STORAGE_ACCOUNT_KEY="Y81x4YjIyS2W2fhIR6sW/05Lom1hTgyhBhYAvDFKcxf7GYE7Fxo3D+JfMRoHShpT5XAKbi4Vjuuc+AStdQgGjA=="
+AZURE_STORAGE_NAME="careerservicesstorage"
+
 # Shared Auth Secrets
 AUTH_GITHUB_ID=Ov23li9hwTQuo1iWqrNH
 AUTH_GITHUB_SECRET=3be8d9d590b4b30df7df1d9513eb4280e605f6fa
