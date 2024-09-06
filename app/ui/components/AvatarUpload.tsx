@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import { ChangeEvent, useState } from 'react';
-import {Avatar, AvatarImageProps} from 'flowbite-react';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Avatar, AvatarImageProps } from 'flowbite-react';
 
 interface Props {
-  id: string,
-  fileTypeText: string,
-  accept: string,
-  maxSizeMB: number,
-  userId: string,
-  onImageUpload: (url: string)  => void;
+  id: string;
+  fileTypeText: string;
+  accept: string;
+  maxSizeMB: number;
+  userId: string;
+  onImageUpload: (url: string) => void;
+  initialImageUrl: string; // new prop to accept session image URL
 }
 
 export default function AvatarUpload({
@@ -19,27 +20,32 @@ export default function AvatarUpload({
   maxSizeMB,
   userId,
   onImageUpload,
+  initialImageUrl,
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
-  const [fileSelected, setFileSelected] = useState("");
-  const [filePath, setFilePath] = useState("");
+  const [fileSelected, setFileSelected] = useState('');
+  const [filePath, setFilePath] = useState('');
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFilePath(initialImageUrl); // Update filePath when initialImageUrl changes
+  }, [initialImageUrl]);
 
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null) {
       const file = event.target.files[0];
       setFileSelected(file.name);
 
-      if (filePath != "") URL.revokeObjectURL(filePath);
+      if (filePath) URL.revokeObjectURL(filePath);
       setFilePath(URL.createObjectURL(file));
 
       const maxSize = 1048576 * maxSizeMB;
-      if (file.size > maxSize) { // file is too large
+      if (file.size > maxSize) {
+        // file is too large
         setFilesizeExceeded(true);
-        setUploadError("File size exceeded. Please use file less than 5MB.")
+        setUploadError('File size exceeded. Please use file less than 5MB.');
         return;
-      }
-      else setFilesizeExceeded(false); // file juuuust right
+      } else setFilesizeExceeded(false); // file juuuust right
 
       try {
         // Convert file to buffer
@@ -65,49 +71,58 @@ export default function AvatarUpload({
         // Check if the upload was successful
         if (response.ok) {
           const result = await response.json();
+          setFilePath(result.imageUrl); // Update filePath with the uploaded image URL
           onImageUpload(result.imageUrl); // Return the image URL to the parent component
         } else {
           const errorData = await response.json();
           setUploadError(errorData.error || 'Failed to upload image');
         }
       } catch (error) {
-        console.error("Error uploading image:", error);
-        setUploadError("Failed to upload image. Please try again.");
+        console.error('Error uploading image:', error);
+        setUploadError('Failed to upload image. Please try again.');
       }
-
     } else {
-      setFileSelected(""); // no file selected
-      if (filePath !== "") URL.revokeObjectURL(filePath);
+      setFileSelected(''); // no file selected
+      if (filePath !== '') URL.revokeObjectURL(filePath);
     }
-  }
+  };
 
   let validFiletype = true;
-  if (fileSelected != "") {
-    const fileType = fileSelected.substring(fileSelected.lastIndexOf("."), fileSelected.length);
-    validFiletype = accept.split(",").includes(fileType);
+  if (fileSelected != '') {
+    const fileType = fileSelected.substring(
+      fileSelected.lastIndexOf('.'),
+      fileSelected.length,
+    );
+    validFiletype = accept.split(',').includes(fileType);
   }
 
-
-  const fileTypeTextPlusSizeLimit = fileTypeText + " (max. " + maxSizeMB + " MB)";
+  const fileTypeTextPlusSizeLimit =
+    fileTypeText + ' (max. ' + maxSizeMB + ' MB)';
 
   // it was getting late and playing around. Feel free to implement this however you find best :)
   const imageProps: AvatarImageProps = {
-    className: "w-20 h-20 rounded-full object-cover", // Ensure the image is a perfect circle
-    "data-testid": "avatar-image",
+    className: 'w-20 h-20 rounded-full object-cover', // Ensure the image is a perfect circle
+    'data-testid': 'avatar-image',
   };
 
   return (
     <div>
-      <label className="flex p-4 hover:bg-slate-50 rounded-full cursor-pointer">
+      <label className="flex cursor-pointer rounded-full p-4 hover:bg-slate-50">
         <Avatar
           rounded
           // img={filePath}
           img={(props) => (
-              <img src={filePath} alt="Uploaded Avatar" {...props} {...imageProps} />
+            <img
+              src={filePath || initialImageUrl}
+              alt="Uploaded Avatar"
+              {...props}
+              {...imageProps}
+            />
           )}
-          className="w-20 h-20 flex-shrink-0"
-          />
-        <input type="file"
+          className="h-20 w-20 flex-shrink-0"
+        />
+        <input
+          type="file"
           id={id}
           name={id}
           className="sr-only"
@@ -115,14 +130,24 @@ export default function AvatarUpload({
           onChange={handleChange}
         />
         <div className="px-6">
-          {fileSelected == "" && 
-            <p className="text-sky-400 uppercase font-medium">Upload Image</p>}
-          {fileSelected != "" && !filesizeExceeded && validFiletype && 
-            <p className="text-gray-400 uppercase font-medium">{fileSelected}</p>}
-          {fileSelected != "" && !filesizeExceeded && !validFiletype && 
-            <p className="font-medium text-red-500 dark:text-red-400">Unsupported file type: {fileSelected}</p>}
-          {fileSelected != "" && filesizeExceeded && 
-            <p className="font-medium text-red-500 dark:text-red-400">File is too large: {fileSelected}</p>}
+          {fileSelected == '' && (
+            <p className="font-medium uppercase text-sky-400">Upload Image</p>
+          )}
+          {fileSelected != '' && !filesizeExceeded && validFiletype && (
+            <p className="font-medium uppercase text-gray-400">
+              {fileSelected}
+            </p>
+          )}
+          {fileSelected != '' && !filesizeExceeded && !validFiletype && (
+            <p className="font-medium text-red-500 dark:text-red-400">
+              Unsupported file type: {fileSelected}
+            </p>
+          )}
+          {fileSelected != '' && filesizeExceeded && (
+            <p className="font-medium text-red-500 dark:text-red-400">
+              File is too large: {fileSelected}
+            </p>
+          )}
           <p className="text-sm">{fileTypeTextPlusSizeLimit}</p>
         </div>
       </label>

@@ -32,7 +32,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
   function handleClick() {
     router.push(`/services/jobseekers/${session?.user.jobseekerId!}`);
   }
-  const firstName = session?.user?.name?.split(' ')[0];
+  const firstName = session?.user?.firstName;
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
@@ -44,79 +44,6 @@ export default function CreateJobseekerProfilePreferencesPage() {
         <Button pill onClick={handleClick}>
           Get Started
         </Button>
-
-        {/* <form onSubmit={ handleSubmit }>
-
-          <fieldset>
-            <div>
-              <fieldset>
-                <legend>What are you looking for?</legend>
-                <div className="container">
-                  <Button
-                      pill
-                      className="custom-outline-btn inline-block m-2"
-                      // variant="outlined"
-                      onClick={ () => { setEmploymentType('Full-time job')} }
-                  >
-                    Full-time job
-                  </Button>
-                  <Button
-                      pill
-                      className="custom-outline-btn inline-block m-2"
-                      // variant="outlined"
-                      onClick={ () => { setEmploymentType('Part-time job')} }
-                  >
-                    Part-time job
-                  </Button>
-                  <Button
-                      pill
-                      className="custom-outline-btn inline-block m-2"
-                      // variant="outlined"
-                      onClick={ () => { setEmploymentType('Internship')} }
-                  >
-                    Internship
-                  </Button>
-                  <Button
-                      pill
-                      className="custom-outline-btn inline-block m-2"
-                      // variant="outlined"
-                      onClick={ () => { setEmploymentType('On-campus job')} }
-                  >
-                    On-campus job
-                  </Button>
-                  <Button
-                      className="custom-outline-btn inline-block m-2"
-                      // variant="outlined"
-                      onClick={ () => { setEmploymentType('Contract')} }
-                  >
-                    Contract
-                  </Button>
-                </div>
-              </fieldset>
-              <FormControl component="fieldset">
-                <FormLabel id="profile-creation-preferences-require-role" className="mt-7" component="legend" sx={{color:"#000000ff"}}>What is your tech role/targeted pathway?</FormLabel>
-                <RadioGroup
-                  aria-labelledby="profile-creation-preferences-require-role"
-                  defaultValue="female"
-                  name="profile-creation-preferences-require-role"
-                  value={ pathway }
-                  onChange = { (e) => { setPathway(e.target.value) } }
-                >
-                  <FormControlLabel value="Software Development" control={<Radio />} label="Software Development" />
-                  <FormControlLabel value="IT & Cloud Computing" control={<Radio />} label="IT & Cloud Computing" />
-                  <FormControlLabel value="Cybersecurity" control={<Radio />} label="Cybersecurity" />
-                  <FormControlLabel value="Data Analytics" control={<Radio />} label="Data Analytics" />
-                </RadioGroup>
-              </FormControl>
-            </div>
-          </fieldset>
-
-          <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">Previous</Button>
-            <Button pill type="submit">Save and continue</Button>
-          </div>
-          
-        </form> */}
       </section>
     </main>
   );
