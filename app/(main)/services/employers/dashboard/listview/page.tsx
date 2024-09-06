@@ -13,8 +13,6 @@ import SingleSelectFilter from '@/app/ui/components/mui/SingleSelectFilter';
 import { IndustrySectorDTO } from '@/data/dtos/IndustrySectorDTO';
 import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
 import { SelectChangeEvent } from '@mui/material/Select';
-import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
-import { PostalGeoDataDTO } from '@/data/dtos/PostalGeoDataDTO';
 import TextField from '@mui/material/TextField';
 
 const resultsPerPage = 50;
@@ -29,14 +27,22 @@ async function fetchFilteredJobSeekerCardView(
   maxResults: number = resultsPerPage,
   page: number = 1,
 ): Promise<JobSeekerCardViewDTO[]> {
+  
+  // Hacky convert the strings to numbers for the request
   var workExp = 0;
+  var zip = null;
+  var pageNum = 1;
   if (yearsWorkExp != "") workExp = Number.parseInt(yearsWorkExp);
+  if (zipCode != "") zip = Number.parseInt(zipCode);
+  if (page != 0) pageNum = page; // if page=0, no GET param set for page, and we actually call this page 1
+  
+  // Make the request
   const response = await fetch('/api/jobseekers/query', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ skills, industry, eduLevel, workExp, zipCode, sortBy, maxResults, page })
+    body: JSON.stringify({ skills, industry, eduLevel, workExp, zip, sortBy, maxResults, pageNum })
   });
   if (!response.ok) {
     // TODO: display error
@@ -57,7 +63,7 @@ export default function Page() {
   const [yearsExp, setYearsExp] = useState<string>();
   const [zipCode, setZipCode] = useState<string>();
 
-  // Query sorting/limits
+  // Sorting and pagination
   const [sortBy, setSortBy] = useState<string>();
   const [page, setPage] = useState<number>();
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -133,8 +139,8 @@ export default function Page() {
   );
 
   return (
-    <main className="m-6 space-y-8 p-6 laptop:px-[200px] py-16">
-      <h1 className="text-2xl font-bold">{skillsList?.toString()} Search Results</h1>
+    <main className="m-6 p-6 laptop:px-[200px] py-16">
+      <h1 className="text-2xl font-bold mb-4">{skillsList?.toString()} Search Results</h1>
 
       {/* Skill Search Bar */}
       <TagsWithAutocomplete
@@ -156,78 +162,87 @@ export default function Page() {
       />
 
       {/* Filters */}
-      <div className="flex flex-row flex-wrap">
+      <div className="flex flex-row flex-wrap mt-1">
 
         {/* Industry */}
-        <MultipleSelectFilterAutoload
-          id="jobseeker-listview-industry"
-          label="Industry"
-          apiAutoloadRoute="/api/employers/industry-sectors"
-          value={getArrayParam("industry")}
-          onChange={newFilterOnChange("industry", setIndustry)}
-          getOptionLabel={(option: IndustrySectorDTO) => option.sector_title}
-        />
+        <div className="w-1/2 tablet:w-1/4">
+          <MultipleSelectFilterAutoload
+            id="jobseeker-listview-industry"
+            label="Industry"
+            apiAutoloadRoute="/api/employers/industry-sectors" // TODO: two requests are happening?
+            value={getArrayParam("industry")}
+            onChange={(event) => {
+              newFilterOnChange("industry", setIndustry);
+              console.log("hit");
+            }}
+            getOptionLabel={(option: IndustrySectorDTO) => option.sector_title}
+          />
+        </div>
 
         {/* Education Level */}
-        <SingleSelectFilter
-          id="jobseeker-listview-edulevel"
-          label="Education Level"
-          value={getArrayParam("edulevel")}
-          onChange={(event) => {
-            setQueryParam('edulevel', encodeURIComponent(event.target.value.toString()));
-            setEduLevel(event.target.value as string);
-          }}
-          options={[
-            { label: "Any", value: "Any" },
-            { label: "Doctorate", value: "Doctorate" },
-            { label: "Master's Degree", value: "Masters" },
-            { label: "Bachelor's Degree", value: "Bachelors" },
-            { label: "Associate's Degree", value: "Associates" },
-            { label: "Vocational Qualification / Certification", value: "VocationalQualification" },
-            { label: "High School Diploma", value: "HighSchool" },
-            { label: "GED", value: "GED" },
-            { label: "Primary Education", value: "PrimaryEducation" },
-            { label: "No Formal Education", value: "NoFormalEducation" },
-          ]}
-        ></SingleSelectFilter>
+        <div className="w-1/2 tablet:w-1/4">
+          <SingleSelectFilter
+            id="jobseeker-listview-edulevel"
+            label="Education Level"
+            value={getArrayParam("edulevel")}
+            onChange={(event) => {
+              setQueryParam('edulevel', encodeURIComponent(event.target.value.toString()));
+              setEduLevel(event.target.value as string);
+            }}
+            options={[
+              { label: "Any", value: "Any" },
+              { label: "Doctorate", value: "Doctorate" },
+              { label: "Master's Degree", value: "Masters" },
+              { label: "Bachelor's Degree", value: "Bachelors" },
+              { label: "Associate's Degree", value: "Associates" },
+              { label: "Vocational Qualification / Certification", value: "VocationalQualification" },
+              { label: "High School Diploma", value: "HighSchool" },
+              { label: "GED", value: "GED" },
+              { label: "Primary Education", value: "PrimaryEducation" },
+              { label: "No Formal Education", value: "NoFormalEducation" },
+            ]}
+          ></SingleSelectFilter>
+        </div>
 
         {/* Years of Experience */}
-        <SingleSelectFilter
-          id="jobseeker-listview-yearsexp"
-          label="Years of Experience"
-          value={getArrayParam("yearsexp")}
-          onChange={(event) => {
-            setQueryParam('yearsexp', encodeURIComponent(event.target.value.toString()));
-            setYearsExp(event.target.value as string);
-          }}
-          options={[
-            { label: "Any", value: "0" },
-            { label: "Less than a year", value: "1" },
-            { label: "1-2 years", value: "2" },
-            { label: "3-4 years", value: "3" },
-            { label: "5 or more years", value: "4" },
-          ]}
-        ></SingleSelectFilter>
+        <div className="w-1/2 tablet:w-1/4">
+          <SingleSelectFilter
+            id="jobseeker-listview-yearsexp"
+            label="Years of Experience"
+            value={getArrayParam("yearsexp")}
+            onChange={(event) => {
+              setQueryParam('yearsexp', encodeURIComponent(event.target.value.toString()));
+              setYearsExp(event.target.value as string);
+            }}
+            options={[ // TODO: sync with design on how to do this, re-implement route
+              { label: "Any", value: "0" },
+              { label: "Less than a year", value: "1" },
+              { label: "1-2 years", value: "2" },
+              { label: "3-4 years", value: "3" },
+              { label: "5 or more years", value: "4" },
+            ]}
+          ></SingleSelectFilter>
+        </div>
 
         {/* Zip Code */}
-        <div className="flex flex-1">
+        <div className="w-1/2 tablet:w-1/4">
           <TextField
             className="zipcode-field"
             autoComplete='off'
-            label="Zip Code (Full/Partial)"
+            label="Full/Partial Zip Code"
             id="outlined-size-small"
             defaultValue={getParam("zipcode")}
             size="small"
             onChange={(event) => {
               if (!isNaN(Number(event.target.value))) { // is it purely numeric chars?
-                if(event.target.value.length <= 5) { // and not longer than 5 chars?
+                if (event.target.value.length <= 5) { // and not longer than 5 chars?
                   setQueryParam('zipcode', event.target.value);
                   setZipCode(event.target.value);
                 }
                 else { // truncate
                   event.target.value = Number.parseInt(event.target.value.slice(0, 5)).toString();
                 }
-              } 
+              }
               else { // erase non-numeric chars
                 const closestInt = Number.parseInt(event.target.value);
                 event.target.value = (isNaN(closestInt) ? "" : closestInt.toString());
@@ -242,17 +257,16 @@ export default function Page() {
                 fontSize: "0.875rem",
                 lineHeight: "1.25rem",
                 top: "15px",
-                left: "14px",
+                left: "4px",
               },
             }}
           />
         </div>
       </div>
 
-      <div className="float-right pb-4">
-        {/* Sorting */}
+      {/* Sorting */}
+      <div className="w-full flex flex-row-reverse pb-4 mt-0">
         <SortDropdown
-          className="float-right"
           id="jobseeker-listview-sort"
           label="Sort by:"
           value={getParam("sort")}
@@ -260,7 +274,7 @@ export default function Page() {
             setQueryParam('sort', event.target.value);
             setSortBy(event.target.value);
           }}
-          options={[
+          options={[ // TODO: design to advise on best sorting options, then implement in route
             { label: "Newest", value: "newest" },
             { label: "Oldest", value: "oldest" },
           ]}

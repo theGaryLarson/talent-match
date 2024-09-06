@@ -42,7 +42,7 @@ export default function MultipleSelectFilterAutoload<ValueType>({
     onChange(event);
   };
 
-  // Load the inital filter values
+  // Load the initial filter values
   React.useEffect(() => {
     const autoload = async () => {
       try {
@@ -78,10 +78,11 @@ export default function MultipleSelectFilterAutoload<ValueType>({
           onChange={handleChange}
           input={<OutlinedInput />}
           renderValue={(selected) => selected.join(', ')}
+          MenuProps={{ PaperProps: { sx: { maxHeight: 500 } } }}
           {...rest}
         >
           {options.map((option) => (
-            <MenuItem key={getOptionLabel(option)} value={getOptionLabel(option)}>
+            <MenuItem dense={true} key={getOptionLabel(option)} value={getOptionLabel(option)}>
               <Checkbox checked={filter.indexOf(getOptionLabel(option)) !== -1} />
               <ListItemText primary={getOptionLabel(option)} />
             </MenuItem>

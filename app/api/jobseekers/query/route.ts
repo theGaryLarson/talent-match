@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import {jobSeekerCardViewSelect} from "@/app/lib/prisma";
+import {jobSeekerCardViewSelect, jobseekerQueryTestSelect} from "@/app/lib/prisma";
 import {educationRank} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import {HighestDegreeType} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
@@ -10,9 +10,9 @@ export async function POST(request: Request) {
     const {
         skills = [],
         industrySector  = [],
-        educationLevel = [],
+        educationLevel = undefined,
         yearsWorkExp = 0,
-        zipCode = "undefined",
+        zipCode = undefined,
         sortBy = "newest",
         maxResults = 50,
         page = 1,
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
                             skill_name: {
                                 in: normalizedSkills,
                             },
-                        }, 
+                        },
                     },
                 },
             },
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     }
 
     // Education Level Filtering
-    if (educationLevel.length > 0) {
+    if (educationLevel) {
         const minRank: number = educationRank[educationLevel as HighestDegreeType];
         andConditions.push({
             highest_level_of_study_completed: {
@@ -105,10 +105,10 @@ export async function POST(request: Request) {
         });
     }
 
+    // TODO: implement pagination and sorting
     const filteredJobSeekers = await prisma.jobseekers.findMany({
         where: andConditions.length > 0 ? { AND: andConditions } : undefined,
-        select:  jobSeekerCardViewSelect, // for testing queries use jobseekerQueryTestSelect
-        // orderBy: { users }
+        select:  jobSeekerCardViewSelect // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
     });
 
     return NextResponse.json(filteredJobSeekers);
