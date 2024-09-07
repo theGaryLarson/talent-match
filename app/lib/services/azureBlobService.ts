@@ -2,7 +2,6 @@ import {
   BlobSASPermissions,
   BlobServiceClient,
   BlockBlobClient,
-  ContainerSASPermissions,
   generateBlobSASQueryParameters,
   SASProtocol,
   StorageSharedKeyCredential,
