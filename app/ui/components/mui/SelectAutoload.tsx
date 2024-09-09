@@ -1,14 +1,17 @@
 import { FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import React from "react";
 
 interface Props<ValueType> {
   id: string,
   apiAutoloadRoute: string,
   label: string,
-  value: ValueType | string,
-  onChange: ((event: SelectChangeEvent<ValueType | string>) => void),
-  placeholder?: string | undefined,
+  value: ValueType,
+  onChange: ((val:ValueType) => void),
+  placeholder?: string,
+  loadingText?: string,
   getOptionLabel: ((option:ValueType) => string),
+  getOptionFromLabel: ((options:ValueType[], label:string) => ValueType),
   [key: string]: any,
 }
 
@@ -19,19 +22,21 @@ export default function SelectAutoload<ValueType>({
   value,
   onChange,
   placeholder,
+  loadingText="Loading dropdown...",
   getOptionLabel,
+  getOptionFromLabel,
   ...rest
 }:Props<ValueType>) {
-  const [selectValue, setSelectValue] = React.useState<ValueType | string>();
+  const [selectValue, setSelectValue] = React.useState<string>(getOptionLabel(value));
   const [options, setOptions] = React.useState<ValueType[]>([]);
   const [loading, setLoading] = React.useState(false);
 
-  const handleChange = (event: SelectChangeEvent<ValueType | string>) => {
+  const handleChange = (event: SelectChangeEvent<string>) => {
     const {
       target: { value },
     } = event;
     setSelectValue(value);
-    onChange(event);
+    onChange(getOptionFromLabel(options, value));
   };
 
   // Load the inital filter values
@@ -41,8 +46,6 @@ export default function SelectAutoload<ValueType>({
         setLoading(true);
         const response = await fetch(apiAutoloadRoute);
         const data: ValueType[] = await response.json();
-
-        console.log(data)
 
         setOptions(data); // Update the options with fetched data
 
@@ -63,29 +66,35 @@ export default function SelectAutoload<ValueType>({
         <Select
           id={id}
           displayEmpty
-          value={value}
+          value={selectValue}
           onChange={handleChange}
-          input={<OutlinedInput />}
+          input={<OutlinedInput notched label={label} />}
           renderValue={(selected) => {
             if (!selected) {
-              return <em>{placeholder}</em>;
+              return <span className="text-gray-500">{placeholder}</span>;
             }
 
-            return (typeof selected === "string")? selected : getOptionLabel(selected);
+            return selected;
           }}
-          inputProps={{ 'aria-label': 'Without label' }}
+          inputProps={{ 'aria-label': label }}
+          {...rest}
         >
-          <MenuItem disabled value="">
-            <em>{placeholder}</em>
+          <MenuItem disabled>
+            {placeholder}
           </MenuItem>
-          {options.map((option) => (
-            <MenuItem
-              key={getOptionLabel(option)}
-              value={getOptionLabel(option)}
-            >
-              {getOptionLabel(option)}
+          {(loading)?
+            <MenuItem disabled>
+              <span><CircularProgress color="inherit" size={20} /> {loadingText}</span>
             </MenuItem>
-          ))}
+            : options.map((option) => (
+              <MenuItem
+                key={getOptionLabel(option)}
+                value={getOptionLabel(option)}
+              >
+                {getOptionLabel(option)}
+              </MenuItem>
+            ))
+          }
         </Select>
       </FormControl>
     </div>

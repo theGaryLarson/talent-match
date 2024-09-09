@@ -88,8 +88,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     const workExperiences = data.workExperiences?.map(workExp => ({
       workId: workExp.uid,
       jobseekerId: 'A5505276-65F4-40F9-BD1B-E063B8C6B6D0', // TODO: jobseeker_id should be pulled from nextauth session data
-      techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose tech area (i.e. Cloud Computing, Database Management, Cybersecurity, etc.)
-      sectorId: null,  // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
+      techAreaId: workExp.technologyarea.id,
+      sectorId: workExp.industry.industry_sector_id,
       company: workExp.company,
       isInternship: false,
       jobTitle: workExp.title,
@@ -98,12 +98,13 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       endDate: workExp.current ? null : new Date(workExp.ends.toISOString()),
       responsibilities: workExp.experience,
     }));
+    console.log(workExperiences);
 
     const internshipExperiences = data.internshipExperiences?.map(internshipExp => ({
       workId: internshipExp.uid,
       jobseekerId: '98efbb19-2f8b-4e08-b179-d1a287ccf710'.toUpperCase(), // TODO: jobseeker_id should be pulled from nextauth session data
-      techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose sector
-      sectorId: null,  // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
+      techAreaId: internshipExp.technologyarea.id,
+      sectorId: internshipExp.industry.industry_sector_id,
       company: internshipExp.company,
       isInternship: true,
       jobTitle: internshipExp.title,

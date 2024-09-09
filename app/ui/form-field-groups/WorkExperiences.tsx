@@ -24,8 +24,8 @@ const classExperience = "experience";
 export interface WorkExperienceData {
   uid: string,
   [classCompany]: string,
-  [classCompanyIndustry]: string,
-  [classCompanyTechArea]: string,
+  [classCompanyIndustry]: IndustrySectorDTO,
+  [classCompanyTechArea]: TechnologyAreaDTO,
   [classTitle]: string,
   [classStarts]: Dayjs,
   [classEnds]: Dayjs,
@@ -37,8 +37,8 @@ export function defaultWorkExperienceData() : WorkExperienceData {
   return {
     uid: uuidv4(),
     [classCompany]: "",
-    [classCompanyIndustry]: "",
-    [classCompanyTechArea]: "",
+    [classCompanyIndustry]: {industry_sector_id:"", sector_title:""},
+    [classCompanyTechArea]: {id:"", title:""},
     [classTitle]: "",
     [classStarts]: dayjs(null),
     [classEnds]: dayjs(null),
@@ -47,7 +47,7 @@ export function defaultWorkExperienceData() : WorkExperienceData {
   }
 }
 
-interface Props {
+  interface Props {
   data: WorkExperienceData[],
   onRemove: (uid:string) => void,
   onUpdate: (key: string, value: any) => void,
@@ -88,8 +88,9 @@ export default memo(function WorkExperiences({
             apiAutoloadRoute="/api/employers/industry-sectors"
             label="Industry Sector *"
             getOptionLabel={(option:IndustrySectorDTO) => option.sector_title}
+            getOptionFromLabel={(options:IndustrySectorDTO[], label:string) => options.find((item) => item.sector_title === label) || {industry_sector_id:"", sector_title:""}}
             placeholder="Your company's industry sector"
-            onChange={(e) => handleChange(index, classCompanyIndustry, e.target.value)}
+            onChange={(val) => handleChange(index, classCompanyIndustry, val)}
             required
             value={workExperience[classCompanyIndustry]}
           />
@@ -98,8 +99,9 @@ export default memo(function WorkExperiences({
             apiAutoloadRoute="/api/employers/technology-areas"
             label="Technology Area *"
             getOptionLabel={(option:TechnologyAreaDTO) => option.title}
+            getOptionFromLabel={(options:TechnologyAreaDTO[], label:string) => options.find((item) => item.title === label) || {id:"", title:""}}
             placeholder="Your company's technology area"
-            onChange={(e) => handleChange(index, classCompanyTechArea, e.target.value)}
+            onChange={(val) => handleChange(index, classCompanyTechArea, val)}
             required
             value={workExperience[classCompanyTechArea]}
           />
