@@ -6,6 +6,7 @@ import {
   SASProtocol,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
+import { devLog } from '@/app/lib/utils';
 
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING!;
 const blobServiceClient =
@@ -207,11 +208,10 @@ async function getBlobUrl(
       return blockBlobClient.url; // Return the URL of the blob without SAS token
     }
 
-    // If no matching blob is found, return null or handle accordingly
     return null;
   } catch (error) {
-    console.error('Error retrieving blob link:', error);
-    throw new Error('Failed to retrieve blob link');
+    console.error('Error retrieving blob url:', error);
+    throw new Error('Failed to retrieve blob url');
   }
 }
 
@@ -229,8 +229,6 @@ function generateBlobSasToken(containerName: string, blobName: string): string {
   const expiresOn = new Date(
     new Date(Date.now() + 15 * 60 * 1000).toISOString().split('.')[0] + 'Z',
   );
-  console.log('startsOn', startsOn);
-  console.log('expiresOn', expiresOn);
 
   const sasOptions = {
     containerName,
@@ -249,6 +247,6 @@ function generateBlobSasToken(containerName: string, blobName: string): string {
     sharedKeyCredential,
   ).toString();
 
-  console.log('Generated SAS Token:', sasToken);
+  devLog('Generated SAS Token:', sasToken);
   return sasToken;
 }
