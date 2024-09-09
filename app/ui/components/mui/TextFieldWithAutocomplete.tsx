@@ -72,6 +72,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
 
   return (
     <Autocomplete
+      className="flex flex-1"
       freeSolo
       autoComplete
       autoSelect

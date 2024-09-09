@@ -1,4 +1,3 @@
-import JobSeekerCardViewSmall from "./JobSeekerCardViewSmall";
 import { getAllJobSeekerCardView } from '@/app/lib/prisma';
 import JobSeekerCardView from "@/app/ui/components/JobSeekerCardView";
 
@@ -25,12 +24,12 @@ export default async function FeaturedCandidates({ maxCandidates }: { maxCandida
       <h2 className="text-lg font-bold py-5">Featured Candidates</h2>
       <div className="grid laptop:grid-cols-3 gap-2">
         {jobSeekers?.map((jobSeeker: any) => (
-          <JobSeekerCardViewSmall
+          <JobSeekerCardView
+              forceSmall={true}
               key={jobSeeker?.jobseeker_id}
               name={`${jobSeeker?.users?.first_name ?? ''} ${jobSeeker?.users?.last_name ?? ''}`.trim()}
-              school={jobSeeker?.jobseeker_education?.eduProviders?.name ?? 'N/A'}
               pathway={jobSeeker?.pathways?.pathway_title ?? ''}
-              skillsList={jobSeeker?.jobseeker_has_skills ?? []}
+              jobseeker={jobSeeker}
               pfpPicSrc={jobSeeker?.users?.photo_url ?? '/default-avatar.png'}
               aboutMe={jobSeeker?.intro_headline ?? 'No information available.'}
               id={jobSeeker?.jobseeker_id}
