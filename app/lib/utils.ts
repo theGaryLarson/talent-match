@@ -55,18 +55,25 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 };
 
 /**
- * Maps a value to an enum if it exists in the enum values.
- * If the value is null, returns null.
- * If the value does not exist in the enum values, returns null.
+ * Maps a string value to its corresponding value in an enum type.
  *
  * @param {string | null} value - The value to map to the enum.
- * @param {any} enumType - The enum type to map the value to.
- * @returns {any} - The mapped value or null.
+ * @param {object} enumType - The enum type to map to.
+ * @returns {any} - The mapped value in the enum type.
+ * @throws {Error} - If the value does not exist in the enum.
  */
 export const mapToEnum = (value: string | null, enumType: any): any => {
-  if (value == null) return null;
+  if (value == null) {
+    return null;
+  }
+
   const enumValues = Object.values(enumType);
-  return enumValues.includes(value) ? value : null;
+
+  if (enumValues.includes(value)) {
+    return value;
+  } else {
+    throw new Error(`Value "${value}" does not exist in the enum.`);
+  }
 };
 
 /**
