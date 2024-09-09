@@ -16,13 +16,29 @@ export default auth((req) => {
     "/create-profile/jobseeker/preferences",
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
-    "/cfa_images/"
-  ];
+    "/cfa_images/",
 
+    // TODO: This should be in empoyerRoutes once auth logic is updated
+    "/create-profile/employer",
+    "/create-profile/employer/personal",
+    "/create-profile/employer/company",
+    "/create-profile/employer/about",
+    "/create-profile/employer/disclosures",
+    "/create-profile/employer/mission",
+    "/create-profile/employer/video",
+    "/create-profile/employer/congratulations",
+  ];
+  
   const employerRoutes = [
     "/create-profile/employer",
-    "/create-profile/employer/personal-info",
-    "/create-profile/employer/company-info",
+    "/create-profile/employer/personal",
+    "/create-profile/employer/company",
+    "/create-profile/employer/about",
+    "/create-profile/employer/disclosures",
+    "/create-profile/employer/mission",
+    "/create-profile/employer/video",
+    "/create-profile/employer/congratulations",
+
     "/create-profile/employer/professional-info",
   ];
 

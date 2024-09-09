@@ -1,7 +1,9 @@
-import {edu_providers, PostalGeoData, PrismaClient, programs, skills} from '@prisma/client';
+import {companies, edu_providers, PostalGeoData, PrismaClient, programs, skills} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {SkillDTO} from '@/data/dtos/SkillDTO';
 import {EducationProviderDTO} from '@/data/dtos/EducationProviderDTO';
+import {CompanyDropdownDTO} from '@/data/dtos/CompanyDropdownDTO';
+
 import {GeneralProgramDTO} from '@/data/dtos/GeneralProgramDTO';
 import {v4 as uuidv4} from 'uuid';
 
@@ -94,6 +96,16 @@ export async function searchEduProviders(searchTerm: string): Promise<EducationP
         maxResults: 10,
         sortField: 'name' // Sort by name
     }).then(results => results.map(provider => ({id: provider.id, name: provider.name})));
+}
+
+export async function searchCompanies(searchTerm: string): Promise<CompanyDropdownDTO[]> {
+    return genericSearch<companies>({
+        searchTerm,
+        entity: 'companies',
+        fields: ['company_name'],
+        maxResults: 10,
+        sortField: 'company_name' // Sort by name
+    }).then(results => results.map(company => ({company_id: company.company_id, company_name: company.company_name})));
 }
 
 export async function searchEduProviderHighSchoolPrograms(searchTerm: string): Promise<GeneralProgramDTO[]> {
