@@ -79,14 +79,22 @@ export default function SelectAutoload<ValueType>({
           inputProps={{ 'aria-label': label }}
           {...rest}
         >
-          <MenuItem disabled>
-            {placeholder}
-          </MenuItem>
-          {(loading)?
-            <MenuItem disabled>
-              <span><CircularProgress color="inherit" size={20} /> {loadingText}</span>
-            </MenuItem>
-            : options.map((option) => (
+          {
+            (loading)?
+              (
+                <MenuItem disabled>
+                  <span><CircularProgress color="inherit" size={20} /> {loadingText}</span>
+                </MenuItem>
+              )
+            : 
+              (
+                <MenuItem disabled>
+                  {placeholder}
+                </MenuItem>
+              )
+          }
+          {
+            options.map((option) => (
               <MenuItem
                 key={getOptionLabel(option)}
                 value={getOptionLabel(option)}

@@ -10,7 +10,7 @@ import SortDropdown from '@/app/ui/components/mui/SortDropdown';
 import MultiSelectFilter from '@/app/ui/components/mui/MultiSelectFilter';
 import Pagination from '@mui/material/Pagination';
 import SingleSelectFilter from '@/app/ui/components/mui/SingleSelectFilter';
-import { IndustrySectorDTO } from '@/data/dtos/IndustrySectorDTO';
+import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
 import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
@@ -175,7 +175,7 @@ export default function Page() {
               newFilterOnChange("industry", setIndustry);
               console.log("hit");
             }}
-            getOptionLabel={(option: IndustrySectorDTO) => option.sector_title}
+            getOptionLabel={(option: IndustrySectorDropdownDTO) => option.sector_title}
           />
         </div>
 
