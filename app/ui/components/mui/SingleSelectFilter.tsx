@@ -8,24 +8,24 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 
 interface Props {
-    id: string,
-    options: {label:string, value:string}[],
-    label: string,
-    value: string[],
-    onChange: ((event: SelectChangeEvent<string[]>) => void),
-    placeholder?: string | undefined,
-    [key: string]: any,
-  }
-  
-  export default function SingleSelectCheckmarks({
-    id,
-    options,
-    label,
-    value,
-    onChange,
-    placeholder,
-    ...rest
-  }:Props) {
+  id: string,
+  options: { label: string, value: string }[],
+  label: string,
+  value: string[],
+  onChange: ((event: SelectChangeEvent<string[]>) => void),
+  placeholder?: string | undefined,
+  [key: string]: any,
+}
+
+export default function SingleSelectCheckmarks({
+  id,
+  options,
+  label,
+  value,
+  onChange,
+  placeholder,
+  ...rest
+}: Props) {
   const [filter, setFilter] = React.useState<string[]>([]);
   // const [formattedLabel, setFormattedLabel] = React.useState<string>(label);
 
@@ -43,19 +43,27 @@ interface Props {
     if (value?.length > 0) setFilter(value);
   }, []);
 
-  // React.useEffect(() => {
-  //   setFormattedLabel(label + " (" + filter.length + ")");
-  // }, [filter]);
-
   return (
     <div className="flex flex-1 px-1">
       <FormControl className="flex flex-1">
-        <InputLabel className="text-sm relative top-2 left-0">{label}</InputLabel>
+        <InputLabel
+          sx={{
+            fontSize: "0.875rem",
+            lineHeight: "1.25rem",
+            position: "relative",
+            top: "8px",
+            left: "0px",
+          }}
+        >{label}</InputLabel>
         <Select
-          className="rounded-full h-7 flex"
+          className=""
           value={filter}
           onChange={handleChange}
           input={<OutlinedInput />}
+          sx={{
+            borderRadius: "9999px",
+            height: "1.75rem",
+          }}
         >
           {options.map((option) => (
             <MenuItem key={option.label} value={option.value}>

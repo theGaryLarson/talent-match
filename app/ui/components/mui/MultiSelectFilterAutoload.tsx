@@ -1,3 +1,4 @@
+'use client'
 import * as React from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -14,10 +15,10 @@ interface Props<ValueType> {
   value: string[],
   onChange: ((event: SelectChangeEvent<string[]>) => void),
   placeholder?: string | undefined,
-  getOptionLabel: ((option:ValueType) => string),
+  getOptionLabel: ((option: ValueType) => string),
   [key: string]: any,
 }
-  
+
 export default function MultipleSelectFilterAutoload<ValueType>({
   id,
   apiAutoloadRoute,
@@ -27,7 +28,7 @@ export default function MultipleSelectFilterAutoload<ValueType>({
   placeholder,
   getOptionLabel,
   ...rest
-}:Props<ValueType>) {
+}: Props<ValueType>) {
   const [filter, setFilter] = React.useState<string[]>([]);
   const [options, setOptions] = React.useState<ValueType[]>([]);
   const [formattedLabel, setFormattedLabel] = React.useState<string>(label);
@@ -70,14 +71,26 @@ export default function MultipleSelectFilterAutoload<ValueType>({
   return (
     <div className="flex flex-1 px-1">
       <FormControl className="flex flex-1">
-        <InputLabel className="text-sm relative top-2 left-0">{formattedLabel}</InputLabel>
+        <InputLabel
+          sx={{
+            fontSize: "0.875rem",
+            lineHeight: "1.25rem",
+            position: "relative",
+            top: "8px",
+            left: "0px",
+          }}
+        >{formattedLabel}</InputLabel>
         <Select
-          className="rounded-full h-7 flex"
           multiple
           value={filter}
           onChange={handleChange}
           input={<OutlinedInput />}
           renderValue={(selected) => selected.join(', ')}
+          sx={{
+            borderRadius: "9999px",
+            height: "1.75rem",
+          }}
+
           MenuProps={{ PaperProps: { sx: { maxHeight: 500 } } }}
           {...rest}
         >

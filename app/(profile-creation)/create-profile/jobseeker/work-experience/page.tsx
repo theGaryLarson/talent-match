@@ -105,8 +105,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     const workExperiences = data.workExperiences?.map((workExp) => ({
       workId: workExp.uid,
       jobseekerId: jobseekerId,
-      techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose tech area (i.e. Cloud Computing, Database Management, Cybersecurity, etc.)
-      sectorId: null, // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
+      techAreaId: workExp.technologyarea.id,
+      sectorId: workExp.industry.industry_sector_id,
       company: workExp.company,
       isInternship: false,
       jobTitle: workExp.title,
@@ -115,24 +115,21 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       endDate: workExp.current ? null : new Date(workExp.ends.toISOString()),
       responsibilities: workExp.experience,
     }));
+    console.log(workExperiences);
 
-    const internshipExperiences = data.internshipExperiences?.map(
-      (internshipExp) => ({
-        workId: internshipExp.uid,
-        jobseekerId: jobseekerId,
-        techAreaId: null, // This should be chosen from a drop down TODO: add drop down to choose sector
-        sectorId: null, // This should be chosen from a dr op down TODO: add drop down to choose sector (i.e. Retail, Healthcare, Finance, etc.)
-        company: internshipExp.company,
-        isInternship: true,
-        jobTitle: internshipExp.title,
-        isCurrentJob: internshipExp.current,
-        startDate: new Date(internshipExp.starts.toISOString()),
-        endDate: internshipExp.current
-          ? null
-          : new Date(internshipExp.ends.toISOString()),
-        responsibilities: internshipExp.experience,
-      }),
-    );
+    const internshipExperiences = data.internshipExperiences?.map(internshipExp => ({
+      workId: internshipExp.uid,
+      jobseekerId: jobseekerId,
+      techAreaId: internshipExp.technologyarea.id,
+      sectorId: internshipExp.industry.industry_sector_id,
+      company: internshipExp.company,
+      isInternship: true,
+      jobTitle: internshipExp.title,
+      isCurrentJob: internshipExp.current,
+      startDate: new Date(internshipExp.starts.toISOString()),
+      endDate: internshipExp.current ? null : new Date(internshipExp.ends.toISOString()),
+      responsibilities: internshipExp.experience,
+    }));
     const formData: JsWorkExpDTO = {
       userId: userId,
       yearsWorkExperience: data.yearsWorkExperience.toString(), // Replace with actual calculation

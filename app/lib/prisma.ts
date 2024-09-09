@@ -1,7 +1,9 @@
-import {edu_providers, PostalGeoData, PrismaClient, programs, skills} from '@prisma/client';
+import {companies, edu_providers, PostalGeoData, PrismaClient, programs, skills} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {SkillDTO} from '@/data/dtos/SkillDTO';
 import {EducationProviderDTO} from '@/data/dtos/EducationProviderDTO';
+import {CompanyDropdownDTO} from '@/data/dtos/CompanyDropdownDTO';
+
 import {GeneralProgramDTO} from '@/data/dtos/GeneralProgramDTO';
 import {v4 as uuidv4} from 'uuid';
 
@@ -76,16 +78,6 @@ async function genericSearch<T>({
 }
 
 // Specialized search functions
-export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
-    return genericSearch<skills>({
-        searchTerm,
-        entity: 'skills',
-        fields: ['skill_name'],
-        maxResults: 15,
-        sortField: 'skill_name' // Sort by skill_name
-    });
-}
-
 export async function searchEduProviders(searchTerm: string): Promise<EducationProviderDTO[]> {
     return genericSearch<edu_providers>({
         searchTerm,
@@ -94,6 +86,16 @@ export async function searchEduProviders(searchTerm: string): Promise<EducationP
         maxResults: 10,
         sortField: 'name' // Sort by name
     }).then(results => results.map(provider => ({id: provider.id, name: provider.name})));
+}
+
+export async function searchCompanies(searchTerm: string): Promise<CompanyDropdownDTO[]> {
+    return genericSearch<companies>({
+        searchTerm,
+        entity: 'companies',
+        fields: ['company_name'],
+        maxResults: 10,
+        sortField: 'company_name' // Sort by name
+    }).then(results => results.map(company => ({company_id: company.company_id, company_name: company.company_name})));
 }
 
 export async function searchEduProviderHighSchoolPrograms(searchTerm: string): Promise<GeneralProgramDTO[]> {
@@ -134,6 +136,130 @@ export async function searchPostalGeoData(postalCode: string, field: keyof Posta
         maxResults: 10,
         sortField: field == 'county' || field == 'city' ? 'city' : field
     });
+}
+
+export async function searchSkills(searchTerm:string): Promise<SkillDTO[]> {
+    const MAX_RESULTS = 10;
+
+    if (searchTerm.length === 0) {
+        return [];
+    }
+    else {
+        const exactResults = (await prisma.skills.findMany({
+            where: {
+                OR: [
+                    {
+                        skill_name:{
+                            equals: searchTerm
+                        }
+                    },
+                    {
+                        skill_name:{
+                            startsWith: searchTerm + " ("
+                        }
+                    },
+                    {
+                        skill_name:{
+                            contains: "(" + searchTerm + ")"
+                        }
+                    }
+                ]
+            },
+            take: 5
+        })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+            if (itemA.skill_name > itemB.skill_name) {
+                return 1;
+            }
+            if (itemA.skill_name < itemB.skill_name) {
+                return -1;
+            }
+            return 0;
+        });
+
+        const startsWithResults = (await prisma.skills.findMany({
+            where: {
+                AND: [
+                    {
+                        skill_name:{
+                            startsWith: searchTerm
+                        }
+                    },
+                    {
+                        NOT: {
+                            skill_name:{
+                                equals: searchTerm
+                            }
+                        }
+                    },
+                    {
+                        NOT: {
+                            skill_name:{
+                                startsWith: searchTerm + " ("
+                            }
+                        }
+                    },
+                    {
+                        NOT: {
+                            skill_name:{
+                                contains: "(" + searchTerm + ")"
+                            }
+                        }
+                    }
+                ]
+            },
+            take: MAX_RESULTS - exactResults.length
+        })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+            if (itemA.skill_name > itemB.skill_name) {
+                return 1;
+            }
+            if (itemA.skill_name < itemB.skill_name) {
+                return -1;
+            }
+            return 0;
+        });
+
+        const containsResults =
+            (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
+                (await prisma.skills.findMany({
+                    where: {
+                        AND: [
+                            {
+                                skill_name: {
+                                    contains: searchTerm
+                                }
+                            },
+                            {
+                                NOT: {
+                                    skill_name: {
+                                        startsWith: searchTerm
+                                    }
+                                }
+                            },
+                            {
+                                NOT: {
+                                    skill_name:{
+                                        contains: "(" + searchTerm + ")"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    take: MAX_RESULTS - exactResults.length - startsWithResults.length
+                })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+                    if (itemA.skill_name > itemB.skill_name) {
+                        return 1;
+                    }
+                    if (itemA.skill_name < itemB.skill_name) {
+                        return -1;
+                    }
+                    return 0;
+                })
+            : []
+        // Had to query them separately to guarantee Exact and StartsWith
+        //   matches were found since I'm limiting the results, and OR
+        //   clauses do not guarantee results in the order of the filters
+        return [...exactResults, ...startsWithResults, ...containsResults];
+    }
 }
 
 export const jobSeekerCardViewSelect = {
@@ -400,6 +526,23 @@ export async function getJobSeekerCardViewByWorkExperience() {
 }
 
 export async function getIndustrySectors() {
-  const industrySectors = await prisma.industry_sectors.findMany();
+  const industrySectors = await prisma.industry_sectors.findMany({
+    where: {},
+    select: {
+        industry_sector_id: true,
+        sector_title: true,
+    }
+  });
   return industrySectors;
+}
+
+export async function getTechnologyAreas() {
+  const technologyAreas = await prisma.technology_areas.findMany({
+    where: {},
+    select: {
+        id: true,
+        title: true,
+    }
+  });
+  return technologyAreas;
 }

@@ -30,6 +30,9 @@ import {
 } from '@mui/material';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 import dayjs, { Dayjs } from 'dayjs';
+import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
+import {CompanyDropdownDTO} from '@/data/dtos/CompanyDropdownDTO';
+
 
 export default function CreateJobseekerProfileIntroPage() {
   const { fields, isSubmitting, error }: FormState = useSelector(
@@ -43,6 +46,7 @@ export default function CreateJobseekerProfileIntroPage() {
   const [race, setRace] = useState('');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
+  const [company, setCompany] = useState<CompanyDropdownDTO | string>('');
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
   const [newFieldType, setNewFieldType] = useState<
@@ -123,14 +127,16 @@ export default function CreateJobseekerProfileIntroPage() {
       //TODO: assign existing userId if exists if not create new with uuidv4().
       userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC',
 
-      // company_id: true,
+      company_id:
+        typeof company === 'string' ? null : company.company_id,
       // industry_sector_id: true,
       industry_sector:
         fields.find((f) => f.id === 'profile-creation-company-industry')
           ?.value || null,
       company_name:
-        fields.find((f) => f.id === 'profile-creation-company-name')?.value ||
-        null,
+        typeof company === 'string' ? company : company.company_name,
+        // fields.find((f) => f.id === 'profile-creation-company-name')?.value ||
+        // null,
       company_logo_url: logoUrl,
       // about_us: // on about page
       company_email:
@@ -141,7 +147,7 @@ export default function CreateJobseekerProfileIntroPage() {
         fields.find((f) => f.id === 'profile-creation-company-website')
           ?.value || null,
       // company_video_url: // on video page
-      compnay_phone: formattedPhone,
+      company_phone: formattedPhone,
       // company_mission: // on mission page
       // company_vision: // REVIEW: MISSING?
       size:
@@ -224,7 +230,7 @@ export default function CreateJobseekerProfileIntroPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="profile-form-grid md:grid-cols-2">
-            <SelectOptionsWithLabel
+            {/* <SelectOptionsWithLabel
               id="profile-creation-company-name"
               onChange={handleFieldChange}
               options={[
@@ -239,7 +245,19 @@ export default function CreateJobseekerProfileIntroPage() {
               }
             >
               Company Name *
-            </SelectOptionsWithLabel>
+            </SelectOptionsWithLabel> */}
+
+            <TextFieldWithAutocomplete
+              apiSearchRoute="/api/companies/search/"
+              fieldLabel="Company Name *"
+              id="profile-creation-company-name"
+              searchingText="Searching..."
+              noResultsText="No companies found..."
+              value={company ?? ""}
+              onChange={(e, val) => setCompany(val??'')}
+              searchPlaceholder="Company name"
+              getOptionLabel={(option: CompanyDropdownDTO) => option.company_name ?? ''}
+            />
 
             <SelectOptionsWithLabel
               id="profile-creation-company-industry"
