@@ -132,8 +132,7 @@ export default function SignupPage() {
         </div>
       </main>
       <footer className='mt-auto'>
-        <CFAFooter>
-        </CFAFooter>
+        <CFAFooter/>
       </footer>
     </>
   );
