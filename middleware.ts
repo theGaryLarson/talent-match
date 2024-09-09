@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { Role } from "./data/dtos/UserInfoDTO";
 
 export default auth((req) => {
-  console.log(req);
+  // console.log(req);
   const jobseekerRoutes = [
     "/services/jobseekers",
     "/services/jobseekers/[id]",
@@ -30,8 +30,6 @@ export default auth((req) => {
 
   const pathname = req.nextUrl.pathname;
 
-  
-
   if (!req.auth && !pathname.startsWith("/signin")) {
     console.log("redirected to signin again");
     const loginUrl = new URL("/signin", req.nextUrl.origin);
@@ -46,7 +44,7 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (req.auth && userRoles.includes(Role.NONE) && pathname !== "/signup") {
+  if (req.auth && userRoles.includes(Role.NONE) && pathname !== "/signup" && pathname !== "/signout") {
     console.log("redirected to account data creation");
     const loginUrl = new URL("/signup", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);

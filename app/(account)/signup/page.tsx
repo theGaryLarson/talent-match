@@ -7,10 +7,48 @@ import DividerWithText from '@/app/ui/components/DividerWithText';
 import Image from 'next/image'
 import CFAFooter from '@/app/ui/CFAFooter';
 import CFASignupHeader from '@/app/ui/CFASignupHeader';
+import {useSession, getSession } from 'next-auth/react';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { useRouter } from 'next/navigation';
+import { Role } from "@/data/dtos/UserInfoDTO";
+
+// interface Data {
+//   userId: string;
+//   role: string;
+// }
 
 export default function SignupPage() {
   const [choice, setChoice] = useState("");
+  const { data: session, status, update } = useSession();
+  const router = useRouter();
   const checkIcon = <Image src='/cfa_images/signup/check-mark.png' width={22} height={22} alt='Green checkmark' className='inline mr-2'/>
+  const updateSessionProperties = useUpdateSession();
+  
+  let handleSubmit = async () =>{
+    let newRole = choice === "employer" ? Role.EMPLOYER : Role.JOBSEEKER;
+    console.log("id",await getSession());
+    if (session){
+      let response = await fetch('/api/users/role/update',{
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: session.user.id,
+          role: newRole,
+        })  
+      });
+      // console.log("response:", response);
+      if(response.ok){
+        let rolesArray = [newRole];
+        await updateSessionProperties({
+          roles: rolesArray,
+        });
+        console.log('Session after update:', await getSession());
+        router.push(`/signup/jobseeker`);
+      }
+    }
+  }
 
   return (
     <>
@@ -46,7 +84,7 @@ export default function SignupPage() {
           </label>
         </div>
       </fieldset>
-      <Button disabled={choice === ""} href={`/signup/${choice}`} className='mx-auto w-fit mt-4 rounded-3xl'>Continue</Button>
+      <Button disabled={choice === ""} onClick={handleSubmit} className='mx-auto w-fit mt-4 rounded-3xl'>Continue</Button>
       
       <div className='flex flex-col gap-4 mb-4 text-center mx-auto'>
         <DividerWithText>or</DividerWithText>
