@@ -1,10 +1,11 @@
-
-import {edu_providers, PostalGeoData, PrismaClient, programs, skills} from '@prisma/client';
+import {companies, edu_providers, PostalGeoData, PrismaClient, programs, skills} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
-import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
-import { v4 as uuidv4 } from 'uuid';
+import {SkillDTO} from '@/data/dtos/SkillDTO';
+import {EducationProviderDTO} from '@/data/dtos/EducationProviderDTO';
+import {CompanyDropdownDTO} from '@/data/dtos/CompanyDropdownDTO';
+
+import {GeneralProgramDTO} from '@/data/dtos/GeneralProgramDTO';
+import {v4 as uuidv4} from 'uuid';
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -24,7 +25,14 @@ function sortByName<T>(array: T[], field: keyof T): T[] {
 }
 
 // Generic search function with sorting
-async function genericSearch<T>({ searchTerm, entity, fields, maxResults, exactMatchOnly, sortField }: SearchOptions<T>): Promise<T[]> {
+async function genericSearch<T>({
+                                    searchTerm,
+                                    entity,
+                                    fields,
+                                    maxResults,
+                                    exactMatchOnly,
+                                    sortField
+                                }: SearchOptions<T>): Promise<T[]> {
     if (!searchTerm.length) return [];
 
     // Assert the correct type for `prisma[entity]` as any model type
@@ -37,7 +45,7 @@ async function genericSearch<T>({ searchTerm, entity, fields, maxResults, exactM
 
     const exactResults = sortResults(await model.findMany({
         where: {
-            OR: fields.map(field => ({ [field]: { equals: searchTerm } }))
+            OR: fields.map(field => ({[field]: {equals: searchTerm}}))
         },
         take: exactMatchOnly ? maxResults : 5
     }));
@@ -47,8 +55,8 @@ async function genericSearch<T>({ searchTerm, entity, fields, maxResults, exactM
     const startsWithResults = sortResults(await model.findMany({
         where: {
             AND: [
-                ...fields.map(field => ({ [field]: { startsWith: searchTerm } })),
-                ...fields.map(field => ({ [field]: { not: { equals: searchTerm } } }))
+                ...fields.map(field => ({[field]: {startsWith: searchTerm}})),
+                ...fields.map(field => ({[field]: {not: {equals: searchTerm}}}))
             ]
         },
         take: maxResults - exactResults.length
@@ -58,8 +66,8 @@ async function genericSearch<T>({ searchTerm, entity, fields, maxResults, exactM
         ? sortResults(await model.findMany({
             where: {
                 AND: [
-                    ...fields.map(field => ({ [field]: { contains: searchTerm } })),
-                    ...fields.map(field => ({ [field]: { not: { startsWith: searchTerm } } }))
+                    ...fields.map(field => ({[field]: {contains: searchTerm}})),
+                    ...fields.map(field => ({[field]: {not: {startsWith: searchTerm}}}))
                 ]
             },
             take: maxResults - exactResults.length - startsWithResults.length
@@ -68,6 +76,7 @@ async function genericSearch<T>({ searchTerm, entity, fields, maxResults, exactM
 
     return [...exactResults, ...startsWithResults, ...containsResults];
 }
+
 // Specialized search functions
 export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
     return genericSearch<skills>({
@@ -86,25 +95,36 @@ export async function searchEduProviders(searchTerm: string): Promise<EducationP
         fields: ['name'],
         maxResults: 10,
         sortField: 'name' // Sort by name
-    }).then(results => results.map(provider => ({ id: provider.id, name: provider.name })));
-}
-export async function searchEduProviderHighSchoolPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
-  return searchPrograms(searchTerm);
+    }).then(results => results.map(provider => ({id: provider.id, name: provider.name})));
 }
 
-export async function searchEduProviderCollegePrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
-  return searchPrograms(searchTerm);
+export async function searchCompanies(searchTerm: string): Promise<CompanyDropdownDTO[]> {
+    return genericSearch<companies>({
+        searchTerm,
+        entity: 'companies',
+        fields: ['company_name'],
+        maxResults: 10,
+        sortField: 'company_name' // Sort by name
+    }).then(results => results.map(company => ({company_id: company.company_id, company_name: company.company_name})));
 }
 
-export async function searchEduProviderPreApprenticeshipPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
+export async function searchEduProviderHighSchoolPrograms(searchTerm: string): Promise<GeneralProgramDTO[]> {
     return searchPrograms(searchTerm);
 }
 
-export async function searchEduProviderOtherPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
+export async function searchEduProviderCollegePrograms(searchTerm: string): Promise<GeneralProgramDTO[]> {
     return searchPrograms(searchTerm);
 }
 
-export async function searchEduProviderTrainingProviderPrograms(searchTerm:string): Promise<GeneralProgramDTO[]> {
+export async function searchEduProviderPreApprenticeshipPrograms(searchTerm: string): Promise<GeneralProgramDTO[]> {
+    return searchPrograms(searchTerm);
+}
+
+export async function searchEduProviderOtherPrograms(searchTerm: string): Promise<GeneralProgramDTO[]> {
+    return searchPrograms(searchTerm);
+}
+
+export async function searchEduProviderTrainingProviderPrograms(searchTerm: string): Promise<GeneralProgramDTO[]> {
     return searchPrograms(searchTerm);
 }
 
@@ -118,15 +138,16 @@ export async function searchPrograms(searchTerm: string): Promise<GeneralProgram
     });
 }
 
-export async function searchPostalGeoData(postalCode: string): Promise<PostalGeoData[]> {
+export async function searchPostalGeoData(postalCode: string, field: keyof PostalGeoData = 'zip'): Promise<PostalGeoData[]> {
     return genericSearch<PostalGeoData>({
         searchTerm: postalCode,
         entity: 'postalGeoData',
-        fields: ['zip'],
+        fields: [field],
         maxResults: 10,
-        sortField: 'zip' // Sort by zip
+        sortField: field == 'county' || field == 'city' ? 'city' : field
     });
 }
+
 export const jobSeekerCardViewSelect = {
     jobseeker_id: true,
     user_id: true,
@@ -222,8 +243,8 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
         },
         select: {
             jobseeker_id: true,
-            intro_headline:true,
-            video_url:true,
+            intro_headline: true,
+            video_url: true,
             current_job_title: true,
             current_enrolled_ed_program: true,
             current_grade_level: true,
@@ -276,8 +297,8 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
                     isInternship: true,
                     isCurrentJob: true,
                     responsibilities: true,
-                    startDate:true,
-                    endDate:true
+                    startDate: true,
+                    endDate: true
                 }
             },
             project_experiences: {

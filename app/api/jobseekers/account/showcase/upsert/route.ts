@@ -53,6 +53,7 @@ export async function POST(request: Request) {
                     portfolio_url: portfolioUrl,
                     portfolio_password: portfolioPassword,
                     video_url: video_url,
+                    updatedAt: new Date(),
                     jobseeker_has_skills: {
                         deleteMany: {},
                         create: skills?.map((skill: SkillDTO) => ({

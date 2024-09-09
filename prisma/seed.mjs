@@ -265,6 +265,17 @@ const colleges = [
 ];
 
 
+const highestDegreeType = [
+    "Primary Education",
+    "High School",
+    "Associates",
+    "Bachelors",
+    "Masters",
+    "Doctorate",
+    "GED",
+    "Vocational Qualification / Certification",
+    "No Formal Education"
+]
 
 const itOccupationTechnologyAreas = [
     { id: "f18b7623-60ba-4a5b-a0a4-6cb588bdf6db", name: "Cybersecurity" },
@@ -1246,7 +1257,7 @@ async function seedJobSeekers() {
             user_id: jobSeeker.id,
             targeted_pathway: faker.helpers.arrayElement(pathways).pathway_id,
             is_enrolled_ed_program: isEnrolledEdProgram,
-            highest_level_of_study_completed: faker.helpers.arrayElement(['None', 'High School', 'Certification', 'Associate\'s Degree', 'Bachelor\'s Degree', 'Master\'s Degree', 'Doctoral Degree']),
+            highest_level_of_study_completed: faker.helpers.arrayElement(highestDegreeType),
             current_grade_level: edLevel === 'High school' || edLevel === 'College' ? faker.helpers.arrayElement(['freshman', 'sophomore', 'junior', 'senior']) : undefined,
             current_enrolled_ed_program: edLevel,
             intern_hours_required: edLevel === 'College' || edLevel === 'Pre-apprenticeship' ? faker.number.int({

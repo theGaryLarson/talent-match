@@ -36,6 +36,7 @@ export async function POST(request: Request) {
             data: {
                 employment_type_sought: preferredEmploymentType,
                 targeted_pathway: targetedPathwayId || pw?.pathway_id,
+                updatedAt: new Date(),
             },
             select: {
                 user_id: true,

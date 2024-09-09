@@ -58,6 +58,7 @@ export async function POST(request: Request) {
                 update: {
                     highest_level_of_study_completed: highestLevelOfStudy,
                     is_enrolled_ed_program: isEnrolledEdProgram,
+                    updatedAt: new Date(),
                 },
                 create: {
                     jobseeker_id: jobseekerId,
@@ -372,6 +373,7 @@ export async function POST(request: Request) {
             // Return consistent result using JSEducationDTO
             const result: JsEducationPageDTO = {
                 userId: upsertedJobseeker.user_id,
+                jobseekerId: upsertedJobseeker.jobseeker_id,
                 highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed, HighestDegreeType),
                 educations: mappedEdHistory,
                 certifications: mappedCerts,
