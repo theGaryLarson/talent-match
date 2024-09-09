@@ -1,5 +1,4 @@
-import parsePhoneNumberFromString from "libphonenumber-js";
-
+import parsePhoneNumberFromString from 'libphonenumber-js';
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
@@ -21,8 +20,6 @@ export const formatDateToLocal = (
   const formatter = new Intl.DateTimeFormat(locale, options);
   return formatter.format(date);
 };
-
-
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
@@ -57,12 +54,27 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
+/**
+ * Maps a value to an enum if it exists in the enum values.
+ * If the value is null, returns null.
+ * If the value does not exist in the enum values, returns null.
+ *
+ * @param {string | null} value - The value to map to the enum.
+ * @param {any} enumType - The enum type to map the value to.
+ * @returns {any} - The mapped value or null.
+ */
 export const mapToEnum = (value: string | null, enumType: any): any => {
   if (value == null) return null;
   const enumValues = Object.values(enumType);
   return enumValues.includes(value) ? value : null;
-}
+};
 
+/**
+ * Normalizes a date string to the ISO 8601 format.
+ *
+ * @param {string} date - The date string to be normalized.
+ * @returns {string} - The normalized date string in the ISO 8601 format.
+ */
 export const normalizeDate = (date: string): string => {
   const d = new Date(date);
   d.setUTCDate(1);
@@ -70,22 +82,90 @@ export const normalizeDate = (date: string): string => {
   return d.toISOString();
 };
 
-// Here the country code is being extracted from how its setup on the frontend.
-// We can also just store the country code on the frontend and use libphonenumber-js
-// to extract the code with getCountryCode = getCountryCallingCode(countryCode);
-export const formatPhoneE164 = (phoneCountryCode?: string | null, phone?: string | null) => {
+/**
+ * Formats a phone number in E.164 format.
+ * @param {string|null} phoneCountryCode - The country code of the phone number.
+ * @param {string|null} phone - The phone number to format.
+ * @returns {string|null} - The formatted phone number in E.164 format, or null if the phone number is invalid.
+ */
+export const formatPhoneE164 = (
+  phoneCountryCode?: string | null,
+  phone?: string | null,
+) => {
   const countryCodeMatch = phoneCountryCode?.match(/\+\d+(-\d+)?/);
   const extractedCountryCode = countryCodeMatch ? countryCodeMatch[0] : null;
   if (phone && extractedCountryCode) {
     try {
-      const phoneNumber = parsePhoneNumberFromString(`${extractedCountryCode}${phone}`);
+      const phoneNumber = parsePhoneNumberFromString(
+        `${extractedCountryCode}${phone}`,
+      );
       if (phoneNumber && phoneNumber.isValid()) {
         return phoneNumber.format('E.164');
       }
-      return null
+      return null;
     } catch (e: any) {
       console.error('Error formatting phone number:', e.message);
     }
   }
+};
 
-}
+/**
+ * Logs messages or objects to the console during development environment.
+ *
+ * @param {string | Record<string, any> | null | undefined} labelOrObject - The label or object to log.
+ * @param {any} [objOrMessage] - The object or message to log.
+ *
+ * @returns {void}
+ */
+export const devLog = (
+  labelOrObject: string | Record<string, any> | null | undefined,
+  objOrMessage?: any,
+): void => {
+  if (process.env.NODE_ENV === 'development') {
+    if (typeof labelOrObject === 'string') {
+      // Case 2: `devLog('label', object)` or `devLog('label', string)`
+      if (objOrMessage === null) {
+        // Log label with 'null'
+        console.log(labelOrObject, 'null');
+      } else if (objOrMessage === undefined) {
+        // Log label with 'undefined'
+        console.log(labelOrObject, 'undefined');
+      } else if (typeof objOrMessage === 'object') {
+        // Logging an object with a label
+        console.log(
+          labelOrObject,
+          JSON.stringify(objOrMessage, getCircularReplacer(), 2),
+        );
+      } else {
+        // Logging a string with a label
+        console.log(labelOrObject, objOrMessage);
+      }
+    } else if (labelOrObject === null) {
+      // Case 4: Log 'null' directly
+      console.log('null');
+    } else if (labelOrObject === undefined) {
+      // Case 5: Log 'undefined' directly
+      console.log('undefined');
+    } else if (typeof labelOrObject === 'object') {
+      // Case 1: `devLog(object)`
+      console.log(JSON.stringify(labelOrObject, getCircularReplacer(), 2));
+    } else {
+      // Case 3: `devLog(string)` - Logging a simple string
+      console.log(labelOrObject);
+    }
+  }
+};
+
+// Helper function to handle circular references
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key: string, value: any) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return '[Circular]';
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};

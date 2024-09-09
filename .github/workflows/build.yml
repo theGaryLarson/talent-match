@@ -22,11 +22,9 @@ jobs:
 
       - name: Run Build
         env:
-          AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
-          # TODO: create secrets for the separate entries in the string and use string formatter to get around incorrect parsing of semicolons.
-          AZURE_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=https;AccountName=mockStorageName;AccountKey=U29tZUF6dXJlTW9ja0tleQ==;EndpointSuffix=core.windows.net"
-          AZURE_STORAGE_NAME: ${{ secrets.AZURE_STORAGE_NAME }}
-          DATABASE_URL: "sqlserver://cfa-test.database.windows.net;database=Test;user=cfa;password=superPass123;encrypt=true;trustServerCertificate=true""
+          AZURE_STORAGE_ACCOUNT_KEY: '${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}'
+          AZURE_STORAGE_CONNECTION_STRING: 'DefaultEndpointsProtocol=https;AccountName=mockBlobStorage;AccountKey=Ju$t@Mock|<3YJu$t@Mock|<3YJu$t@Mock|<3Y==;EndpointSuffix=core.windows.net'
+          AZURE_STORAGE_NAME: '${{ secrets.AZURE_STORAGE_NAME }}'
         run: npm run build  # Run the build script.
 
       # - name: Run Tests

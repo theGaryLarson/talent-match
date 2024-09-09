@@ -1,11 +1,11 @@
-import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
+import NextAuth from 'next-auth';
+import GitHub from 'next-auth/providers/github';
 // import Google from "next-auth/providers/google";
 // import Microsoft from "next-auth/providers/microsoft-entra-id";
 // import LinkedIn from "next-auth/providers/linkedin";
-import type { Provider } from "next-auth/providers";
-import { Role } from "./data/dtos/UserInfoDTO";
-import { createUser, getUserByEmail } from "./app/lib/user";
+import type { Provider } from 'next-auth/providers';
+import { Role } from './data/dtos/UserInfoDTO';
+import { createUser, getUserByEmail } from './app/lib/user';
 
 const providers: Provider[] = [
   GitHub,
@@ -15,7 +15,7 @@ const providers: Provider[] = [
 ];
 
 export const providerMap = providers.map((provider) => {
-  if (typeof provider === "function") {
+  if (typeof provider === 'function') {
     const providerData = provider();
     return { id: providerData.id, name: providerData.name };
   } else {
@@ -27,8 +27,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: true,
   providers,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       try {
+        // Assign provider's image to token if user is new or token doesn't have an image yet
+        // if (user && user.image && !token.image) {
+        //   token.image = user.image;
+        // }
+        if (trigger === 'update') {
+          // Iterate over the session properties and dynamically update the token
+          Object.entries(session).forEach(([key, value]) => {
+            // Dynamically assign updated properties to the token
+            if (value !== undefined) {
+              token[key] = value;
+            }
+          });
+        }
         if (user && user.email) {
           let fetchResponse;
           let createResponse;
@@ -37,13 +50,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             fetchResponse = await getUserByEmail(user.email);
 
             if (!fetchResponse) {
+              //user doesn't exist in database
               const userData = {
                 email: user.email,
-                firstName: user.name?.split(" ")[0] || "",
-                lastName: user.name?.split(" ")[1] || "",
-                roles: [Role.JOBSEEKER],
+                firstName: user.name?.split(' ')[0] || '',
+                lastName: user.name?.split(' ')[1] || '',
+                roles: [Role.JOBSEEKER], // default role of JOBSEEKER assigned
               };
 
+              // add user to database
               createResponse = await createUser(userData);
 
               if (!createResponse) {
@@ -53,21 +68,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
               console.log('User created successfully:', createResponse);
 
+              //assign database values to the token after user is created
               token.id = createResponse.userId;
               token.email = createResponse.email;
+              token.firstName = createResponse.firstName;
+              token.lastName = createResponse.lastName;
               token.jobseekerId = createResponse.jobseekerId || null;
               token.employerId = createResponse.employerId;
               token.companyId = createResponse.companyId;
               token.companyIsApproved = createResponse.companyIsApproved;
               token.employeeIsApproved = createResponse.employeeIsApproved;
+              token.image = createResponse.image
+                ? createResponse.image
+                : (user.image ?? undefined);
             } else {
+              // user already exists in database assign the database values to the token
               token.id = fetchResponse.userId;
+              token.firstName = fetchResponse.firstName;
+              token.lastName = fetchResponse.lastName;
               token.email = fetchResponse.email;
               token.jobseekerId = fetchResponse.jobseekerId;
               token.employerId = fetchResponse.employerId;
               token.companyId = fetchResponse.companyId;
               token.companyIsApproved = fetchResponse.companyIsApproved;
               token.employeeIsApproved = fetchResponse.employeeIsApproved;
+              token.image = fetchResponse.image
+                ? fetchResponse.image
+                : (user.image ?? undefined);
             }
           } catch (error) {
             console.error('Error during user fetch/create:', error);
@@ -88,12 +115,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.companyIsApproved = token.companyIsApproved;
       session.user.employeeIsApproved = token.employeeIsApproved;
       session.user.id = token.id;
-      session.user.email = token.email;
+      (session.user.firstName = token.firstName),
+        (session.user.lastName = token.lastName),
+        (session.user.email = token.email);
       session.user.roles = [Role.JOBSEEKER];
+      session.user.image = token.image;
       return session;
     },
   },
   pages: {
-    signIn: "/signin",
+    signIn: '/signin',
   },
 });

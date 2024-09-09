@@ -38,7 +38,7 @@ interface Props {
     onChange(event);
   };
 
-  // Load the inital filter values
+  // Load the initial filter values
   React.useEffect(() => {
     if (value?.length > 0) setFilter(value);
   }, []);

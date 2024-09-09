@@ -353,7 +353,7 @@ model jobseekers {
   intern_hours_required              Int                                  @default(0, map: "DF__jobseeker__inter__6383C8BA") @db.SmallInt
   intro_headline                     String?                              @db.VarChar(max)
   current_job_title                  String?                              @db.VarChar(255)
-  resume_url                         String?                              @db.VarChar(255)
+  resume_url                         String?                              @db.VarChar(max)
   years_work_exp                     Int?                                 @db.SmallInt
   months_internship_exp              Int?                                 @db.SmallInt
   portfolio_url                      String?                              @db.VarChar(255)
@@ -364,6 +364,8 @@ model jobseekers {
   pool1                              Boolean                              @default(false) @db.Bit
   pool2                              Boolean                              @default(false) @db.Bit
   pool3                              Boolean                              @default(false) @db.Bit
+  createdAt                          DateTime                             @default(now()) @map("created_at")
+  updatedAt                          DateTime?                            @map("updated_at")
   case_mgmt                          case_mgmt[]
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]

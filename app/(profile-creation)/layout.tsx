@@ -11,6 +11,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 // REVIEW: You can locate the store in the layout component if all the routes using that layout need the store. 
 import StoreProvider from '../StoreProvider';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
+import {SessionProvider} from "next-auth/react";
 
 export default function ProfileCreationLayout({
   children,
@@ -24,7 +25,9 @@ export default function ProfileCreationLayout({
           <AppRouterCacheProvider>
             <CFAProfileCreationHeader />
             <StoreProvider>
+              <SessionProvider>
               {children}
+              </SessionProvider>
             </StoreProvider>
           </AppRouterCacheProvider>
         </LocalizationProvider>

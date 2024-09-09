@@ -9,10 +9,13 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
     const {
         skills = [],
+        industrySector  = [],
+        educationLevel = undefined,
         yearsWorkExp = 0,
         zipCode = undefined,
-        industrySector  = undefined,
-        educationLevel = undefined,
+        sortBy = "newest",
+        maxResults = 50,
+        page = 1,
     } = await request.json();
 
     const normalizedSkills: string[] = skills.filter((skill: string) => skill && skill.trim() !== '');
@@ -63,7 +66,7 @@ export async function POST(request: Request) {
     });
 
     // Industry Sector Filtering
-    if (industrySector) {
+    if (industrySector.length > 0) {
         andConditions.push({
             work_experiences: {
                 some: {
@@ -102,9 +105,10 @@ export async function POST(request: Request) {
         });
     }
 
+    // TODO: implement pagination and sorting
     const filteredJobSeekers = await prisma.jobseekers.findMany({
         where: andConditions.length > 0 ? { AND: andConditions } : undefined,
-        select:  jobSeekerCardViewSelect // for testing queries use jobseekerQueryTestSelect
+        select:  jobSeekerCardViewSelect // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
     });
 
     return NextResponse.json(filteredJobSeekers);
