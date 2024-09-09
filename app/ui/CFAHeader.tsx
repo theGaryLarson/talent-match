@@ -21,8 +21,8 @@ const forStudentsDropDownInfo = [
 const TopLevelLinks = [
   { name: 'Talent Showcase', href: '/services'},
   { name: 'For Employers', href: '/services/employers'},
-  { name: 'For JobSeekers', href: '/services/jobseekers'},
-    { name: 'Explore', href: '/todo'},
+  { name: 'For Job Seekers', href: '/services/jobseekers'},
+    { name: 'Explore', href: '/todo'}, // TODO: fill this out!
     {
       name:"Contact Us",
       href:"/todo"
@@ -80,7 +80,7 @@ export default function CFAHeader() {
     
         <PopoverGroup className="hidden laptop:flex laptop:gap-x-12" >
           <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6   ">
+            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
               For Students
               <ChevronDownIcon className="h-5 w-5 flex-none" aria-hidden="true" />
             </PopoverButton>

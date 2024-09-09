@@ -25,7 +25,8 @@ export default function JobSeekerCardView({
   forceSmall: boolean | null;
 }) {
   // Extract the first few skills from the jobseeker_has_skills array
-  const skills: SkillDTO[] = jobseeker["jobseeker_has_skills"].map((item: JobseekerSkillDTO) => item.skills);
+  const skills: SkillDTO[] = jobseeker["jobseeker_has_skills"] ?
+    jobseeker["jobseeker_has_skills"].map((item: JobseekerSkillDTO) => item.skills) : [];
 
   // Decide what school to show
   let school = "";
@@ -48,17 +49,17 @@ export default function JobSeekerCardView({
     }
   }
 
-  const cardViewClasses = "relative w-fit rounded-lg border border-2 border-cyan-600 p-4 sm-tablet:p-6";
+  const cardViewClasses = "relative w-full rounded-lg border border-2 border-cyan-600 p-4 sm-tablet:p-6";
   return (
     <div className={forceSmall ? cardViewClasses : cardViewClasses + " tablet:flex tablet:flex-row"}>
 
       {/* picture and name */}
-      {forceSmall ?
+      {forceSmall ? /* force the small form factor rendering */
         <div className="w-full flex-col items-start space-y-2">
           <div className="flex justify-start items-start"><Avatar imgsrc={pfpPicSrc} /></div>
           <div><span className="text-wrap font-bold">{name}</span></div>
         </div>
-        :
+        : /* don't force small */
         <div className="w-full flex-col items-start space-y-2 tablet:items-center tablet:justify-center tablet:m-auto">
           <div className="flex justify-start items-start tablet:items-center tablet:justify-center tablet:mb-6"><Avatar imgsrc={pfpPicSrc} /></div>
           <div className="tablet:text-center"><span className="text-wrap font-bold tablet:text-lg">{name}</span></div>
@@ -81,7 +82,7 @@ export default function JobSeekerCardView({
           />
 
           {/* view profile */}
-          {forceSmall ?
+          {forceSmall ? /* force the small form factor rendering */
             <div className="absolute top-20 right-2 w-fit">
               <Link
                 href={'/services/jobseekers/' + id}
@@ -89,7 +90,7 @@ export default function JobSeekerCardView({
                 <strong>{'View Profile'}</strong>
               </Link>
             </div>
-            :
+            : /* don't force small */
             <div className="absolute top-20 right-2 tablet:static tablet:flex tablet:pt-2 tablet:justify-end">
               <Link
                 href={'/services/jobseekers/' + id}
