@@ -56,7 +56,7 @@ export default function JobseekerSignupFinishPage(){
                   and <Link className='text-red-600 underline' href="/">data sharing agreement</Link>.</label>
               </div>
             </fieldset>
-            <Button type="submit" className='mx-auto my-8 rounded-full' disabled={!(education && resident && termsAgree)}>Create account</Button>
+            <Button type="submit" className='mx-auto my-8 rounded-full focus:ring-0' disabled={!(education && resident && termsAgree)}>Create account</Button>
             <DividerWithText className='py-8'>or</DividerWithText>
             <div className='text-center flex flex-col gap-2'>
               <p>Already have a CFA account?</p>

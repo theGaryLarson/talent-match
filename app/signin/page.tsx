@@ -1,25 +1,17 @@
 
 /* eslint-disable react/jsx-key */
-import { redirect } from 'next/navigation';
 import { signIn, auth, providerMap } from '@/auth';
-
-import DividerWithText from '@/app/ui/components/DividerWithText';
-import Link from 'next/link';
-import {Button} from '@/app/ui/button';
-import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
+import { Button } from 'flowbite-react';
 import Image from 'next/image';
-import CFAFooter from '@/app/ui/CFAFooter';
-import CFASignupHeader from '@/app/ui/CFASignupHeader';
 
 export default function SignInPage(){
+    console.log(providerMap);
     return(
-      <>
-      <CFASignupHeader className='laptop:hidden'/>
-
-      <main className="max-w-screen-sm-tablet mx-auto laptop:flex laptop:flex-row laptop:gap-8 laptop:max-w-full">
-        <CFASignupPrompt/>
-        <section className="px-8 w-full laptop:pt-24">
-          <div className="flex flex-col gap-2">
+      <main className="max-w-screen-sm-tablet mx-auto">
+        {/* <CFASignupPrompt/> */}
+        <section className="px-8 w-full flex flex-col gap-8 laptop:pt-24">
+          <h1 className='text-[2.125rem]'>Create an account</h1>
+          <div className="flex flex-col gap-2 text-center">
             {Object.values(providerMap).map((provider) => (
               <form
                 action={async () => {
@@ -43,23 +35,15 @@ export default function SignInPage(){
                   }
                 }}
               >
-                <button type="submit">
-                  <span>Sign in with {provider.name}</span>
-                </button>
+                <Button type="submit" className='w-full justify-start bg-transparent border border-[#1E2432]/[.23] enabled:hover:bg-[#00809E]/[.23] focus:bg-[#00809E]/[.23] active:bg-[#00809E]/[.23] focus:ring-0'>
+                  <Image src='/cfa_images/signup/oauth_logos/github-mark.svg' width={20} height={20} alt='Green checkmark' className='inline mr-2'/>
+                  <span className='text-black'>Sign in with {provider.name}</span>
+                </Button>
               </form>
             ))}
           </div>
-          <DividerWithText className='py-8'>or</DividerWithText>
-          {/* <div className='text-center flex flex-col gap-2'>
-            <p>Already have a CFA account?</p>
-            <Link className='text-blue-500' href="/login">Login</Link>
-          </div> */}
           
         </section>
-        <Image src='/cfa_images/signup/jobseeker-vector.png' width={1092} height={1040} className='pt-16 h-1/2 hidden sm-tablet:block laptop:hidden' alt='Art of jobseeker'/>
       </main>
-      
-      <footer className='absolute w-full bottom-0 sm-tablet:hidden'><CFAFooter></CFAFooter></footer>
-      </>
     );
 }

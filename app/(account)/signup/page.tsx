@@ -116,7 +116,7 @@ export default function SignupPage() {
         <Button
           disabled={choice === ''}
           onClick={handleSubmit}
-          className="mx-auto mt-4 w-fit rounded-3xl"
+          className="mx-auto mt-4 w-fit rounded-3xl focus:ring-0"
         >
           Continue
         </Button>
@@ -131,8 +131,9 @@ export default function SignupPage() {
           </p>
         </div>
       </main>
-      <footer className="sm-tablet:absolute sm-tablet:bottom-0 sm-tablet:w-full">
-        <CFAFooter></CFAFooter>
+      <footer className='mt-auto'>
+        <CFAFooter>
+        </CFAFooter>
       </footer>
     </>
   );

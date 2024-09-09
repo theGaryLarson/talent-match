@@ -16,7 +16,6 @@ export default auth((req) => {
     "/create-profile/jobseeker/preferences",
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
-    "/cfa_images/",
     "/signup/",
     "/signup/jobseeker/",
   ];
@@ -78,5 +77,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|cfa_images|favicon.ico).*)"],
 };

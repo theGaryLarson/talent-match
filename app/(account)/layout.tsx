@@ -11,7 +11,9 @@ export default function AccountLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}><SessionProvider>{children}</SessionProvider></body>
+      <body className={`${inter.className} antialiased min-h-screen flex flex-col`}>
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }
