@@ -78,16 +78,6 @@ async function genericSearch<T>({
 }
 
 // Specialized search functions
-export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
-    return genericSearch<skills>({
-        searchTerm,
-        entity: 'skills',
-        fields: ['skill_name'],
-        maxResults: 15,
-        sortField: 'skill_name' // Sort by skill_name
-    });
-}
-
 export async function searchEduProviders(searchTerm: string): Promise<EducationProviderDTO[]> {
     return genericSearch<edu_providers>({
         searchTerm,
@@ -146,6 +136,130 @@ export async function searchPostalGeoData(postalCode: string, field: keyof Posta
         maxResults: 10,
         sortField: field == 'county' || field == 'city' ? 'city' : field
     });
+}
+
+export async function searchSkills(searchTerm:string): Promise<SkillDTO[]> {
+    const MAX_RESULTS = 10;
+
+    if (searchTerm.length === 0) {
+        return [];
+    }
+    else {
+        const exactResults = (await prisma.skills.findMany({
+            where: {
+                OR: [
+                    {
+                        skill_name:{
+                            equals: searchTerm
+                        }
+                    },
+                    {
+                        skill_name:{
+                            startsWith: searchTerm + " ("
+                        }
+                    },
+                    {
+                        skill_name:{
+                            contains: "(" + searchTerm + ")"
+                        }
+                    }
+                ]
+            },
+            take: 5
+        })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+            if (itemA.skill_name > itemB.skill_name) {
+                return 1;
+            }
+            if (itemA.skill_name < itemB.skill_name) {
+                return -1;
+            }
+            return 0;
+        });
+
+        const startsWithResults = (await prisma.skills.findMany({
+            where: {
+                AND: [
+                    {
+                        skill_name:{
+                            startsWith: searchTerm
+                        }
+                    },
+                    {
+                        NOT: {
+                            skill_name:{
+                                equals: searchTerm
+                            }
+                        }
+                    },
+                    {
+                        NOT: {
+                            skill_name:{
+                                startsWith: searchTerm + " ("
+                            }
+                        }
+                    },
+                    {
+                        NOT: {
+                            skill_name:{
+                                contains: "(" + searchTerm + ")"
+                            }
+                        }
+                    }
+                ]
+            },
+            take: MAX_RESULTS - exactResults.length
+        })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+            if (itemA.skill_name > itemB.skill_name) {
+                return 1;
+            }
+            if (itemA.skill_name < itemB.skill_name) {
+                return -1;
+            }
+            return 0;
+        });
+
+        const containsResults =
+            (exactResults.length + startsWithResults.length < MAX_RESULTS) ?
+                (await prisma.skills.findMany({
+                    where: {
+                        AND: [
+                            {
+                                skill_name: {
+                                    contains: searchTerm
+                                }
+                            },
+                            {
+                                NOT: {
+                                    skill_name: {
+                                        startsWith: searchTerm
+                                    }
+                                }
+                            },
+                            {
+                                NOT: {
+                                    skill_name:{
+                                        contains: "(" + searchTerm + ")"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    take: MAX_RESULTS - exactResults.length - startsWithResults.length
+                })).sort((itemA : SkillDTO, itemB : SkillDTO) => {
+                    if (itemA.skill_name > itemB.skill_name) {
+                        return 1;
+                    }
+                    if (itemA.skill_name < itemB.skill_name) {
+                        return -1;
+                    }
+                    return 0;
+                })
+            : []
+        // Had to query them separately to guarantee Exact and StartsWith
+        //   matches were found since I'm limiting the results, and OR
+        //   clauses do not guarantee results in the order of the filters
+        return [...exactResults, ...startsWithResults, ...containsResults];
+    }
 }
 
 export const jobSeekerCardViewSelect = {
