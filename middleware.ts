@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { Role } from "./data/dtos/UserInfoDTO";
 
 export default auth((req) => {
-  console.log(req);
+  // console.log(req);
   const jobseekerRoutes = [
     "/services/jobseekers",
     "/services/jobseekers/[id]",
@@ -17,8 +17,10 @@ export default auth((req) => {
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
     "/cfa_images/",
+    "/signup/",
+    "/signup/jobseeker/",
 
-    // TODO: This should be in empoyerRoutes once auth logic is updated
+    // TODO: This should be in employerRoutes once auth logic is updated
     "/create-profile/employer",
     "/create-profile/employer/personal",
     "/create-profile/employer/company",
@@ -28,7 +30,7 @@ export default auth((req) => {
     "/create-profile/employer/video",
     "/create-profile/employer/congratulations",
   ];
-  
+
   const employerRoutes = [
     "/create-profile/employer",
     "/create-profile/employer/personal",
@@ -50,13 +52,23 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (req.auth && pathname === "/signin") {
+  const userRoles = req.auth?.user?.roles || [];
+
+  if (req.auth && pathname === "/signin" && !userRoles.includes(Role.NONE)) {
     console.log("logged in, redirecting to dashboard");
     const loginUrl = new URL("/", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
   }
 
-  const userRoles = req.auth?.user?.roles || [];
+  if (req.auth && userRoles.includes(Role.NONE) && pathname !== "/signup" && pathname !== "/signout") {
+    console.log("redirected to account data creation");
+    const loginUrl = new URL("/signup", req.nextUrl.origin);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (req.auth && userRoles.includes(Role.NONE) && pathname === "/signup") {
+    return NextResponse.next();
+  }
 
   // Check for jobseeker role access
   if (jobseekerRoutes.some((route) => pathname.includes(route))) {
@@ -82,5 +94,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|cfa_images|favicon.ico).*)"],
 };
