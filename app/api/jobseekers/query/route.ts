@@ -120,7 +120,7 @@ export async function POST(request: Request) {
   // TODO: implement pagination and sorting
   const filteredJobSeekers = await prisma.jobseekers.findMany({
     where: andConditions.length > 0 ? { AND: andConditions } : undefined,
-    select: jobseekerQueryTestSelect, // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
+    select: jobSeekerCardViewSelect, // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
     take: maxResults,
     skip: skip,
     orderBy: orderBy,
