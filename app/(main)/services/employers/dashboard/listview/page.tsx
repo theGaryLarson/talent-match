@@ -1,5 +1,4 @@
 'use client'
-import '@/app/ui/listview.css';
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import { JobSeekerCardViewDTO } from "@/data/dtos/JobSeekerCardViewDTO";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
@@ -7,7 +6,6 @@ import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import SortDropdown from '@/app/ui/components/mui/SortDropdown';
-import MultiSelectFilter from '@/app/ui/components/mui/MultiSelectFilter';
 import Pagination from '@mui/material/Pagination';
 import SingleSelectFilter from '@/app/ui/components/mui/SingleSelectFilter';
 import { IndustrySectorDTO } from '@/data/dtos/IndustrySectorDTO';
@@ -27,7 +25,7 @@ async function fetchFilteredJobSeekerCardView(
   maxResults: number = resultsPerPage,
   page: number = 1,
 ): Promise<JobSeekerCardViewDTO[]> {
-  
+
   // Hacky convert the strings to numbers for the request
   var workExp = 0;
   var zip = null;
@@ -35,7 +33,7 @@ async function fetchFilteredJobSeekerCardView(
   if (yearsWorkExp != "") workExp = Number.parseInt(yearsWorkExp);
   if (zipCode != "") zip = Number.parseInt(zipCode);
   if (page != 0) pageNum = page; // if page=0, no GET param set for page, and we actually call this page 1
-  
+
   // Make the request
   const response = await fetch('/api/jobseekers/query', {
     method: 'POST',
@@ -162,7 +160,7 @@ export default function Page() {
       />
 
       {/* Filters */}
-      <div className="flex flex-row flex-wrap mt-1">
+      <div className="flex flex-row flex-wrap mt-1 mb-4">
 
         {/* Industry */}
         <div className="w-1/2 tablet:w-1/4">
@@ -173,7 +171,6 @@ export default function Page() {
             value={getArrayParam("industry")}
             onChange={(event) => {
               newFilterOnChange("industry", setIndustry);
-              console.log("hit");
             }}
             getOptionLabel={(option: IndustrySectorDTO) => option.sector_title}
           />
@@ -227,10 +224,8 @@ export default function Page() {
         {/* Zip Code */}
         <div className="w-1/2 tablet:w-1/4">
           <TextField
-            className="zipcode-field"
             autoComplete='off'
             label="Full/Partial Zip Code"
-            id="outlined-size-small"
             defaultValue={getParam("zipcode")}
             size="small"
             onChange={(event) => {
@@ -249,15 +244,23 @@ export default function Page() {
               }
             }}
             sx={{
+              padding: "0px 2px",
               "& .MuiInputBase-root": {
                 borderRadius: "9999px",
                 height: "1.75rem",
+              },
+              "& .MuiInputBase-input": {
+                boxShadow: "none",
+                '&:focus': {
+                  boxShadow: "none",
+                },
               },
               "& .MuiInputLabel-root": {
                 fontSize: "0.875rem",
                 lineHeight: "1.25rem",
                 top: "15px",
-                left: "4px",
+                left: "2px",
+                position: "relative",
               },
             }}
           />
