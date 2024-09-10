@@ -12,8 +12,9 @@ import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO
 import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
 import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
 
-const resultsPerPage = 5;
+const resultsPerPage = 50;
 
 async function fetchFilteredJobSeekerCardView(
   skills: string[] = [],
@@ -277,7 +278,7 @@ export default function Page() {
 
 
       {/* Loading */}
-      {loading ? <div className='w-full h-full text-center text-3xl'>Loading...</div> : ""}
+      {loading ? <div className='w-full h-full text-center'><CircularProgress /></div> : ""}
       
       {/* Error */}
       {!loading && error ? <div className='w-full h-full text-center text-3xl'>Error: Invalid Query</div> : ""}
