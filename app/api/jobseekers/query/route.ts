@@ -117,14 +117,21 @@ export async function POST(request: Request) {
   // Determine the number of results to skip based on the page number and maxResults
   const skip = (page - 1) * maxResults;
 
-  // TODO: implement pagination and sorting
-  const filteredJobSeekers = await prisma.jobseekers.findMany({
-    where: andConditions.length > 0 ? { AND: andConditions } : undefined,
-    select: jobSeekerCardViewSelect, // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
-    take: maxResults,
-    skip: skip,
-    orderBy: orderBy,
-  });
+  const [filteredJobSeekers, totalCount] = await prisma.$transaction([
+    prisma.jobseekers.findMany({
+      where: andConditions.length > 0 ? { AND: andConditions } : undefined,
+      select: jobSeekerCardViewSelect, // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
+      take: maxResults,
+      skip: skip,
+      orderBy: orderBy,
+    }),
+    prisma.jobseekers.count({
+      where: andConditions.length > 0 ? { AND: andConditions } : undefined,
+    }),
+  ]);
 
-  return NextResponse.json(filteredJobSeekers);
+  return NextResponse.json({
+    filteredJobSeekers,
+    totalCount,
+  });
 }
