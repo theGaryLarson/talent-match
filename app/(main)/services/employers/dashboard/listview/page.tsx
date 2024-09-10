@@ -13,7 +13,7 @@ import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFil
 import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
-const resultsPerPage = 50;
+const resultsPerPage = 5;
 
 async function fetchFilteredJobSeekerCardView(
   skills: string[] = [],
@@ -29,10 +29,8 @@ async function fetchFilteredJobSeekerCardView(
   // Hacky convert the strings to numbers for the request
   var workExp = 0;
   var zip = null;
-  var pageNum = 1;
   if (yearsWorkExp != "") workExp = Number.parseInt(yearsWorkExp);
   if (zipCode != "") zip = Number.parseInt(zipCode);
-  if (page != 0) pageNum = page; // if page=0, no GET param set for page, and we actually call this page 1
 
   // Make the request
   const response = await fetch('/api/jobseekers/query', {
@@ -40,10 +38,9 @@ async function fetchFilteredJobSeekerCardView(
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ skills, industry, eduLevel, workExp, zip, sortBy, maxResults, pageNum })
+    body: JSON.stringify({ skills, industry, eduLevel, workExp, zip, sortBy, maxResults, page })
   });
   if (!response.ok) {
-    // TODO: display error
     throw new Error('Failed to fetch data');
   }
   return response.json();
@@ -53,6 +50,7 @@ export default function Page() {
   // Listview data
   const [jobseekers, setJobSeekers] = useState<JobSeekerCardViewDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
 
   // Query data
   const [skillsList, setSkillsList] = useState<string[]>();
@@ -103,12 +101,13 @@ export default function Page() {
   // Execute query function
   const execQuery = useCallback(async () => {
     setLoading(true);
+    setError(false);
     try {
       const data = await fetchFilteredJobSeekerCardView(skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, resultsPerPage, page);
       setJobSeekers(data);
     } catch (error) {
+      setError(true);
       console.error('Error fetching job seekers:', error);
-      // TODO: add error UI
     } finally {
       setLoading(false);
     }
@@ -124,7 +123,9 @@ export default function Page() {
       setYearsExp(getParam("yearsexp"));
       setZipCode(getParam("zipcode"));
       setSortBy(getParam("sort") != "" ? getParam("sort") : "newest");
-      setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
+      const pageGETparam = +getParam("page"); // parseInt(null) returns NaN but +null returns 0!
+      if (pageGETparam == 0) setPage(1);
+      else setPage(pageGETparam);
     }
     else execQuery(); // any other change after initial load should execute a new query
   }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
@@ -137,7 +138,7 @@ export default function Page() {
   );
 
   return (
-    <main className="m-6 p-6 laptop:px-[200px] py-16">
+    <main className="m-6 mb-0 p-6 laptop:px-[200px] pt-8">
       <h1 className="text-2xl font-bold mb-4">{skillsList?.toString()} Search Results</h1>
 
       {/* Skill Search Bar */}
@@ -170,7 +171,9 @@ export default function Page() {
             apiAutoloadRoute="/api/employers/industry-sectors" // TODO: two requests are happening?
             value={getArrayParam("industry")}
             onChange={(event) => {
-              newFilterOnChange("industry", setIndustry);
+              setQueryParam('industry', encodeURIComponent(event.target.value.toString()));
+              if (typeof event.target.value === 'string') setIndustry([event.target.value])
+              else setIndustry(event.target.value);
             }}
             getOptionLabel={(option: IndustrySectorDropdownDTO) => option.sector_title}
           />
@@ -187,7 +190,7 @@ export default function Page() {
               setEduLevel(event.target.value as string);
             }}
             options={[
-              { label: "Any", value: "Any" },
+              { label: "Any", value: "" },
               { label: "Doctorate", value: "Doctorate" },
               { label: "Master's Degree", value: "Masters" },
               { label: "Bachelor's Degree", value: "Bachelors" },
@@ -211,8 +214,8 @@ export default function Page() {
               setQueryParam('yearsexp', encodeURIComponent(event.target.value.toString()));
               setYearsExp(event.target.value as string);
             }}
-            options={[ // TODO: sync with design on how to do this, re-implement route
-              { label: "Any", value: "0" },
+            options={[ // TODO: design to advise on what options to offer, will need to re-implement route to accomodate
+              { label: "Any", value: "" },
               { label: "Less than a year", value: "1" },
               { label: "1-2 years", value: "2" },
               { label: "3-4 years", value: "3" },
@@ -222,6 +225,7 @@ export default function Page() {
         </div>
 
         {/* Zip Code */}
+        {/* Design has agreed to a text field until we have a better distance measurement system in place */}
         <div className="w-1/2 tablet:w-1/4">
           <TextField
             autoComplete='off'
@@ -246,23 +250,9 @@ export default function Page() {
             sx={{
               padding: "0px 2px",
               width: "100%",
-              "& .MuiInputBase-root": {
-                borderRadius: "9999px",
-                height: "1.75rem",
-              },
-              "& .MuiInputBase-input": {
-                boxShadow: "none",
-                '&:focus': {
-                  boxShadow: "none",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                fontSize: "0.875rem",
-                lineHeight: "1.25rem",
-                top: "15px",
-                left: "2px",
-                position: "relative",
-              },
+              "& .MuiInputBase-root": { borderRadius: "9999px", height: "1.75rem", },
+              "& .MuiInputBase-input": { boxShadow: "none", '&:focus': { boxShadow: "none", }, },
+              "& .MuiInputLabel-root": { fontSize: "0.875rem", lineHeight: "1.25rem", top: "15px", left: "2px", position: "relative", },
             }}
           />
         </div>
@@ -286,8 +276,14 @@ export default function Page() {
       </div>
 
 
-      {/* Loading or display results */}
-      {loading ? <div className='w-full h-full text-center text-3xl'>Loading...</div> :
+      {/* Loading */}
+      {loading ? <div className='w-full h-full text-center text-3xl'>Loading...</div> : ""}
+      
+      {/* Error */}
+      {!loading && error ? <div className='w-full h-full text-center text-3xl'>Error: Invalid Query</div> : ""}
+
+      {/* else, Display Results */}
+      {!loading && !error ?
         <div className="space-y-4">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
           <JobSeekerCardView
             key={jobSeeker.jobseeker_id}
@@ -297,12 +293,16 @@ export default function Page() {
             pfpPicSrc={jobSeeker?.users?.photo_url}
             aboutMe={jobSeeker?.intro_headline}
             id={jobSeeker?.jobseeker_id}
-            forceSmall={false} />
-        ))}</div>}
+            forceSmall={false} />))}
+        </div> : ""
+      }
 
-      <div className="flex justify-center">
-        {/* TODO: Would be nice to have a "Showing 1-100 of 4,321 results" blurb here */}
-        <Pagination count={Math.ceil(jobseekers.length / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} />
+      {/* Pagination */}
+      <div className="flex justify-center mt-6">
+        {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1}-{resultsPerPage * (page ?? 1)} of xyz total results</div> : "" }
+      </div> {/* TODO: impl total query size */}
+      <div className="flex justify-center mt-2">
+        {!loading ? <Pagination count={Math.ceil(1000 / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : "" }
       </div>
     </main>
   );
