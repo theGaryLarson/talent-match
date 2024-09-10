@@ -297,7 +297,7 @@ export default function Page() {
 
       {/* Pagination */}
       <div className="flex justify-center mt-6">
-        {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1} - {Math.min((resultsPerPage * (page ?? 1)), totalResults)} of {totalResults} total results</div> : "" }
+        {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1} - {Math.min((resultsPerPage * (page ?? 1)), (totalResults ?? 1))} of {totalResults} total results</div> : "" }
       </div> {/* TODO: impl total query size */}
       <div className="flex justify-center mt-2">
         {!loading ? <Pagination count={Math.ceil((totalResults ?? 1) / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : "" }
