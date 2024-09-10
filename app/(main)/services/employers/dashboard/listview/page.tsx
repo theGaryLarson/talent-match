@@ -245,6 +245,7 @@ export default function Page() {
             }}
             sx={{
               padding: "0px 2px",
+              width: "100%",
               "& .MuiInputBase-root": {
                 borderRadius: "9999px",
                 height: "1.75rem",

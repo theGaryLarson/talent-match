@@ -38,14 +38,14 @@ export default function JobSeekerCardView({
     if (enrolledEducation) {
       // If there is an enrolled program, prioritize that
       school = (enrolledEducation.eduProviders?.name || '') + ' | ' +
-          (enrolledEducation?.degreeType || '') +
-          (enrolledEducation.program?.title ? ' | ' + enrolledEducation?.program?.title : '');
+        (enrolledEducation?.degreeType || '') +
+        (enrolledEducation.program?.title ? ' | ' + enrolledEducation?.program?.title : '');
     } else {
       // If no enrolled program is found, show the first available education
       const firstEducation = jobseeker.jobseeker_education[0];
       school = (firstEducation.eduProviders?.name || '') + ' | ' +
-          (firstEducation?.degreeType || '') +
-          (firstEducation?.program?.title ? ' | ' + firstEducation.program.title : '');
+        (firstEducation?.degreeType || '') +
+        (firstEducation?.program?.title ? ' | ' + firstEducation.program.title : '');
     }
   }
 
@@ -55,13 +55,13 @@ export default function JobSeekerCardView({
 
       {/* picture and name */}
       {forceSmall ? /* force the small form factor rendering */
-        <div className="w-full flex-col items-start space-y-2">
+        <div className="flex-col items-start space-y-2">
           <div className="flex justify-start items-start"><Avatar imgsrc={pfpPicSrc} /></div>
           <div><span className="text-wrap font-bold">{name}</span></div>
         </div>
         : /* don't force small */
-        <div className="w-full flex-col items-start space-y-2 tablet:items-center tablet:justify-center tablet:m-auto">
-          <div className="flex justify-start items-start tablet:items-center tablet:justify-center tablet:mb-6"><Avatar imgsrc={pfpPicSrc} /></div>
+        <div className="flex-col items-start space-y-2 tablet:items-center tablet:justify-center tablet:m-auto tablet:w-64 tablet:mr-6">
+          <div className="flex justify-start items-start tablet:items-center tablet:justify-center tablet:mb-4"><Avatar imgsrc={pfpPicSrc} /></div>
           <div className="tablet:text-center"><span className="text-wrap font-bold tablet:text-lg">{name}</span></div>
         </div>
       }
@@ -73,32 +73,39 @@ export default function JobSeekerCardView({
           <h4 className="italic">{school}</h4>
           <p>{aboutMe}</p>
         </div>
-        {/* skills */}
-        <div className="pt-4">
+
+        {/* footer */}
+        <div className="pt-4 flex flex-row">
+
+          <div className="flex grow">
+          {/* skills */}
           <Skills
             skillsList={skills}
             maxNumSkills={5}
             jobseekerID={id}
           />
+          </div>
 
           {/* view profile */}
-          {forceSmall ? /* force the small form factor rendering */
-            <div className="absolute top-20 right-2 w-fit">
-              <Link
-                href={'/services/jobseekers/' + id}
-                className="border border-1 border-cyan-600 inline-block w-fit rounded-full bg-white px-6 py-2 text-lg text-cyan-600 hover:bg-gray-200">
-                <strong>{'View Profile'}</strong>
-              </Link>
-            </div>
-            : /* don't force small */
-            <div className="absolute top-20 right-2 tablet:static tablet:flex tablet:pt-2 tablet:justify-end">
-              <Link
-                href={'/services/jobseekers/' + id}
-                className="border border-1 border-cyan-600 inline-block w-fit rounded-full bg-white px-6 py-2 text-lg text-cyan-600 hover:bg-gray-200">
-                <strong>{'View Profile'}</strong>
-              </Link>
-            </div>
-          }
+          <div className="tablet:grid tablet:place-items-end">
+            {forceSmall ? /* force the small form factor rendering */
+              <div className="absolute top-20 right-2 w-max h-min">
+                <Link
+                  href={'/services/jobseekers/' + id}
+                  className="border border-1 border-cyan-600 inline-block w-fit rounded-full bg-white px-6 py-2 text-lg text-cyan-600 hover:bg-gray-200">
+                  <strong>View Profile</strong>
+                </Link>
+              </div>
+              : /* don't force small */
+              <div className="absolute top-20 right-2 w-max h-min tablet:static tablet:flex tablet:pt-2 tablet:justify-end">
+                <Link
+                  href={'/services/jobseekers/' + id}
+                  className="border border-1 border-cyan-600 inline-block w-fit rounded-full bg-white px-6 py-2 text-lg text-cyan-600 hover:bg-gray-200">
+                  <strong>View Profile</strong>
+                </Link>
+              </div>
+            }
+          </div>
 
         </div>
       </div>
