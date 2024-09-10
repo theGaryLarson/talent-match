@@ -1,7 +1,7 @@
 'use client'
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import { JobSeekerCardViewDTO } from "@/data/dtos/JobSeekerCardViewDTO";
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
@@ -10,11 +10,15 @@ import Pagination from '@mui/material/Pagination';
 import SingleSelectFilter from '@/app/ui/components/mui/SingleSelectFilter';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
-import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const resultsPerPage = 50;
+
+interface JobSeekerQueryResult {
+  filteredJobSeekers: JobSeekerCardViewDTO[];
+  totalCount: number;
+}
 
 async function fetchFilteredJobSeekerCardView(
   skills: string[] = [],
@@ -25,7 +29,7 @@ async function fetchFilteredJobSeekerCardView(
   sortBy: string = "newest",
   maxResults: number = resultsPerPage,
   page: number = 1,
-): Promise<JobSeekerCardViewDTO[]> {
+): Promise<JobSeekerQueryResult> {
 
   // Hacky convert the strings to numbers for the request
   var workExp = 0;
@@ -62,6 +66,7 @@ export default function Page() {
 
   // Sorting and pagination
   const [sortBy, setSortBy] = useState<string>();
+  const [totalResults, setTotalResults] = useState<number>();
   const [page, setPage] = useState<number>();
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setQueryParam('page', encodeURIComponent(value.toString()));
@@ -105,7 +110,8 @@ export default function Page() {
     setError(false);
     try {
       const data = await fetchFilteredJobSeekerCardView(skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, resultsPerPage, page);
-      setJobSeekers(data);
+      setJobSeekers(data.filteredJobSeekers);
+      setTotalResults(data.totalCount);
     } catch (error) {
       setError(true);
       console.error('Error fetching job seekers:', error);
@@ -124,19 +130,10 @@ export default function Page() {
       setYearsExp(getParam("yearsexp"));
       setZipCode(getParam("zipcode"));
       setSortBy(getParam("sort") != "" ? getParam("sort") : "newest");
-      const pageGETparam = +getParam("page"); // parseInt(null) returns NaN but +null returns 0!
-      if (pageGETparam == 0) setPage(1);
-      else setPage(pageGETparam);
+      +getParam("page") == 0 ? setPage(1) : setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
     }
     else execQuery(); // any other change after initial load should execute a new query
   }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
-
-  const newFilterOnChange = (paramName: string, stateSetter: Dispatch<SetStateAction<string[] | undefined>>) => (
-    (event: SelectChangeEvent<string[]>) => {
-      setQueryParam(paramName, encodeURIComponent((typeof event.target.value === 'string') ? event.target.value : event.target.value.join(",")));
-      stateSetter((typeof event.target.value === 'string') ? event.target.value.split(',') : event.target.value);
-    }
-  );
 
   return (
     <main className="m-6 mb-0 p-6 laptop:px-[200px] pt-8">
@@ -300,10 +297,10 @@ export default function Page() {
 
       {/* Pagination */}
       <div className="flex justify-center mt-6">
-        {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1}-{resultsPerPage * (page ?? 1)} of xyz total results</div> : "" }
+        {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1} - {Math.min((resultsPerPage * (page ?? 1)), totalResults)} of {totalResults} total results</div> : "" }
       </div> {/* TODO: impl total query size */}
       <div className="flex justify-center mt-2">
-        {!loading ? <Pagination count={Math.ceil(1000 / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : "" }
+        {!loading ? <Pagination count={Math.ceil((totalResults ?? 1) / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : "" }
       </div>
     </main>
   );
