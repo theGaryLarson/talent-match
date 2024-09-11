@@ -276,22 +276,6 @@ export default function CreateJobseekerProfileIntroPage() {
               required
               loadingText="Retrieving industry sectors..."
             />
-              {/* <SelectOptionsWithLabel
-                id="profile-creation-company-industry"
-                onChange={handleFieldChange}
-                options={[
-                  { label: 'Finance', value: 'Finance' },
-                  { label: 'Healthcare', value: 'Healthcare' },
-                  { label: 'Technology', value: 'Technology' },
-                ]}
-                placeholder="Please select"
-                value={
-                  fields.find((f) => f.id === 'profile-creation-company-industry')
-                    ?.value
-                }
-              >
-                Industry Sector *
-              </SelectOptionsWithLabel> */}
           </div>
 
           <fieldset>
@@ -360,6 +344,7 @@ export default function CreateJobseekerProfileIntroPage() {
               />
 
               {/* <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel> */}
+              {/* REVIEW: May swap to number input instead of dropdown with ranges */}
               <SelectOptionsWithLabel
                 id="profile-creation-company-size"
                 onChange={handleFieldChange}
