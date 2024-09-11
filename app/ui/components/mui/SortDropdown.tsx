@@ -1,3 +1,4 @@
+import { BorderBottom } from '@mui/icons-material';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { ReactNode } from 'react';
 
@@ -21,7 +22,7 @@ export default function SortDropdown({
   ...rest
 }:Props) {
   return (
-    <FormControl size="small">
+    <FormControl size="small" variant="standard">
       <InputLabel id={id + "-label"}>{label}</InputLabel>
       <Select
         className="shadow-transparent border-none"
@@ -30,6 +31,7 @@ export default function SortDropdown({
         value={value == "" ? "newest" : value}
         label={label}
         onChange={onChange}
+        sx={{ "&.MuiInput-underline": { '&:before': { borderBottom: "none", }, }, }}
         {...rest}
       >
         {

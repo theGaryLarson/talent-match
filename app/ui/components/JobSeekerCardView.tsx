@@ -71,7 +71,7 @@ export default function JobSeekerCardView({
         <div className="pt-4 space-y-2">
           <h3><span className="font-bold">{pathway}</span></h3>
           <h4 className="italic">{school}</h4>
-          <p>{aboutMe}</p>
+          <p className="line-clamp-3">{aboutMe}</p>
         </div>
 
         {/* footer */}

@@ -136,7 +136,7 @@ export default function Page() {
   }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
 
   return (
-    <main className="m-6 mb-0 p-6 laptop:px-[200px] pt-8">
+    <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8">
       <h1 className="text-2xl font-bold mb-4">{skillsList?.toString()} Search Results</h1>
 
       {/* Skill Search Bar */}
@@ -298,8 +298,8 @@ export default function Page() {
       {/* Pagination */}
       <div className="flex justify-center mt-6">
         {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1} - {Math.min((resultsPerPage * (page ?? 1)), (totalResults ?? 1))} of {totalResults} total results</div> : "" }
-      </div> {/* TODO: impl total query size */}
-      <div className="flex justify-center mt-2">
+      </div>
+      <div className="flex justify-center mt-2 mb-4 phone:mb-0">
         {!loading ? <Pagination count={Math.ceil((totalResults ?? 1) / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : "" }
       </div>
     </main>
