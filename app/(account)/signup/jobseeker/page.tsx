@@ -9,11 +9,13 @@ import Image from 'next/image';
 import CFAFooter from '@/app/ui/CFAFooter';
 import CFASignupHeader from '@/app/ui/CFASignupHeader';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function JobseekerSignupFinishPage(){
     let [resident, setResident] = useState(false);
     let [education, setEducation] = useState(false);
     let [termsAgree, setTermsAgree] = useState(false);
+    const router = useRouter();
     return(
       <>
       <CFASignupHeader/>
@@ -56,7 +58,7 @@ export default function JobseekerSignupFinishPage(){
                   and <Link className='text-red-600 underline' href="/">data sharing agreement</Link>.</label>
               </div>
             </fieldset>
-            <Button type="submit" className='mx-auto my-8 rounded-full focus:ring-0' disabled={!(education && resident && termsAgree)}>Create account</Button>
+            <Button type="submit" onClick={() => router.push("/create-profile/jobseeker/introduction")} className='mx-auto my-8 rounded-full focus:ring-0' disabled={!(education && resident && termsAgree)}>Create account</Button>
             <DividerWithText className='py-8'>or</DividerWithText>
             <div className='text-center flex flex-col gap-2'>
               <p>Already have a CFA account?</p>
