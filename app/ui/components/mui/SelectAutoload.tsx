@@ -6,7 +6,7 @@ interface Props<ValueType> {
   id: string,
   apiAutoloadRoute: string,
   label: string,
-  value: ValueType,
+  value: string | ValueType,
   onChange: ((val:ValueType) => void),
   placeholder?: string,
   loadingText?: string,
