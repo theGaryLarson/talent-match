@@ -6,8 +6,8 @@ interface Props<ValueType> {
   id: string,
   apiAutoloadRoute: string,
   label: string,
-  value: string | ValueType,
-  onChange: ((val:ValueType) => void),
+  value: ValueType | null,
+  onChange: ((val:ValueType | null) => void),
   placeholder?: string,
   loadingText?: string,
   getOptionLabel: ((option:ValueType) => string),
@@ -27,7 +27,7 @@ export default function SelectAutoload<ValueType>({
   getOptionFromLabel,
   ...rest
 }:Props<ValueType>) {
-  const [selectValue, setSelectValue] = React.useState<string>(getOptionLabel(value));
+  const [selectValue, setSelectValue] = React.useState<string>(value ? getOptionLabel(value) : '');
   const [options, setOptions] = React.useState<ValueType[]>([]);
   const [loading, setLoading] = React.useState(false);
 

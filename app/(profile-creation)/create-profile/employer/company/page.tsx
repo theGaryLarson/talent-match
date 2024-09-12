@@ -49,7 +49,7 @@ export default function CreateJobseekerProfileIntroPage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const [company, setCompany] = useState<CompanyDropdownDTO | string>('');
-  const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | string>('');
+  const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(null);
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
   const [newFieldType, setNewFieldType] = useState<
@@ -133,10 +133,8 @@ export default function CreateJobseekerProfileIntroPage() {
       company_id:
         typeof company === 'string' ? null : company.company_id,
       // industry_sector_id: true,
-      industry_sector_id:
-        typeof industry === 'string' ? null : industry.industry_sector_id,
-      industry_sector_title:
-        typeof industry === 'string' ? null : industry.sector_title,
+      industry_sector_id: industry ? industry.industry_sector_id : null,
+      industry_sector_title: industry ? industry.sector_title : null,
       company_name:
         typeof company === 'string' ? company : company.company_name,
         // fields.find((f) => f.id === 'profile-creation-company-name')?.value ||
@@ -271,8 +269,8 @@ export default function CreateJobseekerProfileIntroPage() {
               getOptionLabel={(option:IndustrySectorDropdownDTO) => option.sector_title}
               getOptionFromLabel={(options:IndustrySectorDropdownDTO[], label:string) => options.find((item) => item.sector_title === label) || {industry_sector_id:"", sector_title:""}}
               placeholder="Your company's industry sector"
-              value={industry ?? ''}
-              onChange={(val) => setIndustry(val??'')}
+              value={industry}
+              onChange={(val) => setIndustry(val)}
               required
               loadingText="Retrieving industry sectors..."
             />
