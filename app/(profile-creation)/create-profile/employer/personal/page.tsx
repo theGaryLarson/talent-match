@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { RootState } from '@/lib/store';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +11,7 @@ import {
   submitFormSuccess,
   submitFormFailure,
   FormState,
+  initializeForm,
 } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
@@ -22,7 +23,9 @@ import { Button, Progress } from 'flowbite-react';
 import { formatPhoneE164 } from '@/app/lib/utils';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
+import { useSession } from 'next-auth/react';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 
 export default function CreateJobseekerProfileIntroPage() {
   const { fields, isSubmitting, error }: FormState = useSelector(
@@ -32,9 +35,6 @@ export default function CreateJobseekerProfileIntroPage() {
   const router = useRouter();
   const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  // const [gender, setGender] = useState('');
-  // const [race, setRace] = useState('');
-
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
   const [newFieldType, setNewFieldType] = useState<
@@ -44,6 +44,51 @@ export default function CreateJobseekerProfileIntroPage() {
   const [newFieldOptions, setNewFieldOptions] = useState<
     { value: string | number; label: string }[]
   >([]);
+  const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
+  const updateSessionProperties = useUpdateSession();
+
+  useEffect(() => {
+    const initializeFormFields = async () => {
+      if (status === 'authenticated' && session?.user) {
+        const { firstName, lastName, email } = session.user;
+        const initialFields = [
+          {
+            id: 'profile-creation-intro-first-name',
+            label: 'First Name',
+            value: firstName || '',
+            type: 'text' as const,
+          },
+          {
+            id: 'profile-creation-intro-last-name',
+            label: 'Last Name',
+            value: lastName || '',
+            type: 'text' as const,
+          },
+          {
+            id: 'profile-creation-intro-email',
+            label: 'Email',
+            value: email || '',
+            type: 'email' as const,
+            options: [],
+          },
+          {
+            id: 'profile-creation-intro-country-phone-code',
+            label: 'Country Phone Code',
+            value: 'United States +1',
+            type: 'select' as const,
+          },
+        ];
+
+        // Dispatch action to initialize fields in Redux state
+        dispatch(initializeForm(initialFields));
+        if (session?.user?.image) {
+          setAvatarUrl(session.user.image);
+        }
+      }
+    };
+
+    initializeFormFields();
+  }, [status, session, dispatch, update]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -95,20 +140,21 @@ export default function CreateJobseekerProfileIntroPage() {
   };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!session || !session.user) {
+      console.error('User session is not available.');
+      return;
+    }
+
     dispatch(submitForm());
 
-    const birthDateISO = birthdate ? birthdate.toISOString() : null;
-
-    const countryCode =
-      fields.find((f) => f.id === 'profile-creation-intro-country-phone-code')
-        ?.value || null;
-    const ph =
-      fields.find((f) => f.id === 'profile-creation-intro-phone-number')
-        ?.value || null;
-    const formattedPhone = formatPhoneE164(
-      countryCode?.toString(),
-      ph?.toString(),
-    );
+    // Extract firstName, lastName, and name from Redux state fields
+    const firstName =
+      fields.find((f) => f.id === 'profile-creation-intro-first-name')?.value ||
+      '';
+    const lastName =
+      fields.find((f) => f.id === 'profile-creation-intro-last-name')?.value ||
+      '';
+    const name = `${firstName} ${lastName}`;
 
     // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
     //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
@@ -122,16 +168,16 @@ export default function CreateJobseekerProfileIntroPage() {
       lastName:
         fields.find((f) => f.id === 'profile-creation-intro-last-name')
           ?.value || null,
-      birthDate: birthDateISO,
-      phoneCountryCode: formattedPhone
-        ? parsePhoneNumberFromString(formattedPhone)?.countryCallingCode
-        : null,
-      phone: formattedPhone,
+      birthDate: birthdate ? birthdate.toISOString() : null,
+      phoneCountryCode:
+        fields.find((f) => f.id === 'profile-creation-intro-country-phone-code')
+          ?.value || null,
+      phone:
+        fields.find((f) => f.id === 'profile-creation-intro-phone-number')
+          ?.value || null,
       email:
         fields.find((f) => f.id === 'profile-creation-intro-email')?.value ||
         '',
-      // gender: gender, // OR? fields.find(f => f.id === 'profile-creation-intro-gender')?.value || null,
-      // race: race,
     };
 
     try {
@@ -182,9 +228,9 @@ export default function CreateJobseekerProfileIntroPage() {
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
-              userId="99E52D83-CC98-46AF-B62A-58124ABEBBDC" // fixme: use userId
+              userId={session?.user.id!}
               onImageUpload={handleAvatarUpload}
-              initialImageUrl={''}
+              initialImageUrl={session?.user?.image!}
             />
           </fieldset>
           <fieldset>
