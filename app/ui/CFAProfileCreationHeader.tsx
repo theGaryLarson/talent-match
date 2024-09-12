@@ -30,14 +30,14 @@ const TopLevelLinks = [
     { name: 'Explore', href: '/todo'},
     {
       name: 'News & Events',
-      href: '/todo'
+      href: '/underconstruction'
     },
     {
       name: 'About Us',
-      href: '/todo'
+      href: '/underconstruction'
     },{
       name:"Contact Us",
-      href:"/todo"
+      href:"/underconstruction"
     }
   ];
 
