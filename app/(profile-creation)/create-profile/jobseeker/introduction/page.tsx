@@ -89,7 +89,7 @@ export default function CreateJobseekerProfileIntroPage() {
     };
 
     initializeFormFields();
-  }, [status, session, dispatch, update]); // Add update to dependencies
+  }, [status, session, dispatch, update]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
