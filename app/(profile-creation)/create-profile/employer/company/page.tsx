@@ -32,6 +32,8 @@ import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 import dayjs, { Dayjs } from 'dayjs';
 import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
 import {CompanyDropdownDTO} from '@/data/dtos/CompanyDropdownDTO';
+import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
+import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 
 
 export default function CreateJobseekerProfileIntroPage() {
@@ -47,6 +49,7 @@ export default function CreateJobseekerProfileIntroPage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const [company, setCompany] = useState<CompanyDropdownDTO | string>('');
+  const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(null);
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
   const [newFieldType, setNewFieldType] = useState<
@@ -130,9 +133,8 @@ export default function CreateJobseekerProfileIntroPage() {
       company_id:
         typeof company === 'string' ? null : company.company_id,
       // industry_sector_id: true,
-      industry_sector:
-        fields.find((f) => f.id === 'profile-creation-company-industry')
-          ?.value || null,
+      industry_sector_id: industry ? industry.industry_sector_id : null,
+      industry_sector_title: industry ? industry.sector_title : null,
       company_name:
         typeof company === 'string' ? company : company.company_name,
         // fields.find((f) => f.id === 'profile-creation-company-name')?.value ||
@@ -259,22 +261,19 @@ export default function CreateJobseekerProfileIntroPage() {
               getOptionLabel={(option: CompanyDropdownDTO) => option.company_name ?? ''}
             />
 
-            <SelectOptionsWithLabel
+
+            <SelectAutoload
               id="profile-creation-company-industry"
-              onChange={handleFieldChange}
-              options={[
-                { label: 'Finance', value: 'Finance' },
-                { label: 'Healthcare', value: 'Healthcare' },
-                { label: 'Technology', value: 'Technology' },
-              ]}
-              placeholder="Please select"
-              value={
-                fields.find((f) => f.id === 'profile-creation-company-industry')
-                  ?.value
-              }
-            >
-              Industry Sector *
-            </SelectOptionsWithLabel>
+              apiAutoloadRoute="/api/employers/industry-sectors"
+              label="Industry Sector *"
+              getOptionLabel={(option:IndustrySectorDropdownDTO) => option.sector_title}
+              getOptionFromLabel={(options:IndustrySectorDropdownDTO[], label:string) => options.find((item) => item.sector_title === label) || {industry_sector_id:"", sector_title:""}}
+              placeholder="Your company's industry sector"
+              value={industry}
+              onChange={(val) => setIndustry(val)}
+              required
+              loadingText="Retrieving industry sectors..."
+            />
           </div>
 
           <fieldset>
@@ -343,6 +342,7 @@ export default function CreateJobseekerProfileIntroPage() {
               />
 
               {/* <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel> */}
+              {/* REVIEW: May swap to number input instead of dropdown with ranges */}
               <SelectOptionsWithLabel
                 id="profile-creation-company-size"
                 onChange={handleFieldChange}
