@@ -283,7 +283,7 @@ export default function Page() {
       {/* else, Display Results */}
       {!loading && !error ?
         <div className="space-y-4">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
-          <JobSeekerCardView jobseeker={jobSeeker} />))}
+          <JobSeekerCardView jobseeker={jobSeeker} key={jobSeeker.jobseeker_id} />))}
         </div> : ""
       }
 

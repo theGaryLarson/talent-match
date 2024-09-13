@@ -26,7 +26,7 @@ export default async function FeaturedCandidates({ maxCandidates }: { maxCandida
       <h2 className="text-lg font-bold py-5">Featured Candidates</h2>
       <div className="grid laptop:grid-cols-3 gap-2">
         {jobSeekers?.map((jobSeeker: any) => (
-          <JobSeekerCardView jobseeker={jobSeeker} />
+          <JobSeekerCardView jobseeker={jobSeeker} key={jobSeeker.jobseeker_id} />
         ))}
       </div>
     </div>
