@@ -326,7 +326,7 @@ export default function CreateJobseekerProfileIntroPage() {
               maxSizeMB={5}
               userId={session?.user?.id!}
               onImageUpload={handleImageUpload}
-              initialImageUrl={session?.user?.image || ''}
+              initialImageUrl={session?.user?.image ?? ''}
             />
           </fieldset>
           <fieldset>
@@ -444,7 +444,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-email"
                 onChange={handleFieldChange}
                 placeholder="example@example.com"
-                defaultValue={session?.user.email || ''}
+                defaultValue={session?.user.email ?? ''}
                 required
                 disabled
               >
@@ -809,7 +809,7 @@ export default function CreateJobseekerProfileIntroPage() {
                   { label: 'Zambia +260', value: 'Zambia +260' },
                   { label: 'Zimbabwe +263', value: 'Zimbabwe +263' },
                 ]}
-                defaultValue={introData.phoneCountryCode || 'United States +1'}
+                defaultValue={introData.phoneCountryCode ?? 'United States +1'}
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
@@ -818,7 +818,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 type="tel"
                 placeholder="Phone number"
                 onChange={handleFieldChange}
-                defaultValue={introData.phone || ''}
+                defaultValue={introData.phone ?? ''}
                 required
               >
                 Phone Number *
@@ -834,7 +834,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-introHeadline"
                 onChange={handleFieldChange}
                 placeholder="Type here"
-                defaultValue={introData.introHeadline || ''}
+                defaultValue={introData.introHeadline ?? ''}
               >
                 Headlines
               </InputTextWithLabel>
@@ -842,7 +842,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-currentJobTitle"
                 onChange={handleFieldChange}
                 placeholder="e.g., Software Developer"
-                defaultValue={introData.currentJobTitle || ''}
+                defaultValue={introData.currentJobTitle ?? ''}
               >
                 Current Position
               </InputTextWithLabel>

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { makeStore, AppStore } from '@/lib/store';
 import {
   JobseekerState,
-  initializeJobseeker,
+  initializeIntroduction,
 } from '@/lib/features/profileCreation/jobseekerSlice';
 import {
   FormField,
@@ -34,7 +34,7 @@ export default function StoreProvider({
     // Create the store instance the first time this renders
     storeRef.current = makeStore();
     if (jobseeker !== null) {
-      storeRef.current.dispatch(initializeJobseeker(jobseeker));
+      storeRef.current.dispatch(initializeIntroduction(jobseeker.introduction));
     }
     if (form !== null) {
       // Convert form to the expected type if needed
