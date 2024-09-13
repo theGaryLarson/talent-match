@@ -12,6 +12,8 @@ export default async function FeaturedCandidates({ maxCandidates }: { maxCandida
         if (Array.isArray(jobSeekers) && maxCandidates != null && jobSeekers.length > maxCandidates) {
             // Safely slice the array if needed
             jobSeekers = jobSeekers.slice(0, maxCandidates);
+            // TODO: actually feature candidates. filter based on industry? randomize results? sort by yearsExp?
+            // at least limit results so we don't return/parse every jobseeker...
         }
     } catch (error) {
         console.error('Failed to fetch or process job seekers:', error);
@@ -24,18 +26,8 @@ export default async function FeaturedCandidates({ maxCandidates }: { maxCandida
       <h2 className="text-lg font-bold py-5">Featured Candidates</h2>
       <div className="grid laptop:grid-cols-3 gap-2">
         {jobSeekers?.map((jobSeeker: any) => (
-          <JobSeekerCardView
-              forceSmall={true}
-              key={jobSeeker?.jobseeker_id}
-              name={`${jobSeeker?.users?.first_name ?? ''} ${jobSeeker?.users?.last_name ?? ''}`.trim()}
-              pathway={jobSeeker?.pathways?.pathway_title ?? ''}
-              jobseeker={jobSeeker}
-              pfpPicSrc={jobSeeker?.users?.photo_url ?? '/default-avatar.png'}
-              aboutMe={jobSeeker?.intro_headline ?? 'No information available.'}
-              id={jobSeeker?.jobseeker_id}
-            />
+          <JobSeekerCardView jobseeker={jobSeeker} />
         ))}
-
       </div>
     </div>
   )

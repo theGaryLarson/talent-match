@@ -212,7 +212,7 @@ export default function Page() {
               setQueryParam('yearsexp', encodeURIComponent(event.target.value.toString()));
               setYearsExp(event.target.value as string);
             }}
-            options={[ // TODO: design to advise on what options to offer, will need to re-implement route to accomodate
+            options={[ // TODO: design advises this to be a range slider
               { label: "Any", value: "" },
               { label: "Less than a year", value: "1" },
               { label: "1-2 years", value: "2" },
@@ -266,7 +266,7 @@ export default function Page() {
             setQueryParam('sort', event.target.value);
             setSortBy(event.target.value);
           }}
-          options={[ // TODO: design to advise on best sorting options, then implement in route
+          options={[ // TODO: Design thinks sorting by 0) none 1) [conditional] distance away from entered zipcode or 2) sort by yearsExp 3) education level
             { label: "Newest", value: "newest" },
             { label: "Oldest", value: "oldest" },
           ]}
@@ -283,15 +283,7 @@ export default function Page() {
       {/* else, Display Results */}
       {!loading && !error ?
         <div className="space-y-4">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
-          <JobSeekerCardView
-            key={jobSeeker.jobseeker_id}
-            name={jobSeeker?.users?.first_name + ' ' + jobSeeker?.users?.last_name}
-            pathway={jobSeeker?.pathways?.pathway_title ?? ''}
-            jobseeker={jobSeeker}
-            pfpPicSrc={jobSeeker?.users?.photo_url}
-            aboutMe={jobSeeker?.intro_headline}
-            id={jobSeeker?.jobseeker_id}
-            forceSmall={false} />))}
+          <JobSeekerCardView jobseeker={jobSeeker} />))}
         </div> : ""
       }
 
@@ -300,7 +292,7 @@ export default function Page() {
         {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1} - {Math.min((resultsPerPage * (page ?? 1)), (totalResults ?? 1))} of {totalResults} total results</div> : "" }
       </div>
       <div className="flex justify-center mt-2 mb-4 phone:mb-0">
-        {!loading ? <Pagination count={Math.ceil((totalResults ?? 1) / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : "" }
+        {!loading ? <Pagination variant="outlined" shape="rounded" count={Math.ceil((totalResults ?? 1) / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : ""}
       </div>
     </main>
   );
