@@ -12,6 +12,7 @@ import {
   submitFormFailure,
   FormState,
   initializeForm,
+  FormField,
 } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
@@ -25,6 +26,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { JsIntroDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 
 export default function CreateJobseekerProfileIntroPage() {
   const { fields, isSubmitting, error }: FormState = useSelector(
@@ -51,39 +53,82 @@ export default function CreateJobseekerProfileIntroPage() {
   useEffect(() => {
     const initializeFormFields = async () => {
       if (status === 'authenticated' && session?.user) {
-        const { firstName, lastName, email } = session.user;
-        const initialFields = [
-          {
-            id: 'profile-creation-intro-first-name',
-            label: 'First Name',
-            value: firstName || '',
-            type: 'text' as const,
-          },
-          {
-            id: 'profile-creation-intro-last-name',
-            label: 'Last Name',
-            value: lastName || '',
-            type: 'text' as const,
-          },
-          {
-            id: 'profile-creation-intro-email',
-            label: 'Email',
-            value: email || '',
-            type: 'email' as const,
-            options: [],
-          },
-          {
-            id: 'profile-creation-intro-country-phone-code',
-            label: 'Country Phone Code',
-            value: 'United States +1',
-            type: 'select' as const,
-          },
-        ];
+        const { id, firstName, lastName, email } = session.user;
+        let fetchedData: JsIntroDTO;
+        try {
+          const response = await fetch(
+            '/api/jobseekers/account/introduction/get/' + id,
+          );
 
-        // Dispatch action to initialize fields in Redux state
-        dispatch(initializeForm(initialFields));
-        if (session?.user?.image) {
-          setAvatarUrl(session.user.image);
+          if (!response.ok) {
+            const errorData = await response.json();
+            dispatch(
+              submitFormFailure(errorData.error || 'Failed to submit the form'),
+            );
+          } else {
+            fetchedData = await response.json();
+            console.log('fetched', fetchedData);
+
+            const initialFields = [
+              {
+                id: 'profile-creation-intro-first-name',
+                label: 'First Name',
+                value: firstName || '',
+                type: 'text' as const,
+              },
+              {
+                id: 'profile-creation-intro-last-name',
+                label: 'Last Name',
+                value: lastName || '',
+                type: 'text' as const,
+              },
+              {
+                id: 'profile-creation-intro-email',
+                label: 'Email',
+                value: email || '',
+                type: 'email' as const,
+                options: [],
+              },
+              {
+                id: 'profile-creation-intro-country-phone-code',
+                label: 'Country Phone Code',
+                value: fetchedData.phoneCountryCode ?? '',
+                type: 'select' as const,
+              },
+              {
+                id: 'profile-creation-intro-phone-number',
+                label: 'Phone Number',
+                value: fetchedData.phone ?? '',
+                type: 'tel' as const,
+              },
+              {
+                id: 'profile-creation-intro-zip-code',
+                label: 'Zip Code',
+                value: fetchedData.zipCode ?? '',
+                type: 'tel' as const,
+              },
+              {
+                id: 'profile-creation-intro-state',
+                label: 'State',
+                value: fetchedData.state ?? '',
+                type: 'text' as const,
+              },
+              {
+                id: 'profile-creation-intro-headlines',
+                label: 'Headlines',
+                value: fetchedData.introHeadline ?? '',
+                type: 'text' as const,
+              },
+            ];
+
+            // Dispatch action to initialize fields in Redux state
+            dispatch(initializeForm(initialFields));
+            if (session?.user?.image) {
+              setAvatarUrl(session.user.image);
+            }
+          }
+        } catch (error) {
+          dispatch(submitFormFailure('Failed to submit the form'));
         }
       }
     };
@@ -168,14 +213,15 @@ export default function CreateJobseekerProfileIntroPage() {
 
     const formData = {
       userId: session.user.id,
-      photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
       firstName:
         fields.find((f) => f.id === 'profile-creation-intro-first-name')
           ?.value || null,
       lastName:
         fields.find((f) => f.id === 'profile-creation-intro-last-name')
           ?.value || null,
-      birthDate: birthdate ? birthdate.toISOString() : null,
+      email:
+        fields.find((f) => f.id === 'profile-creation-intro-email')?.value ||
+        '',
       phoneCountryCode:
         fields.find((f) => f.id === 'profile-creation-intro-country-phone-code')
           ?.value || null,
@@ -188,17 +234,16 @@ export default function CreateJobseekerProfileIntroPage() {
       state:
         fields.find((f) => f.id === 'profile-creation-intro-state')?.value ||
         null,
-      city: '',
-      county: '',
-      email:
-        fields.find((f) => f.id === 'profile-creation-intro-email')?.value ||
-        '',
       introHeadline:
         fields.find((f) => f.id === 'profile-creation-intro-headlines')
           ?.value || null,
       currentJobTitle:
         fields.find((f) => f.id === 'profile-creation-intro-current-position')
           ?.value || null,
+      city: '',
+      county: '',
+      photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
+      birthDate: birthdate ? birthdate.toISOString() : null,
       resumeUrl: resumeUrl,
     };
 
