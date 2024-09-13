@@ -10,7 +10,7 @@ import AccountMenu from './components/mui/AccountMenu';
 
 const forStudentsDropDownInfo = [
   { name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
-  { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '#', icon: FingerPrintIcon }
+  { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '/underconstruction', icon: FingerPrintIcon }
 ]
 
 const TopLevelLinks = [

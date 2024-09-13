@@ -53,9 +53,9 @@ export default function JobseekerSignupFinishPage(){
               </div>
               <div>
                 <input type="checkbox" id="terms" checked={termsAgree} onChange={()=> setTermsAgree(!termsAgree)}/>
-                <label htmlFor='terms'> By signing up you agree to our <Link className='text-red-600 underline' href="/">terms of use</Link>,
-                  and acknowledge you have read the <Link className='text-red-600 underline' href="/">privacy notice</Link> 
-                  and <Link className='text-red-600 underline' href="/">data sharing agreement</Link>.</label>
+                <label htmlFor='terms'> By signing up you agree to our <Link className='text-red-600 underline' href="/underconstruction">terms of use</Link>,
+                  and acknowledge you have read the <Link className='text-red-600 underline' href="/underconstruction">privacy notice</Link> 
+                  and <Link className='text-red-600 underline' href="/underconstruction">data sharing agreement</Link>.</label>
               </div>
             </fieldset>
             <Button type="submit" onClick={() => router.push("/create-profile/jobseeker/introduction")} className='mx-auto my-8 rounded-full focus:ring-0' disabled={!(education && resident && termsAgree)}>Create account</Button>
