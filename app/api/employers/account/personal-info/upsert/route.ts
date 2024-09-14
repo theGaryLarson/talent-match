@@ -7,6 +7,7 @@ import {
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { formatPhoneE164 } from '@/app/lib/utils';
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
       },
       create: {
         id: userId,
-        role: 'EMPLOYER',
+        role: Role.EMPLOYER,
         first_name: firstName,
         last_name: lastName,
         birthdate: new Date(birthDate).toISOString(),
