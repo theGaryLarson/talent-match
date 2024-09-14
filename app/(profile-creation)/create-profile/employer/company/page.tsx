@@ -12,6 +12,7 @@ import {
   submitFormSuccess,
   submitFormFailure,
   FormState,
+  FormField,
 } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
@@ -79,7 +80,7 @@ export default function CreateEmployerCompanyInfoPage() {
       dispatch(
         updateField({
           id: 'profile-creation-company-email',
-          value: companyObject.companyEmail,
+          value: companyObject.companyEmail || '',
         }),
       );
       dispatch(
@@ -109,7 +110,7 @@ export default function CreateEmployerCompanyInfoPage() {
       setCompanyId(generatedId);
     }
     setEmployerId(uuidv4());
-  }, [companyObject]);
+  }, [companyObject, dispatch]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -131,6 +132,14 @@ export default function CreateEmployerCompanyInfoPage() {
         }),
       );
     }
+  };
+
+  const getFieldValue = (id: string, defaultValue: string = ''): string => {
+    const fieldValue = fields.find((f: FormField) => f.id === id)?.value;
+    if (typeof fieldValue === 'number') {
+      return fieldValue.toString();
+    }
+    return fieldValue || defaultValue;
   };
 
   const handleImageUpload = (url: string) => {
@@ -161,7 +170,7 @@ export default function CreateEmployerCompanyInfoPage() {
         websiteUrl: companyObject.companyWebsite || null,
         companyPhone: companyObject.companyPhone || null,
         size: companyObject.companySize || '',
-        estimatedAnnualHires: companyObject.predictedHires || '0',
+        estimatedAnnualHires: companyObject.predictedHires || '',
         aboutUs: undefined, // Add any required fields not yet accounted for in your formData
         mission: undefined,
         vision: null,
@@ -179,12 +188,16 @@ export default function CreateEmployerCompanyInfoPage() {
         industrySectorTitle: industry ? industry.sector_title : null,
         companyName: companyObject || '',
         logoUrl: logoUrl,
-        companyEmail: '',
+        companyEmail: fields.find(
+          (f) => f.id === 'profile-creation-company-email',
+        )?.value as string,
         yearFounded: year_founded?.toISOString()!,
-        websiteUrl: null,
-        companyPhone: null,
-        size: '',
-        estimatedAnnualHires: '0',
+        websiteUrl: getFieldValue('profile-creation-company-website', ''),
+        companyPhone: getFieldValue('profile-creation-company-phone'),
+        size: getFieldValue('profile-creation-company-size'),
+        estimatedAnnualHires: getFieldValue(
+          'profile-creation-company-annual-hire',
+        ),
         aboutUs: undefined, // Add any required fields not yet accounted for in your formData
         mission: undefined,
         vision: null,
@@ -323,8 +336,8 @@ export default function CreateEmployerCompanyInfoPage() {
                 companyObject !== null &&
                 companyObject.companyLogoUrl
                   ? companyObject.companyLogoUrl
-                  : ''
-              } // fixme: use placeholder image for logo
+                  : logoUrl ?? '' // fixme: use placeholder image for logo
+              }
               disabled={typeof companyObject === 'object'}
             />
           </fieldset>
@@ -338,7 +351,9 @@ export default function CreateEmployerCompanyInfoPage() {
                 value={
                   typeof companyObject === 'object' && companyObject !== null
                     ? companyObject.companyWebsite || ''
-                    : ''
+                    : fields.find(
+                        (f) => f.id === 'profile-creation-company-website',
+                      )?.value
                 }
                 disabled={typeof companyObject === 'object'}
                 required
@@ -353,7 +368,9 @@ export default function CreateEmployerCompanyInfoPage() {
                 value={
                   typeof companyObject === 'object' && companyObject !== null
                     ? companyObject.companyEmail || ''
-                    : ''
+                    : fields.find(
+                        (f) => f.id === 'profile-creation-company-email',
+                      )?.value
                 }
                 disabled={typeof companyObject === 'object'}
                 required
@@ -368,7 +385,9 @@ export default function CreateEmployerCompanyInfoPage() {
                 value={
                   typeof companyObject === 'object' && companyObject !== null
                     ? companyObject.companyPhone || ''
-                    : ''
+                    : fields.find(
+                        (f) => f.id === 'profile-creation-company-phone',
+                      )?.value
                 }
                 disabled={typeof companyObject === 'object'}
                 required
@@ -410,7 +429,9 @@ export default function CreateEmployerCompanyInfoPage() {
                   companyObject !== null &&
                   companyObject.companySize
                     ? companyObject.companySize
-                    : undefined
+                    : fields.find(
+                        (f) => f.id === 'profile-creation-company-size',
+                      )?.value
                 }
                 disabled={typeof companyObject === 'object'}
               >
@@ -425,7 +446,9 @@ export default function CreateEmployerCompanyInfoPage() {
                   companyObject !== null &&
                   companyObject.predictedHires
                     ? companyObject.predictedHires
-                    : undefined
+                    : fields.find(
+                        (f) => f.id === 'profile-creation-company-annual-hire',
+                      )?.value
                 }
                 required
                 disabled={typeof companyObject === 'object'}
