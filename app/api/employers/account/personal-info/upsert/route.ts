@@ -40,7 +40,6 @@ export async function POST(request: Request) {
         updatedAt: new Date(),
       },
       create: {
-        id: userId,
         role: Role.EMPLOYER,
         first_name: firstName,
         last_name: lastName,
