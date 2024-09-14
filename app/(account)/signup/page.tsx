@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'flowbite-react';
 import Link from 'next/link';
 import DividerWithText from '@/app/ui/components/DividerWithText';
@@ -33,6 +33,12 @@ export default function SignupPage() {
   );
   const updateSessionProperties = useUpdateSession();
 
+  useEffect(() => {
+    // Prefetch the potential pages when the component mounts
+    router.prefetch('/signup/jobseeker');
+    router.prefetch('/signup/employer');
+  }, [router]);
+
   let handleSubmit = async () => {
     let newRole = choice === 'employer' ? Role.EMPLOYER : Role.JOBSEEKER;
     if (session) {
@@ -52,10 +58,10 @@ export default function SignupPage() {
         await updateSessionProperties({
           roles: rolesArray,
         });
+        if (newRole === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
+        if (newRole === Role.EMPLOYER) router.push(`/signup/employer`);
       }
     }
-    if (newRole === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
-    if (newRole === Role.EMPLOYER) router.push(`/signup/employer`);
   };
 
   return (
