@@ -11,6 +11,7 @@ interface Props {
   userId: string;
   onImageUpload: (url: string) => void;
   initialImageUrl: string; // new prop to accept session image URL
+  disabled?: boolean;
 }
 
 export default function AvatarUpload({
@@ -21,6 +22,7 @@ export default function AvatarUpload({
   userId,
   onImageUpload,
   initialImageUrl,
+  disabled,
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
   const [fileSelected, setFileSelected] = useState('');
@@ -128,6 +130,7 @@ export default function AvatarUpload({
           className="sr-only"
           accept={accept}
           onChange={handleChange}
+          disabled={disabled}
         />
         <div className="px-6">
           {fileSelected == '' && (

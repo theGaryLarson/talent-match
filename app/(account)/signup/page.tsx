@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'flowbite-react';
 import Link from 'next/link';
 import DividerWithText from '@/app/ui/components/DividerWithText';
 import Image from 'next/image';
 import CFAFooter from '@/app/ui/CFAFooter';
 import CFASignupHeader from '@/app/ui/CFASignupHeader';
-import { useSession, getSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { useRouter } from 'next/navigation';
 import { Role } from '@/data/dtos/UserInfoDTO';
-import { devLog, mapToEnum } from '@/app/lib/utils';
+import { mapToEnum } from '@/app/lib/utils';
 
 // interface Data {
 //   userId: string;
@@ -33,6 +33,12 @@ export default function SignupPage() {
   );
   const updateSessionProperties = useUpdateSession();
 
+  useEffect(() => {
+    // Prefetch the potential pages when the component mounts
+    router.prefetch('/signup/jobseeker');
+    router.prefetch('/signup/employer');
+  }, [router]);
+
   let handleSubmit = async () => {
     let newRole = choice === 'employer' ? Role.EMPLOYER : Role.JOBSEEKER;
     if (session) {
@@ -52,7 +58,8 @@ export default function SignupPage() {
         await updateSessionProperties({
           roles: rolesArray,
         });
-        router.push(`/signup/jobseeker`);
+        if (newRole === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
+        if (newRole === Role.EMPLOYER) router.push(`/signup/employer`);
       }
     }
   };
@@ -131,8 +138,8 @@ export default function SignupPage() {
           </p>
         </div> */}
       </main>
-      <footer className='mt-auto'>
-        <CFAFooter/>
+      <footer className="mt-auto">
+        <CFAFooter />
       </footer>
     </>
   );
