@@ -156,11 +156,9 @@ export default function CreateJobseekerProfileIntroPage() {
       '';
     const name = `${firstName} ${lastName}`;
 
-    // TODO: get email from oauth and check db for existing user with that email. If they exist load the data into the form.
-    //  Store userId and relevant IDs in auth session storage using ReadUserInfoDTO as a ref
     const formData = {
       //TODO: assign existing userId if exists if not create new with uuidv4().
-      userId: '99E52D83-CC98-46AF-B62A-58124ABEBBDC',
+      userId: session.user.id,
       photoUrl: avatarUrl || null,
       firstName:
         fields.find((f) => f.id === 'profile-creation-intro-first-name')
@@ -195,6 +193,12 @@ export default function CreateJobseekerProfileIntroPage() {
       if (response.ok) {
         const result = await response.json();
         dispatch(submitFormSuccess());
+        await updateSessionProperties({
+          firstName,
+          lastName,
+          name,
+          image: avatarUrl,
+        });
         router.push('/create-profile/employer/company');
       } else {
         const errorData = await response.json();
