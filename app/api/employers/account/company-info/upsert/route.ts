@@ -42,9 +42,7 @@ export async function POST(request: Request) {
       where: {
         user_id: userId,
       },
-      update: {
-        is_verified_employee: undefined,
-      },
+      update: {},
       create: {
         employer_id: employerId,
         users: {
