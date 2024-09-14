@@ -67,13 +67,14 @@ export type PostAddressDTO = {
 
 export type PostCompanyInfoDTO = {
   userId: string;
+  employerId: string;
   companyId: string;
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  companyAddresses: PostAddressDTO[];
-  logoUrl?: string | null;
-  aboutUs: string;
+  companyAddresses?: PostAddressDTO[];
+  logoUrl: string | null;
+  aboutUs?: string;
   companyEmail: string;
   yearFounded: string;
   websiteUrl?: string | null;
@@ -82,7 +83,7 @@ export type PostCompanyInfoDTO = {
   companyPhone?: string | null;
   mission?: string | null;
   vision?: string | null;
-  employeeCount: string;
+  size: string;
   estimatedAnnualHires: string;
 };
 
@@ -91,7 +92,7 @@ export type ReadCompanyInfoDTO = {
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  companyAddresses: ReadAddressDTO[];
+  companyAddresses?: ReadAddressDTO[];
   logoUrl?: string | null;
   aboutUs: string;
   companyEmail: string;
