@@ -177,7 +177,7 @@ export default function CreateEmployerCompanyInfoPage() {
         companyId: companyId!,
         industrySectorId: industry ? industry.industry_sector_id : null,
         industrySectorTitle: industry ? industry.sector_title : null,
-        companyName: typeof companyObject === 'string' ? companyObject : '',
+        companyName: companyObject || '',
         logoUrl: logoUrl,
         companyEmail: '',
         yearFounded: year_founded?.toISOString()!,
