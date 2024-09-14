@@ -128,7 +128,7 @@ export default function SignupPage() {
           Continue
         </Button>
 
-        <div className="mx-auto mb-4 flex flex-col gap-4 text-center">
+        {/* <div className="mx-auto mb-4 flex flex-col gap-4 text-center">
           <DividerWithText>or</DividerWithText>
           <p>
             Already have a CFA account?{' '}
@@ -136,7 +136,7 @@ export default function SignupPage() {
               Login
             </Link>
           </p>
-        </div>
+        </div> */}
       </main>
       <footer className="mt-auto">
         <CFAFooter />

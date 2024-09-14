@@ -28,16 +28,16 @@ export default function CFAFooter() {
           </a>
         </div>
         <p className="p-4 text-center text-sm">
-          <Link href={'/#'}>Get Support</Link> |{' '}
+          <Link className='text-red-600' href={'/underconstruction'}>Get Support</Link> |{' '}
           <Link href={'/#'}>About CFA</Link> |{' '}
-          <Link href={'/#'}>Partner Orgs</Link>{' '}
+          <Link className='text-red-600' href={'/underconstruction'}>Partner Orgs</Link>{' '}
         </p>
       </div>
       <hr />
       <p className="p-4 text-center text-sm">
-        <Link href={'/#'}>Terms of Services</Link> |{' '}
-        <Link href={'/#'}>Privacy Policy</Link> |{' '}
-        <Link href={'/#'}>Cookie Settings</Link>{' '}
+        <Link className='text-red-600' href={'/underconstruction'}>Terms of Services</Link> |{' '}
+        <Link className='text-red-600' href={'/underconstruction'}>Privacy Policy</Link> |{' '}
+        <Link className='text-red-600' href={'/underconstruction'}>Cookie Settings</Link>{' '}
       </p>
     </div>
   );
