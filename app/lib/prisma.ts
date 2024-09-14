@@ -346,6 +346,16 @@ export const jobSeekerCardViewSelect = {
       pathway_title: true,
     },
   },
+  work_experiences: {
+    select: {
+      industrySector: {
+        select: {
+          industry_sector_id: true,
+          sector_title: true,
+        },
+      },
+    },
+  },
   users: {
     select: {
       id: true,
@@ -353,6 +363,13 @@ export const jobSeekerCardViewSelect = {
       first_name: true,
       last_name: true,
       photo_url: true,
+      user_addresses: {
+        select: {
+          zip: true,
+          state: true,
+          city: true,
+        },
+      },
     },
   },
   jobseeker_education: {
