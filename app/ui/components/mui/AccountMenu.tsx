@@ -102,7 +102,7 @@ export default function AccountMenu() {
 
                 {session?.user.roles.indexOf(Role.JOBSEEKER) != -1 ||
                     session?.user.roles.indexOf(Role.ADMIN) != -1 ?
-                    <Link href={"/services/jobseekers/" + session?.user.id}>
+                    <Link href={"/services/jobseekers/" + session?.user.jobseekerId}>
                         <MenuItem onClick={handleClose}>
                             <ListItemIcon>
                                 <AccountBoxIcon fontSize="small" />

@@ -38,7 +38,7 @@ export default async function page({ params }: { params: { id: string } }) {
   return (
     <main className="space-y-3 bg-gray-bg px-4 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px]">
       <div className="flex flex-wrap gap-4">
-        <div className="flex items-center rounded-md border bg-white">
+        <div className="flex items-center rounded-md border bg-white grow">
           <div className="flex items-center gap-5 p-4">
             <Avatar imgsrc={jobseeker?.users.photo_url} scale={1.5}></Avatar>
             <div>
@@ -63,7 +63,7 @@ export default async function page({ params }: { params: { id: string } }) {
           </div>
         </div>
         <iframe
-          className='aspect-video'
+          className="aspect-video min-w-[200px] grow"
           src={`https://www.youtube.com/embed/${videoID}?autoplay=1`}
           title="YouTube video player"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -72,7 +72,7 @@ export default async function page({ params }: { params: { id: string } }) {
         ></iframe>
       </div>
       <div className="flex flex-wrap gap-4">
-        <div className="max-w-[700px] shrink space-y-3">
+        <div className=" grow space-y-3">
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 className="text-2xl font-bold">Introduction</h1>
             <p>{jobseeker?.intro_headline}</p>
@@ -208,7 +208,7 @@ export default async function page({ params }: { params: { id: string } }) {
             ))}
           </div>
         </div>
-        <div className="w-[350px] grow-[2] space-y-3">
+        <div className=" grow space-y-3">
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 id="skills" className="text-2xl font-bold">
               Skills
