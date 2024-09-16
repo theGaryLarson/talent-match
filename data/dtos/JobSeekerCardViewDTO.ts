@@ -5,6 +5,7 @@ export type JobSeekerCardViewDTO = {
   user_id: string;
   intro_headline: string | null;
   years_work_exp: number | null;
+  highest_level_of_study_completed: string | null;
   pathways: {
     pathway_title: string;
   } | null;
