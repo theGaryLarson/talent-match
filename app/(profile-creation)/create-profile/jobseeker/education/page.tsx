@@ -288,7 +288,7 @@ export default function CreateJobseekerProfileEducationPage() {
               pill
               color="gray"
               onClick={() => {
-                router.push('/create-profile/jobseeker/intro');
+                router.push('/create-profile/jobseeker/introduction');
               }}
             >
               Previous{' '}

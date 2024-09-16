@@ -56,12 +56,11 @@ export default function CreateJobseekerProfileIntroPage() {
   const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
-    console.log('Loading first time');
     const initializeFormFields = async () => {
       if (status === 'authenticated' && session?.user) {
-        const { id, firstName, lastName, email, image } = session.user;
-
         if (_.isEqual(introStoreData, initialState.introduction)) {
+          const { id, firstName, lastName, email, image } = session.user;
+
           introData.userId = id ?? '';
           console.log('fetching fresh');
 
@@ -140,6 +139,7 @@ export default function CreateJobseekerProfileIntroPage() {
     const fieldName = name.substring(formNamePrefix.length);
     if (introData.hasOwnProperty(fieldName)) {
       introData[fieldName as keyof JsIntroDTO] = value;
+      setIntroData({ ...introData });
     }
   };
 
@@ -169,48 +169,10 @@ export default function CreateJobseekerProfileIntroPage() {
     introData.resumeUrl = resumeUrl;
     dispatch(setIntroduction(introData));
 
-    // dispatch(submitForm());
-
     // Extract firstName, lastName, and name from Redux state fields
     const firstName = introData.firstName;
     const lastName = introData.lastName;
     const name = `${firstName} ${lastName}`;
-
-    // const formData = {
-    //   userId: session.user.id,
-    //   firstName:
-    //     fields.find((f) => f.id === 'profile-creation-intro-first-name')
-    //       ?.value || null,
-    //   lastName:
-    //     fields.find((f) => f.id === 'profile-creation-intro-last-name')
-    //       ?.value || null,
-    //   email:
-    //     fields.find((f) => f.id === 'profile-creation-intro-email')?.value ||
-    //     '',
-    //   phoneCountryCode:
-    //     fields.find((f) => f.id === 'profile-creation-intro-country-phone-code')
-    //       ?.value || null,
-    //   phone:
-    //     fields.find((f) => f.id === 'profile-creation-intro-phone-number')
-    //       ?.value || null,
-    //   zipCode:
-    //     fields.find((f) => f.id === 'profile-creation-intro-zip-code')?.value ||
-    //     null,
-    //   state:
-    //     fields.find((f) => f.id === 'profile-creation-intro-state')?.value ||
-    //     null,
-    //   introHeadline:
-    //     fields.find((f) => f.id === 'profile-creation-intro-headlines')
-    //       ?.value || null,
-    //   currentJobTitle:
-    //     fields.find((f) => f.id === 'profile-creation-intro-current-position')
-    //       ?.value || null,
-    //   city: '',
-    //   county: '',
-    //   photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
-    //   birthDate: birthdate ? birthdate.toISOString() : null,
-    //   resumeUrl: resumeUrl,
-    // };
 
     try {
       const response = await fetch(
@@ -226,7 +188,6 @@ export default function CreateJobseekerProfileIntroPage() {
 
       if (response.ok) {
         const result = await response.json();
-        // dispatch(submitFormSuccess());
 
         // Update session properties using the custom hook
         await updateSessionProperties({
@@ -238,13 +199,8 @@ export default function CreateJobseekerProfileIntroPage() {
         router.push('/create-profile/jobseeker/education');
       } else {
         const errorData = await response.json();
-        // dispatch(
-        //   submitFormFailure(errorData.error || 'Failed to submit the form'),
-        // );
       }
-    } catch (error) {
-      // dispatch(submitFormFailure('Failed to submit the form'));
-    }
+    } catch (error) {}
   };
 
   return (
@@ -281,7 +237,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-firstName"
                 placeholder="Your first name"
                 onChange={handleFieldChange}
-                defaultValue={introData.firstName}
+                value={introData.firstName}
                 required
               >
                 First Name *
@@ -290,7 +246,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-lastName"
                 placeholder="Your last name"
                 onChange={handleFieldChange}
-                defaultValue={introData.lastName}
+                value={introData.lastName}
                 required
               >
                 Last Name *
@@ -310,7 +266,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-zipCode"
                 placeholder="Zipcode"
                 onChange={handleFieldChange}
-                defaultValue={introData.zipCode}
+                value={introData.zipCode}
                 required
                 pattern="\d{5}(-\d{4})?"
               >
@@ -373,7 +329,7 @@ export default function CreateJobseekerProfileIntroPage() {
                   { label: 'Wisconsin', value: 'WI' },
                   { label: 'Wyoming', value: 'WY' },
                 ]}
-                defaultValue={introData.state ?? ''}
+                value={introData.state ?? ''}
                 placeholder="Please select"
               >
                 State
@@ -386,7 +342,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-email"
                 onChange={handleFieldChange}
                 placeholder="example@example.com"
-                defaultValue={introData.email ?? ''}
+                value={introData.email ?? ''}
                 required
                 disabled
               >
@@ -751,7 +707,7 @@ export default function CreateJobseekerProfileIntroPage() {
                   { label: 'Zambia +260', value: 'Zambia +260' },
                   { label: 'Zimbabwe +263', value: 'Zimbabwe +263' },
                 ]}
-                defaultValue={introData.phoneCountryCode ?? 'United States +1'}
+                value={introData.phoneCountryCode ?? 'United States +1'}
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
@@ -760,7 +716,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 type="tel"
                 placeholder="Phone number"
                 onChange={handleFieldChange}
-                defaultValue={introData.phone ?? ''}
+                value={introData.phone ?? ''}
                 required
               >
                 Phone Number *
@@ -776,7 +732,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-introHeadline"
                 onChange={handleFieldChange}
                 placeholder="Type here"
-                defaultValue={introData.introHeadline ?? ''}
+                value={introData.introHeadline ?? ''}
               >
                 Headlines
               </InputTextWithLabel>
@@ -784,7 +740,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-currentJobTitle"
                 onChange={handleFieldChange}
                 placeholder="e.g., Software Developer"
-                defaultValue={introData.currentJobTitle ?? ''}
+                value={introData.currentJobTitle ?? ''}
               >
                 Current Position
               </InputTextWithLabel>
