@@ -27,21 +27,23 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { JsIntroDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { setIntroduction } from '@/lib/features/profileCreation/jobseekerSlice';
+import {
+  setIntroduction,
+  initialState,
+} from '@/lib/features/profileCreation/jobseekerSlice';
+import _ from 'lodash';
 
 const formNamePrefix = 'profile-creation-intro-';
 
 export default function CreateJobseekerProfileIntroPage() {
-  const introData = useSelector(
+  const introStoreData = useSelector(
     (state: RootState) => state.jobseeker.introduction,
   );
-  // const { fields, isSubmitting, error }: FormState = useSelector(
-  //   (state: RootState) => state.form,
-  // );
+  const [introData, setIntroData] = useState({ ...introStoreData });
   const dispatch = useDispatch();
   const router = useRouter();
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
-    dayjs(introData.birthDate),
+    introData.birthDate === '' ? null : dayjs(introData.birthDate),
   );
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     introData.photoUrl ?? null,
@@ -50,103 +52,86 @@ export default function CreateJobseekerProfileIntroPage() {
     introData.resumeUrl ?? null,
   );
 
-  // const [newFieldId, setNewFieldId] = useState('');
-  // const [newFieldLabel, setNewFieldLabel] = useState('');
-  // const [newFieldType, setNewFieldType] = useState<
-  //   'text' | 'email' | 'number' | 'select' | 'radio'
-  // >('text');
-  // const [newFieldValue, setNewFieldValue] = useState('');
-  // const [newFieldOptions, setNewFieldOptions] = useState<
-  //   { value: string | number; label: string }[]
-  // >([]);
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
+    console.log('Loading first time');
     const initializeFormFields = async () => {
       if (status === 'authenticated' && session?.user) {
-        const { id, firstName, lastName, email } = session.user;
-        let fetchedData: JsIntroDTO;
-        try {
-          const response = await fetch(
-            '/api/jobseekers/account/introduction/get/' + id,
-          );
+        const { id, firstName, lastName, email, image } = session.user;
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            dispatch(
-              submitFormFailure(errorData.error || 'Failed to submit the form'),
+        if (_.isEqual(introStoreData, initialState.introduction)) {
+          introData.userId = id ?? '';
+          console.log('fetching fresh');
+
+          try {
+            const response = await fetch(
+              '/api/jobseekers/account/introduction/get/' + id,
             );
-          } else {
-            fetchedData = await response.json();
-            console.log('fetched', fetchedData);
 
-            // const initialFields = [
-            //   {
-            //     id: 'profile-creation-intro-first-name',
-            //     label: 'First Name',
-            //     value: firstName || '',
-            //     type: 'text' as const,
-            //   },
-            //   {
-            //     id: 'profile-creation-intro-last-name',
-            //     label: 'Last Name',
-            //     value: lastName || '',
-            //     type: 'text' as const,
-            //   },
-            //   {
-            //     id: 'profile-creation-intro-email',
-            //     label: 'Email',
-            //     value: email || '',
-            //     type: 'email' as const,
-            //     options: [],
-            //   },
-            //   {
-            //     id: 'profile-creation-intro-country-phone-code',
-            //     label: 'Country Phone Code',
-            //     value: fetchedData.phoneCountryCode ?? '',
-            //     type: 'select' as const,
-            //   },
-            //   {
-            //     id: 'profile-creation-intro-phone-number',
-            //     label: 'Phone Number',
-            //     value: fetchedData.phone ?? '',
-            //     type: 'tel' as const,
-            //   },
-            //   {
-            //     id: 'profile-creation-intro-zip-code',
-            //     label: 'Zip Code',
-            //     value: fetchedData.zipCode ?? '',
-            //     type: 'tel' as const,
-            //   },
-            //   {
-            //     id: 'profile-creation-intro-state',
-            //     label: 'State',
-            //     value: fetchedData.state ?? '',
-            //     type: 'text' as const,
-            //   },
-            //   {
-            //     id: 'profile-creation-intro-headlines',
-            //     label: 'Headlines',
-            //     value: fetchedData.introHeadline ?? '',
-            //     type: 'text' as const,
-            //   },
-            // ];
+            if (!response.ok) {
+              const errorData = await response.json();
+              // dispatch(
+              //   submitFormFailure(errorData.error || 'Failed to submit the form'),
+              // );
+            } else {
+              let fetchedData: JsIntroDTO = (await response.json()).result
+                .loadIntroPage;
+              console.log(firstName, lastName, email, image);
+              console.log(fetchedData);
+              introData.birthDate = fetchedData.birthDate ?? '';
+              introData.city = fetchedData.city;
+              introData.county = fetchedData.county;
+              introData.currentJobTitle = fetchedData.currentJobTitle;
+              introData.email =
+                fetchedData.email.length !== 0
+                  ? fetchedData.email
+                  : (email ?? '');
+              introData.firstName =
+                typeof fetchedData.firstName === 'string' &&
+                fetchedData.firstName?.length !== 0
+                  ? fetchedData.firstName
+                  : (firstName ?? '');
+              introData.introHeadline = fetchedData.introHeadline;
+              introData.lastName =
+                typeof fetchedData.lastName === 'string' &&
+                fetchedData.lastName?.length !== 0
+                  ? fetchedData.lastName
+                  : (lastName ?? '');
+              introData.phone = fetchedData.phone;
+              introData.phoneCountryCode = fetchedData.phoneCountryCode;
+              introData.photoUrl =
+                typeof fetchedData.photoUrl === 'string' &&
+                fetchedData.photoUrl?.length !== 0
+                  ? fetchedData.photoUrl
+                  : (image ?? '');
+              introData.resumeUrl = fetchedData.resumeUrl;
+              introData.state = fetchedData.state;
+              introData.zipCode = fetchedData.zipCode ?? '';
 
-            // // Dispatch action to initialize fields in Redux state
-            // dispatch(initializeForm(initialFields));
-            if (session?.user?.image) {
-              setAvatarUrl(session.user.image);
+              setIntroData({ ...introData });
             }
+          } catch (error) {
+            // dispatch(submitFormFailure('Failed to submit the form'));
           }
-        } catch (error) {
-          dispatch(submitFormFailure('Failed to submit the form'));
+        } else {
+          console.log('fetching from redux store');
         }
+
+        setBirthdate(
+          typeof introData.birthDate === 'string' &&
+            introData.birthDate.length !== 0
+            ? dayjs(introData.birthDate)
+            : null,
+        );
+        setAvatarUrl(introData.photoUrl ?? null);
+        setResumeUrl(introData.resumeUrl ?? null);
       }
     };
 
     initializeFormFields();
-  }, [status, session, dispatch, update]); // Add update to dependencies
+  }, [session]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -155,51 +140,8 @@ export default function CreateJobseekerProfileIntroPage() {
     const fieldName = name.substring(formNamePrefix.length);
     if (introData.hasOwnProperty(fieldName)) {
       introData[fieldName as keyof JsIntroDTO] = value;
-      // if (type !== 'checkbox') {
-      //   introData[fieldName as keyof JsIntroDTO] = value;
-      // }
-      // else {
-      //   introData[fieldName as keyof JsIntroDTO] = e.target.checked;
-      // }
     }
-    // const field = fields.find((field) => field.id === name);
-    // if (field) {
-    //   const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
-    //   dispatch(updateField({ id: field.id, value: parsedValue }));
-    // } else {
-    //   dispatch(
-    //     addField({
-    //       id: e.target.id,
-    //       label: newFieldLabel,
-    //       value: e.target.value,
-    //       type: newFieldType,
-    //       options: newFieldOptions,
-    //     }),
-    //   );
-    // }
   };
-
-  // const handleAddField = () => {
-  //   if (newFieldLabel) {
-  //     dispatch(
-  //       addField({
-  //         id: newFieldId,
-  //         label: newFieldLabel,
-  //         value: newFieldValue,
-  //         type: newFieldType,
-  //         options:
-  //           newFieldType === 'select' || newFieldType === 'radio'
-  //             ? newFieldOptions
-  //             : undefined,
-  //       }),
-  //     );
-  //     setNewFieldId('');
-  //     setNewFieldLabel('');
-  //     setNewFieldType('text');
-  //     setNewFieldValue('');
-  //     setNewFieldOptions([]);
-  //   }
-  // };
 
   const handleImageUpload = (url: string) => {
     updateSessionProperties({
@@ -296,12 +238,12 @@ export default function CreateJobseekerProfileIntroPage() {
         router.push('/create-profile/jobseeker/education');
       } else {
         const errorData = await response.json();
-        dispatch(
-          submitFormFailure(errorData.error || 'Failed to submit the form'),
-        );
+        // dispatch(
+        //   submitFormFailure(errorData.error || 'Failed to submit the form'),
+        // );
       }
     } catch (error) {
-      dispatch(submitFormFailure('Failed to submit the form'));
+      // dispatch(submitFormFailure('Failed to submit the form'));
     }
   };
 
@@ -444,7 +386,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-email"
                 onChange={handleFieldChange}
                 placeholder="example@example.com"
-                defaultValue={session?.user.email ?? ''}
+                defaultValue={introData.email ?? ''}
                 required
                 disabled
               >
