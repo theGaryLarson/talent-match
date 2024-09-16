@@ -1,21 +1,35 @@
-import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
+import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 
 export type JobSeekerCardViewDTO = {
-    jobseeker_id: string;
-    user_id: string;
-    intro_headline: string | null;
-    pathways: {
-        pathway_title: string;
+  jobseeker_id: string;
+  user_id: string;
+  intro_headline: string | null;
+  years_work_exp: number | null;
+  pathways: {
+    pathway_title: string;
+  } | null;
+  work_experiences: {
+    industrySector: {
+      industry_sector_id: string;
+      sector_title: string;
     } | null;
-    users: {
-        role: string;
-        first_name: string | null;
-        last_name: string | null;
-        photo_url: string | null;
-    } | null;
-    jobseeker_education: {
+  } | null;
+  users: {
+    role: string;
+    first_name: string | null;
+    last_name: string | null;
+    photo_url: string | null;
+    user_addresses: {
+      // Added user addresses returns an array but will be only one item.
+      zip: string;
+      state: string | null;
+      city: string | null;
+    }[];
+  } | null;
+  jobseeker_education:
+    | {
         eduProviders: {
-            name: string;
+          name: string;
         } | null;
         edLevel: string | null;
         isEnrolled: boolean | null;
@@ -23,9 +37,10 @@ export type JobSeekerCardViewDTO = {
         gradDate: string | null;
         degreeType: string | null;
         program: {
-            id: string;
-            title: string;
+          id: string;
+          title: string;
         } | null;
-    }[] | null; // Corrected to an array as per the select statement
-    jobseeker_has_skills: JobseekerSkillDTO[];
+      }[]
+    | null; // Corrected to an array as per the select statement
+  jobseeker_has_skills: JobseekerSkillDTO[];
 };

@@ -19,25 +19,25 @@ const CareerDropDownInfo = [
   { name: 'Employer Landing Page', description: 'Mange your canidate search', href: '/services/employers', icon: ChartPieIcon },
   { name: 'Employer Dashboard', description: 'Mange your canidate search', href: '/services/employers/dashboard', icon: ChartPieIcon },
   { name: 'Job Seeker Dashboard', description: 'Mange your job search', href: '/services/jobseekers/dashboard', icon: CursorArrowRaysIcon },
-  { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '#', icon: PresentationChartBarIcon },
-  { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '#', icon: FingerPrintIcon }
+  { name: 'Upcoming Info Sessions', description: 'Learn more about what we offer', href: '/underconstruction', icon: PresentationChartBarIcon },
+  { name: 'Project Factory', description: 'Build Projects with guidance from mentors', href: '/underconstruction', icon: FingerPrintIcon }
 ]
 const callsToAction = [
   { name: 'Call to Action 1', href: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', icon: PlayCircleIcon },
   { name: 'Call to Action 2', href: '#', icon: PhoneIcon },
 ]
 const TopLevelLinks = [
-    { name: 'Explore', href: '/todo'},
+    { name: 'Explore', href: '/underconstruction'},
     {
       name: 'News & Events',
-      href: '/todo'
+      href: '/underconstruction'
     },
     {
       name: 'About Us',
-      href: '/todo'
+      href: '/underconstruction'
     },{
       name:"Contact Us",
-      href:"/todo"
+      href:"/underconstruction"
     }
   ];
 

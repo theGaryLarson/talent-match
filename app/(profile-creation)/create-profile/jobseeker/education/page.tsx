@@ -133,7 +133,7 @@ export default function CreateJobseekerProfileEducationPage() {
         degreeType: ed.degreeType || undefined,
         programId: ed?.programObject?.id || ed?.programId!, // Note: no rel with provider_programs pulled from a separate programs table.
         programName: ed?.programObject?.title || ed.programName,
-        gpa: ed?.gpa ? mapToEnum(ed.gpa, GradePointAverage) : null,
+        gpa: ed?.gpa,
         preAppEdSystem: ed.preAppEdSystem || null,
         description: ed.description || null,
         isTechnicalDegree: ed.isTechDegree || false,

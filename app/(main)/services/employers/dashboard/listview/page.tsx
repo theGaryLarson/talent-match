@@ -1,21 +1,24 @@
 'use client'
-import '@/app/ui/listview.css';
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import { JobSeekerCardViewDTO } from "@/data/dtos/JobSeekerCardViewDTO";
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import SortDropdown from '@/app/ui/components/mui/SortDropdown';
-import MultiSelectFilter from '@/app/ui/components/mui/MultiSelectFilter';
 import Pagination from '@mui/material/Pagination';
 import SingleSelectFilter from '@/app/ui/components/mui/SingleSelectFilter';
-import { IndustrySectorDTO } from '@/data/dtos/IndustrySectorDTO';
+import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
-import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const resultsPerPage = 50;
+
+interface JobSeekerQueryResult {
+  filteredJobSeekers: JobSeekerCardViewDTO[];
+  totalCount: number;
+}
 
 async function fetchFilteredJobSeekerCardView(
   skills: string[] = [],
@@ -26,26 +29,23 @@ async function fetchFilteredJobSeekerCardView(
   sortBy: string = "newest",
   maxResults: number = resultsPerPage,
   page: number = 1,
-): Promise<JobSeekerCardViewDTO[]> {
-  
+): Promise<JobSeekerQueryResult> {
+
   // Hacky convert the strings to numbers for the request
   var workExp = 0;
   var zip = null;
-  var pageNum = 1;
   if (yearsWorkExp != "") workExp = Number.parseInt(yearsWorkExp);
   if (zipCode != "") zip = Number.parseInt(zipCode);
-  if (page != 0) pageNum = page; // if page=0, no GET param set for page, and we actually call this page 1
-  
+
   // Make the request
   const response = await fetch('/api/jobseekers/query', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ skills, industry, eduLevel, workExp, zip, sortBy, maxResults, pageNum })
+    body: JSON.stringify({ skills, industry, eduLevel, workExp, zip, sortBy, maxResults, page })
   });
   if (!response.ok) {
-    // TODO: display error
     throw new Error('Failed to fetch data');
   }
   return response.json();
@@ -55,6 +55,7 @@ export default function Page() {
   // Listview data
   const [jobseekers, setJobSeekers] = useState<JobSeekerCardViewDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
 
   // Query data
   const [skillsList, setSkillsList] = useState<string[]>();
@@ -65,6 +66,7 @@ export default function Page() {
 
   // Sorting and pagination
   const [sortBy, setSortBy] = useState<string>();
+  const [totalResults, setTotalResults] = useState<number>();
   const [page, setPage] = useState<number>();
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setQueryParam('page', encodeURIComponent(value.toString()));
@@ -105,12 +107,14 @@ export default function Page() {
   // Execute query function
   const execQuery = useCallback(async () => {
     setLoading(true);
+    setError(false);
     try {
       const data = await fetchFilteredJobSeekerCardView(skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, resultsPerPage, page);
-      setJobSeekers(data);
+      setJobSeekers(data.filteredJobSeekers);
+      setTotalResults(data.totalCount);
     } catch (error) {
+      setError(true);
       console.error('Error fetching job seekers:', error);
-      // TODO: add error UI
     } finally {
       setLoading(false);
     }
@@ -126,20 +130,13 @@ export default function Page() {
       setYearsExp(getParam("yearsexp"));
       setZipCode(getParam("zipcode"));
       setSortBy(getParam("sort") != "" ? getParam("sort") : "newest");
-      setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
+      +getParam("page") == 0 ? setPage(1) : setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
     }
     else execQuery(); // any other change after initial load should execute a new query
   }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
 
-  const newFilterOnChange = (paramName: string, stateSetter: Dispatch<SetStateAction<string[] | undefined>>) => (
-    (event: SelectChangeEvent<string[]>) => {
-      setQueryParam(paramName, encodeURIComponent((typeof event.target.value === 'string') ? event.target.value : event.target.value.join(",")));
-      stateSetter((typeof event.target.value === 'string') ? event.target.value.split(',') : event.target.value);
-    }
-  );
-
   return (
-    <main className="m-6 p-6 laptop:px-[200px] py-16">
+    <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8">
       <h1 className="text-2xl font-bold mb-4">{skillsList?.toString()} Search Results</h1>
 
       {/* Skill Search Bar */}
@@ -162,7 +159,7 @@ export default function Page() {
       />
 
       {/* Filters */}
-      <div className="flex flex-row flex-wrap mt-1">
+      <div className="flex flex-row flex-wrap mt-1 mb-4">
 
         {/* Industry */}
         <div className="w-1/2 tablet:w-1/4">
@@ -172,10 +169,11 @@ export default function Page() {
             apiAutoloadRoute="/api/employers/industry-sectors" // TODO: two requests are happening?
             value={getArrayParam("industry")}
             onChange={(event) => {
-              newFilterOnChange("industry", setIndustry);
-              console.log("hit");
+              setQueryParam('industry', encodeURIComponent(event.target.value.toString()));
+              if (typeof event.target.value === 'string') setIndustry([event.target.value])
+              else setIndustry(event.target.value);
             }}
-            getOptionLabel={(option: IndustrySectorDTO) => option.sector_title}
+            getOptionLabel={(option: IndustrySectorDropdownDTO) => option.sector_title}
           />
         </div>
 
@@ -190,7 +188,7 @@ export default function Page() {
               setEduLevel(event.target.value as string);
             }}
             options={[
-              { label: "Any", value: "Any" },
+              { label: "Any", value: "" },
               { label: "Doctorate", value: "Doctorate" },
               { label: "Master's Degree", value: "Masters" },
               { label: "Bachelor's Degree", value: "Bachelors" },
@@ -214,8 +212,8 @@ export default function Page() {
               setQueryParam('yearsexp', encodeURIComponent(event.target.value.toString()));
               setYearsExp(event.target.value as string);
             }}
-            options={[ // TODO: sync with design on how to do this, re-implement route
-              { label: "Any", value: "0" },
+            options={[ // TODO: design advises this to be a range slider
+              { label: "Any", value: "" },
               { label: "Less than a year", value: "1" },
               { label: "1-2 years", value: "2" },
               { label: "3-4 years", value: "3" },
@@ -225,12 +223,11 @@ export default function Page() {
         </div>
 
         {/* Zip Code */}
+        {/* Design has agreed to a text field until we have a better distance measurement system in place */}
         <div className="w-1/2 tablet:w-1/4">
           <TextField
-            className="zipcode-field"
             autoComplete='off'
             label="Full/Partial Zip Code"
-            id="outlined-size-small"
             defaultValue={getParam("zipcode")}
             size="small"
             onChange={(event) => {
@@ -249,16 +246,11 @@ export default function Page() {
               }
             }}
             sx={{
-              "& .MuiInputBase-root": {
-                borderRadius: "9999px",
-                height: "1.75rem",
-              },
-              "& .MuiInputLabel-root": {
-                fontSize: "0.875rem",
-                lineHeight: "1.25rem",
-                top: "15px",
-                left: "4px",
-              },
+              padding: "0px 2px",
+              width: "100%",
+              "& .MuiInputBase-root": { borderRadius: "9999px", height: "1.75rem", },
+              "& .MuiInputBase-input": { boxShadow: "none", '&:focus': { boxShadow: "none", }, },
+              "& .MuiInputLabel-root": { fontSize: "0.875rem", lineHeight: "1.25rem", top: "15px", left: "2px", position: "relative", },
             }}
           />
         </div>
@@ -274,7 +266,7 @@ export default function Page() {
             setQueryParam('sort', event.target.value);
             setSortBy(event.target.value);
           }}
-          options={[ // TODO: design to advise on best sorting options, then implement in route
+          options={[ // TODO: Design thinks sorting by 0) none 1) [conditional] distance away from entered zipcode or 2) sort by yearsExp 3) education level
             { label: "Newest", value: "newest" },
             { label: "Oldest", value: "oldest" },
           ]}
@@ -282,23 +274,25 @@ export default function Page() {
       </div>
 
 
-      {/* Loading or display results */}
-      {loading ? <div className='w-full h-full text-center text-3xl'>Loading...</div> :
-        <div className="space-y-4">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
-          <JobSeekerCardView
-            key={jobSeeker.jobseeker_id}
-            name={jobSeeker?.users?.first_name + ' ' + jobSeeker?.users?.last_name}
-            pathway={jobSeeker?.pathways?.pathway_title ?? ''}
-            jobseeker={jobSeeker}
-            pfpPicSrc={jobSeeker?.users?.photo_url}
-            aboutMe={jobSeeker?.intro_headline}
-            id={jobSeeker?.jobseeker_id}
-            forceSmall={false} />
-        ))}</div>}
+      {/* Loading */}
+      {loading ? <div className='w-full h-full text-center'><CircularProgress /></div> : ""}
+      
+      {/* Error */}
+      {!loading && error ? <div className='w-full h-full text-center text-3xl'>Error: Invalid Query</div> : ""}
 
-      <div className="flex justify-center">
-        {/* TODO: Would be nice to have a "Showing 1-100 of 4,321 results" blurb here */}
-        <Pagination count={Math.ceil(jobseekers.length / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} />
+      {/* else, Display Results */}
+      {!loading && !error ?
+        <div className="space-y-4">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
+          <JobSeekerCardView jobseeker={jobSeeker} key={jobSeeker.jobseeker_id} />))}
+        </div> : ""
+      }
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-6">
+        {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1} - {Math.min((resultsPerPage * (page ?? 1)), (totalResults ?? 1))} of {totalResults} total results</div> : "" }
+      </div>
+      <div className="flex justify-center mt-2 mb-4 phone:mb-0">
+        {!loading ? <Pagination variant="outlined" shape="rounded" count={Math.ceil((totalResults ?? 1) / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : ""}
       </div>
     </main>
   );

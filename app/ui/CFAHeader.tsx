@@ -1,33 +1,28 @@
 'use client'
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { Fragment, useEffect, useState } from 'react'
 import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition } from '@headlessui/react'
-import {
-  Bars3Icon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon} from '@heroicons/react/20/solid'
+import { Bars3Icon, CursorArrowRaysIcon, FingerPrintIcon, XMarkIcon, } from '@heroicons/react/24/outline'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image';
+import AccountMenu from './components/mui/AccountMenu';
+
 const forStudentsDropDownInfo = [
-{ name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
-{ name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '#', icon: FingerPrintIcon }
-
-
+  { name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
+  { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '/underconstruction', icon: FingerPrintIcon }
 ]
 
 const TopLevelLinks = [
-  { name: 'Talent Showcase', href: '/services'},
-  { name: 'For Employers', href: '/services/employers'},
-  { name: 'For JobSeekers', href: '/services/jobseekers'},
-    { name: 'Explore', href: '/todo'},
-    {
-      name:"Contact Us",
-      href:"/todo"
-    }
-  ];
+  { name: 'Talent Showcase', href: '/services' },
+  { name: 'For Employers', href: '/services/employers' },
+  { name: 'For Job Seekers', href: '/services/jobseekers' },
+  { name: 'Explore', href: '/underconstruction' }, // TODO: fill this out!
+  {
+    name: "Contact Us",
+    href: "/underconstruction"
+  }
+];
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -40,47 +35,36 @@ export default function CFAHeader() {
   useEffect(() => {
     // Do something here...
     setMobileMenuOpen(false)
-    if(pathname == '/services/jobseekers'){
+    if (pathname == '/services/jobseekers') {
       setHeaderTW('w-full z-10 absolute text-white')
-    }else{
+    } else {
       setHeaderTW('bg-white')
     }
   }, [pathname])
   console.log(pathname)
 
   return (
-    
+
     <header className={headerTW} >
       <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"></link>
       <nav className="mx-auto flex items-center justify-between p-4 laptop:px-8" aria-label="Global">
-        <div className="flex laptop:flex-1">
+        <div className="flex shrink">
           {
-            pathname == '/services/jobseekers'?
-          <Link href="/">
-            <span className="sr-only">Computing For All</span>
-            <Image  src="/cfa_images/TWC logo_White.svg" alt="Computing For All" width={75} height={31.8} />
-          </Link>:
-          <Link href="/">
-            <span className="sr-only">Computing For All</span>
-            <Image src="/cfa_images/TWC_75x50_2024.svg" alt="Computing For All" width={75} height={31.8} />
-          </Link>
+            pathname == '/services/jobseekers' ?
+              <Link href="/">
+                <span className="sr-only">Computing For All</span>
+                <Image src="/cfa_images/TWC logo_White.svg" alt="Computing For All" width={75} height={31.8} />
+              </Link> :
+              <Link href="/">
+                <span className="sr-only">Computing For All</span>
+                <Image src="/cfa_images/TWC_75x50_2024.svg" alt="Computing For All" width={75} height={31.8} />
+              </Link>
           }
         </div>
-        {/* moble view Hamburger menu toggle */}
-        <div className="flex laptop:hidden">
-          <button
-            type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5"
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <span className="sr-only">Open main menu</span>
-            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-          </button>
-        </div>
-    
-        <PopoverGroup className="hidden laptop:flex laptop:gap-x-12" >
+
+        <PopoverGroup className="hidden items-center laptop:flex laptop:gap-x-12" >
           <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6   ">
+            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
               For Students
               <ChevronDownIcon className="h-5 w-5 flex-none" aria-hidden="true" />
             </PopoverButton>
@@ -95,61 +79,64 @@ export default function CFAHeader() {
               leaveTo="opacity-0 translate-y-1"
             >
               <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-              {({ close }) => (
-                <><div className="p-4" onMouseLeave={()=>{close()}}>
+                {({ close }) => (
+                  <><div className="p-4" onMouseLeave={() => { close() }}>
                     {forStudentsDropDownInfo.map((item) => (
-                    <Link key={item.name} href={item.href} className="block font-semibold  text-black" onClick={()=>{close()}}>
-                      <div
-                        
-                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
-                      >
-                        <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                          <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
-                        </div>
-                        <div className="flex-auto">
-                          
+                      <Link key={item.name} href={item.href} className="block font-semibold  text-black" onClick={() => { close() }}>
+                        <div
+
+                          className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                        >
+                          <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                            <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
+                          </div>
+                          <div className="flex-auto">
+
                             {item.name}
-                          
-                          <p className="mt-1 text-gray-600">{item.description}</p>
+
+                            <p className="mt-1 text-gray-600">{item.description}</p>
+                          </div>
                         </div>
-                      </div>
                       </Link>
                     ))}
                   </div>
-                    </>
-              )}
-                
+                  </>
+                )}
+
               </PopoverPanel>
             </Transition>
           </Popover>
-          
-        {TopLevelLinks.map((link) => {
-        return (
-          <Link
-            key={link.name}
-            href={link.href}
-            className="text-sm font-semibold leading-6  "
-          >
-          {link.name}
-          </Link>
-        );
-      })}
+
+          {TopLevelLinks.map((link) => {
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-sm font-semibold leading-6  "
+              >
+                {link.name}
+              </Link>
+            );
+          })}
 
 
         </PopoverGroup>
-        
 
-        <div className="hidden laptop:flex laptop:flex-1 laptop:justify-end">
-          <Link href="/services/employers/dashboard" className="text-sm font-semibold leading-6  ">
-            My Dashboard 
-          </Link>
+
+        {/* account menu */}
+        <div className="flex shrink justify-end space-x-2">
+          <AccountMenu />
+
+        {/* mobile view Hamburger menu toggle */}
+          <button
+            type="button" onClick={() => setMobileMenuOpen(true)}
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 laptop:hidden"
+          >
+            <span className="sr-only">Open main menu</span>
+            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+          </button>
         </div>
       </nav>
-
-
-
-
-
 
       <Dialog className="laptop:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <div className="fixed inset-0 z-10" />
@@ -166,7 +153,7 @@ export default function CFAHeader() {
               />
             </Link>
 
-            
+
             <button
               type="button"
               className="-m-2.5 rounded-md p-2.5 text-gray-700"
@@ -198,7 +185,7 @@ export default function CFAHeader() {
                             as={Link}
                             href={item.href}
                             className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7   hover:bg-gray-50"
-                            onClick={()=>{setMobileMenuOpen(false)}}
+                            onClick={() => { setMobileMenuOpen(false) }}
                           >
                             {item.name}
                           </DisclosureButton>
@@ -208,17 +195,17 @@ export default function CFAHeader() {
                   )}
                 </Disclosure>
                 {
-                    TopLevelLinks.map((link)=>{
-                        return(
-                            <Link
-                            key={link.name}
-                            href={link.href}
-                            className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7   hover:bg-gray-50"
-                            >
-                            {link.name}
-                            </Link>
-                        )
-                    })
+                  TopLevelLinks.map((link) => {
+                    return (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7   hover:bg-gray-50"
+                      >
+                        {link.name}
+                      </Link>
+                    )
+                  })
                 }
               </div>
               <div className="py-6">
