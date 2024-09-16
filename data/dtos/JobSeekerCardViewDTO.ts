@@ -8,12 +8,14 @@ export type JobSeekerCardViewDTO = {
   pathways: {
     pathway_title: string;
   } | null;
-  work_experiences: {
-    industrySector: {
-      industry_sector_id: string;
-      sector_title: string;
-    } | null;
-  } | null;
+  work_experiences:
+    | {
+        industrySector: {
+          industry_sector_id: string;
+          sector_title: string;
+        } | null;
+      }[]
+    | null;
   users: {
     role: string;
     first_name: string | null;
