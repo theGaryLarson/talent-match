@@ -84,6 +84,19 @@ export default auth((req) => {
       console.log("Access denied: User does not have permission for jobseeker route");
       return NextResponse.redirect(homeUrl);
     }
+  }
+
+  if (pathname === "/signin") {
+    const homeUrl = new URL("/", req.nextUrl.origin);
+    return NextResponse.redirect(homeUrl);
+  }
+
+  if (jobseekerRoutes.some((route) => pathname.includes(route))) {
+    if (!allowedRolesForJobseekerRoutes.some((role) => userRoles.includes(role))) {
+      console.log("Access denied: User does not have permission for jobseeker route");
+      const homeUrl = new URL("/", req.nextUrl.origin);
+      return NextResponse.redirect(homeUrl);
+    }
     return NextResponse.next();
   }
 
