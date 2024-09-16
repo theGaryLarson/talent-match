@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     educationLevel = undefined,
     yearsWorkExp = 0,
     zipCode = undefined,
-    sortBy = 'newest',
+    sortBy = 'yearsExp',
     maxResults = 50,
     page = 1,
   } = await request.json();
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       work_experiences: {
         some: {
           industrySector: {
-            sector_title: industrySector,
+            sector_title: { in: industrySector },
           },
         },
       },
@@ -110,9 +110,14 @@ export async function POST(request: Request) {
     });
   }
 
-  // Implement sorting based on 'sortBy' (e.g., "newest")
   const orderBy =
-    sortBy === 'newest' ? [{ createdAt: 'desc' as const }] : undefined;
+    sortBy === 'newest'
+      ? [{ createdAt: 'desc' as const }]
+      : sortBy === 'eduLevel'
+        ? [{ highest_level_of_study_completed: 'desc' as const }]
+        : sortBy === 'yearsExp'
+          ? [{ years_work_exp: 'desc' as const }]
+          : undefined;
 
   // Determine the number of results to skip based on the page number and maxResults
   const skip = (page - 1) * maxResults;

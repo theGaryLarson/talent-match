@@ -265,7 +265,7 @@ model employers {
   user_id              String                 @unique @db.UniqueIdentifier
   company_id           String?                @db.UniqueIdentifier
   work_address_id      String?                @db.UniqueIdentifier
-  job_title            String                 @db.VarChar(255)
+  job_title            String?                @db.VarChar(255)
   linkedin_url         String?                @db.VarChar(255)
   is_verified_employee Boolean                @default(false, map: "DF__employers__is_verified") @db.Bit
   users                User                   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_employer_user1")

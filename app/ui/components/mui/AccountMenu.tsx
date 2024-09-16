@@ -9,11 +9,12 @@ import Tooltip from '@mui/material/Tooltip';
 import Logout from '@mui/icons-material/Logout';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Button from '@mui/material/Button';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { usePathname } from 'next/navigation'
+import Link from 'next/link';
 
 export default function AccountMenu() {
     const { data: session } = useSession();
@@ -89,38 +90,39 @@ export default function AccountMenu() {
             >
                 {session?.user.roles.indexOf(Role.EMPLOYER) != -1 ||
                     session?.user.roles.indexOf(Role.ADMIN) != -1 ?
-                    <a href="/services/employers/dashboard">
+                    <Link href="/services/employers/dashboard">
                         <MenuItem onClick={handleClose}>
                             <ListItemIcon>
                                 <DashboardIcon fontSize="small" />
                             </ListItemIcon>
                             Dashboard
                         </MenuItem>
-                    </a>
+                    </Link>
                     : ""}
 
                 {session?.user.roles.indexOf(Role.JOBSEEKER) != -1 ||
                     session?.user.roles.indexOf(Role.ADMIN) != -1 ?
-                    <a href={"/services/jobseekers/" + session?.user.id}>
+                    <Link href={"/services/jobseekers/" + session?.user.id}>
                         <MenuItem onClick={handleClose}>
                             <ListItemIcon>
                                 <AccountBoxIcon fontSize="small" />
                             </ListItemIcon>
                             My Profile
                         </MenuItem>
-                    </a>
+                    </Link>
                     : ""}
 
                 <Divider />
-
-                <a href="/signout">
-                    <MenuItem onClick={handleClose}>
+                <Link href={"/"}>
+                    <MenuItem onClick={ async () => {
+                        await signOut();
+                    }}>
                         <ListItemIcon>
                             <Logout fontSize="small" />
                         </ListItemIcon>
                         Logout
                     </MenuItem>
-                </a>
+                </Link>
             </Menu>
         </React.Fragment>
     );

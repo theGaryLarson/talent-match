@@ -920,6 +920,15 @@ const racesAndEthnicities = [
     "Other"
 ];
 
+const companySizeOptions = [
+    '1-10',
+    '11-50',
+    '51-200',
+    '201-500',
+    '501-1000',
+    '1001-5000'
+];
+
 /////////////////////////////////////////////////
 ////////////   helper functions  ////////////////
 /////////////////////////////////////////////////
@@ -1592,7 +1601,7 @@ async function seedCompanies() {
                 company_phone: generateE164PhoneNumber(),
                 company_mission: faker.lorem.sentences(3),
                 company_vision: faker.lorem.sentences(3),
-                size: faker.number.int({min: 5, max: 1500}).toString(),
+                size: faker.helpers.arrayElement(companySizeOptions),
                 estimated_annual_hires: faker.number.int({min: 1, max: 10})
             }
         });
