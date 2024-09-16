@@ -20,10 +20,10 @@ export type CreateUserDTO = {
 };
 
 export enum Role {
-  NONE = 'NONE',
   ADMIN = 'ADMIN',
-  JOBSEEKER = 'JOBSEEKER',
-  EMPLOYER = 'EMPLOYER',
   EDUCATOR = 'EDUCATOR',
+  EMPLOYER = 'EMPLOYER',
+  JOBSEEKER = 'JOBSEEKER',
+  PUBLIC = 'PUBLIC',
   VOLUNTEER = 'VOLUNTEER',
 }
