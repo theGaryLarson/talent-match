@@ -45,21 +45,21 @@ export async function POST(request: Request) {
           },
         },
       },
-      {
-        project_experiences: {
-          some: {
-            project_has_skills: {
-              some: {
-                skills: {
-                  skill_name: {
-                    in: normalizedSkills,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      // {
+      //   project_experiences: {
+      //     some: {
+      //       project_has_skills: {
+      //         some: {
+      //           skills: {
+      //             skill_name: {
+      //               in: normalizedSkills,
+      //             },
+      //           },
+      //         },
+      //       },
+      //     },
+      //   },
+      // },
     ];
     andConditions.push({ OR: orConditions });
   }
