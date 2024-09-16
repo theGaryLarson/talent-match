@@ -340,6 +340,7 @@ export const jobSeekerCardViewSelect = {
   user_id: true,
   intro_headline: true,
   years_work_exp: true, // added this to the select statement as it is something that can be filtered. Probably should get some UX feedback regarding if it should be viewable in the card.
+  highest_level_of_study_completed: true,
   pathways: {
     select: {
       pathway_id: true,

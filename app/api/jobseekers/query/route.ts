@@ -14,7 +14,8 @@ export async function POST(request: Request) {
     skills = [],
     industrySector = [],
     educationLevel = undefined,
-    yearsWorkExp = 0,
+    yearsWorkExpMin = 0,
+    yearsWorkExpMax = undefined,
     zipCode = undefined,
     sortBy = 'yearsExp',
     maxResults = 50,
@@ -61,14 +62,33 @@ export async function POST(request: Request) {
       //   },
       // },
     ];
+    // fixme: let's change this to an { OR: orConditions } when we have a healthy amount of jobseeker users.
     andConditions.push({ OR: orConditions });
   }
 
-  andConditions.push({
-    years_work_exp: {
-      gte: yearsWorkExp,
-    },
-  });
+  // Years Work Experience Filtering with both lower and upper bounds
+  if (yearsWorkExpMin !== undefined && yearsWorkExpMax !== undefined) {
+    andConditions.push({
+      years_work_exp: {
+        gte: yearsWorkExpMin, // Greater than or equal to the minimum
+        lte: yearsWorkExpMax, // Less than or equal to the maximum
+      },
+    });
+  } else if (yearsWorkExpMin !== undefined) {
+    // If only minimum is specified
+    andConditions.push({
+      years_work_exp: {
+        gte: yearsWorkExpMin,
+      },
+    });
+  } else if (yearsWorkExpMax !== undefined) {
+    // If only maximum is specified
+    andConditions.push({
+      years_work_exp: {
+        lte: yearsWorkExpMax,
+      },
+    });
+  }
 
   // Industry Sector Filtering
   if (industrySector.length > 0) {
@@ -110,14 +130,13 @@ export async function POST(request: Request) {
     });
   }
 
+  // have to sort by eduLevel after we get the result because Prisma does not support custom comparators. see Line 140.
   const orderBy =
     sortBy === 'newest'
       ? [{ createdAt: 'desc' as const }]
-      : sortBy === 'eduLevel'
-        ? [{ highest_level_of_study_completed: 'desc' as const }]
-        : sortBy === 'yearsExp'
-          ? [{ years_work_exp: 'desc' as const }]
-          : undefined;
+      : sortBy === 'yearsExp'
+        ? [{ years_work_exp: 'desc' as const }]
+        : undefined;
 
   // Determine the number of results to skip based on the page number and maxResults
   const skip = (page - 1) * maxResults;
@@ -135,6 +154,14 @@ export async function POST(request: Request) {
     }),
   ]);
 
+  // Sort by education level if needed
+  if (sortBy === 'eduLevel') {
+    filteredJobSeekers.sort(
+      (a, b) =>
+        educationRank[b.highest_level_of_study_completed as HighestDegreeType] -
+        educationRank[a.highest_level_of_study_completed as HighestDegreeType],
+    );
+  }
   return NextResponse.json({
     filteredJobSeekers,
     totalCount,
