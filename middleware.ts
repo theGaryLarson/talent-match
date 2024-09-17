@@ -12,10 +12,7 @@ export default auth((req) => {
   const pathname = req.nextUrl.pathname;
   const userRoles = req.auth?.user?.roles || [];
 
-  const jobseekerRoutes = [
-    "/services/joblistings/[id]",
-    "/services/jobseekers/[id]",
-    "/services/jobseekers/dashboard",
+  const jobseekersOnly = [
     "/create-profile/jobseeker/complete",
     "/create-profile/jobseeker/disclosures",
     "/create-profile/jobseeker/education",
@@ -23,6 +20,12 @@ export default auth((req) => {
     "/create-profile/jobseeker/preferences",
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
+  ]
+
+  const jobseekerRoutes = [
+    "/services/joblistings/[id]",
+    "/services/jobseekers/[id]",
+    "/services/jobseekers/dashboard",
     "/signout",
   ];
 
@@ -55,7 +58,8 @@ export default auth((req) => {
     "/create-profile/employer",
     "/cfa_images/",
   ];
-
+  
+  const allowedRolesForJobseekersOnly = [Role.ADMIN, Role.JOBSEEKER];
   const allowedRolesForJobseekerRoutes = [Role.ADMIN, Role.EMPLOYER, Role.JOBSEEKER];
   const allowedRolesForEmployerRoutes = [Role.ADMIN, Role.EMPLOYER];
   const homeUrl = new URL("/", req.nextUrl.origin);
@@ -69,6 +73,12 @@ export default auth((req) => {
     }
   }
 
+  // If you're signed in and haven't picked a role, you gotta
+  if (req.auth && userRoles.includes(Role.PUBLIC)) {
+    const signUpUrl = new URL("/signup", req.nextUrl.origin);
+    return NextResponse.redirect(signUpUrl);
+  }
+
   // If you're at signin and logged in, reroute to the main page
   if (req.auth && pathname === "/signin") {
     return NextResponse.redirect(homeUrl);
@@ -79,22 +89,17 @@ export default auth((req) => {
     return NextResponse.redirect(homeUrl);
   }
 
-  if (jobseekerRoutes.some((route) => pathname.includes(route))) {
-    if (!allowedRolesForJobseekerRoutes.some((role) => userRoles.includes(role))) {
+  if (jobseekersOnly.some((route) => pathname.includes(route))) {
+    if (!allowedRolesForJobseekersOnly.some((role) => userRoles.includes(role))) {
       console.log("Access denied: User does not have permission for jobseeker route");
       return NextResponse.redirect(homeUrl);
     }
-  }
-
-  if (pathname === "/signin") {
-    const homeUrl = new URL("/", req.nextUrl.origin);
-    return NextResponse.redirect(homeUrl);
+    return NextResponse.next();
   }
 
   if (jobseekerRoutes.some((route) => pathname.includes(route))) {
     if (!allowedRolesForJobseekerRoutes.some((role) => userRoles.includes(role))) {
       console.log("Access denied: User does not have permission for jobseeker route");
-      const homeUrl = new URL("/", req.nextUrl.origin);
       return NextResponse.redirect(homeUrl);
     }
     return NextResponse.next();
