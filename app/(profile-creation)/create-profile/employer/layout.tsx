@@ -9,7 +9,7 @@ import CFAProfileCreationHeader from '@/app/ui/CFAProfileCreationHeader';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 // REVIEW: You can locate the store in the layout component if all the routes using that layout need the store. 
-import StoreProvider from '../StoreProvider';
+import StoreProvider from '../../../JobseekerStoreProvider';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 import {SessionProvider} from "next-auth/react";
 
