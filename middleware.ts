@@ -23,7 +23,6 @@ export default auth((req) => {
     "/create-profile/jobseeker/preferences",
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
-    "/cfa_images/",
     "/signout",
   ];
 
@@ -54,6 +53,7 @@ export default auth((req) => {
     "/services/joblistings",
     "/services/jobseekers",
     "/create-profile/employer",
+    "/cfa_images/",
   ];
 
   const allowedRolesForJobseekerRoutes = [Role.ADMIN, Role.EMPLOYER, Role.JOBSEEKER];
