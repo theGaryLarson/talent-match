@@ -4,9 +4,9 @@ export type PostEmployerPersonalDTO = {
   lastName: string;
   birthDate: string;
   email: string;
-  phoneCountryCode?: string;
-  phone?: string;
-  photoUrl?: string;
+  phoneCountryCode?: string | null;
+  phone?: string | null;
+  photoUrl?: string | null;
 };
 
 export type ReadEmployerPersonalDTO = {
