@@ -56,7 +56,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 email: user.email,
                 firstName: user.name?.split(' ')[0] || '',
                 lastName: user.name?.split(' ')[1] || '',
-                roles: [Role.NONE], // default role
+                roles: [Role.PUBLIC], // default role
               };
               devLog('server-side-default-role\n', userData);
 

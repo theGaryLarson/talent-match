@@ -23,7 +23,6 @@ export default auth((req) => {
     "/create-profile/jobseeker/preferences",
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
-    "/cfa_images/",
     "/signout",
   ];
 
@@ -54,6 +53,7 @@ export default auth((req) => {
     "/services/joblistings",
     "/services/jobseekers",
     "/create-profile/employer",
+    "/cfa_images/",
   ];
 
   const allowedRolesForJobseekerRoutes = [Role.ADMIN, Role.EMPLOYER, Role.JOBSEEKER];
@@ -82,6 +82,19 @@ export default auth((req) => {
   if (jobseekerRoutes.some((route) => pathname.includes(route))) {
     if (!allowedRolesForJobseekerRoutes.some((role) => userRoles.includes(role))) {
       console.log("Access denied: User does not have permission for jobseeker route");
+      return NextResponse.redirect(homeUrl);
+    }
+  }
+
+  if (pathname === "/signin") {
+    const homeUrl = new URL("/", req.nextUrl.origin);
+    return NextResponse.redirect(homeUrl);
+  }
+
+  if (jobseekerRoutes.some((route) => pathname.includes(route))) {
+    if (!allowedRolesForJobseekerRoutes.some((role) => userRoles.includes(role))) {
+      console.log("Access denied: User does not have permission for jobseeker route");
+      const homeUrl = new URL("/", req.nextUrl.origin);
       return NextResponse.redirect(homeUrl);
     }
     return NextResponse.next();
