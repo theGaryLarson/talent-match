@@ -155,7 +155,7 @@ export async function POST(request: Request) {
   ]);
 
   // Sort by education level if needed
-  if (sortBy === 'eduLevel') {
+  if (sortBy === 'highestDegree') {
     filteredJobSeekers.sort(
       (a, b) =>
         educationRank[b.highest_level_of_study_completed as HighestDegreeType] -
