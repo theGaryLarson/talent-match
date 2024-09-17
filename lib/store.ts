@@ -3,6 +3,7 @@ import { Middleware } from '@reduxjs/toolkit';
 import { useMemo } from 'react';
 import { configureStore } from '@reduxjs/toolkit'
 import jobseekerReducer, { JobseekerState } from './features/profileCreation/jobseekerSlice'
+import employerReducer, { EmployerState } from './features/profileCreation/employerSlice'
 import formReducer, { FormState } from './features/profileCreation/formSlice'
 import counterReducer, { CounterState } from './features/profileCreation/counterSlice'
 
@@ -15,6 +16,7 @@ import counterReducer, { CounterState } from './features/profileCreation/counter
 
 interface PreloadedState {
     jobseeker: JobseekerState,
+    employer: EmployerState,
     form: FormState,
     counter: CounterState
 }
@@ -24,6 +26,7 @@ interface PreloadedState {
 export const makeStore = (preloadedState?:PreloadedState) => configureStore({
     reducer: {
         jobseeker: jobseekerReducer,
+        employer: employerReducer,
         form: formReducer,
         counter: counterReducer
     },
