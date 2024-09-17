@@ -3,6 +3,7 @@ import Avatar from '@/app/ui/components/Avatar';
 import Skills from '@/app/ui/components/Skills';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import { auth } from '@/auth';
+import { format } from 'path';
 const monthNames = [
   'Jan',
   'Feb',
@@ -17,6 +18,16 @@ const monthNames = [
   'Nov',
   'Dec',
 ];
+
+function formatUrl(url:string) {
+  if (!url) return '';
+  // If the URL starts with http:// or https://, return as is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  // Default to https:// but don't force it, allow users to adjust
+  return `https://${url}`;
+}
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
   const session = await auth();
@@ -66,7 +77,7 @@ export default async function page({ params }: { params: { id: string } }) {
           className="aspect-video min-w-[200px] grow"
           src={`https://www.youtube.com/embed/${videoID}?autoplay=1`}
           title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share"
           referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
         ></iframe>
@@ -239,7 +250,7 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 className="text-2xl font-bold">Portfolio</h1>
             {jobseeker?.portfolio_url ? (
-              <a href={jobseeker?.portfolio_url}>{jobseeker?.portfolio_url}</a>
+              <a href={formatUrl(jobseeker?.portfolio_url)}>{jobseeker?.portfolio_url}</a>
             ) : (
               ''
             )}
