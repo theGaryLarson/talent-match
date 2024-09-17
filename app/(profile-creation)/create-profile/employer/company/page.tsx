@@ -2,18 +2,9 @@
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '@/lib/employerStore';
 import { v4 as uuidv4 } from 'uuid'; // Import uuidv4
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  addField,
-  updateField,
-  submitForm,
-  submitFormSuccess,
-  submitFormFailure,
-  FormState,
-  FormField,
-} from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
