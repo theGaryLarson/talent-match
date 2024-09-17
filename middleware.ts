@@ -74,7 +74,7 @@ export default auth((req) => {
   }
 
   // If you're signed in and haven't picked a role, you gotta
-  if (req.auth && userRoles.includes(Role.PUBLIC)) {
+  if (req.auth && userRoles.includes(Role.PUBLIC) && pathname !== "/signup") {
     const signUpUrl = new URL("/signup", req.nextUrl.origin);
     return NextResponse.redirect(signUpUrl);
   }
