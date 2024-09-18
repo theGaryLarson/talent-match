@@ -7,6 +7,18 @@ const nextConfig = {
     experimental: {
         missingSuspenseWithCSRBailout: false,
     },
+    images: {
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: 'avatars.githubusercontent.com'
+          },
+          {
+            protocol: 'https',
+            hostname: 'careerservicesstorage.blob.core.windows.net'
+          },
+        ],
+      }
 };
 
 module.exports = nextConfig;
