@@ -5,15 +5,18 @@ export type JobSeekerCardViewDTO = {
   user_id: string;
   intro_headline: string | null;
   years_work_exp: number | null;
+  highest_level_of_study_completed: string | null;
   pathways: {
     pathway_title: string;
   } | null;
-  work_experiences: {
-    industrySector: {
-      industry_sector_id: string;
-      sector_title: string;
-    } | null;
-  } | null;
+  work_experiences:
+    | {
+        industrySector: {
+          industry_sector_id: string;
+          sector_title: string;
+        } | null;
+      }[]
+    | null;
   users: {
     role: string;
     first_name: string | null;

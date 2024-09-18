@@ -12,6 +12,7 @@ import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO
 import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
+import Slider from '@mui/material/Slider';
 
 const resultsPerPage = 50;
 
@@ -22,28 +23,22 @@ interface JobSeekerQueryResult {
 
 async function fetchFilteredJobSeekerCardView(
   skills: string[] = [],
-  industry: string[] = [],
-  eduLevel: string = "",
-  yearsWorkExp: string = "0",
+  industrySector: string[] = [],
+  educationLevel: string = "",
+  yearsWorkExpMin: number = 0,
+  yearsWorkExpMax: number | undefined = undefined,
   zipCode: string = "",
-  sortBy: string = "newest",
+  sortBy: string = "yearsExp",
   maxResults: number = resultsPerPage,
   page: number = 1,
 ): Promise<JobSeekerQueryResult> {
-
-  // Hacky convert the strings to numbers for the request
-  var workExp = 0;
-  var zip = null;
-  if (yearsWorkExp != "") workExp = Number.parseInt(yearsWorkExp);
-  if (zipCode != "") zip = Number.parseInt(zipCode);
-
-  // Make the request
-  const response = await fetch('/api/jobseekers/query', {
+  if (yearsWorkExpMax == 5) yearsWorkExpMax = undefined; // API expects undefined for max to handle 5+ yearsExp
+  const response = await fetch('/api/jobseekers/query', { // Make the request
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ skills, industry, eduLevel, workExp, zip, sortBy, maxResults, page })
+    body: JSON.stringify({ skills, industrySector, educationLevel, yearsWorkExpMin, yearsWorkExpMax, zipCode, sortBy, maxResults, page })
   });
   if (!response.ok) {
     throw new Error('Failed to fetch data');
@@ -61,7 +56,8 @@ export default function Page() {
   const [skillsList, setSkillsList] = useState<string[]>();
   const [industry, setIndustry] = useState<string[]>();
   const [eduLevel, setEduLevel] = useState<string>();
-  const [yearsExp, setYearsExp] = useState<string>();
+  const [yearsExpMin, setYearsExpMin] = useState<number>();
+  const [yearsExpMax, setYearsExpMax] = useState<number>();
   const [zipCode, setZipCode] = useState<string>();
 
   // Sorting and pagination
@@ -109,7 +105,7 @@ export default function Page() {
     setLoading(true);
     setError(false);
     try {
-      const data = await fetchFilteredJobSeekerCardView(skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, resultsPerPage, page);
+      const data = await fetchFilteredJobSeekerCardView(skillsList, industry, eduLevel, yearsExpMin, yearsExpMax, zipCode, sortBy, resultsPerPage, page);
       setJobSeekers(data.filteredJobSeekers);
       setTotalResults(data.totalCount);
     } catch (error) {
@@ -118,26 +114,32 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
+  }, [skillsList, industry, eduLevel, yearsExpMin, yearsExpMax, zipCode, sortBy, page]);
 
   useEffect(() => {
     // on initial page load, get the params from URL if they exist
-    if (skillsList == undefined && industry == undefined && eduLevel == undefined &&
-      yearsExp == undefined && zipCode == undefined && sortBy == undefined && page == undefined) {
+    if (skillsList == undefined && industry == undefined && eduLevel == undefined && yearsExpMin == undefined &&
+      yearsExpMax == undefined && zipCode == undefined && sortBy == undefined && page == undefined) {
       setSkillsList(getArrayParam("skills"));
       setIndustry(getArrayParam("industry"));
-      setEduLevel(getParam("edulevel"));
-      setYearsExp(getParam("yearsexp"));
+      setEduLevel(getParam("eduLevel"));
+      setYearsExpMin(+getParam("yearsExpMin"));
+      setYearsExpMax(+getParam("yearsExpMax") == 0 ? 5 : +getParam("yearsExpMax"));
       setZipCode(getParam("zipcode"));
-      setSortBy(getParam("sort") != "" ? getParam("sort") : "newest");
+      setSortBy(getParam("sort") != "" ? getParam("sort") : "yearsExp");
       +getParam("page") == 0 ? setPage(1) : setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
     }
-    else execQuery(); // any other change after initial load should execute a new query
-  }, [skillsList, industry, eduLevel, yearsExp, zipCode, sortBy, page]);
+    else { // any other change after initial load should execute a new query
+      const timeoutId = setTimeout(() => {
+        execQuery();
+      }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
+      return () => clearTimeout(timeoutId);
+    }
+  }, [skillsList, industry, eduLevel, yearsExpMin, yearsExpMax, zipCode, sortBy, page]);
 
   return (
     <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8">
-      <h1 className="text-2xl font-bold mb-4">{skillsList?.toString()} Search Results</h1>
+      <h1 className="text-2xl font-bold mb-4">Search Results for: {skillsList?.toString().replaceAll(',', ', ')}</h1>
 
       {/* Skill Search Bar */}
       <TagsWithAutocomplete
@@ -159,10 +161,10 @@ export default function Page() {
       />
 
       {/* Filters */}
-      <div className="flex flex-row flex-wrap mt-1 mb-4">
+      <div className="flex flex-row flex-wrap mt-1 mb-0">
 
         {/* Industry */}
-        <div className="w-1/2 tablet:w-1/4">
+        <div className="w-1/2 tablet:w-1/3">
           <MultipleSelectFilterAutoload
             id="jobseeker-listview-industry"
             label="Industry"
@@ -178,10 +180,10 @@ export default function Page() {
         </div>
 
         {/* Education Level */}
-        <div className="w-1/2 tablet:w-1/4">
+        <div className="w-1/2 tablet:w-1/3">
           <SingleSelectFilter
             id="jobseeker-listview-edulevel"
-            label="Education Level"
+            label="Highest Degree"
             value={getArrayParam("edulevel")}
             onChange={(event) => {
               setQueryParam('edulevel', encodeURIComponent(event.target.value.toString()));
@@ -202,29 +204,9 @@ export default function Page() {
           ></SingleSelectFilter>
         </div>
 
-        {/* Years of Experience */}
-        <div className="w-1/2 tablet:w-1/4">
-          <SingleSelectFilter
-            id="jobseeker-listview-yearsexp"
-            label="Years of Experience"
-            value={getArrayParam("yearsexp")}
-            onChange={(event) => {
-              setQueryParam('yearsexp', encodeURIComponent(event.target.value.toString()));
-              setYearsExp(event.target.value as string);
-            }}
-            options={[ // TODO: design advises this to be a range slider
-              { label: "Any", value: "" },
-              { label: "Less than a year", value: "1" },
-              { label: "1-2 years", value: "2" },
-              { label: "3-4 years", value: "3" },
-              { label: "5 or more years", value: "4" },
-            ]}
-          ></SingleSelectFilter>
-        </div>
-
         {/* Zip Code */}
         {/* Design has agreed to a text field until we have a better distance measurement system in place */}
-        <div className="w-1/2 tablet:w-1/4">
+        <div className="w-1/2 tablet:w-1/3">
           <TextField
             autoComplete='off'
             label="Full/Partial Zip Code"
@@ -256,27 +238,56 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Sorting */}
-      <div className="w-full flex flex-row-reverse pb-4 mt-0">
-        <SortDropdown
-          id="jobseeker-listview-sort"
-          label="Sort by:"
-          value={getParam("sort")}
-          onChange={(event) => {
-            setQueryParam('sort', event.target.value);
-            setSortBy(event.target.value);
-          }}
-          options={[ // TODO: Design thinks sorting by 0) none 1) [conditional] distance away from entered zipcode or 2) sort by yearsExp 3) education level
-            { label: "Newest", value: "newest" },
-            { label: "Oldest", value: "oldest" },
-          ]}
-        />
-      </div>
+      {/* Second Filter / Sort row */}
+      <div className="w-full flow-root pb-4 mt-2">
+        {/* Years of Experience */}
+        <div className="float-left items-center px-4 w-1/2 tablet:w-1/3">
+          <p className="text-sm text-slate-600 text-center relative top-2">Years of Experience</p>
+            <Slider
+              sx={{color: '#0891b2'}}
+              size="small"
+              value={[+getParam("yearsExpMin"), +getParam("yearsExpMax") == 0 ? 5 : +getParam("yearsExpMax")]}
+              onChange={(event: Event, newValue: number | number[]) => {
+                if (typeof newValue !== "number") {
+                  setYearsExpMin(newValue[0]);
+                  setQueryParam("yearsExpMin", newValue[0].toString());
+                  setYearsExpMax(newValue[1]);
+                  setQueryParam("yearsExpMax", newValue[1].toString());
+                }
+              }}
+              valueLabelDisplay="off"
+              getAriaLabel={() => 'Years of Experience filter range'}
+              getAriaValueText={(value: number, index: number) => { return index == 0 ? "min: " + value : "max: " + value }}
+              step={1}
+              marks={[{ value: 0, label: '0' }, { value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' }, { value: 4, label: '4' }, { value: 5, label: '5+' }]}
+              min={0}
+              max={5}
+              disableSwap
+            />
+        </div>
 
+        {/* Sorting */}
+        <div className="float-right mt-6">
+          <SortDropdown
+            id="jobseeker-listview-sort"
+            label="Sort by:"
+            value={getParam("sort")}
+            onChange={(event) => {
+              setQueryParam('sort', event.target.value);
+              setSortBy(event.target.value);
+            }}
+            options={[ // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
+              { label: "Years of Experience", value: "yearsExp" },
+              { label: "Highest Degree", value: "highestDegree" },
+              { label: "Newest", value: "newest" },
+            ]}
+          />
+        </div>
+      </div>
 
       {/* Loading */}
       {loading ? <div className='w-full h-full text-center'><CircularProgress /></div> : ""}
-      
+
       {/* Error */}
       {!loading && error ? <div className='w-full h-full text-center text-3xl'>Error: Invalid Query</div> : ""}
 
@@ -289,7 +300,7 @@ export default function Page() {
 
       {/* Pagination */}
       <div className="flex justify-center mt-6">
-        {!loading && !error ? <div>Showing {(resultsPerPage * (page ?? 1)) - resultsPerPage + 1} - {Math.min((resultsPerPage * (page ?? 1)), (totalResults ?? 1))} of {totalResults} total results</div> : "" }
+        {!loading && !error ? <div>Showing {totalResults == 0 ? 0 : (resultsPerPage * (page ?? 1)) - resultsPerPage + 1} - {Math.min((resultsPerPage * (page ?? 1)), (totalResults ?? 1))} of {totalResults} total results</div> : ""}
       </div>
       <div className="flex justify-center mt-2 mb-4 phone:mb-0">
         {!loading ? <Pagination variant="outlined" shape="rounded" count={Math.ceil((totalResults ?? 1) / resultsPerPage)} page={getParam("page") != "" ? +getParam("page") : 1} onChange={handlePageChange} /> : ""}
