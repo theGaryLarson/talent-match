@@ -98,7 +98,7 @@ export default function Page() {
             title={'Data Analytics'}
             text={'Find job seekers with training and expertise in Data Analytics'} href={'/services/employers/dashboard/listview?search=Data+Analytics'}          />
         </div>
-        <h4 className='text-lg font-bold'>Need more information? <Link href={'/services/employers/faq'}>Click here.</Link></h4>
+        <h4 className='text-lg font-bold REPLACE-BEFORE-RELEASE'>Need more information? <Link href={'/services/employers/faq'}>Click here.</Link></h4>
         <h4 className='text-lg text-primary-600'>First candidates will be available for interview in September. This offer is limited to ~ 100 employers as we develop an initial cohort of job candidates.</h4>
         
         <div className='flex flex-wrap'>
