@@ -43,6 +43,7 @@ export type CompanyInfoSummaryDTO = {
   companyId?: string;
   companyName?: string;
   companyLogoUrl?: string;
+  isVerifiedCompany?: boolean;
   companyAddress?: ReadAddressDTO;
 };
 
@@ -67,8 +68,8 @@ export type PostAddressDTO = {
 
 export type PostCompanyInfoDTO = {
   userId: string;
-  employerId: string;
-  companyId: string;
+  employerId?: string;
+  companyId?: string;
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
