@@ -157,7 +157,6 @@ export default function CreateJobseekerProfileIntroPage() {
     const name = `${firstName} ${lastName}`;
 
     const formData = {
-      //TODO: assign existing userId if exists if not create new with uuidv4().
       userId: session.user.id,
       photoUrl: avatarUrl || null,
       firstName:
@@ -193,12 +192,16 @@ export default function CreateJobseekerProfileIntroPage() {
       if (response.ok) {
         const result = await response.json();
         dispatch(submitFormSuccess());
-        await updateSessionProperties({
-          firstName,
-          lastName,
-          name,
-          image: avatarUrl,
-        });
+
+        if (session && status === 'authenticated') {
+          await updateSessionProperties({
+            firstName,
+            lastName,
+            name,
+            image: avatarUrl,
+          });
+        }
+
         router.push('/create-profile/employer/company');
       } else {
         const errorData = await response.json();
