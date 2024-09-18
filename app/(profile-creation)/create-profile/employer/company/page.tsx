@@ -70,33 +70,28 @@ export default function CreateEmployerCompanyInfoPage() {
               //   submitFormFailure(errorData.error || 'Failed to submit the form'),
               // );
             } else {
-              let fetchedData: PostEmployerPersonalDTO = (await response.json()).result
+              let fetchedData: PostCompanyInfoDTO = (await response.json()).result
                 .loadIntroPage;
-              console.log(firstName, lastName, email, image);
               console.log(fetchedData);
-              companyData.birthDate = fetchedData.birthDate ?? '';
-              companyData.email =
-                fetchedData.email.length !== 0
-                  ? fetchedData.email
-                  : (email ?? '');
-              companyData.firstName =
-                typeof fetchedData.firstName === 'string' &&
-                fetchedData.firstName?.length !== 0
-                  ? fetchedData.firstName
-                  : (firstName ?? '');
-              companyData.lastName =
-                typeof fetchedData.lastName === 'string' &&
-                fetchedData.lastName?.length !== 0
-                  ? fetchedData.lastName
-                  : (lastName ?? '');
-              companyData.phone = fetchedData.phone;
-              companyData.phoneCountryCode = fetchedData.phoneCountryCode;
-              companyData.photoUrl =
-                typeof fetchedData.photoUrl === 'string' &&
-                fetchedData.photoUrl?.length !== 0
-                  ? fetchedData.photoUrl
-                  : (image ?? '');
 
+              // Set all normal input data here with fetched data
+              companyData.industrySectorTitle = fetchedData.industrySectorTitle;
+              companyData.companyName = fetchedData.companyName;
+              companyData.companyAddresses = fetchedData.companyAddresses;
+              companyData.logoUrl = fetchedData.logoUrl;
+              companyData.aboutUs = fetchedData.aboutUs;
+              companyData.companyEmail = fetchedData.companyEmail;//
+              companyData.yearFounded = fetchedData.yearFounded ?? '';//
+              companyData.websiteUrl = fetchedData.websiteUrl;
+              companyData.videoUrl = fetchedData.videoUrl;
+              companyData.phoneCountryCode = fetchedData.phoneCountryCode;
+              companyData.companyPhone = fetchedData.companyPhone;
+              companyData.mission = fetchedData.mission;
+              companyData.vision = fetchedData.vision;
+              companyData.size = fetchedData.size;
+              companyData.estimatedAnnualHires = fetchedData.estimatedAnnualHires;
+              
+              // Use setter to update all data
               setCompanyData({ ...companyData });
             }
           } catch (error) {
@@ -106,19 +101,32 @@ export default function CreateEmployerCompanyInfoPage() {
           console.log('fetching from redux store');
         }
 
-        setBirthdate(
-          typeof companyData.birthDate === 'string' &&
-            companyData.birthDate.length !== 0
-            ? dayjs(companyData.birthDate)
+        // Manually set input data here 
+        setYearFounded(
+          typeof companyData.yearFounded === 'string' &&
+            companyData.yearFounded.length !== 0
+            ? dayjs(companyData.yearFounded)
             : null,
         );
-        setAvatarUrl(companyData.photoUrl ?? null);
+        setLogoUrl(companyData.logoUrl ?? null);
       }
     };
     initializeFormFields();
-    // if (typeof companyObject !== 'string' && companyObject) {
+    setYearFounded(
+      typeof companyData.yearFounded === 'string' &&
+      companyData.yearFounded.length !== 0
+      ? dayjs(companyData.yearFounded)
+      : null,
+    );
+    setLogoUrl(companyData.logoUrl);
+
+    
+    // REVIEW: This portion uses companyObject (companyDropdownDTO), if company exists/selected from dropdown below fields
+    // yearfounded, logourl, companyname, companysize
+
+    if (typeof companyObject !== 'string' && companyObject) {
     //   // Company is an object, use existing companyId
-    //   setCompanyId(companyObject.companyId);
+      setCompanyId(companyObject.companyId);
     //   // Only run this if company is a valid object (not a string)
     //   dispatch(
     //     updateField({
@@ -132,22 +140,15 @@ export default function CreateEmployerCompanyInfoPage() {
     //       value: companyObject.companySize as string,
     //     }),
     //   );
-      setYearFounded(
-        typeof companyData.yearFounded === 'string' &&
-        companyData.yearFounded.length !== 0
-        ? dayjs(companyData.yearFounded)
-        : null,
-      );
-      setLogoUrl(companyData.logoUrl);
-    // } else if (
-    //   typeof companyObject === 'string' &&
-    //   companyObject.trim() !== ''
-    // ) {
-    //   // If company is a string (new company), generate a new company ID
-    //   const generatedId = uuidv4();
-    //   setCompanyId(generatedId);
-    // }
-    // setEmployerId(uuidv4());
+    } else if (
+      typeof companyObject === 'string' &&
+      companyObject.trim() !== ''
+    ) {
+      // If company is a string (new company), generate a new company ID
+      const generatedId = uuidv4();
+      setCompanyId(generatedId);
+    }
+    setEmployerId(uuidv4());
   }, [session]);
 
   const handleFieldChange = (
@@ -317,7 +318,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-websiteUrl"
                 placeholder="www.company.com"
                 onChange={handleFieldChange}
-                value={companyData.websiteUrl}
+                value={companyData.websiteUrl ?? ''}
                 disabled={typeof companyObject === 'object'}
                 required
               >
@@ -339,7 +340,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-companyPhone"
                 onChange={handleFieldChange}
                 placeholder="(555) 123-4567"
-                value={companyData.companyPhone}
+                value={companyData.companyPhone ?? ''}
                 disabled={typeof companyObject === 'object'}
                 required
               >
@@ -362,7 +363,6 @@ export default function CreateEmployerCompanyInfoPage() {
               />
 
               {/* <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel> */}
-              {/* REVIEW: May swap to number input instead of dropdown with ranges */}
               <SelectOptionsWithLabel
                 id="profile-creation-company-size"
                 onChange={handleFieldChange}
@@ -376,7 +376,7 @@ export default function CreateEmployerCompanyInfoPage() {
                   { label: '5000+', value: '5000+' },
                 ]}
                 placeholder="Please select"
-                value={companyData.state ?? ''}
+                value={companyData.size ?? ''}
                 disabled={typeof companyObject === 'object'}
               >
                 Company Size *

@@ -72,7 +72,7 @@ export type PostCompanyInfoDTO = {
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  companyAddresses?: PostAddressDTO[];
+  companyAddresses?: PostAddressDTO[] | null;
   logoUrl: string | null;
   aboutUs?: string | null;
   companyEmail: string;

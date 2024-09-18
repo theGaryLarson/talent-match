@@ -1,7 +1,7 @@
 'use client';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../jobseekerStore';
-import { PostEmployerPersonalDTO, PostCompanyInfoDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import { PostEmployerPersonalDTO, PostCompanyInfoDTO, PostAddressDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
 
 // Define a type for the slice state
 export interface EmployerState {
@@ -29,7 +29,7 @@ export const initialState: EmployerState = {
     industrySectorTitle: null,
     companyName: '',
     // REVIEW: Should just import PostAddressDTO?
-    companyAddresses: PostAddressDTO[],
+    companyAddresses: null,
     logoUrl: null,
     aboutUs: null,
     companyEmail: '',
