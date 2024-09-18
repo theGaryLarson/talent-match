@@ -1,13 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { PrismaClient } from '@prisma/client';
+import { auth } from '@/auth';
 import {
   PostAddressDTO,
   PostCompanyInfoDTO,
   ReadCompanyInfoDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
-import { formatPhoneE164 } from '@/app/lib/utils';
+import { devLog, formatPhoneE164 } from '@/app/lib/utils';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 
 const prisma: PrismaClient = getPrismaClient();
@@ -37,14 +38,21 @@ export async function POST(request: Request) {
     } = body;
     const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone);
 
-    // Check if employer record exists for user and is connected to user.
+    // Ensure employer record exists for user and is connected to user.
+    const newEmployerId: string = uuidv4();
     await prisma.employers.upsert({
       where: {
         user_id: userId,
       },
-      update: {},
+      update: {
+        users: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
       create: {
-        employer_id: employerId,
+        employer_id: employerId || newEmployerId,
         users: {
           connect: {
             id: userId,
@@ -53,9 +61,10 @@ export async function POST(request: Request) {
       },
     });
 
+    const newCompanyId: string = uuidv4();
     const upsertedCompany = await prisma.companies.upsert({
       where: {
-        company_id: companyId,
+        company_id: companyId || newCompanyId,
       },
       update: {
         industry_sector_id: industrySectorId,
@@ -78,7 +87,7 @@ export async function POST(request: Request) {
         },
       },
       create: {
-        company_id: companyId,
+        company_id: companyId || newCompanyId,
         industry_sector_id: industrySectorId,
         company_name: companyName,
         company_logo_url: logoUrl,
@@ -134,7 +143,7 @@ export async function POST(request: Request) {
       return prisma.company_addresses.upsert({
         where: {
           company_id_city: {
-            company_id: companyId,
+            company_id: companyId || newCompanyId,
             city: address.city,
           },
         },
@@ -204,6 +213,15 @@ export async function POST(request: Request) {
       estimatedAnnualHires: upsertedCompany?.estimated_annual_hires?.toString(),
       isApproved: upsertedCompany.is_approved,
     };
+
+    // Fixme: Update session with new employerId and companyId. Session returning null.
+    // const session = await auth(); // Get the session using the auth function
+    // if (session) {
+    //   // Update session properties
+    //   session.user.employerId = employerId || newEmployerId;
+    //   session.user.companyId = companyId || newCompanyId;
+    // }
+
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
     console.error('Error upserting company information:', e.message);
