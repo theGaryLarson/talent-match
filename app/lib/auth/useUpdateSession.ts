@@ -18,16 +18,13 @@ export const useUpdateSession = (): ((
 
     // Validate each property
     for (const [key, value] of Object.entries(properties)) {
-      if (typeof value === 'string') {
-        // It's a valid string, do nothing
-        continue;
-      } else if (
-        Array.isArray(value) &&
-        value.every((v) => Object.values(Role).includes(v))
-      ) {
-        // It's an array, and all elements are valid Role values, do nothing
-        continue;
-      } else {
+      const isValid =
+        typeof value === 'string' ||
+        typeof value === 'boolean' ||
+        (Array.isArray(value) &&
+          value.every((v) => Object.values(Role).includes(v)));
+
+      if (!isValid) {
         console.error(`Invalid property type for "${key}":`, value);
         return; // Exit if any property is invalid
       }
@@ -39,7 +36,7 @@ export const useUpdateSession = (): ((
       await update(properties); // Call the update function with the validated properties
       const updatedSession = await getSession(); // Fetch the latest session state and log it
       devLog('Updated session:', updatedSession);
-      devLog(`Session properties updated successfully.`);
+      devLog(`Session properties updated successfully.`, '');
     } catch (error) {
       console.error(`Failed to update session properties:`, error);
     }
