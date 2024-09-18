@@ -43,7 +43,6 @@ export default auth((req) => {
 
   const publicRoutes = [
     "/signin",
-    "/login",
     "/signup",
     "/signup/employer",
     "/signup/jobseeker",

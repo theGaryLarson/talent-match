@@ -62,7 +62,7 @@ export default function JobseekerSignupFinishPage(){
             <DividerWithText className='py-8'>or</DividerWithText>
             <div className='text-center flex flex-col gap-2'>
               <p>Already have a CFA account?</p>
-              <Link className='text-blue-500' href="/login">Login</Link>
+              <Link className='text-blue-500' href="/signin">Sign in</Link>
             </div>
           </form>
           
