@@ -1,11 +1,12 @@
 'use client';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../jobseekerStore';
-import { PostEmployerPersonalDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import { PostEmployerPersonalDTO, PostCompanyInfoDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
 
 // Define a type for the slice state
 export interface EmployerState {
   personal: PostEmployerPersonalDTO;
+  company: PostCompanyInfoDTO;
 }
 
 // Define the initial state using that type
@@ -20,6 +21,28 @@ export const initialState: EmployerState = {
     phone: null,
     photoUrl: null,
   },
+  company: {
+    userId: '',
+    employerId: '',
+    companyId: '',
+    industrySectorId: null,
+    industrySectorTitle: null,
+    companyName: '',
+    // REVIEW: Should just import PostAddressDTO?
+    companyAddresses: PostAddressDTO[],
+    logoUrl: null,
+    aboutUs: null,
+    companyEmail: '',
+    yearFounded: '',
+    websiteUrl: null,
+    videoUrl: null,
+    phoneCountryCode: null,
+    companyPhone: null,
+    mission: null,
+    vision: null,
+    size: '',
+    estimatedAnnualHires: '',
+  }
 };
 
 // Actions
@@ -36,10 +59,16 @@ export const employerSlice = createSlice({
     setPersonal: (state, action: PayloadAction<PostEmployerPersonalDTO>) => {
       state.personal = action.payload;
     },
+    initializeCompany: (state, action: PayloadAction<PostCompanyInfoDTO>) => {
+      state.company = action.payload;
+    },
+    setCompany: (state, action: PayloadAction<PostCompanyInfoDTO>) => {
+      state.company = action.payload;
+    },
   },
 });
 
-export const { initializePersonal, setPersonal } =
+export const { initializePersonal, setPersonal, initializeCompany, setCompany } =
   employerSlice.actions;
 
 // TODO: Review if needed in future

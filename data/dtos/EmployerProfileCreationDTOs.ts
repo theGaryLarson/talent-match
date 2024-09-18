@@ -74,7 +74,7 @@ export type PostCompanyInfoDTO = {
   companyName: string;
   companyAddresses?: PostAddressDTO[];
   logoUrl: string | null;
-  aboutUs?: string;
+  aboutUs?: string | null;
   companyEmail: string;
   yearFounded: string;
   websiteUrl?: string | null;
