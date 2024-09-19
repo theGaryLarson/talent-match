@@ -20,11 +20,7 @@ export default function JobSeekerPageBanner() {
         <div className="flex flex-col items-start justify-start">
           <div className="relative h-6 w-px" />
         </div>
-        <Link href='/signup' className="inline-flex items-center justify-center gap-2 rounded-[100px] border border-white px-6 py-2.5 hover:invert">
-          <div className="text-center font-['Roboto'] text-base font-medium leading-tight tracking-tight text-white">
-            Create Profile
-          </div>
-        </Link>
+        <RoundedButton content={"Create Profile"} link={"/signin"} invertColor={false}/>
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export default function CFASignupHeader({className}:{className?:string}) {
             <Image src='/cfa_images/TWC_75x50_2024.svg' alt="Computing For All" width={75} height={50} priority/>
           </Link>
         </div>
-        <Button href={`/login`} className='bg-primary-600 rounded-full'>Sign In</Button>
+        <Button href={`/signin`} className='bg-primary-600 rounded-full'>Sign In</Button>
       </nav>
       <Divider className='hidden sm-tablet:block'/>
     </header>

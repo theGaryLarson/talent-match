@@ -8,8 +8,8 @@ import RoundedButtonCard from '../ui/components/RoundedButtonCard';
 export default function Page() {
     return (
         <>
-            <PageBanner
-                title="Washington Tech Workforce Coalition" bg={'bg-services-hero'}></PageBanner>
+            <PageBanner title="Washington Tech Workforce Coalition" bg={'bg-services-hero'}
+                        buttonText="SIGN UP" buttonLink="/underconstruction"/>
             <main className="space-y-3 py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px] font-['Roboto']">
                 <h1 className="text-2xl">
                     Computing For All
@@ -37,7 +37,7 @@ export default function Page() {
                             'Join our unique process for getting you connected with ready-to-hire employers as a job candidate with a showcase of TechReady job skills and achievements. We provide development opportunities in technical proficiency and success strategies for success in the work environment, along with career navigation skills. '
                         }
                         buttonText={'Register'}
-                        link={'/signup'}
+                        link={'/signin'}
                         callToAction={
                             'Register for Information session, build your profile'
                         }

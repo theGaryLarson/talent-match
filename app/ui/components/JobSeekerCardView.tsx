@@ -64,7 +64,7 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
         {/* view and share */}
         <div className="flex flex-col">
           <div className="w-max h-min">
-            <Link
+            <Link // view profile should redirect to login and then continue to candidate after account create
               href={'/services/jobseekers/' + id}
               className="border border-2 border-cyan-600 inline-block w-fit rounded-full bg-white py-2 px-2 tablet:px-4 laptop:px-6 text-sm tablet:text-base laptop:text-lg text-cyan-600 hover:bg-gray-200">
               <strong>View Profile</strong>

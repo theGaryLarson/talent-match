@@ -70,7 +70,7 @@ export default function SignupPage() {
       <main className="flex flex-col gap-9 py-8">
         <h1 className="text-center text-4xl">Create account</h1>
         <fieldset className="flex flex-col items-center justify-center gap-8 sm-tablet:flex-row">
-          <legend className="pb-4 text-center">Select your role first</legend>
+          <legend className="pb-4 w-full text-center">Select your role first</legend>
           <div>
             <input
               type="radio"
@@ -128,15 +128,6 @@ export default function SignupPage() {
           Continue
         </Button>
 
-        {/* <div className="mx-auto mb-4 flex flex-col gap-4 text-center">
-          <DividerWithText>or</DividerWithText>
-          <p>
-            Already have a CFA account?{' '}
-            <Link className="text-blue-500" href="/login">
-              Login
-            </Link>
-          </p>
-        </div> */}
       </main>
       <footer className="mt-auto">
         <CFAFooter />
