@@ -11,7 +11,7 @@ import { Role } from "./data/dtos/UserInfoDTO";
 export default auth((req) => {
   const pathname = req.nextUrl.pathname;
   const userRoles = req.auth?.user?.roles || [];
-  const userId = req.auth?.user?.id;
+  const jobseekerId = req.auth?.user?.jobseekerId;
 
   // Routes for logged in users with jobseeker role
   const guestRoutes = [
@@ -57,6 +57,7 @@ export default auth((req) => {
     "/signout",
     "/",
     // "/pre-apprenticeship",
+    "/underconstruction",
     "/services",
     "/services/employers",
     "/services/employers/faq",
@@ -94,6 +95,10 @@ export default auth((req) => {
     const signUpUrl = new URL("/signup", req.nextUrl.origin);
     return NextResponse.redirect(signUpUrl);
   }
+  // Caught someone! They wanna see a jobseeker, they gotta make an account :)
+  else if (!req.auth && pathname.startsWith("/services/jobseekers/")) {
+    return NextResponse.redirect(new URL("/signin", req.nextUrl.origin));
+  }
 
 
   // PUBLIC ROUTING ------------
@@ -118,8 +123,8 @@ export default auth((req) => {
   else if (rolesForJobseeker.some((role) => userRoles.includes(role)) &&
     pathname.startsWith("/services/jobseekers/")) {
     const requestedId = pathname.replace("/services/jobseekers/", "");
-    console.log(requestedId + ", " + userId);
-    if (requestedId != userId) {
+    console.log(requestedId + ", " + jobseekerId);
+    if (requestedId != jobseekerId) {
       console.log("Access denied: Jobseeker can only access their own profile");
       return NextResponse.redirect(homeUrl);
     }
