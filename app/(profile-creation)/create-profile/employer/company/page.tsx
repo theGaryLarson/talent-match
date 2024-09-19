@@ -20,7 +20,7 @@ import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { PostCompanyInfoDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import { PostCompanyInfoDTO, ReadCompanyInfoDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
   setCompany,
   initialState,
@@ -52,54 +52,66 @@ export default function CreateEmployerCompanyInfoPage() {
 
   useEffect(() => {
     const initializeFormFields = async () => {
+      console.log(session);
       if (status === 'authenticated' && session?.user) {
         if (_.isEqual(companyStoreData, initialState.personal)) {
-          const { id, firstName, lastName, email, image } = session.user;
+          const { 
+            id,
+            companyId,
+            employerId,
+          } = session.user;
 
-          companyData.userId = id ?? '';
           console.log('fetching fresh');
+          if(companyId) {
+            try {
+              const response = await fetch(
+                '/api/employers/account/company-info/get/' + companyId,
+              );
 
-          try {
-            const response = await fetch(
-              '/api/employers/account/personal-info/get/' + id,
-            );
+              if (!response.ok) {
+                const errorData = await response.json();
+                // dispatch(
+                //   submitFormFailure(errorData.error || 'Failed to submit the form'),
+                // );
+              } else {
+                let fetchedData: ReadCompanyInfoDTO = (await response.json()).result
+                  .loadIntroPage;
+                console.log(fetchedData);
 
-            if (!response.ok) {
-              const errorData = await response.json();
-              // dispatch(
-              //   submitFormFailure(errorData.error || 'Failed to submit the form'),
-              // );
-            } else {
-              let fetchedData: PostCompanyInfoDTO = (await response.json()).result
-                .loadIntroPage;
-              console.log(fetchedData);
-
-              // Set all normal input data here with fetched data
-              companyData.industrySectorTitle = fetchedData.industrySectorTitle;
-              companyData.companyName = fetchedData.companyName;
-              companyData.companyAddresses = fetchedData.companyAddresses;
-              companyData.logoUrl = fetchedData.logoUrl;
-              companyData.aboutUs = fetchedData.aboutUs;
-              companyData.companyEmail = fetchedData.companyEmail;//
-              companyData.yearFounded = fetchedData.yearFounded ?? '';//
-              companyData.websiteUrl = fetchedData.websiteUrl;
-              companyData.videoUrl = fetchedData.videoUrl;
-              companyData.phoneCountryCode = fetchedData.phoneCountryCode;
-              companyData.companyPhone = fetchedData.companyPhone;
-              companyData.mission = fetchedData.mission;
-              companyData.vision = fetchedData.vision;
-              companyData.size = fetchedData.size;
-              companyData.estimatedAnnualHires = fetchedData.estimatedAnnualHires;
-              
-              // Use setter to update all data
-              setCompanyData({ ...companyData });
+                // Set all normal input data here with fetched data
+                companyData.userId = id ?? '';
+                companyData.employerId = employerId ?? '';
+                companyData.companyId = fetchedData.companyId;//
+                companyData.industrySectorId = fetchedData.industrySectorId;//
+                companyData.industrySectorTitle = fetchedData.industrySectorTitle;
+                companyData.companyName = fetchedData.companyName;//
+                // companyData.companyAddresses = fetchedData.companyAddresses;
+                companyData.logoUrl = fetchedData.logoUrl;//
+                companyData.aboutUs = fetchedData.aboutUs;
+                companyData.companyEmail = fetchedData.companyEmail;//
+                companyData.yearFounded = fetchedData.yearFounded ?? '';//
+                companyData.websiteUrl = fetchedData.websiteUrl;//companyWebsite
+                companyData.videoUrl = fetchedData.videoUrl;
+                companyData.phoneCountryCode = fetchedData.phoneCountryCode;
+                companyData.companyPhone = fetchedData.companyPhone;
+                companyData.mission = fetchedData.mission;
+                companyData.vision = fetchedData.vision;
+                companyData.size = fetchedData.employeeCount;//companySize
+                companyData.estimatedAnnualHires = fetchedData.estimatedAnnualHires;//predictedHires
+              }
+            } catch (error) {
+              // dispatch(submitFormFailure('Failed to submit the form'));
             }
-          } catch (error) {
-            // dispatch(submitFormFailure('Failed to submit the form'));
+          } else {
+            companyData.userId = id ?? '';
+            companyData.employerId = employerId ?? '';
+            companyData.companyId = companyId ?? '';
           }
+          setCompanyData({ ...companyData });
         } else {
           console.log('fetching from redux store');
         }
+
 
         // Manually set input data here 
         setYearFounded(
@@ -118,28 +130,15 @@ export default function CreateEmployerCompanyInfoPage() {
       ? dayjs(companyData.yearFounded)
       : null,
     );
-    setLogoUrl(companyData.logoUrl);
+    setLogoUrl(companyData.logoUrl ?? null);
 
     
     // REVIEW: This portion uses companyObject (companyDropdownDTO), if company exists/selected from dropdown below fields
     // yearfounded, logourl, companyname, companysize
-
+    // TODO: lines 139-150 need to be reviewed and refactored, left off here
     if (typeof companyObject !== 'string' && companyObject) {
     //   // Company is an object, use existing companyId
       setCompanyId(companyObject.companyId);
-    //   // Only run this if company is a valid object (not a string)
-    //   dispatch(
-    //     updateField({
-    //       id: 'profile-creation-company-name',
-    //       value: companyObject.companyName,
-    //     }),
-    //   );
-    //   dispatch(
-    //     updateField({
-    //       id: 'profile-creation-company-size',
-    //       value: companyObject.companySize as string,
-    //     }),
-    //   );
     } else if (
       typeof companyObject === 'string' &&
       companyObject.trim() !== ''
