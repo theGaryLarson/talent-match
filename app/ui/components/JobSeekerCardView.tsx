@@ -1,7 +1,7 @@
+'use client'
 import Avatar from './Avatar';
 import Skills from './Skills';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { BookmarkIcon } from '@heroicons/react/24/outline';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import { JobSeekerCardViewDTO } from '@/data/dtos/JobSeekerCardViewDTO';
 import ShareButton from './ShareButton';
