@@ -97,8 +97,8 @@ export async function GET(request: Request, { params }: { params: { companyId: s
         return NextResponse.json({success:true, result}, {status: 200})
 
     } catch(e: any) {
-        console.error('Error upserting job seeker introduction:', e.message);
-        return NextResponse.json({error: `Failed to upsert employer personal information.\n${e.message}`}, {status: 500});
+        console.error('Error retrieving company record.', e.message);
+        return NextResponse.json({error: `Error retrieving company record.\n${e.message}`}, {status: 500});
     } finally {
         await prisma.$disconnect();
     }
