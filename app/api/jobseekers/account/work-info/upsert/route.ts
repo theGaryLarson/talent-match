@@ -66,6 +66,7 @@ export async function POST(request: Request) {
                     responsibilities: workExperience.responsibilities,
                     isInternship: workExperience.isInternship,
                     techAreaId: workExperience.techAreaId || undefined,
+                    sectorId: workExperience.sectorId || undefined
                 };
 
                 if (existingWorkExperience) {
@@ -89,12 +90,13 @@ export async function POST(request: Request) {
                                 connect: {
                                     jobseeker_id: updatedJobseeker?.jobseeker_id ?? undefined,
                                 },
-                            }, // TODO: Implement when Work Experience UI can get this added in.
-                            // technology_areas: {
-                            //     connect: {
-                            //         technology_area_id: workExperience?.techAreaId ?? undefined,
-                            //     },
-                            // },
+                            },
+                            techArea:  workExperience?.techAreaId
+                                ? { connect: { id: workExperience.techAreaId } }
+                                : undefined, // Skip connection if techAreaId is undefined,
+                            industrySector: workExperience.sectorId
+                                ? { connect: {industry_sector_id: workExperience.sectorId}}
+                                : undefined,
                         },
                     });
                     createdWorkExperiences.push(createdWorkExperience);
