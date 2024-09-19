@@ -126,6 +126,7 @@ export async function searchCompanies(searchTerm: string): Promise<
     companyWebsite: string | null;
     yearFounded: number;
     companySize: string;
+    approvedCompany: boolean;
   }[]
 > {
   return genericSearch<companies>({
@@ -146,6 +147,7 @@ export async function searchCompanies(searchTerm: string): Promise<
       yearFounded: company.year_founded,
       companySize: company.size,
       predictedHires: company.estimated_annual_hires,
+      approvedCompany: company.is_approved,
     })),
   );
 }

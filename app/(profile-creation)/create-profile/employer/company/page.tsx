@@ -3,7 +3,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { RootState } from '@/lib/store';
-import { v4 as uuidv4 } from 'uuid'; // Import uuidv4
 import { useSelector, useDispatch } from 'react-redux';
 import {
   addField,
@@ -40,13 +39,12 @@ export default function CreateEmployerCompanyInfoPage() {
   const [year_founded, setYearFounded] = useState<Dayjs | null>(dayjs(null));
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
-  const updateSessionProperties = useUpdateSession(); // TODO: update session with companyId and isApproved value
+  const updateSessionProperties = useUpdateSession(); // TODO: update session with companyId and isApproved value if company exists
 
   const [companyObject, setCompanyObject] = useState<
     CompanyDropdownDTO | string
   >('');
   const [companyId, setCompanyId] = useState<string | null>(null); // State for companyId
-  const [employerId, setEmployerId] = useState<string>(uuidv4());
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
     null,
   );
@@ -101,15 +99,7 @@ export default function CreateEmployerCompanyInfoPage() {
           : null,
       );
       setLogoUrl(companyObject.companyLogoUrl);
-    } else if (
-      typeof companyObject === 'string' &&
-      companyObject.trim() !== ''
-    ) {
-      // If company is a string (new company), generate a new company ID
-      const generatedId = uuidv4();
-      setCompanyId(generatedId);
     }
-    setEmployerId(uuidv4());
   }, [companyObject, dispatch]);
 
   const handleFieldChange = (
@@ -134,13 +124,19 @@ export default function CreateEmployerCompanyInfoPage() {
     }
   };
 
-  const getFieldValue = (id: string, defaultValue: string = ''): string => {
+  function getFieldValue<T = string>(id: string, defaultValue: T): T {
     const fieldValue = fields.find((f: FormField) => f.id === id)?.value;
-    if (typeof fieldValue === 'number') {
-      return fieldValue.toString();
+
+    if (fieldValue === undefined || fieldValue === null) {
+      return defaultValue; // Return default value if fieldValue is undefined or null
     }
-    return fieldValue || defaultValue;
-  };
+
+    if (typeof fieldValue === typeof defaultValue) {
+      return fieldValue as T; // Cast fieldValue to the type of defaultValue
+    }
+
+    return defaultValue;
+  }
 
   const handleImageUpload = (url: string) => {
     // Update the local state with the uploaded image URL
@@ -157,8 +153,8 @@ export default function CreateEmployerCompanyInfoPage() {
       // If companyObject is an object, access its properties
       formData = {
         userId: session?.user.id!,
-        employerId: employerId,
-        companyId: companyObject.companyId!,
+        employerId: session?.user?.employerId || undefined, // new employer record created on backend if undefined
+        companyId: companyObject?.companyId || undefined, // new company record created on backend if undefined
         industrySectorId:
           companyObject.industrySectorId ||
           (industry ? industry.industry_sector_id : null),
@@ -168,46 +164,55 @@ export default function CreateEmployerCompanyInfoPage() {
         companyEmail: companyObject.companyEmail || '',
         yearFounded: year_founded?.toISOString()!,
         websiteUrl: companyObject.companyWebsite || null,
+        phoneCountryCode: 'United States +1',
         companyPhone: companyObject.companyPhone || null,
         size: companyObject.companySize || '',
         estimatedAnnualHires: companyObject.predictedHires || '',
-        aboutUs: undefined, // Add any required fields not yet accounted for in your formData
+        aboutUs: undefined,
         mission: undefined,
         vision: null,
-        phoneCountryCode: 'United States +1',
         videoUrl: undefined,
         companyAddresses: [], // Provide an empty array or populate as needed
       };
+      // update employer session if the company already exists
+      await updateSessionProperties({
+        companyId,
+        companyIsApproved: companyObject.approvedCompany,
+      });
     } else {
       // If companyObject is a string or not set, use alternate properties
+      // and set the employer session data on the following page.
       formData = {
         userId: session?.user.id!,
-        employerId: employerId,
-        companyId: companyId!,
+        employerId: undefined, // TODO: fetched on
+        companyId: undefined, // TODO: fetch this on the following page with updateSessionProperties custom hook.
         industrySectorId: industry ? industry.industry_sector_id : null,
         industrySectorTitle: industry ? industry.sector_title : null,
         companyName: companyObject || '',
         logoUrl: logoUrl,
-        companyEmail: fields.find(
-          (f) => f.id === 'profile-creation-company-email',
-        )?.value as string,
+        companyEmail: getFieldValue<string>(
+          'profile-creation-company-email',
+          '',
+        ),
         yearFounded: year_founded?.toISOString()!,
         websiteUrl: getFieldValue('profile-creation-company-website', ''),
-        companyPhone: getFieldValue('profile-creation-company-phone'),
-        size: getFieldValue('profile-creation-company-size'),
+        phoneCountryCode: 'United States +1',
+        companyPhone: getFieldValue('profile-creation-company-phone', ''),
+        size: getFieldValue<string>('profile-creation-company-size', ''),
         estimatedAnnualHires: getFieldValue(
           'profile-creation-company-annual-hire',
+          '',
         ),
-        aboutUs: undefined, // Add any required fields not yet accounted for in your formData
+        aboutUs: undefined,
         mission: undefined,
         vision: null,
-        phoneCountryCode: 'United States +1',
         videoUrl: undefined,
         companyAddresses: [], // Provide an empty array or populate as needed
       };
     }
 
     try {
+      // TODO: recreate new routes under api/companies to update for these redesigned single page entries.
       const response = await fetch(
         '/api/employers/account/company-info/upsert',
         {
@@ -220,7 +225,6 @@ export default function CreateEmployerCompanyInfoPage() {
       );
 
       if (response.ok) {
-        const result = await response.json();
         dispatch(submitFormSuccess());
         router.push('/create-profile/employer/about');
       } else {
@@ -351,9 +355,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 value={
                   typeof companyObject === 'object' && companyObject !== null
                     ? companyObject.companyWebsite || ''
-                    : fields.find(
-                        (f) => f.id === 'profile-creation-company-website',
-                      )?.value
+                    : getFieldValue('profile-creation-company-website', '')
                 }
                 disabled={typeof companyObject === 'object'}
                 required
@@ -368,9 +370,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 value={
                   typeof companyObject === 'object' && companyObject !== null
                     ? companyObject.companyEmail || ''
-                    : fields.find(
-                        (f) => f.id === 'profile-creation-company-email',
-                      )?.value
+                    : getFieldValue('profile-creation-company-email', '')
                 }
                 disabled={typeof companyObject === 'object'}
                 required
@@ -385,9 +385,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 value={
                   typeof companyObject === 'object' && companyObject !== null
                     ? companyObject.companyPhone || ''
-                    : fields.find(
-                        (f) => f.id === 'profile-creation-company-phone',
-                      )?.value
+                    : getFieldValue('profile-creation-company-phone', '')
                 }
                 disabled={typeof companyObject === 'object'}
                 required
@@ -429,9 +427,7 @@ export default function CreateEmployerCompanyInfoPage() {
                   companyObject !== null &&
                   companyObject.companySize
                     ? companyObject.companySize
-                    : fields.find(
-                        (f) => f.id === 'profile-creation-company-size',
-                      )?.value
+                    : getFieldValue('profile-creation-company-size', '')
                 }
                 disabled={typeof companyObject === 'object'}
               >
@@ -446,9 +442,7 @@ export default function CreateEmployerCompanyInfoPage() {
                   companyObject !== null &&
                   companyObject.predictedHires
                     ? companyObject.predictedHires
-                    : fields.find(
-                        (f) => f.id === 'profile-creation-company-annual-hire',
-                      )?.value
+                    : getFieldValue('profile-creation-company-annual-hire', '')
                 }
                 required
                 disabled={typeof companyObject === 'object'}
