@@ -8,20 +8,20 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image';
 import AccountMenu from './components/mui/AccountMenu';
 
-const forStudentsDropDownInfo = [
-  { name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
-  { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '/underconstruction', icon: FingerPrintIcon }
-]
+// const forStudentsDropDownInfo = [
+//   { name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
+//   { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '/underconstruction', icon: FingerPrintIcon }
+// ]
 
 const TopLevelLinks = [
-  { name: 'Talent Showcase', href: '/services' },
+  { name: 'Talent Showcase', href: '/services/employers/dashboard/listview' },
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
-  { name: 'Explore', href: '/underconstruction' }, // TODO: fill this out!
-  {
-    name: "Contact Us",
-    href: "/underconstruction"
-  }
+  // { name: 'Explore', href: '/underconstruction' },
+  // {
+  //   name: "Contact Us",
+  //   href: "/underconstruction"
+  // }
 ];
 
 function classNames(...classes: string[]) {
@@ -63,7 +63,7 @@ export default function CFAHeader() {
         </div>
 
         <PopoverGroup className="hidden items-center laptop:flex laptop:gap-x-12" >
-          <Popover className="relative">
+          {/* <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
               For Students
               <ChevronDownIcon className="h-5 w-5 flex-none" aria-hidden="true" />
@@ -105,7 +105,7 @@ export default function CFAHeader() {
 
               </PopoverPanel>
             </Transition>
-          </Popover>
+          </Popover> */}
 
           {TopLevelLinks.map((link) => {
             return (
