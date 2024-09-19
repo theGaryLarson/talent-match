@@ -283,7 +283,7 @@ export default function CreateJobseekerProfileEducationPage() {
               Add project experience
             </Button>
           </fieldset>
-          <div className="flex">
+          <div className="flex profile-form-progress-btn-group">
             <Button
               pill
               color="gray"
