@@ -16,7 +16,6 @@ export default auth((req) => {
   // Routes for logged in users with jobseeker role
   const guestRoutes = [
     "/signup",
-    "/signout",
   ];
 
   // Routes for logged in users with jobseeker role
@@ -33,9 +32,6 @@ export default auth((req) => {
 
     // "/services/joblistings/[id]", // out of scope for MVP
     "/services/jobseekers/dashboard",
-    "/services/employers/dashboard/listview",
-
-    "/signout",
   ];
 
   // Routes for logged in users with employer role
@@ -52,16 +48,13 @@ export default auth((req) => {
     "/create-profile/employer/congratulations",
 
     "/services/employers/dashboard",
-    "/services/employers/dashboard/listview",
     // "/services/joblistings/[id]", // out of scope for MVP
-    "/services/jobseekers/[id]",
-
-    "/signout",
   ];
 
   // Routes for any public, non-logged in user
   const publicRoutes = [
     "/signin",
+    "/signout",
     "/",
     // "/pre-apprenticeship",
     "/services",
@@ -79,44 +72,51 @@ export default auth((req) => {
 
   const homeUrl = new URL("/", req.nextUrl.origin);
 
-  // Explicitly allow public routes
-  if (!req.auth) {
-    if (publicRoutes.includes(pathname)) {
-      return NextResponse.next();
-    } else {
-      console.log("Access denied: This page is not public - " + pathname);
-      return NextResponse.redirect(homeUrl);
-    }
+
+  // HOME PAGE ------------
+  if (pathname === "/") {
+    return NextResponse.next();
   }
 
-  // If you're signed in and haven't picked a role, you gotta
-  if (req.auth && userRoles.includes(Role.GUEST) && pathname !== "/signup") {
-    const signUpUrl = new URL("/signup", req.nextUrl.origin);
-    return NextResponse.redirect(signUpUrl);
-  } // TODO: maybe allow guest signout? low priority for now
 
-  // If you're at signin and logged in, reroute to the main page
-  if (req.auth && pathname === "/signin") {
-    return NextResponse.redirect(homeUrl);
-  }
+  // SPECIFIC REDIRECTS ------------
 
   // If you're at signout and logged out, reroute to the main page
   if (!req.auth && pathname === "/signout") {
     return NextResponse.redirect(homeUrl);
   }
+  // If you're at signin and logged in, reroute to the main page
+  else if (req.auth && pathname === "/signin") {
+    return NextResponse.redirect(homeUrl);
+  }
+  // If you're signed in and haven't picked a role, you gotta
+  else if (req.auth && userRoles.includes(Role.GUEST) && pathname !== "/signup") {
+    const signUpUrl = new URL("/signup", req.nextUrl.origin);
+    return NextResponse.redirect(signUpUrl);
+  }
+
+
+  // PUBLIC ROUTING ------------
+
+  // Explicitly allow public routes
+  else if (publicRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+
+  // ROLE BASED ROUTING ------------
 
   // Route checking for jobseeker routes
-  if (jobseekerRoutes.some((route) => pathname.includes(route))) {
+  else if (jobseekerRoutes.some((route) => pathname.includes(route))) {
     if (!rolesForJobseeker.some((role) => userRoles.includes(role))) {
       console.log("Access denied: User does not have permission for jobseeker route");
       return NextResponse.redirect(homeUrl);
     }
     return NextResponse.next();
   }
-
-  // only allow jobseekers to view their own profile
-  if (rolesForJobseeker.some((role) => userRoles.includes(role)) && 
-      pathname.startsWith("/services/jobseekers/")) {
+  // Only allow jobseekers to view their own profile, not others
+  else if (rolesForJobseeker.some((role) => userRoles.includes(role)) &&
+    pathname.startsWith("/services/jobseekers/")) {
     const requestedId = pathname.replace("/services/jobseekers/", "");
     console.log(requestedId + ", " + userId);
     if (requestedId != userId) {
@@ -125,18 +125,17 @@ export default auth((req) => {
     }
     else return NextResponse.next();
   }
-
   // Route checking for employer routes
-  if (employerRoutes.some((route) => pathname.includes(route))) {
+  else if (employerRoutes.some((route) => pathname.includes(route) || 
+           pathname.startsWith("/services/jobseekers/"))) { // Maybe think of a better way to handle [id]'s when I've had some sleep
     if (!rolesForEmployer.some((role) => userRoles.includes(role))) {
       console.log("Access denied: User does not have permission for employer route");
       return NextResponse.redirect(homeUrl);
     }
     return NextResponse.next();
   }
-
   // Route checking for guest routes
-  if (guestRoutes.some((route) => pathname.includes(route))) {
+  else if (guestRoutes.some((route) => pathname.includes(route))) {
     if (!rolesForGuest.some((role) => userRoles.includes(role))) {
       console.log("Access denied: User does not have permission for guest route");
       return NextResponse.redirect(homeUrl);
@@ -144,7 +143,12 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  return NextResponse.next();
+  // FAILED ALL CHECKS, REDIRECT HOME ------------
+  // Do not pass GO, do not collect $200
+  else {
+    console.log("Access denied: This page is not public - " + pathname);
+    return NextResponse.redirect(homeUrl);
+  }
 });
 
 export const config = { // TODO: route guard the API...
