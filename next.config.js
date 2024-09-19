@@ -17,6 +17,10 @@ const nextConfig = {
             protocol: 'https',
             hostname: 'careerservicesstorage.blob.core.windows.net'
           },
+          {
+            protocol: 'https',
+            hostname: 'randomuser.me'
+          },
         ],
       }
 };
