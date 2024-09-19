@@ -15,9 +15,12 @@ import Button from '@mui/material/Button';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
+import Login from '@mui/icons-material/Login';
 
 export default function AccountMenu() {
     const { data: session } = useSession();
+    const role = session?.user.roles;
+
     const pathname = usePathname();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -31,7 +34,7 @@ export default function AccountMenu() {
     var textColor = "text-black";
     if (pathname == '/services/jobseekers') {
         textColor = 'text-white';
-      }
+    }
 
     return (
         <React.Fragment>
@@ -88,8 +91,7 @@ export default function AccountMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                {session?.user.roles.indexOf(Role.EMPLOYER) != -1 ||
-                    session?.user.roles.indexOf(Role.ADMIN) != -1 ?
+                {role?.includes(Role.EMPLOYER) || role?.includes(Role.ADMIN) ?
                     <Link href="/services/employers/dashboard">
                         <MenuItem onClick={handleClose}>
                             <ListItemIcon>
@@ -100,8 +102,7 @@ export default function AccountMenu() {
                     </Link>
                     : ""}
 
-                {session?.user.roles.indexOf(Role.JOBSEEKER) != -1 ||
-                    session?.user.roles.indexOf(Role.ADMIN) != -1 ?
+                {role?.includes(Role.JOBSEEKER) || role?.includes(Role.ADMIN) ?
                     <Link href={"/services/jobseekers/" + session?.user.jobseekerId}>
                         <MenuItem onClick={handleClose}>
                             <ListItemIcon>
@@ -112,17 +113,30 @@ export default function AccountMenu() {
                     </Link>
                     : ""}
 
-                <Divider />
-                <Link href={"/"}>
-                    <MenuItem onClick={ async () => {
-                        await signOut();
-                    }}>
-                        <ListItemIcon>
-                            <Logout fontSize="small" />
-                        </ListItemIcon>
-                        Logout
-                    </MenuItem>
-                </Link>
+                {role == undefined ?
+                    <Link href={"/signin"}>
+                        <MenuItem>
+                            <ListItemIcon>
+                                <Login fontSize="small" />
+                            </ListItemIcon>
+                            Sign In
+                        </MenuItem>
+                    </Link>
+                    :
+                    <div>
+                        <Divider />
+                        <Link href={"/"}>
+                            <MenuItem onClick={async () => {
+                                await signOut();
+                            }}>
+                                <ListItemIcon>
+                                    <Logout fontSize="small" />
+                                </ListItemIcon>
+                                Logout
+                            </MenuItem>
+                        </Link>
+                    </div>
+                }
             </Menu>
         </React.Fragment>
     );
