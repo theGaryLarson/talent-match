@@ -62,7 +62,7 @@ export default function CFAHeader() {
           }
         </div>
 
-        <PopoverGroup className="hidden items-center laptop:flex laptop:gap-x-12" >
+        <PopoverGroup className="hidden items-center tablet:flex tablet:gap-x-12" >
           {/* <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
               For Students

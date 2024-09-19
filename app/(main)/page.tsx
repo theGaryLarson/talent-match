@@ -8,8 +8,8 @@ import RoundedButtonCard from '../ui/components/RoundedButtonCard';
 export default function Page() {
     return (
         <>
-            <PageBanner
-                title="Washington Tech Workforce Coalition" bg={'bg-services-hero'}></PageBanner>
+            <PageBanner title="Washington Tech Workforce Coalition" bg={'bg-services-hero'}
+                        buttonText="SIGN UP" buttonLink="/underconstruction"/>
             <main className="space-y-3 py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px] font-['Roboto']">
                 <h1 className="text-2xl">
                     Computing For All

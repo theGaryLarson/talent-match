@@ -1,10 +1,12 @@
 import RoundedButton from "./RoundedButton";
 
 export default function PageBanner({
-    title,bg
+    title, bg, buttonText, buttonLink
   }: {
     title: string;
     bg: string;
+    buttonText: string;
+    buttonLink: string;
   }){
     return (
       <div
@@ -13,7 +15,7 @@ export default function PageBanner({
       {/* <img src={src}></img> */}
       <div className="max-w-[540px] bg-blue-trans rounded-xl p-10 space-y-5">
       <p className="text-4xl font-bold ">{title}</p>
-      <div className="REPLACE-BEFORE-RELEASE"><RoundedButton content={"SIGN UP"} link={"/underconstruction"} invertColor={false}/></div>
+      <div className="REPLACE-BEFORE-RELEASE"><RoundedButton content={buttonText} link={buttonLink} invertColor={false}/></div>
       </div>
       
     </div>
