@@ -63,7 +63,7 @@ export default auth((req) => {
   const publicRoutes = [
     "/signin",
     "/",
-    "/pre-apprenticeship",
+    // "/pre-apprenticeship",
     "/services",
     "/services/employers",
     "/services/employers/faq",

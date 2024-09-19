@@ -10,7 +10,8 @@ export default function Page() {
   return (
     <>
     <PageBanner
-      title="Pre-Apprenticeship Program" bg={'bg-services-hero'}></PageBanner>
+      title="Pre-Apprenticeship Program" bg={'bg-services-hero'}
+      buttonText='SIGN UP' buttonLink='/underconstruction'></PageBanner>
     <main className="space-y-3 py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px] font-['Roboto']">
       <h1 className="text-2xl">
       LEARN TO CODE AT COMPUTING FOR ALL

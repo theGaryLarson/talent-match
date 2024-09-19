@@ -8,7 +8,8 @@ export default function Page() {
   return (
     <>
       <PageBanner
-        title="Tech Ready Talent Showcase" bg={'bg-services-hero'}></PageBanner>
+        title="Tech Ready Talent Showcase" bg={'bg-services-hero'}
+        buttonText='SIGN UP' buttonLink='/underconstruction' />
       <main className="space-y-3 py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px] font-['Roboto']">
         <h1 className="text-2xl">
           Unlock your potential with Tech Talent Showcase
