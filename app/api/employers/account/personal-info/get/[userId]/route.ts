@@ -48,10 +48,10 @@ export async function GET(
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
-    console.error('Error upserting job seeker introduction:', e.message);
+    console.error('Failed to retrieve employer personal information.', e.message);
     return NextResponse.json(
       {
-        error: `Failed to upsert employer personal information.\n${e.message}`,
+        error: `Failed to retrieve employer personal information.\n${e.message}`,
       },
       { status: 500 },
     );
