@@ -130,7 +130,7 @@ export default function CFAHeader() {
         {/* mobile view Hamburger menu toggle */}
           <button
             type="button" onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 laptop:hidden"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 tablet:hidden"
           >
             <span className="sr-only">Open main menu</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -168,7 +168,7 @@ export default function CFAHeader() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <Disclosure as="div" className="-mx-3">
+                {/* <Disclosure as="div" className="-mx-3">
                   {({ open }) => (
                     <>
                       <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7   hover:bg-gray-50">
@@ -193,7 +193,7 @@ export default function CFAHeader() {
                       </DisclosurePanel>
                     </>
                   )}
-                </Disclosure>
+                </Disclosure> */}
                 {
                   TopLevelLinks.map((link) => {
                     return (
@@ -208,14 +208,14 @@ export default function CFAHeader() {
                   })
                 }
               </div>
-              <div className="py-6">
+              {/* <div className="py-6">
                 <Link
                   href="/signin"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7   hover:bg-gray-50"
                 >
                   Log in/Sign up
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </DialogPanel>
