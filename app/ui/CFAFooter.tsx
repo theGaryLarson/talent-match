@@ -5,9 +5,9 @@ export default function CFAFooter() {
     <div className="w-full bg-primary-600 px-6 py-2 text-white">
       <div className="flex flex-col items-center">
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 REPLACE-BEFORE-RELEASE">
           <p>Follow Us:</p>
-          <a href='https://www.linkedin.com/company/digitalskillsforall/' target="_blank">
+          <a href='/underconstruction' target="_blank">
             <img
               src={'/cfa_images/stock/LI-In-Bug.png'}
               alt={'Linkedin Link'}
@@ -24,8 +24,8 @@ export default function CFAFooter() {
       <hr />
       <p className="p-4 text-center text-sm">
         <Link className='REPLACE-BEFORE-RELEASE' href={'/underconstruction'}>Terms of Services</Link> |{' '}
-        <Link className='REPLACE-BEFORE-RELEASE' href={'/underconstruction'}>Privacy Policy</Link> |{' '}
-        <Link className='REPLACE-BEFORE-RELEASE' href={'/underconstruction'}>Cookie Settings</Link>{' '}
+        <Link className='REPLACE-BEFORE-RELEASE' href={'/underconstruction'}>Privacy Policy</Link>{' '}
+        {/* <Link className='REPLACE-BEFORE-RELEASE' href={'/underconstruction'}>Cookie Settings</Link>{' '} */}
       </p>
     </div>
   );

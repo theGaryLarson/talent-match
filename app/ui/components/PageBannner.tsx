@@ -13,7 +13,7 @@ export default function PageBanner({
       {/* <img src={src}></img> */}
       <div className="max-w-[540px] bg-blue-trans rounded-xl p-10 space-y-5">
       <p className="text-4xl font-bold ">{title}</p>
-      <RoundedButton content={"SIGN UP"} link={"/signup"} invertColor={false}/>
+      <div className="REPLACE-BEFORE-RELEASE"><RoundedButton content={"SIGN UP"} link={"/underconstruction"} invertColor={false}/></div>
       </div>
       
     </div>
