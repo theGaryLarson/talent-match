@@ -16,7 +16,7 @@ import {
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import {mapToEnum} from "@/app/lib/utils";
+import {mapToEnum, mapToEnumOrThrow} from "@/app/lib/utils";
 import {normalizeDate} from "@/app/lib/utils";
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
@@ -320,19 +320,20 @@ export async function POST(request: Request) {
             // Map the school data to DTO
             const mappedEdHistory: JsEducationInfoDTO[] = upsertedSchools.map((jsEdu: any ) => ({
                 id: jsEdu.id,
-                edLevel: mapToEnum(jsEdu.edLevel, EducationLevel),
+                edLevel: mapToEnumOrThrow(jsEdu.edLevel, EducationLevel),
                 edProviderId: jsEdu.eduProviderId,
                 eduProviderName: undefined,
                 isEnrolled: jsEdu.isEnrolled,
                 isTechDegree: jsEdu.isTechDegree,
                 startDate: jsEdu.startDate.toISOString(),
                 gradDate: jsEdu.gradDate.toISOString(),
-                degreeType: mapToEnum(jsEdu.degreeType ?? "None", CollegeDegreeType) ??
-                            mapToEnum(jsEdu.degreeType ?? "None", HighSchoolDegreeType),
+                degreeType: mapToEnum(jsEdu.degreeType ?? null, HighSchoolDegreeType) ??
+                    mapToEnumOrThrow(jsEdu.degreeType ?? null, CollegeDegreeType)
+                            ,
                 programId: jsEdu.program?.id || null,
                 programName: jsEdu.program?.title || null,
                 gpa: jsEdu.gpa,
-                preAppEdSystem: jsEdu.edSystem ? mapToEnum(jsEdu.edSystem, PreAEduSystem) : undefined,
+                preAppEdSystem: jsEdu.edSystem ? mapToEnumOrThrow(jsEdu.edSystem, PreAEduSystem) : undefined,
                 description: jsEdu.description
             }));
 
@@ -374,7 +375,7 @@ export async function POST(request: Request) {
             const result: JsEducationPageDTO = {
                 userId: upsertedJobseeker.user_id,
                 jobseekerId: upsertedJobseeker.jobseeker_id,
-                highestLevelOfStudy: mapToEnum(upsertedJobseeker.highest_level_of_study_completed, HighestDegreeType),
+                highestLevelOfStudy: mapToEnumOrThrow(upsertedJobseeker.highest_level_of_study_completed, HighestDegreeType),
                 educations: mappedEdHistory,
                 certifications: mappedCerts,
                 projects: mappedProjects,
