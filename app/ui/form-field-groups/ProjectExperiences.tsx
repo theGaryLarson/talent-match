@@ -124,6 +124,7 @@ export default memo(function ProjectExperiences({
             onChange={function(ev, val){ handleChange(index, classSkillsStack, val) }}
             searchPlaceholder="Skill (ex: Java)"
             getTagLabel={(option:SkillDTO) => option.skill_name}
+            getTagLink={(option: SkillDTO) => option.skill_info_url}
           />
         </div>
         <div className="profile-form-grid md:grid-cols-2">
