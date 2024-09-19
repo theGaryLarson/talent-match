@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { useRouter } from 'next/navigation';
 import { Role } from '@/data/dtos/UserInfoDTO';
-import { mapToEnum } from '@/app/lib/utils';
+import { mapToEnumOrThrow } from '@/app/lib/utils';
 
 // interface Data {
 //   userId: string;
@@ -54,7 +54,7 @@ export default function SignupPage() {
       });
       console.log('response:', response);
       if (response.ok) {
-        let rolesArray = [mapToEnum(newRole, Role)] as Role[];
+        let rolesArray = [mapToEnumOrThrow(newRole, Role)] as Role[];
         await updateSessionProperties({
           roles: rolesArray,
         });
