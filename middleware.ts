@@ -13,16 +13,16 @@ export default auth((req) => {
   const userRoles = req.auth?.user?.roles || [];
   const userId = req.auth?.user?.id;
 
-    // Routes for logged in users with jobseeker role
-    const guestRoutes = [
-      "/signup",
-      "/signout",
-    ];
+  // Routes for logged in users with jobseeker role
+  const guestRoutes = [
+    "/signup",
+    "/signout",
+  ];
 
   // Routes for logged in users with jobseeker role
   const jobseekerRoutes = [
     "/signup/jobseeker",
-    
+
     "/create-profile/jobseeker/complete",
     "/create-profile/jobseeker/disclosures",
     "/create-profile/jobseeker/education",
@@ -33,6 +33,7 @@ export default auth((req) => {
 
     // "/services/joblistings/[id]", // out of scope for MVP
     "/services/jobseekers/dashboard",
+    "/services/employers/dashboard/listview",
 
     "/signout",
   ];
@@ -66,11 +67,12 @@ export default auth((req) => {
     "/services",
     "/services/employers",
     "/services/employers/faq",
+    "/services/employers/dashboard/listview",
     // "/services/joblistings", // out of scope for MVP
     "/services/jobseekers",
     "/cfa_images/",
   ];
-  
+
   const rolesForGuest = [/*Role.ADMIN,*/ Role.GUEST]; // disable admin routing for now
   const rolesForJobseeker = [/*Role.ADMIN,*/ Role.JOBSEEKER]; // disable admin routing for now
   const rolesForEmployer = [/*Role.ADMIN,*/ Role.EMPLOYER]; // disable admin routing for now
@@ -105,12 +107,23 @@ export default auth((req) => {
 
   // Route checking for jobseeker routes
   if (jobseekerRoutes.some((route) => pathname.includes(route))) {
-    // TODO: only allow jobseekers to view their own profile
     if (!rolesForJobseeker.some((role) => userRoles.includes(role))) {
       console.log("Access denied: User does not have permission for jobseeker route");
       return NextResponse.redirect(homeUrl);
     }
     return NextResponse.next();
+  }
+
+  // only allow jobseekers to view their own profile
+  if (rolesForJobseeker.some((role) => userRoles.includes(role)) && 
+      pathname.startsWith("/services/jobseekers/")) {
+    const requestedId = pathname.replace("/services/jobseekers/", "");
+    console.log(requestedId + ", " + userId);
+    if (requestedId != userId) {
+      console.log("Access denied: Jobseeker can only access their own profile");
+      return NextResponse.redirect(homeUrl);
+    }
+    else return NextResponse.next();
   }
 
   // Route checking for employer routes
@@ -134,6 +147,6 @@ export default auth((req) => {
   return NextResponse.next();
 });
 
-export const config = {
+export const config = { // TODO: route guard the API...
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
