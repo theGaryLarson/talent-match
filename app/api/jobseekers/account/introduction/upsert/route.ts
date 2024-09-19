@@ -91,7 +91,7 @@ export async function POST(request: Request) {
                     current_grade_level: undefined,
                     current_enrolled_ed_program: undefined,
                     intern_hours_required: undefined,
-                    intro_headline: introHeadline,
+                    intro_headline: introHeadline, // TODO: remove and add to Showcase route
                     current_job_title: currentJobTitle,
                     resume_url: resumeUrl,
                     years_work_exp: undefined,

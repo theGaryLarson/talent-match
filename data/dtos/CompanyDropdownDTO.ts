@@ -9,4 +9,5 @@ export type CompanyDropdownDTO = {
   yearFounded: number | null;
   companySize: string;
   predictedHires: string;
+  approvedCompany: boolean;
 };

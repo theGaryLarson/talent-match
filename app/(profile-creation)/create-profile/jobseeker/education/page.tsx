@@ -32,7 +32,7 @@ import ProjectExperiences, {
   defaultProjectExperienceData,
   ProjectExperienceData,
 } from '@/app/ui/form-field-groups/ProjectExperiences';
-import { mapToEnum } from '@/app/lib/utils';
+import { mapToEnumOrThrow } from '@/app/lib/utils';
 import { getSession, useSession } from 'next-auth/react';
 
 import { initializeForm } from '@/lib/features/profileCreation/formSlice';

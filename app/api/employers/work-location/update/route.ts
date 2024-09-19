@@ -81,8 +81,8 @@ export async function PATCH(request: Request) {
         return NextResponse.json({success: true, result}, {status: 200})
 
     } catch (e: any) {
-        console.error('Error upserting job seeker introduction:', e.message);
-        return NextResponse.json({error: `Failed to upsert employer personal information.\n${e.message}`}, {status: 500});
+        console.error('Error updating employer\'s work location:', e.message);
+        return NextResponse.json({error: `Failed to update employer's work location.\n${e.message}`}, {status: 500});
     } finally {
         await prisma.$disconnect();
     }

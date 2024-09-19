@@ -148,5 +148,5 @@ export default auth((req) => {
 });
 
 export const config = { // TODO: route guard the API...
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|cfa_images|favicon.ico).*)"],
 };

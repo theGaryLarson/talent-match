@@ -144,7 +144,7 @@ export type JsEducationInfoDTO = {
     degreeType?: CollegeDegreeType | HighSchoolDegreeType | null,
     programId: string,
     programName: string,
-    gpa?: GradePointAverage | null,
+    gpa?: string | null,
     description?: string | null;
 }
 
