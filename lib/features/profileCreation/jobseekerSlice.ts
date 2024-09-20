@@ -1,6 +1,6 @@
 'use client';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
+import { RootState } from '../../jobseekerStore';
 import { JsIntroPostDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 
 // Define a type for the slice state

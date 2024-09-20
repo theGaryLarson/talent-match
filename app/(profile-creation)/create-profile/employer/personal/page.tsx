@@ -2,17 +2,8 @@
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  addField,
-  updateField,
-  submitForm,
-  submitFormSuccess,
-  submitFormFailure,
-  FormState,
-  initializeForm,
-} from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
@@ -23,120 +14,119 @@ import { Button, Progress } from 'flowbite-react';
 import { formatPhoneE164 } from '@/app/lib/utils';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { PostEmployerPersonalDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  setPersonal,
+  initialState,
+} from '@/lib/features/profileCreation/employerSlice';
+import _ from 'lodash';
+
+const formNamePrefix = 'profile-creation-personal-';
 
 export default function CreateJobseekerProfileIntroPage() {
-  const { fields, isSubmitting, error }: FormState = useSelector(
-    (state: RootState) => state.form,
+  const personalStoreData = useSelector(
+    (state: RootState) => state.employer.personal,
   );
+  const [personalData, setPersonalData] = useState({ ...personalStoreData });
   const dispatch = useDispatch();
   const router = useRouter();
   const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [newFieldId, setNewFieldId] = useState('');
-  const [newFieldLabel, setNewFieldLabel] = useState('');
-  const [newFieldType, setNewFieldType] = useState<
-    'text' | 'email' | 'number' | 'select' | 'radio'
-  >('text');
-  const [newFieldValue, setNewFieldValue] = useState('');
-  const [newFieldOptions, setNewFieldOptions] = useState<
-    { value: string | number; label: string }[]
-  >([]);
+
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
     const initializeFormFields = async () => {
       if (status === 'authenticated' && session?.user) {
-        const { firstName, lastName, email } = session.user;
-        const initialFields = [
-          {
-            id: 'profile-creation-intro-first-name',
-            label: 'First Name',
-            value: firstName || '',
-            type: 'text' as const,
-          },
-          {
-            id: 'profile-creation-intro-last-name',
-            label: 'Last Name',
-            value: lastName || '',
-            type: 'text' as const,
-          },
-          {
-            id: 'profile-creation-intro-email',
-            label: 'Email',
-            value: email || '',
-            type: 'email' as const,
-            options: [],
-          },
-          {
-            id: 'profile-creation-intro-country-phone-code',
-            label: 'Country Phone Code',
-            value: 'United States +1',
-            type: 'select' as const,
-          },
-        ];
+        if (_.isEqual(personalStoreData, initialState.personal)) {
+          const { id, firstName, lastName, email, image } = session.user;
 
-        // Dispatch action to initialize fields in Redux state
-        dispatch(initializeForm(initialFields));
-        if (session?.user?.image) {
-          setAvatarUrl(session.user.image);
+          personalData.userId = id ?? '';
+          console.log('fetching fresh');
+
+          try {
+            const response = await fetch(
+              '/api/employers/account/personal-info/get/' + id,
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              // dispatch(
+              //   submitFormFailure(errorData.error || 'Failed to submit the form'),
+              // );
+            } else {
+              let fetchedData: PostEmployerPersonalDTO = (await response.json()).result
+                .loadIntroPage;
+              console.log(firstName, lastName, email, image);
+              console.log(fetchedData);
+              personalData.birthDate = fetchedData.birthDate ?? '';
+              personalData.email =
+                fetchedData.email.length !== 0
+                  ? fetchedData.email
+                  : (email ?? '');
+              personalData.firstName =
+                typeof fetchedData.firstName === 'string' &&
+                fetchedData.firstName?.length !== 0
+                  ? fetchedData.firstName
+                  : (firstName ?? '');
+              personalData.lastName =
+                typeof fetchedData.lastName === 'string' &&
+                fetchedData.lastName?.length !== 0
+                  ? fetchedData.lastName
+                  : (lastName ?? '');
+              personalData.phone = fetchedData.phone;
+              personalData.phoneCountryCode = fetchedData.phoneCountryCode;
+              personalData.photoUrl =
+                typeof fetchedData.photoUrl === 'string' &&
+                fetchedData.photoUrl?.length !== 0
+                  ? fetchedData.photoUrl
+                  : (image ?? '');
+
+              setPersonalData({ ...personalData });
+            }
+          } catch (error) {
+            // dispatch(submitFormFailure('Failed to submit the form'));
+          }
+        } else {
+          console.log('fetching from redux store');
         }
+
+        setBirthdate(
+          typeof personalData.birthDate === 'string' &&
+            personalData.birthDate.length !== 0
+            ? dayjs(personalData.birthDate)
+            : null,
+        );
+        setAvatarUrl(personalData.photoUrl ?? null);
       }
     };
 
     initializeFormFields();
-  }, [status, session, dispatch, update]);
+  }, [session]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    const field = fields.find((field) => field.id === name);
-    if (field) {
-      const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
-      dispatch(updateField({ id: field.id, value: parsedValue }));
-    } else {
-      dispatch(
-        addField({
-          id: e.target.id,
-          label: newFieldLabel,
-          value: e.target.value,
-          type: newFieldType,
-          options: newFieldOptions,
-        }),
-      );
+    const fieldName = name.substring(formNamePrefix.length);
+    if (personalData.hasOwnProperty(fieldName)) {
+      personalData[fieldName as keyof PostEmployerPersonalDTO] = value;
+      setPersonalData({ ...personalData });
     }
   };
 
-  const handleAddField = () => {
-    if (newFieldLabel) {
-      dispatch(
-        addField({
-          id: newFieldId,
-          label: newFieldLabel,
-          value: newFieldValue,
-          type: newFieldType,
-          options:
-            newFieldType === 'select' || newFieldType === 'radio'
-              ? newFieldOptions
-              : undefined,
-        }),
-      );
-      setNewFieldId('');
-      setNewFieldLabel('');
-      setNewFieldType('text');
-      setNewFieldValue('');
-      setNewFieldOptions([]);
-    }
-  };
 
   const handleAvatarUpload = (url: string) => {
-    // Update the local state with the uploaded image URL
-    setAvatarUrl(url);
+    updateSessionProperties({
+      image: url,
+    }).then(() => {
+      // Update the local state with the uploaded image URL
+      setAvatarUrl(url);
+    });
   };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -145,38 +135,14 @@ export default function CreateJobseekerProfileIntroPage() {
       return;
     }
 
-    dispatch(submitForm());
+    personalData.birthDate = birthdate?.toISOString() ?? '';
+    personalData.photoUrl = avatarUrl;
+    dispatch(setPersonal(personalData));
 
     // Extract firstName, lastName, and name from Redux state fields
-    const firstName =
-      fields.find((f) => f.id === 'profile-creation-intro-first-name')?.value ||
-      '';
-    const lastName =
-      fields.find((f) => f.id === 'profile-creation-intro-last-name')?.value ||
-      '';
+    const firstName = personalData.firstName;
+    const lastName = personalData.lastName;
     const name = `${firstName} ${lastName}`;
-
-    const formData = {
-      //TODO: assign existing userId if exists if not create new with uuidv4().
-      userId: session.user.id,
-      photoUrl: avatarUrl || null,
-      firstName:
-        fields.find((f) => f.id === 'profile-creation-intro-first-name')
-          ?.value || null,
-      lastName:
-        fields.find((f) => f.id === 'profile-creation-intro-last-name')
-          ?.value || null,
-      birthDate: birthdate ? birthdate.toISOString() : null,
-      phoneCountryCode:
-        fields.find((f) => f.id === 'profile-creation-intro-country-phone-code')
-          ?.value || null,
-      phone:
-        fields.find((f) => f.id === 'profile-creation-intro-phone-number')
-          ?.value || null,
-      email:
-        fields.find((f) => f.id === 'profile-creation-intro-email')?.value ||
-        '',
-    };
 
     try {
       const response = await fetch(
@@ -186,29 +152,24 @@ export default function CreateJobseekerProfileIntroPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(personalData),
         },
       );
 
       if (response.ok) {
         const result = await response.json();
-        dispatch(submitFormSuccess());
+
+        // Update session properties using the custom hook
         await updateSessionProperties({
           firstName,
           lastName,
           name,
-          image: avatarUrl,
         });
         router.push('/create-profile/employer/company');
       } else {
         const errorData = await response.json();
-        dispatch(
-          submitFormFailure(errorData.error || 'Failed to submit the form'),
-        );
       }
-    } catch (error) {
-      dispatch(submitFormFailure('Failed to submit the form'));
-    }
+    } catch (error) {}
   };
 
   return (
@@ -228,7 +189,7 @@ export default function CreateJobseekerProfileIntroPage() {
               </h2>
             </legend>
             <AvatarUpload
-              id="profile-creation-intro-avatar-upload"
+              id="profile-creation-personal-photoUrl"
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
@@ -240,27 +201,19 @@ export default function CreateJobseekerProfileIntroPage() {
           <fieldset>
             <div className="profile-form-grid tablet:grid-cols-2">
               <InputTextWithLabel
-                id="profile-creation-intro-first-name"
+                id="profile-creation-personal-firstName"
                 placeholder="First name"
                 onChange={handleFieldChange}
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-first-name',
-                  )?.value || ''
-                }
+                value={personalData.firstName}
                 required
               >
                 First Name *
               </InputTextWithLabel>
               <InputTextWithLabel
-                id="profile-creation-intro-last-name"
+                id="profile-creation-personal-lastName"
                 placeholder="Last name"
                 onChange={handleFieldChange}
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-last-name',
-                  )?.value || ''
-                }
+                value={personalData.lastName}
                 required
               >
                 Last Name *
@@ -277,20 +230,17 @@ export default function CreateJobseekerProfileIntroPage() {
 
               <InputTextWithLabel
                 type="email"
-                id="profile-creation-intro-email"
+                id="profile-creation-personal-email"
                 onChange={handleFieldChange}
                 placeholder="example@example.com"
-                value={
-                  fields.find((f) => f.id === 'profile-creation-intro-email')
-                    ?.value || ''
-                }
+                value={personalData.email}
                 required
               >
                 Email *
               </InputTextWithLabel>
 
               <SelectOptionsWithLabel
-                id="profile-creation-intro-country-phone-code"
+                id="profile-creation-personal-country-phoneCountryCode"
                 className="phone-code"
                 onChange={handleFieldChange}
                 options={[
@@ -646,31 +596,23 @@ export default function CreateJobseekerProfileIntroPage() {
                   { label: 'Zambia +260', value: 'Zambia +260' },
                   { label: 'Zimbabwe +263', value: 'Zimbabwe +263' },
                 ]}
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-country-phone-code',
-                  )?.value || 'United States +1'
-                }
+                value={personalData.phoneCountryCode ?? 'United States +1'}
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
               <InputTextWithLabel
-                id="profile-creation-intro-phone-number"
+                id="profile-creation-personal-phone"
                 type="tel"
                 placeholder="Phone number"
                 onChange={handleFieldChange}
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-phone-number',
-                  )?.value || ''
-                }
+                value={personalData.phone ?? ''}
                 required
               >
                 Phone Number *
               </InputTextWithLabel>
 
               {/* <SelectWithLabel
-                id="profile-creation-intro-gender"
+                id="profile-creation-personal-gender"
                 fullWidth
                 label="Gender"
                   value={gender}
@@ -687,7 +629,7 @@ export default function CreateJobseekerProfileIntroPage() {
               /> */}
 
               {/* <SelectWithLabel
-                id="profile-creation-intro-race"
+                id="profile-creation-personal-race"
                 fullWidth
                 label="Race"
                   value={race}

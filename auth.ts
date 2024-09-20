@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import GitHub from 'next-auth/providers/github';
-// import Google from "next-auth/providers/google";
+import Google from "next-auth/providers/google";
 // import Microsoft from "next-auth/providers/microsoft-entra-id";
 // import LinkedIn from "next-auth/providers/linkedin";
 import type { Provider } from 'next-auth/providers';
@@ -10,7 +10,7 @@ import { devLog } from '@/app/lib/utils';
 
 const providers: Provider[] = [
   GitHub,
-  // Google,
+  Google({ clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET }),
   // Microsoft,
   // LinkedIn
 ];
@@ -56,7 +56,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 email: user.email,
                 firstName: user.name?.split(' ')[0] || '',
                 lastName: user.name?.split(' ')[1] || '',
-                roles: [Role.NONE], // default role
+                roles: [Role.PUBLIC], // default role
               };
               devLog('server-side-default-role\n', userData);
 
