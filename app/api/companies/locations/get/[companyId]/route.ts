@@ -28,7 +28,7 @@ export async function GET(request: Request, {params}: { params: { companyId: str
         if (!companyAddresses) {
             return NextResponse.json({
                 success: false,
-                error: `There are no companies with id ${companyId}`
+                error: `There is no company with id ${companyId}`
             }, {status: 400})
 
         }
