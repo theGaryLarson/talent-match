@@ -639,3 +639,7 @@ export async function getTechnologyAreas() {
   });
   return technologyAreas;
 }
+
+export async function deleteUser() {
+  // TODO: create delete user & remove jobseeker/soft-delete from api-routes
+}
