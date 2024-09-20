@@ -117,19 +117,23 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     }));
     console.log(workExperiences);
 
-    const internshipExperiences = data.internshipExperiences?.map(internshipExp => ({
-      workId: internshipExp.uid,
-      jobseekerId: jobseekerId,
-      techAreaId: internshipExp.technologyarea.id,
-      sectorId: internshipExp.industry.industry_sector_id,
-      company: internshipExp.company,
-      isInternship: true,
-      jobTitle: internshipExp.title,
-      isCurrentJob: internshipExp.current,
-      startDate: new Date(internshipExp.starts.toISOString()),
-      endDate: internshipExp.current ? null : new Date(internshipExp.ends.toISOString()),
-      responsibilities: internshipExp.experience,
-    }));
+    const internshipExperiences = data.internshipExperiences?.map(
+      (internshipExp) => ({
+        workId: internshipExp.uid,
+        jobseekerId: jobseekerId,
+        techAreaId: internshipExp.technologyarea.id,
+        sectorId: internshipExp.industry.industry_sector_id,
+        company: internshipExp.company,
+        isInternship: true,
+        jobTitle: internshipExp.title,
+        isCurrentJob: internshipExp.current,
+        startDate: new Date(internshipExp.starts.toISOString()),
+        endDate: internshipExp.current
+          ? null
+          : new Date(internshipExp.ends.toISOString()),
+        responsibilities: internshipExp.experience,
+      }),
+    );
     const formData: JsWorkExpDTO = {
       userId: userId,
       yearsWorkExperience: data.yearsWorkExperience.toString(), // Replace with actual calculation
@@ -181,7 +185,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                   type="number"
                   id="profile-creation-experience-work-fulltime-years"
                   name="yearsWorkExperience"
-                  value={data.yearsWorkExperience}
+                  value={data.yearsWorkExperience + ''}
                   onChange={handleInputUpdate}
                 >
                   How many years of full-time work experience do you have (not
@@ -216,7 +220,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                   id="profile-creation-experience-internship-months"
                   name="monthsInternshipExperience"
                   onChange={handleInputUpdate}
-                  value={data.monthsInternshipExperience}
+                  value={data.monthsInternshipExperience + ''}
                 >
                   How many months of internship work experience do you have?
                 </InputTextWithLabel>
