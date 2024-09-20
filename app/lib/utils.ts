@@ -1,4 +1,5 @@
 import parsePhoneNumberFromString from 'libphonenumber-js';
+import {FormField} from "@/lib/features/profileCreation/formSlice";
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
@@ -53,6 +54,21 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+
+export function getFieldValue<T = string | undefined>(fields: FormField[], id: string, defaultValue: T): T {
+  const fieldValue = fields.find((f: FormField) => f.id === id)?.value;
+  if (fieldValue === undefined || fieldValue === null) {
+    return defaultValue; // Return default value if fieldValue is undefined or null
+  }
+
+  if (typeof fieldValue === typeof defaultValue) {
+    return fieldValue as T; // Cast fieldValue to the type of defaultValue
+  }
+
+  return defaultValue;
+}
+
 
 /**
  * Maps a string value to its corresponding value in an enum type.
