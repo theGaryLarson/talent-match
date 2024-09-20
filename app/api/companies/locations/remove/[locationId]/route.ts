@@ -28,7 +28,7 @@ export async function DELETE(request: Request, {params}: { params: { locationId:
         if (!deletedAddress) {
             return NextResponse.json({
                 success: false,
-                error: `There are no companies with id ${addressId}`
+                error: `There are no company with id ${addressId}`
             }, {status: 400})
 
         }
