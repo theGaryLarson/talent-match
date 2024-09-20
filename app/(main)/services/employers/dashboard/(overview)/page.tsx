@@ -1,15 +1,27 @@
 
+"use client"
 import BrowseByCategory from '@/app/ui/components/BrowseByCategory';
 import EmployerNameTitleTag from '@/app/ui/components/EmployerNameTitleTag';
 import FeaturedCandidates from '@/app/ui/components/FeaturedCandidates';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import ScoreCard from '@/app/ui/components/ScoreCard';
 import Teaser from '@/app/ui/components/Teaser';
+import { useSession } from "next-auth/react"
+import { use } from 'react';
 //employer dashboard
 export default async function Page() {
+  const { data: session } = useSession();
+  try{
+    let employer = (await fetch("/api/employers/account/personal-info/"+ session?.user.employerId));
+    
+    console.log(employer)
+  }catch(e){
+    console.log(e);
+  }
+  
   return (
     <main className="space-y-3 py-8 mx-4 tablet:mx-[50px] tablet:mx-[100px] desktop:mx-[200px] font-['Roboto']">
-      <EmployerNameTitleTag name={'Damien Cruz'} title={'Programming Instructor'} company={'Computing For All'} />
+      <EmployerNameTitleTag name={session?.user.name} title={"Magenta"} company={'Computing For All'} pfp={session?.user.image??undefined}/>
       <div className="flex flex-wrap justify-center tablet:justify-between gap-5">
         {<ScoreCard title="Saved Candidates" val={3} />}
         {<ScoreCard title="Job Applications " val={5} />}
@@ -50,9 +62,7 @@ export default async function Page() {
           buttonContent={'Search For talent'}
         />
       </div>
-      <div className="pt-10 pb-10">
-        <FeaturedCandidates maxCandidates={3} />
-      </div>
+    
       <BrowseByCategory />
       {/* <ArticleStub
         isPhotoFirst={true}
