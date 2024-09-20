@@ -20,7 +20,10 @@ import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { PostCompanyInfoDTO, ReadCompanyInfoDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  PostCompanyInfoDTO,
+  ReadCompanyInfoDTO,
+} from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
   setCompany,
   initialState,
@@ -36,7 +39,9 @@ export default function CreateEmployerCompanyInfoPage() {
   const [companyData, setCompanyData] = useState({ ...companyStoreData });
   const dispatch = useDispatch();
   const router = useRouter();
-  const [year_founded, setYearFounded] = useState<Dayjs | null>(companyData.yearFounded === '' ? null : dayjs(companyData.yearFounded));
+  const [year_founded, setYearFounded] = useState<Dayjs | null>(
+    companyData.yearFounded === '' ? null : dayjs(companyData.yearFounded),
+  );
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession();
@@ -54,15 +59,11 @@ export default function CreateEmployerCompanyInfoPage() {
     const initializeFormFields = async () => {
       console.log(session);
       if (status === 'authenticated' && session?.user) {
-        if (_.isEqual(companyStoreData, initialState.personal)) {
-          const { 
-            id,
-            companyId,
-            employerId,
-          } = session.user;
+        if (_.isEqual(companyStoreData, initialState.company)) {
+          const { id, companyId, employerId } = session.user;
 
           console.log('fetching fresh');
-          if(companyId) {
+          if (companyId) {
             try {
               const response = await fetch(
                 '/api/employers/account/company-info/get/' + companyId,
@@ -74,30 +75,48 @@ export default function CreateEmployerCompanyInfoPage() {
                 //   submitFormFailure(errorData.error || 'Failed to submit the form'),
                 // );
               } else {
-                let fetchedData: ReadCompanyInfoDTO = (await response.json()).result
-                  .loadIntroPage;
+                let fetchedData: ReadCompanyInfoDTO = (await response.json())
+                  .result.loadIntroPage;
                 console.log(fetchedData);
+                // REVIEW: update session properties, to pass in company id which we currently are not getting, should go in handlesubmit so it will be updated on next load
 
                 // Set all normal input data here with fetched data
                 companyData.userId = id ?? '';
                 companyData.employerId = employerId ?? '';
-                companyData.companyId = fetchedData.companyId;//
-                companyData.industrySectorId = fetchedData.industrySectorId;//
-                companyData.industrySectorTitle = fetchedData.industrySectorTitle;
-                companyData.companyName = fetchedData.companyName;//
+                companyData.companyId = fetchedData.companyId; //
+                companyData.industrySectorId = fetchedData.industrySectorId; //
+                companyData.industrySectorTitle =
+                  fetchedData.industrySectorTitle;
+                companyData.companyName = fetchedData.companyName; //
                 // companyData.companyAddresses = fetchedData.companyAddresses;
-                companyData.logoUrl = fetchedData.logoUrl;//
+                companyData.logoUrl = fetchedData.logoUrl; //
                 companyData.aboutUs = fetchedData.aboutUs;
-                companyData.companyEmail = fetchedData.companyEmail;//
-                companyData.yearFounded = fetchedData.yearFounded ?? '';//
-                companyData.websiteUrl = fetchedData.websiteUrl;//companyWebsite
+                companyData.companyEmail = fetchedData.companyEmail; //
+                companyData.yearFounded = fetchedData.yearFounded ?? ''; //
+                companyData.websiteUrl = fetchedData.websiteUrl; //companyWebsite
                 companyData.videoUrl = fetchedData.videoUrl;
                 companyData.phoneCountryCode = fetchedData.phoneCountryCode;
                 companyData.companyPhone = fetchedData.companyPhone;
                 companyData.mission = fetchedData.mission;
                 companyData.vision = fetchedData.vision;
-                companyData.size = fetchedData.employeeCount;//companySize
-                companyData.estimatedAnnualHires = fetchedData.estimatedAnnualHires;//predictedHires
+                companyData.size = fetchedData.employeeCount; //companySize
+                companyData.estimatedAnnualHires =
+                  fetchedData.estimatedAnnualHires; //predictedHires
+                setCompanyObject({
+                  companyId: fetchedData.companyId,
+                  companyName: fetchedData.companyName,
+                  companyLogoUrl: fetchedData.logoUrl ?? '',
+                  industrySectorId: fetchedData.industrySectorId ?? '',
+                  companyWebsite: fetchedData.websiteUrl ?? '',
+                  companyEmail: fetchedData.companyEmail,
+                  companyPhone: fetchedData.companyPhone ?? '',
+                  yearFounded:
+                    fetchedData.yearFounded?.length !== 0
+                      ? parseInt(fetchedData.yearFounded)
+                      : null,
+                  companySize: fetchedData.employeeCount,
+                  predictedHires: fetchedData.estimatedAnnualHires,
+                });
               }
             } catch (error) {
               // dispatch(submitFormFailure('Failed to submit the form'));
@@ -112,8 +131,7 @@ export default function CreateEmployerCompanyInfoPage() {
           console.log('fetching from redux store');
         }
 
-
-        // Manually set input data here 
+        // Manually set input data here
         setYearFounded(
           typeof companyData.yearFounded === 'string' &&
             companyData.yearFounded.length !== 0
@@ -124,30 +142,24 @@ export default function CreateEmployerCompanyInfoPage() {
       }
     };
     initializeFormFields();
-    setYearFounded(
-      typeof companyData.yearFounded === 'string' &&
-      companyData.yearFounded.length !== 0
-      ? dayjs(companyData.yearFounded)
-      : null,
-    );
-    setLogoUrl(companyData.logoUrl ?? null);
 
-    
     // REVIEW: This portion uses companyObject (companyDropdownDTO), if company exists/selected from dropdown below fields
     // yearfounded, logourl, companyname, companysize
     // TODO: lines 139-150 need to be reviewed and refactored, left off here
-    if (typeof companyObject !== 'string' && companyObject) {
-    //   // Company is an object, use existing companyId
-      setCompanyId(companyObject.companyId);
-    } else if (
-      typeof companyObject === 'string' &&
-      companyObject.trim() !== ''
-    ) {
+    if (companyData.companyId !== '') {
+      // Company is an object, use existing companyId
+      setCompanyId(companyData.companyId);
+    } else {
       // If company is a string (new company), generate a new company ID
       const generatedId = uuidv4();
       setCompanyId(generatedId);
     }
-    setEmployerId(uuidv4());
+
+    if (companyData.employerId !== '') {
+      setEmployerId(companyData.employerId);
+    } else {
+      setEmployerId(uuidv4());
+    }
   }, [session]);
 
   const handleFieldChange = (
@@ -161,7 +173,6 @@ export default function CreateEmployerCompanyInfoPage() {
     }
   };
 
-
   const handleImageUpload = (url: string) => {
     // Update the local state with the uploaded image URL
     setLogoUrl(url);
@@ -174,11 +185,23 @@ export default function CreateEmployerCompanyInfoPage() {
       return;
     }
 
+    if (typeof companyObject !== 'string') {
+      companyData.companyId = companyObject.companyId;
+      companyData.companyName = companyObject.companyName;
+    } else {
+      companyData.companyId = companyId!;
+      companyData.companyName = companyObject;
+    }
 
+    // companyData.companyId = companyId!;
+    companyData.employerId = employerId!;
+    if (industry) {
+      companyData.industrySectorId = industry.industry_sector_id;
+      companyData.industrySectorTitle = industry.sector_title;
+    }
     companyData.yearFounded = year_founded?.toISOString() ?? '';
     companyData.logoUrl = logoUrl;
     dispatch(setCompany(companyData));
-
 
     try {
       const response = await fetch(
@@ -305,7 +328,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 companyObject !== null &&
                 companyObject.companyLogoUrl
                   ? companyObject.companyLogoUrl
-                  : logoUrl ?? '' // fixme: use placeholder image for logo
+                  : (logoUrl ?? '') // fixme: use placeholder image for logo
               }
               disabled={typeof companyObject === 'object'}
             />
@@ -317,7 +340,11 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-websiteUrl"
                 placeholder="www.company.com"
                 onChange={handleFieldChange}
-                value={companyData.websiteUrl ?? ''}
+                value={
+                  (typeof companyObject === 'object'
+                    ? companyObject.companyWebsite
+                    : companyData.websiteUrl) ?? ''
+                }
                 disabled={typeof companyObject === 'object'}
                 required
               >
@@ -328,7 +355,11 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-companyEmail"
                 placeholder="hello@company.com"
                 onChange={handleFieldChange}
-                value={companyData.companyEmail}
+                value={
+                  (typeof companyObject === 'object'
+                    ? companyObject.companyEmail
+                    : companyData.companyEmail) ?? ''
+                }
                 disabled={typeof companyObject === 'object'}
                 required
               >
@@ -339,7 +370,11 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-companyPhone"
                 onChange={handleFieldChange}
                 placeholder="(555) 123-4567"
-                value={companyData.companyPhone ?? ''}
+                value={
+                  (typeof companyObject === 'object'
+                    ? companyObject.companyPhone
+                    : companyData.companyPhone) ?? ''
+                }
                 disabled={typeof companyObject === 'object'}
                 required
               >
@@ -348,13 +383,12 @@ export default function CreateEmployerCompanyInfoPage() {
               <DatePicker
                 label={'Year Founded *'}
                 views={['year']}
-                //TODO: UPDATE VALUE USING SET YEAR FOUNDED
                 value={
                   typeof companyObject === 'object' &&
                   companyObject !== null &&
                   companyObject.yearFounded
                     ? dayjs().year(companyObject.yearFounded) // Convert to Dayjs object
-                    : null
+                    : year_founded
                 }
                 onChange={setYearFounded}
                 className="year-picker"
@@ -375,7 +409,11 @@ export default function CreateEmployerCompanyInfoPage() {
                   { label: '5000+', value: '5000+' },
                 ]}
                 placeholder="Please select"
-                value={companyData.size ?? ''}
+                value={
+                  (typeof companyObject === 'object'
+                    ? companyObject.companySize
+                    : companyData.size) ?? ''
+                }
                 disabled={typeof companyObject === 'object'}
               >
                 Company Size *
@@ -384,7 +422,11 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-estimatedAnnualHires"
                 placeholder="100"
                 onChange={handleFieldChange}
-                value={companyData.estimatedAnnualHires}
+                value={
+                  (typeof companyObject === 'object'
+                    ? companyObject.predictedHires
+                    : companyData.estimatedAnnualHires) ?? ''
+                }
                 required
                 disabled={typeof companyObject === 'object'}
               >

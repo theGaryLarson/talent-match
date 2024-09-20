@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       companyId,
       industrySectorId,
       companyName,
-      companyAddresses,
+      // companyAddresses,
       logoUrl,
       aboutUs,
       companyEmail,
