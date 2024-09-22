@@ -19,10 +19,9 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
   const aboutMe: string = jobseeker?.intro_headline ?? '';
   const id: string = jobseeker?.jobseeker_id;
   const industry: string = [...new Set(jobseeker?.work_experiences?.map(ind => ind.industrySector?.sector_title))].toString().replaceAll(',', ', ') ?? '';
-  const location: string = jobseeker?.users?.user_addresses[0].city + ', ' + jobseeker?.users?.user_addresses[0].state + ' ' + jobseeker?.users?.user_addresses[0].zip;
+  const location: string = jobseeker?.users?.locationData?.city + ', ' + jobseeker?.users?.locationData?.state + ' ' + jobseeker?.users?.locationData?.zip;
   const yearsExp: string = jobseeker.years_work_exp + ' years work exp';
   const highestDegree: string = jobseeker.highest_level_of_study_completed ?? '';
-
   const skills: SkillDTO[] = jobseeker?.jobseeker_has_skills ?
     jobseeker?.jobseeker_has_skills.map((item: JobseekerSkillDTO) => item.skills) : [];
 
