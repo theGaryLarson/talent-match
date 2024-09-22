@@ -19,10 +19,9 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
-import { formatPhoneE164 } from '@/app/lib/utils';
-import parsePhoneNumberFromString from 'libphonenumber-js';
+import { getFieldValue } from '@/app/lib/utils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 
@@ -170,35 +169,22 @@ export default function CreateJobseekerProfileIntroPage() {
       userId: session.user.id,
       photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
       firstName:
-        fields.find((f) => f.id === 'profile-creation-intro-first-name')
-          ?.value || null,
+        getFieldValue(fields, 'profile-creation-intro-first-name', null),
       lastName:
-        fields.find((f) => f.id === 'profile-creation-intro-last-name')
-          ?.value || null,
+        getFieldValue(fields, 'profile-creation-intro-last-name', null),
       birthDate: birthdate ? birthdate.toISOString() : null,
       phoneCountryCode:
-        fields.find((f) => f.id === 'profile-creation-intro-country-phone-code')
-          ?.value || null,
+        getFieldValue(fields, 'profile-creation-intro-country-phone-code', null),
       phone:
-        fields.find((f) => f.id === 'profile-creation-intro-phone-number')
-          ?.value || null,
+        getFieldValue(fields, 'profile-creation-intro-phone-number', null),
       zipCode:
-        fields.find((f) => f.id === 'profile-creation-intro-zip-code')?.value ||
-        null,
-      state:
-        fields.find((f) => f.id === 'profile-creation-intro-state')?.value ||
-        null,
-      city: '',
-      county: '',
+        getFieldValue(fields, 'profile-creation-intro-zip-code', null),
       email:
-        fields.find((f) => f.id === 'profile-creation-intro-email')?.value ||
-        '',
+        getFieldValue(fields, 'profile-creation-intro-email', '' ),
       introHeadline:
-        fields.find((f) => f.id === 'profile-creation-intro-headlines')
-          ?.value || null,
+        getFieldValue(fields, 'profile-creation-intro-headlines', null),
       currentJobTitle:
-        fields.find((f) => f.id === 'profile-creation-intro-current-position')
-          ?.value || null,
+        getFieldValue(fields, 'profile-creation-intro-current-position', null),
       resumeUrl: resumeUrl,
     };
 
@@ -317,71 +303,6 @@ export default function CreateJobseekerProfileIntroPage() {
               >
                 Zip Code *
               </InputTextWithLabel>
-
-              <SelectOptionsWithLabel
-                id="profile-creation-intro-state"
-                onChange={handleFieldChange}
-                options={[
-                  { label: 'Alabama', value: 'AL' },
-                  { label: 'Alaska', value: 'AK' },
-                  { label: 'Arizona', value: 'AZ' },
-                  { label: 'Arkansas', value: 'AR' },
-                  { label: 'California', value: 'CA' },
-                  { label: 'Colorado', value: 'CO' },
-                  { label: 'Connecticut', value: 'CT' },
-                  { label: 'Delaware', value: 'DE' },
-                  { label: 'District of Columbia', value: 'DC' },
-                  { label: 'Florida', value: 'FL' },
-                  { label: 'Georgia', value: 'GA' },
-                  { label: 'Hawaii', value: 'HI' },
-                  { label: 'Idaho', value: 'ID' },
-                  { label: 'Illinois', value: 'IL' },
-                  { label: 'Indiana', value: 'IN' },
-                  { label: 'Iowa', value: 'IA' },
-                  { label: 'Kansas', value: 'KS' },
-                  { label: 'Kentucky', value: 'KY' },
-                  { label: 'Louisiana', value: 'LA' },
-                  { label: 'Maine', value: 'ME' },
-                  { label: 'Maryland', value: 'MD' },
-                  { label: 'Massachusetts', value: 'MA' },
-                  { label: 'Michigan', value: 'MI' },
-                  { label: 'Minnesota', value: 'MN' },
-                  { label: 'Mississippi', value: 'MS' },
-                  { label: 'Missouri', value: 'MO' },
-                  { label: 'Montana', value: 'MT' },
-                  { label: 'Nebraska', value: 'NE' },
-                  { label: 'Nevada', value: 'NV' },
-                  { label: 'New Hampshire', value: 'NH' },
-                  { label: 'New Jersey', value: 'NJ' },
-                  { label: 'New Mexico', value: 'NM' },
-                  { label: 'New York', value: 'NY' },
-                  { label: 'North Carolina', value: 'NC' },
-                  { label: 'North Dakota', value: 'ND' },
-                  { label: 'Ohio', value: 'OH' },
-                  { label: 'Oklahoma', value: 'OK' },
-                  { label: 'Oregon', value: 'OR' },
-                  { label: 'Pennsylvania', value: 'PA' },
-                  { label: 'Rhode Island', value: 'RI' },
-                  { label: 'South Carolina', value: 'SC' },
-                  { label: 'South Dakota', value: 'SD' },
-                  { label: 'Tennessee', value: 'TN' },
-                  { label: 'Texas', value: 'TX' },
-                  { label: 'Utah', value: 'UT' },
-                  { label: 'Vermont', value: 'VT' },
-                  { label: 'Virginia', value: 'VA' },
-                  { label: 'Washington', value: 'WA' },
-                  { label: 'West Virginia', value: 'WV' },
-                  { label: 'Wisconsin', value: 'WI' },
-                  { label: 'Wyoming', value: 'WY' },
-                ]}
-                value={
-                  fields.find((f) => f.id === 'profile-creation-intro-state')
-                    ?.value || ''
-                }
-                placeholder="Please select"
-              >
-                State
-              </SelectOptionsWithLabel>
             </div>
 
             <div className="profile-form-grid">
