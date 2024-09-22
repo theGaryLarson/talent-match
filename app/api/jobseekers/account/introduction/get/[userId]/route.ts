@@ -29,13 +29,13 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                 phone: true,
                 photo_url: true,
                 createdAt: true,
-                user_addresses: {
+                locationData: {
                     select: {
-                        user_address_id: true,
                         zip: true,
                         state: true,
-                        city: true,
+                        stateCode: true,
                         county: true,
+                        city: true,
                     }
                 },
                 jobseekers: {
@@ -69,7 +69,6 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             return NextResponse.json({error: 'Jobseeker not found'}, {status: 404})
         }
 
-        const address = user.user_addresses && user.user_addresses.length > 0 ? user.user_addresses?.[0] : null;
         const jobseeker = user.jobseekers && user.jobseekers.length > 0 ? user.jobseekers?.[0] : null;
 
         // Map the jobseeker data to JsIntroDTO
@@ -81,10 +80,10 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             birthDate: user.birthdate,
             phoneCountryCode: user.phone ? parsePhoneNumberFromString(user.phone)?.countryCallingCode : null,
             phone: user.phone ? parsePhoneNumberFromString(user.phone)?.number : null,
-            zipCode: address?.zip,
-            state: address?.state,
-            city: address?.city,
-            county: address?.county,
+            zipCode: user.locationData?.zip,
+            state: user.locationData?.state,
+            city: user.locationData?.city,
+            county: user.locationData?.county,
             email: user.email,
             introHeadline: jobseeker?.intro_headline,
             currentJobTitle: jobseeker?.current_job_title,
@@ -97,7 +96,6 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             createdAt: user.createdAt,
             pathwayId: jobseeker?.pathways?.pathway_id,
             jobseekerId: jobseeker?.jobseeker_id,
-            contactAddressId: address?.user_address_id,
             isMarkedDeletion: jobseeker?.is_marked_deletion,
         }
         const result = {loadIntroPage, meta}
