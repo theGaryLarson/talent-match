@@ -203,9 +203,13 @@ export default function CreateEmployerCompanyInfoPage() {
         companyAddresses: [], // Provide an empty array or populate as needed
       };
     }
+    // update employer session if the company already exists
+    await updateSessionProperties({
+      companyId: companyId,
+      companyIsApproved: typeof companyObject === 'object' ? companyObject.approvedCompany : false,
+    });
 
     try {
-      // TODO: recreate new routes under api/companies to update for these redesigned single page entries.
       const response = await fetch(
         '/api/employers/account/company-info/upsert',
         {
@@ -219,7 +223,11 @@ export default function CreateEmployerCompanyInfoPage() {
 
       if (response.ok) {
         dispatch(submitFormSuccess());
-        router.push('/create-profile/employer/about');
+        if (typeof companyObject === 'object') {
+          router.push('/create-profile/employer/disclosures');
+        } else{
+          router.push('/create-profile/employer/about');
+        }
       } else {
         const errorData = await response.json();
         dispatch(
