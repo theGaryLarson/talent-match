@@ -366,13 +366,15 @@ export const jobSeekerCardViewSelect = {
       first_name: true,
       last_name: true,
       photo_url: true,
-      user_addresses: {
+      locationData: {
         select: {
           zip: true,
           state: true,
-          city: true,
-        },
-      },
+          stateCode: true,
+          county: true,
+          city: true
+        }
+      }
     },
   },
   jobseeker_education: {
