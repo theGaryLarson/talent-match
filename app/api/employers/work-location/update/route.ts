@@ -40,9 +40,14 @@ export async function PATCH(request: Request) {
                         company_addresses: {
                             select: {
                                 company_address_id: true,
-                                city: true,
-                                state: true,
-                                zip_region: true,
+                                locationData: {
+                                    select: {
+                                        city: true,
+                                        state: true,
+                                        stateCode: true,
+                                        zip: true,
+                                    }
+                                }
                             }
                         }
                     }
@@ -58,6 +63,9 @@ export async function PATCH(request: Request) {
             employerAddress = await prisma.company_addresses.findUnique({
                 where: {
                     company_address_id: empWorkInfo.work_address_id
+                },
+                include: {
+                    locationData: true
                 }
             })
         }
@@ -72,9 +80,9 @@ export async function PATCH(request: Request) {
             isVerifiedEmployee: empWorkInfo.is_verified_employee,
             companyAddress: {
                 addressId: employerAddress?.company_address_id,
-                city: employerAddress?.city,
-                state: employerAddress?.state,
-                zipCode: employerAddress?.zip_region
+                city: employerAddress?.locationData.city,
+                state: employerAddress?.locationData.state,
+                zipCode: employerAddress?.locationData.zip
             }
 
         }
