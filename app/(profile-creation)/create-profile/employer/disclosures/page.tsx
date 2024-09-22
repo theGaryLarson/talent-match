@@ -21,6 +21,8 @@ import { Checkbox, Typography } from '@mui/material';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 import { useSession } from 'next-auth/react';
 import { getFieldValue } from '@/app/lib/utils';
+import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
+import {CompanyAddressDropdownDTO} from "@/data/dtos/CompanyAddressDropdownDTO";
 
 export default function CreateEmployerCompanyInfoDisclosurePage() {
   const { fields, isSubmitting, error }: FormState = useSelector(
@@ -39,6 +41,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     { value: string | number; label: string }[]
   >([]);
   const [companyName, setCompanyName] = useState<string>('');
+  const [workAddress, setWorkAddress] = useState<CompanyAddressDropdownDTO | null >(null)
   const { data: session, update, status } = useSession();
 
   useEffect(() => {
@@ -66,7 +69,6 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
         if (success && result) {
           const { company_name } = result;
           setCompanyName(company_name)
-          console.log("useEffect", session)
         } else {
           console.error('Failed to fetch company name.', result);
         }
@@ -108,7 +110,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     dispatch(submitForm());
 
     const formData = {
-      userId: session?.user?.id,
+      employerId: session?.user?.employerId,
 
       job_title: getFieldValue(
         fields,
@@ -121,19 +123,15 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
         '',
       ),
 
-      // NOTE: These may not be in the DTO? work-location the correct endpoint?
-      company_name: getFieldValue(fields, 'profile-creation-company-name', ''),
-      work_location: getFieldValue(
-        fields,
-        'profile-creation-company-work-location',
-        '',
-      ),
-      hasReadTerms: termsAccepted,
+      // company was already associated with employer at the employer/company page
+      // company_name: getFieldValue(fields, 'profile-creation-company-name', ''),
+      work_address_id: workAddress?.companyAddressId?? undefined,
+      hasAgreedTerms: termsAccepted,
     };
 
     try {
-      const response = await fetch(`/api/employers/account/`, {
-        method: 'GET',
+      const response = await fetch(`/api/employers/account/disclosures/update/${session?.user?.employerId}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -218,19 +216,51 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               >
                 Job Title *
               </InputTextWithLabel>
-              <InputTextWithLabel
-                id="profile-creation-company-work-location"
-                placeholder="98362"
-                onChange={handleFieldChange}
-                value={getFieldValue(
-                  fields,
-                  'profile-creation-company-work-location',
-                  '',
-                )}
-                required
-              >
-                Work Location Zip Code *
-              </InputTextWithLabel>
+              <SelectAutoload
+                  id="profile-creation-work-address"
+                  apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
+                  label="Work Address *"
+                  getOptionLabel={(option: CompanyAddressDropdownDTO) =>
+                      `${option.city}, ${option.stateCode} ${option.zipCode}`
+                  }
+                  getOptionFromLabel={(
+                      options: CompanyAddressDropdownDTO[],
+                      label: string,
+                  ) => {
+                    // Match based on the label (formatted) or a unique identifier like companyAddressId
+                    // For simplicity, we map by `companyAddressId` or any unique identifier instead of label
+                    const matchedOption = options.find(
+                        (item) =>
+                            `${item.city}, ${item.stateCode} ${item.zipCode}` === label
+                    );
+                    return (
+                        matchedOption || {
+                          companyAddressId: '',
+                          city: '',
+                          stateCode: '',
+                          zipCode: ''
+                        }
+                    );
+                  }}
+                  placeholder="Your work location"
+                  value={workAddress}
+                  onChange={(val) => setWorkAddress(val)}
+                  required
+                  loadingText="Retrieving work addresses..."
+              />
+              {/*<InputTextWithLabel*/}
+              {/*  id="profile-creation-company-work-location"*/}
+              {/*  placeholder="98362"*/}
+              {/*  onChange={handleFieldChange}*/}
+              {/*  value={getFieldValue(*/}
+              {/*    fields,*/}
+              {/*    'profile-creation-company-work-location',*/}
+              {/*    '',*/}
+              {/*  )}*/}
+              {/*  required*/}
+              {/*>*/}
+              {/*  Work Location Zip Code **/}
+              {/*</InputTextWithLabel>*/}
               <InputTextWithLabel
                 id="profile-creation-company-linkedin"
                 placeholder="www.linkedin.com/username"
