@@ -142,45 +142,52 @@ export async function POST(request: Request) {
     const upsertPromises = companyAddresses?.map((address: PostAddressDTO) => {
       return prisma.company_addresses.upsert({
         where: {
-          company_id_city: {
+          company_id_zip: {
             company_id: companyId || newCompanyId,
-            city: address.city,
+            zip: address.zipCode,
           },
         },
         update: {
-          city: address.city,
-          state: address.state,
-          zip_region: address.zipCode,
-          county: address.county,
+          zip: address.zipCode,
         },
         create: {
           company_address_id: uuidv4(),
-          city: address.city,
-          state: address.state,
-          zip_region: address.zipCode,
-          county: address.county,
-          companies: { connect: { company_id: companyId } },
+          zip: address.zipCode,
+          company_id: upsertedCompany.company_id,
         },
         select: {
-          city: true,
-          state: true,
-          zip_region: true,
-          county: true,
+          company_address_id: true,
+          locationData: {
+            select: {
+              city: true,
+              state: true,
+              zip: true,
+              county: true,
+            }
+          },
         },
       });
     });
-    if (Array.isArray(upsertPromises) && upsertPromises.length > 0)
+
+    if (Array.isArray(upsertPromises) && upsertPromises.length > 0) {
       await Promise.all(upsertPromises);
+    }
+
     const updatedAddresses = await prisma.company_addresses.findMany({
       where: {
         company_id: companyId,
       },
       select: {
         company_address_id: true,
-        city: true,
-        state: true,
-        zip_region: true,
-        county: true,
+        locationData: {
+          select: {
+            city: true,
+            state: true,
+            zip: true,
+            county: true,
+          }
+        }
+
       },
     });
 
@@ -189,13 +196,13 @@ export async function POST(request: Request) {
       industrySectorId: upsertedCompany.industry_sector_id,
       industrySectorTitle: upsertedCompany?.industry_sectors?.sector_title,
       companyName: upsertedCompany.company_name,
-      // companyAddresses: updatedAddresses.map((address) => ({
-      //   addressId: address.company_address_id,
-      //   state: address.state,
-      //   city: address.city,
-      //   zipCode: address.zip_region,
-      //   county: address.county,
-      // })),
+      companyAddresses: updatedAddresses?.map((address) => ({
+        addressId: address.company_address_id,
+        state: address.locationData.state,
+        city: address.locationData.city,
+        zipCode: address.locationData.zip,
+        county: address.locationData.county,
+      })) || undefined,
       logoUrl: upsertedCompany.company_logo_url,
       aboutUs: upsertedCompany.about_us,
       companyEmail: upsertedCompany.company_email,

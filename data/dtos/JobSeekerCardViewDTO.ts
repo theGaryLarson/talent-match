@@ -22,12 +22,12 @@ export type JobSeekerCardViewDTO = {
     first_name: string | null;
     last_name: string | null;
     photo_url: string | null;
-    user_addresses: {
+    locationData: {
       // Added user addresses returns an array but will be only one item.
       zip: string;
       state: string | null;
       city: string | null;
-    }[];
+    };
   } | null;
   jobseeker_education:
     | {

@@ -12,20 +12,14 @@ import {
   submitFormFailure,
   FormState,
 } from '@/lib/features/profileCreation/formSlice';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
-import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
-import { formatPhoneE164 } from '@/app/lib/utils';
-import parsePhoneNumberFromString from 'libphonenumber-js';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import {getFieldValue} from "@/app/lib/utils";
 
-export default function CreateJobseekerProfileIntroPage() {
+export default function CreateEmployerCompanyInfoAboutPage() {
   const { fields, isSubmitting, error }: FormState = useSelector(
     (state: RootState) => state.form,
   );
@@ -73,8 +67,8 @@ export default function CreateJobseekerProfileIntroPage() {
             isVerifiedCompany,
           } = result;
           await updateSessionProperties({
-            employerId,
-            companyId,
+            employerId: employerId,
+            companyId: companyId,
             companyIsApproved: isVerifiedCompany,
             employeeIsApproved: isVerifiedEmployee,
           });
@@ -139,19 +133,16 @@ export default function CreateJobseekerProfileIntroPage() {
     dispatch(submitForm());
 
     const formData = {
-      userId: session?.user.id,
-      about_us:
-        fields.find((f) => f.id === 'profile-creation-company-about')?.value ||
-        null,
-      // company_video_url: // on video page
-      // company_mission: // on mission page
+      companyId: session?.user.companyId,
+      aboutUs:
+        getFieldValue(fields, 'profile-creation-company-about' , '')
     };
 
     try {
       const response = await fetch(
-        '/api/employers/account/company-info/upsert',
+        '/api/companies/about/update/',
         {
-          method: 'POST',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -194,9 +185,8 @@ export default function CreateJobseekerProfileIntroPage() {
                 rows="16"
                 onChange={handleFieldChange}
                 required
-                value={
-                  fields.find((f) => f.id === 'profile-creation-company-about')
-                    ?.value || ''
+                defaultValue={
+                  getFieldValue(fields, 'profile-creation-company-about', '')
                 }
               >
                 {/* Tell us about your company * */}

@@ -51,6 +51,7 @@ export type ReadAddressDTO = {
   addressId?: string;
   city?: string | null;
   state?: string | null;
+  stateCode?: string | null;
   zipCode?: string | null;
   county?: string | null;
   lat?: string | null;
@@ -58,7 +59,7 @@ export type ReadAddressDTO = {
 };
 
 export type PostAddressDTO = {
-  city: string;
+  city?: string;
   state?: string;
   zipCode: string;
   county?: string | null;

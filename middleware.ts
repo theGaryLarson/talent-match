@@ -39,7 +39,7 @@ export default auth((req) => {
     "/signup/employer",
 
     "/create-profile/employer/personal",
-    "/create-profile/employer/company-info",
+    "/create-profile/employer/company",
     "/create-profile/employer/professional-info",
     "/create-profile/employer/about",
     "/create-profile/employer/disclosures",

@@ -19,26 +19,31 @@ export async function DELETE(request: Request, {params}: { params: { locationId:
             },
             select: {
                 company_address_id: true,
-                city: true,
-                state: true,
-                zip_region: true,
-                county: true
+                locationData: {
+                    select: {
+                        city: true,
+                        state: true,
+                        stateCode: true,
+                        zip: true,
+                        county: true
+                    }
+                }
             }
         })
         if (!deletedAddress) {
             return NextResponse.json({
                 success: false,
-                error: `There are no companies with id ${addressId}`
+                error: `There are no company with id ${addressId}`
             }, {status: 400})
 
         }
 
         const result: ReadAddressDTO = {
             addressId: deletedAddress.company_address_id,
-            city: deletedAddress.city,
-            state: deletedAddress.state,
-            zipCode: deletedAddress.zip_region,
-            county: deletedAddress.county,
+            city: deletedAddress.locationData.city,
+            state: deletedAddress.locationData.state,
+            zipCode: deletedAddress.locationData.zip,
+            county: deletedAddress.locationData.county,
         }
 
         return NextResponse.json({success: true, result}, {status: 200})

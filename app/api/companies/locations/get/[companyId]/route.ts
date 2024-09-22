@@ -7,7 +7,7 @@ const prisma: PrismaClient = getPrismaClient();
 
 export async function GET(request: Request, {params}: { params: { companyId: string } }) {
     try {
-        const companyId = params.companyId;
+        const companyId = params?.companyId;
 
         if (!companyId) {
             return NextResponse.json({success: false, error: `A uuidv4 companyId is required.`}, {status: 400})
@@ -19,29 +19,35 @@ export async function GET(request: Request, {params}: { params: { companyId: str
             },
             select: {
                 company_address_id: true,
-                city: true,
-                state: true,
-                zip_region: true,
-                county: true
+                locationData: {
+                    select: {
+                        zip: true,
+                        state: true,
+                        stateCode: true,
+                        county: true,
+                        city: true,
+                    }
+                }
             }
         })
         if (!companyAddresses) {
             return NextResponse.json({
                 success: false,
-                error: `There are no companies with id ${companyId}`
+                error: `There is no company with id ${companyId}`
             }, {status: 400})
 
         }
 
         const result: ReadAddressDTO[] = companyAddresses.map(address => ({
             addressId: address.company_address_id,
-            city: address.city,
-            state: address.state,
-            zipCode: address.zip_region,
-            county: address.county,
+            city: address.locationData.city,
+            state: address.locationData.state,
+            stateCode: address.locationData.stateCode,
+            zipCode: address.locationData.zip,
+            county: address.locationData.county,
         }));
 
-        return NextResponse.json({success: true, result}, {status: 200})
+        return NextResponse.json(result, {status: 200})
 
     } catch (e: any) {
         console.error('Error reading company locations:', e.message);
