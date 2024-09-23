@@ -13,33 +13,33 @@ datasource db {
 /////////////////////////////////////////////////////
 
 model User {
-  id               String         @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  role             String         @db.VarChar(255)
-  first_name       String?        @db.VarChar(255) // TODO: does this need to be name for auth.js
-  last_name        String?        @db.VarChar(255) // TODO: do we need to add username
-  birthdate        DateTime?      @db.DateTime
-  email            String         @unique @db.VarChar(255)
-  emailVerified    DateTime?      @map("email_verified") @db.DateTime
-  phone            String?        @db.VarChar(16)
-  zip              String?        @db.VarChar(5)
-  gender           String?        @db.VarChar(45)
-  race             String?        @db.VarChar(45)
-  photo_url        String?        @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
-  has_agreed_terms Boolean        @default(false) @db.Bit
-  createdAt        DateTime       @map("created_at") @db.DateTime
-  updatedAt        DateTime?      @map("updated_at") @db.DateTime
-  locationData     PostalGeoData? @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
-
-  cfa_admin     cfa_admin[]
-  educators     educators[]
-  employers     employers[]
-  jobseekers    jobseekers[]
-  eduProviders  edu_providers[]
-  volunteers    volunteers[]
-  Account       Account[]
-  Session       Session[]
+  id                 String          @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  role               String          @db.VarChar(255)
+  first_name         String?         @db.VarChar(255) // TODO: does this need to be name for auth.js
+  last_name          String?         @db.VarChar(255) // TODO: do we need to add username
+  birthdate          DateTime?       @db.DateTime
+  email              String          @unique @db.VarChar(255)
+  emailVerified      DateTime?       @map("email_verified") @db.DateTime
+  phone              String?         @db.VarChar(16)
+  zip                String?         @db.VarChar(5)
+  gender             String?         @db.VarChar(45)
+  race               String?         @db.VarChar(45)
+  photo_url          String?         @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
+  has_agreed_terms   Boolean         @default(false) @db.Bit
+  createdAt          DateTime        @map("created_at") @db.DateTime
+  updatedAt          DateTime?       @map("updated_at") @db.DateTime
+  is_marked_deletion DateTime?       @db.DateTime
+  locationData       PostalGeoData?  @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
+  cfa_admin          cfa_admin[]
+  educators          educators[]
+  employers          employers[]
+  jobseekers         jobseekers[]
+  eduProviders       edu_providers[]
+  volunteers         volunteers[]
+  Account            Account[]
+  Session            Session[]
   // Optional for WebAuthn support
-  Authenticator Authenticator[]
+  Authenticator      Authenticator[]
 
   @@map("users")
 }
