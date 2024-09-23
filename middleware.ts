@@ -82,6 +82,9 @@ export default auth((req) => {
 
   // SPECIFIC REDIRECTS ------------
 
+// signout redirect again logged in guest role
+// jobseeker register redirecting
+
   // If you're at signout and logged out, reroute to the main page
   if (!req.auth && pathname === "/signout") {
     return NextResponse.redirect(homeUrl);
