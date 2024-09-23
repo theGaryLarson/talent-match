@@ -22,7 +22,7 @@ export default auth((req) => {
   const jobseekerRoutes = [
     "/signup/jobseeker",
 
-    "/create-profile/jobseeker/complete",
+    "/create-profile/jobseeker/congratulations",
     "/create-profile/jobseeker/disclosures",
     "/create-profile/jobseeker/education",
     "/create-profile/jobseeker/introduction",
@@ -159,6 +159,12 @@ export default auth((req) => {
   }
 });
 
+/* Match all request paths except for the ones starting with:
+ * - api (API routes)
+ * - _next/static (static files)
+ * - _next/image (image optimization files)
+ * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+ */
 export const config = { // TODO: route guard the API...
   matcher: ["/((?!api|_next/static|_next/image|cfa_images|favicon.ico).*)"],
 };
