@@ -51,7 +51,7 @@ export async function POST(request: Request) {
         race: undefined,
         photo_url: photoUrl,
         createdAt: new Date(),
-        is_marked_deletion: new Date().setDate(Date.now()+30).toString(),
+        is_marked_deletion: new Date(new Date().setDate(Date.now()+30)),
       },
     });
 
