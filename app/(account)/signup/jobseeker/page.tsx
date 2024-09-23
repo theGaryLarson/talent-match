@@ -121,21 +121,21 @@ export default function JobseekerSignupFinishPage() {
                   {' '}
                   By signing up you agree to our{' '}
                   <Link
-                    className="text-red-600 underline"
+                    className="REPLACE-BEFORE-RELEASE"
                     href="/underconstruction"
                   >
                     terms of use
                   </Link>
                   , and acknowledge you have read the{' '}
                   <Link
-                    className="text-red-600 underline"
+                    className="REPLACE-BEFORE-RELEASE"
                     href="/underconstruction"
                   >
                     privacy notice
                   </Link>
                   and{' '}
                   <Link
-                    className="text-red-600 underline"
+                    className="REPLACE-BEFORE-RELEASE"
                     href="/underconstruction"
                   >
                     data sharing agreement
@@ -154,13 +154,13 @@ export default function JobseekerSignupFinishPage() {
             >
               Create account
             </Button>
-            <DividerWithText className="py-8">or</DividerWithText>
+            {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
               <p>Already have a CFA account?</p>
               <Link className="text-blue-500" href="/signin">
                 Sign in
               </Link>
-            </div>
+            </div> */}
           </form>
         </section>
         <Image
