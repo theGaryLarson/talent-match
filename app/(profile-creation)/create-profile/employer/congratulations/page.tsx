@@ -1,10 +1,7 @@
 'use client';
 
 import React, {useState} from 'react';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import Confetti from '@/app/ui/components/Confetti';
-
-
 // REVIEW: testing redux
 // import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
@@ -12,60 +9,31 @@ import Confetti from '@/app/ui/components/Confetti';
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 import { Button } from "flowbite-react";
 import { useRouter } from 'next/navigation';
-import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import {useSession} from "next-auth/react";
 
 
 
-export default function CreateJobseekerProfilePreferencesPage(){
+export default function EmployerCongratsPage(){
   // const { fields } = useSelector((state: RootState) => state.form);
   // const dispatch = useDispatch();
   const [employmentType, setEmploymentType] = useState('');
   const [pathway, setPathway] = useState('');
   const [error, setError] = useState('');
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   function handleClick() {
     router.push('/services/employers/dashboard');
   }
 
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    const formData: JsPreferencesDTO = {
-      userId: '87E52D83-CC98-46AF-B62A-58124ABEBBDC', // TODO: grab user.id from nextauth session
-      targetedPathwayId: null,
-      targetedPathway: pathway,
-      preferredEmploymentType: employmentType,
 
-    }
-
-    try {
-      const response = await fetch('/api/jobseekers/account/preferences/upsert', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) {
-        const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
-        setError(errorMessage);
-        return;
-      }
-
-      const result = await response.json();
-      console.log(JSON.stringify(result, null ,2 ));
-      router.push('/services/employers/dashboard');
-    } catch (e: any) {
-      setError(`An unexpected error occurred: ${e.message}`);
-    }
-  }
   return(
     <main className="flex justify-center">
       <aside className="profile-form-aside">
       </aside>
       <section className="profile-form-section main-content">
         <Confetti />
-        <h1>Congrats on completing your profile, Katherine!</h1>
+        <h1>{`Congrats on completing your profile, ${session?.user?.firstName}!`}</h1>
 
         <p className='subtitle-congrats'>{"Let's kickstart your candidate search journey!"}</p>
         <Button pill onClick={handleClick}>Get Started</Button>

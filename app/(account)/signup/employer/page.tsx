@@ -38,21 +38,21 @@ export default function EmployerSignUpFinish() {
                   {' '}
                   By signing up you agree to our{' '}
                   <Link
-                    className="text-red-600 underline"
+                    className="REPLACE-BEFORE-RELEASE"
                     href="/underconstruction"
                   >
                     terms of use
                   </Link>
                   , and acknowledge you have read the{' '}
                   <Link
-                    className="text-red-600 underline"
+                    className="REPLACE-BEFORE-RELEASE"
                     href="/underconstruction"
                   >
                     privacy notice
                   </Link>
                   and{' '}
                   <Link
-                    className="text-red-600 underline"
+                    className="REPLACE-BEFORE-RELEASE"
                     href="/underconstruction"
                   >
                     data sharing agreement

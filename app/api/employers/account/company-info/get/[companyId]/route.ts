@@ -41,10 +41,16 @@ export async function GET(request: Request, { params }: { params: { companyId: s
                 is_approved: true,
                 company_addresses: {
                     select: {
-                        state: true,
-                        city: true,
-                        zip_region: true,
-                        county:true,
+                        locationData: {
+                            select: {
+                                state: true,
+                                stateCode: true,
+                                city: true,
+                                zip: true,
+                                county:true,
+                            }
+                        }
+
                     }
                 }
             }
@@ -60,10 +66,15 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             },
             select: {
                 company_address_id: true,
-                city: true,
-                state: true,
-                zip_region: true,
-                county: true
+                locationData: {
+                    select: {
+                        state: true,
+                        stateCode: true,
+                        county: true,
+                        city: true,
+                        zip: true,
+                    }
+                }
             }
         })
 
@@ -87,10 +98,10 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             isApproved: companyInfo.is_approved,
             companyAddresses: updatedAddresses.map(address => ({
                 addressId: address.company_address_id,
-                state: address.state,
-                city: address.city,
-                zipCode: address.zip_region,
-                county: address.county
+                state: address.locationData.state,
+                city: address.locationData.city,
+                zipCode: address.locationData.zip,
+                county: address.locationData.county
             }))
 
         }

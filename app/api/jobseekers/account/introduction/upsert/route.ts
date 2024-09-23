@@ -22,9 +22,6 @@ export async function POST(request: Request) {
             phoneCountryCode,
             phone,
             zipCode,
-            state,
-            city,
-            county,
             email,
             introHeadline,
             currentJobTitle,
@@ -45,6 +42,11 @@ export async function POST(request: Request) {
                     phone: formattedPhone,
                     email: email,
                     photo_url: photoUrl,
+                    locationData: {
+                        connect: {
+                            zip: zipCode,
+                        }
+                    },
                     updatedAt: new Date(),
                 },
                 create: {
@@ -54,7 +56,7 @@ export async function POST(request: Request) {
                     last_name: lastName,
                     birthdate: birthDate,
                     phone: formattedPhone,
-                    email,
+                    email: email,
                     gender: undefined,
                     race: undefined,
                     photo_url: photoUrl,
@@ -62,6 +64,9 @@ export async function POST(request: Request) {
                     updatedAt: undefined,
                     emailVerified: undefined,
                 },
+                include: {
+                    locationData: true,
+                }
             });
 
             // Upsert jobseeker
@@ -100,32 +105,7 @@ export async function POST(request: Request) {
                     employment_type_sought: undefined,
                 },
             });
-            const existingUserAddress = await prisma.user_addresses.findUnique({
-                where: {
-                    user_id: user.id
-                },
-                select: {
-                    user_address_id: true,
-                }
-            })
-            const user_address_id = existingUserAddress?.user_address_id || uuidv4();
-            const userAddress = await prisma.user_addresses.upsert({
-                where: {user_id: user.id},
-                update: {
-                    zip: zipCode,
-                    state,
-                    city,
-                    county,
-                },
-                create: {
-                    user_address_id: user_address_id,
-                    user_id: user.id,
-                    zip: zipCode,
-                    state,
-                    city,
-                    county
-                }
-            });
+
             const loadIntroPage: JsIntroDTO = {
                 userId: user.id,
                 photoUrl: user.photo_url,
@@ -134,10 +114,10 @@ export async function POST(request: Request) {
                 birthDate: user.birthdate,
                 phoneCountryCode: user.phone ? parsePhoneNumberFromString(user.phone)?.countryCallingCode : null,
                 phone: user.phone,
-                zipCode: userAddress.zip,
-                state: userAddress.state,
-                city: userAddress.city,
-                county: userAddress.county,
+                zipCode: user.locationData?.zip,
+                state: user.locationData?.stateCode,
+                city: user.locationData?.city,
+                county: user.locationData?.county,
                 email: user.email,
                 introHeadline: jobseeker.intro_headline,
                 currentJobTitle: jobseeker.current_job_title,
@@ -150,7 +130,6 @@ export async function POST(request: Request) {
                 createdAt: user.createdAt,
                 pathwayId: jobseeker.targeted_pathway,
                 jobseekerId: jobseeker.jobseeker_id,
-                contactAddressId: userAddress.user_address_id,
                 isMarkedDeletion: jobseeker.is_marked_deletion,
             }
             return {loadIntroPage, meta};

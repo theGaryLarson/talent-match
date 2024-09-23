@@ -28,7 +28,7 @@ export default function CFASignupFooter({
         <div className="hidden py-4 laptop:block">
           <p>Not ready to log in?</p>
           <p>
-            <Link href="/" className="text-blue-400 underline">
+            <Link href="/underconstruction" className="REPLACE-BEFORE-RELEASE">
               Learn how CFA works
             </Link>
           </p>

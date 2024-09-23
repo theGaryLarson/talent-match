@@ -1002,9 +1002,16 @@ function getRandomUserPhoto() {
 
 async function seedUsers(numUsers = 4) {
     console.log('Seeding Users...')
+    const waLocations = await prisma.postalGeoData.findMany({
+        where: {
+            stateCode: "WA",
+        },
+        select: {
+            zip: true,
+        }
+    })
     if (numUsers <= 4) {
         for (let idx = 0; idx < numUsers; idx++) {
-            // const hashedPassword = await bcryptjs.hash(user.password, 10);
             await prisma.user.create({
                 data: {
                     id: uuidv4(),
@@ -1018,6 +1025,11 @@ async function seedUsers(numUsers = 4) {
                     gender: null,
                     race: null,
                     photo_url: getRandomUserPhoto(),
+                    locationData: {
+                        connect: {
+                            zip: faker.helpers.arrayElement(waLocations).zip,
+                        }
+                    },
                     createdAt: new Date(),
                 }
             });
@@ -1038,32 +1050,17 @@ async function seedUsers(numUsers = 4) {
                     gender: faker.person.gender(),
                     race: faker.helpers.arrayElement(racesAndEthnicities),
                     photo_url: getRandomUserPhoto(),
+                    locationData: {
+                        connect: {
+                            zip: faker.helpers.arrayElement(waLocations).zip,
+                        }
+                    },
                     createdAt: new Date().toISOString()
                 }
             });
         }
     }
     console.log(`Seeded ${numUsers} users.\n`)
-}
-
-async function seedUserAddresses() {
-    console.log(`Seeding User Addresses...`)
-    const users = await prisma.user.findMany();
-    for (const user of users) {
-        const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
-        await prisma.user_addresses.create({
-            data: {
-                user_address_id: uuidv4(),
-                user_id: user.id,
-                zip: faker.helpers.arrayElement(regionInfo.zipCodes),
-                state: 'WA',
-                city: faker.location.city(),
-                county: regionInfo.county,
-
-            }
-        })
-    }
-    console.log(`Seeded ${users.length} User Addresses.\n`)
 }
 
 async function seedPathways() {
@@ -1153,7 +1150,7 @@ async function seedPrograms() {
     }
 }
 
-async function SeedEduAddresses() {
+async function SeedEdProvidersAddresses() {
     console.log(`Seeding Institution Addresses...`);
     const edInstitutions = await prisma.edu_providers.findMany({
         select: {
@@ -1161,18 +1158,21 @@ async function SeedEduAddresses() {
             name: true, // needed to filter out the unknown. In case a jobseeker does not enter an institution.
         }
     });
+    const waAddresses = await prisma.postalGeoData.findMany({
+        where: {
+            stateCode: "WA",
+        }
+    })
     const addresses = edInstitutions
         .filter(institution => institution.name !== "No data")
         .map(institution => {
-            const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
+            const locationInfo = faker.helpers.arrayElement(waAddresses);
             return {
                 edu_address_id: uuidv4(),
                 edu_provider_id: institution.id,
                 street1: faker.location.streetAddress(),
                 street2: faker.location.secondaryAddress(),
-                city: faker.location.city(),
-                state: regionInfo.county,
-                zip: faker.helpers.arrayElement(regionInfo.zipCodes),
+                zip: locationInfo.zip,
             };
         });
 
@@ -1637,16 +1637,20 @@ async function seedEmployers() {
 
 async function seedCompanyAddresses() {
     const companies = await prisma.companies.findMany();
+    const waLocationData = await prisma.postalGeoData.findMany({
+        where: {
+            stateCode: "WA",
+        },
+        select:{
+            zip:true,
+        }
+    })
     for (const c of companies) {
-        const regionInfo = faker.helpers.arrayElement(waStateCountiesWithZipCodes);
         await prisma.company_addresses.create({
             data: {
                 company_address_id: uuidv4(),
                 company_id: c.company_id,
-                city: faker.location.city(),
-                state: 'WA',
-                zip_region: faker.helpers.arrayElement(regionInfo.zipCodes),
-                county: regionInfo.county,
+                zip: faker.helpers.arrayElement(waLocationData).zip,
             },
         });
 
@@ -1798,7 +1802,9 @@ async function seedJobPostings() {
 async function seedPostalGeoData(jsonFilePath, logFrequency=10, batchSize=1000) {
     console.log('Seeding Postal Geo Data (zip, city, state, stateId, geographic coords)...');
 
-    const jsonData = JSON.parse(fs.readFileSync(path.resolve(__dirname, jsonFilePath), 'utf-8'));
+    let jsonData = JSON.parse(fs.readFileSync(path.resolve(__dirname, jsonFilePath), 'utf-8'));
+    // Filter data to only include entries where state_code is "WA" for dev
+    jsonData = jsonData.filter(item => item.stateCode === "WA");
 
     let totalInserted = 0;
     let batchCount = 0;
@@ -1842,12 +1848,12 @@ async function main() {
     await seedIndustrySectors(); // use in production
     await seedSubcategories(); // use in production
     await seedSkills(); // use in production
+    await seedPostalGeoData("../data/postal_geo_data.json"); // use in production
     await seedSocialMediaPlatforms(); // use in production
     await seedUsers(250);
-    await seedUserAddresses();
     await seedPrograms(); // use in production
     await seedEduProviders(); // use in production
-    await SeedEduAddresses();
+    await SeedEdProvidersAddresses();
     await seedJobSeekers();
     await seedJobSeekersPrivateData();
     await seedJobSeekerSkills();
@@ -1867,7 +1873,6 @@ async function main() {
     await seedCompanyTestimonials();
     await seedCompanySocialLinks();
     await seedJobPostings();
-    await seedPostalGeoData("../data/postal_geo_data.json");
     console.log("Finished seeding.\n")
 
 }

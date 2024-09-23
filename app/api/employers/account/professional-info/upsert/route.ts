@@ -7,6 +7,7 @@ import {
   ReadEmployerWorkDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
+import {devLog} from "@/app/lib/utils";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -27,7 +28,6 @@ export async function POST(request: Request) {
       create: {
         employer_id: uuidv4(),
         user_id: userId,
-        company_id: undefined,
         job_title: currentJobTitle,
         work_address_id: addressId,
         linkedin_url: linkedInUrl,
@@ -51,16 +51,21 @@ export async function POST(request: Request) {
               },
               select: {
                 company_address_id: true,
-                city: true,
-                state: true,
-                zip_region: true,
+                locationData: {
+                  select: {
+                    city: true,
+                    state: true,
+                    zip: true,
+                  }
+                }
               },
             },
           },
         },
       },
     });
-    console.log(JSON.stringify(upsertedEmployer, null, 2));
+    devLog(upsertedEmployer);
+    const companyAddressExists = !!upsertedEmployer?.companies?.company_addresses?.[0]
     const result: ReadEmployerWorkDTO & CompanyInfoSummaryDTO = {
       userId: upsertedEmployer.user_id,
       employerId: upsertedEmployer.employer_id,
@@ -70,13 +75,13 @@ export async function POST(request: Request) {
       companyName: upsertedEmployer?.companies?.company_name,
       isVerifiedCompany: upsertedEmployer.companies?.is_approved ?? false,
       isVerifiedEmployee: upsertedEmployer.is_verified_employee,
-      companyAddress: {
+      companyAddress: companyAddressExists ? {
         addressId:
-          upsertedEmployer?.companies?.company_addresses[0]?.company_address_id,
-        city: upsertedEmployer?.companies?.company_addresses[0]?.city,
-        state: upsertedEmployer?.companies?.company_addresses[0]?.state,
-        zipCode: upsertedEmployer?.companies?.company_addresses[0]?.zip_region,
-      },
+          upsertedEmployer?.companies?.company_addresses?.[0]?.company_address_id,
+        city: upsertedEmployer?.companies?.company_addresses?.[0]?.locationData.city,
+        state: upsertedEmployer?.companies?.company_addresses?.[0]?.locationData.state,
+        zipCode: upsertedEmployer?.companies?.company_addresses?.[0]?.locationData.zip,
+      } : undefined,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
