@@ -51,7 +51,7 @@ export default async function page({ params }: { params: { id: string } }) {
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center rounded-md border bg-white grow">
           <div className="flex items-center gap-5 p-4">
-            <Avatar imgsrc={jobseeker?.users.photo_url} scale={1.5}></Avatar>
+            <Avatar imgsrc={jobseeker?.users.photo_url??undefined} scale={1.5}></Avatar>
             <div>
               <h1 className="text-2xl font-bold">
                 {jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name}
