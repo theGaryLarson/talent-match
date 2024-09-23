@@ -185,25 +185,26 @@ export default function CreateEmployerCompanyInfoPage() {
       return;
     }
 
+    const newCompanyData: PostCompanyInfoDTO = { ...companyData };
     if (typeof companyObject !== 'string') {
-      companyData.companyId = companyObject.companyId;
-      companyData.companyName = companyObject.companyName;
+      newCompanyData.companyId = companyObject.companyId;
+      newCompanyData.companyName = companyObject.companyName;
     } else {
-      companyData.companyId = companyId!;
-      companyData.companyName = companyObject;
+      newCompanyData.companyId = companyId!;
+      newCompanyData.companyName = companyObject;
     }
 
-    // companyData.companyId = companyId!;
-    companyData.employerId = employerId!;
+    // newCompanyData.companyId = companyId!;
+    newCompanyData.employerId = employerId!;
     if (industry) {
-      companyData.industrySectorId = industry.industry_sector_id;
-      companyData.industrySectorTitle = industry.sector_title;
+      newCompanyData.industrySectorId = industry.industry_sector_id;
+      newCompanyData.industrySectorTitle = industry.sector_title;
     }
-    companyData.yearFounded = year_founded?.toISOString() ?? '';
-    companyData.logoUrl = logoUrl;
-    dispatch(setCompany(companyData));
+    newCompanyData.yearFounded = year_founded?.toISOString() ?? '';
+    newCompanyData.logoUrl = logoUrl;
 
     try {
+      console.log(newCompanyData);
       const response = await fetch(
         '/api/employers/account/company-info/upsert',
         {
@@ -211,12 +212,13 @@ export default function CreateEmployerCompanyInfoPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(companyData),
+          body: JSON.stringify(newCompanyData),
         },
       );
 
       if (response.ok) {
         const result = await response.json();
+        dispatch(setCompany(newCompanyData));
         router.push('/create-profile/employer/about');
       } else {
         const errorData = await response.json();
