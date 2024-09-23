@@ -10,6 +10,7 @@ export type ReadUserInfoDTO = {
   companyId?: string | null;
   companyIsApproved: boolean;
   employeeIsApproved: boolean;
+  isMarkedDeletion: Date | null;
 };
 
 export type CreateUserDTO = {
