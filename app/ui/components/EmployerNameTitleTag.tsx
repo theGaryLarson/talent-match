@@ -1,15 +1,38 @@
-import Link from "next/link";
-import Avatar from "./Avatar";
+'use client';
+import Link from 'next/link';
+import Avatar from './Avatar';
 
-export default function EmployerNameTitleTag(props:{name:string, title:string, company:string}){
-    return(
-        <div className="w-full border h-24 rounded-lg flex items-center">
-            <Avatar/>
-            <div className="w-full flex items-center flex-wrap justify-between p-4">
-                <h2 className="font-bold">{props.name} | {props.title} | <span className="font-light">{props.company}</span></h2>
-                <Link className="REPLACE-BEFORE-RELEASE" href='/underconstruction'><h2>Edit Profile Details</h2></Link>
-            </div>
-            
-        </div>
-    )
+import { useSession } from 'next-auth/react';
+export default function EmployerNameTitleTag(props: {
+  name: string | null | undefined;
+  title: string;
+  company: string;
+  pfp: string | undefined;
+}) {
+  return (
+    <div className="flex h-[76px] w-full items-center rounded-lg border">
+      <Avatar imgsrc={props.pfp} scale={0.69} />
+      <div className="flex w-full flex-wrap items-center justify-between p-4">
+        <h2 className="font-bold">
+          {props.name} | {props.title} |{' '}
+          <span className="font-light">{props.company}</span>
+        </h2>
+        <p>
+          <Link
+            className="text-[#1e88e5]"
+            href="/create-profile/employer/personal"
+          >
+            Edit My Profile
+          </Link>{' '}
+          |{' '}
+          <Link
+            className="text-red-600"
+            href="/underconstruction"
+          >
+            Edit Company Profile
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
 }
