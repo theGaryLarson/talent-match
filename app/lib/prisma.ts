@@ -642,6 +642,6 @@ export async function getTechnologyAreas() {
   return technologyAreas;
 }
 
-export async function deleteUser() {
+export async function deleteUser(date: Date) {
   // TODO: create delete user & remove jobseeker/soft-delete from api-routes
 }
