@@ -10,13 +10,16 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
-import { formatPhoneE164 } from '@/app/lib/utils';
+import { devLog, formatPhoneE164 } from '@/app/lib/utils';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { JsIntroDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {
+  JsIntroDTO,
+  JsIntroPostDTO,
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {
   setIntroduction,
   initialState,
@@ -26,12 +29,18 @@ import _ from 'lodash';
 const formNamePrefix = 'profile-creation-intro-';
 
 export default function CreateJobseekerProfileIntroPage() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
+  const updateSessionProperties = useUpdateSession();
   const introStoreData = useSelector(
     (state: RootState) => state.jobseeker.introduction,
   );
-  const [introData, setIntroData] = useState({ ...introStoreData });
-  const dispatch = useDispatch();
-  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+
+  const [introData, setIntroData] = useState<JsIntroPostDTO>({
+    ...introStoreData,
+  });
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
     introData.birthDate === '' ? null : dayjs(introData.birthDate),
   );
@@ -42,70 +51,55 @@ export default function CreateJobseekerProfileIntroPage() {
     introData.resumeUrl ?? null,
   );
 
-  const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
-  const updateSessionProperties = useUpdateSession();
-
   useEffect(() => {
-    const initializeFormFields = async () => {
-      if (status === 'authenticated' && session?.user) {
+    if (session?.user?.id && status === 'authenticated') {
+      const initializeFormFields = async () => {
         if (_.isEqual(introStoreData, initialState.introduction)) {
           const { id, firstName, lastName, email, image } = session.user;
 
-          introData.userId = id ?? '';
-          console.log('fetching fresh');
-
           try {
+            devLog('fetching fresh');
             const response = await fetch(
               '/api/jobseekers/account/introduction/get/' + id,
             );
 
             if (!response.ok) {
-              const errorData = await response.json();
-              // dispatch(
-              //   submitFormFailure(errorData.error || 'Failed to submit the form'),
-              // );
+              setIntroData({
+                ...introData,
+                userId: id!,
+                email: email!,
+                firstName: firstName ?? '',
+                lastName: lastName ?? '',
+                photoUrl: image ?? '',
+              });
             } else {
               let fetchedData: JsIntroDTO = (await response.json()).result
                 .loadIntroPage;
-              console.log(firstName, lastName, email, image);
-              console.log(fetchedData);
-              introData.birthDate = fetchedData.birthDate ?? '';
-              introData.city = fetchedData.city;
-              introData.county = fetchedData.county;
-              introData.currentJobTitle = fetchedData.currentJobTitle;
-              introData.email =
-                fetchedData.email.length !== 0
-                  ? fetchedData.email
-                  : (email ?? '');
-              introData.firstName =
-                typeof fetchedData.firstName === 'string' &&
-                fetchedData.firstName?.length !== 0
-                  ? fetchedData.firstName
-                  : (firstName ?? '');
-              introData.introHeadline = fetchedData.introHeadline;
-              introData.lastName =
-                typeof fetchedData.lastName === 'string' &&
-                fetchedData.lastName?.length !== 0
-                  ? fetchedData.lastName
-                  : (lastName ?? '');
-              introData.phone = fetchedData.phone;
-              introData.phoneCountryCode = fetchedData.phoneCountryCode;
-              introData.photoUrl =
-                typeof fetchedData.photoUrl === 'string' &&
-                fetchedData.photoUrl?.length !== 0
-                  ? fetchedData.photoUrl
-                  : (image ?? '');
-              introData.resumeUrl = fetchedData.resumeUrl;
-              introData.state = fetchedData.state;
-              introData.zipCode = fetchedData.zipCode ?? '';
 
-              setIntroData({ ...introData });
+              setIntroData({
+                ...introData,
+                userId: id!,
+                email: email!,
+                firstName: firstName ?? '',
+                lastName: lastName ?? '',
+                photoUrl: image ?? '',
+                birthDate: fetchedData.birthDate ?? '',
+                zipCode: fetchedData.zipCode ?? '',
+                city: fetchedData.city,
+                county: fetchedData.county,
+                currentJobTitle: fetchedData.currentJobTitle,
+                introHeadline: fetchedData.introHeadline,
+                phone: fetchedData.phone,
+                phoneCountryCode: fetchedData.phoneCountryCode,
+                resumeUrl: fetchedData.resumeUrl,
+                state: fetchedData.state,
+              });
             }
           } catch (error) {
-            // dispatch(submitFormFailure('Failed to submit the form'));
+            console.error(error);
           }
         } else {
-          console.log('fetching from redux store');
+          devLog('fetching from store');
         }
 
         setBirthdate(
@@ -116,11 +110,11 @@ export default function CreateJobseekerProfileIntroPage() {
         );
         setAvatarUrl(introData.photoUrl ?? null);
         setResumeUrl(introData.resumeUrl ?? null);
-      }
-    };
+      };
 
-    initializeFormFields();
-  }, [session]);
+      initializeFormFields();
+    }
+  }, [session?.user?.id]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -128,8 +122,10 @@ export default function CreateJobseekerProfileIntroPage() {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
     if (introData.hasOwnProperty(fieldName)) {
-      introData[fieldName as keyof JsIntroDTO] = value;
-      setIntroData({ ...introData });
+      setIntroData({
+        ...introData,
+        [fieldName]: value,
+      });
     }
   };
 
@@ -149,7 +145,7 @@ export default function CreateJobseekerProfileIntroPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!session || !session.user) {
+    if (!session?.user?.id) {
       console.error('User session is not available.');
       return;
     }
@@ -157,7 +153,6 @@ export default function CreateJobseekerProfileIntroPage() {
     introData.birthDate = birthdate?.toISOString() ?? '';
     introData.photoUrl = avatarUrl;
     introData.resumeUrl = resumeUrl;
-    dispatch(setIntroduction(introData));
 
     // Extract firstName, lastName, and name from Redux state fields
     const firstName = introData.firstName;
@@ -179,18 +174,25 @@ export default function CreateJobseekerProfileIntroPage() {
       if (response.ok) {
         const result = await response.json();
 
+        // Update the redux state
+        dispatch(setIntroduction(introData));
+
         // Update session properties using the custom hook
         await updateSessionProperties({
           firstName,
           lastName,
           name,
+          image: introData.photoUrl,
         });
 
         router.push('/create-profile/jobseeker/education');
       } else {
-        const errorData = await response.json();
+        const errorMessage = `Failed to submit basic info. Status: ${response.status} - ${response.statusText}`;
+        setError(errorMessage);
       }
-    } catch (error) {}
+    } catch (e: any) {
+      setError(`An unexpected error occurred: ${e.message}`);
+    }
   };
 
   return (

@@ -17,7 +17,15 @@ import InternshipExperiences, {
 import { JsWorkExpDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { initializeForm } from '@/lib/features/profileCreation/formSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/lib/jobseekerStore';
+import {
+  initialState,
+  setWorkExperience,
+} from '@/lib/features/profileCreation/jobseekerSlice';
+import dayjs, { Dayjs } from 'dayjs';
+import _ from 'lodash';
+import { devLog } from '@/app/lib/utils';
 
 interface Data {
   yearsWorkExperience: string | number;
@@ -29,17 +37,60 @@ interface Data {
 }
 
 export default function CreateJobseekerProfileWorkExperiencePage() {
-  const { data: session, status } = useSession();
-  const [data, setData] = useState<Data>({
-    yearsWorkExperience: '',
-    monthsInternshipExperience: '',
-    workExperiences: [],
-    internshipExperiences: [],
-    isAuthorizedToWorkUsa: undefined,
-    requiresSponsorship: undefined,
-  });
-
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const dispatch = useDispatch();
+  const workExperienceStoreData = useSelector(
+    (state: RootState) => state.jobseeker.workExperience,
+  );
+  let workExperienceData = { ...workExperienceStoreData };
+  const [error, setError] = useState<string | null>(null);
+
+  const [data, setData] = useState<Data>({
+    yearsWorkExperience: workExperienceData.yearsWorkExperience,
+    monthsInternshipExperience:
+      workExperienceData.monthsInternshipExperience ?? '',
+    workExperiences:
+      workExperienceData.workExperiences
+        ?.filter((exp) => !exp.isInternship)
+        .map(
+          (exp): WorkExperienceData => ({
+            workId: exp.workId,
+            company: exp.company,
+            sectorObject: {
+              industry_sector_id: exp.sectorId ?? '',
+              sector_title: '',
+            },
+            techAreaObject: { id: exp.techAreaId ?? '', title: '' },
+            jobTitle: exp.jobTitle,
+            startDate: dayjs(exp.startDate),
+            endDate: dayjs(exp.endDate),
+            isCurrentJob: exp.isCurrentJob,
+            responsibilities: exp.responsibilities,
+          }),
+        ) ?? [],
+    internshipExperiences:
+      workExperienceData.workExperiences
+        ?.filter((exp) => exp.isInternship)
+        .map(
+          (exp): WorkExperienceData => ({
+            workId: exp.workId,
+            company: exp.company,
+            sectorObject: {
+              industry_sector_id: exp.sectorId ?? '',
+              sector_title: '',
+            },
+            techAreaObject: { id: exp.techAreaId ?? '', title: '' },
+            jobTitle: exp.jobTitle,
+            startDate: dayjs(exp.startDate),
+            endDate: dayjs(exp.endDate),
+            isCurrentJob: exp.isCurrentJob,
+            responsibilities: exp.responsibilities,
+          }),
+        ) ?? [],
+    isAuthorizedToWorkUsa: workExperienceData.isAuthorizedToWorkUsa,
+    requiresSponsorship: workExperienceData.requiresSponsorship,
+  });
 
   function addNewWorkExperience() {
     const newWorkExperienceData = defaultWorkExperienceData();
@@ -52,7 +103,9 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
   function removeWorkExperience(byUid: string) {
     setData({
       ...data,
-      workExperiences: data.workExperiences.filter(({ uid }) => uid !== byUid),
+      workExperiences: data.workExperiences.filter(
+        ({ workId: uid }) => uid !== byUid,
+      ),
     });
   }
 
@@ -71,7 +124,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     setData({
       ...data,
       internshipExperiences: data.internshipExperiences.filter(
-        ({ uid }) => uid !== byUid,
+        ({ workId: uid }) => uid !== byUid,
       ),
     });
   }
@@ -94,54 +147,135 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     [],
   );
 
+  useEffect(() => {
+    if (session?.user?.id && status === 'authenticated') {
+      const initializeFormFields = async () => {
+        if (_.isEqual(workExperienceStoreData, initialState.workExperience)) {
+          const { id } = session.user;
+
+          try {
+            devLog('fetching fresh');
+            const response = await fetch(
+              '/api/jobseekers/account/work-info/get/' + id,
+            );
+
+            if (!response.ok) {
+              workExperienceData.userId = id!;
+            } else {
+              let fetchedData: JsWorkExpDTO = (await response.json()).result;
+              workExperienceData = {
+                ...fetchedData,
+              };
+            }
+
+            setData({
+              yearsWorkExperience: workExperienceData.yearsWorkExperience,
+              monthsInternshipExperience:
+                workExperienceData.monthsInternshipExperience ?? '',
+              workExperiences:
+                workExperienceData.workExperiences
+                  ?.filter((exp) => !exp.isInternship)
+                  .map(
+                    (exp): WorkExperienceData => ({
+                      workId: exp.workId,
+                      company: exp.company,
+                      sectorObject: {
+                        industry_sector_id: exp.sectorId ?? '',
+                        sector_title: '',
+                      },
+                      techAreaObject: { id: exp.techAreaId ?? '', title: '' },
+                      jobTitle: exp.jobTitle,
+                      startDate: dayjs(exp.startDate),
+                      endDate: dayjs(exp.endDate),
+                      isCurrentJob: exp.isCurrentJob,
+                      responsibilities: exp.responsibilities,
+                    }),
+                  ) ?? [],
+              internshipExperiences:
+                workExperienceData.workExperiences
+                  ?.filter((exp) => exp.isInternship)
+                  .map(
+                    (exp): WorkExperienceData => ({
+                      workId: exp.workId,
+                      company: exp.company,
+                      sectorObject: {
+                        industry_sector_id: exp.sectorId ?? '',
+                        sector_title: '',
+                      },
+                      techAreaObject: { id: exp.techAreaId ?? '', title: '' },
+                      jobTitle: exp.jobTitle,
+                      startDate: dayjs(exp.startDate),
+                      endDate: dayjs(exp.endDate),
+                      isCurrentJob: exp.isCurrentJob,
+                      responsibilities: exp.responsibilities,
+                    }),
+                  ) ?? [],
+              isAuthorizedToWorkUsa: workExperienceData.isAuthorizedToWorkUsa,
+              requiresSponsorship: workExperienceData.requiresSponsorship,
+            });
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          devLog('fetching from store');
+        }
+      };
+
+      initializeFormFields();
+    }
+  }, [session?.user?.id]);
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!session || !session.user) {
+    if (!session?.user?.id) {
       console.error('User session is not available.');
       return;
     }
+
     const userId = session.user.id!;
     const jobseekerId = session.user.jobseekerId!;
+
     const workExperiences = data.workExperiences?.map((workExp) => ({
-      workId: workExp.uid,
+      workId: workExp.workId,
       jobseekerId: jobseekerId,
-      techAreaId: workExp.technologyarea.id,
-      sectorId: workExp.industry.industry_sector_id,
+      techAreaId: workExp.techAreaObject.id,
+      sectorId: workExp.sectorObject.industry_sector_id,
       company: workExp.company,
       isInternship: false,
-      jobTitle: workExp.title,
-      isCurrentJob: workExp.current,
-      startDate: new Date(workExp.starts.toISOString()),
-      endDate: workExp.current ? null : new Date(workExp.ends.toISOString()),
-      responsibilities: workExp.experience,
+      jobTitle: workExp.jobTitle,
+      isCurrentJob: workExp.isCurrentJob,
+      startDate: new Date(workExp.startDate!.toISOString()),
+      endDate: new Date(workExp.endDate!.toISOString()),
+      responsibilities: workExp.responsibilities,
     }));
-    console.log(workExperiences);
 
     const internshipExperiences = data.internshipExperiences?.map(
       (internshipExp) => ({
-        workId: internshipExp.uid,
+        workId: internshipExp.workId,
         jobseekerId: jobseekerId,
-        techAreaId: internshipExp.technologyarea.id,
-        sectorId: internshipExp.industry.industry_sector_id,
+        techAreaId: internshipExp.techAreaObject.id,
+        sectorId: internshipExp.sectorObject.industry_sector_id,
         company: internshipExp.company,
         isInternship: true,
-        jobTitle: internshipExp.title,
-        isCurrentJob: internshipExp.current,
-        startDate: new Date(internshipExp.starts.toISOString()),
-        endDate: internshipExp.current
-          ? null
-          : new Date(internshipExp.ends.toISOString()),
-        responsibilities: internshipExp.experience,
+        jobTitle: internshipExp.jobTitle,
+        isCurrentJob: internshipExp.isCurrentJob,
+        startDate: new Date(internshipExp.startDate!.toISOString()),
+        endDate: new Date(internshipExp.endDate!.toISOString()),
+        responsibilities: internshipExp.responsibilities,
       }),
     );
-    const formData: JsWorkExpDTO = {
-      userId: userId,
-      yearsWorkExperience: data.yearsWorkExperience.toString(), // Replace with actual calculation
-      monthsInternshipExperience: data.monthsInternshipExperience.toString(), // Replace with actual calculation
-      isAuthorizedToWorkUsa: data.isAuthorizedToWorkUsa,
-      requiresSponsorship: data.requiresSponsorship,
-      workExperiences: [...workExperiences, ...internshipExperiences],
-    };
+
+    workExperienceData.userId = userId;
+    workExperienceData.yearsWorkExperience =
+      data.yearsWorkExperience.toString(); // Replace with actual calculation
+    workExperienceData.monthsInternshipExperience =
+      data.monthsInternshipExperience.toString(); // Replace with actual calculation
+    workExperienceData.isAuthorizedToWorkUsa = data.isAuthorizedToWorkUsa;
+    workExperienceData.requiresSponsorship = data.requiresSponsorship;
+    workExperienceData.workExperiences = [
+      ...workExperiences,
+      ...internshipExperiences,
+    ];
 
     try {
       const response = await fetch('/api/jobseekers/account/work-info/upsert', {
@@ -149,18 +283,20 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(workExperienceData),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.ok) {
+        dispatch(setWorkExperience(workExperienceData));
+      } else {
+        const errorMessage = `Failed to submit work experiences. Status: ${response.status} - ${response.statusText}`;
+        setError(errorMessage);
       }
 
       const result = await response.json();
       router.push('/create-profile/jobseeker/showcase');
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      // TODO: Handle error, e.g., display an error message
+    } catch (e: any) {
+      setError(`An unexpected error occurred: ${e.message}`);
     }
   }
 
@@ -227,7 +363,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               </div>
             )}
             <InternshipExperiences
-              data={data.internshipExperiences}
+              data={data.internshipExperiences as InternshipExperienceData[]}
               onUpdate={handleUpdate}
               onRemove={removeInternshipExperience}
             />

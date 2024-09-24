@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button } from 'flowbite-react';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
@@ -10,31 +10,92 @@ import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { JsShowcaseDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/lib/jobseekerStore';
+import _ from 'lodash';
+import {
+  initialState,
+  setShowcase,
+} from '@/lib/features/profileCreation/jobseekerSlice';
+import { devLog } from '@/app/lib/utils';
 
 export default function CreateJobseekerProfileShowcasePage() {
-  const [skills, setSkills] = useState<SkillDTO[]>([]);
-  const [portfolioUrl, setPortfolioUrl] = useState('');
-  const [portfolioPassword, setPortfolioPassword] = useState('');
-  const [videoUrl, setVideoUrl] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const { data: session, status } = useSession();
-
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const dispatch = useDispatch();
+  const showcaseStoreData = useSelector(
+    (state: RootState) => state.jobseeker.showcase,
+  );
+  const showcaseData = { ...showcaseStoreData };
+  const [error, setError] = useState<string | null>(null);
+
+  const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
+  const [portfolioUrl, setPortfolioUrl] = useState(
+    showcaseData.portfolioUrl ?? '',
+  );
+  const [portfolioPassword, setPortfolioPassword] = useState(
+    showcaseData.portfolioPassword ?? '',
+  );
+  const [videoUrl, setVideoUrl] = useState(showcaseData.video_url ?? '');
+
+  useEffect(() => {
+    if (session?.user?.id && status === 'authenticated') {
+      const initializeFormFields = async () => {
+        if (_.isEqual(showcaseStoreData, initialState.preferences)) {
+          const { id } = session.user;
+
+          try {
+            console.log('fetching fresh');
+            const response = await fetch(
+              '/api/jobseekers/account/showcase/get/' + id,
+            );
+
+            if (!response.ok) {
+              showcaseData.userId = id!;
+            } else {
+              let fetchedData: JsShowcaseDTO = (await response.json()).result;
+              showcaseData.userId = id!;
+              if (fetchedData.skills) {
+                showcaseData.skills = fetchedData.skills;
+                setSkills(showcaseData.skills);
+              }
+              if (fetchedData.portfolioUrl) {
+                showcaseData.portfolioUrl = fetchedData.portfolioUrl;
+                setPortfolioUrl(showcaseData.portfolioUrl);
+              }
+              if (fetchedData.portfolioPassword) {
+                showcaseData.portfolioPassword = fetchedData.portfolioPassword;
+                setPortfolioPassword(showcaseData.portfolioPassword);
+              }
+              if (fetchedData.video_url) {
+                showcaseData.video_url = fetchedData.video_url;
+                setVideoUrl(showcaseData.video_url);
+              }
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          console.log('fetching from store');
+        }
+      };
+
+      initializeFormFields();
+    }
+  }, [session?.user?.id]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!session || !session.user?.id) {
+    if (!session?.user?.id) {
       console.error('User session is not available.');
       return;
     }
-    const userId = session.user.id;
-    const formData: JsShowcaseDTO = {
-      userId: userId,
-      skills: skills,
-      portfolioUrl: portfolioUrl,
-      portfolioPassword: portfolioPassword,
-      video_url: videoUrl,
-    };
+
+    showcaseData.userId = session.user.id;
+    showcaseData.skills = skills;
+    showcaseData.portfolioUrl = portfolioUrl;
+    showcaseData.portfolioPassword = portfolioPassword;
+    showcaseData.video_url = videoUrl;
 
     try {
       const response = await fetch('/api/jobseekers/account/showcase/upsert', {
@@ -42,20 +103,22 @@ export default function CreateJobseekerProfileShowcasePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(showcaseData),
       });
 
-      if (!response.ok) {
-        const errorMessage: string = await response.text(); // Get the error message from the response
-        setError(`Failed to save data: ${errorMessage}`);
-        return; // Exit the function if the response is not ok
-      }
+      if (response.ok) {
+        const result = await response.json();
+        devLog(JSON.stringify(result, null, 2));
 
-      const result = await response.json();
-      console.log(JSON.stringify(result, null, 2));
-      router.push('/create-profile/jobseeker/preferences');
+        dispatch(setShowcase(showcaseData));
+
+        router.push('/create-profile/jobseeker/preferences');
+      } else {
+        const errorMessage = `Failed to submit showcase info. Status: ${response.status} - ${response.statusText}`;
+        setError(errorMessage);
+      }
     } catch (e: any) {
-      //error handling
+      setError(`An unexpected error occurred: ${e.message}`);
     }
   }
 

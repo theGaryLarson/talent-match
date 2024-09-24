@@ -5,7 +5,10 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
-import { JsDisclosuresPostDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {
+  JsDisclosuresDTO,
+  JsDisclosuresPostDTO,
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
 import { Button, Label, List, ListItem } from 'flowbite-react';
 import {
@@ -14,43 +17,110 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  Checkbox, 
-  Snackbar, 
-  SnackbarContent, 
-  Typography, 
-  IconButton
+  Checkbox,
+  Snackbar,
+  SnackbarContent,
+  Typography,
+  IconButton,
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/lib/jobseekerStore';
+import {
+  initialState,
+  setDisclosures,
+} from '@/lib/features/profileCreation/jobseekerSlice';
+import _ from 'lodash';
+import { devLog } from '@/app/lib/utils';
 
 export default function CreateJobseekerProfileDisclosuresPage() {
-  const [veteranStatus, setVeteranStatus] = useState('');
-  const [disabilityStatus, setDisabilityStatus] = useState('');
-  const [gender, setGender] = useState('');
-  const [race, setRace] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
   const { data: session, status } = useSession();
-  const [sessionData, setSessionData] = useState(null);
+  const disclosuresStoreData = useSelector(
+    (state: RootState) => state.jobseeker.disclosures,
+  );
+  const disclosuresData = { ...disclosuresStoreData };
+  const [error, setError] = useState<string | null>(null);
+
+  const [veteranStatus, setVeteranStatus] = useState(disclosuresData.isVeteran);
+  const [disabilityStatus, setDisabilityStatus] = useState(
+    disclosuresData.hasDisability,
+  );
+  const [gender, setGender] = useState(disclosuresData.gender);
+  const [race, setRace] = useState(disclosuresData.race);
+  const [termsAccepted, setTermsAccepted] = useState(
+    disclosuresData.hasReadTerms,
+  );
   const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (session?.user?.id && status === 'authenticated') {
+      const initializeFormFields = async () => {
+        if (_.isEqual(disclosuresStoreData, initialState.disclosures)) {
+          const { id } = session.user;
+
+          try {
+            devLog('fetching fresh');
+            const response = await fetch(
+              '/api/jobseekers/account/disclosures/get/' + id,
+            );
+
+            if (!response.ok) {
+              disclosuresData.userId = id!;
+            } else {
+              let fetchedData: JsDisclosuresDTO = (await response.json())
+                .result;
+              disclosuresData.userId = id!;
+              if (fetchedData.gender) {
+                disclosuresData.gender = fetchedData.gender;
+                setGender(disclosuresData.gender);
+              }
+              if (fetchedData.hasDisability) {
+                disclosuresData.hasDisability = fetchedData.hasDisability;
+                setDisabilityStatus(disclosuresData.hasDisability);
+              }
+              if (fetchedData.isVeteran) {
+                disclosuresData.isVeteran = fetchedData.isVeteran;
+                setVeteranStatus(disclosuresData.isVeteran);
+              }
+              if (fetchedData.race) {
+                disclosuresData.race = fetchedData.race;
+                setRace(disclosuresData.race);
+              }
+              disclosuresData.hasReadTerms = fetchedData.hasReadTerms;
+              setTermsAccepted(disclosuresData.hasReadTerms);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          devLog('fetching from store');
+        }
+      };
+
+      initializeFormFields();
+    }
+  }, [session?.user?.id]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if(!termsAccepted) {
-      setOpen(true);
-    }
-    if (!session || !session.user?.id) {
+    if (!session?.user?.id) {
       console.error('User session is not available.');
       return;
     }
-    const formData: JsDisclosuresPostDTO = {
-      userId: session.user.id,
-      isVeteran: veteranStatus,
-      hasDisability: disabilityStatus,
-      gender: gender,
-      race: race,
-      hasReadTerms: termsAccepted,
-    };
+
+    if (!termsAccepted) {
+      setOpen(true);
+    }
+
+    disclosuresData.userId = session.user.id;
+    disclosuresData.isVeteran = veteranStatus;
+    disclosuresData.hasDisability = disabilityStatus;
+    disclosuresData.gender = gender;
+    disclosuresData.race = race;
+    disclosuresData.hasReadTerms = termsAccepted;
 
     try {
       const response = await fetch(
@@ -60,21 +130,24 @@ export default function CreateJobseekerProfileDisclosuresPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(disclosuresData),
         },
       );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.ok) {
+        dispatch(setDisclosures(disclosuresData));
+      } else {
+        const errorMessage = `Failed to submit disclosure info. Status: ${response.status} - ${response.statusText}`;
+        setError(errorMessage);
       }
       router.push('/create-profile/jobseeker/congratulations');
     } catch (e: any) {
-      // error handling
+      setError(`An unexpected error occurred: ${e.message}`);
     }
   }
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
-    reason?: string
+    reason?: string,
   ) => {
     if (reason === 'clickaway') {
       return;
@@ -95,9 +168,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
           variant="alert"
           message={
             <div>
-              <Typography variant="body1">
-                Must agree to terms!
-              </Typography>
+              <Typography variant="body1">Must agree to terms!</Typography>
               <Typography variant="body2">
                 To finish creating your profile, you must agree to the terms.
               </Typography>
