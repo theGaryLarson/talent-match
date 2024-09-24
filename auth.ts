@@ -131,14 +131,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: '/signin',
   },
   cookies: {
+    csrfToken: {
+      name: 'next-auth.csrf-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'none',
+        path: '/',
+        secure: true
+      }
+    },
     pkceCodeVerifier: {
-      name: "next-auth.pkce.code_verifier",
-        options: {
-          httpOnly: true,
-          sameSite: "none",
-          path: "/",
-          secure: true,
-        }
+      name: 'next-auth.pkce.code_verifier',
+      options: {
+        httpOnly: true,
+        sameSite: 'none',
+        path: '/',
+        secure: true
+      }
     }
-  }
+  },
 });
