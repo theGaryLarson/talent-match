@@ -16,12 +16,12 @@ export default auth((req) => {
   // Routes for logged in users with jobseeker role
   const guestRoutes = [
     "/signup",
+    "/signup/jobseeker",
+    "/signup/employer",
   ];
 
   // Routes for logged in users with jobseeker role
   const jobseekerRoutes = [
-    "/signup/jobseeker",
-
     "/create-profile/jobseeker/congratulations",
     "/create-profile/jobseeker/disclosures",
     "/create-profile/jobseeker/education",
@@ -36,8 +36,6 @@ export default auth((req) => {
 
   // Routes for logged in users with employer role
   const employerRoutes = [
-    "/signup/employer",
-
     "/create-profile/employer/personal",
     "/create-profile/employer/company",
     "/create-profile/employer/professional-info",
@@ -82,8 +80,8 @@ export default auth((req) => {
 
   // SPECIFIC REDIRECTS ------------
 
-// signout redirect again logged in guest role
-// jobseeker register redirecting
+  // signout redirect again logged in guest role
+  // jobseeker register redirecting
 
   // If you're at signout and logged out, reroute to the main page
   if (!req.auth && pathname === "/signout") {
@@ -91,13 +89,12 @@ export default auth((req) => {
   }
   // If you're at signin and logged in, reroute to the main page
   else if (req.auth && pathname === "/signin") {
-    return NextResponse.redirect(homeUrl);
+    if (userRoles.includes(Role.GUEST)){ // If you're signed in and haven't picked a role, you gotta
+      return NextResponse.redirect(new URL("/signup", req.nextUrl.origin));
+    }
+    else return NextResponse.redirect(homeUrl);
   }
-  // If you're signed in and haven't picked a role, you gotta
-  else if (req.auth && userRoles.includes(Role.GUEST) && pathname !== "/signup") {
-    const signUpUrl = new URL("/signup", req.nextUrl.origin);
-    return NextResponse.redirect(signUpUrl);
-  }
+
   // Caught someone! They wanna see a jobseeker, they gotta make an account :)
   else if (!req.auth && pathname.startsWith("/services/jobseekers/")) {
     return NextResponse.redirect(new URL("/signin", req.nextUrl.origin));
@@ -113,6 +110,16 @@ export default auth((req) => {
 
 
   // ROLE BASED ROUTING ------------
+
+  // Route checking for guest routes
+  else if (guestRoutes.some((route) => pathname.includes(route))) {
+    if (!rolesForGuest.some((role) => userRoles.includes(role))) {
+      console.log("Access denied: User does not have permission for guest routes");
+      console.log(pathname);
+      return NextResponse.redirect(homeUrl);
+    }
+    return NextResponse.next();
+  }
 
   // Route checking for jobseeker routes
   else if (jobseekerRoutes.some((route) => pathname.includes(route))) {
@@ -134,8 +141,8 @@ export default auth((req) => {
     else return NextResponse.next();
   }
   // Route checking for employer routes
-  else if (employerRoutes.some((route) => pathname.includes(route) || 
-           pathname.startsWith("/services/jobseekers/"))) { // Maybe think of a better way to handle [id]'s when I've had some sleep
+  else if (employerRoutes.some((route) => pathname.includes(route) ||
+    pathname.startsWith("/services/jobseekers/"))) { // Maybe think of a better way to handle [id]'s when I've had some sleep
     if (!rolesForEmployer.some((role) => userRoles.includes(role))) {
       console.log("Access denied: User does not have permission for employer route");
       return NextResponse.redirect(homeUrl);

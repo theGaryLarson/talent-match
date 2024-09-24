@@ -8,14 +8,20 @@ import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
 import Image from 'next/image';
 import CFAFooter from '@/app/ui/CFAFooter';
 import CFASignupHeader from '@/app/ui/CFASignupHeader';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { useSession } from 'next-auth/react';
+import { Role } from '@/data/dtos/UserInfoDTO';
+import { mapToEnumOrThrow } from '@/app/lib/utils';
 const vectorImgSrc = '/cfa_images/signup/jobseeker-vector.png';
 
 export default function JobseekerSignupFinishPage() {
   let [resident, setResident] = useState(false);
   let [education, setEducation] = useState(false);
   let [termsAgree, setTermsAgree] = useState(false);
+  const { data: session, status, update } = useSession();
+  const updateSessionProperties = useUpdateSession();
   const router = useRouter();
   return (
     <>
@@ -146,9 +152,27 @@ export default function JobseekerSignupFinishPage() {
             </fieldset>
             <Button
               type="submit"
-              onClick={() =>
-                router.push('/create-profile/jobseeker/introduction')
+              onClick={async (e: FormEvent) => {
+                e.preventDefault();
+                let response = await fetch('/api/users/role/update', {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    userId: session?.user.id,
+                    role: Role.JOBSEEKER,
+                  }),
+                });
+                // console.log('response:', response);
+                if (response.ok) {
+                  let rolesArray = [mapToEnumOrThrow(Role.JOBSEEKER, Role)] as Role[];
+                  await updateSessionProperties({
+                    roles: rolesArray,
+                  });
+                  router.push('/create-profile/jobseeker/introduction');
               }
+            }}
               className="mx-auto my-8 rounded-full focus:ring-0"
               disabled={!(education && resident && termsAgree)}
             >

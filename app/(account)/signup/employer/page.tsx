@@ -8,12 +8,18 @@ import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
 import Image from 'next/image';
 import CFAFooter from '@/app/ui/CFAFooter';
 import CFASignupHeader from '@/app/ui/CFASignupHeader';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { mapToEnumOrThrow } from '@/app/lib/utils';
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 export default function EmployerSignUpFinish() {
   let [termsAgree, setTermsAgree] = useState(false);
   let vectorImgSrc = '/cfa_images/signup/employer-vector.png';
+  const { data: session, status, update } = useSession();
+  const updateSessionProperties = useUpdateSession();
   const router = useRouter();
   return (
     <>
@@ -63,19 +69,39 @@ export default function EmployerSignUpFinish() {
             </fieldset>
             <Button
               type="submit"
-              onClick={() => router.push('/create-profile/employer/personal')}
+              onClick={async (e: FormEvent) => {
+                e.preventDefault();
+                let response = await fetch('/api/users/role/update', {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    userId: session?.user.id,
+                    role: Role.EMPLOYER,
+                  }),
+                });
+                // console.log('response:', response);
+                if (response.ok) {
+                  let rolesArray = [mapToEnumOrThrow(Role.EMPLOYER, Role)] as Role[];
+                  await updateSessionProperties({
+                    roles: rolesArray,
+                  });
+                  router.push('/create-profile/employer/personal');
+              }
+            }}
               className="mx-auto my-8 rounded-full focus:ring-0"
               disabled={!termsAgree}
             >
               Create account
             </Button>
-            <DividerWithText className="py-8">or</DividerWithText>
+            {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
               <p>Already have a CFA account?</p>
               <Link className="text-blue-500" href="/signin">
                 Sign in
               </Link>
-            </div>
+            </div> */}
           </form>
         </section>
         <Image
