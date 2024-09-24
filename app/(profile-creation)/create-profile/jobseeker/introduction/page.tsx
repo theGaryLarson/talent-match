@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import type { RootState } from '@/lib/store';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  addField,
-  updateField,
-  submitForm,
-  submitFormSuccess,
-  submitFormFailure,
-  FormState,
-  initializeForm,
+    addField,
+    updateField,
+    submitForm,
+    submitFormSuccess,
+    submitFormFailure,
+    FormState,
+    initializeForm, FormField,
 } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
@@ -169,22 +169,23 @@ export default function CreateJobseekerProfileIntroPage() {
       userId: session.user.id,
       photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
       firstName:
-        getFieldValue(fields, 'profile-creation-intro-first-name', null),
+        getFieldValue(fields, 'profile-creation-intro-first-name', ''),
       lastName:
-        getFieldValue(fields, 'profile-creation-intro-last-name', null),
-      birthDate: birthdate ? birthdate.toISOString() : null,
+        getFieldValue(fields, 'profile-creation-intro-last-name', ''),
+      birthDate: birthdate ? birthdate.toDate() : null,
       phoneCountryCode:
-        getFieldValue(fields, 'profile-creation-intro-country-phone-code', null),
+      fields.find((f) => f.id === 'profile-creation-intro-country-phone-code')?.value,
       phone:
-        getFieldValue(fields, 'profile-creation-intro-phone-number', null),
+        getFieldValue(fields, 'profile-creation-intro-phone-number', ''),
       zipCode:
-        getFieldValue(fields, 'profile-creation-intro-zip-code', null),
+          fields.find((f) => f.id === 'profile-creation-intro-zip-code')?.value ||
+          '',
       email:
         getFieldValue(fields, 'profile-creation-intro-email', '' ),
       introHeadline:
-        getFieldValue(fields, 'profile-creation-intro-headlines', null),
+        getFieldValue(fields, 'profile-creation-intro-headlines', ''),
       currentJobTitle:
-        getFieldValue(fields, 'profile-creation-intro-current-position', null),
+        getFieldValue(fields, 'profile-creation-intro-current-position', ''),
       resumeUrl: resumeUrl,
     };
 
@@ -295,8 +296,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 placeholder="Zipcode"
                 onChange={handleFieldChange}
                 value={
-                  fields.find((f) => f.id === 'profile-creation-intro-zip-code')
-                    ?.value || ''
+                  getFieldValue(fields, "profile-creation-intro-zip-code", '')
                 }
                 required
                 pattern="\d{5}(-\d{4})?"
