@@ -148,15 +148,16 @@ export async function getUserByEmail(
 }
 
 export async function clearUserDeletionFlag(
-    // TODO: how to get session data server side
   userId: string,
 ): Promise<ReadUserInfoDTO | null> {
+  // TODO: how to get session data server side
+  //  ensure terms have been agreed to as well
   try {
     const data = await prisma.user.update({
       where: { id: userId },
       data: {
         updatedAt: new Date(),
-        is_marked_deletion: null,// marked for deletion 30 days from now
+        is_marked_deletion: null,// no longer marked for deletion
       },
       select: {
         id: true,
