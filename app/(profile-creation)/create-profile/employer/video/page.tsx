@@ -2,16 +2,9 @@
 
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  addField,
-  updateField,
-  submitForm,
-  submitFormSuccess,
-  submitFormFailure,
-  FormState,
-} from '@/lib/features/profileCreation/formSlice';
+// import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button, Progress } from 'flowbite-react';
@@ -64,24 +57,17 @@ export default function CreateJobseekerProfileIntroPage() {
 
     const formData = {
       companyId: session?.user?.companyId,
-      videoUrl: getFieldValue(
-        fields,
-        'profile-creation-company-video',
-        '',
-      ),
+      videoUrl: getFieldValue(fields, 'profile-creation-company-video', ''),
     };
 
     try {
-      const response = await fetch(
-        '/api/companies/video/update',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+      const response = await fetch('/api/companies/video/update', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify(formData),
+      });
 
       if (response.ok) {
         const result = await response.json();

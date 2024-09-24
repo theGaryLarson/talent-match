@@ -2,22 +2,18 @@
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  addField,
-  updateField,
-  submitForm,
-  submitFormSuccess,
-  submitFormFailure,
-  FormState,
-} from '@/lib/features/profileCreation/formSlice';
+// import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '@/lib/features/profileCreation/formSlice';
+import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
+import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button, Progress } from 'flowbite-react';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import {getFieldValue} from "@/app/lib/utils";
+import { getFieldValue } from '@/app/lib/utils';
 
 export default function CreateEmployerCompanyInfoAboutPage() {
   const { fields, isSubmitting, error }: FormState = useSelector(
@@ -134,21 +130,17 @@ export default function CreateEmployerCompanyInfoAboutPage() {
 
     const formData = {
       companyId: session?.user.companyId,
-      aboutUs:
-        getFieldValue(fields, 'profile-creation-company-about' , '')
+      aboutUs: getFieldValue(fields, 'profile-creation-company-about', ''),
     };
 
     try {
-      const response = await fetch(
-        '/api/companies/about/update/',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+      const response = await fetch('/api/companies/about/update/', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify(formData),
+      });
 
       if (response.ok) {
         const result = await response.json();
@@ -185,9 +177,11 @@ export default function CreateEmployerCompanyInfoAboutPage() {
                 rows="16"
                 onChange={handleFieldChange}
                 required
-                defaultValue={
-                  getFieldValue(fields, 'profile-creation-company-about', '')
-                }
+                defaultValue={getFieldValue(
+                  fields,
+                  'profile-creation-company-about',
+                  '',
+                )}
               >
                 {/* Tell us about your company * */}
               </TextareaWithLabel>

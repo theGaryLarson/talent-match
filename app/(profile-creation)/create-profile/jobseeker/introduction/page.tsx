@@ -2,17 +2,8 @@
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '@/lib/jobseekerStore';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-    addField,
-    updateField,
-    submitForm,
-    submitFormSuccess,
-    submitFormFailure,
-    FormState,
-    initializeForm, FormField,
-} from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
@@ -24,112 +15,120 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { JsIntroDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {
+  setIntroduction,
+  initialState,
+} from '@/lib/features/profileCreation/jobseekerSlice';
+import _ from 'lodash';
+
+const formNamePrefix = 'profile-creation-intro-';
 
 export default function CreateJobseekerProfileIntroPage() {
-  const { fields, isSubmitting, error }: FormState = useSelector(
-    (state: RootState) => state.form,
+  const introStoreData = useSelector(
+    (state: RootState) => state.jobseeker.introduction,
   );
+  const [introData, setIntroData] = useState({ ...introStoreData });
   const dispatch = useDispatch();
   const router = useRouter();
-  const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+  const [birthdate, setBirthdate] = useState<Dayjs | null>(
+    introData.birthDate === '' ? null : dayjs(introData.birthDate),
+  );
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    introData.photoUrl ?? null,
+  );
+  const [resumeUrl, setResumeUrl] = useState<string | null>(
+    introData.resumeUrl ?? null,
+  );
 
-  const [newFieldId, setNewFieldId] = useState('');
-  const [newFieldLabel, setNewFieldLabel] = useState('');
-  const [newFieldType, setNewFieldType] = useState<
-    'text' | 'email' | 'number' | 'select' | 'radio'
-  >('text');
-  const [newFieldValue, setNewFieldValue] = useState('');
-  const [newFieldOptions, setNewFieldOptions] = useState<
-    { value: string | number; label: string }[]
-  >([]);
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
     const initializeFormFields = async () => {
       if (status === 'authenticated' && session?.user) {
-        const { firstName, lastName, email } = session.user;
-        const initialFields = [
-          {
-            id: 'profile-creation-intro-first-name',
-            label: 'First Name',
-            value: firstName || '',
-            type: 'text' as const,
-          },
-          {
-            id: 'profile-creation-intro-last-name',
-            label: 'Last Name',
-            value: lastName || '',
-            type: 'text' as const,
-          },
-          {
-            id: 'profile-creation-intro-email',
-            label: 'Email',
-            value: email || '',
-            type: 'email' as const,
-            options: [],
-          },
-          {
-            id: 'profile-creation-intro-country-phone-code',
-            label: 'Country Phone Code',
-            value: 'United States +1',
-            type: 'select' as const,
-          },
-        ];
+        if (_.isEqual(introStoreData, initialState.introduction)) {
+          const { id, firstName, lastName, email, image } = session.user;
 
-        // Dispatch action to initialize fields in Redux state
-        dispatch(initializeForm(initialFields));
-        if (session?.user?.image) {
-          setAvatarUrl(session.user.image);
+          introData.userId = id ?? '';
+          console.log('fetching fresh');
+
+          try {
+            const response = await fetch(
+              '/api/jobseekers/account/introduction/get/' + id,
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              // dispatch(
+              //   submitFormFailure(errorData.error || 'Failed to submit the form'),
+              // );
+            } else {
+              let fetchedData: JsIntroDTO = (await response.json()).result
+                .loadIntroPage;
+              console.log(firstName, lastName, email, image);
+              console.log(fetchedData);
+              introData.birthDate = fetchedData.birthDate ?? '';
+              introData.city = fetchedData.city;
+              introData.county = fetchedData.county;
+              introData.currentJobTitle = fetchedData.currentJobTitle;
+              introData.email =
+                fetchedData.email.length !== 0
+                  ? fetchedData.email
+                  : (email ?? '');
+              introData.firstName =
+                typeof fetchedData.firstName === 'string' &&
+                fetchedData.firstName?.length !== 0
+                  ? fetchedData.firstName
+                  : (firstName ?? '');
+              introData.introHeadline = fetchedData.introHeadline;
+              introData.lastName =
+                typeof fetchedData.lastName === 'string' &&
+                fetchedData.lastName?.length !== 0
+                  ? fetchedData.lastName
+                  : (lastName ?? '');
+              introData.phone = fetchedData.phone;
+              introData.phoneCountryCode = fetchedData.phoneCountryCode;
+              introData.photoUrl =
+                typeof fetchedData.photoUrl === 'string' &&
+                fetchedData.photoUrl?.length !== 0
+                  ? fetchedData.photoUrl
+                  : (image ?? '');
+              introData.resumeUrl = fetchedData.resumeUrl;
+              introData.state = fetchedData.state;
+              introData.zipCode = fetchedData.zipCode ?? '';
+
+              setIntroData({ ...introData });
+            }
+          } catch (error) {
+            // dispatch(submitFormFailure('Failed to submit the form'));
+          }
+        } else {
+          console.log('fetching from redux store');
         }
+
+        setBirthdate(
+          typeof introData.birthDate === 'string' &&
+            introData.birthDate.length !== 0
+            ? dayjs(introData.birthDate)
+            : null,
+        );
+        setAvatarUrl(introData.photoUrl ?? null);
+        setResumeUrl(introData.resumeUrl ?? null);
       }
     };
 
     initializeFormFields();
-  }, [status, session, dispatch, update]);
+  }, [session]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    const field = fields.find((field) => field.id === name);
-    if (field) {
-      const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
-      dispatch(updateField({ id: field.id, value: parsedValue }));
-    } else {
-      dispatch(
-        addField({
-          id: e.target.id,
-          label: newFieldLabel,
-          value: e.target.value,
-          type: newFieldType,
-          options: newFieldOptions,
-        }),
-      );
-    }
-  };
-
-  const handleAddField = () => {
-    if (newFieldLabel) {
-      dispatch(
-        addField({
-          id: newFieldId,
-          label: newFieldLabel,
-          value: newFieldValue,
-          type: newFieldType,
-          options:
-            newFieldType === 'select' || newFieldType === 'radio'
-              ? newFieldOptions
-              : undefined,
-        }),
-      );
-      setNewFieldId('');
-      setNewFieldLabel('');
-      setNewFieldType('text');
-      setNewFieldValue('');
-      setNewFieldOptions([]);
+    const fieldName = name.substring(formNamePrefix.length);
+    if (introData.hasOwnProperty(fieldName)) {
+      introData[fieldName as keyof JsIntroDTO] = value;
+      setIntroData({ ...introData });
     }
   };
 
@@ -154,40 +153,15 @@ export default function CreateJobseekerProfileIntroPage() {
       return;
     }
 
-    dispatch(submitForm());
+    introData.birthDate = birthdate?.toISOString() ?? '';
+    introData.photoUrl = avatarUrl;
+    introData.resumeUrl = resumeUrl;
+    dispatch(setIntroduction(introData));
 
     // Extract firstName, lastName, and name from Redux state fields
-    const firstName =
-      fields.find((f) => f.id === 'profile-creation-intro-first-name')?.value ||
-      '';
-    const lastName =
-      fields.find((f) => f.id === 'profile-creation-intro-last-name')?.value ||
-      '';
+    const firstName = introData.firstName;
+    const lastName = introData.lastName;
     const name = `${firstName} ${lastName}`;
-
-    const formData = {
-      userId: session.user.id,
-      photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
-      firstName:
-        getFieldValue(fields, 'profile-creation-intro-first-name', ''),
-      lastName:
-        getFieldValue(fields, 'profile-creation-intro-last-name', ''),
-      birthDate: birthdate ? birthdate.toDate() : null,
-      phoneCountryCode:
-      fields.find((f) => f.id === 'profile-creation-intro-country-phone-code')?.value,
-      phone:
-        getFieldValue(fields, 'profile-creation-intro-phone-number', ''),
-      zipCode:
-          fields.find((f) => f.id === 'profile-creation-intro-zip-code')?.value ||
-          '',
-      email:
-        getFieldValue(fields, 'profile-creation-intro-email', '' ),
-      introHeadline:
-        getFieldValue(fields, 'profile-creation-intro-headlines', ''),
-      currentJobTitle:
-        getFieldValue(fields, 'profile-creation-intro-current-position', ''),
-      resumeUrl: resumeUrl,
-    };
 
     try {
       const response = await fetch(
@@ -197,13 +171,12 @@ export default function CreateJobseekerProfileIntroPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(introData),
         },
       );
 
       if (response.ok) {
         const result = await response.json();
-        dispatch(submitFormSuccess());
 
         // Update session properties using the custom hook
         await updateSessionProperties({
@@ -215,13 +188,8 @@ export default function CreateJobseekerProfileIntroPage() {
         router.push('/create-profile/jobseeker/education');
       } else {
         const errorData = await response.json();
-        dispatch(
-          submitFormFailure(errorData.error || 'Failed to submit the form'),
-        );
       }
-    } catch (error) {
-      dispatch(submitFormFailure('Failed to submit the form'));
-    }
+    } catch (error) {}
   };
 
   return (
@@ -245,7 +213,7 @@ export default function CreateJobseekerProfileIntroPage() {
               maxSizeMB={5}
               userId={session?.user?.id!}
               onImageUpload={handleImageUpload}
-              initialImageUrl={session?.user?.image || ''}
+              initialImageUrl={session?.user?.image ?? ''}
             />
           </fieldset>
           <fieldset>
@@ -255,27 +223,19 @@ export default function CreateJobseekerProfileIntroPage() {
 
             <div className="profile-form-grid md:grid-cols-2">
               <InputTextWithLabel
-                id="profile-creation-intro-first-name"
+                id="profile-creation-intro-firstName"
                 placeholder="Your first name"
                 onChange={handleFieldChange}
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-first-name',
-                  )?.value || ''
-                }
+                value={introData.firstName}
                 required
               >
                 First Name *
               </InputTextWithLabel>
               <InputTextWithLabel
-                id="profile-creation-intro-last-name"
+                id="profile-creation-intro-lastName"
                 placeholder="Your last name"
                 onChange={handleFieldChange}
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-last-name',
-                  )?.value || ''
-                }
+                value={introData.lastName}
                 required
               >
                 Last Name *
@@ -292,12 +252,10 @@ export default function CreateJobseekerProfileIntroPage() {
 
             <div className="profile-form-grid md:grid-cols-2">
               <InputTextWithLabel
-                id="profile-creation-intro-zip-code"
+                id="profile-creation-intro-zipCode"
                 placeholder="Zipcode"
                 onChange={handleFieldChange}
-                value={
-                  getFieldValue(fields, "profile-creation-intro-zip-code", '')
-                }
+                value={introData.zipCode}
                 required
                 pattern="\d{5}(-\d{4})?"
               >
@@ -311,7 +269,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-email"
                 onChange={handleFieldChange}
                 placeholder="example@example.com"
-                value={session?.user.email || ''}
+                value={introData.email ?? ''}
                 required
                 disabled
               >
@@ -321,7 +279,7 @@ export default function CreateJobseekerProfileIntroPage() {
 
             <div className="profile-form-grid tablet:grid-cols-2">
               <SelectOptionsWithLabel
-                id="profile-creation-intro-country-phone-code"
+                id="profile-creation-intro-phoneCountryCode"
                 onChange={handleFieldChange}
                 options={[
                   { label: 'Afghanistan +93', value: 'Afghanistan +93' },
@@ -676,24 +634,16 @@ export default function CreateJobseekerProfileIntroPage() {
                   { label: 'Zambia +260', value: 'Zambia +260' },
                   { label: 'Zimbabwe +263', value: 'Zimbabwe +263' },
                 ]}
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-country-phone-code',
-                  )?.value || 'United States +1'
-                }
+                value={introData.phoneCountryCode ?? 'United States +1'}
               >
                 Country Phone Code *
               </SelectOptionsWithLabel>
               <InputTextWithLabel
-                id="profile-creation-intro-phone-number"
+                id="profile-creation-intro-phone"
                 type="tel"
                 placeholder="Phone number"
                 onChange={handleFieldChange}
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-phone-number',
-                  )?.value || ''
-                }
+                value={introData.phone ?? ''}
                 required
               >
                 Phone Number *
@@ -706,41 +656,18 @@ export default function CreateJobseekerProfileIntroPage() {
             </legend>
             <div className="profile-form-grid">
               <InputTextWithLabel
-                id="profile-creation-intro-headlines"
+                id="profile-creation-intro-introHeadline"
                 onChange={handleFieldChange}
                 placeholder="Type here"
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-headlines',
-                  )?.value || ''
-                }
+                value={introData.introHeadline ?? ''}
               >
                 Headlines
               </InputTextWithLabel>
               <InputTextWithLabel
-                id="profile-creation-intro-current-or-graduated-school"
-                onChange={handleFieldChange}
-                placeholder="Type here"
-                value={
-                  fields.find(
-                    (f) =>
-                      f.id ===
-                      'profile-creation-intro-current-or-graduated-school',
-                  )?.value || ''
-                }
-                required
-              >
-                Current School / Graduated School *
-              </InputTextWithLabel>
-              <InputTextWithLabel
-                id="profile-creation-intro-current-position"
+                id="profile-creation-intro-currentJobTitle"
                 onChange={handleFieldChange}
                 placeholder="e.g., Software Developer"
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-current-position',
-                  )?.value || ''
-                }
+                value={introData.currentJobTitle ?? ''}
               >
                 Current Position
               </InputTextWithLabel>

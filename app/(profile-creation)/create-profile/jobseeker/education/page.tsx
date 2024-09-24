@@ -236,6 +236,7 @@ export default function CreateJobseekerProfileEducationPage() {
                 )
                 .map((value) => ({ label: value, value }))}
               placeholder="Please select"
+              defaultValue=""
               required
             >
               What is your highest completed level of study? *
@@ -288,7 +289,7 @@ export default function CreateJobseekerProfileEducationPage() {
               pill
               color="gray"
               onClick={() => {
-                router.push('/create-profile/jobseeker/intro');
+                router.push('/create-profile/jobseeker/introduction');
               }}
             >
               Previous{' '}

@@ -4,9 +4,9 @@ export type PostEmployerPersonalDTO = {
   lastName: string;
   birthDate: string;
   email: string;
-  phoneCountryCode?: string;
-  phone?: string;
-  photoUrl?: string;
+  phoneCountryCode?: string | null;
+  phone?: string | null;
+  photoUrl?: string | null;
 };
 
 export type ReadEmployerPersonalDTO = {
@@ -74,9 +74,9 @@ export type PostCompanyInfoDTO = {
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  companyAddresses?: PostAddressDTO[];
-  logoUrl: string | null;
-  aboutUs?: string;
+  // companyAddresses?: PostAddressDTO[] | null;
+  logoUrl?: string | null;
+  aboutUs?: string | null;
   companyEmail: string;
   yearFounded: string;
   websiteUrl?: string | null;
@@ -94,7 +94,7 @@ export type ReadCompanyInfoDTO = {
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  companyAddresses?: ReadAddressDTO[];
+  // companyAddresses?: ReadAddressDTO[];
   logoUrl?: string | null;
   aboutUs: string;
   companyEmail: string;
@@ -106,7 +106,7 @@ export type ReadCompanyInfoDTO = {
   mission?: string | null;
   vision?: string | null;
   employeeCount: string;
-  estimatedAnnualHires?: string | null;
+  estimatedAnnualHires: string;
   isApproved: boolean;
 };
 
