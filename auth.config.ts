@@ -6,7 +6,7 @@ import bcryptjs from 'bcryptjs';
 
 export const authConfig: NextAuthConfig = {
   pages: {
-    signIn: '/login',
+    signIn: '/signin',
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User | null; account?: Account | null; profile?: Profile; isNewUser?: boolean }): Promise<JWT> {

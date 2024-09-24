@@ -24,6 +24,6 @@ export enum Role {
   EDUCATOR = 'EDUCATOR',
   EMPLOYER = 'EMPLOYER',
   JOBSEEKER = 'JOBSEEKER',
-  PUBLIC = 'PUBLIC',
+  GUEST = 'GUEST', // logged in with oauth but no role selected yet
   VOLUNTEER = 'VOLUNTEER',
 }

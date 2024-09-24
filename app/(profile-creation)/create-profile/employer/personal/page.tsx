@@ -6,13 +6,9 @@ import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
-import { formatPhoneE164 } from '@/app/lib/utils';
-import parsePhoneNumberFromString from 'libphonenumber-js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
@@ -26,7 +22,7 @@ import _ from 'lodash';
 
 const formNamePrefix = 'profile-creation-personal-';
 
-export default function CreateJobseekerProfileIntroPage() {
+export default function CreateEmployerPersonalPage() {
   const personalStoreData = useSelector(
     (state: RootState) => state.employer.personal,
   );
@@ -59,8 +55,8 @@ export default function CreateJobseekerProfileIntroPage() {
               //   submitFormFailure(errorData.error || 'Failed to submit the form'),
               // );
             } else {
-              let fetchedData: PostEmployerPersonalDTO = (await response.json()).result
-                .loadIntroPage;
+              let fetchedData: PostEmployerPersonalDTO = (await response.json())
+                .result.loadIntroPage;
               console.log(firstName, lastName, email, image);
               console.log(fetchedData);
               personalData.birthDate = fetchedData.birthDate ?? '';
@@ -119,7 +115,6 @@ export default function CreateJobseekerProfileIntroPage() {
     }
   };
 
-
   const handleAvatarUpload = (url: string) => {
     updateSessionProperties({
       image: url,
@@ -159,12 +154,15 @@ export default function CreateJobseekerProfileIntroPage() {
       if (response.ok) {
         const result = await response.json();
 
-        // Update session properties using the custom hook
-        await updateSessionProperties({
-          firstName,
-          lastName,
-          name,
-        });
+        if (session && status === 'authenticated') {
+          await updateSessionProperties({
+            firstName,
+            lastName,
+            name,
+            image: avatarUrl,
+          });
+        }
+
         router.push('/create-profile/employer/company');
       } else {
         const errorData = await response.json();

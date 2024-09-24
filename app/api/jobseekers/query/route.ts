@@ -6,6 +6,7 @@ import {
 } from '@/app/lib/prisma';
 import { educationRank } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { HighestDegreeType } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {devLog} from "@/app/lib/utils";
 
 const prisma = new PrismaClient();
 
@@ -119,13 +120,11 @@ export async function POST(request: Request) {
   if (zipCode) {
     andConditions.push({
       users: {
-        user_addresses: {
           some: {
             zip: {
               startsWith: zipCode,
             },
           },
-        },
       },
     });
   }
@@ -162,6 +161,8 @@ export async function POST(request: Request) {
         educationRank[a.highest_level_of_study_completed as HighestDegreeType],
     );
   }
+  devLog(filteredJobSeekers[0]);
+
   return NextResponse.json({
     filteredJobSeekers,
     totalCount,

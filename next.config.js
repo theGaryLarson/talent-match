@@ -7,6 +7,34 @@ const nextConfig = {
     experimental: {
         missingSuspenseWithCSRBailout: false,
     },
+    images: {
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: 'avatars.githubusercontent.com'
+          },
+          {
+            protocol: 'https',
+            hostname: 'careerservicesstorage.blob.core.windows.net'
+          },
+          {
+            protocol: 'https',
+            hostname: 'randomuser.me'
+          },
+          {
+              protocol: 'http',
+              hostname: 'example.com'
+          },
+          {
+            protocol: 'https',
+            hostname: 'i.pinimg.com'
+          },
+          {
+            protocol: 'https',
+            hostname: 'lh3.googleusercontent.com'
+          },
+        ],
+      }
 };
 
 module.exports = nextConfig;

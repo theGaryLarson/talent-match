@@ -103,7 +103,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     const userId = session.user.id!;
     const jobseekerId = session.user.jobseekerId!;
     const workExperiences = data.workExperiences?.map((workExp) => ({
-      workId: workExp.uid,
+      workId: workExp.uid, //fixme: generate uuid on the backend or is this fine?
       jobseekerId: jobseekerId,
       techAreaId: workExp.technologyarea.id,
       sectorId: workExp.industry.industry_sector_id,

@@ -13,31 +13,33 @@ datasource db {
 /////////////////////////////////////////////////////
 
 model User {
-  id               String           @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  role             String           @db.VarChar(255)
-  first_name       String?          @db.VarChar(255) // TODO: does this need to be name for auth.js
-  last_name        String?          @db.VarChar(255) // TODO: do we need to add username
-  birthdate        DateTime?        @db.DateTime
-  email            String           @unique @db.VarChar(255)
-  emailVerified    DateTime?        @map("email_verified") @db.DateTime
-  phone            String?          @db.VarChar(16)
-  gender           String?          @db.VarChar(45)
-  race             String?          @db.VarChar(45)
-  photo_url        String?          @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
-  has_agreed_terms Boolean          @default(false) @db.Bit
-  createdAt        DateTime         @map("created_at") @db.DateTime
-  updatedAt        DateTime?        @map("updated_at") @db.DateTime
-  cfa_admin        cfa_admin[]
-  user_addresses   user_addresses[]
-  educators        educators[]
-  employers        employers[]
-  jobseekers       jobseekers[]
-  eduProviders     edu_providers[]
-  volunteers       volunteers[]
-  Account          Account[]
-  Session          Session[]
+  id               String         @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  role             String         @db.VarChar(255)
+  first_name       String?        @db.VarChar(255) // TODO: does this need to be name for auth.js
+  last_name        String?        @db.VarChar(255) // TODO: do we need to add username
+  birthdate        DateTime?      @db.DateTime
+  email            String         @unique @db.VarChar(255)
+  emailVerified    DateTime?      @map("email_verified") @db.DateTime
+  phone            String?        @db.VarChar(16)
+  zip              String?        @db.VarChar(5)
+  gender           String?        @db.VarChar(45)
+  race             String?        @db.VarChar(45)
+  photo_url        String?        @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
+  has_agreed_terms Boolean        @default(false) @db.Bit
+  createdAt        DateTime       @map("created_at") @db.DateTime
+  updatedAt        DateTime?      @map("updated_at") @db.DateTime
+  locationData     PostalGeoData? @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
+
+  cfa_admin     cfa_admin[]
+  educators     educators[]
+  employers     employers[]
+  jobseekers    jobseekers[]
+  eduProviders  edu_providers[]
+  volunteers    volunteers[]
+  Account       Account[]
+  Session       Session[]
   // Optional for WebAuthn support
-  Authenticator    Authenticator[]
+  Authenticator Authenticator[]
 
   @@map("users")
 }
@@ -170,15 +172,13 @@ model companies {
 model company_addresses {
   company_address_id String         @id(clustered: false, map: "company_addresses_PRIMARY") @db.UniqueIdentifier
   company_id         String         @db.UniqueIdentifier
-  city               String?        @db.VarChar(255)
-  state              String?        @db.VarChar(255)
-  zip_region         String         @db.VarChar(10)
-  county             String?        @db.VarChar(255)
+  zip                String         @map("zip_region") @db.VarChar(5)
   companies          companies      @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_address_company1")
+  locationData       PostalGeoData  @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_company_address_postgeodata1")
   employers          employers[]
   job_postings       job_postings[]
 
-  @@unique([company_id, city], map: "company_addresses_company_id_city_unique")
+  @@unique([company_id, zip], map: "company_addresses_company_id_zip_unique")
   @@index([company_id], map: "company_addresses_fk_company_address_company1_idx")
 }
 
@@ -208,27 +208,14 @@ model company_testimonials {
   @@index([company_id], map: "fk_company_testimonials_company1_idx")
 }
 
-model user_addresses {
-  user_address_id String  @id(clustered: false, map: "contact_addresses_PRIMARY") @db.UniqueIdentifier
-  user_id         String  @unique @db.UniqueIdentifier
-  zip             String  @db.NVarChar(10)
-  state           String? @db.VarChar(255)
-  city            String? @db.VarChar(255)
-  county          String? @db.VarChar(255)
-  users           User    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_address_contacts1")
-
-  @@index([user_id], map: "contact_addresses_fk_address_contacts1_idx")
-}
-
 model edu_addresses {
   edu_address_id  String        @id(clustered: false, map: "edu_addresses_PRIMARY") @db.UniqueIdentifier
   edu_provider_id String        @db.UniqueIdentifier
   street1         String        @db.VarChar(255)
   street2         String?       @db.VarChar(255)
-  city            String        @db.VarChar(255)
-  state           String        @db.VarChar(255)
-  zip             String        @db.VarChar(10)
+  zip             String        @db.VarChar(5)
   edu_providers   edu_providers @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_edu_address_edu_institution1")
+  locationData    PostalGeoData @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_edu_address_postgeodata1")
 
   @@index([edu_provider_id], map: "edu_addresses_fk_edu_address_edu_institution1_idx")
 }
@@ -267,6 +254,7 @@ model employers {
   work_address_id      String?                @db.UniqueIdentifier
   job_title            String?                @db.VarChar(255)
   linkedin_url         String?                @db.VarChar(255)
+  hasAgreedTerms       Boolean                @default(false) @map("has_agreed_terms")
   is_verified_employee Boolean                @default(false, map: "DF__employers__is_verified") @db.Bit
   users                User                   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_employer_user1")
   companies            companies?             @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")
@@ -656,15 +644,18 @@ model WorkExperience {
 }
 
 model PostalGeoData {
-  zip       String @id(clustered: false, map: "postal_codes_PRIMARY")
-  city      String @db.NVarChar(100)
-  county    String @db.NVarChar(100)
-  stateCode String @map("state_code") @db.VarChar(2)
-  state     String @db.NVarChar(100)
+  zip               String              @id(clustered: false, map: "postal_codes_PRIMARY") @db.VarChar(5)
+  city              String              @db.NVarChar(100)
+  county            String              @db.NVarChar(100)
+  stateCode         String              @map("state_code") @db.VarChar(2)
+  state             String              @db.NVarChar(100)
   // lat and lng will be replaced with GEOGRAPHY type and dropped using raw sql as Prisma ORM does not support GEO type
   // Justification: Will leverage optimized spatial calculations in MS SQL for within radius feature.
-  lat       Float
-  lng       Float
+  lat               Float
+  lng               Float
+  edu_addresses     edu_addresses[]
+  company_addresses company_addresses[]
+  User              User[]
 
   @@index([lat, lng], map: "postal_code_lat_lng_idx")
   @@map("postal_geo_data")

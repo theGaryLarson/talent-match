@@ -1,24 +1,27 @@
+'use client'
 import Avatar from './Avatar';
 import Skills from './Skills';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { BookmarkIcon } from '@heroicons/react/24/outline';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import { JobSeekerCardViewDTO } from '@/data/dtos/JobSeekerCardViewDTO';
 import ShareButton from './ShareButton';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerCardViewDTO }) {
+  const { data: session } = useSession();
+  const sessionJobseekerId = session?.user?.jobseekerId;
+  console.log(sessionJobseekerId)
+
   const name: string = jobseeker?.users?.first_name + ' ' + jobseeker?.users?.last_name;
   // const pathway: string = jobseeker?.pathways?.pathway_title ?? '';
   const pfpPicSrc: string = jobseeker?.users?.photo_url ?? '';
   const aboutMe: string = jobseeker?.intro_headline ?? '';
   const id: string = jobseeker?.jobseeker_id;
   const industry: string = [...new Set(jobseeker?.work_experiences?.map(ind => ind.industrySector?.sector_title))].toString().replaceAll(',', ', ') ?? '';
-  const location: string = jobseeker?.users?.user_addresses[0].city + ', ' + jobseeker?.users?.user_addresses[0].state + ' ' + jobseeker?.users?.user_addresses[0].zip;
-
+  const location: string = jobseeker?.users?.locationData?.city + ', ' + jobseeker?.users?.locationData?.state + ' ' + jobseeker?.users?.locationData?.zip;
   const yearsExp: string = jobseeker.years_work_exp + ' years work exp';
   const highestDegree: string = jobseeker.highest_level_of_study_completed ?? '';
-
   const skills: SkillDTO[] = jobseeker?.jobseeker_has_skills ?
     jobseeker?.jobseeker_has_skills.map((item: JobseekerSkillDTO) => item.skills) : [];
 
@@ -63,13 +66,14 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
 
         {/* view and share */}
         <div className="flex flex-col">
-          <div className="w-max h-min">
-            <Link
-              href={'/services/jobseekers/' + id}
-              className="border border-2 border-cyan-600 inline-block w-fit rounded-full bg-white py-2 px-2 tablet:px-4 laptop:px-6 text-sm tablet:text-base laptop:text-lg text-cyan-600 hover:bg-gray-200">
-              <strong>View Profile</strong>
-            </Link>
-          </div>
+          {sessionJobseekerId == undefined || sessionJobseekerId == id ? // only show View Profile if it's your Jobseeker profile
+            <div className="w-max h-min">
+              <Link // view profile should redirect to login and then continue to candidate after account create
+                href={'/services/jobseekers/' + id}
+                className="border border-2 border-cyan-600 inline-block w-fit rounded-full bg-white py-2 px-2 tablet:px-4 laptop:px-6 text-sm tablet:text-base laptop:text-lg text-cyan-600 hover:bg-gray-200">
+                <strong>View Profile</strong>
+              </Link>
+            </div> : "" }
           <div className="w-min mt-2 mr-2 text-cyan-600 place-self-end">
             <ShareButton href={'/services/jobseekers/' + id} />
             {/* <div className="p-2 rounded-full hover:bg-slate-200">

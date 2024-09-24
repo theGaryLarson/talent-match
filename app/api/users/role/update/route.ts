@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { devLog, mapToEnum } from '@/app/lib/utils';
+import { devLog, mapToEnumOrThrow } from '@/app/lib/utils';
 import { Role } from '@/data/dtos/UserInfoDTO';
 
 const prisma: PrismaClient = getPrismaClient();
@@ -18,7 +18,7 @@ export async function PATCH(request: Request) {
       const user = await prisma.user.update({
         where: { id: userId },
         data: {
-          role: mapToEnum(role, Role),
+          role: mapToEnumOrThrow(role, Role),
         },
       });
 

@@ -8,7 +8,7 @@ export default function Avatar({imgsrc, scale}:{imgsrc?:string|null; scale?:numb
     }
     return(
        <div className={`w-[${size}px] h-[${size}px] flex justify-center items-center`}>
-       {imgsrc?<img width={size} height={size} src={imgsrc} alt={""} className={`rounded-full object-cover aspect-square`}/>:<UserCircleIcon/>}
+       {imgsrc?<Image width={size} height={size} src={imgsrc} alt={""} className={`rounded-full object-cover aspect-square`}/>:<UserCircleIcon/>}
        </div> 
     )
 }

@@ -126,6 +126,7 @@ export async function searchCompanies(searchTerm: string): Promise<
     companyWebsite: string | null;
     yearFounded: number;
     companySize: string;
+    approvedCompany: boolean;
   }[]
 > {
   return genericSearch<companies>({
@@ -146,6 +147,7 @@ export async function searchCompanies(searchTerm: string): Promise<
       yearFounded: company.year_founded,
       companySize: company.size,
       predictedHires: company.estimated_annual_hires,
+      approvedCompany: company.is_approved,
     })),
   );
 }
@@ -364,13 +366,15 @@ export const jobSeekerCardViewSelect = {
       first_name: true,
       last_name: true,
       photo_url: true,
-      user_addresses: {
+      locationData: {
         select: {
           zip: true,
           state: true,
-          city: true,
-        },
-      },
+          stateCode: true,
+          county: true,
+          city: true
+        }
+      }
     },
   },
   jobseeker_education: {
@@ -636,4 +640,8 @@ export async function getTechnologyAreas() {
     },
   });
   return technologyAreas;
+}
+
+export async function deleteUser() {
+  // TODO: create delete user & remove jobseeker/soft-delete from api-routes
 }

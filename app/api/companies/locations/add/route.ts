@@ -11,39 +11,46 @@ export async function POST(request: Request) {
         const body: PostAddressDTO & {companyId: string} = await request.json();
         const {
             companyId,
-            city,
-            state,
             zipCode,
-            county,
         } = body;
-        if (!companyId) {
-            return NextResponse.json({success: false, error: `A uuidv4 companyId is required.`}, {status: 400})
+        if (!companyId || !zipCode) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId and zip code is required.`}, {status: 400})
         }
 
-        const newLocation = await prisma.company_addresses.create({
-            data: {
+        const newLocation = await prisma.company_addresses.upsert({
+            where: {
+                company_id_zip: { // compound unique field for company_id and zip
+                    company_id: companyId,
+                    zip: zipCode,
+                },
+            },
+            update: {
+              // do nothing just offering a smoother UX
+            },
+            create: {
               company_address_id: uuidv4(),
               company_id: companyId,
-              city,
-              state,
-              zip_region: zipCode,
-              county
+              zip: zipCode,
             },
             select: {
                 company_address_id: true,
-                city: true,
-                state: true,
-                zip_region: true,
-                county: true
+                locationData: {
+                    select: {
+                        zip: true,
+                        city: true,
+                        state: true,
+                        county: true,
+                    }
+                }
             }
         })
 
         const result: ReadAddressDTO = {
             addressId: newLocation.company_address_id,
-            city: newLocation.city,
-            state: newLocation.state,
-            zipCode: newLocation.zip_region,
-            county: newLocation.county,
+            city: newLocation.locationData.city,
+            state: newLocation.locationData.state,
+            zipCode: newLocation.locationData.zip,
+            county: newLocation.locationData.county,
         }
 
         return NextResponse.json({success: true, result}, {status: 200})

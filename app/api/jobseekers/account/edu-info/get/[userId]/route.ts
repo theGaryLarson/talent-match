@@ -7,7 +7,7 @@ import {
     JsEducationInfoDTO,
     JsEducationPageDTO, ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem, GradePointAverage
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import {mapToEnum} from "@/app/lib/utils";
+import {mapToEnum, mapToEnumOrThrow} from "@/app/lib/utils";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
 
@@ -103,18 +103,18 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
         // Map the jobseeker data to DTOs
         const edHistory: JsEducationInfoDTO[] = jobseeker.jobseeker_education.map((edu) => ({
             id: edu.id,
-            edLevel: mapToEnum(edu.edLevel, EducationLevel),
+            edLevel: mapToEnumOrThrow(edu.edLevel, EducationLevel),
             edProviderId: edu.eduProviderId!, //these should always exist on an entry
             edProviderName: edu.eduProviders.name! ?? undefined, //these should always exist on an entry
-            preAppEdSystem: mapToEnum(edu?.preAppEdSystem, PreAEduSystem),
+            preAppEdSystem: mapToEnumOrThrow(edu?.preAppEdSystem, PreAEduSystem),
             isEnrolled: edu.isEnrolled,
             startDate: edu.startDate.toISOString(),
             gradDate: edu.gradDate.toISOString(),
             degreeType: mapToEnum(edu.degreeType, CollegeDegreeType) ||
-                        mapToEnum(edu.degreeType, HighSchoolDegreeType),
+                        mapToEnumOrThrow(edu.degreeType, HighSchoolDegreeType),
             programId: edu?.program?.id!, //these should always exist on an entry
             programName: edu?.program?.title!, //these should always exist on an entry
-            gpa: mapToEnum(edu.gpa, GradePointAverage),
+            gpa: edu.gpa,
             description: edu.description
 
         }));
@@ -150,7 +150,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         const result: JsEducationPageDTO = {
             userId: jobseeker.user_id,
-            highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed ?? "None", HighestDegreeType),
+            highestLevelOfStudy: mapToEnumOrThrow(jobseeker.highest_level_of_study_completed ?? "None", HighestDegreeType),
             educations: edHistory,
             certifications: certs,
             projects: projects,

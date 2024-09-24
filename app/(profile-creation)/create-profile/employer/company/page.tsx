@@ -31,12 +31,15 @@ import {
 import _ from 'lodash';
 
 const formNamePrefix = 'profile-creation-company-';
+import { getFieldValue } from '@/app/lib/utils';
 
 export default function CreateEmployerCompanyInfoPage() {
   const companyStoreData = useSelector(
     (state: RootState) => state.employer.company,
   );
-  const [companyData, setCompanyData] = useState({ ...companyStoreData });
+  const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({
+    ...companyStoreData,
+  });
   const dispatch = useDispatch();
   const router = useRouter();
   const [year_founded, setYearFounded] = useState<Dayjs | null>(
@@ -44,13 +47,12 @@ export default function CreateEmployerCompanyInfoPage() {
   );
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
-  const updateSessionProperties = useUpdateSession();
+  const updateSessionProperties = useUpdateSession(); // TODO: update session with companyId and isApproved value if company exists
 
   const [companyObject, setCompanyObject] = useState<
     CompanyDropdownDTO | string
   >('');
   const [companyId, setCompanyId] = useState<string | null>(null); // State for companyId
-  const [employerId, setEmployerId] = useState<string>(uuidv4());
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
     null,
   );
@@ -116,6 +118,7 @@ export default function CreateEmployerCompanyInfoPage() {
                       : null,
                   companySize: fetchedData.employeeCount,
                   predictedHires: fetchedData.estimatedAnnualHires,
+                  approvedCompany: fetchedData.isApproved,
                 });
               }
             } catch (error) {
@@ -148,18 +151,18 @@ export default function CreateEmployerCompanyInfoPage() {
     // TODO: lines 139-150 need to be reviewed and refactored, left off here
     if (companyData.companyId !== '') {
       // Company is an object, use existing companyId
-      setCompanyId(companyData.companyId);
+      setCompanyId(companyData.companyId ?? null);
     } else {
       // If company is a string (new company), generate a new company ID
       const generatedId = uuidv4();
       setCompanyId(generatedId);
     }
-
-    if (companyData.employerId !== '') {
-      setEmployerId(companyData.employerId);
-    } else {
-      setEmployerId(uuidv4());
-    }
+    // REVIEW: Gary removed employerId/setEmployerId assuming not using anymore, but should still be reviewed with Gary
+    // if (companyData.employerId !== '') {
+    //   setEmployerId(companyData.employerId);
+    // } else {
+    //   setEmployerId(uuidv4());
+    // }
   }, [session]);
 
   const handleFieldChange = (
@@ -195,7 +198,7 @@ export default function CreateEmployerCompanyInfoPage() {
     }
 
     // newCompanyData.companyId = companyId!;
-    newCompanyData.employerId = employerId!;
+    // newCompanyData.employerId = employerId!;
     if (industry) {
       newCompanyData.industrySectorId = industry.industry_sector_id;
       newCompanyData.industrySectorTitle = industry.sector_title;
@@ -217,9 +220,24 @@ export default function CreateEmployerCompanyInfoPage() {
       );
 
       if (response.ok) {
-        const result = await response.json();
         dispatch(setCompany(newCompanyData));
-        router.push('/create-profile/employer/about');
+        if (typeof companyObject !== 'string') {
+          await updateSessionProperties({
+            companyId: companyId,
+            companyIsApproved: companyObject.approvedCompany,
+          });
+        } else {
+          await updateSessionProperties({
+            companyId: companyId,
+            companyIsApproved: false,
+          });
+        }
+
+        if (typeof companyObject === 'object') {
+          router.push('/create-profile/employer/disclosures');
+        } else {
+          router.push('/create-profile/employer/about');
+        }
       } else {
         const errorData = await response.json();
       }
@@ -274,8 +292,7 @@ export default function CreateEmployerCompanyInfoPage() {
               fieldLabel="Company Name *"
               id="profile-creation-company-companyName"
               searchingText="Searching..."
-              noResultsText="No companies found..."
-              //REVIEW: value={companyData.companyName}?
+              noResultsText="No company found..."
               value={companyObject ?? ''}
               onChange={(e, val) => setCompanyObject(val ?? '')}
               searchPlaceholder="Company name"

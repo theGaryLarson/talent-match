@@ -1,4 +1,5 @@
 import parsePhoneNumberFromString from 'libphonenumber-js';
+import {FormField} from "@/lib/features/profileCreation/formSlice";
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
@@ -54,6 +55,21 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
+
+export function getFieldValue<T = string | undefined>(fields: FormField[], id: string, defaultValue: T): T {
+  const fieldValue = fields.find((f: FormField) => f.id === id)?.value;
+  if (fieldValue === undefined || fieldValue === null) {
+    return defaultValue; // Return default value if fieldValue is undefined or null
+  }
+
+  if (typeof fieldValue === typeof defaultValue) {
+    return fieldValue as T; // Cast fieldValue to the type of defaultValue
+  }
+
+  return defaultValue;
+}
+
+
 /**
  * Maps a string value to its corresponding value in an enum type.
  *
@@ -62,19 +78,44 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
  * @returns {any} - The mapped value in the enum type.
  * @throws {Error} - If the value does not exist in the enum.
  */
-export const mapToEnum = (value: string | null, enumType: any): any => {
+export const mapToEnumOrThrow = (value: string | null, enumType: any): any => {
   if (value == null) {
+    return null;
+  }
+  if (value == undefined) {
+    return undefined;
+  }
+
+  const enumValues = Object.values(enumType);
+
+  if (!enumValues.includes(value)) {
+    throw new Error(`Value "${value}" does not exist in the enum.`);
+  }
+
+  return value;
+};
+
+/**
+ * Maps a string value to an enum member.
+ *
+ * @param {string | null} value - The string value to be mapped to an enum member.
+ * @param {any} enumType - The enum type to map the value to.
+ * @returns {any | null} - The enum member corresponding to the value, or null if the value is not present in the enum.
+ */
+export const mapToEnum = (value: string | null, enumType: any): any => {
+  if (value == null || value == undefined) {
     return null;
   }
 
   const enumValues = Object.values(enumType);
 
-  if (enumValues.includes(value)) {
-    return value;
-  } else {
-    throw new Error(`Value "${value}" does not exist in the enum.`);
+  if (!enumValues.includes(value)) {
+    return null;  // Return null instead of throwing an error
   }
+
+  return value;
 };
+
 
 /**
  * Normalizes a date string to the ISO 8601 format.

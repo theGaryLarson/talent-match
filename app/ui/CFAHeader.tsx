@@ -8,20 +8,20 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image';
 import AccountMenu from './components/mui/AccountMenu';
 
-const forStudentsDropDownInfo = [
-  { name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
-  { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '/underconstruction', icon: FingerPrintIcon }
-]
+// const forStudentsDropDownInfo = [
+//   { name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
+//   { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '/underconstruction', icon: FingerPrintIcon }
+// ]
 
 const TopLevelLinks = [
-  { name: 'Talent Showcase', href: '/services' },
+  { name: 'Talent Showcase', href: '/services/employers/dashboard/listview' },
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
-  { name: 'Explore', href: '/underconstruction' }, // TODO: fill this out!
-  {
-    name: "Contact Us",
-    href: "/underconstruction"
-  }
+  // { name: 'Explore', href: '/underconstruction' },
+  // {
+  //   name: "Contact Us",
+  //   href: "/underconstruction"
+  // }
 ];
 
 function classNames(...classes: string[]) {
@@ -62,8 +62,8 @@ export default function CFAHeader() {
           }
         </div>
 
-        <PopoverGroup className="hidden items-center laptop:flex laptop:gap-x-12" >
-          <Popover className="relative">
+        <PopoverGroup className="hidden items-center tablet:flex tablet:gap-x-12" >
+          {/* <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
               For Students
               <ChevronDownIcon className="h-5 w-5 flex-none" aria-hidden="true" />
@@ -105,7 +105,7 @@ export default function CFAHeader() {
 
               </PopoverPanel>
             </Transition>
-          </Popover>
+          </Popover> */}
 
           {TopLevelLinks.map((link) => {
             return (
@@ -130,7 +130,7 @@ export default function CFAHeader() {
         {/* mobile view Hamburger menu toggle */}
           <button
             type="button" onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 laptop:hidden"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 tablet:hidden"
           >
             <span className="sr-only">Open main menu</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -168,7 +168,7 @@ export default function CFAHeader() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <Disclosure as="div" className="-mx-3">
+                {/* <Disclosure as="div" className="-mx-3">
                   {({ open }) => (
                     <>
                       <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7   hover:bg-gray-50">
@@ -193,7 +193,7 @@ export default function CFAHeader() {
                       </DisclosurePanel>
                     </>
                   )}
-                </Disclosure>
+                </Disclosure> */}
                 {
                   TopLevelLinks.map((link) => {
                     return (
@@ -208,14 +208,14 @@ export default function CFAHeader() {
                   })
                 }
               </div>
-              <div className="py-6">
+              {/* <div className="py-6">
                 <Link
-                  href="/login"
+                  href="/signin"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7   hover:bg-gray-50"
                 >
                   Log in/Sign up
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </DialogPanel>

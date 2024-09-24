@@ -1,13 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { PrismaClient } from '@prisma/client';
+import { auth } from '@/auth';
 import {
   PostAddressDTO,
   PostCompanyInfoDTO,
   ReadCompanyInfoDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
-import { formatPhoneE164 } from '@/app/lib/utils';
+import { devLog, formatPhoneE164 } from '@/app/lib/utils';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 
 const prisma: PrismaClient = getPrismaClient();
@@ -37,14 +38,21 @@ export async function POST(request: Request) {
     } = body;
     const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone);
 
-    // Check if employer record exists for user and is connected to user.
+    // Ensure employer record exists for user and is connected to user.
+    const newEmployerId: string = uuidv4();
     await prisma.employers.upsert({
       where: {
         user_id: userId,
       },
-      update: {},
+      update: {
+        users: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
       create: {
-        employer_id: employerId,
+        employer_id: employerId || newEmployerId,
         users: {
           connect: {
             id: userId,
@@ -53,9 +61,10 @@ export async function POST(request: Request) {
       },
     });
 
+    const newCompanyId: string = uuidv4();
     const upsertedCompany = await prisma.companies.upsert({
       where: {
-        company_id: companyId,
+        company_id: companyId || newCompanyId,
       },
       update: {
         industry_sector_id: industrySectorId,
@@ -78,7 +87,7 @@ export async function POST(request: Request) {
         },
       },
       create: {
-        company_id: companyId,
+        company_id: companyId || newCompanyId,
         industry_sector_id: industrySectorId,
         company_name: companyName,
         company_logo_url: logoUrl,
@@ -133,45 +142,52 @@ export async function POST(request: Request) {
     const upsertPromises = companyAddresses?.map((address: PostAddressDTO) => {
       return prisma.company_addresses.upsert({
         where: {
-          company_id_city: {
-            company_id: companyId,
-            city: address.city,
+          company_id_zip: {
+            company_id: companyId || newCompanyId,
+            zip: address.zipCode,
           },
         },
         update: {
-          city: address.city,
-          state: address.state,
-          zip_region: address.zipCode,
-          county: address.county,
+          zip: address.zipCode,
         },
         create: {
           company_address_id: uuidv4(),
-          city: address.city,
-          state: address.state,
-          zip_region: address.zipCode,
-          county: address.county,
-          companies: { connect: { company_id: companyId } },
+          zip: address.zipCode,
+          company_id: upsertedCompany.company_id,
         },
         select: {
-          city: true,
-          state: true,
-          zip_region: true,
-          county: true,
+          company_address_id: true,
+          locationData: {
+            select: {
+              city: true,
+              state: true,
+              zip: true,
+              county: true,
+            }
+          },
         },
       });
     });
-    if (Array.isArray(upsertPromises) && upsertPromises.length > 0)
+
+    if (Array.isArray(upsertPromises) && upsertPromises.length > 0) {
       await Promise.all(upsertPromises);
+    }
+
     const updatedAddresses = await prisma.company_addresses.findMany({
       where: {
         company_id: companyId,
       },
       select: {
         company_address_id: true,
-        city: true,
-        state: true,
-        zip_region: true,
-        county: true,
+        locationData: {
+          select: {
+            city: true,
+            state: true,
+            zip: true,
+            county: true,
+          }
+        }
+
       },
     });
 
@@ -180,13 +196,13 @@ export async function POST(request: Request) {
       industrySectorId: upsertedCompany.industry_sector_id,
       industrySectorTitle: upsertedCompany?.industry_sectors?.sector_title,
       companyName: upsertedCompany.company_name,
-      // companyAddresses: updatedAddresses.map((address) => ({
-      //   addressId: address.company_address_id,
-      //   state: address.state,
-      //   city: address.city,
-      //   zipCode: address.zip_region,
-      //   county: address.county,
-      // })),
+      companyAddresses: updatedAddresses?.map((address) => ({
+        addressId: address.company_address_id,
+        state: address.locationData.state,
+        city: address.locationData.city,
+        zipCode: address.locationData.zip,
+        county: address.locationData.county,
+      })) || undefined,
       logoUrl: upsertedCompany.company_logo_url,
       aboutUs: upsertedCompany.about_us,
       companyEmail: upsertedCompany.company_email,
@@ -204,6 +220,15 @@ export async function POST(request: Request) {
       estimatedAnnualHires: upsertedCompany?.estimated_annual_hires?.toString(),
       isApproved: upsertedCompany.is_approved,
     };
+
+    // Fixme: Update session with new employerId and companyId. Session returning null.
+    // const session = await auth(); // Get the session using the auth function
+    // if (session) {
+    //   // Update session properties
+    //   session.user.employerId = employerId || newEmployerId;
+    //   session.user.companyId = companyId || newCompanyId;
+    // }
+
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
     console.error('Error upserting company information:', e.message);
