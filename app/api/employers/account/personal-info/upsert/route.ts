@@ -33,8 +33,9 @@ export async function POST(request: Request) {
       update: {
         first_name: firstName,
         last_name: lastName,
-        birthdate: new Date(birthDate).toISOString(),
+        birthdate: birthDate ? new Date(birthDate).toISOString() : undefined,
         email: email,
+        phoneCountryCode: phoneCountryCode,
         phone: formattedPhone,
         photo_url: photoUrl,
         updatedAt: new Date(),
@@ -46,6 +47,7 @@ export async function POST(request: Request) {
         last_name: lastName,
         birthdate: new Date(birthDate).toISOString(),
         email: email,
+        phoneCountryCode: phoneCountryCode,
         phone: formattedPhone,
         gender: undefined,
         race: undefined,
