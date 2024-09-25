@@ -20,6 +20,7 @@ model User {
   birthdate          DateTime?       @db.DateTime
   email              String          @unique @db.VarChar(255)
   emailVerified      DateTime?       @map("email_verified") @db.DateTime
+  phoneCountryCode   String?         @db.VarChar(100)
   phone              String?         @db.VarChar(16)
   zip                String?         @db.VarChar(5)
   gender             String?         @db.VarChar(45)
