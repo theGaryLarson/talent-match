@@ -17,6 +17,7 @@ export type CreateUserDTO = {
   email: string;
   firstName: string;
   lastName: string;
+  image?: string | null;
   roles: Role[];
 };
 
