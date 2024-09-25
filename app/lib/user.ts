@@ -10,7 +10,7 @@ export async function createUser(
   userData: CreateUserDTO,
 ): Promise<ReadUserInfoDTO | null> {
   try {
-    const { email, firstName, lastName, roles } = userData;
+    const { email, firstName, lastName, roles, image } = userData;
 
     const data = await prisma.user.create({
       data: {
@@ -18,6 +18,7 @@ export async function createUser(
         first_name: firstName,
         last_name: lastName,
         email: email,
+        photo_url: image,
         role: roles[0].toUpperCase().trim(), // fixme: modify database to handle multiple roles.
         createdAt: new Date(),
         is_marked_deletion: new Date(
