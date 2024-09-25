@@ -31,7 +31,7 @@ export default function JobseekerSignupFinishPage() {
         <SignupPrompt
           vectorImgSrc={vectorImgSrc}
           prompt={
-            'Create a free CFA account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
+            'Create a free WTWC account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
           }
         />
         <section className="mx-auto w-full px-8 laptop:pt-24 ">
@@ -180,7 +180,7 @@ export default function JobseekerSignupFinishPage() {
             </Button>
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
-              <p>Already have a CFA account?</p>
+              <p>Already have a WTWC account?</p>
               <Link className="text-blue-500" href="/signin">
                 Sign in
               </Link>

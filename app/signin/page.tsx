@@ -7,7 +7,7 @@ export default function SignInPage() {
   console.log(providerMap);
   return (
     <main className="mx-auto max-w-screen-sm-tablet">
-      {/* <CFASignupPrompt/> */}
+      {/* <SignupPrompt/> */}
       <section className="flex w-full flex-col gap-8 px-8 laptop:pt-24">
         <h1 className="text-[2.125rem]">Create an account</h1>
         <div className="flex flex-col gap-2 text-center">

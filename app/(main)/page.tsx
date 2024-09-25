@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import PageBanner from '../ui/components/PageBannner';
 import RoundedButtonCard from '../ui/components/RoundedButtonCard';
-//entire CFA landing page
+//entire WTWC landing page
 export default function Page() {
     return (
         <>
