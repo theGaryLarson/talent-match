@@ -110,6 +110,22 @@ export type ReadCompanyInfoDTO = {
   isApproved: boolean;
 };
 
+export type PostEmployerAboutDTO = {
+  companyId: string;
+  aboutUs?: string | null;
+};
+
+export type PostEmployerMissionDTO = {
+  companyId: string;
+  mission?: string | null;
+  // vision?: string | null;
+};
+
+export type PostEmployerVideoDTO = {
+  companyId: string;
+  videoUrl?: string | null;
+};
+
 export type PostCompanyTestimonialsDTO = {
   companyId: string;
   employerId: string;

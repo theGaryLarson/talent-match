@@ -1,12 +1,23 @@
 'use client';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../jobseekerStore';
-import { PostEmployerPersonalDTO, PostCompanyInfoDTO, PostAddressDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  PostEmployerPersonalDTO,
+  PostCompanyInfoDTO,
+  PostEmployerAboutDTO,
+  PostEmployerVideoDTO,
+  PostEmployerMissionDTO,
+  PostEmployerWorkDTO,
+} from '@/data/dtos/EmployerProfileCreationDTOs';
 
 // Define a type for the slice state
 export interface EmployerState {
   personal: PostEmployerPersonalDTO;
   company: PostCompanyInfoDTO;
+  about: PostEmployerAboutDTO;
+  mission: PostEmployerMissionDTO;
+  video: PostEmployerVideoDTO;
+  disclosures: PostEmployerWorkDTO;
 }
 
 // Define the initial state using that type
@@ -28,21 +39,38 @@ export const initialState: EmployerState = {
     industrySectorId: null,
     industrySectorTitle: null,
     companyName: '',
-    // REVIEW: Should just import PostAddressDTO?
-    companyAddresses: null,
+    // companyAddresses: null,
     logoUrl: null,
-    aboutUs: null,
+    aboutUs: null, //ABOUT
     companyEmail: '',
     yearFounded: '',
     websiteUrl: null,
-    videoUrl: null,
+    videoUrl: null, //VIDEO
     phoneCountryCode: null,
     companyPhone: null,
-    mission: null,
+    mission: null, //MISSION
     vision: null,
     size: '',
     estimatedAnnualHires: '',
-  }
+  },
+  about: {
+    companyId: '',
+    aboutUs: '',
+  },
+  mission: {
+    companyId: '',
+    mission: '',
+  },
+  disclosures: {
+    userId: '',
+    currentJobTitle: '',
+    linkedInUrl: '',
+    workAddressId: '',
+  },
+  video: {
+    companyId: '',
+    videoUrl: '',
+  },
 };
 
 // Actions
@@ -53,7 +81,10 @@ export const employerSlice = createSlice({
 
   // REVIEW: each field will need its own reducer? unsure if best, seems there should be a way to deconstruct ...state then update this.id/param specific?
   reducers: {
-    initializePersonal: (state, action: PayloadAction<PostEmployerPersonalDTO>) => {
+    initializePersonal: (
+      state,
+      action: PayloadAction<PostEmployerPersonalDTO>,
+    ) => {
       state.personal = action.payload;
     },
     setPersonal: (state, action: PayloadAction<PostEmployerPersonalDTO>) => {
@@ -68,8 +99,12 @@ export const employerSlice = createSlice({
   },
 });
 
-export const { initializePersonal, setPersonal, initializeCompany, setCompany } =
-  employerSlice.actions;
+export const {
+  initializePersonal,
+  setPersonal,
+  initializeCompany,
+  setCompany,
+} = employerSlice.actions;
 
 // TODO: Review if needed in future
 // Other code such as selectors can use the imported `RootState` type
