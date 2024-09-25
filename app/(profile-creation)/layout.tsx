@@ -5,13 +5,13 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import '@/app/ui/global.css';
 import '@/app/ui/profile-creation.css';
 import { inter } from '@/app/ui/fonts';
-import CFAProfileCreationHeader from '@/app/ui/CFAProfileCreationHeader';
+import ProfileCreationHeader from '@/app/ui/ProfileCreationHeader';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 // REVIEW: You can locate the store in the layout component if all the routes using that layout need the store. 
 import StoreProvider from '../StoreProvider';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
-import {SessionProvider} from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
 
 export default function ProfileCreationLayout({
   children,
@@ -23,10 +23,10 @@ export default function ProfileCreationLayout({
       <body className={`${inter.className} antialiased`}>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
           <AppRouterCacheProvider>
-            <CFAProfileCreationHeader />
             <StoreProvider>
               <SessionProvider>
-              {children}
+                <ProfileCreationHeader />
+                {children}
               </SessionProvider>
             </StoreProvider>
           </AppRouterCacheProvider>

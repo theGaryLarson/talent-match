@@ -1,6 +1,5 @@
 import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
-import CFASignupHeader from '@/app/ui/CFASignupHeader';
 import { SessionProvider } from 'next-auth/react';
 
 export default function AccountLayout({

@@ -39,7 +39,7 @@ export default function SignInPage() {
                 className="w-full justify-start border border-[#1E2432]/[.23] bg-transparent focus:bg-[#00809E]/[.23] focus:ring-0 active:bg-[#00809E]/[.23] enabled:hover:bg-[#00809E]/[.23]"
               >
                 <Image
-                  src={`/cfa_images/signup/oauth_logos/${provider.name}-mark.svg`}
+                  src={`/images/signup/oauth_logos/${provider.name}-mark.svg`}
                   width={20}
                   height={20}
                   alt="Green checkmark"

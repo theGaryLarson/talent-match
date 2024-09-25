@@ -8,7 +8,7 @@ interface Props {
   prompt: string;
 }
 
-export default function CFASignupFooter({
+export default function SignupPrompt({
   className = '',
   vectorImgSrc,
   prompt,

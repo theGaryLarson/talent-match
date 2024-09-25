@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
-export default function CFAFooter() {
+export default function Footer() {
   return (
     <div className="flex w-full flex-col flex-wrap items-center bg-primary-600 px-[16px] py-[32px] font-['Roboto'] text-white sm-tablet:flex-row sm-tablet:justify-between  ">
       <Link href="/">
-        <span className="sr-only">Computing For All</span>
+        <span className="sr-only">Tech Workforce Coalition</span>
         <Image
-          src="/cfa_images/TWC logo_White.svg"
-          alt="Computing For All"
+          src="/images/TWC logo_White.svg"
+          alt="Tech Workforce Coalition"
           width={75}
           height={31.8}
         />
@@ -19,7 +19,7 @@ export default function CFAFooter() {
       >
         <p>Follow Us:</p>
         <img
-          src={'/cfa_images/stock/LI-In-Bug.png'}
+          src={'/images/stock/LI-In-Bug.png'}
           alt={'Linkedin Link'}
           width={40}
         ></img>

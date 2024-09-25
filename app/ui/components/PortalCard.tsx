@@ -1,6 +1,6 @@
 import RoundedButton from "./RoundedButton";
 
-export default function CFAPortalCard(){
+export default function PortalCard(){
     return (
     <div className="flex flex-col justify-center items-center gap-8 py-32 px-8 w-full bg-gray-background rounded-3xl">
         <h1 className="font-black text-5xl phone:text-6xl">Tech Talent Showcase</h1>
