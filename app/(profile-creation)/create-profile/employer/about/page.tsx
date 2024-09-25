@@ -13,26 +13,23 @@ import { Button, Progress } from 'flowbite-react';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { getFieldValue } from '@/app/lib/utils';
+// import { getFieldValue } from '@/app/lib/utils';
+import { PostEmployerAboutDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  setAbout,
+  initialState,
+} from '@/lib/features/profileCreation/employerSlice';
+import _ from 'lodash';
+
+const formNamePrefix = 'profile-creation-company-about-';
 
 export default function CreateEmployerCompanyInfoAboutPage() {
-  const { fields, isSubmitting, error }: FormState = useSelector(
-    (state: RootState) => state.form,
+  const aboutStoreData = useSelector(
+    (state: RootState) => state.employer.about,
   );
+  const [aboutData, setAboutData] = useState({ ...aboutStoreData });
   const dispatch = useDispatch();
   const router = useRouter();
-
-  const [newFieldId, setNewFieldId] = useState('');
-  const [newFieldLabel, setNewFieldLabel] = useState('');
-  const [newFieldType, setNewFieldType] = useState<
-    'text' | 'email' | 'number' | 'select' | 'radio'
-  >('text');
-  const [newFieldValue, setNewFieldValue] = useState('');
-  const [newFieldOptions, setNewFieldOptions] = useState<
-    { value: string | number; label: string }[]
-  >([]);
-  const { data: session, update, status } = useSession();
-  const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
     const updateSession = async () => {
@@ -40,7 +37,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
 
       try {
         const response = await fetch(
-          `/api/employers/account/professional-info/get/${session.user.id}`,
+          `/api/companies/about/update/${session.user.id}`,
           {
             method: 'GET',
             headers: {
