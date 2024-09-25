@@ -28,7 +28,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function CFAHeader() {
+export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [headerTW, setHeaderTW] = useState('')
   const pathname = usePathname()
@@ -52,12 +52,12 @@ export default function CFAHeader() {
           {
             pathname == '/services/jobseekers' ?
               <Link href="/">
-                <span className="sr-only">Computing For All</span>
-                <Image src="/cfa_images/TWC logo_White.svg" alt="Computing For All" width={75} height={31.8} />
+                <span className="sr-only">Tech Workforce Coalition</span>
+                <Image src="/images/TWC logo_White.svg" alt="Tech Workforce Coalition" width={75} height={31.8} />
               </Link> :
               <Link href="/">
-                <span className="sr-only">Computing For All</span>
-                <Image src="/cfa_images/TWC_75x50_2024.svg" alt="Computing For All" width={75} height={31.8} />
+                <span className="sr-only">Tech Workforce Coalition</span>
+                <Image src="/images/TWC_75x50_2024.svg" alt="Tech Workforce Coalition" width={75} height={31.8} />
               </Link>
           }
         </div>
@@ -143,12 +143,12 @@ export default function CFAHeader() {
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 phone:max-w-sm phone:ring-1 phone:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <Link href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Computing For All</span>
+              <span className="sr-only">Tech Workforce Coalition</span>
               <Image
                 width={50}
                 height={50}
                 className="h-8 w-auto"
-                src="/cfa_images/cfalogo.jpg"
+                src="/images/TWC_75x50_2024.svg"
                 alt=""
               />
             </Link>

@@ -8,7 +8,7 @@ interface Props {
   prompt: string;
 }
 
-export default function CFASignupFooter({
+export default function SignupPrompt({
   className = '',
   vectorImgSrc,
   prompt,
@@ -22,14 +22,14 @@ export default function CFASignupFooter({
     >
       <div className="mx-auto flex flex-col gap-4 py-4 laptop:max-w-[390px] laptop:gap-6">
         <h1 className="text-center text-[34px] leading-[42px]">
-          Create a CFA account
+          Create a WTWC account
         </h1>
         <p className="">{prompt}</p>
         <div className="hidden py-4 laptop:block">
           <p>Not ready to log in?</p>
           <p>
             <Link href="/underconstruction" className="REPLACE-BEFORE-RELEASE">
-              Learn how CFA works
+              Learn how WTWC works
             </Link>
           </p>
         </div>

@@ -10,7 +10,10 @@ import { devLog } from '@/app/lib/utils';
 
 const providers: Provider[] = [
   GitHub,
-  Google({ clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET }),
+  Google({
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  }),
   // Microsoft,
   // LinkedIn
 ];
@@ -133,13 +136,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   cookies: {
     pkceCodeVerifier: {
-      name: "next-auth.pkce.code_verifier",
-        options: {
-          httpOnly: true,
-          sameSite: "none",
-          path: "/",
-          secure: true,
-        }
-    }
-  }
+      name: 'next-auth.pkce.code_verifier',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+        domain: 'www.watechwfcoalition.org',
+      },
+    },
+  },
 });

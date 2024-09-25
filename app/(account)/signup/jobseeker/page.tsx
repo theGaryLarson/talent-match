@@ -4,28 +4,34 @@ import DividerWithText from '@/app/ui/components/DividerWithText';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import Link from 'next/link';
 import { Button } from 'flowbite-react';
-import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
+import SignupPrompt from '@/app/ui/components/SignupPrompt';
 import Image from 'next/image';
-import CFAFooter from '@/app/ui/CFAFooter';
-import CFASignupHeader from '@/app/ui/CFASignupHeader';
-import { useState } from 'react';
+import Footer from '@/app/ui/Footer';
+import SignupHeader from '@/app/ui/SignupHeader';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-const vectorImgSrc = '/cfa_images/signup/jobseeker-vector.png';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { useSession } from 'next-auth/react';
+import { Role } from '@/data/dtos/UserInfoDTO';
+import { mapToEnumOrThrow } from '@/app/lib/utils';
+const vectorImgSrc = '/images/signup/jobseeker-vector.png';
 
 export default function JobseekerSignupFinishPage() {
   let [resident, setResident] = useState(false);
   let [education, setEducation] = useState(false);
   let [termsAgree, setTermsAgree] = useState(false);
+  const { data: session, status, update } = useSession();
+  const updateSessionProperties = useUpdateSession();
   const router = useRouter();
   return (
     <>
-      <CFASignupHeader />
+      <SignupHeader />
 
       <main className="mx-auto max-w-screen-sm-tablet overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
-        <CFASignupPrompt
+        <SignupPrompt
           vectorImgSrc={vectorImgSrc}
           prompt={
-            'Create a free CFA account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
+            'Create a free WTWC account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
           }
         />
         <section className="mx-auto w-full px-8 laptop:pt-24 ">
@@ -146,9 +152,27 @@ export default function JobseekerSignupFinishPage() {
             </fieldset>
             <Button
               type="submit"
-              onClick={() =>
-                router.push('/create-profile/jobseeker/introduction')
+              onClick={async (e: FormEvent) => {
+                e.preventDefault();
+                let response = await fetch('/api/users/role/update', {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    userId: session?.user.id,
+                    role: Role.JOBSEEKER,
+                  }),
+                });
+                // console.log('response:', response);
+                if (response.ok) {
+                  let rolesArray = [mapToEnumOrThrow(Role.JOBSEEKER, Role)] as Role[];
+                  await updateSessionProperties({
+                    roles: rolesArray,
+                  });
+                  router.push('/create-profile/jobseeker/introduction');
               }
+            }}
               className="mx-auto my-8 rounded-full focus:ring-0"
               disabled={!(education && resident && termsAgree)}
             >
@@ -156,7 +180,7 @@ export default function JobseekerSignupFinishPage() {
             </Button>
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
-              <p>Already have a CFA account?</p>
+              <p>Already have a WTWC account?</p>
               <Link className="text-blue-500" href="/signin">
                 Sign in
               </Link>
@@ -173,7 +197,7 @@ export default function JobseekerSignupFinishPage() {
       </main>
 
       <footer className="mt-auto pt-8 sm-tablet:hidden">
-        <CFAFooter />
+        <Footer />
       </footer>
     </>
   );

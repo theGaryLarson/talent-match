@@ -4,6 +4,7 @@ import Skills from '@/app/ui/components/Skills';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import { auth } from '@/auth';
 import { format } from 'path';
+import DeletionFlag from '@/app/ui/components/DeletionFlag';
 const monthNames = [
   'Jan',
   'Feb',
@@ -19,7 +20,7 @@ const monthNames = [
   'Dec',
 ];
 
-function formatUrl(url:string) {
+function formatUrl(url: string) {
   if (!url) return '';
   // If the URL starts with http:// or https://, return as is
   if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -48,10 +49,14 @@ export default async function page({ params }: { params: { id: string } }) {
 
   return (
     <main className="space-y-3 bg-gray-bg px-4 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px]">
+      <DeletionFlag deletionDate={undefined} />
       <div className="flex flex-wrap gap-4">
-        <div className="flex items-center rounded-md border bg-white grow">
+        <div className="flex grow items-center rounded-md border bg-white">
           <div className="flex items-center gap-5 p-4">
-            <Avatar imgsrc={jobseeker?.users.photo_url} scale={1.5}></Avatar>
+            <Avatar
+              imgsrc={jobseeker?.users.photo_url ?? undefined}
+              scale={1.5}
+            ></Avatar>
             <div>
               <h1 className="text-2xl font-bold">
                 {jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name}
@@ -250,7 +255,9 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 className="text-2xl font-bold">Portfolio</h1>
             {jobseeker?.portfolio_url ? (
-              <a href={formatUrl(jobseeker?.portfolio_url)}>{jobseeker?.portfolio_url}</a>
+              <a href={formatUrl(jobseeker?.portfolio_url)}>
+                {jobseeker?.portfolio_url}
+              </a>
             ) : (
               ''
             )}

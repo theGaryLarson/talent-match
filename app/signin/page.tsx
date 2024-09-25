@@ -7,7 +7,7 @@ export default function SignInPage() {
   console.log(providerMap);
   return (
     <main className="mx-auto max-w-screen-sm-tablet">
-      {/* <CFASignupPrompt/> */}
+      {/* <SignupPrompt/> */}
       <section className="flex w-full flex-col gap-8 px-8 laptop:pt-24">
         <h1 className="text-[2.125rem]">Create an account</h1>
         <div className="flex flex-col gap-2 text-center">
@@ -39,7 +39,7 @@ export default function SignInPage() {
                 className="w-full justify-start border border-[#1E2432]/[.23] bg-transparent focus:bg-[#00809E]/[.23] focus:ring-0 active:bg-[#00809E]/[.23] enabled:hover:bg-[#00809E]/[.23]"
               >
                 <Image
-                  src={`/cfa_images/signup/oauth_logos/${provider.name}-mark.svg`}
+                  src={`/images/signup/oauth_logos/${provider.name}-mark.svg`}
                   width={20}
                   height={20}
                   alt="Green checkmark"

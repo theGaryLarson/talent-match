@@ -6,12 +6,11 @@ interface Props {
 }
 export default function ScoreCard(props:Props){
     return (
-        <div className="flex flex-none justify-between p-4 w-[260px] h-[58px] bg-whitebg rounded-md border border-blue-background items-center">
-            <span className="space-x-2">
-            <UserIcon className="inline-block w-8"/>
-            <div className=" inline-block text-balance">{props.title}</div>
-            </span>
-            <div className="inline-block bg-blue-background py-2 px-4 rounded-md text-white font-bold">{props.val}</div>
+        <div className="h-[50px] bg-white rounded-[100px] shadow border backdrop-blur-[120px] justify-center items-center inline-flex">
+        <div className="p-5 justify-center items-center gap-2 flex">
+            <div className="text-[#181818] text-base font-normal font-['Roboto'] leading-none">{props.title}</div>
+            <div className="text-center text-[#047f9c] text-xl font-bold font-['Roboto'] leading-7">{props.val}</div>
         </div>
+    </div>
     );
 }

@@ -1,7 +1,7 @@
 import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
-import CFAHeader from '@/app/ui/CFAHeader';
-import CFAFooter from '@/app/ui/CFAFooter';
+import Header from '@/app/ui/Header';
+import Footer from '@/app/ui/Footer';
 import { SessionProvider } from 'next-auth/react';
 
 
@@ -14,9 +14,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <SessionProvider>
-          <CFAHeader />
+          <Header />
           {children}
-          <CFAFooter />
+          <Footer />
         </SessionProvider>
       </body>
     </html>
