@@ -6,7 +6,6 @@ export const useUpdateSession = (): ((
   properties: Record<string, any>,
 ) => Promise<void>) => {
   const { update } = useSession(); // Ensure we get the update function
-  devLog('updateIsFunction', typeof update === 'function'); // Check if 'update' is a function
 
   const updateSessionProperties = async (
     properties: Record<string, any>,
