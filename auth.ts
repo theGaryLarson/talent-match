@@ -9,8 +9,12 @@ import { createUser, getUserByEmail } from './app/lib/user';
 import { devLog } from '@/app/lib/utils';
 
 const providers: Provider[] = [
-  GitHub,
-  Google({ clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET }),
+  GitHub({ checks: ["state"] }),
+  Google({
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    checks: ["state"],
+  }),
   // Microsoft,
   // LinkedIn
 ];
@@ -129,25 +133,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   pages: {
     signIn: '/signin',
-  },
-  cookies: {
-    csrfToken: {
-      name: 'next-auth.csrf-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'none',
-        path: '/',
-        secure: true
-      }
-    },
-    pkceCodeVerifier: {
-      name: 'next-auth.pkce.code_verifier',
-      options: {
-        httpOnly: true,
-        sameSite: 'none',
-        path: '/',
-        secure: true
-      }
-    }
   },
 });
