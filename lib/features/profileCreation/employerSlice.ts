@@ -81,6 +81,36 @@ export const employerSlice = createSlice({
 
   // REVIEW: each field will need its own reducer? unsure if best, seems there should be a way to deconstruct ...state then update this.id/param specific?
   reducers: {
+    initializeAbout: (state, action: PayloadAction<PostEmployerAboutDTO>) => {
+      state.about = action.payload;
+    },
+    setAbout: (state, action: PayloadAction<PostEmployerAboutDTO>) => {
+      state.about = action.payload;
+    },
+    initializeMission: (
+      state,
+      action: PayloadAction<PostEmployerMissionDTO>,
+    ) => {
+      state.mission = action.payload;
+    },
+    setMission: (state, action: PayloadAction<PostEmployerMissionDTO>) => {
+      state.mission = action.payload;
+    },
+    initializeVideo: (state, action: PayloadAction<PostEmployerVideoDTO>) => {
+      state.video = action.payload;
+    },
+    setVideo: (state, action: PayloadAction<PostEmployerVideoDTO>) => {
+      state.video = action.payload;
+    },
+    initializeDisclosures: (
+      state,
+      action: PayloadAction<PostEmployerWorkDTO>,
+    ) => {
+      state.disclosures = action.payload;
+    },
+    setDisclosures: (state, action: PayloadAction<PostEmployerWorkDTO>) => {
+      state.disclosures = action.payload;
+    },
     initializePersonal: (
       state,
       action: PayloadAction<PostEmployerPersonalDTO>,
@@ -100,14 +130,18 @@ export const employerSlice = createSlice({
 });
 
 export const {
+  initializeAbout,
+  setAbout,
+  initializeMission,
+  setMission,
+  initializeVideo,
+  setVideo,
+  initializeDisclosures,
+  setDisclosures,
   initializePersonal,
   setPersonal,
   initializeCompany,
   setCompany,
 } = employerSlice.actions;
-
-// TODO: Review if needed in future
-// Other code such as selectors can use the imported `RootState` type
-// export const selectCount = (state: RootState) => state.counter.value;
 
 export default employerSlice.reducer;
