@@ -107,18 +107,27 @@ export type ReadCompanyInfoDTO = {
 
 export type PostEmployerAboutDTO = {
   companyId: string;
+  aboutUs: string;
+};
+
+export type ReadEmployerAboutDTO = {
+  companyId?: string;
   aboutUs?: string | null;
 };
 
 export type PostEmployerMissionDTO = {
   companyId: string;
-  mission?: string | null;
-  // vision?: string | null;
+  mission?: string;
+};
+
+export type ReadEmployerMissionDTO = {
+  companyId: string;
+  mission?: string;
 };
 
 export type PostEmployerVideoDTO = {
   companyId: string;
-  videoUrl?: string | null;
+  videoUrl?: string;
 };
 
 export type PostCompanyTestimonialsDTO = {

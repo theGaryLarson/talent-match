@@ -20,6 +20,7 @@ import {
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
 import _ from 'lodash';
+import { devLog } from '@/app/lib/utils';
 
 const formNamePrefix = 'profile-creation-company-about-';
 
@@ -27,174 +28,142 @@ export default function CreateEmployerCompanyInfoAboutPage() {
   const aboutStoreData = useSelector(
     (state: RootState) => state.employer.about,
   );
-  const [aboutData, setAboutData] = useState({ ...aboutStoreData });
+  const [aboutData, setAboutData] = useState<PostEmployerAboutDTO>({
+    ...aboutStoreData,
+  });
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const { data: session, update, status } = useSession();
+  const updateSessionProperties = useUpdateSession();
+
   useEffect(() => {
-    const updateSession = async () => {
-      if (!session?.user?.id) return; // Prevent running if session.user.id is undefined
+    const initializeFormFields = async () => {
+      console.log('session', session);
+      if (!session?.user.id) return;
+      if (status === 'authenticated') {
+        if (_.isEqual(aboutStoreData, initialState.about)) {
+          const { id, companyId, employerId } = session.user;
 
-      try {
-        const response = await fetch(
-          `/api/employers/account/professional-info/get/${session.user.id}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        );
+          try {
+            const response = await fetch(
+              `/api/companies/about/get/${session.user.companyId}`,
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
+            if (!response.ok) {
+              const errorData = await response.json();
+            } else {
+              let { result } = await response.json();
 
-        const { success, result } = await response.json(); // Destructure response
-
-        if (success && result) {
-          const {
-            employerId,
-            companyId,
-            isVerifiedEmployee,
-            isVerifiedCompany,
-          } = result;
-          await updateSessionProperties({
-            employerId: employerId,
-            companyId: companyId,
-            companyIsApproved: isVerifiedCompany,
-            employeeIsApproved: isVerifiedEmployee,
-          });
+              console.log('fetchedData', result);
+              setAboutData({
+                ...aboutData,
+                companyId: result.companyId,
+                aboutUs: result.aboutUs,
+              });
+            }
+          } catch (error) {
+            // dispatch(submitFormFailure('Failed to submit the form'));
+          }
         } else {
-          console.error('Failed to fetch professional info:', result);
+          console.log('fetching from redux store');
         }
-      } catch (e) {
-        console.error('Error updating session:', e);
       }
+      // if (session && status === 'authenticated') {
+      //   updateSession();
+      // }
     };
-
-    if (session && status === 'authenticated') {
-      updateSession();
-    }
+    initializeFormFields();
+    devLog(aboutData);
   }, [session?.user?.id]);
+
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     console.log(name, value);
-    // const field = fields.find((field) => field.id === name);
-    //   if (field) {
-    //     const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
-    //     dispatch(updateField({ id: field.id, value: parsedValue }));
-    //   } else {
-    //     dispatch(
-    //       addField({
-    //         id: e.target.id,
-    //         label: newFieldLabel,
-    //         value: e.target.value,
-    //         type: newFieldType,
-    //         options: newFieldOptions,
-    //       }),
-    //     );
-    //   }
-    // };
-
-    // const handleAddField = () => {
-    //   if (newFieldLabel) {
-    //     dispatch(
-    //       addField({
-    //         id: newFieldId,
-    //         label: newFieldLabel,
-    //         value: newFieldValue,
-    //         type: newFieldType,
-    //         options:
-    //           newFieldType === 'select' || newFieldType === 'radio'
-    //             ? newFieldOptions
-    //             : undefined,
-    //       }),
-    //     );
-    //     setNewFieldId('');
-    //     setNewFieldLabel('');
-    //     setNewFieldType('text');
-    //     setNewFieldValue('');
-    //     setNewFieldOptions([]);
-    //   }
-    // };
-
-    // const handleSubmit = async (e: FormEvent) => {
-    //   e.preventDefault();
-    //   dispatch(submitForm());
-    //
-    //   const formData = {
-    //     companyId: session?.user.companyId,
-    //     aboutUs: getFieldValue(fields, 'profile-creation-company-about', ''),
-    //   };
-    //
-    //   try {
-    //     const response = await fetch('/api/companies/about/update/', {
-    //       method: 'PATCH',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(formData),
-    //     });
-    //
-    //     if (response.ok) {
-    //       const result = await response.json();
-    //       dispatch(submitFormSuccess());
-    //       router.push('/create-profile/employer/mission');
-    //     } else {
-    //       const errorData = await response.json();
-    //       dispatch(
-    //         submitFormFailure(errorData.error || 'Failed to submit the form'),
-    //       );
-    //     }
-    //   } catch (error) {
-    //     dispatch(submitFormFailure('Failed to submit the form'));
-    //   }
-    // };
-
-    return (
-      <main className="flex justify-center">
-        <aside className="profile-form-aside"></aside>
-        <section className="profile-form-section">
-          <ProgressBarFlat progress={(3 / 6) * 100} size="sm" />
-          <p>Step 3/6</p>
-          <h1>Company Info</h1>
-          <p className="subtitle">* Indicates a required field</p>
-
-          <h2>About</h2>
-          <form>
-            Tell us about your company *
-            <div className="profile-form-grid">
-              <fieldset>
-                <TextareaWithLabel
-                  id="profile-creation-company-about"
-                  placeholder="About your company"
-                  rows="16"
-                  onChange={handleFieldChange}
-                  required
-                  // defaultValue={getFieldValue(
-                  //   fields,
-                  //   'profile-creation-company-about',
-                  //   '',
-                  // )}
-                >
-                  {/* Tell us about your company * */}
-                </TextareaWithLabel>
-              </fieldset>
-            </div>
-            <div className="profile-form-progress-btn-group">
-              <Button pill className="custom-outline-btn">
-                Cancel
-              </Button>
-              <Button pill type="submit">
-                Save and continue
-              </Button>
-            </div>
-          </form>
-        </section>
-      </main>
-    );
+    const fieldName = name.substring(formNamePrefix.length);
+    if (aboutData.hasOwnProperty(fieldName)) {
+      aboutData[fieldName as keyof PostEmployerAboutDTO] = value;
+      setAboutData({ ...aboutData });
+    }
   };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!session || !session.user) {
+      console.error('User session is not available.');
+      return;
+    }
+    setAboutData({ ...aboutData });
+    devLog('aboutData', aboutData);
+
+    try {
+      const response = await fetch('/api/companies/about/update/', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(aboutData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        dispatch(setAbout(aboutData));
+        router.push('/create-profile/employer/mission');
+      } else {
+        const errorData = await response.json();
+      }
+    } catch (error) {}
+  };
+
+  return (
+    <main className="flex justify-center">
+      <aside className="profile-form-aside"></aside>
+      <section className="profile-form-section">
+        <ProgressBarFlat progress={(3 / 6) * 100} size="sm" />
+        <p>Step 3/6</p>
+        <h1>Company Info</h1>
+        <p className="subtitle">* Indicates a required field</p>
+
+        <h2>About</h2>
+        <form onSubmit={handleSubmit}>
+          Tell us about your company *
+          <div className="profile-form-grid">
+            <fieldset>
+              <TextareaWithLabel
+                id="profile-creation-company-about"
+                placeholder="About your company"
+                rows="16"
+                onChange={handleFieldChange}
+                required
+                // defaultValue={getFieldValue(
+                //   fields,
+                //   'profile-creation-company-about',
+                //   '',
+                // )}
+              >
+                {/* Tell us about your company * */}
+              </TextareaWithLabel>
+            </fieldset>
+          </div>
+          <div className="profile-form-progress-btn-group">
+            <Button pill className="custom-outline-btn">
+              Cancel
+            </Button>
+            <Button pill type="submit">
+              Save and continue
+            </Button>
+          </div>
+        </form>
+      </section>
+    </main>
+  );
 }
