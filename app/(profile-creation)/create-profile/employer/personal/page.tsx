@@ -13,12 +13,17 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { PostEmployerPersonalDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  PostEmployerPersonalDTO,
+  ReadEmployerPersonalDTO,
+} from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
   setPersonal,
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
 import _ from 'lodash';
+import { devLog } from '@/app/lib/utils';
+import {JsIntroDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const formNamePrefix = 'profile-creation-personal-';
 
@@ -36,13 +41,11 @@ export default function CreateEmployerPersonalPage() {
   const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
+    if (!session?.user?.id) return;
     const initializeFormFields = async () => {
-      if (status === 'authenticated' && session?.user) {
+      if (status === 'authenticated') {
         if (_.isEqual(personalStoreData, initialState.personal)) {
           const { id, firstName, lastName, email, image } = session.user;
-
-          personalData.userId = id ?? '';
-          console.log('fetching fresh');
 
           try {
             const response = await fetch(
@@ -51,38 +54,28 @@ export default function CreateEmployerPersonalPage() {
 
             if (!response.ok) {
               const errorData = await response.json();
-              // dispatch(
-              //   submitFormFailure(errorData.error || 'Failed to submit the form'),
-              // );
+              setPersonalData((prevState) => ({
+                ...prevState,
+                userId: id ?? '',
+                firstName: firstName ?? '',
+                lastName: lastName ?? '',
+                email: email ?? '',
+                photoUrl: image ?? '',
+                phoneCountryCode: 'United States +1'
+              }));
             } else {
-              let fetchedData: PostEmployerPersonalDTO = (await response.json())
-                .result.loadIntroPage;
-              console.log(firstName, lastName, email, image);
-              console.log(fetchedData);
-              personalData.birthDate = fetchedData.birthDate ?? '';
-              personalData.email =
-                fetchedData.email.length !== 0
-                  ? fetchedData.email
-                  : (email ?? '');
-              personalData.firstName =
-                typeof fetchedData.firstName === 'string' &&
-                fetchedData.firstName?.length !== 0
-                  ? fetchedData.firstName
-                  : (firstName ?? '');
-              personalData.lastName =
-                typeof fetchedData.lastName === 'string' &&
-                fetchedData.lastName?.length !== 0
-                  ? fetchedData.lastName
-                  : (lastName ?? '');
-              personalData.phone = fetchedData.phone;
-              personalData.phoneCountryCode = fetchedData.phoneCountryCode;
-              personalData.photoUrl =
-                typeof fetchedData.photoUrl === 'string' &&
-                fetchedData.photoUrl?.length !== 0
-                  ? fetchedData.photoUrl
-                  : (image ?? '');
-
-              setPersonalData({ ...personalData });
+              let { result } = await response.json();
+              setPersonalData({
+                ...personalData,
+                userId: result.userId,
+                birthDate: result.birthDate ?? '',
+                email: email!,
+                firstName: firstName ?? '',
+                lastName: lastName ?? '',
+                phone: result.phone,
+                phoneCountryCode: result.phoneCountryCode,
+                photoUrl: image ?? '',
+              });
             }
           } catch (error) {
             // dispatch(submitFormFailure('Failed to submit the form'));
@@ -97,44 +90,55 @@ export default function CreateEmployerPersonalPage() {
             ? dayjs(personalData.birthDate)
             : null,
         );
-        setAvatarUrl(personalData.photoUrl ?? null);
+        setAvatarUrl(personalData.photoUrl ?? session.user?.image??'');
       }
     };
 
     initializeFormFields();
-  }, [session]);
+    devLog(personalData);
+  }, [session?.user?.id]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
+    console.log('name', name, 'value', value, 'fieldName,', fieldName)
     if (personalData.hasOwnProperty(fieldName)) {
-      personalData[fieldName as keyof PostEmployerPersonalDTO] = value;
-      setPersonalData({ ...personalData });
+        personalData[fieldName as keyof PostEmployerPersonalDTO] = value;
+      setPersonalData({
+        ...personalData,
+        [fieldName]: value,
+      });
     }
   };
 
-  const handleAvatarUpload = (url: string) => {
-    updateSessionProperties({
-      image: url,
-    }).then(() => {
-      // Update the local state with the uploaded image URL
-      setAvatarUrl(url);
-    });
-  };
+    const handleAvatarUpload = (url: string) => {
+        console.log("Uploaded Image URL:", url);
+        updateSessionProperties({
+            image: url,
+        }).then(() => {
+            setAvatarUrl(url);
+            setPersonalData({
+                ...personalData,
+                photoUrl: url
+            })
+        }).catch((error) => console.error('Failed to update session image:', error));
+    };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!session || !session.user) {
       console.error('User session is not available.');
       return;
     }
-
-    personalData.birthDate = birthdate?.toISOString() ?? '';
-    personalData.photoUrl = avatarUrl;
-    dispatch(setPersonal(personalData));
-
+    setPersonalData({
+      ...personalData,
+      birthDate: birthdate?.toISOString() ?? '',
+      photoUrl: avatarUrl,
+    });
+    devLog('personalData', personalData)
     // Extract firstName, lastName, and name from Redux state fields
+
     const firstName = personalData.firstName;
     const lastName = personalData.lastName;
     const name = `${firstName} ${lastName}`;
@@ -150,9 +154,11 @@ export default function CreateEmployerPersonalPage() {
           body: JSON.stringify(personalData),
         },
       );
-
+        console.log('personalData\n', JSON.stringify(personalData, null, 2));
       if (response.ok) {
-        const result = await response.json();
+        const { result } = await response.json();
+
+        dispatch(setPersonal(personalData));
 
         if (session && status === 'authenticated') {
           await updateSessionProperties({
@@ -193,7 +199,7 @@ export default function CreateEmployerPersonalPage() {
               maxSizeMB={5}
               userId={session?.user.id!}
               onImageUpload={handleAvatarUpload}
-              initialImageUrl={session?.user?.image!}
+              initialImageUrl={session?.user?.image??''}
             />
           </fieldset>
           <fieldset>
@@ -233,12 +239,13 @@ export default function CreateEmployerPersonalPage() {
                 placeholder="example@example.com"
                 value={personalData.email}
                 required
+                disabled
               >
                 Email *
               </InputTextWithLabel>
 
               <SelectOptionsWithLabel
-                id="profile-creation-personal-country-phoneCountryCode"
+                id="profile-creation-personal-phoneCountryCode"
                 className="phone-code"
                 onChange={handleFieldChange}
                 options={[
@@ -639,7 +646,7 @@ export default function CreateEmployerPersonalPage() {
                   {label:"Native Hawaiian or Pacific Islander", value:"native-hawaiian-pacific-islander"},
                   {label:"American Indian or Alaska Native", value:"american-indian-alaska-native"},
                   {label:"Multi-racial", value:"multi-racial"},
-                  {label:"Other", value:"other"},                 
+                  {label:"Other", value:"other"},
                   {label:"I prefer not to say", value:"undisclosed"},
                 ]}
                 placeholder="Please select"

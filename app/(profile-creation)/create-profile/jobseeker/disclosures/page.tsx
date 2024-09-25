@@ -38,6 +38,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
     event.preventDefault();
     if(!termsAccepted) {
       setOpen(true);
+      return
     }
     if (!session || !session.user?.id) {
       console.error('User session is not available.');

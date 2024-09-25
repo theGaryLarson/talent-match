@@ -39,7 +39,8 @@ export const initialState: EmployerState = {
     industrySectorId: null,
     industrySectorTitle: null,
     companyName: '',
-    // companyAddresses: null,
+    // REVIEW: Should just import PostAddressDTO?
+    companyAddresses: [] as PostAddressDTO[], // Gary switched this from null. and uncommented it out in EmployerProfileCreationDTO.ts --> PostCompanyInfoDTO
     logoUrl: null,
     aboutUs: null, //ABOUT
     companyEmail: '',

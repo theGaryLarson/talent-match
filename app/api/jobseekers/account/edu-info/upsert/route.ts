@@ -50,7 +50,7 @@ export async function POST(request: Request) {
                 }
             });
 
-            const jobseekerId: string = jobseeker?.jobseeker_id || uuidv4();
+            const jobseekerId: string = jobseeker?.jobseeker_id || uuidv4(); // rather than create a new one use from session. Guaranteed to exist because created when selecting role.
             const isEnrolledEdProgram = jobseeker?.is_enrolled_ed_program || false;
 
             upsertedJobseeker = await prisma.jobseekers.upsert({

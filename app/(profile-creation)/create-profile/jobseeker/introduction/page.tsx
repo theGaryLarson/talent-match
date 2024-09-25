@@ -10,9 +10,8 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
-import { getFieldValue } from '@/app/lib/utils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { JsIntroDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
@@ -21,6 +20,7 @@ import {
   initialState,
 } from '@/lib/features/profileCreation/jobseekerSlice';
 import _ from 'lodash';
+import {devLog} from "@/app/lib/utils";
 
 const formNamePrefix = 'profile-creation-intro-';
 
@@ -45,17 +45,17 @@ export default function CreateJobseekerProfileIntroPage() {
   const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
+      if (!session?.user?.id) return;
     const initializeFormFields = async () => {
-      if (status === 'authenticated' && session?.user) {
+      if (status === 'authenticated') {
         if (_.isEqual(introStoreData, initialState.introduction)) {
           const { id, firstName, lastName, email, image } = session.user;
 
-          introData.userId = id ?? '';
           console.log('fetching fresh');
 
           try {
             const response = await fetch(
-              '/api/jobseekers/account/introduction/get/' + id,
+              `/api/jobseekers/account/introduction/get/${session.user.id}`,
             );
 
             if (!response.ok) {
@@ -68,37 +68,23 @@ export default function CreateJobseekerProfileIntroPage() {
                 .loadIntroPage;
               console.log(firstName, lastName, email, image);
               console.log(fetchedData);
-              introData.birthDate = fetchedData.birthDate ?? '';
-              introData.city = fetchedData.city;
-              introData.county = fetchedData.county;
-              introData.currentJobTitle = fetchedData.currentJobTitle;
-              introData.email =
-                fetchedData.email.length !== 0
-                  ? fetchedData.email
-                  : (email ?? '');
-              introData.firstName =
-                typeof fetchedData.firstName === 'string' &&
-                fetchedData.firstName?.length !== 0
-                  ? fetchedData.firstName
-                  : (firstName ?? '');
-              introData.introHeadline = fetchedData.introHeadline;
-              introData.lastName =
-                typeof fetchedData.lastName === 'string' &&
-                fetchedData.lastName?.length !== 0
-                  ? fetchedData.lastName
-                  : (lastName ?? '');
-              introData.phone = fetchedData.phone;
-              introData.phoneCountryCode = fetchedData.phoneCountryCode;
-              introData.photoUrl =
-                typeof fetchedData.photoUrl === 'string' &&
-                fetchedData.photoUrl?.length !== 0
-                  ? fetchedData.photoUrl
-                  : (image ?? '');
-              introData.resumeUrl = fetchedData.resumeUrl;
-              introData.state = fetchedData.state;
-              introData.zipCode = fetchedData.zipCode ?? '';
-
-              setIntroData({ ...introData });
+                setIntroData({
+                    ...introData,
+                    birthDate: fetchedData.birthDate ?? '',
+                    city: fetchedData.city,
+                    county: fetchedData.county,
+                    currentJobTitle: fetchedData.currentJobTitle,
+                    email: email!,
+                    firstName: firstName ?? '',
+                    introHeadline: fetchedData.introHeadline,
+                    lastName: lastName ?? '',
+                    phone: fetchedData.phone,
+                    phoneCountryCode: fetchedData.phoneCountryCode ?? 'United States +1',
+                    photoUrl: session.user.image,
+                    resumeUrl: fetchedData.resumeUrl,
+                    state: fetchedData.state,
+                    zipCode: fetchedData.zipCode ?? ''
+                });
             }
           } catch (error) {
             // dispatch(submitFormFailure('Failed to submit the form'));
@@ -113,13 +99,13 @@ export default function CreateJobseekerProfileIntroPage() {
             ? dayjs(introData.birthDate)
             : null,
         );
-        setAvatarUrl(introData.photoUrl ?? null);
+        setAvatarUrl(session?.user?.image ?? null);
         setResumeUrl(introData.resumeUrl ?? null);
       }
     };
 
     initializeFormFields();
-  }, [session]);
+  }, [session?.user?.id]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -128,7 +114,11 @@ export default function CreateJobseekerProfileIntroPage() {
     const fieldName = name.substring(formNamePrefix.length);
     if (introData.hasOwnProperty(fieldName)) {
       introData[fieldName as keyof JsIntroDTO] = value;
-      setIntroData({ ...introData });
+      console.log(fieldName, value);
+      setIntroData({
+          ...introData,
+          [fieldName]: value,
+      });
     }
   };
 
@@ -138,6 +128,10 @@ export default function CreateJobseekerProfileIntroPage() {
     }).then(() => {
       // Update the local state with the uploaded image URL
       setAvatarUrl(url);
+      setIntroData({
+          ...introData,
+          photoUrl: url,
+      })
     });
   };
 
@@ -148,15 +142,20 @@ export default function CreateJobseekerProfileIntroPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!session || !session.user) {
+      devLog('phoneCountryCode:', introData.phoneCountryCode);
+      if (!session || !session.user) {
       console.error('User session is not available.');
       return;
     }
 
-    introData.birthDate = birthdate?.toISOString() ?? '';
-    introData.photoUrl = avatarUrl;
-    introData.resumeUrl = resumeUrl;
-    dispatch(setIntroduction(introData));
+    const updatedIntroData = {
+        ...introData,
+        birthDate: birthdate?.toISOString() ?? '',
+        photoUrl: avatarUrl,
+        resumeUrl: resumeUrl,
+    };
+
+    dispatch(setIntroduction(updatedIntroData));
 
     // Extract firstName, lastName, and name from Redux state fields
     const firstName = introData.firstName;
@@ -171,7 +170,10 @@ export default function CreateJobseekerProfileIntroPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(introData),
+            body: JSON.stringify({
+                ...updatedIntroData,
+                userId: session.user.id, // Ensure userId is passed from session
+            }),
         },
       );
 
@@ -246,7 +248,7 @@ export default function CreateJobseekerProfileIntroPage() {
               <DatePicker
                 label="Birth Date *"
                 value={birthdate}
-                onChange={setBirthdate}
+                onChange={(newDate) => setBirthdate(newDate)}
               />
             </div>
 

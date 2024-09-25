@@ -35,7 +35,6 @@ import ProjectExperiences, {
 import { mapToEnumOrThrow } from '@/app/lib/utils';
 import { getSession, useSession } from 'next-auth/react';
 
-import { initializeForm } from '@/lib/features/profileCreation/formSlice';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 
 interface Data {
