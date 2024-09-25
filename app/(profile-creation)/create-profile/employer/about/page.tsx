@@ -144,11 +144,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
                 rows="16"
                 onChange={handleFieldChange}
                 required
-                // defaultValue={getFieldValue(
-                //   fields,
-                //   'profile-creation-company-about',
-                //   '',
-                // )}
+                value={aboutData.aboutUs}
               >
                 {/* Tell us about your company * */}
               </TextareaWithLabel>
