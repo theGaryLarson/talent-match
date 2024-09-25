@@ -56,7 +56,7 @@ export type ReadAddressDTO = {
   county?: string | null;
   lat?: string | null;
   lon?: string | null;
-};
+} | null;
 
 export type PostAddressDTO = {
   zipCode: string;
@@ -89,7 +89,7 @@ export type ReadCompanyInfoDTO = {
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  // companyAddresses?: ReadAddressDTO[];
+  companyAddresses?: ReadAddressDTO[] | null;
   logoUrl?: string | null;
   aboutUs: string;
   companyEmail: string;
