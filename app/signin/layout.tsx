@@ -1,6 +1,6 @@
 import '@/app/ui/global.css';
-import CFAFooter from '@/app/ui/CFAFooter';
-import CFASignupHeader from '@/app/ui/CFASignupHeader';
+import Footer from '@/app/ui/Footer';
+import SignupHeader from '@/app/ui/SignupHeader';
 
 export const metadata = {
   title: 'Next.js',
@@ -15,9 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased min-h-screen flex flex-col`}>
-        <CFASignupHeader></CFASignupHeader>
+        <SignupHeader/>
         {children}
-        <footer className='mt-auto'><CFAFooter></CFAFooter></footer>
+        <footer className='mt-auto'><Footer/></footer>
         
       </body>
     </html>

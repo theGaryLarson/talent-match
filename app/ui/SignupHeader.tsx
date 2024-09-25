@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Divider from '@mui/material/Divider';
 import { Button } from 'flowbite-react';
 
-export default function CFASignupHeader({ className }: { className?: string }) {
+export default function SignupHeader({ className }: { className?: string }) {
   return (
     <header className={'mx-8 bg-white ' + className}>
       <nav
@@ -15,10 +15,10 @@ export default function CFASignupHeader({ className }: { className?: string }) {
       >
         <div className="w-1/2">
           <Link href="/">
-            <span className="sr-only">Computing For All</span>
+            <span className="sr-only">Tech Workforce Coalition</span>
             <Image
-              src="/cfa_images/TWC_75x50_2024.svg"
-              alt="Computing For All"
+              src="/images/TWC_75x50_2024.svg"
+              alt="Tech Workforce Coalition"
               width={75}
               height={50}
               priority

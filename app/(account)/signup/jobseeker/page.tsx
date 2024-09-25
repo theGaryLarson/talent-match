@@ -4,17 +4,17 @@ import DividerWithText from '@/app/ui/components/DividerWithText';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import Link from 'next/link';
 import { Button } from 'flowbite-react';
-import CFASignupPrompt from '@/app/ui/components/CFASignupPrompt';
+import SignupPrompt from '@/app/ui/components/SignupPrompt';
 import Image from 'next/image';
-import CFAFooter from '@/app/ui/CFAFooter';
-import CFASignupHeader from '@/app/ui/CFASignupHeader';
+import Footer from '@/app/ui/Footer';
+import SignupHeader from '@/app/ui/SignupHeader';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { useSession } from 'next-auth/react';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { mapToEnumOrThrow } from '@/app/lib/utils';
-const vectorImgSrc = '/cfa_images/signup/jobseeker-vector.png';
+const vectorImgSrc = '/images/signup/jobseeker-vector.png';
 
 export default function JobseekerSignupFinishPage() {
   let [resident, setResident] = useState(false);
@@ -25,13 +25,13 @@ export default function JobseekerSignupFinishPage() {
   const router = useRouter();
   return (
     <>
-      <CFASignupHeader />
+      <SignupHeader />
 
       <main className="mx-auto max-w-screen-sm-tablet overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
-        <CFASignupPrompt
+        <SignupPrompt
           vectorImgSrc={vectorImgSrc}
           prompt={
-            'Create a free CFA account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
+            'Create a free WTWC account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
           }
         />
         <section className="mx-auto w-full px-8 laptop:pt-24 ">
@@ -180,7 +180,7 @@ export default function JobseekerSignupFinishPage() {
             </Button>
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
-              <p>Already have a CFA account?</p>
+              <p>Already have a WTWC account?</p>
               <Link className="text-blue-500" href="/signin">
                 Sign in
               </Link>
@@ -197,7 +197,7 @@ export default function JobseekerSignupFinishPage() {
       </main>
 
       <footer className="mt-auto pt-8 sm-tablet:hidden">
-        <CFAFooter />
+        <Footer />
       </footer>
     </>
   );

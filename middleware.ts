@@ -62,7 +62,7 @@ export default auth((req) => {
     "/services/employers/dashboard/listview",
     // "/services/joblistings", // out of scope for MVP
     "/services/jobseekers",
-    "/cfa_images/",
+    "/images/",
   ];
 
   const rolesForGuest = [/*Role.ADMIN,*/ Role.GUEST]; // disable admin routing for now
@@ -87,11 +87,13 @@ export default auth((req) => {
   if (!req.auth && pathname === "/signout") {
     return NextResponse.redirect(homeUrl);
   }
-  // If you're at signin and logged in, reroute to the main page
+  // If you're at signin and logged in
   else if (req.auth && pathname === "/signin") {
-    if (userRoles.includes(Role.GUEST)){ // If you're signed in and haven't picked a role, you gotta
+    if (userRoles.includes(Role.GUEST)){
+      // If you're signed in and haven't picked a role, you gotta
       return NextResponse.redirect(new URL("/signup", req.nextUrl.origin));
     }
+    // Everyone else, reroute to the main page after signin
     else return NextResponse.redirect(homeUrl);
   }
 
@@ -110,6 +112,8 @@ export default auth((req) => {
 
 
   // ROLE BASED ROUTING ------------
+  // Check most permissive roles first, least permissive roles last
+  // TODO: redo these to check role first, then route. So the same route can be access by multiple roles.
 
   // Route checking for guest routes
   else if (guestRoutes.some((route) => pathname.includes(route))) {
@@ -173,5 +177,5 @@ export default auth((req) => {
  * - favicon.ico, sitemap.xml, robots.txt (metadata files)
  */
 export const config = { // TODO: route guard the API...
-  matcher: ["/((?!api|_next/static|_next/image|cfa_images|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|images|favicon.ico).*)"],
 };
