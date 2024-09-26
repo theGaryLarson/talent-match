@@ -117,16 +117,21 @@ export type ReadEmployerAboutDTO = {
 
 export type PostEmployerMissionDTO = {
   companyId: string;
-  mission?: string;
+  mission: string;
 };
 
 export type ReadEmployerMissionDTO = {
-  companyId: string;
+  companyId?: string;
   mission?: string;
 };
 
 export type PostEmployerVideoDTO = {
   companyId: string;
+  videoUrl: string;
+};
+
+export type ReadEmployerVideoDTO = {
+  companyId?: string;
   videoUrl?: string;
 };
 
