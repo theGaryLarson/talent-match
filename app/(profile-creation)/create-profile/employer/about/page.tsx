@@ -11,7 +11,6 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button, Progress } from 'flowbite-react';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { useSession } from 'next-auth/react';
-
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { PostEmployerAboutDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
