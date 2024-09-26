@@ -41,7 +41,6 @@ export default function Header() {
       setHeaderTW('bg-white')
     }
   }, [pathname])
-  console.log(pathname)
 
   return (
 
