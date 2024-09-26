@@ -1,6 +1,7 @@
 //employer landing page
 import BrowseByCategory from '@/app/ui/components/BrowseByCategory';
 import CategoryCard from '@/app/ui/components/CategoryCard';
+import EmployerPageBanner from '@/app/ui/components/EmployerPageBanner';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import PageBanner from '@/app/ui/components/PageBannner';
 import PhotoCardWithTitle from '@/app/ui/components/PhotoCardWithTitle';
@@ -14,8 +15,7 @@ import Link from 'next/link';
 export default function Page() {
   return (
     <>
-      <PageBanner title={"Welcome to WTWC's Tech Talent Showcase"} bg="bg-employer-hero-1"
-        buttonText='SIGN UP' buttonLink='/signin' />
+      <EmployerPageBanner/>
       <main className="mx-4 space-y-3 py-8 font-['Roboto'] tablet:mx-[150px] laptop:mx-[200px]">
         <h1 className="text-3xl font-bold">
           Unique Access to Tech Talent
