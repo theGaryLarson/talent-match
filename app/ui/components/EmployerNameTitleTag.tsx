@@ -10,7 +10,7 @@ export default function EmployerNameTitleTag(props: {
   pfp: string | undefined;
 }) {
   return (
-    <div className="flex h-[76px] w-full items-center rounded-lg border">
+    <div className="flex h-[76px] p-[16px] w-full items-center rounded-lg border">
       <Avatar imgsrc={props.pfp} scale={0.69} />
       <div className="flex w-full flex-wrap items-center justify-between p-4">
         <h2 className="font-bold">
