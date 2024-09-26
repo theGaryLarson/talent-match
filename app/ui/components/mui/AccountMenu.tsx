@@ -33,7 +33,7 @@ export default function AccountMenu() {
   };
 
   var textColor = 'text-black';
-  if (pathname == '/services/jobseekers') {
+  if (pathname == '/services/jobseekers'|| pathname == '/services/employers') {
     textColor = 'text-white';
   }
 

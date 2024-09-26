@@ -178,7 +178,7 @@ export default function CreateJobseekerProfileIntroPage() {
       phone:
         getFieldValue(fields, 'profile-creation-intro-phone-number', null),
       zipCode:
-        getFieldValue(fields, 'profile-creation-intro-zip-code', null),
+        getFieldValue(fields, 'profile-creation-intro-zip-code', "98178"),
       email:
         getFieldValue(fields, 'profile-creation-intro-email', '' ),
       introHeadline:
