@@ -65,7 +65,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
               setMissionData({
                 ...missionData,
                 companyId: result.companyId,
-                mission: result.mission,
+                mission: result.mission ?? '',
               });
             }
           } catch (error) {}

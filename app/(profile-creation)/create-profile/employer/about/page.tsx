@@ -63,7 +63,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
               setAboutData({
                 ...aboutData,
                 companyId: result.companyId,
-                aboutUs: result.aboutUs,
+                aboutUs: result.aboutUs ?? '',
               });
             }
           } catch (error) {

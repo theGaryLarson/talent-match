@@ -78,9 +78,9 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 ...disclosuresData,
                 userId: id!,
                 // companyId: result.companyId,
-                currentJobTitle: result.currentJobTitle,
-                linkedInUrl: result.linkedInUrl,
-                workAddressId: result.workAddressId,
+                currentJobTitle: result.currentJobTitle ?? '',
+                linkedInUrl: result.linkedInUrl ?? '',
+                workAddressId: result.workAddressId ?? '',
               });
             }
           } catch (error) {}
