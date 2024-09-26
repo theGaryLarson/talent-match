@@ -11,7 +11,6 @@ import { useSession } from 'next-auth/react';
 export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerCardViewDTO }) {
   const { data: session } = useSession();
   const sessionJobseekerId = session?.user?.jobseekerId;
-  console.log(sessionJobseekerId)
 
   const name: string = jobseeker?.users?.first_name + ' ' + jobseeker?.users?.last_name;
   // const pathway: string = jobseeker?.pathways?.pathway_title ?? '';

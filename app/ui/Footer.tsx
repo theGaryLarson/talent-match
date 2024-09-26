@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 export default function Footer() {
   return (
-    <div className="flex w-full flex-col flex-wrap items-center bg-primary-600 px-[16px] py-[32px] font-['Roboto'] text-white sm-tablet:flex-row sm-tablet:justify-between  ">
+    <div className="flex w-full flex-col flex-wrap items-center bg-primary-600 px-[16px] py-[32px] font-['Roboto'] text-white sm-tablet:grid sm-tablet:grid-cols-3">
       <Link href="/">
         <span className="sr-only">Tech Workforce Coalition</span>
         <Image
@@ -13,7 +13,7 @@ export default function Footer() {
         />
       </Link>
       <a
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 justify-self-center"
         href="https://www.linkedin.com/company/washington-tech-workforce-coalition"
         target="_blank"
       >
