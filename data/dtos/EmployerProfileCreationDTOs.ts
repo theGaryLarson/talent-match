@@ -132,7 +132,7 @@ export type PostEmployerVideoDTO = {
 
 export type ReadEmployerVideoDTO = {
   companyId?: string;
-  videoUrl?: string;
+  videoUrl?: string | null;
 };
 
 export type PostCompanyTestimonialsDTO = {

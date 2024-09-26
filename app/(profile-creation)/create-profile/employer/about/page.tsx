@@ -4,7 +4,6 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
-// import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
@@ -12,8 +11,8 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button, Progress } from 'flowbite-react';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { useSession } from 'next-auth/react';
+
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-// import { getFieldValue } from '@/app/lib/utils';
 import { PostEmployerAboutDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
   setAbout,
