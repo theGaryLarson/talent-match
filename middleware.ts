@@ -2,26 +2,18 @@ import { auth } from "@/auth";
 import { NextResponse } from 'next/server';
 import { Role } from "./data/dtos/UserInfoDTO";
 
-// Access tier list:
-// Admin can see any route
-// Employers can see Employer, Jobseeker, and public (None)
-// Jobseekers can see Jobseeker and public
-// None can only see public
-
 export default auth((req) => {
   const pathname = req.nextUrl.pathname;
   const userRoles = req.auth?.user?.roles || [];
   const jobseekerId = req.auth?.user?.jobseekerId;
 
-  // Routes for logged in users with jobseeker role
-  const guestRoutes = [
+  const guestRoutes = [ // Routes for logged in users with GUEST role
     "/signup",
     "/signup/jobseeker",
     "/signup/employer",
   ];
 
-  // Routes for logged in users with jobseeker role
-  const jobseekerRoutes = [
+  const jobseekerRoutes = [ // Routes for logged in users with JOBSEEKER role
     "/create-profile/jobseeker/congratulations",
     "/create-profile/jobseeker/disclosures",
     "/create-profile/jobseeker/education",
@@ -30,12 +22,12 @@ export default auth((req) => {
     "/create-profile/jobseeker/showcase",
     "/create-profile/jobseeker/work-experience",
 
-    // "/services/joblistings/[id]", // out of scope for MVP
     "/services/jobseekers/dashboard",
+
+    "/api/jobseekers/"
   ];
 
-  // Routes for logged in users with employer role
-  const employerRoutes = [
+  const employerRoutes = [ // Routes for logged in users with EMPLOYER role
     "/create-profile/employer/personal",
     "/create-profile/employer/company",
     "/create-profile/employer/professional-info",
@@ -46,136 +38,120 @@ export default auth((req) => {
     "/create-profile/employer/congratulations",
 
     "/services/employers/dashboard",
-    // "/services/joblistings/[id]", // out of scope for MVP
+    "/services/jobseekers/",
+
+    "/api/employers/",
   ];
 
-  // Routes for any public, non-logged in user
-  const publicRoutes = [
+  const publicRoutes = [ // Routes for anyone, logged in or not
+    "/",
+    "/underconstruction",
+
     "/signin",
     "/signout",
-    "/",
-    // "/pre-apprenticeship",
-    "/underconstruction",
+
     "/services",
     "/services/employers",
     "/services/employers/faq",
     "/services/employers/dashboard/listview",
-    // "/services/joblistings", // out of scope for MVP
     "/services/jobseekers",
-    "/images/",
+
+    "/api/jobseekers/query",
+    "/api/employers/industry-sectors",
   ];
 
-  const rolesForGuest = [/*Role.ADMIN,*/ Role.GUEST]; // disable admin routing for now
-  const rolesForJobseeker = [/*Role.ADMIN,*/ Role.JOBSEEKER]; // disable admin routing for now
-  const rolesForEmployer = [/*Role.ADMIN,*/ Role.EMPLOYER]; // disable admin routing for now
+  function userIsGuest() { return userRoles.includes(Role.GUEST) /* || userRoles.includes(Role.ADMIN)*/; }
+  function userIsJobseeker() { return userRoles.includes(Role.JOBSEEKER) /* || userRoles.includes(Role.ADMIN)*/; }
+  function userIsEmployer() { return userRoles.includes(Role.EMPLOYER) /* || userRoles.includes(Role.ADMIN)*/; }
+
+  function pathIsGuestRoute() { return guestRoutes.some((route) => pathname.startsWith(route)); }
+  function pathIsJobseekerRoute() { return jobseekerRoutes.some((route) => pathname.startsWith(route)); }
+  function pathIsEmployerRoute() { return employerRoutes.some((route) => pathname.startsWith(route)); }
 
   const homeUrl = new URL("/", req.nextUrl.origin);
 
 
-  // HOME PAGE ------------
+  // HOME PAGE ------------ Always allowed
+
   if (pathname === "/") {
     return NextResponse.next();
   }
 
 
-  // SPECIFIC REDIRECTS ------------
+  // SPECIFIC REDIRECTS ------------ Handling special cases
 
-  // signout redirect again logged in guest role
-  // jobseeker register redirecting
-
-  // If you're at signout and logged out, reroute to the main page
-  if (!req.auth && pathname === "/signout") {
+  if (!req.auth && pathname === "/signout") { // If you're at signout and logged out, reroute to the main page
     return NextResponse.redirect(homeUrl);
   }
-  // If you're at signin and logged in
-  else if (req.auth && pathname === "/signin") {
-    if (userRoles.includes(Role.GUEST)){
-      // If you're signed in and haven't picked a role, you gotta
+  
+  else if (req.auth && pathname === "/signin") { // If you're at signin and logged in
+    if (userRoles.includes(Role.GUEST)) { // If you're signed in and haven't picked a role, you gotta
       return NextResponse.redirect(new URL("/signup", req.nextUrl.origin));
     }
-    // Everyone else, reroute to the main page after signin
-    else return NextResponse.redirect(homeUrl);
+    else return NextResponse.redirect(homeUrl); // Everyone else, reroute to the main page after signin
   }
 
-  // Caught someone! They wanna see a jobseeker, they gotta make an account :)
-  else if (!req.auth && pathname.startsWith("/services/jobseekers/")) {
+  else if (!req.auth && pathname.startsWith("/services/jobseekers/")) { // Caught someone! Create account to view jobseeker
     return NextResponse.redirect(new URL("/signin", req.nextUrl.origin));
   }
 
 
-  // PUBLIC ROUTING ------------
+  // PUBLIC ROUTING ------------ Any route which is always publicly accessible
 
-  // Explicitly allow public routes
-  else if (publicRoutes.includes(pathname)) {
+  else if (publicRoutes.includes(pathname)) { // Explicitly allow public routes, no wildcards or startsWith for safety
     return NextResponse.next();
   }
 
 
-  // ROLE BASED ROUTING ------------
-  // Check most permissive roles first, least permissive roles last
-  // TODO: redo these to check role first, then route. So the same route can be access by multiple roles.
+  // ROLE BASED ROUTING ------------ Check most permissive roles first, least permissive roles last
 
-  // Route checking for guest routes
-  else if (guestRoutes.some((route) => pathname.includes(route))) {
-    if (!rolesForGuest.some((role) => userRoles.includes(role))) {
-      console.log("Access denied: User does not have permission for guest routes");
-      console.log(pathname);
+  else if (userIsEmployer()) { // Route checking for employer routes
+    if (pathIsEmployerRoute()) return NextResponse.next();
+    else {
+      console.log("Access denied: Employer role does not have permission to access this route: " + pathname);
       return NextResponse.redirect(homeUrl);
     }
-    return NextResponse.next();
   }
 
-  // Route checking for jobseeker routes
-  else if (jobseekerRoutes.some((route) => pathname.includes(route))) {
-    if (!rolesForJobseeker.some((role) => userRoles.includes(role))) {
-      console.log("Access denied: User does not have permission for jobseeker route");
+  else if (userIsJobseeker()) { // Route checking for jobseeker routes
+    if (pathIsJobseekerRoute()) {
+      if (pathname.startsWith("/services/jobseekers/")) { // Jobseekers can only access their own profile
+        const requestedId = pathname.replace("/services/jobseekers/", "");
+        if (requestedId != jobseekerId) {
+          console.log("Access denied: Jobseeker can only access their own profile");
+          return NextResponse.redirect(homeUrl);
+        }
+      }
+      return NextResponse.next();
+    }
+    else {
+      console.log("Access denied: Jobseeker role does not have permission to access this route: " + pathname);
       return NextResponse.redirect(homeUrl);
     }
-    return NextResponse.next();
   }
-  // Only allow jobseekers to view their own profile, not others
-  else if (rolesForJobseeker.some((role) => userRoles.includes(role)) &&
-    pathname.startsWith("/services/jobseekers/")) {
-    const requestedId = pathname.replace("/services/jobseekers/", "");
-    console.log(requestedId + ", " + jobseekerId);
-    if (requestedId != jobseekerId) {
-      console.log("Access denied: Jobseeker can only access their own profile");
-      return NextResponse.redirect(homeUrl);
-    }
-    else return NextResponse.next();
-  }
-  // Route checking for employer routes
-  else if (employerRoutes.some((route) => pathname.includes(route) ||
-    pathname.startsWith("/services/jobseekers/"))) { // Maybe think of a better way to handle [id]'s when I've had some sleep
-    if (!rolesForEmployer.some((role) => userRoles.includes(role))) {
-      console.log("Access denied: User does not have permission for employer route");
-      return NextResponse.redirect(homeUrl);
-    }
-    return NextResponse.next();
-  }
-  // Route checking for guest routes
-  else if (guestRoutes.some((route) => pathname.includes(route))) {
-    if (!rolesForGuest.some((role) => userRoles.includes(role))) {
+
+  else if (userIsGuest()) { // Route checking for guest routes
+    if (pathIsGuestRoute()) return NextResponse.next();
+    else {
       console.log("Access denied: User does not have permission for guest route");
       return NextResponse.redirect(homeUrl);
     }
-    return NextResponse.next();
   }
 
-  // FAILED ALL CHECKS, REDIRECT HOME ------------
-  // Do not pass GO, do not collect $200
+  // FAILED ALL CHECKS, REDIRECT HOME ------------ Do not pass GO, do not collect $200
   else {
-    console.log("Access denied: This page is not public - " + pathname);
+    console.log("Access denied: User's role does not have permission to access - " + pathname);
     return NextResponse.redirect(homeUrl);
   }
 });
 
 /* Match all request paths except for the ones starting with:
- * - api (API routes)
+ * - api/auth (all auth routes are allowed)
  * - _next/static (static files)
  * - _next/image (image optimization files)
+ * - images (...images. what did you expect?)
  * - favicon.ico, sitemap.xml, robots.txt (metadata files)
  */
 export const config = { // TODO: route guard the API...
-  matcher: ["/((?!api|_next/static|_next/image|images|favicon.ico).*)"],
+  matcher: ["/((?!api/auth|_next/static|_next/image|images|favicon.ico).*)"],
 };
