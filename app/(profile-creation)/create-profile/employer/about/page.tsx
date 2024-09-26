@@ -20,7 +20,7 @@ import {
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
-const formNamePrefix = 'profile-creation-company-about-';
+const formNamePrefix = 'profile-creation-company-';
 
 export default function CreateEmployerCompanyInfoAboutPage() {
   const aboutStoreData = useSelector(
@@ -137,7 +137,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
           <div className="profile-form-grid">
             <fieldset>
               <TextareaWithLabel
-                id="profile-creation-company-about"
+                id="profile-creation-company-aboutUs"
                 placeholder="About your company"
                 rows="16"
                 onChange={handleFieldChange}

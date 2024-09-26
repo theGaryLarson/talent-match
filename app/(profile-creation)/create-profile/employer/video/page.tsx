@@ -17,7 +17,7 @@ import {
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
-const formNamePrefix = 'profile-creation-company-video-';
+const formNamePrefix = 'profile-creation-company-';
 
 export default function CreateJobseekerProfileIntroPage() {
   const videoStoreData = useSelector(
@@ -153,7 +153,7 @@ export default function CreateJobseekerProfileIntroPage() {
           <div className="profile-form-grid md:grid-cols-2">
             <fieldset>
               <InputTextWithLabel
-                id="profile-creation-company-video"
+                id="profile-creation-company-videoUrl"
                 placeholder="Youtube link url"
                 onChange={handleFieldChange}
                 value={videoData.videoUrl}
