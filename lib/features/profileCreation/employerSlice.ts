@@ -39,7 +39,6 @@ export const initialState: EmployerState = {
     industrySectorId: null,
     industrySectorTitle: null,
     companyName: '',
-    // REVIEW: Should just import PostAddressDTO?
     companyAddresses: null,
     logoUrl: null,
     aboutUs: null, //ABOUT
