@@ -5,7 +5,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import '@/app/ui/global.css';
 import '@/app/ui/profile-creation.css';
 import { inter } from '@/app/ui/fonts';
-import CFAProfileCreationHeader from '@/app/ui/CFAProfileCreationHeader';
+import CFAProfileCreationHeader from '@/app/ui/ProfileCreationHeader';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 // REVIEW: You can locate the store in the layout component if all the routes using that layout need the store. 
