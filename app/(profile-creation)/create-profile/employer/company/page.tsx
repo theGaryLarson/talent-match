@@ -31,7 +31,6 @@ import {
 import _ from 'lodash';
 
 const formNamePrefix = 'profile-creation-company-';
-import { getFieldValue } from '@/app/lib/utils';
 
 export default function CreateEmployerCompanyInfoPage() {
   const companyStoreData = useSelector(
@@ -90,7 +89,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 companyData.industrySectorTitle =
                   fetchedData.industrySectorTitle;
                 companyData.companyName = fetchedData.companyName; //
-                // companyData.companyAddresses = fetchedData.companyAddresses;
+                companyData.companyAddresses = fetchedData.companyAddresses; // FYI Company Locations (by zip code) will be added here
                 companyData.logoUrl = fetchedData.logoUrl; //
                 companyData.aboutUs = fetchedData.aboutUs;
                 companyData.companyEmail = fetchedData.companyEmail; //

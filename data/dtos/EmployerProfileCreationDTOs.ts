@@ -56,7 +56,7 @@ export type ReadAddressDTO = {
   county?: string | null;
   lat?: string | null;
   lon?: string | null;
-};
+} | null;
 
 export type PostAddressDTO = {
   zipCode: string;
@@ -89,7 +89,7 @@ export type ReadCompanyInfoDTO = {
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  // companyAddresses?: ReadAddressDTO[];
+  companyAddresses?: ReadAddressDTO[] | null;
   logoUrl?: string | null;
   aboutUs: string;
   companyEmail: string;
@@ -103,6 +103,36 @@ export type ReadCompanyInfoDTO = {
   employeeCount: string;
   estimatedAnnualHires: string;
   isApproved: boolean;
+};
+
+export type PostEmployerAboutDTO = {
+  companyId: string;
+  aboutUs: string;
+};
+
+export type ReadEmployerAboutDTO = {
+  companyId?: string;
+  aboutUs?: string | null;
+};
+
+export type PostEmployerMissionDTO = {
+  companyId: string;
+  mission: string;
+};
+
+export type ReadEmployerMissionDTO = {
+  companyId?: string;
+  mission?: string | null;
+};
+
+export type PostEmployerVideoDTO = {
+  companyId: string;
+  videoUrl: string;
+};
+
+export type ReadEmployerVideoDTO = {
+  companyId?: string;
+  videoUrl?: string | null;
 };
 
 export type PostCompanyTestimonialsDTO = {
