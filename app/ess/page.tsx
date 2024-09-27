@@ -9,7 +9,7 @@ export default async function Home() {
       <Container maxWidth="xl">
         <Box sx={{ marginTop: 2, '& > *:not(:last-child)': { marginBottom: 2 } }}>
           <Typography variant="h6" sx={{ color: 'primary.main' }}>
-            Your ultimate resource for discovering and navigating high-demand IT career paths. Whether you're a student or an early-career professional, this portal helps you explore, plan, and pursue opportunities in the IT Industry.
+            Your ultimate resource for discovering and navigating high-demand IT career paths. Whether you&apos;re a student or an early-career professional, this portal helps you explore, plan, and pursue opportunities in the IT Industry.
           </Typography>
           <Typography variant="h4" gutterBottom>
             Explore IT Career Pathways
