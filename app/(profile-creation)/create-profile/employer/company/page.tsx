@@ -21,6 +21,7 @@ import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import {
+  PostAddressDTO,
   PostCompanyInfoDTO,
   ReadCompanyInfoDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
@@ -80,7 +81,9 @@ export default function CreateEmployerCompanyInfoPage() {
                   .result.loadIntroPage;
                 console.log(fetchedData);
                 // REVIEW: update session properties, to pass in company id which we currently are not getting, should go in handlesubmit so it will be updated on next load
-
+                const companyZips: PostAddressDTO[] | null = fetchedData?.companyAddresses?.map ( addr => ({
+                  zipCode: addr!.zipCode
+                } )) || null
                 // Set all normal input data here with fetched data
                 companyData.userId = id ?? '';
                 companyData.employerId = employerId ?? '';
@@ -89,7 +92,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 companyData.industrySectorTitle =
                   fetchedData.industrySectorTitle;
                 companyData.companyName = fetchedData.companyName; //
-                companyData.companyAddresses = fetchedData.companyAddresses; // FYI Company Locations (by zip code) will be added here
+                companyData.companyAddresses = companyZips ?? undefined;
                 companyData.logoUrl = fetchedData.logoUrl; //
                 companyData.aboutUs = fetchedData.aboutUs;
                 companyData.companyEmail = fetchedData.companyEmail; //
@@ -170,8 +173,10 @@ export default function CreateEmployerCompanyInfoPage() {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
     if (companyData.hasOwnProperty(fieldName)) {
-      companyData[fieldName as keyof PostCompanyInfoDTO] = value;
-      setCompanyData({ ...companyData });
+
+      setCompanyData({ ...companyData,
+        [fieldName]: value
+      });
     }
   };
 
