@@ -83,7 +83,7 @@ export default auth((req) => {
   if (!req.auth && pathname === "/signout") { // If you're at signout and logged out, reroute to the main page
     return NextResponse.redirect(homeUrl);
   }
-  
+
   else if (req.auth && pathname === "/signin") { // If you're at signin and logged in
     if (userRoles.includes(Role.GUEST)) { // If you're signed in and haven't picked a role, you gotta
       return NextResponse.redirect(new URL("/signup", req.nextUrl.origin));
@@ -153,5 +153,5 @@ export default auth((req) => {
  * - favicon.ico, sitemap.xml, robots.txt (metadata files)
  */
 export const config = { // TODO: route guard the API...
-  matcher: ["/((?!api/auth|_next/static|_next/image|images|favicon.ico).*)"],
+  matcher: ["/((?!api/auth|_next/static|_next/image|images|favicon.ico|ess).*)"],
 };
