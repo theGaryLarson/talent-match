@@ -10,8 +10,8 @@ export default function TCPortalFunctionsFold() {
   ]
   const Subtitle = [
     'Our searchable database quickly connects you with qualified candidates who match your specific needs.',
-    '',
-    ''
+    'Uncover hidden tech talent, assess their fit, and quickly find the perfect match for your team—all in one place.',
+    'Discover a diverse pool of talented candidates from various backgrounds and experiences, ready to contribute unique perspectives to your team'
   ]
   return (
     <div>
@@ -23,9 +23,9 @@ export default function TCPortalFunctionsFold() {
           Portal
         </span>
       </div>
+      
       <div className="text-center font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-[#0f1728]">
-        Our searchable database quickly connects you with qualified candidates
-        who match your specific needs.
+       {Subtitle.filter((text, i)=>i==index)}
       </div>
       <div className='flex items center gap-4'>
       {tabs.map((tab, i) => (
