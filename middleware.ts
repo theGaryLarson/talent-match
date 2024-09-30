@@ -24,7 +24,11 @@ export default auth((req) => {
 
     "/services/jobseekers/dashboard",
 
-    "/api/jobseekers/"
+    "/api/jobseekers/",
+
+    "/api/edu-providers/", //fixme: had to add so jobseeker can see list of colleges in TextFieldAutoComplete component
+    "/api/skills/",  //fixme: had to add so jobseeker can see list of skills in TextFieldAutoComplete component
+    "/api/employers/technology-areas" //fixme: had to add so jobseeker can see list of tech-areas in TextFieldAutoComplete component
   ];
 
   const employerRoutes = [ // Routes for logged in users with EMPLOYER role
