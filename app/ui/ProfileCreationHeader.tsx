@@ -12,7 +12,6 @@ export default function ProfileCreationHeader() {
     : '/services/jobseekers/dashboard';
 
   return (
-    <SessionProvider session={session}>
       <header className="bg-white">
         <nav
           className="mx-auto flex items-center justify-between p-6 laptop:px-8"
@@ -41,6 +40,5 @@ export default function ProfileCreationHeader() {
           </div>
         </nav>
       </header>
-    </SessionProvider>
   );
 }
