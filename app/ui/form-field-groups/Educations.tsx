@@ -10,7 +10,6 @@ import {
   EducationLevel,
   PreAEduSystem,
   JsEducationInfoDTO,
-  GradePointAverage,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { edu_providers, educators, provider_programs } from '@prisma/client';
 import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
@@ -60,7 +59,7 @@ export interface EducationData {
   // [classMinor]?: string | null,
   [classPreAppEdSystem]?: PreAEduSystem | null;
   [classDescription]?: string | null;
-  [classGPA]?: GradePointAverage | null;
+  [classGPA]?: string | null;
   [classIsTechDegree]?: boolean;
 }
 
