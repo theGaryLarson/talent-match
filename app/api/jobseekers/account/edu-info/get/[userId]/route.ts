@@ -5,7 +5,7 @@ import {
     HighestDegreeType,
     EducationLevel,
     JsEducationInfoDTO,
-    JsEducationPageDTO, ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem, GradePointAverage
+    JsEducationPageDTO, ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {mapToEnum, mapToEnumOrThrow} from "@/app/lib/utils";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
