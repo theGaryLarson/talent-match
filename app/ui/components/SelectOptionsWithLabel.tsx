@@ -18,7 +18,7 @@ interface ManagedValue {
 
 interface DefaultValue {
   value?: never;
-  defaultValue: string | number;
+  defaultValue?: string | number;
 }
 
 export default function SelectOptionsWithLabel({
