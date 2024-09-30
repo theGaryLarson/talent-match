@@ -6,6 +6,9 @@ export default defineConfig({
     plugins: [react()],
     test: {
         environment: 'jsdom',
+        coverage: {
+            reporter: ['cobertura', 'text'],
+        },
     },
     resolve: {
         alias: {
