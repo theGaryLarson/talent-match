@@ -17,7 +17,6 @@ import InternshipExperiences, {
 import { JsWorkExpDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { initializeForm } from '@/lib/features/profileCreation/formSlice';
 
 interface Data {
   yearsWorkExperience: string | number;
