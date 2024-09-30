@@ -1,10 +1,10 @@
-import { RootState } from '@/lib/store';
+// import { RootState } from '@/lib/store';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
 const StateViewer = () => {
-    const formState = useSelector((state: RootState) => state.form);
-
+    // const formState = useSelector((state: RootState) => state.form);
+    const formState = null
     return (
         <pre>{JSON.stringify(formState, null, 2)}</pre>
     );
