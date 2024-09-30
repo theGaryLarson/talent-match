@@ -41,7 +41,7 @@ export function defaultWorkExperienceData(): WorkExperienceData {
     [classCompanyTechArea]: { id: '', title: '' },
     [classTitle]: '',
     [classStarts]: dayjs(null),
-    [classEnds]: dayjs(null),
+    [classEnds]: null,
     [classCurrent]: false,
     [classExperience]: '',
   };
