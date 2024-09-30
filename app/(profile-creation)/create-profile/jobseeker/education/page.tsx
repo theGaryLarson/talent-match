@@ -200,12 +200,12 @@ export default function CreateJobseekerProfileEducationPage() {
       setResponse(data);
       console.log(JSON.stringify(data, null, 2));
       // Update session with new jobseekerId
-      if (session) {
-        await updateSessionProperties({
-          jobseekerId: data.result.jobseekerId,
-        });
-        console.log('Session after update:', await getSession());
-      }
+      // if (session) {
+      //   await updateSessionProperties({
+      //     jobseekerId: data.result.jobseekerId,
+      //   });
+      //   console.log('Session after update:', await getSession());
+      // }
 
       router.push('/create-profile/jobseeker/work-experience');
     } catch (err: any) {

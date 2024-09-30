@@ -14,7 +14,7 @@ import Link from 'next/link';
 export default function Page() {
   return (
     <>
-      <PageBanner title={"Welcome to WTWC's Tech Talent Showcase"} bg="bg-employer-hero-1"
+      <PageBanner title={"Welcome to TWC's Tech Talent Showcase"} bg="bg-employer-hero-1"
         buttonText='SIGN UP' buttonLink='/signin' />
       <main className="mx-4 space-y-3 py-8 font-['Roboto'] tablet:mx-[150px] laptop:mx-[200px]">
         <h1 className="text-3xl font-bold">
