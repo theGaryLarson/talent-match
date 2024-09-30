@@ -8,13 +8,9 @@ import { Button } from 'flowbite-react';
 import {
   CertDTO,
   HighestDegreeType,
-  EducationLevel,
   JsEducationInfoDTO,
   JsEducationPageDTO,
   ProjectExpDTO,
-  PreAEduSystem,
-  CollegeDegreeType,
-  GradePointAverage,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
