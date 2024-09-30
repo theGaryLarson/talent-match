@@ -3,7 +3,7 @@ import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { PrismaClient } from '@prisma/client';
 import {
   CompanyInfoSummaryDTO,
-  PostEmployerWorkDTO,
+  PostEmployerWorkDTO, ReadAddressDTO,
   ReadEmployerWorkDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
@@ -39,6 +39,7 @@ export async function POST(request: Request) {
         job_title: true,
         linkedin_url: true,
         is_verified_employee: true,
+        work_address_id: true,
         companies: {
           select: {
             company_id: true,
@@ -46,18 +47,17 @@ export async function POST(request: Request) {
             company_logo_url: true,
             is_approved: true,
             company_addresses: {
-              where: {
-                company_address_id: addressId,
-              },
               select: {
                 company_address_id: true,
                 locationData: {
                   select: {
                     city: true,
                     state: true,
+                    stateCode: true,
+                    county: true,
                     zip: true,
                   }
-                }
+                },
               },
             },
           },
@@ -77,11 +77,13 @@ export async function POST(request: Request) {
       isVerifiedEmployee: upsertedEmployer.is_verified_employee,
       companyAddress: companyAddressExists ? {
         addressId:
-          upsertedEmployer?.companies?.company_addresses?.[0]?.company_address_id,
-        city: upsertedEmployer?.companies?.company_addresses?.[0]?.locationData.city,
-        state: upsertedEmployer?.companies?.company_addresses?.[0]?.locationData.state,
-        zipCode: upsertedEmployer?.companies?.company_addresses?.[0]?.locationData.zip,
-      } : undefined,
+          upsertedEmployer?.companies?.company_addresses[0].company_address_id,
+        city: upsertedEmployer?.companies?.company_addresses[0].locationData.city,
+        state: upsertedEmployer?.companies?.company_addresses[0].locationData.state,
+        stateCode: upsertedEmployer.companies?.company_addresses[0].locationData.stateCode,
+        zipCode: upsertedEmployer?.companies?.company_addresses[0].locationData.zip,
+        county: upsertedEmployer.companies?.company_addresses[0].locationData.county,
+      } as ReadAddressDTO : undefined,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
