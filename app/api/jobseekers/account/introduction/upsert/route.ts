@@ -1,14 +1,16 @@
 import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import {JsIntroDTO, JsIntroPostDTO} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import {formatPhoneE164} from "@/app/lib/utils";
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
+    let session = await auth();
+    const jobseekerId = session?.user.jobseekerId!;
     try {
         const body: JsIntroPostDTO = await request.json();
 
@@ -78,8 +80,7 @@ export async function POST(request: Request) {
                 select: {jobseeker_id: true, targeted_pathway: true, is_enrolled_ed_program: true}
             });
 
-            const jobseeker_id = js?.jobseeker_id || uuidv4();
-
+            const jobseeker_id = jobseekerId;
             const isEnrolledInCollege = js?.is_enrolled_ed_program || false;
 
             const jobseeker = await prisma.jobseekers.upsert({

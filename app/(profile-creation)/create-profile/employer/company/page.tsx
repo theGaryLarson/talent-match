@@ -201,8 +201,8 @@ export default function CreateEmployerCompanyInfoPage() {
       newCompanyData.companyName = companyObject;
     }
 
-    // newCompanyData.companyId = companyId!;
-    // newCompanyData.employerId = employerId!;
+      newCompanyData.employerId = session?.user.employerId!;
+      // newCompanyData.companyId = companyId!;
     if (industry) {
       newCompanyData.industrySectorId = industry.industry_sector_id;
       newCompanyData.industrySectorTitle = industry.sector_title;

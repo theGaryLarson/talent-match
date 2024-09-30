@@ -11,6 +11,8 @@ export default auth((req) => {
     "/signup",
     "/signup/jobseeker",
     "/signup/employer",
+
+    "/api/users/",
   ];
 
   const jobseekerRoutes = [ // Routes for logged in users with JOBSEEKER role
@@ -112,7 +114,7 @@ export default auth((req) => {
   else if (userIsEmployer()) { // Route checking for employer routes
     if (pathIsEmployerRoute()) return NextResponse.next();
     else {
-      console.log("Access denied: Employer role does not have permission to access this route: " + pathname);
+      console.log("Access denied: Employer role does not have permission to access - " + pathname);
       return NextResponse.redirect(homeUrl);
     }
   }
@@ -129,7 +131,7 @@ export default auth((req) => {
       return NextResponse.next();
     }
     else {
-      console.log("Access denied: Jobseeker role does not have permission to access this route: " + pathname);
+      console.log("Access denied: Jobseeker role does not have permission to access - " + pathname);
       return NextResponse.redirect(homeUrl);
     }
   }
@@ -137,7 +139,7 @@ export default auth((req) => {
   else if (userIsGuest()) { // Route checking for guest routes
     if (pathIsGuestRoute()) return NextResponse.next();
     else {
-      console.log("Access denied: User does not have permission for guest route");
+      console.log("Access denied: User does not have permission to access - " + pathname);
       return NextResponse.redirect(homeUrl);
     }
   }
