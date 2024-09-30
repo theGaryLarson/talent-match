@@ -102,20 +102,20 @@ export enum HighSchoolDegreeType {
 
 // fixme: My thoughts are this could just be a number entry constrained between 0.0 and 4.0
 //  Also, the percentage thresholds and letter grading mapping to GPA vary from institution to institution.
-export enum GradePointAverage {
-    APlus =  "A+\t97-100%\t4.0",
-    A =      "A\t93-96%\t4.0",
-    AMinus = "A-\t90-92%\t3.7",
-    BPlus =  "B+\t87-89%\t3.3",
-    B =      "B\t83-86%\t3.0",
-    BMinus = "B-\t80-82%\t2.7",
-    CPlus =  "C+\t77-79%\t2.3",
-    C =      "C\t73-76%\t2.0",
-    CMinus = "C-\t70-72%\t1.7",
-    DPlus =  "D+\t67-69%\t1.3",
-    D =      "D\t65-66%\t1.0",
-    F =      "F\tBelow 65%\t0.0",
-}
+// export enum GradePointAverage {
+//     APlus =  "A+\t97-100%\t4.0",
+//     A =      "A\t93-96%\t4.0",
+//     AMinus = "A-\t90-92%\t3.7",
+//     BPlus =  "B+\t87-89%\t3.3",
+//     B =      "B\t83-86%\t3.0",
+//     BMinus = "B-\t80-82%\t2.7",
+//     CPlus =  "C+\t77-79%\t2.3",
+//     C =      "C\t73-76%\t2.0",
+//     CMinus = "C-\t70-72%\t1.7",
+//     DPlus =  "D+\t67-69%\t1.3",
+//     D =      "D\t65-66%\t1.0",
+//     F =      "F\tBelow 65%\t0.0",
+// }
 
 export enum EducationLevel {
     Unselected = "",
