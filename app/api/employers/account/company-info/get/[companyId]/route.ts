@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {
+    ReadAddressDTO,
     ReadCompanyInfoDTO,
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import parsePhoneNumberFromString from "libphonenumber-js";
@@ -96,13 +97,14 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             employeeCount: companyInfo.size,
             estimatedAnnualHires: companyInfo?.estimated_annual_hires?.toString(),
             isApproved: companyInfo.is_approved,
-            companyAddresses: updatedAddresses.map(address => ({
+            companyAddresses: updatedAddresses?.map(address => ({
                 addressId: address.company_address_id,
                 state: address.locationData.state,
+                stateCode: address.locationData.stateCode,
                 city: address.locationData.city,
                 zipCode: address.locationData.zip,
                 county: address.locationData.county
-            }))
+            })) || [] as ReadAddressDTO[]
 
         }
         return NextResponse.json({success:true, result}, {status: 200})
