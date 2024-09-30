@@ -103,9 +103,9 @@ export default function CreateEmployerCompanyInfoPage() {
                 companyData.companyPhone = fetchedData.companyPhone;
                 companyData.mission = fetchedData.mission;
                 companyData.vision = fetchedData.vision;
-                companyData.size = fetchedData.employeeCount; //companySize
+                companyData.size = fetchedData.employeeCount ?? ''; //companySize
                 companyData.estimatedAnnualHires =
-                  fetchedData.estimatedAnnualHires; //predictedHires
+                  fetchedData.estimatedAnnualHires ?? ''; //predictedHires
                 setCompanyObject({
                   companyId: fetchedData.companyId,
                   companyName: fetchedData.companyName,
@@ -118,9 +118,9 @@ export default function CreateEmployerCompanyInfoPage() {
                     fetchedData.yearFounded?.length !== 0
                       ? parseInt(fetchedData.yearFounded)
                       : null,
-                  companySize: fetchedData.employeeCount,
-                  predictedHires: fetchedData.estimatedAnnualHires,
-                  approvedCompany: fetchedData.isApproved,
+                  companySize: fetchedData.employeeCount ?? '',
+                  predictedHires: fetchedData.estimatedAnnualHires ?? '',
+                  approvedCompany: fetchedData.isApproved ?? false,
                 });
               }
             } catch (error) {
