@@ -21,7 +21,7 @@ const main = () => {
     gitCommitHash
   };
 
-  const filePath = path.resolve('', 'generatedGitInfo.json');
+  const filePath = path.resolve('app', 'generatedGitInfo.json');
   const fileContents = JSON.stringify(obj, null, 2);
 
   fs.writeFileSync(filePath, fileContents);

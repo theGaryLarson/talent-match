@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import generatedGitInfo from './../../generatedGitInfo.json';
+import generatedGitInfo from '../generatedGitInfo.json';
 export default function Footer() {
   return (
     <div className="flex w-full flex-col flex-wrap items-center bg-primary-600 px-[16px] py-[16px] font-['Roboto'] text-white sm-tablet:grid sm-tablet:grid-cols-3">
