@@ -14,16 +14,17 @@ import {
     JsEducationPageDTO,
     ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {mapToEnum, mapToEnumOrThrow} from "@/app/lib/utils";
 import {normalizeDate} from "@/app/lib/utils";
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
+    let session = await auth();
     try {
         const body: JsEducationPageDTO = await request.json();
 
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
                 }
             });
 
-            const jobseekerId: string = jobseeker?.jobseeker_id || uuidv4();
+            const jobseekerId: string = session?.user.jobseekerId!;
             const isEnrolledEdProgram = jobseeker?.is_enrolled_ed_program || false;
 
             upsertedJobseeker = await prisma.jobseekers.upsert({

@@ -14,6 +14,7 @@ import parsePhoneNumberFromString from 'libphonenumber-js';
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
+  let session = await auth();
   try {
     const body: PostCompanyInfoDTO = await request.json();
     const {
@@ -38,8 +39,6 @@ export async function POST(request: Request) {
     } = body;
     const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone);
 
-    // Ensure employer record exists for user and is connected to user.
-    const newEmployerId: string = uuidv4();
     await prisma.employers.upsert({
       where: {
         user_id: userId,
@@ -52,7 +51,7 @@ export async function POST(request: Request) {
         },
       },
       create: {
-        employer_id: employerId || newEmployerId,
+        employer_id: employerId!,
         users: {
           connect: {
             id: userId,
@@ -61,7 +60,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const newCompanyId: string = uuidv4();
+    const newCompanyId: string = session?.user.employerId!;
     const upsertedCompany = await prisma.companies.upsert({
       where: {
         company_id: companyId || newCompanyId,
