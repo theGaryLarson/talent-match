@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { auth } from '@/auth';
 import {
   PostAddressDTO,
-  PostCompanyInfoDTO,
+  PostCompanyInfoDTO, ReadAddressDTO,
   ReadCompanyInfoDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       companyId,
       industrySectorId,
       companyName,
-      // companyAddresses,
+      companyAddresses,
       logoUrl,
       aboutUs,
       companyEmail,
@@ -183,6 +183,7 @@ export async function POST(request: Request) {
           select: {
             city: true,
             state: true,
+            stateCode: true,
             zip: true,
             county: true,
           }
@@ -199,10 +200,11 @@ export async function POST(request: Request) {
       companyAddresses: updatedAddresses?.map((address) => ({
         addressId: address.company_address_id,
         state: address.locationData.state,
+        stateCode: address.locationData.stateCode,
         city: address.locationData.city,
         zipCode: address.locationData.zip,
         county: address.locationData.county,
-      })) || undefined,
+      })) || [] as ReadAddressDTO[],
       logoUrl: upsertedCompany.company_logo_url,
       aboutUs: upsertedCompany.about_us,
       companyEmail: upsertedCompany.company_email,
