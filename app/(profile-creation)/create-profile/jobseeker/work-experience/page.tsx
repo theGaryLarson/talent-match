@@ -186,7 +186,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                       techAreaObject: { id: exp.techAreaId ?? '', title: '' },
                       jobTitle: exp.jobTitle,
                       startDate: dayjs(exp.startDate),
-                      endDate: dayjs(exp.endDate),
+                      endDate: exp.endDate ? dayjs(exp.endDate) : null,
                       isCurrentJob: exp.isCurrentJob,
                       responsibilities: exp.responsibilities,
                     }),
@@ -205,7 +205,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                       techAreaObject: { id: exp.techAreaId ?? '', title: '' },
                       jobTitle: exp.jobTitle,
                       startDate: dayjs(exp.startDate),
-                      endDate: dayjs(exp.endDate),
+                      endDate: exp.endDate ? dayjs(exp.endDate) : null,
                       isCurrentJob: exp.isCurrentJob,
                       responsibilities: exp.responsibilities,
                     }),
@@ -234,7 +234,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
 
     const userId = session.user.id!;
     const jobseekerId = session.user.jobseekerId!;
-
+    devLog(data.workExperiences);
+    // TODO: industry sector and tech-area look ups being set with redux store values
     const workExperiences = data.workExperiences?.map((workExp) => ({
       workId: workExp.workId, //fixme: generate uuid on the backend or is this fine?
       jobseekerId: jobseekerId,
@@ -245,7 +246,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
       startDate: new Date(workExp.startDate!.toISOString()),
-      endDate: new Date(workExp.endDate!.toISOString()),
+      endDate: workExp.endDate ? new Date(workExp.endDate?.toISOString()) : null,
       responsibilities: workExp.responsibilities,
     }));
 
@@ -260,7 +261,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
         startDate: new Date(internshipExp.startDate!.toISOString()),
-        endDate: new Date(internshipExp.endDate!.toISOString()),
+        endDate: internshipExp.endDate ? new Date(internshipExp.endDate?.toISOString()) : null,
         responsibilities: internshipExp.responsibilities,
       }),
     );
