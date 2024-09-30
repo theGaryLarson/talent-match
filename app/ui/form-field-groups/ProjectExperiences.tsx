@@ -108,7 +108,7 @@ export default memo(function ProjectExperiences({
             type="number"
             id={classNamePrefix + projectExperience.uid + "-" + classTeamSize}
             onChange={(e) => handleChange(index, classTeamSize, e.target.value)}
-            value={projectExperience[classTeamSize]}
+            value={projectExperience[classTeamSize].toString()||''}
           >
             Team Size
           </InputTextWithLabel>
