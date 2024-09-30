@@ -48,14 +48,14 @@ export type CompanyInfoSummaryDTO = {
 };
 
 export type ReadAddressDTO = {
-  addressId?: string;
-  city?: string | null;
-  state?: string | null;
-  stateCode?: string | null;
-  zipCode?: string | null;
-  county?: string | null;
-  lat?: string | null;
-  lon?: string | null;
+  addressId: string;
+  city: string;
+  state: string;
+  stateCode: string;
+  zipCode: string;
+  county: string;
+  lat?: string;
+  lon?: string;
 } | null;
 
 export type PostAddressDTO = {
@@ -89,7 +89,7 @@ export type ReadCompanyInfoDTO = {
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  companyAddresses?: ReadAddressDTO[] | null;
+  companyAddresses?: ReadAddressDTO[];
   logoUrl?: string | null;
   aboutUs: string;
   companyEmail: string;
@@ -100,9 +100,9 @@ export type ReadCompanyInfoDTO = {
   companyPhone?: string | null;
   mission?: string | null;
   vision?: string | null;
-  employeeCount: string;
-  estimatedAnnualHires: string;
-  isApproved: boolean;
+  employeeCount?: string | null;
+  estimatedAnnualHires?: string | null;
+  isApproved?: boolean | null;
 };
 
 export type PostEmployerAboutDTO = {
