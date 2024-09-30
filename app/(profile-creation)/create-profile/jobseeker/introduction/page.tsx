@@ -25,7 +25,6 @@ import {
   initialState,
 } from '@/lib/features/profileCreation/jobseekerSlice';
 import _ from 'lodash';
-import {devLog} from "@/app/lib/utils";
 
 const formNamePrefix = 'profile-creation-intro-';
 
@@ -102,7 +101,7 @@ export default function CreateJobseekerProfileIntroPage() {
         } else {
           devLog('fetching from store');
         }
-
+        devLog(introData);
         setBirthdate(
           typeof introData.birthDate === 'string' &&
             introData.birthDate.length !== 0
@@ -222,7 +221,7 @@ export default function CreateJobseekerProfileIntroPage() {
               maxSizeMB={5}
               userId={session?.user?.id!}
               onImageUpload={handleImageUpload}
-              initialImageUrl={session?.user?.image ?? ''}
+              initialImageUrl={introData.photoUrl ?? ''}
             />
           </fieldset>
           <fieldset>
