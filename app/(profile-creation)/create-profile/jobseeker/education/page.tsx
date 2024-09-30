@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
@@ -14,7 +14,7 @@ import {
   ProjectExpDTO,
   PreAEduSystem,
   CollegeDegreeType,
-  GradePointAverage,
+  HighSchoolDegreeType,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
@@ -32,7 +32,7 @@ import ProjectExperiences, {
   defaultProjectExperienceData,
   ProjectExperienceData,
 } from '@/app/ui/form-field-groups/ProjectExperiences';
-import { devLog, mapToEnum } from '@/app/lib/utils';
+import { devLog, mapToEnum, mapToEnumOrThrow } from '@/app/lib/utils';
 import { getSession, useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { useDispatch, useSelector } from 'react-redux';
@@ -90,7 +90,7 @@ export default function CreateJobseekerProfileEducationPage() {
       }),
     ),
     educations: educationData.educations.map(
-      (education): EducationData => ({
+      (education: JsEducationInfoDTO): EducationData => ({
         id: education.id,
         edLevel: education.edLevel ?? EducationLevel.Unselected,
         edProviderObject: {
@@ -102,7 +102,9 @@ export default function CreateJobseekerProfileEducationPage() {
         isEnrolled: education.isEnrolled,
         startDate: dayjs(education.startDate),
         gradDate: dayjs(education.gradDate),
-        degreeType: education.degreeType,
+        degreeType:
+          mapToEnum(education.degreeType ?? null, HighSchoolDegreeType) ??
+          mapToEnumOrThrow(education.degreeType ?? null, CollegeDegreeType),
         programObject: {
           id: education.programId,
           title: education.programName,
@@ -116,6 +118,10 @@ export default function CreateJobseekerProfileEducationPage() {
       }),
     ),
   });
+
+  function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>)  {
+      setHighestLevelOfStudy(mapToEnumOrThrow(event.target.value, HighestDegreeType));
+  }
 
   function addNewLicense() {
     const newLicenseData = defaultLicenseData();
@@ -218,7 +224,15 @@ export default function CreateJobseekerProfileEducationPage() {
                         isEnrolled: education.isEnrolled,
                         startDate: dayjs(education.startDate),
                         gradDate: dayjs(education.gradDate),
-                        degreeType: education.degreeType,
+                        degreeType:
+                          mapToEnum(
+                            education.degreeType ?? null,
+                            HighSchoolDegreeType,
+                          ) ??
+                          mapToEnumOrThrow(
+                            education.degreeType ?? null,
+                            CollegeDegreeType,
+                          ),
                         programObject: {
                           id: education.programId,
                           title: education.programName,
@@ -409,7 +423,8 @@ export default function CreateJobseekerProfileEducationPage() {
                 )
                 .map((value) => ({ label: value, value }))}
               placeholder="Please select"
-              defaultValue=""
+              onChange={handleLevelOfStudy}
+              value={highestLevelOfStudy}
               required
             >
               What is your highest completed level of study? *
@@ -457,7 +472,7 @@ export default function CreateJobseekerProfileEducationPage() {
               Add project experience
             </Button>
           </fieldset>
-          <div className="flex profile-form-progress-btn-group">
+          <div className="profile-form-progress-btn-group flex">
             <Button
               pill
               color="gray"
