@@ -47,6 +47,8 @@ export default auth((req) => {
     "/services/jobseekers/",
 
     "/api/employers/",
+
+    "/api/companies"  //fixme: had to add so employer can see list of existing companies in TextFieldAutoComplete component
   ];
 
   const publicRoutes = [ // Routes for anyone, logged in or not
