@@ -71,6 +71,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 firstName: firstName ?? '',
                 lastName: lastName ?? '',
                 photoUrl: image ?? '',
+                phoneCountryCode: 'United States +1',
               });
             } else {
               let fetchedData: JsIntroDTO = (await response.json()).result
