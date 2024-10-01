@@ -105,9 +105,9 @@ export default function CreateJobseekerProfileIntroPage() {
         devLog(introData);
         setBirthdate(
           typeof introData.birthDate === 'string' &&
-            introData.birthDate.length !== 0
-            ? dayjs(introData.birthDate)
-            : null,
+            introData.birthDate.length === 0
+            ? null
+            : dayjs(introData.birthDate),
         );
         setResumeUrl(introData.resumeUrl ?? null);
       };
