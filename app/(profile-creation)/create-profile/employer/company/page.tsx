@@ -91,7 +91,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 // Set all normal input data here with fetched data
                 setCompanyData({
                   ...companyData,
-                  userId: companyData.userId = id ?? '',
+                  userId: session.user?.id!,
                   employerId: companyData.employerId = employerId ?? '',
                   companyId: companyData.companyId = fetchedData.companyId,
                   industrySectorId:  fetchedData.industrySectorId,
