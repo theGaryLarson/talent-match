@@ -80,7 +80,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             lastName: user?.last_name,
             birthDate: user.birthdate,
             phoneCountryCode: user.phoneCountryCode,
-            phone: user.phone ? parsePhoneNumberFromString(user.phone)?.number : null,
+            phone: user.phone ?? null,
             zipCode: user.locationData?.zip,
             state: user.locationData?.state,
             city: user.locationData?.city,
