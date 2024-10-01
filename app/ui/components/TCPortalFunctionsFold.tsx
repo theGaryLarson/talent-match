@@ -13,8 +13,25 @@ export default function TCPortalFunctionsFold() {
     'Uncover hidden tech talent, assess their fit, and quickly find the perfect match for your team—all in one place.',
     'Discover a diverse pool of talented candidates from various backgrounds and experiences, ready to contribute unique perspectives to your team'
   ]
+  const Content = [
+  "/images/CandidateSearchTabContent.png",
+    "/images/SkillsGapContent.png",
+    "/images/DiverseLocalContent.png"
+  ]
+  setTimeout(()=>{
+    if(index < 2){
+      setIndex(index+1)
+      console.log("tab")
+    }else if (index == 2){
+      setIndex(0)
+    }
+    
+  }, 4000)
+
+  //TODO: add transition on tab content
+  //TODO: Replace content images with higher quality images from figma & crop so they have the same aspect raito
   return (
-    <div>
+    <div className='flex flex-col items-center gap-[42px]'>
       <div className="text-center">
         <span className="font-['Roboto'] text-[88px] font-normal capitalize leading-[123.20px] text-[#014260]">
           Talent & Career{' '}
@@ -37,11 +54,17 @@ export default function TCPortalFunctionsFold() {
         onClick={() => setIndex(tab.index)}
       />
     ))}
-      <div id='conent'>
-        <p>{index}</p>
-      </div>
-      </div>
       
+      </div>
+      {
+        Content.map((content, i)=> {
+          if(i == index){
+            return <Image key={i} src={content} width={588} height={432} alt={''}/>
+          }else{
+            return <Image key={i} className="hidden" src={content} width={588} height={432} alt={''}/>
+          }
+        })
+      }
     </div>
   );
 }
