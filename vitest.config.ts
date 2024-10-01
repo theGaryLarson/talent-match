@@ -8,6 +8,10 @@ export default defineConfig({
         environment: 'jsdom',
         coverage: {
             reporter: ['cobertura', 'text'],
+            exclude: [
+                '.next/',
+                'data/',
+            ],
         },
     },
     resolve: {
