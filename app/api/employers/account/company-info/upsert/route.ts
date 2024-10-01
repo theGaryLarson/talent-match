@@ -37,8 +37,10 @@ export async function POST(request: Request) {
       size,
       estimatedAnnualHires,
     } = body;
-    const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone);
-
+    // const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone);
+    if (!industrySectorId) {
+      console.log("null industrySectorId")
+    }
     await prisma.employers.upsert({
       where: {
         user_id: userId,
@@ -66,7 +68,11 @@ export async function POST(request: Request) {
         company_id: companyId || newCompanyId,
       },
       update: {
-        industry_sector_id: industrySectorId,
+        industry_sectors: {
+          connect: {
+            industry_sector_id: industrySectorId!,
+          }
+        },
         company_name: companyName,
         company_logo_url: logoUrl,
         about_us: aboutUs || undefined,
@@ -74,7 +80,7 @@ export async function POST(request: Request) {
         year_founded: parseInt(yearFounded, 10),
         company_website_url: websiteUrl,
         company_video_url: videoUrl,
-        company_phone: formattedPhone,
+        company_phone: companyPhone,
         company_mission: mission,
         company_vision: vision,
         size: size,
@@ -95,7 +101,7 @@ export async function POST(request: Request) {
         year_founded: parseInt(yearFounded, 10),
         company_website_url: websiteUrl,
         company_video_url: videoUrl,
-        company_phone: formattedPhone,
+        company_phone: companyPhone,
         company_mission: mission,
         company_vision: vision,
         size: size,
