@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       photoUrl,
     } = body;
 
-    const formattedPhone = formatPhoneE164(phoneCountryCode, phone);
+    // const formattedPhone = formatPhoneE164(phoneCountryCode, phone);
     const upsertedUser = await prisma.user.upsert({
       where: {
         id: userId,
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         birthdate: birthDate ? new Date(birthDate).toISOString() : undefined,
         email: email,
         phoneCountryCode: phoneCountryCode,
-        phone: formattedPhone,
+        phone: phone,
         photo_url: photoUrl,
         updatedAt: new Date(),
       },
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         birthdate: new Date(birthDate).toISOString(),
         email: email,
         phoneCountryCode: phoneCountryCode,
-        phone: formattedPhone,
+        phone: phone,
         gender: undefined,
         race: undefined,
         photo_url: photoUrl,
@@ -62,12 +62,8 @@ export async function POST(request: Request) {
       lastName: upsertedUser.last_name,
       birthDate: upsertedUser?.birthdate?.toISOString(),
       email: upsertedUser.email,
-      phoneCountryCode: upsertedUser?.phone
-        ? parsePhoneNumberFromString(upsertedUser.phone)?.countryCallingCode
-        : null,
-      phone: upsertedUser?.phone
-        ? parsePhoneNumberFromString(upsertedUser.phone)?.number
-        : null,
+      phoneCountryCode: phoneCountryCode ?? null,
+      phone: phone ?? null,
       gender: upsertedUser.gender,
       race: upsertedUser.race,
       photoUrl: upsertedUser.photo_url,
