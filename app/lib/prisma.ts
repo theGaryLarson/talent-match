@@ -13,6 +13,7 @@ import { CompanyDropdownDTO } from '@/data/dtos/CompanyDropdownDTO';
 
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { v4 as uuidv4 } from 'uuid';
+import {Role} from "@/data/dtos/UserInfoDTO";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -642,6 +643,7 @@ export async function getTechnologyAreas() {
   return technologyAreas;
 }
 
-export async function deleteUser(date: Date) {
+export async function deleteUser(role: Role, userId: string, date: Date) {
   // TODO: create delete user & remove jobseeker/soft-delete from api-routes
+  // jobseeker cannot be deleted if they have participated in a partner training provider program
 }
