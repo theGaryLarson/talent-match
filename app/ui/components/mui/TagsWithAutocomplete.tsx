@@ -22,6 +22,7 @@ interface Props<ValueType> {
   getTagLabel: ((option: ValueType) => string) | undefined,
   getTagLink?: ((option: ValueType) => string) | undefined,
   initialTags?: string[],
+  addNewTags?: string[],
 }
 
 export default function TagsWithAutocomplete<ValueType>({
@@ -36,6 +37,7 @@ export default function TagsWithAutocomplete<ValueType>({
   getTagLabel,
   getTagLink,
   initialTags,
+  addNewTags,
 }: Props<ValueType>) {
   const [options, setOptions] = useState<ValueType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -89,6 +91,20 @@ export default function TagsWithAutocomplete<ValueType>({
     initTags();
   }, []);
 
+  // Additively load in new tags if addNewTags prop changes
+  useEffect(() => {
+    async function getAndAddNewTags() {
+      if (Array.isArray(addNewTags) && addNewTags.length !== 0) {
+        const response = await fetch(`${apiSearchRoute}${addNewTags.map(tag => (encodeURIComponent(tag))).join(',')}`);
+        const newTagsData: ValueType[] = await response.json();
+        setSelectedTags([
+          ...selectedTags,
+          ...newTagsData
+        ]);
+      }
+    }
+    getAndAddNewTags();
+  }, [addNewTags])
 
   return (
     <Autocomplete

@@ -30,6 +30,7 @@ export default function CreateJobseekerProfileShowcasePage() {
   const [error, setError] = useState<string | null>(null);
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
+  const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
   const [portfolioUrl, setPortfolioUrl] = useState(
     showcaseData.portfolioUrl ?? '',
   );
@@ -55,9 +56,10 @@ export default function CreateJobseekerProfileShowcasePage() {
             } else {
               let fetchedData: JsShowcaseDTO = (await response.json()).result;
               showcaseData.userId = id!;
-              if (fetchedData.skills) {
+              if (fetchedData.skills.length !== 0) {
                 showcaseData.skills = fetchedData.skills;
                 setSkills(showcaseData.skills);
+                setFetchLoadedTags(showcaseData.skills);
               }
               if (fetchedData.portfolioUrl) {
                 showcaseData.portfolioUrl = fetchedData.portfolioUrl;
@@ -149,6 +151,7 @@ export default function CreateJobseekerProfileShowcasePage() {
                   }
                 }}
                 searchPlaceholder="Skill (ex: Java)"
+                addNewTags={fetchLoadedTags}
                 getTagLabel={(option: SkillDTO) => option.skill_name}
                 getTagLink={(option: SkillDTO) => option.skill_info_url}
               />

@@ -246,7 +246,9 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
       startDate: new Date(workExp.startDate!.toISOString()),
-      endDate: workExp.endDate ? new Date(workExp.endDate?.toISOString()) : null,
+      endDate: workExp.endDate
+        ? new Date(workExp.endDate?.toISOString())
+        : null,
       responsibilities: workExp.responsibilities,
     }));
 
@@ -261,7 +263,9 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
         startDate: new Date(internshipExp.startDate!.toISOString()),
-        endDate: internshipExp.endDate ? new Date(internshipExp.endDate?.toISOString()) : null,
+        endDate: internshipExp.endDate
+          ? new Date(internshipExp.endDate?.toISOString())
+          : null,
         responsibilities: internshipExp.responsibilities,
       }),
     );
@@ -397,6 +401,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     name="isAuthorizedToWorkUsa"
                     value="yes"
                     onChange={handleInputUpdate}
+                    checked={
+                      typeof data.isAuthorizedToWorkUsa === 'boolean'
+                        ? data.isAuthorizedToWorkUsa
+                        : false
+                    }
                     required
                   />{' '}
                   Yes
@@ -406,6 +415,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     name="isAuthorizedToWorkUsa"
                     value="no"
                     onChange={handleInputUpdate}
+                    checked={
+                      typeof data.isAuthorizedToWorkUsa === 'boolean'
+                        ? !data.isAuthorizedToWorkUsa
+                        : false
+                    }
                     required
                   />{' '}
                   No
@@ -424,6 +438,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     name="requiresSponsorship"
                     value="yes"
                     onChange={handleInputUpdate}
+                    checked={
+                      typeof data.requiresSponsorship === 'boolean'
+                        ? data.requiresSponsorship
+                        : false
+                    }
                     required
                   />{' '}
                   Yes
@@ -433,6 +452,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     name="requiresSponsorship"
                     value="no"
                     onChange={handleInputUpdate}
+                    checked={
+                      typeof data.requiresSponsorship === 'boolean'
+                        ? !data.requiresSponsorship
+                        : false
+                    }
                     required
                   />{' '}
                   No
