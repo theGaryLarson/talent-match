@@ -49,7 +49,7 @@ export default function CreateEmployerPersonalPage() {
 
           try {
             const response = await fetch(
-              '/api/employers/account/personal-info/get/' + id,
+              `/api/employers/account/personal-info/get/${session.user.id}`,
             );
 
             if (!response.ok) {
@@ -65,17 +65,18 @@ export default function CreateEmployerPersonalPage() {
               }));
             } else {
               let { result } = await response.json();
-              setPersonalData({
-                ...personalData,
-                userId: result.userId,
-                birthDate: result.birthDate ?? '',
-                email: email!,
-                firstName: firstName ?? '',
-                lastName: lastName ?? '',
-                phone: result.phone,
-                phoneCountryCode: result.phoneCountryCode,
-                photoUrl: image ?? '',
-              });
+              setPersonalData( (prevPersonalData) => ({
+                  ...prevPersonalData,
+                  userId: result.userId,
+                  birthDate: result.birthDate ?? '',
+                  email: email!,
+                  firstName: firstName ?? '',
+                  lastName: lastName ?? '',
+                  phone: result.phone,
+                  phoneCountryCode: result.phoneCountryCode,
+                  photoUrl: image ?? '',
+              }));
+
             }
           } catch (error) {
             // dispatch(submitFormFailure('Failed to submit the form'));
@@ -106,10 +107,10 @@ export default function CreateEmployerPersonalPage() {
     console.log('name', name, 'value', value, 'fieldName,', fieldName)
     if (personalData.hasOwnProperty(fieldName)) {
         personalData[fieldName as keyof PostEmployerPersonalDTO] = value;
-      setPersonalData({
-        ...personalData,
+      setPersonalData(prevPersonalData  => ({
+        ...prevPersonalData,
         [fieldName]: value,
-      });
+      }));
     }
   };
 
@@ -119,10 +120,10 @@ export default function CreateEmployerPersonalPage() {
             image: url,
         }).then(() => {
             setAvatarUrl(url);
-            setPersonalData({
-                ...personalData,
+            setPersonalData( prevPersonalData => ({
+                ...prevPersonalData,
                 photoUrl: url
-            })
+            }))
         }).catch((error) => console.error('Failed to update session image:', error));
     };
   const handleSubmit = async (e: FormEvent) => {
@@ -131,11 +132,11 @@ export default function CreateEmployerPersonalPage() {
       console.error('User session is not available.');
       return;
     }
-    setPersonalData({
-      ...personalData,
+    setPersonalData(prevPersonalData => ({
+      ...prevPersonalData,
       birthDate: birthdate?.toISOString() ?? '',
       photoUrl: avatarUrl,
-    });
+    }));
     devLog('personalData', personalData)
     // Extract firstName, lastName, and name from Redux state fields
 
@@ -151,14 +152,20 @@ export default function CreateEmployerPersonalPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(personalData),
+          body: JSON.stringify({
+              ...personalData,
+              birthDate: birthdate?.toISOString() ?? '',
+          }),
         },
       );
         console.log('personalData\n', JSON.stringify(personalData, null, 2));
       if (response.ok) {
         const { result } = await response.json();
 
-        dispatch(setPersonal(personalData));
+        dispatch(setPersonal({
+            ...personalData,
+            birthDate: birthdate?.toISOString() ?? '',
+        }));
 
         if (session && status === 'authenticated') {
           await updateSessionProperties({
@@ -228,7 +235,7 @@ export default function CreateEmployerPersonalPage() {
               <DatePicker
                 label="Birthdate *"
                 value={birthdate}
-                onChange={setBirthdate}
+                onChange={(newDate) => setBirthdate(newDate)}
                 className="date-picker"
               />
 
