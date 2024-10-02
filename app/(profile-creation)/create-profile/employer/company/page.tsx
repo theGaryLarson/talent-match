@@ -145,7 +145,7 @@ export default function CreateEmployerCompanyInfoPage() {
       // If companyObject is an object, access its properties
       formData = {
         userId: session?.user.id!,
-        employerId: session?.user?.employerId || undefined, // new employer record created on backend if undefined
+        employerId: session?.user.employerId!,
         companyId: companyObject?.companyId || undefined, // new company record created on backend if undefined
         industrySectorId:
           companyObject.industrySectorId ||
@@ -176,7 +176,7 @@ export default function CreateEmployerCompanyInfoPage() {
       // and set the employer session data on the following page.
       formData = {
         userId: session?.user.id!,
-        employerId: undefined, // TODO: fetch this on the following page with updateSessionProperties custom hook.
+        employerId: session?.user.employerId!,
         companyId: companyId!, // TODO: fetch this on the following page with updateSessionProperties custom hook.
         industrySectorId: industry ? industry.industry_sector_id : null,
         industrySectorTitle: industry ? industry.sector_title : null,

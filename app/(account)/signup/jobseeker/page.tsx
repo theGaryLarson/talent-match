@@ -14,6 +14,8 @@ import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { useSession } from 'next-auth/react';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { mapToEnumOrThrow } from '@/app/lib/utils';
+import { v4 as uuidv4 } from 'uuid';
+
 const vectorImgSrc = '/images/signup/jobseeker-vector.png';
 
 export default function JobseekerSignupFinishPage() {
@@ -31,7 +33,7 @@ export default function JobseekerSignupFinishPage() {
         <SignupPrompt
           vectorImgSrc={vectorImgSrc}
           prompt={
-            'Create a free WTWC account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
+            'Create a free TWC account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
           }
         />
         <section className="mx-auto w-full px-8 laptop:pt-24 ">
@@ -164,10 +166,10 @@ export default function JobseekerSignupFinishPage() {
                     role: Role.JOBSEEKER,
                   }),
                 });
-                // console.log('response:', response);
                 if (response.ok) {
                   let rolesArray = [mapToEnumOrThrow(Role.JOBSEEKER, Role)] as Role[];
                   await updateSessionProperties({
+                    jobseekerId: uuidv4(),
                     roles: rolesArray,
                   });
                   router.push('/create-profile/jobseeker/introduction');
@@ -180,7 +182,7 @@ export default function JobseekerSignupFinishPage() {
             </Button>
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
-              <p>Already have a WTWC account?</p>
+              <p>Already have a TWC account?</p>
               <Link className="text-blue-500" href="/signin">
                 Sign in
               </Link>

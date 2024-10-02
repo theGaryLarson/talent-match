@@ -1,0 +1,32 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+  displayName: 'Install dependencies'
+
+- script: |
+    npm run coverage
+    npm run test:ci
+  displayName: 'Run Vitest tests with coverage'
+
+- task: PublishCodeCoverageResults@2
+  inputs:
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+  displayName: 'Publish code coverage results'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: 'JUnit'
+    testResultsFiles: '$(System.DefaultWorkingDirectory)/reports/junit.xml'
+  displayName: 'Publish test results'

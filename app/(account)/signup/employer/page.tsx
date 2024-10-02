@@ -14,6 +14,7 @@ import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { mapToEnumOrThrow } from '@/app/lib/utils';
 import { Role } from '@/data/dtos/UserInfoDTO';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function EmployerSignUpFinish() {
   let [termsAgree, setTermsAgree] = useState(false);
@@ -28,7 +29,7 @@ export default function EmployerSignUpFinish() {
       <main className="mx-auto max-w-screen-sm-tablet overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
         <SignupPrompt
           vectorImgSrc={vectorImgSrc}
-          prompt="It's free to set up your company with WTWC. We work for YOU - providing customized solutions built within your budget to match your unique business needs. (placeholder)"
+          prompt="It's free to set up your company with TWC. We work for YOU - providing customized solutions built within your budget to match your unique business needs. (placeholder)"
         />
         <section className="mx-auto w-full px-8 laptop:pt-24 ">
           <form className="mx-auto flex flex-col gap-6 laptop:max-w-screen-sm-tablet">
@@ -85,6 +86,7 @@ export default function EmployerSignUpFinish() {
                 if (response.ok) {
                   let rolesArray = [mapToEnumOrThrow(Role.EMPLOYER, Role)] as Role[];
                   await updateSessionProperties({
+                    employerId: uuidv4(),
                     roles: rolesArray,
                   });
                   router.push('/create-profile/employer/personal');
@@ -97,7 +99,7 @@ export default function EmployerSignUpFinish() {
             </Button>
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
-              <p>Already have a WTWC account?</p>
+              <p>Already have a TWC account?</p>
               <Link className="text-blue-500" href="/signin">
                 Sign in
               </Link>

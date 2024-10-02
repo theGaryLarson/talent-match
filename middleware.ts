@@ -11,6 +11,8 @@ export default auth((req) => {
     "/signup",
     "/signup/jobseeker",
     "/signup/employer",
+
+    "/api/users/",
   ];
 
   const jobseekerRoutes = [ // Routes for logged in users with JOBSEEKER role
@@ -24,7 +26,7 @@ export default auth((req) => {
 
     "/services/jobseekers/dashboard",
 
-    "/api/jobseekers/"
+    "/api/jobseekers/",
   ];
 
   const employerRoutes = [ // Routes for logged in users with EMPLOYER role
@@ -83,7 +85,7 @@ export default auth((req) => {
   if (!req.auth && pathname === "/signout") { // If you're at signout and logged out, reroute to the main page
     return NextResponse.redirect(homeUrl);
   }
-  
+
   else if (req.auth && pathname === "/signin") { // If you're at signin and logged in
     if (userRoles.includes(Role.GUEST)) { // If you're signed in and haven't picked a role, you gotta
       return NextResponse.redirect(new URL("/signup", req.nextUrl.origin));
@@ -108,7 +110,7 @@ export default auth((req) => {
   else if (userIsEmployer()) { // Route checking for employer routes
     if (pathIsEmployerRoute()) return NextResponse.next();
     else {
-      console.log("Access denied: Employer role does not have permission to access this route: " + pathname);
+      console.log("Access denied: Employer role does not have permission to access - " + pathname);
       return NextResponse.redirect(homeUrl);
     }
   }
@@ -125,7 +127,7 @@ export default auth((req) => {
       return NextResponse.next();
     }
     else {
-      console.log("Access denied: Jobseeker role does not have permission to access this route: " + pathname);
+      console.log("Access denied: Jobseeker role does not have permission to access - " + pathname);
       return NextResponse.redirect(homeUrl);
     }
   }
@@ -133,7 +135,7 @@ export default auth((req) => {
   else if (userIsGuest()) { // Route checking for guest routes
     if (pathIsGuestRoute()) return NextResponse.next();
     else {
-      console.log("Access denied: User does not have permission for guest route");
+      console.log("Access denied: User does not have permission to access - " + pathname);
       return NextResponse.redirect(homeUrl);
     }
   }
@@ -152,6 +154,6 @@ export default auth((req) => {
  * - images (...images. what did you expect?)
  * - favicon.ico, sitemap.xml, robots.txt (metadata files)
  */
-export const config = { // TODO: route guard the API...
-  matcher: ["/((?!api/auth|_next/static|_next/image|images|favicon.ico).*)"],
+export const config = {
+  matcher: ["/((?!api/auth|_next/static|_next/image|images|favicon.ico|ess).*)"],
 };
