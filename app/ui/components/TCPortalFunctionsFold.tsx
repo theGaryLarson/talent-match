@@ -36,10 +36,10 @@ export default function TCPortalFunctionsFold() {
   return (
     <div className="flex flex-col items-center gap-[42px]">
       <div className="text-center">
-        <span className="font-['Roboto'] text-[88px] font-normal capitalize leading-[123.20px] text-[#014260]">
+        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-[#014260]">
           Talent & Career{' '}
         </span>
-        <span className="font-['Roboto'] text-[88px] font-normal capitalize leading-[123.20px] text-[#047f9c]">
+        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-[#047f9c]">
           Portal
         </span>
       </div>
@@ -80,7 +80,7 @@ function TabButton(props: {
 }) {
   return (
     <div
-      className="inline-flex h-[120px] w-[120px] flex-col items-center justify-center gap-2 rounded-2xl bg-[#f3f3f3] p-4 shadow"
+      className="inline-flex h-[120px] w-[120px] flex-col items-center justify-center gap-2 rounded-2xl bg-[#f3f3f3] p-4 shadow cursor-pointer"
       onClick={props.onClick}
     >
       <TabImage src={props.src} isSelected={props.isSelected} />
