@@ -48,7 +48,8 @@ export default auth((req) => {
 
     "/api/employers/",
 
-    "/api/companies"  //fixme: had to add so employer can see list of existing companies in TextFieldAutoComplete component
+    "/api/companies",  //fixme: had to add so employer can see list of existing companies in TextFieldAutoComplete component
+    "/api/users/avatar/upload", //fixme: had to add so employer can upload an image
   ];
 
   const publicRoutes = [ // Routes for anyone, logged in or not
