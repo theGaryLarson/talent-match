@@ -19,11 +19,12 @@ export default function Footer() {
         target="_blank"
       >
         <p>Follow Us:</p>
-        <img
+        <Image
           src={'/images/stock/LI-In-Bug.png'}
           alt={'Linkedin Link'}
           width={40}
-        ></img>
+          height={40}
+        />
       </a>
       <div className="text-center sm-tablet:text-right">
         <Link href='/underconstruction' className=" text-white underline REPLACE-BEFORE-RELEASE">Privacy Policy</Link>

@@ -24,10 +24,6 @@ const TopLevelLinks = [
   // }
 ];
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
-
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [headerTW, setHeaderTW] = useState('')
@@ -35,7 +31,7 @@ export default function Header() {
   useEffect(() => {
     // Do something here...
     setMobileMenuOpen(false)
-    if (pathname == '/services/jobseekers') {
+    if (pathname == '/services/jobseekers' || pathname == '/services/employers') {
       setHeaderTW('w-full z-10 absolute text-white')
     } else {
       setHeaderTW('bg-white')
@@ -49,7 +45,7 @@ export default function Header() {
       <nav className="mx-auto flex items-center justify-between p-4 laptop:px-8" aria-label="Global">
         <div className="flex shrink">
           {
-            pathname == '/services/jobseekers' ?
+            pathname == '/services/jobseekers'|| pathname == '/services/employers' ?
               <Link href="/">
                 <span className="sr-only">Tech Workforce Coalition</span>
                 <Image src="/images/TWC logo_White.svg" alt="Tech Workforce Coalition" width={75} height={31.8} />
@@ -167,32 +163,6 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                {/* <Disclosure as="div" className="-mx-3">
-                  {({ open }) => (
-                    <>
-                      <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7   hover:bg-gray-50">
-                        For Students
-                        <ChevronDownIcon
-                          className={classNames(open ? 'rotate-180' : '', 'h-5 w-5 flex-none')}
-                          aria-hidden="true"
-                        />
-                      </DisclosureButton>
-                      <DisclosurePanel className="mt-2 space-y-2">
-                        {[...forStudentsDropDownInfo].map((item) => (
-                          <DisclosureButton
-                            key={item.name}
-                            as={Link}
-                            href={item.href}
-                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7   hover:bg-gray-50"
-                            onClick={() => { setMobileMenuOpen(false) }}
-                          >
-                            {item.name}
-                          </DisclosureButton>
-                        ))}
-                      </DisclosurePanel>
-                    </>
-                  )}
-                </Disclosure> */}
                 {
                   TopLevelLinks.map((link) => {
                     return (
@@ -207,14 +177,6 @@ export default function Header() {
                   })
                 }
               </div>
-              {/* <div className="py-6">
-                <Link
-                  href="/signin"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7   hover:bg-gray-50"
-                >
-                  Log in/Sign up
-                </Link>
-              </div> */}
             </div>
           </div>
         </DialogPanel>
