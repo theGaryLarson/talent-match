@@ -1,6 +1,7 @@
 //employer landing page
 import BrowseByCategory from '@/app/ui/components/BrowseByCategory';
 import CategoryCard from '@/app/ui/components/CategoryCard';
+import EmployerHowItWorks from '@/app/ui/components/EmployerHowItWorks';
 import EmployerPageBanner from '@/app/ui/components/EmployerPageBanner';
 import LargeRoundedButtonCard from '@/app/ui/components/LargeRoundedButtonCard';
 import PageBanner from '@/app/ui/components/PageBannner';
@@ -19,6 +20,7 @@ export default function Page() {
       <EmployerPageBanner/>
       <main className="mx-4 space-y-3 py-8 font-['Roboto'] tablet:mx-[150px] laptop:mx-[200px]">
         <TCPortalFunctionsFold/>
+        <EmployerHowItWorks/>
       </main>
     </>
   );
