@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 export default function TCPortalFunctionsFold() {
   const [index, setIndex] = useState<number>(0);  
   const tabs = [
@@ -18,15 +18,14 @@ export default function TCPortalFunctionsFold() {
     "/images/SkillsGapContent.png",
     "/images/DiverseLocalContent.png"
   ]
-  setTimeout(()=>{
-    if(index < 2){
-      setIndex(index+1)
-      console.log("tab")
-    }else if (index == 2){
-      setIndex(0)
-    }
-    
-  }, 4000)
+  // Automatically switch tabs every 4 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIndex((prevIndex) => (prevIndex < 2 ? prevIndex + 1 : 0));
+    }, 4000);
+
+    return () => clearTimeout(timer); // Clean up the timer
+  }, [index]);
 
   //TODO: add transition on tab content
   //TODO: Replace content images with higher quality images from figma & crop so they have the same aspect raito
