@@ -225,10 +225,7 @@ export async function POST(request: Request) {
             yearFounded: upsertedCompany?.year_founded?.toString(),
             websiteUrl: upsertedCompany.company_website_url,
             videoUrl: upsertedCompany.company_video_url,
-            phoneCountryCode: upsertedCompany.company_phone
-                ? parsePhoneNumberFromString(upsertedCompany?.company_phone)
-                    ?.countryCallingCode
-                : null,
+            phoneCountryCode: null,
             companyPhone: upsertedCompany.company_phone,
             mission: upsertedCompany.company_mission,
             vision: upsertedCompany.company_vision,
