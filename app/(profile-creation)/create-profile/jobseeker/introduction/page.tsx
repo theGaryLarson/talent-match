@@ -52,11 +52,15 @@ export default function CreateJobseekerProfileIntroPage() {
   );
 
   useEffect(() => {
-    if (session?.user?.id && status === 'authenticated') {
-      const initializeFormFields = async () => {
+    if (!session?.user?.id) return;
+
+    if (status === 'authenticated') {
+
+        let dbBirthdate: string | Date | null | undefined = null;
+
+        const initializeFormFields = async () => {
         if (_.isEqual(introStoreData, initialState.introduction)) {
           const { id, firstName, lastName, email, image } = session.user;
-
           try {
             devLog('fetching fresh');
             const response = await fetch(
@@ -70,20 +74,20 @@ export default function CreateJobseekerProfileIntroPage() {
                 email: email!,
                 firstName: firstName ?? '',
                 lastName: lastName ?? '',
-                photoUrl: image ?? '',
+                photoUrl: session.user?.image ?? '',
                 phoneCountryCode: 'United States +1',
               });
             } else {
               let fetchedData: JsIntroDTO = (await response.json()).result
                 .loadIntroPage;
-
+              dbBirthdate = fetchedData.birthDate
               setIntroData({
                 ...introData,
                 userId: id!,
                 email: email!,
                 firstName: firstName ?? '',
                 lastName: lastName ?? '',
-                photoUrl: fetchedData.photoUrl ?? image ?? '',
+                photoUrl: fetchedData.photoUrl ?? session.user?.image ?? '',
                 birthDate: fetchedData.birthDate ?? '',
                 zipCode: fetchedData.zipCode ?? '',
                 city: fetchedData.city,
@@ -102,11 +106,12 @@ export default function CreateJobseekerProfileIntroPage() {
         } else {
           devLog('fetching from store');
         }
-        devLog(introData);
+        setAvatarUrl(session.user?.image ?? null)
+        devLog('dbBirthdate', dbBirthdate)
         setBirthdate(
-          typeof introData.birthDate === 'string' &&
-            introData.birthDate.length !== 0
-            ? dayjs(introData.birthDate)
+          typeof dbBirthdate === 'string' &&
+          dbBirthdate.length !== 0
+            ? dayjs(dbBirthdate)
             : null,
         );
         setResumeUrl(introData.resumeUrl ?? null);
@@ -140,6 +145,7 @@ export default function CreateJobseekerProfileIntroPage() {
   const handleResumeUpload = (url: string) => {
     // Update the local state with the uploaded image URL
     setResumeUrl(url);
+    devLog('introData', introData)
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -163,6 +169,7 @@ export default function CreateJobseekerProfileIntroPage() {
     const name = `${firstName} ${lastName}`;
 
     try {
+        devLog('updatedIntroData', updatedIntroData)
       const response = await fetch(
         '/api/jobseekers/account/introduction/upsert',
         {
