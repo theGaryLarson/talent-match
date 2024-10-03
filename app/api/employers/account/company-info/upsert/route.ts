@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const newCompanyId: string = session?.user.employerId!;
+    const newCompanyId: string = uuidv4();
     const upsertedCompany = await prisma.companies.upsert({
       where: {
         company_id: companyId || newCompanyId,
