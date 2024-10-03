@@ -61,6 +61,7 @@ export default function CreateJobseekerProfileIntroPage() {
         const initializeFormFields = async () => {
         if (_.isEqual(introStoreData, initialState.introduction)) {
           const { id, firstName, lastName, email, image } = session.user;
+
           try {
             devLog('fetching fresh');
             const response = await fetch(
@@ -145,7 +146,6 @@ export default function CreateJobseekerProfileIntroPage() {
   const handleResumeUpload = (url: string) => {
     // Update the local state with the uploaded image URL
     setResumeUrl(url);
-    devLog('introData', introData)
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -169,7 +169,6 @@ export default function CreateJobseekerProfileIntroPage() {
     const name = `${firstName} ${lastName}`;
 
     try {
-        devLog('updatedIntroData', updatedIntroData)
       const response = await fetch(
         '/api/jobseekers/account/introduction/upsert',
         {
