@@ -82,7 +82,7 @@ export default function CreateEmployerPersonalPage() {
             // dispatch(submitFormFailure('Failed to submit the form'));
           }
         } else {
-          console.log('fetching from redux store');
+          devLog('fetching from redux store');
         }
 
         setBirthdate(
@@ -91,6 +91,7 @@ export default function CreateEmployerPersonalPage() {
             ? dayjs(personalData.birthDate)
             : null,
         );
+
         setAvatarUrl(personalData.photoUrl ?? session.user?.image??'');
       }
     };
@@ -115,7 +116,7 @@ export default function CreateEmployerPersonalPage() {
   };
 
     const handleAvatarUpload = (url: string) => {
-        console.log("Uploaded Image URL:", url);
+        devLog("Uploaded Image URL:", url);
         updateSessionProperties({
             image: url,
         }).then(() => {
@@ -158,7 +159,7 @@ export default function CreateEmployerPersonalPage() {
           }),
         },
       );
-        console.log('personalData\n', JSON.stringify(personalData, null, 2));
+        devLog('personalData\n', personalData);
       if (response.ok) {
         const { result } = await response.json();
 
