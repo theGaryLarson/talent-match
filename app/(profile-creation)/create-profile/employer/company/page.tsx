@@ -22,7 +22,7 @@ import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import {
   PostAddressDTO,
-  PostCompanyInfoDTO,
+  PostCompanyInfoDTO, ReadAddressDTO,
   ReadCompanyInfoDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
@@ -60,126 +60,93 @@ export default function CreateEmployerCompanyInfoPage() {
 
   useEffect(() => {
     if (!session?.user?.id) return;
-    const initializeFormFields = async () => {
-      console.log(session);
-      if (status === 'authenticated') {
-        if (_.isEqual(companyStoreData, initialState.company)) {
 
-          console.log('fetching fresh');
-          // if companyId exists on session.user fetch all the data
-          if (session.user.companyId) {
-            try {
-              const response = await fetch(
-                `/api/employers/account/company-info/get/${session.user.companyId}`,
-              );
+    const fetchCompanyData = async (companyId: string) => {
+      try {
+        const response = await fetch(`/api/employers/account/company-info/get/${companyId}`);
 
-              if (!response.ok) {
-                const errorData = await response.json();
-                console.log('response', JSON.stringify(response, null, 2));
-                // dispatch(
-                //   submitFormFailure(errorData.error || 'Failed to submit the form'),
-                // );
-              } else {
-                let fetchedData: ReadCompanyInfoDTO = (await response.json())
-                  .result.loadIntroPage;
-                console.log(fetchedData);
-                // REVIEW: update session properties, to pass in company id which we currently are not getting, should go in handlesubmit so it will be updated on next load
-                const companyZips: PostAddressDTO[] = fetchedData?.companyAddresses?.map ( addr => ({
-                  zipCode: addr!.zipCode
-                } )) || [] as PostAddressDTO[]
-                // Set all normal input data here with fetched data
-                setCompanyData({
-                  ...companyData,
-                  userId: session.user?.id!,
-                  employerId: session?.user?.employerId!,
-                  companyId: fetchedData.companyId,
-                  industrySectorId:  fetchedData.industrySectorId,
-                  industrySectorTitle: fetchedData.industrySectorTitle,
-                  companyName: fetchedData.companyName,
-                  companyAddresses: companyZips,
-                  logoUrl: fetchedData.logoUrl,
-                  aboutUs: fetchedData.aboutUs,
-                  companyEmail: fetchedData.companyEmail,
-                  yearFounded: fetchedData.yearFounded ?? '',
-                  websiteUrl: fetchedData.websiteUrl, //companyWebsite
-                  videoUrl: fetchedData.videoUrl,
-                  phoneCountryCode: fetchedData.phoneCountryCode,
-                  companyPhone: fetchedData.companyPhone,
-                  mission: fetchedData.mission,
-                  vision: fetchedData.vision,
-                  size: fetchedData.employeeCount ?? '', //companySize
-                  estimatedAnnualHires:
-                      fetchedData.estimatedAnnualHires ?? '', //predictedHires
-                })
-                setSelectCompanyDropdownData({
-                  companyId: fetchedData.companyId,
-                  companyName: fetchedData.companyName,
-                  companyLogoUrl: fetchedData.logoUrl ?? '',
-                  industrySectorId: fetchedData.industrySectorId ?? '',
-                  companyWebsite: fetchedData.websiteUrl ?? '',
-                  companyEmail: fetchedData.companyEmail,
-                  companyPhone: fetchedData.companyPhone ?? '',
-                  yearFounded:
-                    fetchedData.yearFounded?.length !== 0
-                      ? parseInt(fetchedData.yearFounded)
-                      : null,
-                  companySize: fetchedData.employeeCount ?? '',
-                  predictedHires: fetchedData.estimatedAnnualHires ?? '',
-                  approvedCompany: fetchedData.isApproved ?? false,
-                });
-                setIndustry({
-                  industry_sector_id: fetchedData.industrySectorId!,
-                  sector_title: fetchedData.industrySectorTitle!,
-                })
-              }
-            } catch (error) {
-              // dispatch(submitFormFailure('Failed to submit the form'));
-            }
-          } else {
-            // if company does not exist set the required fields
-            setCompanyData({
-              ...companyData,
-              userId: session.user.id!,
-              employerId: session.user.employerId!,
-              companyId: undefined, // not set because it does not yet exist
-            })
-
-          }
-        } else {
-          console.log('fetching from redux store');
+        if (!response.ok) {
+          console.warn('Data fetching failed. Using initialized fields.');
+          return; // Skip updating if fetching fails
         }
 
-        // Manually set input data here
-        console.log('YearFounded -> setYearFounded L153', yearFounded)
-        setYearFounded(
-          typeof companyData.yearFounded === 'string' &&
-            companyData.yearFounded.length !== 0
-            ? dayjs(companyData.yearFounded)
-            : null,
-        );
+        const fetchedData: ReadCompanyInfoDTO = (await response.json()).result;
+        devLog('fetchedData', fetchedData)
+        const companyZips: PostAddressDTO[] = (fetchedData?.companyAddresses || [])
+            .filter((addr): addr is ReadAddressDTO => addr?.zipCode !== undefined)  // Filter out addresses with undefined zipCode
+            .map(addr => ({ zipCode: addr?.zipCode! }));
+        devLog('companyZips', companyZips)
+        const updatedCompanyData: PostCompanyInfoDTO = {
+          userId: session?.user?.id!,
+          employerId: session?.user?.employerId || undefined,
+          companyId: fetchedData.companyId || undefined,
+          industrySectorId: fetchedData.industrySectorId || undefined,
+          industrySectorTitle: fetchedData.industrySectorTitle || undefined,
+          companyName: fetchedData.companyName,
+          companyAddresses: companyZips,
+          logoUrl: fetchedData.logoUrl || undefined,
+          aboutUs: fetchedData.aboutUs || undefined,
+          companyEmail: fetchedData.companyEmail || '',
+          yearFounded: fetchedData.yearFounded || '',
+          websiteUrl: fetchedData.websiteUrl || undefined,
+          videoUrl: fetchedData.videoUrl || undefined,
+          phoneCountryCode: fetchedData.phoneCountryCode || undefined,
+          companyPhone: fetchedData.companyPhone || undefined,
+          mission: fetchedData.mission || undefined,
+          vision: fetchedData.vision || undefined,
+          size: fetchedData.employeeCount || '',
+          estimatedAnnualHires: fetchedData.estimatedAnnualHires || ''
+        };
+        devLog('updatedCompanyData', updatedCompanyData);
+        setCompanyData(prevState => ({
+          ...prevState,
+          ...updatedCompanyData
+        }));
+        devLog('setCompanyData', companyData)
+        setYearFounded(fetchedData.yearFounded ? dayjs().year(parseInt(fetchedData.yearFounded)) : null);
+        setSelectCompanyDropdownData({
+          companyId: fetchedData.companyId,
+          companyName: fetchedData.companyName,
+          companyLogoUrl: fetchedData.logoUrl || undefined,
+          industrySectorId: fetchedData.industrySectorId || undefined,
+          companyWebsite: fetchedData.websiteUrl || '',
+          yearFounded: fetchedData.yearFounded ? parseInt(fetchedData.yearFounded) : null,
+          companyEmail: fetchedData.companyEmail || '',
+          companyPhone: fetchedData.companyPhone || '',
+          companySize: fetchedData.employeeCount || '',
+          predictedHires: fetchedData.estimatedAnnualHires || '',
+          approvedCompany: fetchedData.isApproved ?? false
+        });
+
+        setIndustry({
+          industry_sector_id: fetchedData.industrySectorId || '',
+          sector_title: fetchedData.industrySectorTitle || ''
+        });
+
+      } catch (error) {
+        console.warn('Error fetching company data. Using initialized fields.');
+      }
+    };
+
+    const initializeFormFields = () => {
+      if (_.isEqual(companyStoreData, initialState.company)) {
+        if (session?.user?.companyId) {
+          devLog('session.user.companyId: ', session.user.companyId)
+          fetchCompanyData(session.user.companyId);
+        } else {
+          setCompanyId(uuidv4());
+        }
+      } else {
+        setCompanyData(companyStoreData);
+        setYearFounded(companyData.yearFounded ? dayjs(companyData.yearFounded) : null);
         setLogoUrl(companyData.logoUrl ?? null);
       }
     };
-    initializeFormFields();
 
-    // REVIEW: This portion uses companyObject (companyDropdownDTO), if company exists/selected from dropdown below fields
-    // yearfounded, logourl, companyname, companysize
-    // TODO: lines 139-150 need to be reviewed and refactored, left off here
-    if (companyData.companyId) {
-      // Company is an object, use existing companyId
-      setCompanyId(companyData.companyId ?? null);
-    } else {
-      // If company is a string (new company), generate a new company ID
-      const generatedId = uuidv4();
-      setCompanyId(generatedId);
-    }
-    // REVIEW: Gary removed employerId/setEmployerId assuming not using anymore, but should still be reviewed with Gary
-    // if (companyData.employerId !== '') {
-    //   setEmployerId(companyData.employerId);
-    // } else {
-    //   setEmployerId(uuidv4());
-    // }
+    initializeFormFields();
   }, [session?.user.id]);
+
+
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -187,7 +154,6 @@ export default function CreateEmployerCompanyInfoPage() {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
     if (companyData.hasOwnProperty(fieldName)) {
-
       setCompanyData({ ...companyData,
         [fieldName]: value
       });
@@ -196,6 +162,13 @@ export default function CreateEmployerCompanyInfoPage() {
 
   const handleImageUpload = (url: string) => {
     // Update the local state with the uploaded image URL
+    if (typeof selectCompanyDropdownData === 'object' && selectCompanyDropdownData !== null) {
+      setSelectCompanyDropdownData({
+        ...selectCompanyDropdownData,
+        companyLogoUrl: url,
+      });
+    }
+
     setLogoUrl(url);
     updateSessionProperties( {
       ...session,
@@ -254,6 +227,8 @@ export default function CreateEmployerCompanyInfoPage() {
             ...chosenCompanyData,
             userId: session.user.id,
             employerId: session.user.employerId,
+            logoUrl: chosenCompanyData.logoUrl || companyData.logoUrl || logoUrl, // couldn't find why this isn't passed. Hack fix to ensure its set...
+
           }),
         },
       );
@@ -396,7 +371,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 selectCompanyDropdownData !== null &&
                 selectCompanyDropdownData.companyLogoUrl
                   ? selectCompanyDropdownData.companyLogoUrl
-                  : (logoUrl ?? '') // fixme: use placeholder image for logo
+                  : logoUrl ?? '' // fixme: use placeholder image for logo instead of empty string ''
               }
               disabled={typeof selectCompanyDropdownData === 'object'}
             />
