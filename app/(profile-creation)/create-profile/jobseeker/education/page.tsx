@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
@@ -14,7 +14,7 @@ import {
   ProjectExpDTO,
   PreAEduSystem,
   CollegeDegreeType,
-  GradePointAverage,
+  HighSchoolDegreeType,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
@@ -32,11 +32,17 @@ import ProjectExperiences, {
   defaultProjectExperienceData,
   ProjectExperienceData,
 } from '@/app/ui/form-field-groups/ProjectExperiences';
-import { mapToEnumOrThrow } from '@/app/lib/utils';
+import { devLog, mapToEnum, mapToEnumOrThrow } from '@/app/lib/utils';
 import { getSession, useSession } from 'next-auth/react';
-
-import { initializeForm } from '@/lib/features/profileCreation/formSlice';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/lib/jobseekerStore';
+import {
+  initialState,
+  setEducation,
+} from '@/lib/features/profileCreation/jobseekerSlice';
+import dayjs, { Dayjs } from 'dayjs';
+import _ from 'lodash';
 
 interface Data {
   projectExperiences: ProjectExperienceData[];
@@ -45,16 +51,78 @@ interface Data {
 }
 
 export default function CreateJobseekerProfileEducationPage() {
-  const { data: session, update, status } = useSession(); // Use useSession hook and destructure update
-  const [data, setData] = useState<Data>({
-    projectExperiences: [],
-    licenses: [],
-    educations: [],
-  });
   const router = useRouter();
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState<string | null>(null);
+  const { data: session, update, status } = useSession(); // Use useSession hook and destructure update
   const updateSessionProperties = useUpdateSession();
+  const dispatch = useDispatch();
+  const educationStoreData = useSelector(
+    (state: RootState) => state.jobseeker.education,
+  );
+  let educationData = { ...educationStoreData };
+  const [error, setError] = useState<string | null>(null);
+
+  const [highestLevelOfStudy, setHighestLevelOfStudy] = useState(
+    educationData.highestLevelOfStudy,
+  );
+  const [data, setData] = useState<Data>({
+    projectExperiences: educationData.projects.map(
+      (project): ProjectExperienceData => ({
+        projectId: project.projectId,
+        projectTitle: project.projTitle,
+        projectRole: project.projectRole,
+        startDate: dayjs(project.startDate),
+        completionDate: dayjs(project.completionDate),
+        reference: project.repoUrl ?? '',
+        problemSolvedDescription: project.problemSolvedDescription,
+        teamSize: project.teamSize,
+        skills: project.skills,
+      }),
+    ),
+    licenses: educationData.certifications.map(
+      (cert): LicenseData => ({
+        certId: cert.certId,
+        name: cert.name,
+        issuingOrg: cert.issuingOrg,
+        credentialId: cert.credentialId ?? '',
+        credentialUrl: cert.credentialUrl ?? '',
+        issueDate: dayjs(cert.issueDate),
+        expiryDate: dayjs(cert.expiryDate),
+      }),
+    ),
+    educations: educationData.educations.map(
+      (education: JsEducationInfoDTO): EducationData => ({
+        id: education.id,
+        edLevel: education.edLevel ?? EducationLevel.Unselected,
+        edProviderObject: {
+          id: education.edProviderId ?? '',
+          name: education.edProviderName ?? '',
+        },
+        edProviderId: education.edProviderId,
+        edProviderName: education.edProviderName ?? '',
+        isEnrolled: education.isEnrolled,
+        startDate: dayjs(education.startDate),
+        gradDate: dayjs(education.gradDate),
+        degreeType:
+          mapToEnum(education.degreeType ?? null, HighSchoolDegreeType) ??
+          mapToEnumOrThrow(education.degreeType ?? null, CollegeDegreeType),
+        programObject: {
+          id: education.programId,
+          title: education.programName,
+        },
+        programName: education.programName,
+        programId: education.programId,
+        preAppEdSystem: education.preAppEdSystem,
+        description: education.description,
+        gpa: education.gpa,
+        isTechDegree: undefined,
+      }),
+    ),
+  });
+
+  function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>)  {
+      setHighestLevelOfStudy(mapToEnumOrThrow(event.target.value, HighestDegreeType));
+  }
+
   function addNewLicense() {
     const newLicenseData = defaultLicenseData();
     setData({
@@ -66,7 +134,7 @@ export default function CreateJobseekerProfileEducationPage() {
   function removeLicense(byUid: string) {
     setData({
       ...data,
-      licenses: data.licenses.filter(({ uid }) => uid !== byUid),
+      licenses: data.licenses.filter(({ certId: uid }) => uid !== byUid),
     });
   }
 
@@ -85,7 +153,7 @@ export default function CreateJobseekerProfileEducationPage() {
     setData({
       ...data,
       projectExperiences: data.projectExperiences.filter(
-        ({ uid }) => uid !== byUid,
+        ({ projectId: uid }) => uid !== byUid,
       ),
     });
   }
@@ -101,7 +169,7 @@ export default function CreateJobseekerProfileEducationPage() {
   function removeEducation(byUid: string) {
     setData({
       ...data,
-      educations: data.educations.filter(({ uid }) => uid !== byUid),
+      educations: data.educations.filter(({ id: uid }) => uid !== byUid),
     });
   }
 
@@ -112,24 +180,149 @@ export default function CreateJobseekerProfileEducationPage() {
     }));
   }, []);
 
+  useEffect(() => {
+    if (session?.user?.id && status === 'authenticated') {
+      const initializeFormFields = async () => {
+        if (_.isEqual(educationStoreData, initialState.education)) {
+          const { id, jobseekerId } = session.user;
+
+          try {
+            devLog('fetching fresh');
+            const response = await fetch(
+              '/api/jobseekers/account/edu-info/get/' + id,
+            );
+
+            if (!response.ok) {
+              educationData.userId = id!;
+              educationData.jobseekerId = jobseekerId!;
+            } else {
+              let fetchedData: JsEducationPageDTO = (await response.json())
+                .result;
+              educationData.userId = id!;
+              educationData.jobseekerId = jobseekerId!;
+              if (fetchedData.highestLevelOfStudy) {
+                educationData.highestLevelOfStudy =
+                  fetchedData.highestLevelOfStudy;
+                setHighestLevelOfStudy(educationData.highestLevelOfStudy);
+              }
+              if (fetchedData.educations) {
+                educationData.educations = fetchedData.educations;
+                setData({
+                  ...data,
+                  educations: [
+                    ...data.educations,
+                    ...educationData.educations.map(
+                      (education): EducationData => ({
+                        id: education.id,
+                        edLevel: education.edLevel ?? EducationLevel.Unselected,
+                        edProviderObject: {
+                          id: education.edProviderId ?? '',
+                          name: education.edProviderName ?? '',
+                        },
+                        edProviderId: education.edProviderId,
+                        edProviderName: education.edProviderName ?? '',
+                        isEnrolled: education.isEnrolled,
+                        startDate: dayjs(education.startDate),
+                        gradDate: dayjs(education.gradDate),
+                        degreeType:
+                          mapToEnum(
+                            education.degreeType ?? null,
+                            HighSchoolDegreeType,
+                          ) ??
+                          mapToEnumOrThrow(
+                            education.degreeType ?? null,
+                            CollegeDegreeType,
+                          ),
+                        programObject: {
+                          id: education.programId,
+                          title: education.programName,
+                        },
+                        programName: education.programName,
+                        programId: education.programId,
+                        preAppEdSystem: education.preAppEdSystem,
+                        description: education.description,
+                        gpa: education.gpa,
+                        isTechDegree: undefined,
+                      }),
+                    ),
+                  ],
+                });
+              }
+              if (fetchedData.projects) {
+                educationData.projects = fetchedData.projects;
+                setData({
+                  ...data,
+                  projectExperiences: [
+                    ...data.projectExperiences,
+                    ...educationData.projects.map(
+                      (project): ProjectExperienceData => ({
+                        projectId: project.projectId,
+                        projectTitle: project.projTitle,
+                        projectRole: project.projectRole,
+                        startDate: dayjs(project.startDate),
+                        completionDate: dayjs(project.completionDate),
+                        reference: project.repoUrl ?? '',
+                        problemSolvedDescription:
+                          project.problemSolvedDescription,
+                        teamSize: project.teamSize,
+                        skills: project.skills,
+                      }),
+                    ),
+                  ],
+                });
+              }
+              if (fetchedData.certifications) {
+                educationData.certifications = fetchedData.certifications;
+                setData({
+                  ...data,
+                  licenses: [
+                    ...data.licenses,
+                    ...educationData.certifications.map(
+                      (cert): LicenseData => ({
+                        certId: cert.certId,
+                        name: cert.name,
+                        issuingOrg: cert.issuingOrg,
+                        credentialId: cert.credentialId ?? '',
+                        credentialUrl: cert.credentialUrl ?? '',
+                        issueDate: dayjs(cert.issueDate),
+                        expiryDate: dayjs(cert.expiryDate),
+                      }),
+                    ),
+                  ],
+                });
+              }
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          devLog('fetching from store');
+        }
+      };
+
+      initializeFormFields();
+    }
+  }, [session?.user?.id]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!session || !session.user.id) {
+    if (!session?.user?.id) {
       console.error('User session is not available.');
       return;
     }
+
     const userId = session.user.id;
     const form = event.currentTarget as HTMLFormElement;
 
     const educations: JsEducationInfoDTO[] = data.educations.map(
       (ed: EducationData) => ({
-        id: ed.uid,
+        id: ed.id,
         edProviderId: ed?.edProviderObject?.id || ed?.edProviderId!,
         edLevel: ed.edLevel,
         edProviderName: ed?.edProviderObject?.name || ed?.edProviderName,
         isEnrolled: ed.isEnrolled,
-        startDate: ed.startDate?.toISOString() || '',
-        gradDate: ed.gradDate?.toISOString() || '',
+        startDate: ed.startDate?.toISOString() ?? '',
+        gradDate: ed.gradDate?.toISOString() ?? '',
         degreeType: ed.degreeType || undefined,
         programId: ed?.programObject?.id || ed?.programId!, // Note: no rel with provider_programs pulled from a separate programs table.
         programName: ed?.programObject?.title || ed.programName,
@@ -142,74 +335,68 @@ export default function CreateJobseekerProfileEducationPage() {
 
     const certifications: CertDTO[] = data.licenses.map(
       (cert: LicenseData) => ({
-        certId: cert.uid,
+        certId: cert.certId,
         name: cert.name,
         logoUrl: undefined,
-        issuingOrg: cert['issuing-org'],
-        credentialId: cert['credential-id'],
-        credentialUrl: cert['credential-url'],
-        issueDate: cert['issue-date']?.toISOString() || '',
-        expiryDate: cert['expiration-date']?.toISOString() || '',
+        issuingOrg: cert.issuingOrg,
+        credentialId: cert.credentialId,
+        credentialUrl: cert.credentialUrl,
+        issueDate: cert.issueDate?.toISOString() ?? '',
+        expiryDate: cert.expiryDate?.toISOString() ?? '',
         description: undefined,
       }),
     );
 
     const projects: ProjectExpDTO[] = data.projectExperiences.map(
       (proj: ProjectExperienceData) => ({
-        projectId: proj.uid,
-        projTitle: proj.title,
-        projectRole: proj['project-role'],
-        startDate: proj['starting-date']?.toISOString() || null,
-        completionDate: proj['completion-date']?.toISOString() || null,
-        problemSolvedDescription: proj['description'],
-        teamSize: proj['team-size'].toString(),
-        repoUrl: proj['reference-url'],
+        projectId: proj.projectId,
+        projTitle: proj.projectTitle,
+        projectRole: proj.projectRole,
+        startDate: proj.startDate?.toISOString() ?? '',
+        completionDate: proj.completionDate?.toISOString() ?? '',
+        problemSolvedDescription: proj.problemSolvedDescription,
+        teamSize: proj.teamSize,
+        repoUrl: proj.reference,
         videoDemoUrl: undefined,
-        skills: proj['skills-stack'],
+        skills: proj.skills,
       }),
     );
 
-    const formData: JsEducationPageDTO = {
+    educationData = {
+      ...educationData,
       userId: userId,
-      highestLevelOfStudy:
-        form['profile-creation-education-highest-completed'].value,
+      highestLevelOfStudy: highestLevelOfStudy,
       educations: educations,
       certifications: certifications,
       projects: projects,
     };
-    console.log(formData);
-    await handleApiCall(formData);
+
+    await handleApiCall(educationData);
   };
-  const handleApiCall = async (formData: JsEducationPageDTO) => {
+
+  const handleApiCall = async (educationData: JsEducationPageDTO) => {
     try {
-      const res = await fetch('/api/jobseekers/account/edu-info/upsert', {
+      const response = await fetch('/api/jobseekers/account/edu-info/upsert', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(educationData),
       });
 
-      if (!res.ok) {
-        const errorMessage = await res.text(); // Get the error message from the response
+      if (response.ok) {
+        const data = await response.json();
+        devLog(JSON.stringify(data, null, 2));
+
+        dispatch(setEducation(educationData));
+
+        router.push('/create-profile/jobseeker/work-experience');
+      } else {
+        const errorMessage = await response.text(); // Get the error message from the response
         setError(`Failed to save data:\n${errorMessage}`);
-        return; // Exit the function if the response is not ok
       }
-
-      const data = await res.json();
-      setResponse(data);
-      console.log(JSON.stringify(data, null, 2));
-      // Update session with new jobseekerId
-      // if (session) {
-      //   await updateSessionProperties({
-      //     jobseekerId: data.result.jobseekerId,
-      //   });
-      //   console.log('Session after update:', await getSession());
-      // }
-
-      router.push('/create-profile/jobseeker/work-experience');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (e: any) {
+      setError(`An unexpected error occurred: ${e.message}`);
     }
   };
 
@@ -236,6 +423,8 @@ export default function CreateJobseekerProfileEducationPage() {
                 )
                 .map((value) => ({ label: value, value }))}
               placeholder="Please select"
+              onChange={handleLevelOfStudy}
+              value={highestLevelOfStudy}
               required
             >
               What is your highest completed level of study? *
@@ -283,12 +472,12 @@ export default function CreateJobseekerProfileEducationPage() {
               Add project experience
             </Button>
           </fieldset>
-          <div className="flex profile-form-progress-btn-group">
+          <div className="profile-form-progress-btn-group flex">
             <Button
               pill
               color="gray"
               onClick={() => {
-                router.push('/create-profile/jobseeker/intro');
+                router.push('/create-profile/jobseeker/introduction');
               }}
             >
               Previous{' '}

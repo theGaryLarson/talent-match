@@ -39,6 +39,7 @@ export async function POST(request: Request) {
                         zip: true,
                         city: true,
                         state: true,
+                        stateCode: true,
                         county: true,
                     }
                 }
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
             addressId: newLocation.company_address_id,
             city: newLocation.locationData.city,
             state: newLocation.locationData.state,
+            stateCode: newLocation.locationData.stateCode,
             zipCode: newLocation.locationData.zip,
             county: newLocation.locationData.county,
         }

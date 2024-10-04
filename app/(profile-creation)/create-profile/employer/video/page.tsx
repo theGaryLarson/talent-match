@@ -1,101 +1,117 @@
 'use client';
 
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  addField,
-  updateField,
-  submitForm,
-  submitFormSuccess,
-  submitFormFailure,
-  FormState,
-} from '@/lib/features/profileCreation/formSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button, Progress } from 'flowbite-react';
 import { useSession } from 'next-auth/react';
-import { getFieldValue } from '@/app/lib/utils';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { PostEmployerVideoDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  setVideo,
+  initialState,
+} from '@/lib/features/profileCreation/employerSlice';
+import _ from 'lodash';
+import { devLog } from '@/app/lib/utils';
+
+const formNamePrefix = 'profile-creation-company-';
 
 export default function CreateJobseekerProfileIntroPage() {
-  const { fields, isSubmitting, error }: FormState = useSelector(
-    (state: RootState) => state.form,
+  const videoStoreData = useSelector(
+    (state: RootState) => state.employer.video,
   );
+  const [videoData, setVideoData] = useState<PostEmployerVideoDTO>({
+    ...videoStoreData,
+  });
+
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const [newFieldId, setNewFieldId] = useState('');
-  const [newFieldLabel, setNewFieldLabel] = useState('');
-  const [newFieldType, setNewFieldType] = useState<
-    'text' | 'email' | 'number' | 'select' | 'radio'
-  >('text');
-  const [newFieldValue, setNewFieldValue] = useState('');
-  const [newFieldOptions, setNewFieldOptions] = useState<
-    { value: string | number; label: string }[]
-  >([]);
   const { data: session, update, status } = useSession();
+  const updateSessionProperties = useUpdateSession();
+
+  useEffect(() => {
+    const initializeFormFields = async () => {
+      console.log('session', session);
+      if (!session?.user.id) return;
+      if (status === 'authenticated') {
+        if (_.isEqual(videoStoreData, initialState.video)) {
+          const { id, companyId, employerId } = session.user;
+
+          try {
+            const response = await fetch(
+              `/api/companies/video/get/${session.user.companyId}`,
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+            } else {
+              let { result } = await response.json();
+
+              console.log('fetchedData', result);
+              setVideoData({
+                ...videoData,
+                companyId: result.companyId,
+                videoUrl: result.video ?? '',
+              });
+            }
+          } catch (error) {}
+        } else {
+          console.log('fetching from redux store');
+        }
+      }
+    };
+    initializeFormFields();
+    devLog(videoData);
+  }, [session?.user?.id]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     console.log(name, value);
-    const field = fields.find((field) => field.id === name);
-    if (field) {
-      const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
-      dispatch(updateField({ id: field.id, value: parsedValue }));
-    } else {
-      dispatch(
-        addField({
-          id: e.target.id,
-          label: newFieldLabel,
-          value: e.target.value,
-          type: newFieldType,
-          options: newFieldOptions,
-        }),
-      );
+    const fieldName = name.substring(formNamePrefix.length);
+    if (videoData.hasOwnProperty(fieldName)) {
+      videoData[fieldName as keyof PostEmployerVideoDTO] = value;
+      setVideoData({ ...videoData });
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    dispatch(submitForm());
-
-    const formData = {
-      companyId: session?.user?.companyId,
-      videoUrl: getFieldValue(
-        fields,
-        'profile-creation-company-video',
-        '',
-      ),
-    };
+    if (!session || !session.user) {
+      console.error('User session is not available.');
+      return;
+    }
+    setVideoData({ ...videoData });
+    devLog('videoData', videoData);
 
     try {
-      const response = await fetch(
-        '/api/companies/video/update',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+      const response = await fetch('/api/companies/video/update', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify(videoData),
+      });
 
       if (response.ok) {
         const result = await response.json();
-        dispatch(submitFormSuccess());
+        dispatch(setVideo(videoData));
         router.push('/create-profile/employer/disclosures');
       } else {
         const errorData = await response.json();
-        dispatch(
-          submitFormFailure(errorData.error || 'Failed to submit the form'),
-        );
       }
-    } catch (error) {
-      dispatch(submitFormFailure('Failed to submit the form'));
-    }
+    } catch (error) {}
   };
 
   return (
@@ -137,13 +153,10 @@ export default function CreateJobseekerProfileIntroPage() {
           <div className="profile-form-grid md:grid-cols-2">
             <fieldset>
               <InputTextWithLabel
-                id="profile-creation-company-video"
+                id="profile-creation-company-videoUrl"
                 placeholder="Youtube link url"
                 onChange={handleFieldChange}
-                value={
-                  fields.find((f) => f.id === 'profile-creation-company-video')
-                    ?.value || ''
-                }
+                value={videoData.videoUrl}
                 required
               >
                 Youtube Link

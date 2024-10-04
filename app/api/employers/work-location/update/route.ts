@@ -2,7 +2,7 @@ import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {
-    CompanyInfoSummaryDTO,
+    CompanyInfoSummaryDTO, ReadAddressDTO,
     ReadEmployerWorkDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 
@@ -78,12 +78,14 @@ export async function PATCH(request: Request) {
             companyId: empWorkInfo?.companies?.company_id,
             companyName: empWorkInfo?.companies?.company_name,
             isVerifiedEmployee: empWorkInfo.is_verified_employee,
-            companyAddress: {
+            companyAddress: employerAddress ? {
                 addressId: employerAddress?.company_address_id,
                 city: employerAddress?.locationData.city,
                 state: employerAddress?.locationData.state,
+                stateCode: employerAddress?.locationData.stateCode,
+                county: employerAddress?.locationData.county,
                 zipCode: employerAddress?.locationData.zip
-            }
+            } as ReadAddressDTO : undefined
 
         }
         return NextResponse.json({success: true, result}, {status: 200})

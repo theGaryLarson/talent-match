@@ -2,16 +2,9 @@
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  addField,
-  updateField,
-  submitForm,
-  submitFormSuccess,
-  submitFormFailure,
-  FormState,
-} from '@/lib/features/profileCreation/formSlice';
+import { EmployerState } from '@/lib/features/profileCreation/employerSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
@@ -19,65 +12,89 @@ import { Button, Progress } from 'flowbite-react';
 import { Label } from 'flowbite-react';
 import { Checkbox, Typography } from '@mui/material';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
+import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
+import { CompanyAddressDropdownDTO } from '@/data/dtos/CompanyAddressDropdownDTO';
 import { useSession } from 'next-auth/react';
-import { getFieldValue } from '@/app/lib/utils';
-import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
-import {CompanyAddressDropdownDTO} from "@/data/dtos/CompanyAddressDropdownDTO";
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import { PostEmployerWorkDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  setDisclosures,
+  initialState,
+} from '@/lib/features/profileCreation/employerSlice';
+import _ from 'lodash';
+import { devLog } from '@/app/lib/utils';
+import CircularProgress from "@mui/material/CircularProgress";
+
+const formNamePrefix = 'profile-creation-company-';
 
 export default function CreateEmployerCompanyInfoDisclosurePage() {
-  const { fields, isSubmitting, error }: FormState = useSelector(
-    (state: RootState) => state.form,
+  const disclosuresStoreData = useSelector(
+    (state: RootState) => state.employer.disclosures,
   );
+  const companyStoreData = useSelector((state: RootState) => state.employer.company);
+
+  const [disclosuresData, setDisclosuresData] = useState<PostEmployerWorkDTO>({
+    ...disclosuresStoreData,
+  });
+
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const { data: session, update, status } = useSession();
+  const updateSessionProperties = useUpdateSession();
+
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
 
-  const [newFieldLabel, setNewFieldLabel] = useState('');
-  const [newFieldType, setNewFieldType] = useState<
-    'text' | 'email' | 'number' | 'select' | 'radio'
-  >('text');
-  const [newFieldOptions, setNewFieldOptions] = useState<
-    { value: string | number; label: string }[]
-  >([]);
   const [companyName, setCompanyName] = useState<string>('');
-  const [workAddress, setWorkAddress] = useState<CompanyAddressDropdownDTO | null >(null)
-  const { data: session, update, status } = useSession();
+  const [workAddress, setWorkAddress] =
+    useState<CompanyAddressDropdownDTO | null>(null);
 
   useEffect(() => {
-    if (!session?.user?.companyId) return;
-    // work around until redux state is implemented then should be able
-    // to grab company name from store.
-    const populateCompanyName = async () => {
-      try {
-        const response = await fetch(
-            `/api/companies/name/get/${session.user.companyId}`,
-            {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
+    const initializeFormFields = async () => {
+      console.log('session', session);
+      if (!session?.user?.companyId) return;
+      if (status === 'authenticated') {
+        if (_.isEqual(disclosuresStoreData, initialState.disclosures)) {
+          const { id, companyId, employerId } = session.user;
+
+          try {
+            // NOTE: @Gary it seems you were using a different route than disclosures get? I'm leaving this the same here as I'm not too sure about creating a disclosures get route
+            const response = await fetch(
+              `/api/companies/name/get/${session.user.companyId}`,
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
               },
-            },
-        );
+            );
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const { success, result } = await response.json(); // Destructure response
-
-        if (success && result) {
-          const { company_name } = result;
-          setCompanyName(company_name)
+            if (!response.ok) {
+              throw new Error(
+                `Error: ${response.status} ${response.statusText}`,
+              );
+            } else {
+              let { result } = await response.json();
+              //   setCompanyName(result.company_name);
+              // REVIEW: @Gary this section might not align correctly with the above /api/companies/name/get
+              setDisclosuresData({
+                ...disclosuresData,
+                userId: id!,
+                // companyId: result.companyId,
+                currentJobTitle: result.currentJobTitle ?? '',
+                linkedInUrl: result.linkedInUrl ?? '',
+                workAddressId: result.workAddressId ?? '',
+              });
+            }
+          } catch (error) {}
         } else {
-          console.error('Failed to fetch company name.', result);
+          console.log('fetching from redux store');
         }
-      } catch (e) {
-        console.error('Error fetching company name:', e);
       }
     };
-    populateCompanyName();
-
+    initializeFormFields();
+    devLog(disclosuresData);
   }, [session?.user?.id]);
 
   const handleFieldChange = (
@@ -85,20 +102,10 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   ) => {
     const { name, value } = e.target;
     console.log(name, value);
-    const field = fields.find((field) => field.id === name);
-    if (field) {
-      const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
-      dispatch(updateField({ id: field.id, value: parsedValue }));
-    } else {
-      dispatch(
-        addField({
-          id: e.target.id,
-          label: newFieldLabel,
-          value: e.target.value,
-          type: newFieldType,
-          options: newFieldOptions,
-        }),
-      );
+    const fieldName = name.substring(formNamePrefix.length);
+    if (disclosuresData.hasOwnProperty(fieldName)) {
+      disclosuresData[fieldName as keyof PostEmployerWorkDTO] = value;
+      setDisclosuresData({ ...disclosuresData });
     }
   };
 
@@ -107,50 +114,34 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     if (!termsAccepted) {
       setOpen(true);
     }
-    dispatch(submitForm());
 
-    const formData = {
-      employerId: session?.user?.employerId,
-
-      job_title: getFieldValue(
-        fields,
-        'profile-creation-company-job-title',
-        '',
-      ),
-      linkedin_url: getFieldValue(
-        fields,
-        'profile-creation-company-linkedin',
-        '',
-      ),
-
-      // company was already associated with employer at the employer/company page
-      // company_name: getFieldValue(fields, 'profile-creation-company-name', ''),
-      work_address_id: workAddress?.companyAddressId?? undefined,
-      hasAgreedTerms: termsAccepted,
-    };
+    if (!session || !session.user) {
+      console.error('User session is not available.');
+      return;
+    }
+    setDisclosuresData({ ...disclosuresData });
+    devLog('disclosuresData', disclosuresData);
 
     try {
-      const response = await fetch(`/api/employers/account/disclosures/update/${session?.user?.employerId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `/api/employers/account/disclosures/update/${session?.user?.employerId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(disclosuresData),
         },
-        body: JSON.stringify(formData),
-      });
+      );
 
       if (response.ok) {
         const result = await response.json();
-        dispatch(submitFormSuccess());
+        dispatch(setDisclosures(disclosuresData));
         router.push('/create-profile/employer/congratulations');
       } else {
         const errorData = await response.json();
-        dispatch(
-          submitFormFailure(errorData.error || 'Failed to submit the form'),
-        );
       }
-    } catch (error) {
-      dispatch(submitFormFailure('Failed to submit the form'));
-    }
+    } catch (error) {}
   };
 
   const handleClose = (
@@ -196,58 +187,53 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 id="profile-creation-company-name"
                 placeholder="Automated"
                 onChange={handleFieldChange}
-                value={companyName}
-                disabled={!!companyName}
+                value={companyStoreData.companyName}
+                disabled={!!companyStoreData.companyName}
                 required
               >
                 Company Name
               </InputTextWithLabel>
               <h2>Last thing...</h2>
               <InputTextWithLabel
-                id="profile-creation-company-job-title"
+                id="profile-creation-company-currentJobTitle"
                 placeholder="Job Title"
                 onChange={handleFieldChange}
-                value={getFieldValue(
-                  fields,
-                  'profile-creation-company-job-title',
-                  '',
-                )}
+                value={disclosuresData.currentJobTitle}
                 required
               >
                 Job Title *
               </InputTextWithLabel>
-              <SelectAutoload
-                  id="profile-creation-work-address"
-                  apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
-                  label="Work Address *"
-                  getOptionLabel={(option: CompanyAddressDropdownDTO) =>
-                      `${option.city}, ${option.stateCode} ${option.zipCode}`
-                  }
-                  getOptionFromLabel={(
-                      options: CompanyAddressDropdownDTO[],
-                      label: string,
-                  ) => {
-                    // Match based on the label (formatted) or a unique identifier like companyAddressId
-                    // For simplicity, we map by `companyAddressId` or any unique identifier instead of label
-                    const matchedOption = options.find(
-                        (item) =>
-                            `${item.city}, ${item.stateCode} ${item.zipCode}` === label
-                    );
-                    return (
-                        matchedOption || {
-                          companyAddressId: '',
-                          city: '',
-                          stateCode: '',
-                          zipCode: ''
+              <div>
+                {status === 'loading' ? (
+                    <CircularProgress/>  // Show a loader until the session is loaded
+                ) : (
+                    <SelectAutoload
+                        id="profile-creation-workAddressId"
+                        apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
+                        label="Work Address *"
+                        getOptionLabel={(option: CompanyAddressDropdownDTO) =>
+                            `${option.city}, ${option.stateCode} ${option.zipCode}`
                         }
-                    );
-                  }}
-                  placeholder="Your work location"
-                  value={workAddress}
-                  onChange={(val) => setWorkAddress(val)}
-                  required
-                  loadingText="Retrieving work addresses..."
-              />
+                        getOptionFromLabel={(options: CompanyAddressDropdownDTO[], label: string) => {
+                          const matchedOption = options.find(
+                              (item) => `${item.city}, ${item.stateCode} ${item.zipCode}` === label,
+                          );
+                          return (
+                              matchedOption || {
+                                companyAddressId: '',
+                                city: '',
+                                stateCode: '',
+                                zipCode: '',
+                              }
+                          );
+                        }}
+                        placeholder="Your work location"
+                        value={workAddress}
+                        onChange={(val) => setWorkAddress(val)}
+                        required
+                    />
+                )}
+              </div>
               {/*<InputTextWithLabel*/}
               {/*  id="profile-creation-company-work-location"*/}
               {/*  placeholder="98362"*/}
@@ -262,15 +248,11 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               {/*  Work Location Zip Code **/}
               {/*</InputTextWithLabel>*/}
               <InputTextWithLabel
-                id="profile-creation-company-linkedin"
-                placeholder="www.linkedin.com/username"
-                onChange={handleFieldChange}
-                value={getFieldValue(
-                  fields,
-                  'profile-creation-company-linkedin',
-                  '',
-                )}
-                required
+                  id="profile-creation-company-linkedInUrl"
+                  placeholder="www.linkedin.com/username"
+                  onChange={handleFieldChange}
+                  value={disclosuresData.linkedInUrl}
+                  required
               >
                 LinkedIn URL *
               </InputTextWithLabel>
@@ -282,7 +264,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           </legend>
           <Label className="block">
             <Checkbox
-              name="profile-creation-disclosures-require-terms"
+                name="profile-creation-disclosures-require-terms"
               checked={termsAccepted}
               onChange={(event) => setTermsAccepted(event.target.checked)}
             />{' '}

@@ -13,6 +13,7 @@ import { CompanyDropdownDTO } from '@/data/dtos/CompanyDropdownDTO';
 
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { v4 as uuidv4 } from 'uuid';
+import {Role} from "@/data/dtos/UserInfoDTO";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -553,69 +554,69 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
   return empView;
 }
 
-// intended for use with the search bar. Currently, supports searching by combinations of skills and work experience.
-// If skills is [] or contains empty strings [''] will disregard and only focus on work experience.
-// If work experience is not a query parameter it will be set to 0
-export async function getFilteredJobSeekerCardView(
-  skills: string[] = [],
-  yearsWorkExp: number = 0,
-) {
-  // Normalize skills array
-  const normalizedSkills = skills.filter(
-    (skill) => skill && skill.trim() !== '',
-  );
-  // TODO: add other options from Jobseeker ListView
-  // Construct the AND conditions array
-  const andConditions: any[] = [];
-
-  // If skills are provided, add the OR condition for skills
-  if (normalizedSkills.length > 0) {
-    const orConditions = [
-      {
-        jobseeker_has_skills: {
-          some: {
-            skills: {
-              skill_name: {
-                in: normalizedSkills,
-              },
-            },
-          },
-        },
-      },
-      {
-        project_experiences: {
-          some: {
-            project_has_skills: {
-              some: {
-                skills: {
-                  skill_name: {
-                    in: normalizedSkills,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    ];
-    andConditions.push({ OR: orConditions });
-  }
-
-  // Add the condition for years of work experience
-  andConditions.push({
-    years_work_exp: {
-      gte: yearsWorkExp,
-    },
-  });
-
-  // Filter jobseekers based on skills and years of work experience
-  const filteredJobSeekers = await prisma.jobseekers.findMany({
-    where: andConditions.length > 0 ? { AND: andConditions } : undefined,
-    select: jobSeekerCardViewSelect,
-  });
-
-  return filteredJobSeekers;
-}
+// // intended for use with the search bar. Currently, supports searching by combinations of skills and work experience.
+// // If skills is [] or contains empty strings [''] will disregard and only focus on work experience.
+// // If work experience is not a query parameter it will be set to 0
+// export async function getFilteredJobSeekerCardView(
+//   skills: string[] = [],
+//   yearsWorkExp: number = 0,
+// ) {
+//   // Normalize skills array
+//   const normalizedSkills = skills.filter(
+//     (skill) => skill && skill.trim() !== '',
+//   );
+//   // TODO: add other options from Jobseeker ListView
+//   // Construct the AND conditions array
+//   const andConditions: any[] = [];
+//
+//   // If skills are provided, add the OR condition for skills
+//   if (normalizedSkills.length > 0) {
+//     const orConditions = [
+//       {
+//         jobseeker_has_skills: {
+//           some: {
+//             skills: {
+//               skill_name: {
+//                 in: normalizedSkills,
+//               },
+//             },
+//           },
+//         },
+//       },
+//       {
+//         project_experiences: {
+//           some: {
+//             project_has_skills: {
+//               some: {
+//                 skills: {
+//                   skill_name: {
+//                     in: normalizedSkills,
+//                   },
+//                 },
+//               },
+//             },
+//           },
+//         },
+//       },
+//     ];
+//     andConditions.push({ OR: orConditions });
+//   }
+//
+//   // Add the condition for years of work experience
+//   andConditions.push({
+//     years_work_exp: {
+//       gte: yearsWorkExp,
+//     },
+//   });
+//
+//   // Filter jobseekers based on skills and years of work experience
+//   const filteredJobSeekers = await prisma.jobseekers.findMany({
+//     where: andConditions.length > 0 ? { AND: andConditions } : undefined,
+//     select: jobSeekerCardViewSelect,
+//   });
+//
+//   return filteredJobSeekers;
+// }
 
 // returns those jobseekers with at least yearsExp in a profession
 export async function getJobSeekerCardViewByWorkExperience() {}
@@ -642,6 +643,27 @@ export async function getTechnologyAreas() {
   return technologyAreas;
 }
 
-export async function deleteUser() {
+export async function removeDeletionMarker(userId: string) {
+  const industrySectors = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      is_marked_deletion: null,
+    },
+  });
+}
+
+export async function deleteUser(role: Role, userId: string, date: Date) {
   // TODO: create delete user & remove jobseeker/soft-delete from api-routes
+  // jobseeker cannot be deleted if they have participated in a partner training provider program
+}
+
+async function deleteJobseeker(userId: string) {
+  // TODO: cannot be hard deleted if they have participated in a WJI Training Partner program.
+  //  check training_provider.iscoalitionmember prior to deleting. If jobseeker is a coalition member perform soft delete.
+}
+
+async function deleteEmployer(userId: string) {
+
 }

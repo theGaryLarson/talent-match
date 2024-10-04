@@ -27,6 +27,11 @@ export default auth((req) => {
     "/services/jobseekers/dashboard",
 
     "/api/jobseekers/",
+
+    "/api/edu-providers/", //fixme: had to add so jobseeker can see list of colleges in TextFieldAutoComplete component
+    "/api/skills/",  //fixme: had to add so jobseeker can see list of skills in TextFieldAutoComplete component
+    "/api/employers/technology-areas", //fixme: had to add so jobseeker can see list of tech-areas in TextFieldAutoComplete component
+    "/services/jobseekers"  // fixme: had to add to view own profile. Need to validate that id is theirs to view the page.
   ];
 
   const employerRoutes = [ // Routes for logged in users with EMPLOYER role
@@ -43,6 +48,10 @@ export default auth((req) => {
     "/services/jobseekers/",
 
     "/api/employers/",
+
+    "/api/companies",  //fixme: had to add so employer can see list of existing companies in TextFieldAutoComplete component
+    "/api/users/avatar/upload", //fixme: had to add so employer can upload an image
+    "/api/skills/", // fixme: had to add so employer can search based on skills
   ];
 
   const publicRoutes = [ // Routes for anyone, logged in or not
@@ -154,6 +163,6 @@ export default auth((req) => {
  * - images (...images. what did you expect?)
  * - favicon.ico, sitemap.xml, robots.txt (metadata files)
  */
-export const config = {
+export const config = { // TODO: route guard the API...
   matcher: ["/((?!api/auth|_next/static|_next/image|images|favicon.ico|ess).*)"],
 };

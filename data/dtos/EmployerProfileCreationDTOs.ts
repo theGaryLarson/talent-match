@@ -4,9 +4,9 @@ export type PostEmployerPersonalDTO = {
   lastName: string;
   birthDate: string;
   email: string;
-  phoneCountryCode?: string;
-  phone?: string;
-  photoUrl?: string;
+  phoneCountryCode?: string | null;
+  phone?: string | null;
+  photoUrl?: string | null;
 };
 
 export type ReadEmployerPersonalDTO = {
@@ -48,23 +48,18 @@ export type CompanyInfoSummaryDTO = {
 };
 
 export type ReadAddressDTO = {
-  addressId?: string;
-  city?: string | null;
-  state?: string | null;
-  stateCode?: string | null;
-  zipCode?: string | null;
-  county?: string | null;
-  lat?: string | null;
-  lon?: string | null;
-};
+  addressId: string;
+  city: string;
+  state: string;
+  stateCode: string;
+  zipCode: string;
+  county: string;
+  lat?: string;
+  lon?: string;
+} | null;
 
 export type PostAddressDTO = {
-  city?: string;
-  state?: string;
   zipCode: string;
-  county?: string | null;
-  lat?: number | null;
-  lon?: number | null;
 };
 
 export type PostCompanyInfoDTO = {
@@ -74,9 +69,9 @@ export type PostCompanyInfoDTO = {
   industrySectorId?: string | null;
   industrySectorTitle?: string | null;
   companyName: string;
-  companyAddresses?: PostAddressDTO[];
-  logoUrl: string | null;
-  aboutUs?: string;
+  companyAddresses?: PostAddressDTO[] | null;
+  logoUrl?: string | null;
+  aboutUs?: string | null;
   companyEmail: string;
   yearFounded: string;
   websiteUrl?: string | null;
@@ -105,9 +100,39 @@ export type ReadCompanyInfoDTO = {
   companyPhone?: string | null;
   mission?: string | null;
   vision?: string | null;
-  employeeCount: string;
+  employeeCount?: string | null;
   estimatedAnnualHires?: string | null;
-  isApproved: boolean;
+  isApproved?: boolean | null;
+};
+
+export type PostEmployerAboutDTO = {
+  companyId: string;
+  aboutUs: string;
+};
+
+export type ReadEmployerAboutDTO = {
+  companyId?: string;
+  aboutUs?: string | null;
+};
+
+export type PostEmployerMissionDTO = {
+  companyId: string;
+  mission: string;
+};
+
+export type ReadEmployerMissionDTO = {
+  companyId?: string;
+  mission?: string | null;
+};
+
+export type PostEmployerVideoDTO = {
+  companyId: string;
+  videoUrl: string;
+};
+
+export type ReadEmployerVideoDTO = {
+  companyId?: string;
+  videoUrl?: string | null;
 };
 
 export type PostCompanyTestimonialsDTO = {

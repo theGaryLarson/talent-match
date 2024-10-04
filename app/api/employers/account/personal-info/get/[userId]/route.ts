@@ -38,9 +38,7 @@ export async function GET(
       lastName: empPersonalInfo?.last_name,
       birthDate: empPersonalInfo?.birthdate?.toISOString(),
       email: empPersonalInfo?.email,
-      phoneCountryCode: empPersonalInfo?.phone
-        ? parsePhoneNumberFromString(empPersonalInfo.phone)?.countryCallingCode
-        : null,
+      phoneCountryCode: empPersonalInfo.phoneCountryCode,
       phone: empPersonalInfo?.phone,
       gender: empPersonalInfo?.gender,
       race: empPersonalInfo?.race,
