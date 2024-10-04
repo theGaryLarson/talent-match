@@ -33,7 +33,6 @@ export default function CreateJobseekerProfileIntroPage() {
   const router = useRouter();
   const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
 
   const [newFieldId, setNewFieldId] = useState('');
   const [newFieldLabel, setNewFieldLabel] = useState('');
@@ -142,10 +141,6 @@ export default function CreateJobseekerProfileIntroPage() {
     });
   };
 
-  const handleResumeUpload = (url: string) => {
-    // Update the local state with the uploaded image URL
-    setResumeUrl(url);
-  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -169,23 +164,18 @@ export default function CreateJobseekerProfileIntroPage() {
       userId: session.user.id,
       photoUrl: avatarUrl, // i was having issues with dispatch. Was working fine but would not reset the state when using new file.
       firstName:
-        getFieldValue(fields, 'profile-creation-intro-first-name', null),
+        getFieldValue(fields, 'profile-creation-intro-first-name', ''),
       lastName:
-        getFieldValue(fields, 'profile-creation-intro-last-name', null),
-      birthDate: birthdate ? birthdate.toISOString() : null,
+        getFieldValue(fields, 'profile-creation-intro-last-name', ''),
+      birthDate: birthdate ? birthdate.toISOString() : '',
       phoneCountryCode:
-        getFieldValue(fields, 'profile-creation-intro-country-phone-code', null),
+        getFieldValue(fields, 'profile-creation-intro-country-phone-code', ''),
       phone:
-        getFieldValue(fields, 'profile-creation-intro-phone-number', null),
+        getFieldValue(fields, 'profile-creation-intro-phone-number', ''),
       zipCode:
-        getFieldValue(fields, 'profile-creation-intro-zip-code', null),
+        getFieldValue(fields, 'profile-creation-intro-zip-code', ''),
       email:
         getFieldValue(fields, 'profile-creation-intro-email', '' ),
-      introHeadline:
-        getFieldValue(fields, 'profile-creation-intro-headlines', null),
-      currentJobTitle:
-        getFieldValue(fields, 'profile-creation-intro-current-position', null),
-      resumeUrl: resumeUrl,
     };
 
     try {
@@ -700,63 +690,7 @@ export default function CreateJobseekerProfileIntroPage() {
               </InputTextWithLabel>
             </div>
           </fieldset>
-          <fieldset>
-            <legend>
-              <h2>Intro</h2>
-            </legend>
-            <div className="profile-form-grid">
-              <InputTextWithLabel
-                id="profile-creation-intro-headlines"
-                onChange={handleFieldChange}
-                placeholder="Type here"
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-headlines',
-                  )?.value || ''
-                }
-              >
-                Headlines
-              </InputTextWithLabel>
-              <InputTextWithLabel
-                id="profile-creation-intro-current-or-graduated-school"
-                onChange={handleFieldChange}
-                placeholder="Type here"
-                value={
-                  fields.find(
-                    (f) =>
-                      f.id ===
-                      'profile-creation-intro-current-or-graduated-school',
-                  )?.value || ''
-                }
-                required
-              >
-                Current School / Graduated School *
-              </InputTextWithLabel>
-              <InputTextWithLabel
-                id="profile-creation-intro-current-position"
-                onChange={handleFieldChange}
-                placeholder="e.g., Software Developer"
-                value={
-                  fields.find(
-                    (f) => f.id === 'profile-creation-intro-current-position',
-                  )?.value || ''
-                }
-              >
-                Current Position
-              </InputTextWithLabel>
-            </div>
-            <div>
-              Resume *
-              <InputFileDropzone
-                id="profile-creation-intro-resume"
-                fileTypeText="PDF, DOC, DOCX, TXT or RTF"
-                accept=".pdf,.doc,.docx,.txt,.rtf"
-                maxSizeMB={5}
-                userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
-                onDocUpload={handleResumeUpload}
-              />
-            </div>
-          </fieldset>
+          
           <div className="profile-form-progress-btn-group">
             <Button pill className="custom-outline-btn">
               Cancel
