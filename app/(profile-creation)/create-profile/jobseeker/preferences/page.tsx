@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
 // REVIEW: testing redux
@@ -18,28 +18,89 @@ import { Button } from 'flowbite-react';
 import { useRouter } from 'next/navigation';
 import { JsPreferencesDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useSession } from 'next-auth/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/lib/jobseekerStore';
+import {
+  initialState,
+  setPreferences,
+} from '@/lib/features/profileCreation/jobseekerSlice';
+import _ from 'lodash';
+import { devLog } from '@/app/lib/utils';
 
 export default function CreateJobseekerProfilePreferencesPage() {
-  // const { fields } = useSelector((state: RootState) => state.form);
-  // const dispatch = useDispatch();
-  const [employmentType, setEmploymentType] = useState('');
-  const [pathway, setPathway] = useState('');
-  const [error, setError] = useState('');
   const router = useRouter();
   const { data: session, status } = useSession();
+  const dispatch = useDispatch();
+  const preferencesStoreData = useSelector(
+    (state: RootState) => state.jobseeker.preferences,
+  );
+  const preferencesData = { ...preferencesStoreData };
+  const [error, setError] = useState<string | null>(null);
+
+  const [employmentType, setEmploymentType] = useState(
+    preferencesData.preferredEmploymentType ?? '',
+  );
+  const [pathway, setPathway] = useState(preferencesData.targetedPathway ?? '');
+  const [pathwayId, setPathwayId] = useState(
+    preferencesData.targetedPathwayId ?? '',
+  );
+
+  useEffect(() => {
+    if (session?.user?.id && status === 'authenticated') {
+      const initializeFormFields = async () => {
+        if (_.isEqual(preferencesStoreData, initialState.preferences)) {
+          const { id } = session.user;
+
+          try {
+            devLog('fetching fresh');
+            const response = await fetch(
+              '/api/jobseekers/account/preferences/get/' + id,
+            );
+
+            if (!response.ok) {
+              preferencesData.userId = id!;
+            } else {
+              let fetchedData: JsPreferencesDTO = (await response.json())
+                .result;
+              preferencesData.userId = id!;
+              if (fetchedData.preferredEmploymentType) {
+                preferencesData.preferredEmploymentType =
+                  fetchedData.preferredEmploymentType;
+                setEmploymentType(preferencesData.preferredEmploymentType);
+              }
+              if (fetchedData.targetedPathway) {
+                preferencesData.targetedPathway = fetchedData.targetedPathway;
+                setPathway(preferencesData.targetedPathway);
+              }
+              if (fetchedData.targetedPathwayId) {
+                preferencesData.targetedPathwayId =
+                  fetchedData.targetedPathwayId;
+                setPathwayId(preferencesData.targetedPathwayId);
+              }
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          devLog('fetching from store');
+        }
+      };
+
+      initializeFormFields();
+    }
+  }, [session?.user?.id]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!session || !session.user.id) {
+    if (!session?.user?.id) {
       console.error('User session is not available.');
       return;
     }
-    const formData: JsPreferencesDTO = {
-      userId: session.user.id,
-      targetedPathwayId: null,
-      targetedPathway: pathway,
-      preferredEmploymentType: employmentType,
-    };
+
+    preferencesData.userId = session.user.id;
+    preferencesData.targetedPathwayId = pathwayId;
+    preferencesData.targetedPathway = pathway;
+    preferencesData.preferredEmploymentType = employmentType;
 
     try {
       const response = await fetch(
@@ -49,22 +110,26 @@ export default function CreateJobseekerProfilePreferencesPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(preferencesData),
         },
       );
-      if (!response.ok) {
+
+      if (response.ok) {
+        const result = await response.json();
+        devLog(JSON.stringify(result, null, 2));
+
+        dispatch(setPreferences(preferencesData));
+
+        router.push('/create-profile/jobseeker/disclosures');
+      } else {
         const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
-        return;
       }
-
-      const result = await response.json();
-      console.log(JSON.stringify(result, null, 2));
-      router.push('/create-profile/jobseeker/disclosures');
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
   }
+
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>

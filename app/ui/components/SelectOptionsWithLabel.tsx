@@ -7,9 +7,18 @@ interface Props {
   className?: string;
   placeholder?: string;
   required?: boolean;
-  disabled?: boolean;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
-  value?: string | number;
+  disabled?: boolean;
+}
+
+interface ManagedValue {
+  value: string | number;
+  defaultValue?: never;
+}
+
+interface DefaultValue {
+  value?: never;
+  defaultValue?: string | number;
 }
 
 export default function SelectOptionsWithLabel({
@@ -19,10 +28,11 @@ export default function SelectOptionsWithLabel({
   className = '',
   placeholder = '',
   required = false,
-  disabled = false,
   onChange,
   value,
-}: Props) {
+  defaultValue,
+  disabled = false,
+}: Props & (ManagedValue | DefaultValue)) {
   const [internalValue, setInternalValue] = useState('');
 
   return (
@@ -32,7 +42,14 @@ export default function SelectOptionsWithLabel({
           id={id}
           name={id}
           onChange={onChange ?? ((e) => setInternalValue(e.target.value))}
-          value={value ?? internalValue}
+          value={
+            typeof defaultValue === 'undefined'
+              ? (value ?? internalValue)
+              : undefined
+          }
+          defaultValue={
+            typeof defaultValue !== 'undefined' ? defaultValue : undefined
+          }
           className="border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
           required={required}
           disabled={disabled}

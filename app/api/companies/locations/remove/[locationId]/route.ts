@@ -42,6 +42,7 @@ export async function DELETE(request: Request, {params}: { params: { locationId:
             addressId: deletedAddress.company_address_id,
             city: deletedAddress.locationData.city,
             state: deletedAddress.locationData.state,
+            stateCode: deletedAddress.locationData.stateCode,
             zipCode: deletedAddress.locationData.zip,
             county: deletedAddress.locationData.county,
         }

@@ -938,10 +938,9 @@ function formatISODate(date) {
     return new Date(date).toISOString();
 }
 
-function generateE164PhoneNumber() {
-    const countryCode = faker.number.int({min: 1, max: 999}).toString();
-    const nationalNumber = faker.number.int({min: 1000000000, max: 9999999999}).toString();
-    return `+${countryCode}${nationalNumber}`;
+function generatePhoneNumber() {
+    return faker.number.int({min: 1000000000, max: 9999999999}).toString();
+
 }
 
 function generateProblemSolvedDescription(numSentences = 3) {
@@ -1046,7 +1045,7 @@ async function seedUsers(numUsers = 4) {
                     birthdate: faker.date.birthdate({min: 18, max: 65, mode: "age"}),
                     email: faker.internet.email({firstName: fName, lastName: lName}),
                     role: faker.helpers.arrayElement(roles),
-                    phone: generateE164PhoneNumber(),
+                    phone: generatePhoneNumber(),
                     gender: faker.person.gender(),
                     race: faker.helpers.arrayElement(racesAndEthnicities),
                     photo_url: getRandomUserPhoto(),
@@ -1598,7 +1597,7 @@ async function seedCompanies() {
                 year_founded: faker.number.int({min: 1900, max: 2024}),
                 company_website_url: faker.internet.url(),
                 company_video_url: faker.internet.url(),
-                company_phone: generateE164PhoneNumber(),
+                company_phone: generatePhoneNumber(),
                 company_mission: faker.lorem.sentences(3),
                 company_vision: faker.lorem.sentences(3),
                 size: faker.helpers.arrayElement(companySizeOptions),

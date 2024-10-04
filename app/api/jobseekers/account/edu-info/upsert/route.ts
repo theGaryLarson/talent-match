@@ -279,8 +279,8 @@ export async function POST(request: Request) {
                             projectId: proj.projectId,
                             projTitle: proj.projTitle,
                             projectRole: proj.projectRole,
-                            startDate: proj?.startDate ? new Date(proj.startDate.toString()) : '', //fixme: determine why Dayjs | null has to be a thing
-                            completionDate: proj?.completionDate ? new Date(proj.completionDate.toString()) : '', //fixme: determine why Dayjs | null has to be a thing
+                            startDate: proj?.startDate ? new Date(proj.startDate.toString()) : '',
+                            completionDate: proj?.completionDate ? new Date(proj.completionDate.toString()) : '',
                             problemSolvedDescription: proj.problemSolvedDescription,
                             teamSize: parseInt(proj.teamSize, 10),
                             repoUrl: proj?.repoUrl,

@@ -2,167 +2,124 @@
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  addField,
-  updateField,
-  submitForm,
-  submitFormSuccess,
-  submitFormFailure,
-  FormState,
-} from '@/lib/features/profileCreation/formSlice';
+import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
+import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button, Progress } from 'flowbite-react';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import {getFieldValue} from "@/app/lib/utils";
+import { PostEmployerAboutDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  setAbout,
+  initialState,
+} from '@/lib/features/profileCreation/employerSlice';
+import _ from 'lodash';
+import { devLog } from '@/app/lib/utils';
+
+const formNamePrefix = 'profile-creation-company-';
 
 export default function CreateEmployerCompanyInfoAboutPage() {
-  const { fields, isSubmitting, error }: FormState = useSelector(
-    (state: RootState) => state.form,
+  const aboutStoreData = useSelector(
+    (state: RootState) => state.employer.about,
   );
+  const [aboutData, setAboutData] = useState<PostEmployerAboutDTO>({
+    ...aboutStoreData,
+  });
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const [newFieldId, setNewFieldId] = useState('');
-  const [newFieldLabel, setNewFieldLabel] = useState('');
-  const [newFieldType, setNewFieldType] = useState<
-    'text' | 'email' | 'number' | 'select' | 'radio'
-  >('text');
-  const [newFieldValue, setNewFieldValue] = useState('');
-  const [newFieldOptions, setNewFieldOptions] = useState<
-    { value: string | number; label: string }[]
-  >([]);
   const { data: session, update, status } = useSession();
   const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
-    const updateSession = async () => {
-      if (!session?.user?.id) return; // Prevent running if session.user.id is undefined
+    const initializeFormFields = async () => {
+      console.log('session', session);
+      if (!session?.user.id) return;
+      if (status === 'authenticated') {
+        if (_.isEqual(aboutStoreData, initialState.about)) {
+          const { id, companyId, employerId } = session.user;
 
-      try {
-        const response = await fetch(
-          `/api/employers/account/professional-info/get/${session.user.id}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        );
+          try {
+            const response = await fetch(
+              `/api/companies/about/get/${session.user.companyId}`,
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
+            if (!response.ok) {
+              const errorData = await response.json();
+            } else {
+              let { result } = await response.json();
 
-        const { success, result } = await response.json(); // Destructure response
-
-        if (success && result) {
-          const {
-            employerId,
-            companyId,
-            isVerifiedEmployee,
-            isVerifiedCompany,
-          } = result;
-          await updateSessionProperties({
-            employerId: employerId,
-            companyId: companyId,
-            companyIsApproved: isVerifiedCompany,
-            employeeIsApproved: isVerifiedEmployee,
-          });
+              console.log('fetchedData', result);
+              setAboutData({
+                ...aboutData,
+                companyId: result.companyId,
+                aboutUs: result.aboutUs ?? '',
+              });
+            }
+          } catch (error) {
+            // dispatch(submitFormFailure('Failed to submit the form'));
+          }
         } else {
-          console.error('Failed to fetch professional info:', result);
+          console.log('fetching from redux store');
         }
-      } catch (e) {
-        console.error('Error updating session:', e);
       }
+      // if (session && status === 'authenticated') {
+      //   updateSession();
+      // }
     };
-
-    if (session && status === 'authenticated') {
-      updateSession();
-    }
+    initializeFormFields();
+    devLog(aboutData);
   }, [session?.user?.id]);
+
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     console.log(name, value);
-    const field = fields.find((field) => field.id === name);
-    if (field) {
-      const parsedValue = field.type === 'number' ? parseInt(value, 10) : value;
-      dispatch(updateField({ id: field.id, value: parsedValue }));
-    } else {
-      dispatch(
-        addField({
-          id: e.target.id,
-          label: newFieldLabel,
-          value: e.target.value,
-          type: newFieldType,
-          options: newFieldOptions,
-        }),
-      );
-    }
-  };
-
-  const handleAddField = () => {
-    if (newFieldLabel) {
-      dispatch(
-        addField({
-          id: newFieldId,
-          label: newFieldLabel,
-          value: newFieldValue,
-          type: newFieldType,
-          options:
-            newFieldType === 'select' || newFieldType === 'radio'
-              ? newFieldOptions
-              : undefined,
-        }),
-      );
-      setNewFieldId('');
-      setNewFieldLabel('');
-      setNewFieldType('text');
-      setNewFieldValue('');
-      setNewFieldOptions([]);
+    const fieldName = name.substring(formNamePrefix.length);
+    if (aboutData.hasOwnProperty(fieldName)) {
+      aboutData[fieldName as keyof PostEmployerAboutDTO] = value;
+      setAboutData({ ...aboutData });
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    dispatch(submitForm());
 
-    const formData = {
-      companyId: session?.user.companyId,
-      aboutUs:
-        getFieldValue(fields, 'profile-creation-company-about' , '')
-    };
+    if (!session || !session.user) {
+      console.error('User session is not available.');
+      return;
+    }
+    setAboutData({ ...aboutData });
+    devLog('aboutData', aboutData);
 
     try {
-      const response = await fetch(
-        '/api/companies/about/update/',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+      const response = await fetch('/api/companies/about/update/', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify(aboutData),
+      });
 
       if (response.ok) {
         const result = await response.json();
-        dispatch(submitFormSuccess());
+        dispatch(setAbout(aboutData));
         router.push('/create-profile/employer/mission');
       } else {
         const errorData = await response.json();
-        dispatch(
-          submitFormFailure(errorData.error || 'Failed to submit the form'),
-        );
       }
-    } catch (error) {
-      dispatch(submitFormFailure('Failed to submit the form'));
-    }
+    } catch (error) {}
   };
 
   return (
@@ -180,14 +137,12 @@ export default function CreateEmployerCompanyInfoAboutPage() {
           <div className="profile-form-grid">
             <fieldset>
               <TextareaWithLabel
-                id="profile-creation-company-about"
+                id="profile-creation-company-aboutUs"
                 placeholder="About your company"
                 rows="16"
                 onChange={handleFieldChange}
                 required
-                defaultValue={
-                  getFieldValue(fields, 'profile-creation-company-about', '')
-                }
+                value={aboutData.aboutUs}
               >
                 {/* Tell us about your company * */}
               </TextareaWithLabel>

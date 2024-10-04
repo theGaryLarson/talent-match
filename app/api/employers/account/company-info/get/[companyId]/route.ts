@@ -2,9 +2,11 @@ import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {
+    ReadAddressDTO,
     ReadCompanyInfoDTO,
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import parsePhoneNumberFromString from "libphonenumber-js";
+import {devLog} from "@/app/lib/utils";
 const prisma: PrismaClient = getPrismaClient();
 
 export async function GET(request: Request, { params }: { params: { companyId: string } }) {
@@ -89,22 +91,24 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             yearFounded: companyInfo?.year_founded?.toString(),
             websiteUrl: companyInfo.company_website_url,
             videoUrl: companyInfo.company_video_url,
-            phoneCountryCode: companyInfo?.company_phone ? parsePhoneNumberFromString(companyInfo?.company_phone)?.countryCallingCode : null,
+            phoneCountryCode: null,
             companyPhone: companyInfo.company_phone,
             mission: companyInfo.company_mission,
             vision: companyInfo.company_vision,
             employeeCount: companyInfo.size,
             estimatedAnnualHires: companyInfo?.estimated_annual_hires?.toString(),
             isApproved: companyInfo.is_approved,
-            companyAddresses: updatedAddresses.map(address => ({
+            companyAddresses: updatedAddresses?.map(address => ({
                 addressId: address.company_address_id,
                 state: address.locationData.state,
+                stateCode: address.locationData.stateCode,
                 city: address.locationData.city,
                 zipCode: address.locationData.zip,
                 county: address.locationData.county
-            }))
+            })) || [] as ReadAddressDTO[]
 
         }
+        console.log('server-result', result);
         return NextResponse.json({success:true, result}, {status: 200})
 
     } catch(e: any) {

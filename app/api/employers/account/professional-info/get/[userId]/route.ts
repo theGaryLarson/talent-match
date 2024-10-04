@@ -83,12 +83,14 @@ export async function GET(
       companyName: empWorkInfo?.companies?.company_name,
       isVerifiedCompany: empWorkInfo?.companies?.is_approved ?? false,
       isVerifiedEmployee: empWorkInfo.is_verified_employee,
-      companyAddress: {
-        addressId: employerAddress?.company_address_id,
-        city: employerAddress?.locationData.city,
-        state: employerAddress?.locationData.state,
-        zipCode: employerAddress?.locationData.zip,
-      },
+      companyAddress: employerAddress ?  {
+        addressId: employerAddress.company_address_id,
+        city: employerAddress.locationData.city,
+        state: employerAddress.locationData.state,
+        stateCode: employerAddress.locationData.stateCode,
+        county: employerAddress.locationData.county,
+        zipCode: employerAddress.locationData.zip,
+      } : undefined,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {

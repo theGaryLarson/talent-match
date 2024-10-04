@@ -1,8 +1,8 @@
 export type CompanyDropdownDTO = {
   companyId: string;
   companyName: string;
-  companyLogoUrl: string | null;
-  industrySectorId: string | null;
+  companyLogoUrl?: string;
+  industrySectorId?: string;
   companyWebsite: string | null;
   companyEmail: string;
   companyPhone: string | null;
