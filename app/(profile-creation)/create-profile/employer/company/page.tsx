@@ -129,14 +129,22 @@ export default function CreateEmployerCompanyInfoPage() {
     };
 
     const initializeFormFields = () => {
+      // if companyStoreData contains init values
       if (_.isEqual(companyStoreData, initialState.company)) {
         if (session?.user?.companyId) {
           devLog('session.user.companyId: ', session.user.companyId)
           fetchCompanyData(session.user.companyId);
         } else {
-          setCompanyId(uuidv4());
+          //company doesn't exist on page load
+          const newCompanyId = uuidv4();
+          setCompanyId(newCompanyId);
+          setCompanyData(prevState => ({
+            ...prevState,
+            companyId: newCompanyId,
+          }))
         }
-      } else {
+
+      } else { // redux store contains company data
         setCompanyData(companyStoreData);
         setYearFounded(companyData.yearFounded ? dayjs(companyData.yearFounded) : null);
         setLogoUrl(companyData.logoUrl ?? null);
