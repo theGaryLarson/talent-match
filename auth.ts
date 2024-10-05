@@ -147,7 +147,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         sameSite: 'lax',
         path: '/',
         secure: true,
-        domain: 'www.watechwfcoalition.org',
+       // domain: 'www.watechwfcoalition.org',
       },
     },
   },
