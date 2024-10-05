@@ -1,10 +1,7 @@
 import EmployerNameTitleTag from '@/app/ui/components/EmployerNameTitleTag';
 import ScoreCard from '@/app/ui/components/ScoreCard';
-import { useSession } from 'next-auth/react';
-import { ReadCompanyInfoDTO, ReadEmployerWorkDTO, CompanyInfoSummaryDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
-import { useEffect, useState } from 'react';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
-import { getCompanyById, getEmployerById, getEmployersByCompanyId } from '@/app/lib/prisma';
+import { getCompanyById, getEmployerById } from '@/app/lib/prisma';
 import EmployerTeamMembers from '@/app/ui/components/EmployerTeamMembers';
 import { auth } from '@/auth';
 //employer dashboard

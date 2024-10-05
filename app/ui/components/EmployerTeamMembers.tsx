@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 export default async function EmployerTeamMembers(){
     let session = await auth();
     let teamates = await getEmployersByCompanyId(session?.user.companyId??'')
-    console.log(teamates)
+    console.log("Team Mates: ",teamates)
     return(
 <div>
     My Team
