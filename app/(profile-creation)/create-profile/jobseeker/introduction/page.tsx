@@ -143,10 +143,6 @@ export default function CreateJobseekerProfileIntroPage() {
       })
   };
 
-  const handleResumeUpload = (url: string) => {
-    // Update the local state with the uploaded image URL
-    setResumeUrl(url);
-  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -228,7 +224,7 @@ export default function CreateJobseekerProfileIntroPage() {
               maxSizeMB={5}
               userId={session?.user?.id!}
               onImageUpload={handleImageUpload}
-              initialImageUrl={introData.photoUrl ?? ''}
+              initialImageUrl={session?.user?.image || introData.photoUrl || ''}
             />
           </fieldset>
           <fieldset>
@@ -665,40 +661,7 @@ export default function CreateJobseekerProfileIntroPage() {
               </InputTextWithLabel>
             </div>
           </fieldset>
-          <fieldset>
-            <legend>
-              <h2>Intro</h2>
-            </legend>
-            <div className="profile-form-grid">
-              <InputTextWithLabel
-                id="profile-creation-intro-introHeadline"
-                onChange={handleFieldChange}
-                placeholder="Type here"
-                value={introData.introHeadline ?? ''}
-              >
-                Headlines
-              </InputTextWithLabel>
-              <InputTextWithLabel
-                id="profile-creation-intro-currentJobTitle"
-                onChange={handleFieldChange}
-                placeholder="e.g., Software Developer"
-                value={introData.currentJobTitle ?? ''}
-              >
-                Current Position
-              </InputTextWithLabel>
-            </div>
-            <div>
-              Resume *
-              <InputFileDropzone
-                id="profile-creation-intro-resume"
-                fileTypeText="PDF, DOC, DOCX, TXT or RTF"
-                accept=".pdf,.doc,.docx,.txt,.rtf"
-                maxSizeMB={5}
-                userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
-                onDocUpload={handleResumeUpload}
-              />
-            </div>
-          </fieldset>
+
           <div className="profile-form-progress-btn-group">
             <Button pill className="custom-outline-btn">
               Cancel
