@@ -62,9 +62,10 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                 userId: user.id,
                 yearsWorkExperience: jobseeker.years_work_exp?.toString() ?? "0",
                 monthsInternshipExperience: jobseeker.months_internship_exp?.toString() ?? "0",
-                isAuthorizedToWorkUsa: privateData.is_authorized_to_work_in_usa,
-                requiresSponsorship: privateData.job_sponsorship_required,
+                ...(privateData?.is_authorized_to_work_in_usa !== undefined && { isAuthorizedToWorkUsa: privateData.is_authorized_to_work_in_usa }),
+                ...(privateData?.job_sponsorship_required !== undefined && { requiresSponsorship: privateData.job_sponsorship_required }),
                 workExperiences: workExperiences,
+
             };
 
             return NextResponse.json({
