@@ -129,7 +129,7 @@ export default function CreateEmployerCompanyInfoPage() {
     };
 
     const initializeFormFields = () => {
-      // if companyStoreData contains init values
+      // if no company data for the employer (companyStoreData contains redux store init values)
       if (_.isEqual(companyStoreData, initialState.company)) {
         if (session?.user?.companyId) {
           devLog('session.user.companyId: ', session.user.companyId)
@@ -244,11 +244,13 @@ export default function CreateEmployerCompanyInfoPage() {
       if (response.ok) {
         dispatch(setCompany(chosenCompanyData));
         if (typeof selectCompanyDropdownData !== 'string') {
+          // company selection from drop-down exists. use the dropdown object data
           await updateSessionProperties({
-            companyId: companyId,
+            companyId: selectCompanyDropdownData.companyId,
             companyIsApproved: selectCompanyDropdownData.approvedCompany,
           });
         } else {
+          //company drop down selection doesn't exist. use generated companyId instead
           await updateSessionProperties({
             companyId: companyId,
             companyIsApproved: false,
