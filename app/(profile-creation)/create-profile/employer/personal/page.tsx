@@ -92,7 +92,7 @@ export default function CreateEmployerPersonalPage() {
             : null,
         );
 
-        setAvatarUrl(personalData.photoUrl ?? session.user?.image??'');
+        setAvatarUrl(personalData.photoUrl ?? session.user?.image?? '');
       }
     };
 
@@ -116,7 +116,7 @@ export default function CreateEmployerPersonalPage() {
   };
 
     const handleAvatarUpload = (url: string) => {
-        devLog("Uploaded Image URL:", url);
+        console.log("Uploaded Image URL:", url);
         updateSessionProperties({
             image: url,
         }).then(() => {
