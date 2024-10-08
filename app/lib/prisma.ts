@@ -670,6 +670,13 @@ async function deleteEmployer(userId: string) {
 }
 
 
+
+
+/**
+ * @author Damien Cruz
+ * @param companyId The ID for the company
+ * @returns a list of all employer users that work for a company
+ */
 export async function getEmployersByCompanyId(companyId:string) {
   try {
     const employers = await prisma.employers.findMany({
@@ -701,7 +708,11 @@ export async function getEmployersByCompanyId(companyId:string) {
     throw new Error('Could not retrieve employers for the given company.');
   }
 }
-
+/**
+ * @author Damien Cruz
+ * @param companyId The ID for the company
+ * @returns a company record
+ */
 export async function getCompanyById(companyId:string){
   try{
     const company = prisma.companies.findUnique(
@@ -716,6 +727,11 @@ export async function getCompanyById(companyId:string){
     console.log(e)
   }
 }
+/**
+ * @author Damien Cruz
+ * @param employerId the ID of the employer
+ * @returns 
+ */
 export async function getEmployerById(employerId:string) {
   try {
     const employer = await prisma.employers.findUnique({
@@ -751,3 +767,5 @@ export async function getEmployerById(employerId:string) {
     throw new Error('Could not retrieve employer with the given ID.');
   }
 }
+
+
