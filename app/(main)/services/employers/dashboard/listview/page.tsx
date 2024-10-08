@@ -138,7 +138,7 @@ export default function Page() {
   }, [skillsList, industry, eduLevel, yearsExpMin, yearsExpMax, zipCode, sortBy, page]);
 
   return (
-    <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8">
+    <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8 w-full">
       <h1 className="text-2xl font-bold mb-4">Search Results for: {skillsList?.toString().replaceAll(',', ', ')}</h1>
 
       {/* Skill Search Bar */}

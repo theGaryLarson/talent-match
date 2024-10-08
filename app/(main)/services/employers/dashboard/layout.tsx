@@ -15,7 +15,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
           Home
         </Link>
         <Link
-          href="/services/employers/dashboard"
+          href="/services/employers/dashboard/listview"
           className="inline-flex items-center justify-start gap-[5px]  p-2"
         >
           <SearchOutlinedIcon />
@@ -23,7 +23,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
         </Link>
 
         <Link
-          href="/services/employers/dashboard"
+          href="/services/employers/dashboard/myjobposts"
           className="inline-flex items-center justify-start gap-[5px] p-2"
         >
           <FolderOutlinedIcon />
