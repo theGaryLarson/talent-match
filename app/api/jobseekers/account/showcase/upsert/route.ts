@@ -13,10 +13,12 @@ export async function POST(request: Request) {
         const body: JsShowcaseDTO = await request.json();
         const {
             userId,
+            introduction,
             skills,
             portfolioUrl,
             portfolioPassword,
-            video_url
+            video_url,
+            resume_url,
         } = body;
         const existingJobseeker = await prisma.jobseekers.findUnique({
             where: {
@@ -36,9 +38,11 @@ export async function POST(request: Request) {
                         }
                     }
                 },
+                intro_headline: true,
                 portfolio_url: true,
                 portfolio_password: true,
-                video_url: true
+                video_url: true,
+                resume_url: true,
             }
         });
 
@@ -50,9 +54,11 @@ export async function POST(request: Request) {
                     user_id: userId
                 },
                 data: {
+                    intro_headline: introduction,
                     portfolio_url: portfolioUrl,
                     portfolio_password: portfolioPassword,
                     video_url: video_url,
+                    resume_url: resume_url,
                     updatedAt: new Date(),
                     jobseeker_has_skills: {
                         deleteMany: {},
@@ -65,6 +71,7 @@ export async function POST(request: Request) {
                 },
                 select: {
                     user_id: true,
+                    intro_headline: true,
                     jobseeker_has_skills: {
                         select:{
                             jobseeker_id: true,
@@ -79,7 +86,8 @@ export async function POST(request: Request) {
                     },
                     portfolio_url: true,
                     portfolio_password: true,
-                    video_url: true
+                    video_url: true,
+                    resume_url: true,
                 }
 
             })
@@ -89,9 +97,11 @@ export async function POST(request: Request) {
                 data: {
                     jobseeker_id: uuidv4(),
                     user_id: userId,
+                    intro_headline: introduction,
                     portfolio_url: portfolioUrl,
                     portfolio_password: portfolioPassword,
                     video_url: video_url,
+                    resume_url: resume_url,
                     targeted_pathway: undefined, // Provide a default or get from input
                     is_enrolled_ed_program: false, // Provide a default or get from input
                     jobseeker_has_skills: {
@@ -104,6 +114,7 @@ export async function POST(request: Request) {
                 },
                 select: {
                     user_id: true,
+                    intro_headline: true,
                     jobseeker_has_skills: {
                         select:{
                             jobseeker_id: true,
@@ -118,7 +129,8 @@ export async function POST(request: Request) {
                     },
                     portfolio_url: true,
                     portfolio_password: true,
-                    video_url: true
+                    video_url: true,
+                    resume_url: true,
                 }
             });
             updatedRecords.push(createdRecord)
@@ -132,9 +144,11 @@ export async function POST(request: Request) {
         }));
         const result: JsShowcaseDTO = {
             userId: userId,
+            introduction: showcase.intro_headline,
             portfolioUrl: showcase.portfolio_url,
             portfolioPassword: showcase.portfolio_password,
             video_url: showcase.video_url,
+            resume_url: showcase.resume_url,
             skills: mappedSkills
         }
         return NextResponse.json({success: true, result}, {status: 200})
