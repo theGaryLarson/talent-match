@@ -10,7 +10,7 @@ export default async function Page() {
   const company = await getCompanyById(session?.user.companyId??'');
   const proInfo = await getEmployerById(session?.user.employerId??'');
   return (
-    <main className="mx-4 space-y-3 py-8 font-['Roboto'] tablet:mx-[100px] tablet:mx-[50px] desktop:mx-[200px]">
+    <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <DeletionFlag deletionDate={undefined} />
       <div className="font-['Roboto'] text-2xl font-medium leading-[28.80px] text-black/90">
         My Dashboard
