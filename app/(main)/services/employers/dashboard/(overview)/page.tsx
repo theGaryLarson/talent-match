@@ -5,6 +5,9 @@ import { getCompanyById, getEmployerById } from '@/app/lib/prisma';
 import EmployerTeamMembers from '@/app/ui/components/EmployerTeamMembers';
 import { auth } from '@/auth';
 //employer dashboard
+export const metadata = {
+  title: "My Dashboard"
+};
 export default async function Page() {
   const session = await auth();
   const company = await getCompanyById(session?.user.companyId??'');
