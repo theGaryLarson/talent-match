@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import type { RootState } from '@/lib/jobseekerStore';
 import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
@@ -50,6 +50,7 @@ export default function CreateJobseekerProfileIntroPage() {
   const [resumeUrl, setResumeUrl] = useState<string | null>(
     introData.resumeUrl ?? null,
   );
+    const pathname = usePathname();  // Gets the current pathname
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -120,7 +121,7 @@ export default function CreateJobseekerProfileIntroPage() {
 
       initializeFormFields();
     }
-  }, [session?.user?.id]);
+  }, [session?.user?.id, pathname]); //using pathname as a dependency to trigger useEffect when user clicks back button.
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -137,10 +138,16 @@ export default function CreateJobseekerProfileIntroPage() {
 
   const handleImageUpload = (url: string) => {
       // Update the local state with the uploaded image URL
-      setIntroData({
-          ...introData,
-          photoUrl: url,
-      })
+      updateSessionProperties({
+          image: url,
+      }).then(() => {
+          setAvatarUrl(url);
+          setIntroData({
+              ...introData,
+              photoUrl: url,
+          })
+      }).catch((error) => console.error('Failed to update session image:', error));
+
   };
 
 
