@@ -2,14 +2,18 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {NextResponse} from "next/server";
 import {JsPreferencesDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+
         const body: JsPreferencesDTO = await request.json();
         const {
-            userId,
             preferredEmploymentType,
             targetedPathwayId,
             targetedPathway

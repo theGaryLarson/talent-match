@@ -2,15 +2,19 @@ import {NextResponse} from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {ReadAddressDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function DELETE(request: Request, {params}: { params: { locationId: string } }) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        
         const addressId = params.locationId;
 
-        if (!addressId) {
-            return NextResponse.json({success: false, error: `A uuidv4 companyId is required.`}, {status: 400})
+        if (!addressId || !session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `A uuidv4 addressId is required, and employee must be approved.`}, {status: 400})
         }
 
         const deletedAddress = await prisma.company_addresses.delete({

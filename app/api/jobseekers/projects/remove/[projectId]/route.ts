@@ -1,12 +1,17 @@
 import {NextResponse} from 'next/server';
 import {PrismaClient, ProjectExperiences} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function DELETE(request: Request, {params}: { params: { projectId: string } }) {
     let projId = null;
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const jobseekerId: string = session?.user.jobseekerId!;
+        
         projId = params.projectId;
 
         const skillsCount = await prisma.project_has_skills.deleteMany({
@@ -20,6 +25,7 @@ export async function DELETE(request: Request, {params}: { params: { projectId: 
         const deletedEntry: ProjectExperiences = await prisma.projectExperiences.delete({
             where: {
                 projectId: projId,
+                jobseekerId: jobseekerId,
             }
         });
 
@@ -28,7 +34,12 @@ export async function DELETE(request: Request, {params}: { params: { projectId: 
             skillsCount
         }
 
-        return NextResponse.json({success: true, result});
+        if (deletedEntry) { // project was deleted
+            return NextResponse.json({ success: true, result });
+        }
+        else { // project doesn't exist or jobseekerId mismatch
+            return NextResponse.json({ error: `Failed to delete jobseeker project with id: ${projId}` });
+        }
 
     } catch (e: any) {
         console.log(e.message);

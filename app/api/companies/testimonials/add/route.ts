@@ -6,21 +6,25 @@ import {
     ReadCompanyTestimonialsDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const employerId: string = session?.user.employerId!;
+        const companyId: string | null | undefined = session?.user.companyId;
+        
         const body: PostCompanyTestimonialsDTO = await request.json();
         const {
-            companyId,
-            employerId,
             text,
             author,
         } = body;
 
-        if (!companyId || !employerId) {
-            return NextResponse.json({success: false, error: `A uuidv4 companyId and employerId is required.`}, {status: 400})
+        if (!companyId || !employerId || !session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId and employerId is required, and user must be approved.`}, {status: 400})
         }
         const companyTestimonial = await prisma.company_testimonials.create({
             data: {

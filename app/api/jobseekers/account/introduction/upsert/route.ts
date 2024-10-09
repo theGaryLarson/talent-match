@@ -5,21 +5,21 @@ import {
   JsIntroPostDTO,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import parsePhoneNumberFromString from 'libphonenumber-js';
-import { formatPhoneE164 } from '@/app/lib/utils';
 import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
-  let session = await auth();
-  const jobseekerId = session?.user.jobseekerId!;
   try {
+    // Get essentials from session, not the request
+    let session = await auth();
+    const userId: string = session?.user.id!;
+    const jobseekerId: string = session?.user.jobseekerId!;
+
     const body: JsIntroPostDTO = await request.json();
 
     // Destructure the DTO
     const {
-      userId,
       photoUrl,
       firstName,
       lastName,

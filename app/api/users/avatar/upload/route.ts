@@ -2,13 +2,18 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { uploadAvatar } from "@/app/lib/services/azureBlobService";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+
         const body = await request.json();
-        const { file, fileName, userId } = body;
+        const { file, fileName } = body;
 
         if (!file || !userId) {
             return NextResponse.json({ success: false, error: "Missing file or userId" }, { status: 400 });

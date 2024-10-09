@@ -3,15 +3,19 @@ import {Prisma, PrismaClient, WorkExperience} from '@prisma/client';
 import {v4 as uuidv4} from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {JsWorkExpDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+
         const body: JsWorkExpDTO = await request.json();
 
         const {
-            userId,
             yearsWorkExperience,
             monthsInternshipExperience,
             isAuthorizedToWorkUsa,

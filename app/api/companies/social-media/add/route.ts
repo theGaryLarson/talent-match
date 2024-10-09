@@ -6,23 +6,27 @@ import {
     ReadCompanySocialLinkDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const companyId: string | null | undefined = session?.user.companyId;
+        
         const body: PostCompanySocialLinkDTO = await request.json();
         const {
-            companyId,
             socialPlatformId,
             employerId,
             socialUrl,
         } = body;
 
-        if (!companyId || !socialPlatformId || !employerId || !socialUrl) {
+        if (!companyId || !socialPlatformId || !employerId || !socialUrl || !session?.user.employeeIsApproved) {
             return NextResponse.json({
                 success: false,
-                error: `A uuidv4 companyId, socialPlatformId, employerId and socialUrl is required.`
+                error: `A uuidv4 companyId, socialPlatformId, employerId and socialUrl is required, and employee must be approved.`
             }, {status: 400})
         }
 
