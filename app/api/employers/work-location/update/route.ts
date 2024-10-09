@@ -5,14 +5,18 @@ import {
     CompanyInfoSummaryDTO, ReadAddressDTO,
     ReadEmployerWorkDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function PATCH(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+
         const body = await request.json();
         const {
-            userId,
             companyAddressId,
         } = body;
 

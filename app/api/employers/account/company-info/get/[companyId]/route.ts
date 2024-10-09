@@ -5,7 +5,6 @@ import {
     ReadAddressDTO,
     ReadCompanyInfoDTO,
 } from "@/data/dtos/EmployerProfileCreationDTOs";
-import parsePhoneNumberFromString from "libphonenumber-js";
 import {devLog} from "@/app/lib/utils";
 const prisma: PrismaClient = getPrismaClient();
 
