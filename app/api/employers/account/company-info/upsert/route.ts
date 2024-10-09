@@ -1,24 +1,25 @@
-import {NextResponse, NextRequest} from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import {PrismaClient} from '@prisma/client';
-import {auth} from '@/auth';
+import { PrismaClient } from '@prisma/client';
+import { auth } from '@/auth';
 import {
     PostAddressDTO,
     PostCompanyInfoDTO, ReadAddressDTO,
     ReadCompanyInfoDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
-import {v4 as uuidv4} from 'uuid';
-import parsePhoneNumberFromString from 'libphonenumber-js';
+import { v4 as uuidv4 } from 'uuid';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
-    let session = await auth();
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+        const employerId: string = session?.user.employerId!;
+
         const body: PostCompanyInfoDTO = await request.json();
         const {
-            userId,
-            employerId,
             companyId,
             industrySectorId,
             companyName,
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
                 },
             },
             create: {
-                employer_id: employerId!,
+                employer_id: employerId,
                 users: {
                     connect: {
                         id: userId,
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
                 company_logo_url: logoUrl,
                 about_us: aboutUs || undefined,
                 company_email: companyEmail,
-                year_founded: yearFounded? parseInt(yearFounded, 10) : undefined,
+                year_founded: yearFounded ? parseInt(yearFounded, 10) : undefined,
                 company_website_url: websiteUrl,
                 company_video_url: videoUrl,
                 company_phone: companyPhone,
@@ -97,7 +98,7 @@ export async function POST(request: Request) {
                 company_id: companyId,
                 company_name: companyName,
                 company_logo_url:
-                logoUrl,
+                    logoUrl,
                 about_us: aboutUs || '',
                 company_email: companyEmail,
                 year_founded: parseInt(yearFounded, 10),
@@ -124,11 +125,11 @@ export async function POST(request: Request) {
                 company_id: true,
                 industry_sector_id: true,
                 industry_sectors:
-                    {
-                        select: {
-                            sector_title: true,
-                        },
+                {
+                    select: {
+                        sector_title: true,
                     },
+                },
                 company_name: true,
                 company_logo_url: true,
                 about_us: true,
@@ -144,7 +145,7 @@ export async function POST(request: Request) {
                 is_approved: true,
             },
         }
-    );
+        );
 
         if (!upsertedCompany) {
             return NextResponse.json({
@@ -242,13 +243,13 @@ export async function POST(request: Request) {
         //   session.user.companyId = companyId || newCompanyId;
         // }
 
-        return NextResponse.json({success: true, result}, {status: 200});
+        return NextResponse.json({ success: true, result }, { status: 200 });
     } catch
-        (e: any) {
+    (e: any) {
         console.error('Error upserting company information:', e.message);
         return NextResponse.json(
-            {error: `Failed to upsert company information.\n${e.message}`},
-            {status: 500},
+            { error: `Failed to upsert company information.\n${e.message}` },
+            { status: 500 },
         );
     } finally {
         await prisma.$disconnect();
