@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {employers, PrismaClient} from '@prisma/client';
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function PATCH(request: Request, {params}: { params: { employerId: string } }) {
+export async function PATCH(request: Request, {params}: { params: { } }) {
     try {
-        const employerId = params.employerId;
+        // Get essentials from session, not the request
+        let session = await auth();
+        const employerId: string = session?.user.employerId!;
+
         if (!employerId) {
             return NextResponse.json({success: false, error: `A uuidv4 employerId  is required.`}, {status: 400})
         }
