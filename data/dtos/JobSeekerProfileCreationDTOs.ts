@@ -182,10 +182,12 @@ export type JsWorkDTO = {
 
 export type JsShowcaseDTO = {
   userId: string;
+  introduction?: string | null;
   skills: SkillDTO[];
   portfolioUrl?: string | null;
   portfolioPassword?: string | null; // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
   video_url?: string | null;
+  resume_url?: string | null;
 };
 
 export type JsPreferencesDTO = {

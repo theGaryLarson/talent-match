@@ -18,6 +18,8 @@ import {
   setShowcase,
 } from '@/lib/features/profileCreation/jobseekerSlice';
 import { devLog } from '@/app/lib/utils';
+import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 
 export default function CreateJobseekerProfileShowcasePage() {
   const router = useRouter();
@@ -28,6 +30,9 @@ export default function CreateJobseekerProfileShowcasePage() {
   );
   const showcaseData = { ...showcaseStoreData };
   const [error, setError] = useState<string | null>(null);
+  const [introduction, setIntroduction] = useState('');
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+  const [currentJobTitle, setCurrentJobTitle] = useState('');
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
   const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
@@ -98,6 +103,8 @@ export default function CreateJobseekerProfileShowcasePage() {
     showcaseData.portfolioUrl = portfolioUrl;
     showcaseData.portfolioPassword = portfolioPassword;
     showcaseData.video_url = videoUrl;
+    showcaseData.introduction = introduction;
+    showcaseData.resume_url = resumeUrl;
 
     try {
       const response = await fetch('/api/jobseekers/account/showcase/upsert', {
@@ -124,6 +131,11 @@ export default function CreateJobseekerProfileShowcasePage() {
     }
   }
 
+  const handleResumeUpload = (url: string) => {
+    // Update the local state with the uploaded image URL
+    setResumeUrl(url);
+  };
+
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
@@ -133,6 +145,36 @@ export default function CreateJobseekerProfileShowcasePage() {
         <h1>Showcase</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
+          <fieldset>
+            <legend>
+              <h2>Career Introduction</h2>
+            </legend>
+
+            <div className="profile-form-grid">
+              <InputTextWithLabel
+                id="profile-creation-intro-headlines"
+                onChange={(e) => {
+                  setIntroduction(e.target.value);
+                }}
+                placeholder="Type here"
+                value={introduction}
+              >
+                Introduction
+              </InputTextWithLabel>
+              {/*<InputTextWithLabel*/}
+              {/*  id="profile-creation-intro-current-position"*/}
+              {/*  onChange = {(e) => {*/}
+              {/*    setCurrentJobTitle(e.target.value);*/}
+              {/*  }}*/}
+              {/*  placeholder="e.g., Software Developer"*/}
+              {/*  value={*/}
+              {/*    currentJobTitle*/}
+              {/*  }*/}
+              {/*>*/}
+              {/*  Current Position*/}
+              {/*</InputTextWithLabel>*/}
+            </div>
+          </fieldset>
           <fieldset>
             <legend>
               <h2>Skills</h2>
@@ -231,6 +273,17 @@ export default function CreateJobseekerProfileShowcasePage() {
               />
             </div>
           </fieldset>
+          <div>
+            Resume *
+            <InputFileDropzone
+              id="profile-creation-intro-resume"
+              fileTypeText="PDF, DOC, DOCX, TXT or RTF"
+              accept=".pdf,.doc,.docx,.txt,.rtf"
+              maxSizeMB={5}
+              userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
+              onDocUpload={handleResumeUpload}
+            />
+          </div>
           <div className="profile-form-progress-btn-group">
             <Button pill className="custom-outline-btn">
               Previous

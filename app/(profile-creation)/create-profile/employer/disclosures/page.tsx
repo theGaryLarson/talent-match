@@ -4,6 +4,7 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
+import { EmployerState } from '@/lib/features/profileCreation/employerSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
@@ -22,6 +23,7 @@ import {
 } from '@/lib/features/profileCreation/employerSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
+import CircularProgress from "@mui/material/CircularProgress";
 
 const formNamePrefix = 'profile-creation-company-';
 
@@ -29,6 +31,8 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   const disclosuresStoreData = useSelector(
     (state: RootState) => state.employer.disclosures,
   );
+  const companyStoreData = useSelector((state: RootState) => state.employer.company);
+
   const [disclosuresData, setDisclosuresData] = useState<PostEmployerWorkDTO>({
     ...disclosuresStoreData,
   });
@@ -183,8 +187,8 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 id="profile-creation-company-name"
                 placeholder="Automated"
                 onChange={handleFieldChange}
-                value={companyName}
-                disabled={!!companyName}
+                value={companyStoreData.companyName}
+                disabled={!!companyStoreData.companyName}
                 required
               >
                 Company Name
@@ -199,39 +203,37 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               >
                 Job Title *
               </InputTextWithLabel>
-              <SelectAutoload
-                id="profile-creation-workAddressId"
-                apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
-                label="Work Address *"
-                getOptionLabel={(option: CompanyAddressDropdownDTO) =>
-                  `${option.city}, ${option.stateCode} ${option.zipCode}`
-                }
-                getOptionFromLabel={(
-                  options: CompanyAddressDropdownDTO[],
-                  label: string,
-                ) => {
-                  // Match based on the label (formatted) or a unique identifier like companyAddressId
-                  // For simplicity, we map by `companyAddressId` or any unique identifier instead of label
-                  const matchedOption = options.find(
-                    (item) =>
-                      `${item.city}, ${item.stateCode} ${item.zipCode}` ===
-                      label,
-                  );
-                  return (
-                    matchedOption || {
-                      companyAddressId: '',
-                      city: '',
-                      stateCode: '',
-                      zipCode: '',
-                    }
-                  );
-                }}
-                placeholder="Your work location"
-                value={workAddress}
-                onChange={(val) => setWorkAddress(val)}
-                required
-                loadingText="Retrieving work addresses..."
-              />
+              <div>
+                {status === 'loading' ? (
+                    <CircularProgress/>  // Show a loader until the session is loaded
+                ) : (
+                    <SelectAutoload
+                        id="profile-creation-workAddressId"
+                        apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
+                        label="Work Address *"
+                        getOptionLabel={(option: CompanyAddressDropdownDTO) =>
+                            `${option.city}, ${option.stateCode} ${option.zipCode}`
+                        }
+                        getOptionFromLabel={(options: CompanyAddressDropdownDTO[], label: string) => {
+                          const matchedOption = options.find(
+                              (item) => `${item.city}, ${item.stateCode} ${item.zipCode}` === label,
+                          );
+                          return (
+                              matchedOption || {
+                                companyAddressId: '',
+                                city: '',
+                                stateCode: '',
+                                zipCode: '',
+                              }
+                          );
+                        }}
+                        placeholder="Your work location"
+                        value={workAddress}
+                        onChange={(val) => setWorkAddress(val)}
+                        required
+                    />
+                )}
+              </div>
               {/*<InputTextWithLabel*/}
               {/*  id="profile-creation-company-work-location"*/}
               {/*  placeholder="98362"*/}
@@ -246,11 +248,11 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               {/*  Work Location Zip Code **/}
               {/*</InputTextWithLabel>*/}
               <InputTextWithLabel
-                id="profile-creation-company-linkedInUrl"
-                placeholder="www.linkedin.com/username"
-                onChange={handleFieldChange}
-                value={disclosuresData.linkedInUrl}
-                required
+                  id="profile-creation-company-linkedInUrl"
+                  placeholder="www.linkedin.com/username"
+                  onChange={handleFieldChange}
+                  value={disclosuresData.linkedInUrl}
+                  required
               >
                 LinkedIn URL *
               </InputTextWithLabel>
@@ -262,7 +264,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           </legend>
           <Label className="block">
             <Checkbox
-              name="profile-creation-disclosures-require-terms"
+                name="profile-creation-disclosures-require-terms"
               checked={termsAccepted}
               onChange={(event) => setTermsAccepted(event.target.checked)}
             />{' '}

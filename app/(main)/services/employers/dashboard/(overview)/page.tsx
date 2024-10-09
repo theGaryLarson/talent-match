@@ -2,26 +2,37 @@
 import EmployerNameTitleTag from '@/app/ui/components/EmployerNameTitleTag';
 import ScoreCard from '@/app/ui/components/ScoreCard';
 import { useSession } from 'next-auth/react';
-import { ReadCompanyInfoDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import { ReadCompanyInfoDTO, ReadEmployerWorkDTO, CompanyInfoSummaryDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
 import { useEffect, useState } from 'react';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
 //employer dashboard
 export default function Page() {
   const { data: session } = useSession();
   const [company, setCompany] = useState<ReadCompanyInfoDTO>();
-
+  const [proInfo, setProInfo] = useState<ReadEmployerWorkDTO & CompanyInfoSummaryDTO>();
   useEffect(() => {
     async function getData() {
       try {
-        console.log(session);
         if (session?.user?.employerId) {
           const response = await fetch(
             `/api/employers/account/company-info/get/${session.user.companyId}`,
           );
-          console.log(response);
           const data = await response.json();
-          setCompany(data.result);
-          console.log('wjcniw;nci;w;c', data.result);
+          setCompany(data);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    async function getProInfo() {
+      try {
+        if (session?.user.id) {
+          const response = await fetch(
+            `/api/employers/account/professional-info/get/${session.user.id}`,
+          );
+          const data = await response.json();
+          console.log(data)
+          setProInfo(data)
         }
       } catch (e) {
         console.log(e);
@@ -30,6 +41,7 @@ export default function Page() {
 
     if (session) {
       getData();
+      getProInfo();
     }
   }, [session]);
 
@@ -41,7 +53,7 @@ export default function Page() {
       </div>
       <EmployerNameTitleTag
         name={session?.user.name}
-        title={'recrutor'}
+        title={proInfo?.currentJobTitle??''}
         company={company?.companyName ?? ''}
         pfp={session?.user.image ?? undefined}
       />

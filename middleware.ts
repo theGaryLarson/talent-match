@@ -29,8 +29,10 @@ export default auth((req) => {
     "/api/jobseekers/",
 
     "/api/edu-providers/", //fixme: had to add so jobseeker can see list of colleges in TextFieldAutoComplete component
-    "/api/skills/",  //fixme: had to add so jobseeker can see list of skills in TextFieldAutoComplete component
-    "/api/employers/technology-areas" //fixme: had to add so jobseeker can see list of tech-areas in TextFieldAutoComplete component
+    "/api/skills/search/",  //fixme: had to add so jobseeker can see list of skills in TextFieldAutoComplete component
+    "/api/employers/technology-areas", //fixme: had to add so jobseeker can see list of tech-areas in TextFieldAutoComplete component
+    "/services/jobseekers",  // fixme: had to add to view own profile. Need to validate that id is theirs to view the page.
+    "/api/users/avatar/upload" // fixme: had to add so jobseeker can update their avatar image.
   ];
 
   const employerRoutes = [ // Routes for logged in users with EMPLOYER role
@@ -47,6 +49,10 @@ export default auth((req) => {
     "/services/jobseekers/",
 
     "/api/employers/",
+
+    "/api/companies",  //fixme: had to add so employer can see list of existing companies in TextFieldAutoComplete component
+    "/api/users/avatar/upload", //fixme: had to add so employer can upload an image
+    "/api/skills/search/", // fixme: had to add so employer can search based on skills
   ];
 
   const publicRoutes = [ // Routes for anyone, logged in or not
