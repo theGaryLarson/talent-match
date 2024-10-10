@@ -72,9 +72,10 @@ export const initialState: JobseekerState = {
   disclosures: {
     userId: '',
     isVeteran: '',
-    hasDisability: '',
+    disability: '',
     gender: '',
     race: '',
+    ethnicity: '',
     hasReadTerms: false,
   },
 };

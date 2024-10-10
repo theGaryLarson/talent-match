@@ -89,7 +89,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 email: email!,
                 firstName: firstName ?? '',
                 lastName: lastName ?? '',
-                photoUrl: fetchedData.photoUrl ?? session.user?.image ?? '',
+                photoUrl: fetchedData.photoUrl ?? session.user?.image,
                 birthDate: fetchedData.birthDate ?? '',
                 zipCode: fetchedData.zipCode ?? '',
                 city: fetchedData.city,
@@ -136,19 +136,19 @@ export default function CreateJobseekerProfileIntroPage() {
     }
   };
 
-  const handleImageUpload = (url: string) => {
-      // Update the local state with the uploaded image URL
-      updateSessionProperties({
-          image: url,
-      }).then(() => {
-          setAvatarUrl(url);
-          setIntroData({
-              ...introData,
-              photoUrl: url,
-          })
-      }).catch((error) => console.error('Failed to update session image:', error));
+    const handleImageUpload = (url: string) => {
+        // Update the local state with the uploaded image URL
+        updateSessionProperties({
+            image: url,
+        }).then(() => {
+            setAvatarUrl(url);
+            setIntroData({
+                ...introData,
+                photoUrl: url,
+            })
+        }).catch((error) => console.error('Failed to update session image:', error));
 
-  };
+    };
 
 
   const handleSubmit = async (e: FormEvent) => {

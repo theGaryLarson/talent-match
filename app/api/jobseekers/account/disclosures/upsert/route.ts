@@ -11,9 +11,10 @@ export async function POST(request: Request) {
         const {
             userId,
             isVeteran,
-            hasDisability,
+            disability,
             gender,
             race,
+            ethnicity,
             hasReadTerms
         } = body;
 
@@ -43,8 +44,7 @@ export async function POST(request: Request) {
                 id: userId
             },
             data: {
-                gender: gender,
-                race: race,
+
                 has_agreed_terms: hasReadTerms,
                 jobseekers: {
                     update: {
@@ -59,7 +59,10 @@ export async function POST(request: Request) {
                                     },
                                     data: {
                                         is_veteran: isVeteran,
-                                        has_disability: hasDisability,
+                                        disability: disability,
+                                        gender: gender,
+                                        race: race,
+                                        ethnicity: ethnicity,
                                     }
                                 }
                             }
@@ -74,28 +77,31 @@ export async function POST(request: Request) {
                         jobseekers_private_data: {
                             select: {
                                 is_veteran: true,
-                                has_disability: true,
+                                disability: true,
+                                gender: true,
+                                race: true,
+                                ethnicity: true,
+
                             }
                         }
                     }
                 },
-                gender: true,
                 has_agreed_terms: true,
-                race: true,
             }
         });
 
-        const {jobseekers, gender: userGender, has_agreed_terms, race: userRace} = user;
+        const {jobseekers, has_agreed_terms} = user;
         const jobseekerDetails = jobseekers?.[0] || {};
         const privateDetails = jobseekerDetails.jobseekers_private_data?.[0] || {};
 
         const result: JsDisclosuresDTO = {
             jobseekerId: jobseekerDetails.jobseeker_id || null,
-            gender: userGender || null,
-            race: userRace || null,
+            gender: privateDetails.gender || null,
+            race: privateDetails.race || null,
+            ethnicity: privateDetails?.ethnicity || null,
             hasReadTerms: has_agreed_terms || false,
-            isVeteran: privateDetails.is_veteran || null,
-            hasDisability: privateDetails.has_disability || null
+            isVeteran: privateDetails?.is_veteran || null,
+            hasDisability: privateDetails?.disability || null
         };
 
         return NextResponse.json({success: true, result}, {status: 200})

@@ -23,8 +23,6 @@ model User {
   phoneCountryCode   String?         @db.VarChar(100)
   phone              String?         @db.VarChar(16)
   zip                String?         @db.VarChar(5)
-  gender             String?         @db.VarChar(45)
-  race               String?         @db.VarChar(45)
   photo_url          String?         @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
   has_agreed_terms   Boolean         @default(false) @db.Bit
   createdAt          DateTime        @map("created_at") @db.DateTime
@@ -166,8 +164,21 @@ model companies {
   company_testimonials   company_testimonials[]
   employers              employers[]
   job_postings           job_postings[]
+  BookmarkedJobseeker    BookmarkedJobseeker[]
 
   @@index([industry_sector_id], map: "companies_fk_company_industry_sectors1_idx")
+}
+
+model BookmarkedJobseeker {
+  id          String     @id(clustered: false, map: "bookmarked_jobseekers_PRIMARY") @db.UniqueIdentifier
+  jobseekerId String     @map("jobseeker_id") @db.UniqueIdentifier
+  companyId   String     @map("company_id") @db.UniqueIdentifier
+  employerId  String     @map("employer_id") @db.UniqueIdentifier
+  jobseeker   jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseekers1")
+  company     companies  @relation(fields: [companyId], references: [company_id], onUpdate: NoAction, map: "fk_companies1")
+  employer    employers  @relation(fields: [employerId], references: [employer_id], onUpdate: NoAction, map: "fk_employers1")
+
+  @@map("bookmarked_jobseekers")
 }
 
 model company_addresses {
@@ -263,6 +274,7 @@ model employers {
   job_postings         job_postings[]
   company_testimonials company_testimonials[]
   company_social_links company_social_links[]
+  BookmarkedJobseeker  BookmarkedJobseeker[]
 
   @@index([user_id], map: "employers_fk_employer_user1_idx")
   @@index([company_id], map: "fk_employers_company1_idx")
@@ -313,6 +325,7 @@ model job_postings {
   techArea               technology_areas?        @relation(fields: [tech_area_id], references: [id], onUpdate: NoAction, map: "fk_job_postings_technology_areas1")
   company_addresses      company_addresses        @relation(fields: location_id, references: [company_address_id], onUpdate: NoAction, map: "fk_job_postings_company_addresses1")
   industry_sectors       industry_sectors?        @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, map: "fk_job_postings_industry_sectors1")
+  BookmarkedJobPosting   BookmarkedJobPosting[]
 
   @@index([location_id], map: "fk_job_postings_company_addresses1_idx")
   @@index([company_id], map: "fk_job_postings_companies1_idx")
@@ -366,6 +379,8 @@ model jobseekers {
   project_experiences                ProjectExperiences[]
   work_experiences                   WorkExperience[]
   jobseeker_education                jobseekers_education[]
+  BookmarkedJobseeker                BookmarkedJobseeker[]
+  BookmarkedJobPosting               BookmarkedJobPosting[]
 
   @@index([targeted_pathway], map: "jobseekers_fk_jobseeker_Pathways1_idx")
   @@index([user_id], map: "jobseekers_fk_learner_user1_idx")
@@ -378,7 +393,10 @@ model jobseekers_private_data {
   is_authorized_to_work_in_usa Boolean    @default(false, map: "DF__jobseeker__is_au__3C34F16F") @db.Bit
   job_sponsorship_required     Boolean    @default(false, map: "DF__jobseeker__job_s__3D2915A8") @db.Bit
   is_veteran                   String     @default("prefer not to say", map: "DF__jobseeker__is_ve__3E1D39E1") @db.VarChar(45)
-  has_disability               String     @default("prefer not to say", map: "DF__jobseeker__has_d__3F115E1A") @db.VarChar(45)
+  disability                   String     @default("prefer not to say", map: "DF__jobseeker__has_d__3F115E1A") @db.VarChar(45)
+  gender                       String     @default("undisclosed") @db.VarChar(45)
+  race                         String     @default("undisclosed") @db.VarChar(45)
+  ethnicity                    String     @default("undisclosed") @db.VarChar(45)
   jobseekers                   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_user_learner_private_data_user1")
 
   @@index([jobseeker_id], map: "jobseekers_private_data_fk_user_learner_private_data_user1")
@@ -414,6 +432,16 @@ model jobseekers_skill_gap_data {
   jobseekers                  jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_learner_skill_gap_data_learner1")
 
   @@index([jobseeker_id], map: "jobseekers_skill_gap_data_fk_learner_skill_gap_data_learner1")
+}
+
+model BookmarkedJobPosting {
+  id          String       @id(clustered: false, map: "bookmarked_job_postings_PRIMARY") @db.UniqueIdentifier
+  jobseekerId String       @map("jobseeker_id") @db.UniqueIdentifier
+  jobPostId   String       @map("job_posting_id") @db.UniqueIdentifier
+  jobseeker   jobseekers   @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_bookmarked_job_postings_jobseekers1")
+  jobPost     job_postings @relation(fields: [jobPostId], references: [job_posting_id], onUpdate: NoAction, map: "fk_bookmarked_job_postings_job_postings1")
+
+  @@map("bookmarked_job_postings")
 }
 
 model learner_proj_based_tech_assessment {
