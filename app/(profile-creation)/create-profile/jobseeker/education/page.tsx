@@ -1,6 +1,6 @@
 'use client';
 
-import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
@@ -119,8 +119,10 @@ export default function CreateJobseekerProfileEducationPage() {
     ),
   });
 
-  function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>)  {
-      setHighestLevelOfStudy(mapToEnumOrThrow(event.target.value, HighestDegreeType));
+  function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>) {
+    setHighestLevelOfStudy(
+      mapToEnumOrThrow(event.target.value, HighestDegreeType),
+    );
   }
 
   function addNewLicense() {
@@ -198,6 +200,7 @@ export default function CreateJobseekerProfileEducationPage() {
             } else {
               let fetchedData: JsEducationPageDTO = (await response.json())
                 .result;
+              console.log('fetched', fetchedData);
               educationData.userId = id!;
               educationData.jobseekerId = jobseekerId!;
               if (fetchedData.highestLevelOfStudy) {
@@ -205,7 +208,7 @@ export default function CreateJobseekerProfileEducationPage() {
                   fetchedData.highestLevelOfStudy;
                 setHighestLevelOfStudy(educationData.highestLevelOfStudy);
               }
-              if (fetchedData.educations) {
+              if (fetchedData.educations?.length !== 0) {
                 educationData.educations = fetchedData.educations;
                 setData({
                   ...data,
@@ -247,8 +250,9 @@ export default function CreateJobseekerProfileEducationPage() {
                     ),
                   ],
                 });
+                console.log('educations', data.educations);
               }
-              if (fetchedData.projects) {
+              if (fetchedData.projects?.length !== 0) {
                 educationData.projects = fetchedData.projects;
                 setData({
                   ...data,
@@ -270,8 +274,9 @@ export default function CreateJobseekerProfileEducationPage() {
                     ),
                   ],
                 });
+                console.log('projects', data.projectExperiences);
               }
-              if (fetchedData.certifications) {
+              if (fetchedData.certifications?.length !== 0) {
                 educationData.certifications = fetchedData.certifications;
                 setData({
                   ...data,
@@ -290,6 +295,7 @@ export default function CreateJobseekerProfileEducationPage() {
                     ),
                   ],
                 });
+                console.log('certifications', data.licenses);
               }
             }
           } catch (error) {
