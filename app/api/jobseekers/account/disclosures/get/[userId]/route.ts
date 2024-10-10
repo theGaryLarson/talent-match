@@ -24,15 +24,15 @@ export async function GET(request: Request, {params}: {params: { userId: string 
                         jobseekers_private_data: {
                             select: {
                                 is_veteran: true,
-                                has_disability: true,
+                                disability: true,
+                                gender: true,
+                                race: true,
                             }
                         }
                     }
                 },
                 role: true,
-                gender: true,
                 has_agreed_terms: true,
-                race: true,
             }
         });
 
@@ -55,15 +55,16 @@ export async function GET(request: Request, {params}: {params: { userId: string 
         }
 
         if (user?.jobseekers && user?.jobseekers.length > 0) {
-            result.gender = user?.gender;
             result.hasReadTerms = user.has_agreed_terms;
-            result.race = user.race;
             const jobseekerDetails = user?.jobseekers?.[0] || null;
             result.jobseekerId = jobseekerDetails?.jobseeker_id;
             if (jobseekerDetails.jobseekers_private_data && jobseekerDetails.jobseekers_private_data.length > 0) {
                 const privateDetails: Partial<jobseekers_private_data> = jobseekerDetails.jobseekers_private_data[0]
                 result.isVeteran = privateDetails.is_veteran;
-                result.hasDisability = privateDetails.has_disability;
+                result.hasDisability = privateDetails.disability;
+                result.gender = privateDetails.gender;
+                result.race = privateDetails.race;
+                result.ethnicity = privateDetails.ethnicity;
 
             }
         }

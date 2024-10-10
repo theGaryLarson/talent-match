@@ -18,8 +18,6 @@ export type ReadEmployerPersonalDTO = {
   email?: string | null;
   phoneCountryCode?: string | null;
   phone?: string | null;
-  gender?: string | null;
-  race?: string | null;
   photoUrl?: string | null;
 };
 

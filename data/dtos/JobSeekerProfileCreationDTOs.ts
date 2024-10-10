@@ -202,16 +202,18 @@ export type JsDisclosuresDTO = {
   jobseekerId?: string | null; // jsDetails
   isVeteran?: string | null; // privateDetails
   hasDisability?: string | null; // privateDetails
-  gender?: string | null; // users.gender
-  race?: string | null; //users.race
+  gender?: string | null;
+  race?: string | null;
+  ethnicity?: string | null; // users.ethnicity
   hasReadTerms: boolean; //users.has_read_terms
 };
 
 export type JsDisclosuresPostDTO = {
   userId: string;
   isVeteran: string; // jobseekers[0].jobseekers_private_data[0].is_veteran
-  hasDisability: string; // jobseekers[0].jobseekers_private_data[0].has_disability
+  disability: string; // jobseekers[0].jobseekers_private_data[0].has_disability
   gender: string; // users.gender
   race: string; //users.race
+  ethnicity: string;
   hasReadTerms: boolean; //users.has_read_terms
 };

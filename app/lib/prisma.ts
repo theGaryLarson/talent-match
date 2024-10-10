@@ -1,7 +1,7 @@
 import {
   companies,
   edu_providers,
-  PostalGeoData,
+  PostalGeoData, Prisma,
   PrismaClient,
   programs,
   skills,
@@ -14,9 +14,12 @@ import { CompanyDropdownDTO } from '@/data/dtos/CompanyDropdownDTO';
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { v4 as uuidv4 } from 'uuid';
 import {Role} from "@/data/dtos/UserInfoDTO";
+import { auth } from "@/auth";
+import {NextResponse} from "next/server";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
+
 
 type SearchOptions<T> = {
   searchTerm: string;
@@ -666,4 +669,63 @@ async function deleteJobseeker(userId: string) {
 
 async function deleteEmployer(userId: string) {
 
+}
+
+export async function bookmarkJobseeker(jobseekerId: string) {
+  const session = await auth();
+  if (!session?.user?.employeeIsApproved){
+    return NextResponse.json({ error: 'Access denied. Please check that you have been given approval by your coworkers or CFA Admin.' }, { status: 409 })
+  }
+  try {
+    const savedJobseeker = await prisma.bookmarkedJobseeker.create({
+      data: {
+        id: uuidv4(),
+        jobseekerId: jobseekerId,
+        employerId: session.user.employerId!,
+        companyId: session.user.companyId!,
+      }
+    });
+    return NextResponse.json({ success: true, savedJobseeker }, { status: 200 })
+  } catch (e: any) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code == 'P2002') {
+        console.error(e)
+        return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
+      }
+      // Add specific Prisma errors as needed
+      console.error('Unexpected error:', e);
+      return NextResponse.json({error: `Failed to bookmark jobseeker.\n${e.message} `}, {status: 500});
+    }
+  } finally {
+  prisma.$disconnect()
+  }
+}
+
+export async function bookmarkJobPosting(jobPostId: string) {
+  const session = await auth();
+  if (!session?.user?.jobseekerId){
+    return NextResponse.json({ error: 'Access denied. Please create a jobseeker profile.' }, { status: 409 })
+  }
+  try {
+    const savedJobPost = await prisma.bookmarkedJobPosting.create({
+      data: {
+        id: uuidv4(),
+        jobseekerId: session.user.jobseekerId!,
+        jobPostId: jobPostId
+      }
+    });
+    return NextResponse.json({ success: true, savedJobPost }, { status: 200 })
+  } catch (e: any) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code == 'P2002') {
+        console.error(e)
+        return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
+      }
+      // Add specific Prisma errors as needed
+      console.error('Unexpected error:', e);
+      return NextResponse.json({error: `Failed to bookmark job post.\n${e.message} `}, {status: 500});
+    }
+  } finally {
+    prisma.$disconnect()
+  }
 }

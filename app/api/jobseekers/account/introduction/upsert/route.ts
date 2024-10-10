@@ -8,6 +8,7 @@ import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { formatPhoneE164 } from '@/app/lib/utils';
 import { auth } from '@/auth';
+import {Role} from "@/data/dtos/UserInfoDTO";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -56,15 +57,13 @@ export async function POST(request: Request) {
         },
         create: {
           id: userId,
-          role: 'Jobseeker',
+          role: Role.JOBSEEKER,
           first_name: firstName,
           last_name: lastName,
           birthdate: birthDate ?? undefined,
           phoneCountryCode: phoneCountryCode,
           phone: phone ?? undefined,
           email: email,
-          gender: undefined,
-          race: undefined,
           photo_url: photoUrl,
           createdAt: new Date(),
           updatedAt: undefined,

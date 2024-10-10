@@ -51,8 +51,6 @@ export async function POST(request: Request) {
         email: email,
         phoneCountryCode: phoneCountryCode,
         phone: phone,
-        gender: undefined,
-        race: undefined,
         photo_url: photoUrl,
         createdAt: new Date(),
       },
@@ -66,8 +64,6 @@ export async function POST(request: Request) {
       email: upsertedUser.email,
       phoneCountryCode: phoneCountryCode ?? null,
       phone: phone ?? null,
-      gender: upsertedUser.gender,
-      race: upsertedUser.race,
       photoUrl: upsertedUser.photo_url,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
