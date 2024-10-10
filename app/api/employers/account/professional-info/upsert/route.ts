@@ -8,13 +8,19 @@ import {
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import { v4 as uuidv4 } from 'uuid';
 import {devLog} from "@/app/lib/utils";
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
   try {
+    // Get essentials from session, not the request
+    let session = await auth();
+    const userId: string = session?.user.id!;
+    const employerId: string = session?.user.employerId!;
+
     const body: PostEmployerWorkDTO = await request.json();
-    const { userId, currentJobTitle, linkedInUrl, workAddressId } = body;
+    const { currentJobTitle, linkedInUrl, workAddressId } = body;
     const addressId = !workAddressId ? undefined : workAddressId;
     const upsertedEmployer = await prisma.employers.upsert({
       where: {
@@ -26,7 +32,7 @@ export async function POST(request: Request) {
         work_address_id: addressId,
       },
       create: {
-        employer_id: uuidv4(),
+        employer_id: employerId,
         user_id: userId,
         job_title: currentJobTitle,
         work_address_id: addressId,

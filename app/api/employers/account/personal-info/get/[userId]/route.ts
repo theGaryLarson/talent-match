@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { PrismaClient } from '@prisma/client';
 import { ReadEmployerPersonalDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
-import parsePhoneNumberFromString from 'libphonenumber-js';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -40,8 +39,6 @@ export async function GET(
       email: empPersonalInfo?.email,
       phoneCountryCode: empPersonalInfo.phoneCountryCode,
       phone: empPersonalInfo?.phone,
-      gender: empPersonalInfo?.gender,
-      race: empPersonalInfo?.race,
       photoUrl: empPersonalInfo?.photo_url,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });

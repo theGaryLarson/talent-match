@@ -5,17 +5,19 @@ import {
   PostEmployerPersonalDTO,
   ReadEmployerPersonalDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
-import parsePhoneNumberFromString from 'libphonenumber-js';
-import { formatPhoneE164 } from '@/app/lib/utils';
 import { Role } from '@/data/dtos/UserInfoDTO';
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
   try {
+    // Get essentials from session, not the request
+    let session = await auth();
+    const userId: string = session?.user.id!;
+
     const body: PostEmployerPersonalDTO = await request.json();
     const {
-      userId,
       firstName,
       lastName,
       birthDate,
@@ -49,8 +51,6 @@ export async function POST(request: Request) {
         email: email,
         phoneCountryCode: phoneCountryCode,
         phone: phone,
-        gender: undefined,
-        race: undefined,
         photo_url: photoUrl,
         createdAt: new Date(),
       },
@@ -64,8 +64,6 @@ export async function POST(request: Request) {
       email: upsertedUser.email,
       phoneCountryCode: phoneCountryCode ?? null,
       phone: phone ?? null,
-      gender: upsertedUser.gender,
-      race: upsertedUser.race,
       photoUrl: upsertedUser.photo_url,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });

@@ -1046,8 +1046,6 @@ async function seedUsers(numUsers = 4) {
                     email: faker.internet.email({firstName: fName, lastName: lName}),
                     role: faker.helpers.arrayElement(roles),
                     phone: generatePhoneNumber(),
-                    gender: faker.person.gender(),
-                    race: faker.helpers.arrayElement(racesAndEthnicities),
                     photo_url: getRandomUserPhoto(),
                     locationData: {
                         connect: {
@@ -1302,7 +1300,7 @@ async function seedJobSeekersPrivateData() {
                     is_authorized_to_work_in_usa: Boolean(faker.number.int({min: 0, max: 1})),
                     job_sponsorship_required: Boolean(faker.number.int({min: 0, max: 1})),
                     is_veteran: faker.helpers.arrayElement(['yes', 'no', 'undisclosed']),
-                    has_disability: faker.helpers.arrayElement(['yes', 'no', 'undisclosed'])
+                    disability: faker.helpers.arrayElement(['cognitive', 'emotional', 'hearing', 'mental', 'physical', 'visual', 'other', 'unknown', 'yes', 'no', 'undisclosed'])
                 }
             });
         }
