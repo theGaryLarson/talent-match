@@ -1,22 +1,21 @@
 'use client'
-import { createJobListingWithSkills } from '@/app/lib/joblistings'
-import { JobListingDTO } from '@/data/dtos/JobListingDTO'
 import { FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
 export default function Page() {
+  const router = useRouter()
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
-      event.preventDefault()
-   
-      const formData = new FormData(event.currentTarget)
+      event.preventDefault();
+      
+    const formData = new FormData(event.currentTarget);
 
     // Convert FormData to a JobListingDTO object
-    const jobListingData: JobListingDTO = {
-      company_id: formData.get('company_id') as string,
-      location_id: formData.get('location_id') as string,
-      employer_id: formData.get('employer_id') as string,
+    const jobListingData = {
+      //location_id: formData.get('location_id') as string,
+      //employer_id: formData.get('employer_id') as string,
       job_title: formData.get('job_title') as string,
       job_description: formData.get('job_description') as string,
-      is_internship: formData.get('is_internship') === 'on', // Checkboxes return "on" when checked
-      is_paid: formData.get('is_paid') === 'on', // Same for paid
+      is_internship: formData.get('is_internship') === 'on', // Checkboxes return "on"
+      is_paid: formData.get('is_paid') === 'on',
       employment_type: formData.get('employment_type') as string,
       location: formData.get('location') as string,
       salary_range: formData.get('salary_range') as string,
@@ -26,32 +25,47 @@ export default function Page() {
       unpublish_date: formData.get('unpublish_date') ? new Date(formData.get('unpublish_date') as string) : undefined,
       job_post_url: formData.get('job_post_url') as string,
       assessment_url: formData.get('assessment_url') as string,
-      skillIds: formData.get('skillIds') ? (formData.get('skillIds') as string).split(',') : []
-    }
+      skillIds: formData.get('skillIds') ? (formData.get('skillIds') as string).split(',') : [],
+    };
+console.log("look here: ", jobListingData)
+    try {
+      // Send job listing data to server
+      
+      const response = await fetch('/api/joblistings/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jobListingData), // Send as JSON
+      });
 
-    // Call your server function to create the job listing
-    
+      if (!response.ok) {
+        // If response is not OK, handle error
+        console.error('Failed to create job listing');
+        return;
+      }else{
+        // Await the response JSON
+      const data = await response.json();
+      console.log('Job listing created:', data);
+      router.push('/services/joblistings/'+data.job_posting_id)
+      }
+    } catch (error) {
+      console.error('Error creating job listing:', error);
     }
+  }
+    
+    
    
     return  (
         <form onSubmit={onSubmit}>
           {/* Company ID */}
-          <div>
-            <label htmlFor="company_id">Company ID</label>
-            <input type="text" name="company_id" required />
-          </div>
+       
     
           {/* Location ID */}
-          <div>
-            <label htmlFor="location_id">Location ID</label>
-            <input type="text" name="location_id" required />
-          </div>
+  
     
           {/* Employer ID */}
-          <div>
-            <label htmlFor="employer_id">Employer ID</label>
-            <input type="text" name="employer_id" required />
-          </div>
+        
     
           {/* Job Title */}
           <div>

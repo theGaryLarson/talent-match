@@ -1,8 +1,6 @@
 export type JobListingDTO = {
     job_posting_id?: string;        // Optional: for updates or responses
-    company_id: string;
-    location_id: string;
-    employer_id: string;
+    location_id?: string;
     tech_area_id?: string;
     sector_id?: string;
     job_title: string;
