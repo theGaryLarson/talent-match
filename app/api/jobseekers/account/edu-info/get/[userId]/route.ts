@@ -2,7 +2,7 @@ import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import {
     CertDTO,
-    HighestDegreeType,
+    HighestCompletedEducationLevel,
     EducationLevel,
     JsEducationInfoDTO,
     JsEducationPageDTO, ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem
@@ -150,7 +150,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         const result: JsEducationPageDTO = {
             userId: jobseeker.user_id,
-            highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed, HighestDegreeType),
+            highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed, HighestCompletedEducationLevel),
             educations: edHistory,
             certifications: certs,
             projects: projects,
