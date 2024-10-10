@@ -26,10 +26,14 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
     let session = await auth();
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+        const jobseekerId: string = session?.user.jobseekerId!;
+
         const body: JsEducationPageDTO = await request.json();
 
         const {
-            userId,
             highestLevelOfStudy,
             educations,
             certifications,
@@ -51,7 +55,6 @@ export async function POST(request: Request) {
                 }
             });
 
-            const jobseekerId: string = session?.user.jobseekerId!;
             const isEnrolledEdProgram = jobseeker?.is_enrolled_ed_program || false;
 
             upsertedJobseeker = await prisma.jobseekers.upsert({

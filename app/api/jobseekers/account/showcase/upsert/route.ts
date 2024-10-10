@@ -5,14 +5,18 @@ import {JsShowcaseDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
 import {v4 as uuidv4} from 'uuid';
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+
         const body: JsShowcaseDTO = await request.json();
         const {
-            userId,
             introduction,
             skills,
             portfolioUrl,

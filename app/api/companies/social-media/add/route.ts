@@ -6,24 +6,28 @@ import {
     ReadCompanySocialLinkDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const companyId: string | null | undefined = session?.user.companyId;
+        
         const body: PostCompanySocialLinkDTO = await request.json();
         const {
-            companyId,
             socialPlatformId,
             employerId,
             socialUrl,
         } = body;
 
         if (!companyId || !socialPlatformId || !employerId || !socialUrl) {
-            return NextResponse.json({
-                success: false,
-                error: `A uuidv4 companyId, socialPlatformId, employerId and socialUrl is required.`
-            }, {status: 400})
+            return NextResponse.json({success: false, error: `A uuidv4 companyId, socialPlatformId, employerId, and socialUrl is required.`}, {status: 400});
+        }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
         }
 
         const companySocialAccount = await prisma.company_social_links.create({
