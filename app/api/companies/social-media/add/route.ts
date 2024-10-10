@@ -23,11 +23,11 @@ export async function POST(request: Request) {
             socialUrl,
         } = body;
 
-        if (!companyId || !socialPlatformId || !employerId || !socialUrl || !session?.user.employeeIsApproved) {
-            return NextResponse.json({
-                success: false,
-                error: `A uuidv4 companyId, socialPlatformId, employerId and socialUrl is required, and employee must be approved.`
-            }, {status: 400})
+        if (!companyId || !socialPlatformId || !employerId || !socialUrl) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId, socialPlatformId, employerId, and socialUrl is required.`}, {status: 400});
+        }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
         }
 
         const companySocialAccount = await prisma.company_social_links.create({

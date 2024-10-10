@@ -18,9 +18,13 @@ export async function DELETE(request: Request, {params}: { params: { testimonial
         
         const testimonialId = params.testimonialId;
 
-        if (!companyId || !testimonialId || !session?.user.employeeIsApproved) {
-            return NextResponse.json({success: false, error: `A uuidv4 companyId and testimonialId is required, and user must be approved.`}, {status: 400})
+        if (!companyId || !testimonialId) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId and testimonialId is required.`}, {status: 400});
         }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
+        }
+        
         const deletedTestimonial = await prisma.company_testimonials.delete({
             where: {
                 testimonial_id: testimonialId,

@@ -14,11 +14,13 @@ export async function POST(request: Request) {
         const companyId: string | null | undefined = session?.user.companyId;
         
         const body: PostAddressDTO & {companyId: string} = await request.json();
-        const {
-            zipCode,
-        } = body;
-        if (!companyId || !zipCode || !session?.user.employeeIsApproved) {
-            return NextResponse.json({success: false, error: `A uuidv4 companyId and zip code is required, and employee must be approved.`}, {status: 400})
+        const { zipCode, } = body;
+
+        if (!companyId || !zipCode) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId and zip code is required.`}, {status: 400});
+        }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
         }
 
         const newLocation = await prisma.company_addresses.upsert({

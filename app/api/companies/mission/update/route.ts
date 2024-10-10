@@ -15,11 +15,13 @@ export async function PATCH(request: Request) {
         const { mission} = body;
 
         // validate the companyId and verify the user is an approved employee
-        if (!companyId || !session?.user.employeeIsApproved) {
-            return NextResponse.json(
-                { error: `Failed to update company, missing Id or unapproved employee ` },
-                { status: 500 });
+        if (!companyId) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId is required.`}, {status: 400});
         }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
+        }
+        
         const result = await prisma.companies.update({
             where: {
                 company_id: companyId,

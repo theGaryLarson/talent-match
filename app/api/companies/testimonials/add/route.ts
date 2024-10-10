@@ -23,9 +23,13 @@ export async function POST(request: Request) {
             author,
         } = body;
 
-        if (!companyId || !employerId || !session?.user.employeeIsApproved) {
-            return NextResponse.json({success: false, error: `A uuidv4 companyId and employerId is required, and user must be approved.`}, {status: 400})
+        if (!companyId || !employerId) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId and employerId is required.`}, {status: 400});
         }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
+        }
+
         const companyTestimonial = await prisma.company_testimonials.create({
             data: {
                 testimonial_id: uuidv4(),

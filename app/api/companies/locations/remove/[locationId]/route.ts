@@ -13,8 +13,11 @@ export async function DELETE(request: Request, {params}: { params: { locationId:
         
         const addressId = params.locationId;
 
-        if (!addressId || !session?.user.employeeIsApproved) {
-            return NextResponse.json({success: false, error: `A uuidv4 addressId is required, and employee must be approved.`}, {status: 400})
+        if (!addressId) {
+            return NextResponse.json({success: false, error: `A uuidv4 addressId is required.`}, {status: 400});
+        }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
         }
 
         const deletedAddress = await prisma.company_addresses.delete({
