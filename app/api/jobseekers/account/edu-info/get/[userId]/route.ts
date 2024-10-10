@@ -150,7 +150,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
         const result: JsEducationPageDTO = {
             userId: jobseeker.user_id,
-            highestLevelOfStudy: mapToEnumOrThrow(jobseeker.highest_level_of_study_completed ?? "None", HighestDegreeType),
+            highestLevelOfStudy: mapToEnum(jobseeker.highest_level_of_study_completed, HighestDegreeType),
             educations: edHistory,
             certifications: certs,
             projects: projects,
