@@ -32,12 +32,26 @@ import { JobListingDTO } from '@/data/dtos/JobListingDTO';
     
     
     try {
-      const locationId = await prisma.company_addresses.findFirst({where:{
-        zip:"98295"
-      }})
-if (!locationId) {
-      throw new Error('Location not found for the provided zip code');
+      let locationId = await prisma.company_addresses.findFirst(
+        {where:{AND:{
+          zip:jobData.zip,
+          company_id:Session.user.companyId
+        }
+        }}
+      )
+      if (!locationId) {
+        locationId = await prisma.company_addresses.create(
+        {
+          data:{
+            company_id:Session.user.companyId,
+            company_address_id: uuidv4(),
+            zip: jobData.zip
+          }
+        }
+        )
     }
+
+    let postalGeoData = await prisma.postalGeoData.findFirst({where:{zip:jobData.zip}})
 
     console.log('Employer ID:', Session.user.employerId);
     console.log('Company ID:', Session.user.companyId);
@@ -45,7 +59,7 @@ if (!locationId) {
         data: {
         job_posting_id: uuidv4(),
           company_id: Session.user.companyId,
-          location_id: locationId?.company_address_id??'',
+          location_id: locationId.company_address_id,
           employer_id: Session?.user.employerId,
           //tech_area_id: jobData.tech_area_id,
           //sector_id: jobData.sector_id,
@@ -53,11 +67,11 @@ if (!locationId) {
           job_description: jobData.job_description,
           is_internship: jobData.is_internship || false,
           is_paid: jobData.is_paid || true,
-          zip:"98178",
+          zip:jobData.zip,
           employment_type: jobData.employment_type || 'full-time',
-          location: jobData.location,
+          location: jobData.location,//meant to be Remote/ hybrid/ onsite
           salary_range: jobData.salary_range,
-          county: jobData.county,
+          county: postalGeoData?.county??'',
           publish_date: new Date(),
           unpublish_date: new Date(jobData.unpublish_date??'12/25/2030'),
           job_post_url: jobData.job_post_url,
