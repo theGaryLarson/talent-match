@@ -908,7 +908,7 @@ const frontendProjectSkills = [
     },
 ];
 
-const racesAndEthnicities = [
+const raceOptions = [
     "White",
     "Black or African American",
     "American Indian or Alaska Native",
