@@ -1,34 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
+import React, {useEffect} from 'react';
 import Confetti from '@/app/ui/components/Confetti';
 
-// REVIEW: testing redux
-// import type { RootState } from '@/lib/store';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-} from '@mui/material';
+
 import { Button } from 'flowbite-react';
 import { useRouter } from 'next/navigation';
-import { JsPreferencesDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useSession } from 'next-auth/react';
 
 export default function CreateJobseekerProfilePreferencesPage() {
-  // const { fields } = useSelector((state: RootState) => state.form);
-  // const dispatch = useDispatch();
-  const [employmentType, setEmploymentType] = useState('');
-  const [pathway, setPathway] = useState('');
-  const [error, setError] = useState('');
   const router = useRouter();
   const { data: session, status } = useSession();
 
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.jobseekerId) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`/api/jobseekers/validate-profile`, {
+            method: 'PATCH', // Specify the PATCH method
+            headers: {
+              'Content-Type': 'application/json', // Set the content type
+            },
+          });
+          if (!response.ok) {
+            throw new Error('Failed to validate jobseeker profile.');
+          }
+        } catch (error) {
+          console.error('Error fetching jobseeker preferences:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [status, session]);
   function handleClick() {
     router.push(`/services/jobseekers/${session?.user.jobseekerId!}`);
   }
