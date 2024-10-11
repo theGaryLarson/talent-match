@@ -278,6 +278,7 @@ const highestDegreeType = [
 ]
 
 const itOccupationTechnologyAreas = [
+    { id: "f23b7623-60ba-4a5b-a0a4-6cb588dbf6bd", name: "N/A" },
     { id: "f18b7623-60ba-4a5b-a0a4-6cb588bdf6db", name: "Cybersecurity" },
     { id: "7e3b01fc-7c6a-4baf-b755-e47b07ad9191", name: "Cloud Computing" },
     { id: "48d5b1e9-2f36-4c2a-89bb-3b6b063fdd77", name: "Data Science" },

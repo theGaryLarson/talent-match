@@ -646,15 +646,35 @@ export async function getTechnologyAreas() {
   return technologyAreas;
 }
 
-export async function removeDeletionMarker(userId: string) {
-  const industrySectors = await prisma.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      is_marked_deletion: null,
-    },
-  });
+export async function removeDeletionMarker() {
+  const session = await auth();
+  if (!session?.user?.id){
+    return NextResponse.json({ error: 'Unable to retrieve user id from session' }, { status: 409 })
+  }
+  try {
+    const industrySectors = await prisma.user.update({
+      where: {
+        id: session.user.id!,
+      },
+      data: {
+        is_marked_deletion: null,
+      },
+    });
+  } catch (e: any) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2025') {
+        // Record not found
+        console.error('Record not found:', e);
+        return NextResponse.json({error: 'The user was not found.'}, {status: 404});
+      }
+      // Add specific Prisma errors as needed
+      console.error('Unexpected error:', e);
+      return NextResponse.json({error: `Failed to validate jobseeker profile.\n${e.message} `}, {status: 500});
+    }
+  } finally {
+    prisma.$disconnect()
+  }
+
 }
 
 export async function deleteUser(role: Role, userId: string) {
