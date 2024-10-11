@@ -122,7 +122,7 @@ export default memo(function WorkExperiences({
             classNamePrefix + workExperience.workId + '-' + classCompanyTechArea
           }
           apiAutoloadRoute="/api/employers/technology-areas"
-          label="Technology Area *"
+          label="Technical Expertise *"
           getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
           getOptionFromLabel={(
             options: TechnologyAreaDropdownDTO[],
@@ -133,7 +133,7 @@ export default memo(function WorkExperiences({
               title: '',
             }
           }
-          placeholder="Your company's technology area"
+          placeholder="Your job role's area of technical expertise"
           onChange={(val) => handleChange(index, classCompanyTechArea, val)}
           required
           value={workExperience[classCompanyTechArea]}
