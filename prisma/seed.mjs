@@ -908,7 +908,7 @@ const frontendProjectSkills = [
     },
 ];
 
-const racesAndEthnicities = [
+const raceOptions = [
     "White",
     "Black or African American",
     "American Indian or Alaska Native",
@@ -1082,7 +1082,7 @@ async function seedPathways() {
         'c45fce80-c3ea-47b5-b541-6f7f8f9c6009',
         'a46fbd79-c3ea-47b5-9bbf-6f7f8f9c6009',
         '56308104-c3ea-47b5-9bbf-6f7f8f9c6009',
-        't78fce80-c3ea-47b5-b541-6f7f8f9c6009',
+        '478fce80-c3ea-47b5-b541-6f7f8f9c6009',
     ]
     let idx = 0
     for (const path of pathways) {
