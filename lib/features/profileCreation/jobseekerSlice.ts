@@ -2,7 +2,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../jobseekerStore';
 import {
-  HighestDegreeType,
+  HighestCompletedEducationLevel,
   JsDisclosuresPostDTO,
   JsEducationPageDTO,
   JsIntroPostDTO,
@@ -43,7 +43,7 @@ export const initialState: JobseekerState = {
   education: {
     userId: '',
     jobseekerId: '',
-    highestLevelOfStudy: HighestDegreeType.NoFormalEducation,
+    highestLevelOfStudy: HighestCompletedEducationLevel.NoFormalEducation,
     educations: [],
     certifications: [],
     projects: [],

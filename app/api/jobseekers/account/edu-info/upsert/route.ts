@@ -8,7 +8,7 @@ import {
 } from '@prisma/client';
 import {
     CertDTO,
-    HighestDegreeType,
+    HighestCompletedEducationLevel,
     EducationLevel,
     JsEducationInfoDTO,
     JsEducationPageDTO,
@@ -144,6 +144,7 @@ export async function POST(request: Request) {
                         edLevel: edEntry.edLevel,
                         preAppEdSystem: edEntry.preAppEdSystem || undefined,
                         isEnrolled: edEntry.isEnrolled,
+                        enrollmentStatus: edEntry.enrollmentStatus,
                         startDate: new Date(edEntry.startDate).toISOString(),
                         gradDate: new Date(edEntry.gradDate).toISOString(),
                         degreeType: edEntry.degreeType,
@@ -328,6 +329,7 @@ export async function POST(request: Request) {
                 edProviderId: jsEdu.eduProviderId,
                 eduProviderName: undefined,
                 isEnrolled: jsEdu.isEnrolled,
+                enrollmentStatus: jsEdu.enrollmentStatus,
                 isTechDegree: jsEdu.isTechDegree,
                 startDate: jsEdu.startDate.toISOString(),
                 gradDate: jsEdu.gradDate.toISOString(),
@@ -379,7 +381,7 @@ export async function POST(request: Request) {
             const result: JsEducationPageDTO = {
                 userId: upsertedJobseeker.user_id,
                 jobseekerId: upsertedJobseeker.jobseeker_id,
-                highestLevelOfStudy: mapToEnumOrThrow(upsertedJobseeker.highest_level_of_study_completed, HighestDegreeType),
+                highestLevelOfStudy: mapToEnumOrThrow(upsertedJobseeker.highest_level_of_study_completed, HighestCompletedEducationLevel),
                 educations: mappedEdHistory,
                 certifications: mappedCerts,
                 projects: mappedProjects,
