@@ -657,14 +657,37 @@ export async function removeDeletionMarker(userId: string) {
   });
 }
 
-export async function deleteUser(role: Role, userId: string, date: Date) {
+export async function deleteUser(role: Role, userId: string) {
   // TODO: create delete user & remove jobseeker/soft-delete from api-routes
-  // jobseeker cannot be deleted if they have participated in a partner training provider program
+  // jobseeker cannot be deleted if they have participated in a partner training provider program (i.e. edu_provider.iscoalitionmember = true)
 }
 
 async function deleteJobseeker(userId: string) {
   // TODO: cannot be hard deleted if they have participated in a WJI Training Partner program.
   //  check training_provider.iscoalitionmember prior to deleting. If jobseeker is a coalition member perform soft delete.
+  const jobseekerRecord = await prisma.user.findUnique({
+    where: {
+      id: userId
+    },
+    include: {
+      jobseekers: {
+        select: {
+          jobseeker_id: true,
+        },
+        include: {
+          jobseeker_education: {
+            include: {
+              eduProviders: {
+                select: {
+                  isCoalitionMember: true,
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  })
 }
 
 async function deleteEmployer(userId: string) {
