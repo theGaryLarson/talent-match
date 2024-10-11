@@ -62,31 +62,41 @@ export type ProjectExpDTO = {
   skills: SkillDTO[];
 };
 
-export enum HighestDegreeType {
-  PrimaryEducation = 'Primary Education',
+// Updated to match WJI grant reporting data (do not modify)
+export enum HighestCompletedEducationLevel {
+  // VocationalQualification = 'Vocational Qualification / Certification',
+  NoFormalEducation = 'Less than high school diploma',
+  GED = 'GED',
   HighSchool = 'High School',
+  PostHighSchool = 'Some post high school, no degree or certificate',
+  Certificate = 'Certificate (less than two years)',
   Associates = 'Associates',
   Bachelors = 'Bachelors',
   Masters = 'Masters',
   Doctorate = 'Doctorate',
-  GED = 'GED',
-  VocationalQualification = 'Vocational Qualification / Certification',
-  NoFormalEducation = 'No Formal Education',
+  // PrimaryEducation = 'Primary Education',
 }
 
 // Rank mapping for the enum to use with jobseekers/query
-export const educationRank: Record<HighestDegreeType, number> = {
-  [HighestDegreeType.NoFormalEducation]: 0,
-  [HighestDegreeType.PrimaryEducation]: 1,
-  [HighestDegreeType.GED]: 2,
-  [HighestDegreeType.HighSchool]: 3,
-  [HighestDegreeType.VocationalQualification]: 4,
-  [HighestDegreeType.Associates]: 5,
-  [HighestDegreeType.Bachelors]: 6,
-  [HighestDegreeType.Masters]: 7,
-  [HighestDegreeType.Doctorate]: 8,
+export const educationRank: Record<HighestCompletedEducationLevel, number> = {
+  [HighestCompletedEducationLevel.NoFormalEducation]: 0,
+  [HighestCompletedEducationLevel.GED]: 1,
+  [HighestCompletedEducationLevel.HighSchool]: 2,
+  [HighestCompletedEducationLevel.PostHighSchool]: 3,
+  [HighestCompletedEducationLevel.Certificate]: 4,
+  [HighestCompletedEducationLevel.Associates]: 5,
+  [HighestCompletedEducationLevel.Bachelors]: 6,
+  [HighestCompletedEducationLevel.Masters]: 7,
+  [HighestCompletedEducationLevel.Doctorate]: 8,
 };
 
+// included for WJI grant reporting (do not modify)
+export enum ProgramEnrollmentStatus {
+  Applied = "Admitted, not yet enrolled.",
+  Enrolled = "Currently active in program.",
+  Graduated = "Graduated / Completed",
+  Withdrawn = "Withdrawn / terminated",
+}
 export enum CollegeDegreeType {
   AssociatesDegree = "Associate's Degree",
   BachelorsDegree = "Bachelor's Degree",
@@ -139,6 +149,7 @@ export type JsEducationInfoDTO = {
   edProviderName?: string;
   preAppEdSystem: PreAEduSystem | null;
   isEnrolled: boolean;
+  enrollmentStatus?: ProgramEnrollmentStatus;
   startDate: string;
   gradDate: string;
   degreeType?: CollegeDegreeType | HighSchoolDegreeType | null;
@@ -151,7 +162,7 @@ export type JsEducationInfoDTO = {
 export type JsEducationPageDTO = {
   userId: string;
   jobseekerId?: string;
-  highestLevelOfStudy: HighestDegreeType;
+  highestLevelOfStudy: HighestCompletedEducationLevel;
   educations: JsEducationInfoDTO[];
   certifications: CertDTO[];
   projects: ProjectExpDTO[];
