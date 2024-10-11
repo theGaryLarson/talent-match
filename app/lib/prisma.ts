@@ -568,7 +568,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 //   const normalizedSkills = skills.filter(
 //     (skill) => skill && skill.trim() !== '',
 //   );
-//   // TODO: add other options from Jobseeker ListView
+//   // TODO: add other options from Jobseeker talent-search
 //   // Construct the AND conditions array
 //   const andConditions: any[] = [];
 //

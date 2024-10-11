@@ -78,16 +78,16 @@ describe('BrowseByCategory Component', () => {
             </RouterContext.Provider>
         );
         const links = [
-            { text: 'Cloud Computing', href: '/services/employers/dashboard/listview?search=Cloud+Computing' },
-            { text: 'Cyber Security', href: '/services/employers/dashboard/listview?search=Cyber+Security' },
-            { text: 'Data Analyst', href: '/services/employers/dashboard/listview?search=Data+Analytics' },
-            { text: 'IT Support', href: '/services/employers/dashboard/listview?search=IT+Support' },
-            { text: 'Project Manag.', href: '/services/employers/dashboard/listview?search=Project+Management' },
-            { text: 'Software Dev', href: '/services/employers/dashboard/listview?search=Software+Development' },
-            { text: 'AI Analyst', href: '/services/employers/dashboard/listview?search=AI+Analytics' },
-            { text: 'UX Researcher', href: '/services/employers/dashboard/listview?search=UX+Research' },
-            { text: 'Machine Learning', href: '/services/employers/dashboard/listview?search=Machine+Learning' },
-            { text: 'UX Designer', href: '/services/employers/dashboard/listview?search=UX+Designer' },
+            { text: 'Cloud Computing', href: '/services/talent-search?search=Cloud+Computing' },
+            { text: 'Cyber Security', href: '/services/talent-search?search=Cyber+Security' },
+            { text: 'Data Analyst', href: '/services/talent-search?search=Data+Analytics' },
+            { text: 'IT Support', href: '/services/talent-search?search=IT+Support' },
+            { text: 'Project Manag.', href: '/services/talent-search?search=Project+Management' },
+            { text: 'Software Dev', href: '/services/talent-search?search=Software+Development' },
+            { text: 'AI Analyst', href: '/services/talent-search?search=AI+Analytics' },
+            { text: 'UX Researcher', href: '/services/talent-search?search=UX+Research' },
+            { text: 'Machine Learning', href: '/services/talent-search?search=Machine+Learning' },
+            { text: 'UX Designer', href: '/services/talent-search?search=UX+Designer' },
             { text: 'Lorem Ipsum', href: '/underconstruction' },
         ];
 
