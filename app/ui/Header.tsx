@@ -14,7 +14,7 @@ import AccountMenu from './components/mui/AccountMenu';
 // ]
 
 const TopLevelLinks = [
-  { name: 'Talent Showcase', href: '/services/employers/dashboard/listview' },
+  { name: 'Talent Showcase', href: '/services/employers/dashboard/talent-search' },
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
   // { name: 'Explore', href: '/underconstruction' },

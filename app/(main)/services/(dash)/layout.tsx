@@ -19,7 +19,7 @@ export default async function layout({ children }: { children: React.ReactNode }
           Home
         </Link>
         <Link
-          href="/services/employers/dashboard/listview"
+          href="/services/talent-search"
           className="inline-flex items-center justify-start gap-[5px]  p-2"
         >
           <SearchOutlinedIcon />
