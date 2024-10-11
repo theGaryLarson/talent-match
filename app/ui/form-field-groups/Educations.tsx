@@ -9,7 +9,7 @@ import {
   HighSchoolDegreeType,
   EducationLevel,
   PreAEduSystem,
-  JsEducationInfoDTO,
+  JsEducationInfoDTO, ProgramEnrollmentStatus,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { edu_providers, educators, provider_programs } from '@prisma/client';
 import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
@@ -29,6 +29,7 @@ const classIsCurrent = 'isEnrolled';
 const classStartDate = 'startDate';
 const classEndDate = 'gradDate';
 const classDegreeType = 'degreeType';
+const classEnrollmentStatus = 'enrollmentStatus';
 // const classGradeLevel = "schoolGradeLevel"; no longer needed as an input
 // const classPreALevel = "preALevel";
 const classProgramObject = 'programObject'; // fixme: rename to programId
@@ -52,6 +53,7 @@ export interface EducationData {
   [classEdProviderObject]?: EducationProviderDTO | null;
   [classEdProviderId]?: string | null;
   [classDegreeType]?: CollegeDegreeType | HighSchoolDegreeType | null;
+  [classEnrollmentStatus]?: ProgramEnrollmentStatus | null;
   [classProgramObject]?: GeneralProgramDTO | null;
   [classProgramName]: string;
   [classProgramId]?: string | null;
@@ -74,6 +76,7 @@ export function defaultEducationData() {
     [classStartDate]: null,
     [classEndDate]: null,
     [classDegreeType]: null,
+    [classEnrollmentStatus]: null,
     // [classGradeLevel]: null,
     // [classPreALevel]: null,
     [classProgramObject]: null,
@@ -240,6 +243,25 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             >
               What is your degree type? *
             </SelectOptionsWithLabel>
+
+            {/*added for WJI data collection alignment (Please do not modify data).*/}
+            <SelectOptionsWithLabel
+                id="profile-creation-education-enrollment-status"
+                className="w-full"
+                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                    (value) => ({ label: value, value }),
+                )}
+                placeholder="Select enrollment status"
+                onChange={(e) =>
+                    handleChange(index, classEnrollmentStatus, e.target.value)
+                }
+                required
+                value={education[classEnrollmentStatus] as string}
+            >
+              What is your enrollment status? *
+            </SelectOptionsWithLabel>
+            {/*end add for WJI data collection alignment*/}
+
           </div>
           <div className="profile-form-grid md:grid-cols-2">
             <DatePicker
@@ -259,17 +281,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               }
             />
           </div>
-          <Label>
-            <Checkbox
-              id={classNamePrefix + education.id + '-' + classIsCurrent}
-              name={classNamePrefix + education.id + '-' + classIsCurrent}
-              checked={education[classIsCurrent]}
-              onChange={(e) =>
-                handleChange(index, classIsCurrent, e.target.checked)
-              }
-            />
-            Current
-          </Label>
+          {/*<Label>*/}
+          {/*  <Checkbox*/}
+          {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    checked={education[classIsCurrent]}*/}
+          {/*    onChange={(e) =>*/}
+          {/*      handleChange(index, classIsCurrent, e.target.checked)*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*  Current*/}
+          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-high-school-gpa'}
@@ -336,6 +358,23 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             >
               What is your degree type? *
             </SelectOptionsWithLabel>
+            {/*added for WJI data collection alignment (Please do not modify data).*/}
+            <SelectOptionsWithLabel
+                id="profile-creation-education-enrollment-status"
+                className="w-full"
+                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                    (value) => ({ label: value, value }),
+                )}
+                placeholder="Select enrollment status"
+                onChange={(e) =>
+                    handleChange(index, classEnrollmentStatus, e.target.value)
+                }
+                required
+                value={education[classEnrollmentStatus] as string}
+            >
+              What is your enrollment status? *
+            </SelectOptionsWithLabel>
+            {/*end add for WJI data collection alignment*/}
           </div>
           <div className="profile-form-grid md:grid-cols-2">
             <DatePicker
@@ -355,17 +394,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               }
             />
           </div>
-          <Label>
-            <Checkbox
-              id={classNamePrefix + education.id + '-' + classIsCurrent}
-              name={classNamePrefix + education.id + '-' + classIsCurrent}
-              checked={education[classIsCurrent]}
-              onChange={(e) =>
-                handleChange(index, classIsCurrent, e.target.checked)
-              }
-            />
-            Current
-          </Label>
+          {/*<Label>*/}
+          {/*  <Checkbox*/}
+          {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    checked={education[classIsCurrent]}*/}
+          {/*    onChange={(e) =>*/}
+          {/*      handleChange(index, classIsCurrent, e.target.checked)*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*  Current*/}
+          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-college-gpa'}
@@ -417,6 +456,23 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               searchPlaceholder="Training program name"
               getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
             />
+            {/*added for WJI data collection alignment (Please do not modify data).*/}
+            <SelectOptionsWithLabel
+                id="profile-creation-education-enrollment-status"
+                className="w-full"
+                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                    (value) => ({ label: value, value }),
+                )}
+                placeholder="Select enrollment status"
+                onChange={(e) =>
+                    handleChange(index, classEnrollmentStatus, e.target.value)
+                }
+                required
+                value={education[classEnrollmentStatus] as string}
+            >
+              What is your enrollment status? *
+            </SelectOptionsWithLabel>
+            {/*end add for WJI data collection alignment*/}
           </div>
           <div className="profile-form-grid md:grid-cols-2">
             <DatePicker
@@ -436,17 +492,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               }
             />
           </div>
-          <Label>
-            <Checkbox
-              id={classNamePrefix + education.id + '-' + classIsCurrent}
-              name={classNamePrefix + education.id + '-' + classIsCurrent}
-              checked={education[classIsCurrent]}
-              onChange={(e) =>
-                handleChange(index, classIsCurrent, e.target.checked)
-              }
-            />
-            Current
-          </Label>
+          {/*<Label>*/}
+          {/*  <Checkbox*/}
+          {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    checked={education[classIsCurrent]}*/}
+          {/*    onChange={(e) =>*/}
+          {/*      handleChange(index, classIsCurrent, e.target.checked)*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*  Current*/}
+          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-training-program-gpa'}
@@ -513,6 +569,23 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               searchPlaceholder="Program name"
               getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
             />
+            {/*added for WJI data collection alignment (Please do not modify data).*/}
+            <SelectOptionsWithLabel
+                id="profile-creation-education-enrollment-status"
+                className="w-full"
+                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                    (value) => ({ label: value, value }),
+                )}
+                placeholder="Select enrollment status"
+                onChange={(e) =>
+                    handleChange(index, classEnrollmentStatus, e.target.value)
+                }
+                required
+                value={education[classEnrollmentStatus] as string}
+            >
+              What is your enrollment status? *
+            </SelectOptionsWithLabel>
+            {/*end add for WJI data collection alignment*/}
           </div>
           <div className="profile-form-grid md:grid-cols-2">
             <DatePicker
@@ -532,17 +605,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               }
             />
           </div>
-          <Label>
-            <Checkbox
-              id={classNamePrefix + education.id + '-' + classIsCurrent}
-              name={classNamePrefix + education.id + '-' + classIsCurrent}
-              checked={education[classIsCurrent]}
-              onChange={(e) =>
-                handleChange(index, classIsCurrent, e.target.checked)
-              }
-            />
-            Current
-          </Label>
+          {/*<Label>*/}
+          {/*  <Checkbox*/}
+          {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    checked={education[classIsCurrent]}*/}
+          {/*    onChange={(e) =>*/}
+          {/*      handleChange(index, classIsCurrent, e.target.checked)*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*  Current*/}
+          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-preapprenticeship-gpa'}
@@ -594,6 +667,23 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               searchPlaceholder="Education provider program name"
               getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
             />
+            {/*added for WJI data collection alignment (Please do not modify data).*/}
+            <SelectOptionsWithLabel
+                id="profile-creation-education-enrollment-status"
+                className="w-full"
+                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                    (value) => ({ label: value, value }),
+                )}
+                placeholder="Select enrollment status"
+                onChange={(e) =>
+                    handleChange(index, classEnrollmentStatus, e.target.value)
+                }
+                required
+                value={education[classEnrollmentStatus] as string}
+            >
+              What is your enrollment status? *
+            </SelectOptionsWithLabel>
+            {/*end add for WJI data collection alignment*/}
           </div>
           <div className="profile-form-grid md:grid-cols-2">
             <DatePicker
@@ -613,17 +703,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               }
             />
           </div>
-          <Label>
-            <Checkbox
-              id={classNamePrefix + education.id + '-' + classIsCurrent}
-              name={classNamePrefix + education.id + '-' + classIsCurrent}
-              checked={education[classIsCurrent]}
-              onChange={(e) =>
-                handleChange(index, classIsCurrent, e.target.checked)
-              }
-            />
-            Current
-          </Label>
+          {/*<Label>*/}
+          {/*  <Checkbox*/}
+          {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
+          {/*    checked={education[classIsCurrent]}*/}
+          {/*    onChange={(e) =>*/}
+          {/*      handleChange(index, classIsCurrent, e.target.checked)*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*  Current*/}
+          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-other-gpa'}
