@@ -5,7 +5,7 @@ import {
     HighestCompletedEducationLevel,
     EducationLevel,
     JsEducationInfoDTO,
-    JsEducationPageDTO, ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem
+    JsEducationPageDTO, ProjectExpDTO, CollegeDegreeType, HighSchoolDegreeType, PreAEduSystem, ProgramEnrollmentStatus
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {mapToEnum, mapToEnumOrThrow} from "@/app/lib/utils";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
@@ -41,6 +41,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                         edLevel: true,
                         preAppEdSystem: true,
                         isEnrolled: true,
+                        enrollmentStatus: true,
                         startDate: true,
                         gradDate: true,
                         degreeType: true,
@@ -108,6 +109,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             edProviderName: edu.eduProviders.name! ?? undefined, //these should always exist on an entry
             preAppEdSystem: mapToEnumOrThrow(edu?.preAppEdSystem, PreAEduSystem),
             isEnrolled: edu.isEnrolled,
+            enrollmentStatus: mapToEnum(edu.enrollmentStatus, ProgramEnrollmentStatus),
             startDate: edu.startDate.toISOString(),
             gradDate: edu.gradDate.toISOString(),
             degreeType: mapToEnum(edu.degreeType, CollegeDegreeType) ||
