@@ -26,6 +26,9 @@ export default auth((req) => {
 
     "/services/jobseekers/dashboard",
 
+
+    "/services/joblistings",
+
     "/api/jobseekers/",
 
     "/api/edu-providers/", //fixme: had to add so jobseeker can see list of colleges in TextFieldAutoComplete component
@@ -47,7 +50,8 @@ export default auth((req) => {
 
     "/services/employers/dashboard",
     "/services/jobseekers/",
-
+    "/services/joblistings",
+    "/api/joblistings/add",
     "/api/employers/",
 
     "/api/companies",  //fixme: had to add so employer can see list of existing companies in TextFieldAutoComplete component

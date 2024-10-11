@@ -2,13 +2,18 @@ import { NextResponse } from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function DELETE(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+
         const body = await request.json();
-        const { userId, skillIds } = body;
+        const { skillIds } = body;
         if (!userId || !Array.isArray(skillIds) || skillIds.length === 0) {
             return NextResponse.json({
                 success: false,

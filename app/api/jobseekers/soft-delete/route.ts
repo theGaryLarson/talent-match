@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -8,12 +9,15 @@ export async function POST(request: Request) {
     let jsId = null;
     let jsMarkedForDeletion = null;
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const jobseekerId: string = session?.user.jobseekerId!;
+
         const body =  await request.json();
-        const { jobseekerId } = body;
         jsId = jobseekerId;
         jsMarkedForDeletion = await prisma.jobseekers.update({
             where: {
-                jobseeker_id: jsId,
+                jobseeker_id: jobseekerId,
             },
             data: {
                 is_marked_deletion: new Date()

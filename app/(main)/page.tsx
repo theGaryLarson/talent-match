@@ -5,6 +5,9 @@ import Image from 'next/image';
 import PageBanner from '../ui/components/PageBannner';
 import RoundedButtonCard from '../ui/components/RoundedButtonCard';
 //entire TWC landing page
+export const metadata = {
+    title: "Tech Workforce Coalition"
+  };
 export default function Page() {
     return (
         <>

@@ -5,19 +5,31 @@ import {
     ReadCompanyTestimonialsDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function DELETE(request: Request, {params}: { params: { testimonialId: string } }) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const employerId: string = session?.user.employerId!;
+        const companyId: string | null | undefined = session?.user.companyId;
+        
         const testimonialId = params.testimonialId;
 
-        if (!testimonialId) {
-            return NextResponse.json({success: false, error: `A uuidv4 testimonialId is required.`}, {status: 400})
+        if (!companyId || !testimonialId) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId and testimonialId is required.`}, {status: 400});
         }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
+        }
+        
         const deletedTestimonial = await prisma.company_testimonials.delete({
             where: {
                 testimonial_id: testimonialId,
+                company_id: companyId,
+                employer_id: employerId,
             }
         });
 

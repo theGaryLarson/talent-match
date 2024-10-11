@@ -752,3 +752,100 @@ export async function bookmarkJobPosting(jobPostId: string) {
     prisma.$disconnect()
   }
 }
+
+
+
+
+/**
+ * @author Damien Cruz
+ * @param companyId The ID for the company
+ * @returns a list of all employer users that work for a company
+ */
+export async function getEmployersByCompanyId(companyId:string) {
+  try {
+    const employers = await prisma.employers.findMany({
+      where: {
+        company_id: companyId,
+      },
+      select: {
+        employer_id: true,
+        job_title: true,
+        is_verified_employee: true,
+        users: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            phone: true,
+            photo_url: true,
+          },
+        },
+      },
+    });
+
+    return employers;
+  } catch (error) {
+    console.error('Error fetching employers and user information:', error);
+    throw new Error('Could not retrieve employers for the given company.');
+  }
+}
+/**
+ * @author Damien Cruz
+ * @param companyId The ID for the company
+ * @returns a company record
+ */
+export async function getCompanyById(companyId:string){
+  try{
+    const company = prisma.companies.findUnique(
+      {
+      where:{
+        company_id:companyId
+      }
+      }
+    )
+    return company
+  }catch(e){
+    console.log(e)
+  }
+}
+/**
+ * @author Damien Cruz
+ * @param employerId the ID of the employer
+ * @returns 
+ */
+export async function getEmployerById(employerId:string) {
+  try {
+    const employer = await prisma.employers.findUnique({
+      where: {
+        employer_id: employerId,
+      },
+      select: {
+        employer_id: true,
+        job_title: true,
+        is_verified_employee: true,
+        users: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            phone: true,
+            photo_url: true,
+          },
+        },
+      },
+    });
+
+    if (!employer) {
+      throw new Error('Employer not found');
+    }
+
+    return employer;
+  } catch (error) {
+    console.error('Error fetching employer:', error);
+    throw new Error('Could not retrieve employer with the given ID.');
+  }
+}
+
+
