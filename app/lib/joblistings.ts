@@ -1,20 +1,9 @@
 import {
-  companies,
-  edu_providers,
-  PostalGeoData,
-  Prisma,
   PrismaClient,
-  programs,
-  skills,
 } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
-import { CompanyDropdownDTO } from '@/data/dtos/CompanyDropdownDTO';
 
-import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { v4 as uuidv4 } from 'uuid';
-import { Role } from '@/data/dtos/UserInfoDTO';
 import { auth } from '@/auth';
 import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
