@@ -13,9 +13,9 @@ import { CompanyDropdownDTO } from '@/data/dtos/CompanyDropdownDTO';
 
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { v4 as uuidv4 } from 'uuid';
-import {Role} from "@/data/dtos/UserInfoDTO";
+import { Role } from "@/data/dtos/UserInfoDTO";
 import { auth } from "@/auth";
-import {NextResponse} from "next/server";
+import { NextResponse } from "next/server";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -84,20 +84,20 @@ async function genericSearch<T>({
   const containsResults =
     exactResults.length + startsWithResults.length < maxResults
       ? sortResults(
-          await model.findMany({
-            where: {
-              AND: [
-                ...fields.map((field) => ({
-                  [field]: { contains: searchTerm },
-                })),
-                ...fields.map((field) => ({
-                  [field]: { not: { startsWith: searchTerm } },
-                })),
-              ],
-            },
-            take: maxResults - exactResults.length - startsWithResults.length,
-          }),
-        )
+        await model.findMany({
+          where: {
+            AND: [
+              ...fields.map((field) => ({
+                [field]: { contains: searchTerm },
+              })),
+              ...fields.map((field) => ({
+                [field]: { not: { startsWith: searchTerm } },
+              })),
+            ],
+          },
+          take: maxResults - exactResults.length - startsWithResults.length,
+        }),
+      )
       : [];
 
   return [...exactResults, ...startsWithResults, ...containsResults];
@@ -297,42 +297,42 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
     const containsResults =
       exactResults.length + startsWithResults.length < MAX_RESULTS
         ? (
-            await prisma.skills.findMany({
-              where: {
-                AND: [
-                  {
+          await prisma.skills.findMany({
+            where: {
+              AND: [
+                {
+                  skill_name: {
+                    contains: searchTerm,
+                  },
+                },
+                {
+                  NOT: {
                     skill_name: {
-                      contains: searchTerm,
+                      startsWith: searchTerm,
                     },
                   },
-                  {
-                    NOT: {
-                      skill_name: {
-                        startsWith: searchTerm,
-                      },
+                },
+                {
+                  NOT: {
+                    skill_name: {
+                      contains: '(' + searchTerm + ')',
                     },
                   },
-                  {
-                    NOT: {
-                      skill_name: {
-                        contains: '(' + searchTerm + ')',
-                      },
-                    },
-                  },
-                ],
-              },
-              take:
-                MAX_RESULTS - exactResults.length - startsWithResults.length,
-            })
-          ).sort((itemA: SkillDTO, itemB: SkillDTO) => {
-            if (itemA.skill_name > itemB.skill_name) {
-              return 1;
-            }
-            if (itemA.skill_name < itemB.skill_name) {
-              return -1;
-            }
-            return 0;
+                },
+              ],
+            },
+            take:
+              MAX_RESULTS - exactResults.length - startsWithResults.length,
           })
+        ).sort((itemA: SkillDTO, itemB: SkillDTO) => {
+          if (itemA.skill_name > itemB.skill_name) {
+            return 1;
+          }
+          if (itemA.skill_name < itemB.skill_name) {
+            return -1;
+          }
+          return 0;
+        })
         : [];
     // Had to query them separately to guarantee Exact and StartsWith
     //   matches were found since I'm limiting the results, and OR
@@ -391,7 +391,7 @@ export const jobSeekerCardViewSelect = {
       },
       id: true,
       edLevel: true,
-      isEnrolled: true,
+      enrollmentStatus: true,
       startDate: true,
       gradDate: true,
       degreeType: true,
@@ -622,7 +622,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 // }
 
 // returns those jobseekers with at least yearsExp in a profession
-export async function getJobSeekerCardViewByWorkExperience() {}
+export async function getJobSeekerCardViewByWorkExperience() { }
 
 export async function getIndustrySectors() {
   const industrySectors = await prisma.industry_sectors.findMany({
@@ -716,7 +716,7 @@ async function deleteEmployer(userId: string) {
 
 export async function bookmarkJobseeker(jobseekerId: string) {
   const session = await auth();
-  if (!session?.user?.employeeIsApproved){
+  if (!session?.user?.employeeIsApproved) {
     return NextResponse.json({ error: 'Access denied. Please check that you have been given approval by your coworkers or CFA Admin.' }, { status: 409 })
   }
   try {
@@ -737,16 +737,16 @@ export async function bookmarkJobseeker(jobseekerId: string) {
       }
       // Add specific Prisma errors as needed
       console.error('Unexpected error:', e);
-      return NextResponse.json({error: `Failed to bookmark jobseeker.\n${e.message} `}, {status: 500});
+      return NextResponse.json({ error: `Failed to bookmark jobseeker.\n${e.message} ` }, { status: 500 });
     }
   } finally {
-  prisma.$disconnect()
+    prisma.$disconnect()
   }
 }
 
 export async function bookmarkJobPosting(jobPostId: string) {
   const session = await auth();
-  if (!session?.user?.jobseekerId){
+  if (!session?.user?.jobseekerId) {
     return NextResponse.json({ error: 'Access denied. Please create a jobseeker profile.' }, { status: 409 })
   }
   try {
@@ -766,7 +766,7 @@ export async function bookmarkJobPosting(jobPostId: string) {
       }
       // Add specific Prisma errors as needed
       console.error('Unexpected error:', e);
-      return NextResponse.json({error: `Failed to bookmark job post.\n${e.message} `}, {status: 500});
+      return NextResponse.json({ error: `Failed to bookmark job post.\n${e.message} ` }, { status: 500 });
     }
   } finally {
     prisma.$disconnect()
@@ -781,7 +781,7 @@ export async function bookmarkJobPosting(jobPostId: string) {
  * @param companyId The ID for the company
  * @returns a list of all employer users that work for a company
  */
-export async function getEmployersByCompanyId(companyId:string) {
+export async function getEmployersByCompanyId(companyId: string) {
   try {
     const employers = await prisma.employers.findMany({
       where: {
@@ -815,17 +815,17 @@ export async function getEmployersByCompanyId(companyId:string) {
  * @param companyId The ID for the company
  * @returns a company record
  */
-export async function getCompanyById(companyId:string){
-  try{
+export async function getCompanyById(companyId: string) {
+  try {
     const company = prisma.companies.findUnique(
       {
-      where:{
-        company_id:companyId
-      }
+        where: {
+          company_id: companyId
+        }
       }
     )
     return company
-  }catch(e){
+  } catch (e) {
     console.log(e)
   }
 }
@@ -834,7 +834,7 @@ export async function getCompanyById(companyId:string){
  * @param employerId the ID of the employer
  * @returns 
  */
-export async function getEmployerById(employerId:string) {
+export async function getEmployerById(employerId: string) {
   try {
     const employer = await prisma.employers.findUnique({
       where: {
