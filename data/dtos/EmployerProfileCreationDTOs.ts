@@ -78,7 +78,7 @@ export type PostCompanyInfoDTO = {
   companyPhone?: string | null;
   mission?: string | null;
   vision?: string | null;
-  size: string;
+  companySize: string;
   estimatedAnnualHires: string;
 };
 
@@ -114,7 +114,7 @@ export type ReadEmployerAboutDTO = {
 };
 
 export type PostEmployerMissionDTO = {
-  companyId: string;
+  // companyId: string;
   mission: string;
 };
 
