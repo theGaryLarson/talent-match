@@ -67,6 +67,7 @@ export async function uploadResume(
 
 // Method to get a link to the resume with a SAS token
 export async function getResumeUrl(userId: string): Promise<string | null> {
+  if (userId.length < 1) return null;
   const blobPrefix = `${userId}/${BlobPrefix.Resume}`; // Common prefix for resumes
   return await getBlobUrlWithSas(resumeContainerName, blobPrefix);
 }
