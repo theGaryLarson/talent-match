@@ -32,7 +32,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     (state: RootState) => state.employer.disclosures,
   );
   const companyStoreData = useSelector((state: RootState) => state.employer.company);
-
+  devLog(companyStoreData)
   const [disclosuresData, setDisclosuresData] = useState<PostEmployerWorkDTO>({
     ...disclosuresStoreData,
   });
@@ -76,7 +76,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               );
             } else {
               let { result } = await response.json();
-              //   setCompanyName(result.company_name);
+              setCompanyName(result.company_name);
               // REVIEW: @Gary this section might not align correctly with the above /api/companies/name/get
               setDisclosuresData({
                 ...disclosuresData,
