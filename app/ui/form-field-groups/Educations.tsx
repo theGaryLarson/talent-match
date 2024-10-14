@@ -295,14 +295,10 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-high-school-gpa'}
-              type="number"
+              type="text"
               className="w-full"
               placeholder="Your GPA (ex: 4.0)"
-              min="1.0"
-              max="4.0"
-              step="0.01"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              required
               value={education[classGPA] ?? ''}
             >
               What is your grade?
@@ -408,14 +404,10 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-college-gpa'}
-              type="number"
+              type="text"
               className="w-full"
               placeholder="Your GPA (ex: 4.0)"
-              min="1.0"
-              max="4.0"
-              step="0.01"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              required
               value={education[classGPA] ?? ''}
             >
               What is your grade?
@@ -506,14 +498,10 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-training-program-gpa'}
-              type="number"
+              type="text"
               className="w-full"
               placeholder="Your GPA (ex: 4.0)"
-              min="1.0"
-              max="4.0"
-              step="0.01"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              required
               value={education[classGPA] ?? ''}
             >
               What is your grade?
@@ -619,14 +607,10 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-preapprenticeship-gpa'}
-              type="number"
+              type="text"
               className="w-full"
               placeholder="Your GPA (ex: 4.0)"
-              min="1.0"
-              max="4.0"
-              step="0.01"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              required
               value={education[classGPA] ?? ''}
             >
               What is your grade?
@@ -717,14 +701,10 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-other-gpa'}
-              type="number"
+              type="text"
               className="w-full"
               placeholder="Your GPA (ex: 4.0)"
-              min="1.0"
-              max="4.0"
-              step="0.01"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              required
               value={education[classGPA] ?? ''}
             >
               What is your grade?
