@@ -3,15 +3,20 @@ import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { devLog, mapToEnumOrThrow } from '@/app/lib/utils';
 import { Role } from '@/data/dtos/UserInfoDTO';
+import { auth } from '@/auth';
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function PATCH(request: Request) {
   try {
-    const body: { userId: string; role: Role } = await request.json();
+    // Get essentials from session, not the request
+    let session = await auth();
+    const userId: string = session?.user.id!;
+
+    const body: { role: Role } = await request.json();
 
     // Destructure the DTO
-    const { userId, role } = body;
+    const { role } = body;
 
     const result = await prisma.$transaction(async (prisma) => {
       // Upsert user

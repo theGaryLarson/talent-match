@@ -278,6 +278,7 @@ const highestDegreeType = [
 ]
 
 const itOccupationTechnologyAreas = [
+    { id: "f23b7623-60ba-4a5b-a0a4-6cb588dbf6bd", name: "N/A" },
     { id: "f18b7623-60ba-4a5b-a0a4-6cb588bdf6db", name: "Cybersecurity" },
     { id: "7e3b01fc-7c6a-4baf-b755-e47b07ad9191", name: "Cloud Computing" },
     { id: "48d5b1e9-2f36-4c2a-89bb-3b6b063fdd77", name: "Data Science" },
@@ -908,7 +909,7 @@ const frontendProjectSkills = [
     },
 ];
 
-const racesAndEthnicities = [
+const raceOptions = [
     "White",
     "Black or African American",
     "American Indian or Alaska Native",
@@ -1062,10 +1063,15 @@ async function seedUsers(numUsers = 4) {
 
 async function seedPathways() {
     const pathways = [
-        "Software Development",
-        "IT & Cloud Computing",
         "Cybersecurity",
         "Data Analytics",
+        "Data Center Operations",
+        "IT & Cloud Computing",
+        "Digital Marketing",
+        "UI/UX",
+        "Project Management",
+        "Software Development",
+        "Other",
     ]
     console.log('Seeding Pathways...')
     const uuids = [
@@ -1075,6 +1081,9 @@ async function seedPathways() {
         'b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009',
         '79608104-c3ea-47b5-9bbf-6f7f8f9c6009',
         'c45fce80-c3ea-47b5-b541-6f7f8f9c6009',
+        'a46fbd79-c3ea-47b5-9bbf-6f7f8f9c6009',
+        '56308104-c3ea-47b5-9bbf-6f7f8f9c6009',
+        '478fce80-c3ea-47b5-b541-6f7f8f9c6009',
     ]
     let idx = 0
     for (const path of pathways) {
@@ -1242,11 +1251,15 @@ async function seedJobSeekers() {
             role: 'JOBSEEKER',
         }
     });
+    // Fetch pathways, excluding the "Other" pathway if in a development environment
+    const isProduction = process.env.NODE_ENV === 'production'; // Check the environment
     const pathways = await prisma.pathways.findMany({
+        where: isProduction ? {} : { pathway_title: { not: 'Other' } }, // Exclude "Other" in development
         select: {
             pathway_id: true,
         }
     });
+
 
     console.log('Seeding jobseekers...')
     for (const jobSeeker of jobSeekers) {

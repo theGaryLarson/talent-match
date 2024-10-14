@@ -5,7 +5,7 @@ import {
   jobseekerQueryTestSelect,
 } from '@/app/lib/prisma';
 import { educationRank } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { HighestDegreeType } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import { HighestCompletedEducationLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {devLog} from "@/app/lib/utils";
 
 const prisma = new PrismaClient();
@@ -106,11 +106,11 @@ export async function POST(request: Request) {
 
   // Education Level Filtering
   if (educationLevel) {
-    const minRank: number = educationRank[educationLevel as HighestDegreeType];
+    const minRank: number = educationRank[educationLevel as HighestCompletedEducationLevel];
     andConditions.push({
       highest_level_of_study_completed: {
         in: Object.keys(educationRank).filter(
-          (level) => educationRank[level as HighestDegreeType] >= minRank,
+          (level) => educationRank[level as HighestCompletedEducationLevel] >= minRank,
         ),
       },
     });
@@ -157,8 +157,8 @@ export async function POST(request: Request) {
   if (sortBy === 'highestDegree') {
     filteredJobSeekers.sort(
       (a, b) =>
-        educationRank[b.highest_level_of_study_completed as HighestDegreeType] -
-        educationRank[a.highest_level_of_study_completed as HighestDegreeType],
+        educationRank[b.highest_level_of_study_completed as HighestCompletedEducationLevel] -
+        educationRank[a.highest_level_of_study_completed as HighestCompletedEducationLevel],
     );
   }
   devLog(filteredJobSeekers[0]);

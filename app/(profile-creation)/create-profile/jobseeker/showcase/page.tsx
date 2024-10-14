@@ -147,7 +147,7 @@ export default function CreateJobseekerProfileShowcasePage() {
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Career Introduction</h2>
+              <h2>Introduction to Employers</h2>
             </legend>
 
             <div className="profile-form-grid">
@@ -159,7 +159,7 @@ export default function CreateJobseekerProfileShowcasePage() {
                 placeholder="Type here"
                 value={introduction}
               >
-                Introduction
+                Tell Your Story
               </InputTextWithLabel>
               {/*<InputTextWithLabel*/}
               {/*  id="profile-creation-intro-current-position"*/}

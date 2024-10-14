@@ -587,7 +587,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 //   const normalizedSkills = skills.filter(
 //     (skill) => skill && skill.trim() !== '',
 //   );
-//   // TODO: add other options from Jobseeker ListView
+//   // TODO: add other options from Jobseeker talent-search
 //   // Construct the AND conditions array
 //   const andConditions: any[] = [];
 //
@@ -665,25 +665,68 @@ export async function getTechnologyAreas() {
   return technologyAreas;
 }
 
-export async function removeDeletionMarker(userId: string) {
-  const industrySectors = await prisma.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      is_marked_deletion: null,
-    },
-  });
+export async function removeDeletionMarker() {
+  const session = await auth();
+  if (!session?.user?.id){
+    return NextResponse.json({ error: 'Unable to retrieve user id from session' }, { status: 409 })
+  }
+  try {
+    const industrySectors = await prisma.user.update({
+      where: {
+        id: session.user.id!,
+      },
+      data: {
+        is_marked_deletion: null,
+      },
+    });
+  } catch (e: any) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2025') {
+        // Record not found
+        console.error('Record not found:', e);
+        return NextResponse.json({error: 'The user was not found.'}, {status: 404});
+      }
+      // Add specific Prisma errors as needed
+      console.error('Unexpected error:', e);
+      return NextResponse.json({error: `Failed to validate jobseeker profile.\n${e.message} `}, {status: 500});
+    }
+  } finally {
+    prisma.$disconnect()
+  }
+
 }
 
-export async function deleteUser(role: Role, userId: string, date: Date) {
+export async function deleteUser(role: Role, userId: string) {
   // TODO: create delete user & remove jobseeker/soft-delete from api-routes
-  // jobseeker cannot be deleted if they have participated in a partner training provider program
+  // jobseeker cannot be deleted if they have participated in a partner training provider program (i.e. edu_provider.iscoalitionmember = true)
 }
 
 async function deleteJobseeker(userId: string) {
   // TODO: cannot be hard deleted if they have participated in a WJI Training Partner program.
   //  check training_provider.iscoalitionmember prior to deleting. If jobseeker is a coalition member perform soft delete.
+  const jobseekerRecord = await prisma.user.findUnique({
+    where: {
+      id: userId
+    },
+    include: {
+      jobseekers: {
+        select: {
+          jobseeker_id: true,
+        },
+        include: {
+          jobseeker_education: {
+            include: {
+              eduProviders: {
+                select: {
+                  isCoalitionMember: true,
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  })
 }
 
 async function deleteEmployer(userId: string) {
@@ -748,3 +791,100 @@ export async function bookmarkJobPosting(jobPostId: string) {
     prisma.$disconnect()
   }
 }
+
+
+
+
+/**
+ * @author Damien Cruz
+ * @param companyId The ID for the company
+ * @returns a list of all employer users that work for a company
+ */
+export async function getEmployersByCompanyId(companyId:string) {
+  try {
+    const employers = await prisma.employers.findMany({
+      where: {
+        company_id: companyId,
+      },
+      select: {
+        employer_id: true,
+        job_title: true,
+        is_verified_employee: true,
+        users: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            phone: true,
+            photo_url: true,
+          },
+        },
+      },
+    });
+
+    return employers;
+  } catch (error) {
+    console.error('Error fetching employers and user information:', error);
+    throw new Error('Could not retrieve employers for the given company.');
+  }
+}
+/**
+ * @author Damien Cruz
+ * @param companyId The ID for the company
+ * @returns a company record
+ */
+export async function getCompanyById(companyId:string){
+  try{
+    const company = prisma.companies.findUnique(
+      {
+      where:{
+        company_id:companyId
+      }
+      }
+    )
+    return company
+  }catch(e){
+    console.log(e)
+  }
+}
+/**
+ * @author Damien Cruz
+ * @param employerId the ID of the employer
+ * @returns 
+ */
+export async function getEmployerById(employerId:string) {
+  try {
+    const employer = await prisma.employers.findUnique({
+      where: {
+        employer_id: employerId,
+      },
+      select: {
+        employer_id: true,
+        job_title: true,
+        is_verified_employee: true,
+        users: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            phone: true,
+            photo_url: true,
+          },
+        },
+      },
+    });
+
+    if (!employer) {
+      throw new Error('Employer not found');
+    }
+
+    return employer;
+  } catch (error) {
+    console.error('Error fetching employer:', error);
+    throw new Error('Could not retrieve employer with the given ID.');
+  }
+}
+
+

@@ -6,23 +6,29 @@ import {
     ReadCompanySocialLinkDTO
 } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function DELETE(request: Request, {params}: {params: {socialId: string}}) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const companyId: string | null | undefined = session?.user.companyId;
+        
         const socialId = params.socialId;
 
-        if (!socialId) {
-            return NextResponse.json({
-                success: false,
-                error: `A uuidv4 socialId is required.`
-            }, {status: 400})
+        if (!companyId || !socialId) {
+            return NextResponse.json({success: false, error: `A uuidv4 companyId and socialId is required.`}, {status: 400});
+        }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
         }
 
         const deletedSocial = await prisma.company_social_links.delete({
             where: {
-                social_media_id: socialId
+                social_media_id: socialId,
+                company_id: companyId,
             },
             select: {
                 social_media_id: true,

@@ -3,18 +3,24 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import {PrismaClient} from "@prisma/client";
 import {PostAddressDTO, ReadAddressDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
 import {v4 as uuidv4} from 'uuid';
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
+        // Get essentials from session, not the request
+        let session = await auth();
+        const companyId: string | null | undefined = session?.user.companyId;
+        
         const body: PostAddressDTO & {companyId: string} = await request.json();
-        const {
-            companyId,
-            zipCode,
-        } = body;
+        const { zipCode, } = body;
+
         if (!companyId || !zipCode) {
-            return NextResponse.json({success: false, error: `A uuidv4 companyId and zip code is required.`}, {status: 400})
+            return NextResponse.json({success: false, error: `A uuidv4 companyId and zip code is required.`}, {status: 400});
+        }
+        if (!session?.user.employeeIsApproved) {
+            return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
         }
 
         const newLocation = await prisma.company_addresses.upsert({

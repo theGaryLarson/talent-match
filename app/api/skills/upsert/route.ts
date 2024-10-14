@@ -3,12 +3,17 @@ import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
     try {
-        const { userId, skillIds } = await request.json();
+        // Get essentials from session, not the request
+        let session = await auth();
+        const userId: string = session?.user.id!;
+
+        const { skillIds } = await request.json();
 
         if (!userId || !Array.isArray(skillIds)) {
             return NextResponse.json({ error: 'Invalid input. Requires jobseekerId and skillId[]' }, { status: 400 });

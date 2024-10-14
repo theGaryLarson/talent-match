@@ -7,7 +7,7 @@ import { MdAdd } from 'react-icons/md';
 import { Button } from 'flowbite-react';
 import {
   CertDTO,
-  HighestDegreeType,
+  HighestCompletedEducationLevel,
   EducationLevel,
   JsEducationInfoDTO,
   JsEducationPageDTO,
@@ -100,6 +100,7 @@ export default function CreateJobseekerProfileEducationPage() {
         edProviderId: education.edProviderId,
         edProviderName: education.edProviderName ?? '',
         isEnrolled: education.isEnrolled,
+        enrollmentStatus: education.enrollmentStatus,
         startDate: dayjs(education.startDate),
         gradDate: dayjs(education.gradDate),
         degreeType:
@@ -121,7 +122,7 @@ export default function CreateJobseekerProfileEducationPage() {
 
   function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>) {
     setHighestLevelOfStudy(
-      mapToEnumOrThrow(event.target.value, HighestDegreeType),
+      mapToEnumOrThrow(event.target.value, HighestCompletedEducationLevel),
     );
   }
 
@@ -318,6 +319,7 @@ export default function CreateJobseekerProfileEducationPage() {
         edLevel: ed.edLevel,
         edProviderName: ed?.edProviderObject?.name || ed?.edProviderName,
         isEnrolled: ed.isEnrolled,
+        enrollmentStatus: ed.enrollmentStatus ?? undefined,
         startDate: ed.startDate?.toISOString() ?? '',
         gradDate: ed.gradDate?.toISOString() ?? '',
         degreeType: ed.degreeType || undefined,
@@ -413,10 +415,11 @@ export default function CreateJobseekerProfileEducationPage() {
             <SelectOptionsWithLabel
               id="profile-creation-education-highest-completed"
               className="w-full"
-              options={(Object.values(HighestDegreeType) as string[])
+              options={(
+                Object.values(HighestCompletedEducationLevel) as string[]
+              )
                 .filter(
-                  (value) =>
-                    value !== 'Vocational Qualification / Certification',
+                  (value) => value !== 'Certificate (less than two years)', // TODO: review to see if needs included for WJI grant reporting.
                 )
                 .map((value) => ({ label: value, value }))}
               placeholder="Please select"
