@@ -81,11 +81,7 @@ export async function GET(
         ...(privateData?.job_sponsorship_required !== undefined && {
           requiresSponsorship: privateData.job_sponsorship_required,
         }),
-        workExperiences: workExperiences.map((w) => ({
-          ...w,
-          startDate: w.startDate.toISOString(),
-          endDate: w.endDate?.toISOString() ?? null,
-        })),
+        workExperiences,
       };
 
       return NextResponse.json(

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
 import { Button, Label } from 'flowbite-react';
@@ -14,7 +14,10 @@ import InternshipExperiences, {
   defaultInternshipExperienceData,
   InternshipExperienceData,
 } from '@/app/ui/form-field-groups/InternshipExperiences';
-import { JsWorkExpDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {
+  JsWorkDTO,
+  JsWorkExpDTO,
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,7 +31,7 @@ import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
 interface Data {
-  yearsWorkExperience: string | number;
+  yearsWorkExperience: string;
   monthsInternshipExperience: string | number;
   workExperiences: WorkExperienceData[];
   internshipExperiences: WorkExperienceData[];
@@ -40,10 +43,25 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const dispatch = useDispatch();
-  const workExperienceStoreData = useSelector(
+  const originalWorkExperienceStoreData = useSelector(
     (state: RootState) => state.jobseeker.workExperience,
   );
-  let workExperienceData = { ...workExperienceStoreData };
+  const workExperienceStoreData = useMemo(
+    (): JsWorkExpDTO => ({
+      ...originalWorkExperienceStoreData,
+      workExperiences: originalWorkExperienceStoreData.workExperiences?.map(
+        (workExperience) => ({
+          ...workExperience,
+          startDate: new Date(workExperience.startDate),
+          endDate: workExperience.endDate
+            ? new Date(workExperience.endDate)
+            : null,
+        }),
+      ),
+    }),
+    [originalWorkExperienceStoreData],
+  );
+  let workExperienceData: JsWorkExpDTO = { ...workExperienceStoreData };
   const [error, setError] = useState<string | null>(null);
 
   const [data, setData] = useState<Data>({
@@ -244,8 +262,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       isInternship: false,
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
-      startDate: workExp.startDate!.toISOString(),
-      endDate: workExp.endDate ? workExp.endDate.toISOString() : null,
+      startDate: workExp.startDate!.toDate(),
+      endDate: workExp.endDate ? workExp.endDate.toDate() : null,
       responsibilities: workExp.responsibilities,
     }));
 
@@ -259,10 +277,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         isInternship: true,
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
-        startDate: internshipExp.startDate!.toISOString(),
-        endDate: internshipExp.endDate
-          ? internshipExp.endDate.toISOString()
-          : null,
+        startDate: internshipExp.startDate!.toDate(),
+        endDate: internshipExp.endDate ? internshipExp.endDate.toDate() : null,
         responsibilities: internshipExp.responsibilities,
       }),
     );
@@ -289,7 +305,18 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       });
 
       if (response.ok) {
-        dispatch(setWorkExperience(workExperienceData));
+        dispatch(
+          setWorkExperience({
+            ...workExperienceData,
+            workExperiences: workExperienceData.workExperiences?.map(
+              (workExperience) => ({
+                ...workExperience,
+                startDate: workExperience.startDate.toISOString(),
+                endDate: workExperience.endDate?.toISOString() ?? null,
+              }),
+            ),
+          }),
+        );
       } else {
         const errorMessage = `Failed to submit work experiences. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
