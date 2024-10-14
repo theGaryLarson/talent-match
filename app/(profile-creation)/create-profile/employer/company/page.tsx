@@ -1,7 +1,7 @@
 'use client';
 
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, {ChangeEvent, FormEvent, SyntheticEvent, useEffect, useMemo, useRef, useState} from 'react';
+import {usePathname, useRouter} from 'next/navigation';
 import type { RootState } from '@/lib/employerStore';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
@@ -57,6 +57,13 @@ export default function CreateEmployerCompanyInfoPage() {
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
     null,
   );
+  const [companyLocations, setCompanyLocations] = useState<ReadAddressDTO[]>([]);
+  const [workLocationData, setWorkLocationData] = useState<ReadAddressDTO | string>('');  // Track user input in state
+
+  const pathname = usePathname();
+  // using to track whether selectCompanyDropDownData is a string or object. In this way I can prevent Basic Info section
+  // from resetting when retyping or correcting Company name.
+  const prevSelectCompanyDropdownData = useRef<typeof selectCompanyDropdownData>();
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -94,7 +101,7 @@ export default function CreateEmployerCompanyInfoPage() {
           companyPhone: fetchedData.companyPhone || undefined,
           mission: fetchedData.mission || undefined,
           vision: fetchedData.vision || undefined,
-          size: fetchedData.employeeCount || '',
+          companySize: fetchedData.employeeCount || '',
           estimatedAnnualHires: fetchedData.estimatedAnnualHires || ''
         };
         devLog('updatedCompanyData', updatedCompanyData);
@@ -107,19 +114,19 @@ export default function CreateEmployerCompanyInfoPage() {
         setSelectCompanyDropdownData({
           companyId: fetchedData.companyId,
           companyName: fetchedData.companyName,
-          companyLogoUrl: fetchedData.logoUrl || undefined,
+          logoUrl: fetchedData.logoUrl || undefined,
           industrySectorId: fetchedData.industrySectorId || undefined,
-          companyWebsite: fetchedData.websiteUrl || '',
+          websiteUrl: fetchedData.websiteUrl || '',
           yearFounded: fetchedData.yearFounded ? parseInt(fetchedData.yearFounded) : null,
           companyEmail: fetchedData.companyEmail || '',
           companyPhone: fetchedData.companyPhone || '',
           companySize: fetchedData.employeeCount || '',
-          predictedHires: fetchedData.estimatedAnnualHires || '',
+          estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
           approvedCompany: fetchedData.isApproved ?? false
         });
 
         setIndustry({
-          industry_sector_id: fetchedData.industrySectorId || '',
+          industry_sector_id: fetchedData.industrySectorId || null,
           sector_title: fetchedData.industrySectorTitle || ''
         });
 
@@ -135,13 +142,17 @@ export default function CreateEmployerCompanyInfoPage() {
           devLog('session.user.companyId: ', session.user.companyId)
           fetchCompanyData(session.user.companyId);
         } else {
-          //company doesn't exist on page load
+          // No company data exists; generate a new companyId
           const newCompanyId = uuidv4();
           setCompanyId(newCompanyId);
-          setCompanyData(prevState => ({
+          setCompanyData((prevState) => ({
             ...prevState,
+            ...initialState.company,
+            employerId: session.user.employerId!,
             companyId: newCompanyId,
-          }))
+
+          }));
+
         }
 
       } else { // redux store contains company data
@@ -152,7 +163,66 @@ export default function CreateEmployerCompanyInfoPage() {
     };
 
     initializeFormFields();
-  }, [session?.user.id]);
+  }, [session?.user.id, pathname]);
+
+  useEffect(() => {
+    if (
+        typeof selectCompanyDropdownData === 'object' &&
+        selectCompanyDropdownData !== null
+    ) {
+      // Company selected from dropdown
+      const companyObj = selectCompanyDropdownData;
+      setYearFounded(
+          companyObj.yearFounded ? dayjs().year(companyObj.yearFounded) : null
+      );
+      setCompanyData({
+        ...companyData,
+        companyId: companyObj.companyId,
+        companyName: companyObj.companyName,
+        yearFounded: companyObj.yearFounded?.toString() || '',
+        websiteUrl: companyObj.websiteUrl,
+      });
+      setIndustry({
+        industry_sector_id: companyObj.industrySectorId ?? '',
+        sector_title: '', // Not needed; only ID is required
+      });
+      setCompanyId(companyObj.companyId);
+    } else {
+      // selectCompanyDropdownData is a string (new company name)
+      // Check if previous value was an object
+      if (
+          !companyData.companyId ||
+          (typeof prevSelectCompanyDropdownData.current === 'object' &&
+          prevSelectCompanyDropdownData.current !== null)
+      ) {
+        // Transitioned from object to string - reset inputs
+        const newCompanyId = uuidv4();
+        setCompanyData({
+          ...initialState.company,
+          companyId: newCompanyId,
+          employerId: session?.user.employerId!,
+          companyName: selectCompanyDropdownData as string,
+        });
+        setCompanyId(newCompanyId);
+        setYearFounded(null);
+        setIndustry({
+          industry_sector_id: null,
+          sector_title: '',
+        });
+      } else {
+        // Continuing to type a new company name - update companyName only
+        setCompanyData({
+          ...companyData,
+          companyName: selectCompanyDropdownData as string,
+        });
+      }
+    }
+
+    // Update the previous value
+    prevSelectCompanyDropdownData.current = selectCompanyDropdownData;
+  }, [selectCompanyDropdownData, pathname]);
+
+
 
 
 
@@ -162,26 +232,59 @@ export default function CreateEmployerCompanyInfoPage() {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
     if (companyData.hasOwnProperty(fieldName)) {
-      setCompanyData({ ...companyData,
+      setCompanyData({
+        ...companyData,
         [fieldName]: value
       });
     }
   };
 
+  // Handle address selection from autocomplete
+  const handleAddressSelection = (
+      e: SyntheticEvent<Element, Event>,
+      val: string | ReadAddressDTO | null
+  ) => {
+    if (val && typeof val === 'object' && 'zipCode' in val) {
+      const selectedLocation = val as ReadAddressDTO;
+
+      // Append the selected location to the array if it's not already selected
+      setCompanyLocations((prevLocations) => {
+        const alreadyExists = prevLocations.some(
+            (location) => location?.zipCode === selectedLocation?.zipCode
+        );
+        if (!alreadyExists) {
+          return [...prevLocations, selectedLocation];
+        }
+        return prevLocations;  // Avoid adding duplicates
+      });
+    }
+  };
+
   const handleImageUpload = (url: string) => {
-    // Update the local state with the uploaded image URL
-    if (typeof selectCompanyDropdownData === 'object' && selectCompanyDropdownData !== null) {
+    // Update companyData.logoUrl in all cases
+    setCompanyData((prevState) => ({
+      ...prevState,
+      logoUrl: url,
+    }));
+
+    // If selectCompanyDropdownData is an object, update its logoUrl
+    if (
+        typeof selectCompanyDropdownData === 'object' &&
+        selectCompanyDropdownData !== null
+    ) {
       setSelectCompanyDropdownData({
         ...selectCompanyDropdownData,
-        companyLogoUrl: url,
+        logoUrl: url,
       });
     }
 
+    // Update logoUrl state
     setLogoUrl(url);
-    updateSessionProperties( {
-      ...session,
+
+    // Update session properties if needed
+    updateSessionProperties({
       image: url,
-    })
+    });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -193,34 +296,36 @@ export default function CreateEmployerCompanyInfoPage() {
     }
 
     const chosenCompanyData: PostCompanyInfoDTO = { ...companyData };
-    // company exists in selection
-    if (typeof selectCompanyDropdownData !== 'string') {
-      chosenCompanyData.companyId = selectCompanyDropdownData.companyId;
-      chosenCompanyData.companyName = selectCompanyDropdownData.companyName;
-      //fix: added the rest of the values that are set from the company drop down object
-      chosenCompanyData.logoUrl = selectCompanyDropdownData.companyLogoUrl;
-      chosenCompanyData.industrySectorId = selectCompanyDropdownData.industrySectorId;
-      chosenCompanyData.websiteUrl = selectCompanyDropdownData.companyWebsite;
-      chosenCompanyData.companyEmail = selectCompanyDropdownData.companyEmail;
-      chosenCompanyData.companyPhone = selectCompanyDropdownData.companyPhone;
-      chosenCompanyData.yearFounded = selectCompanyDropdownData.yearFounded ? selectCompanyDropdownData.yearFounded.toString() : '';
-      chosenCompanyData.size = selectCompanyDropdownData.companySize;
-      chosenCompanyData.estimatedAnnualHires = selectCompanyDropdownData.predictedHires;
-      devLog(chosenCompanyData)
-    // company doesn't exist in selection
-    } else {
-      chosenCompanyData.companyId = companyId!; // newCompanyId is created for a new company
-      chosenCompanyData.companyName = selectCompanyDropdownData; // string data type because company doesn't exist in db
-    }
 
     chosenCompanyData.employerId = session?.user.employerId!;
 
-    if (industry) {
-      chosenCompanyData.industrySectorId = industry.industry_sector_id;
-      chosenCompanyData.industrySectorTitle = industry.sector_title;
+    // company exists in selection
+    if (typeof selectCompanyDropdownData !== 'string') {
+      chosenCompanyData.employerId = session.user.employerId!;
+      chosenCompanyData.companyId = selectCompanyDropdownData.companyId;
+      chosenCompanyData.companyName = selectCompanyDropdownData.companyName;
+      chosenCompanyData.industrySectorId = selectCompanyDropdownData.industrySectorId;
+      chosenCompanyData.logoUrl = selectCompanyDropdownData.logoUrl;
+      chosenCompanyData.websiteUrl = selectCompanyDropdownData.websiteUrl;
+      chosenCompanyData.companyEmail = selectCompanyDropdownData.companyEmail;
+      chosenCompanyData.companyPhone = selectCompanyDropdownData.companyPhone;
+      chosenCompanyData.yearFounded = selectCompanyDropdownData.yearFounded ? selectCompanyDropdownData.yearFounded.toString() : '';
+      chosenCompanyData.companySize = selectCompanyDropdownData.companySize;
+      chosenCompanyData.estimatedAnnualHires = selectCompanyDropdownData.estimatedAnnualHires;
+      devLog(chosenCompanyData)
+    // new company: values stored in companyData from page inputs
+    } else {
+      chosenCompanyData.companyId = companyData.companyId; // newCompanyId is created for a new company
+      chosenCompanyData.companyName = selectCompanyDropdownData; // string data type because company doesn't exist in db
+      chosenCompanyData.industrySectorId = industry?.industry_sector_id
+      chosenCompanyData.logoUrl = companyData.logoUrl;
+      chosenCompanyData.websiteUrl = companyData.websiteUrl;
+      chosenCompanyData.companyEmail = companyData.companyEmail;
+      chosenCompanyData.companyPhone = companyData.companyPhone;
+      // chosenCompanyData.yearFounded = yearFounded?.toString()!;
+      // chosenCompanyData.companySize = companyData.companySize;
+      chosenCompanyData.estimatedAnnualHires = companyData.estimatedAnnualHires;
     }
-    chosenCompanyData.yearFounded = yearFounded?.toISOString() ?? '';
-    chosenCompanyData.logoUrl = logoUrl;
 
     try {
       console.log(chosenCompanyData);
@@ -252,7 +357,7 @@ export default function CreateEmployerCompanyInfoPage() {
         } else {
           //company drop down selection doesn't exist. use generated companyId instead
           await updateSessionProperties({
-            companyId: companyId,
+            companyId: chosenCompanyData.companyId, // new uuidv4() generated above
             companyIsApproved: false,
           });
         }
@@ -319,14 +424,8 @@ export default function CreateEmployerCompanyInfoPage() {
               noResultsText="No company found..."
               value={selectCompanyDropdownData ?? ''}
               onChange={(e, val) => {
-                // Check if val is of type CompanyDropdownDTO by checking for a known property
-                if (val !== null && typeof val === 'object' && 'companyId' in val) {
-                  // Now we know val is of type CompanyDropdownDTO
-                  devLog('CompanyDropdownDTO object:', val);
-                  setYearFounded(val.yearFounded ? dayjs().year(val.yearFounded) : null);
-                }
-
-                // Always update the dropdown value
+                // logic predominately handled in useEffect
+                // Always update the dropdown value whether an existing company (object) or new company (string)
                 setSelectCompanyDropdownData(val ?? '');
               }}
               searchPlaceholder="Company name"
@@ -356,7 +455,14 @@ export default function CreateEmployerCompanyInfoPage() {
                   placeholder="Your company's industry sector"
                   //REVIEW: value={companyData.industrySectorTitle}?
                   value={industry}
-                  onChange={(val) => setIndustry(val)}
+                  onChange={(val) => {
+                    setIndustry(val);
+                    setCompanyData({
+                      ...companyData,
+                      industrySectorId: val?.industry_sector_id!,
+                      industrySectorTitle: val?.sector_title,
+                    });
+                  }}
                   required
                   loadingText="Retrieving industry sectors..."
                 />
@@ -379,9 +485,9 @@ export default function CreateEmployerCompanyInfoPage() {
               initialImageUrl={
                 typeof selectCompanyDropdownData === 'object' &&
                 selectCompanyDropdownData !== null &&
-                selectCompanyDropdownData.companyLogoUrl
-                  ? selectCompanyDropdownData.companyLogoUrl
-                  : logoUrl ?? '' // fixme: use placeholder image for logo instead of empty string ''
+                selectCompanyDropdownData.logoUrl
+                  ? selectCompanyDropdownData.logoUrl
+                  : (logoUrl ?? '') // fixme: use placeholder image for logo instead of empty string ''
               }
               disabled={typeof selectCompanyDropdownData === 'object'}
             />
@@ -395,7 +501,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 onChange={handleFieldChange}
                 value={
                   (typeof selectCompanyDropdownData === 'object'
-                    ? selectCompanyDropdownData.companyWebsite
+                    ? selectCompanyDropdownData.websiteUrl
                     : companyData.websiteUrl) ?? ''
                 }
                 disabled={typeof selectCompanyDropdownData === 'object'}
@@ -436,21 +542,21 @@ export default function CreateEmployerCompanyInfoPage() {
               <DatePicker
                 label={'Year Founded *'}
                 views={['year']}
-                value={
-                  typeof selectCompanyDropdownData === 'object' &&
-                  selectCompanyDropdownData !== null &&
-                  selectCompanyDropdownData.yearFounded
-                    ? dayjs().year(selectCompanyDropdownData.yearFounded) // Convert to Dayjs object
-                    : yearFounded
-                }
-                onChange={setYearFounded}
+                value={yearFounded}
+                onChange={(newValue) => {
+                  setYearFounded(newValue);
+                  setCompanyData({
+                    ...companyData,
+                    yearFounded: newValue?.year().toString() || '',
+                  });
+                }}
                 className="year-picker"
                 disabled={typeof selectCompanyDropdownData === 'object'}
               />
 
               {/* <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel> */}
               <SelectOptionsWithLabel
-                id="profile-creation-company-size"
+                id="profile-creation-company-companySize"
                 onChange={handleFieldChange}
                 options={[
                   { label: '1-10', value: '1-10' },
@@ -465,7 +571,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 value={
                   (typeof selectCompanyDropdownData === 'object'
                     ? selectCompanyDropdownData.companySize
-                    : companyData.size) ?? ''
+                    : companyData.companySize) ?? ''
                 }
                 disabled={typeof selectCompanyDropdownData === 'object'}
               >
@@ -477,7 +583,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 onChange={handleFieldChange}
                 value={
                   (typeof selectCompanyDropdownData === 'object'
-                    ? selectCompanyDropdownData.predictedHires
+                    ? selectCompanyDropdownData.estimatedAnnualHires
                     : companyData.estimatedAnnualHires) ?? ''
                 }
                 required
@@ -485,6 +591,37 @@ export default function CreateEmployerCompanyInfoPage() {
               >
                 Predicted Annual Hire *
               </InputTextWithLabel>
+              <TextFieldWithAutocomplete
+                  apiSearchRoute={`/api/post-geo-data/zip/search/`} // Use generic search API
+                  fieldLabel="Company Location*"
+                  id="profile-creation-company-companyAddresses"
+                  searchingText="Searching..."
+                  noResultsText="No postal code found..."
+                  value={workLocationData ?? ''} // Control the value via searchTerm, similar to selectCompanyDropdownData for company name
+                  onChange={(e, val) => {
+                    // Handle the selected address and set the searchTerm
+                    handleAddressSelection(e, val);
+
+                    // Update the searchTerm based on the selected value
+                    if (val && typeof val === 'object' && 'zipCode' in val) {
+                      setWorkLocationData(val.zipCode);  // Set searchTerm to selected ZIP code
+                    } else if (typeof val === 'string') {
+                      setWorkLocationData(val);  // Set searchTerm directly if it's a string
+                    }
+                  }}
+                  searchPlaceholder="Company Location Postal Code"
+                  getOptionLabel={(option: ReadAddressDTO) =>
+                      `${option?.city}, ${option?.stateCode} ${option?.zipCode}`
+                  }
+              />
+              {/* Display the selected addresses below */}
+              <div className="selected-locations">
+                {companyLocations.map((location, index) => (
+                    <div key={index} className="location-tag">
+                      {location?.city}, {location?.stateCode} {location?.zipCode}
+                    </div>
+                ))}
+              </div>
             </div>
           </fieldset>
 
