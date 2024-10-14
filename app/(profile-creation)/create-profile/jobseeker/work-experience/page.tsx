@@ -235,7 +235,6 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     const userId = session.user.id!;
     const jobseekerId = session.user.jobseekerId!;
     devLog(data.workExperiences);
-    // TODO: industry sector and tech-area look ups being set with redux store values
     const workExperiences = data.workExperiences?.map((workExp) => ({
       workId: workExp.workId, //fixme: generate uuid on the backend or is this fine?
       jobseekerId: jobseekerId,
@@ -245,10 +244,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       isInternship: false,
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
-      startDate: new Date(workExp.startDate!.toISOString()),
-      endDate: workExp.endDate
-        ? new Date(workExp.endDate?.toISOString())
-        : null,
+      startDate: workExp.startDate!.toISOString(),
+      endDate: workExp.endDate ? workExp.endDate.toISOString() : null,
       responsibilities: workExp.responsibilities,
     }));
 
@@ -262,9 +259,9 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         isInternship: true,
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
-        startDate: new Date(internshipExp.startDate!.toISOString()),
+        startDate: internshipExp.startDate!.toISOString(),
         endDate: internshipExp.endDate
-          ? new Date(internshipExp.endDate?.toISOString())
+          ? internshipExp.endDate.toISOString()
           : null,
         responsibilities: internshipExp.responsibilities,
       }),
@@ -465,7 +462,13 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             </div>
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => {
+                router.push('/create-profile/jobseeker/education');
+              }}
+            >
               Previous
             </Button>
             <Button pill type="submit">

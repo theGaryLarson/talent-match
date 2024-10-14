@@ -200,7 +200,6 @@ export default function CreateJobseekerProfileEducationPage() {
             } else {
               let fetchedData: JsEducationPageDTO = (await response.json())
                 .result;
-              console.log('fetched', fetchedData);
               educationData.userId = id!;
               educationData.jobseekerId = jobseekerId!;
               if (fetchedData.highestLevelOfStudy) {
@@ -210,93 +209,85 @@ export default function CreateJobseekerProfileEducationPage() {
               }
               if (fetchedData.educations?.length !== 0) {
                 educationData.educations = fetchedData.educations;
-                setData({
-                  ...data,
-                  educations: [
-                    ...data.educations,
-                    ...educationData.educations.map(
-                      (education): EducationData => ({
-                        id: education.id,
-                        edLevel: education.edLevel ?? EducationLevel.Unselected,
-                        edProviderObject: {
-                          id: education.edProviderId ?? '',
-                          name: education.edProviderName ?? '',
-                        },
-                        edProviderId: education.edProviderId,
-                        edProviderName: education.edProviderName ?? '',
-                        isEnrolled: education.isEnrolled,
-                        startDate: dayjs(education.startDate),
-                        gradDate: dayjs(education.gradDate),
-                        degreeType:
-                          mapToEnum(
-                            education.degreeType ?? null,
-                            HighSchoolDegreeType,
-                          ) ??
-                          mapToEnumOrThrow(
-                            education.degreeType ?? null,
-                            CollegeDegreeType,
-                          ),
-                        programObject: {
-                          id: education.programId,
-                          title: education.programName,
-                        },
-                        programName: education.programName,
-                        programId: education.programId,
-                        preAppEdSystem: education.preAppEdSystem,
-                        description: education.description,
-                        gpa: education.gpa,
-                        isTechDegree: undefined,
-                      }),
-                    ),
-                  ],
-                });
-                console.log('educations', data.educations);
               }
               if (fetchedData.projects?.length !== 0) {
                 educationData.projects = fetchedData.projects;
-                setData({
-                  ...data,
-                  projectExperiences: [
-                    ...data.projectExperiences,
-                    ...educationData.projects.map(
-                      (project): ProjectExperienceData => ({
-                        projectId: project.projectId,
-                        projectTitle: project.projTitle,
-                        projectRole: project.projectRole,
-                        startDate: dayjs(project.startDate),
-                        completionDate: dayjs(project.completionDate),
-                        reference: project.repoUrl ?? '',
-                        problemSolvedDescription:
-                          project.problemSolvedDescription,
-                        teamSize: project.teamSize,
-                        skills: project.skills,
-                      }),
-                    ),
-                  ],
-                });
-                console.log('projects', data.projectExperiences);
               }
               if (fetchedData.certifications?.length !== 0) {
                 educationData.certifications = fetchedData.certifications;
-                setData({
-                  ...data,
-                  licenses: [
-                    ...data.licenses,
-                    ...educationData.certifications.map(
-                      (cert): LicenseData => ({
-                        certId: cert.certId,
-                        name: cert.name,
-                        issuingOrg: cert.issuingOrg,
-                        credentialId: cert.credentialId ?? '',
-                        credentialUrl: cert.credentialUrl ?? '',
-                        issueDate: dayjs(cert.issueDate),
-                        expiryDate: dayjs(cert.expiryDate),
-                      }),
-                    ),
-                  ],
-                });
-                console.log('certifications', data.licenses);
               }
+
+              setData({
+                ...data,
+                educations: [
+                  ...data.educations,
+                  ...educationData.educations.map(
+                    (education): EducationData => ({
+                      id: education.id,
+                      edLevel: education.edLevel ?? EducationLevel.Unselected,
+                      edProviderObject: {
+                        id: education.edProviderId ?? '',
+                        name: education.edProviderName ?? '',
+                      },
+                      edProviderId: education.edProviderId,
+                      edProviderName: education.edProviderName ?? '',
+                      isEnrolled: education.isEnrolled,
+                      startDate: dayjs(education.startDate),
+                      gradDate: dayjs(education.gradDate),
+                      degreeType:
+                        mapToEnum(
+                          education.degreeType ?? null,
+                          HighSchoolDegreeType,
+                        ) ??
+                        mapToEnumOrThrow(
+                          education.degreeType ?? null,
+                          CollegeDegreeType,
+                        ),
+                      programObject: {
+                        id: education.programId,
+                        title: education.programName,
+                      },
+                      programName: education.programName,
+                      programId: education.programId,
+                      preAppEdSystem: education.preAppEdSystem,
+                      description: education.description,
+                      gpa: education.gpa,
+                      isTechDegree: undefined,
+                    }),
+                  ),
+                ],
+                projectExperiences: [
+                  ...data.projectExperiences,
+                  ...educationData.projects.map(
+                    (project): ProjectExperienceData => ({
+                      projectId: project.projectId,
+                      projectTitle: project.projTitle,
+                      projectRole: project.projectRole,
+                      startDate: dayjs(project.startDate),
+                      completionDate: dayjs(project.completionDate),
+                      reference: project.repoUrl ?? '',
+                      problemSolvedDescription:
+                        project.problemSolvedDescription,
+                      teamSize: project.teamSize,
+                      skills: project.skills,
+                    }),
+                  ),
+                ],
+                licenses: [
+                  ...data.licenses,
+                  ...educationData.certifications.map(
+                    (cert): LicenseData => ({
+                      certId: cert.certId,
+                      name: cert.name,
+                      issuingOrg: cert.issuingOrg,
+                      credentialId: cert.credentialId ?? '',
+                      credentialUrl: cert.credentialUrl ?? '',
+                      issueDate: dayjs(cert.issueDate),
+                      expiryDate: dayjs(cert.expiryDate),
+                    }),
+                  ),
+                ],
+              });
             }
           } catch (error) {
             console.error(error);

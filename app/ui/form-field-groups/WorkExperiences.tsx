@@ -40,7 +40,7 @@ export function defaultWorkExperienceData(): WorkExperienceData {
     [classCompanyIndustry]: { industry_sector_id: '', sector_title: '' },
     [classCompanyTechArea]: { id: '', title: '' },
     [classTitle]: '',
-    [classStarts]: dayjs(null),
+    [classStarts]: null,
     [classEnds]: null,
     [classCurrent]: false,
     [classExperience]: '',
@@ -102,14 +102,11 @@ export default memo(function WorkExperiences({
           getOptionLabel={(option: IndustrySectorDropdownDTO) =>
             option.sector_title
           }
-          getOptionFromLabel={(
-            options: IndustrySectorDropdownDTO[],
-            label: string,
-          ) =>
-            options.find((item) => item.sector_title === label) || {
-              industry_sector_id: '',
-              sector_title: '',
-            }
+          getOptionId={(option: IndustrySectorDropdownDTO) =>
+            option.industry_sector_id
+          }
+          getOptionFromId={(options: IndustrySectorDropdownDTO[], id: string) =>
+            options.find((item) => item.industry_sector_id === id) || null
           }
           placeholder="Your company's industry sector"
           onChange={(val) => handleChange(index, classCompanyIndustry, val)}
@@ -124,14 +121,9 @@ export default memo(function WorkExperiences({
           apiAutoloadRoute="/api/employers/technology-areas"
           label="Technology Area *"
           getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
-          getOptionFromLabel={(
-            options: TechnologyAreaDropdownDTO[],
-            label: string,
-          ) =>
-            options.find((item) => item.title === label) || {
-              id: '',
-              title: '',
-            }
+          getOptionId={(option: TechnologyAreaDropdownDTO) => option.id}
+          getOptionFromId={(options: TechnologyAreaDropdownDTO[], id: string) =>
+            options.find((item) => item.id === id) || null
           }
           placeholder="Your company's technology area"
           onChange={(val) => handleChange(index, classCompanyTechArea, val)}

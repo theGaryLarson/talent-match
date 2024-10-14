@@ -175,8 +175,8 @@ export type JsWorkDTO = {
   isInternship: boolean; // ADD isInternship
   jobTitle: string;
   isCurrentJob: boolean;
-  startDate: Date;
-  endDate: Date | null;
+  startDate: string;
+  endDate: string | null;
   responsibilities: string;
 };
 

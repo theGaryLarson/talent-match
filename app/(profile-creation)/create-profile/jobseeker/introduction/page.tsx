@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import {usePathname, useRouter} from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type { RootState } from '@/lib/jobseekerStore';
 import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
@@ -41,25 +41,24 @@ export default function CreateJobseekerProfileIntroPage() {
   const [introData, setIntroData] = useState<JsIntroPostDTO>({
     ...introStoreData,
   });
+  console.log('initialdata', introData);
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
     introData.birthDate === '' ? null : dayjs(introData.birthDate),
   );
+  console.log('initialbirthdate', birthdate);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     introData.photoUrl ?? null,
   );
   const [resumeUrl, setResumeUrl] = useState<string | null>(
     introData.resumeUrl ?? null,
   );
-    const pathname = usePathname();  // Gets the current pathname
+  const pathname = usePathname(); // Gets the current pathname
 
   useEffect(() => {
     if (!session?.user?.id) return;
 
     if (status === 'authenticated') {
-
-        let dbBirthdate: string | Date | null | undefined = null;
-
-        const initializeFormFields = async () => {
+      const initializeFormFields = async () => {
         if (_.isEqual(introStoreData, initialState.introduction)) {
           const { id, firstName, lastName, email, image } = session.user;
 
@@ -79,10 +78,11 @@ export default function CreateJobseekerProfileIntroPage() {
                 photoUrl: session.user?.image ?? '',
                 phoneCountryCode: 'United States +1',
               });
+              setAvatarUrl(session.user?.image ?? null);
             } else {
               let fetchedData: JsIntroDTO = (await response.json()).result
                 .loadIntroPage;
-              dbBirthdate = fetchedData.birthDate
+              console.log('fetcheddata', fetchedData);
               setIntroData({
                 ...introData,
                 userId: id!,
@@ -101,6 +101,14 @@ export default function CreateJobseekerProfileIntroPage() {
                 resumeUrl: fetchedData.resumeUrl,
                 state: fetchedData.state,
               });
+              setAvatarUrl(fetchedData.photoUrl ?? session.user?.image ?? null);
+              setBirthdate(
+                typeof fetchedData.birthDate === 'string' &&
+                  fetchedData.birthDate === ''
+                  ? null
+                  : dayjs(fetchedData.birthDate),
+              );
+              setResumeUrl(fetchedData.resumeUrl ?? null);
             }
           } catch (error) {
             console.error(error);
@@ -108,15 +116,6 @@ export default function CreateJobseekerProfileIntroPage() {
         } else {
           devLog('fetching from store');
         }
-        setAvatarUrl(session.user?.image ?? null)
-        devLog('dbBirthdate', dbBirthdate)
-        setBirthdate(
-          typeof dbBirthdate === 'string' &&
-          dbBirthdate.length !== 0
-            ? dayjs(dbBirthdate)
-            : null,
-        );
-        setResumeUrl(introData.resumeUrl ?? null);
       };
 
       initializeFormFields();
@@ -136,20 +135,22 @@ export default function CreateJobseekerProfileIntroPage() {
     }
   };
 
-    const handleImageUpload = (url: string) => {
-        // Update the local state with the uploaded image URL
-        updateSessionProperties({
-            image: url,
-        }).then(() => {
-            setAvatarUrl(url);
-            setIntroData({
-                ...introData,
-                photoUrl: url,
-            })
-        }).catch((error) => console.error('Failed to update session image:', error));
-
-    };
-
+  const handleImageUpload = (url: string) => {
+    // Update the local state with the uploaded image URL
+    updateSessionProperties({
+      image: url,
+    })
+      .then(() => {
+        setAvatarUrl(url);
+        setIntroData({
+          ...introData,
+          photoUrl: url,
+        });
+      })
+      .catch((error) =>
+        console.error('Failed to update session image:', error),
+      );
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -159,10 +160,10 @@ export default function CreateJobseekerProfileIntroPage() {
     }
 
     const updatedIntroData = {
-        ...introData,
-        birthDate: birthdate?.toISOString() ?? '',
-        photoUrl: avatarUrl,
-        resumeUrl: resumeUrl,
+      ...introData,
+      birthDate: birthdate?.toISOString() ?? '',
+      photoUrl: avatarUrl,
+      resumeUrl: resumeUrl,
     };
     setIntroData(updatedIntroData);
 
@@ -179,10 +180,10 @@ export default function CreateJobseekerProfileIntroPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-            body: JSON.stringify({
-                ...updatedIntroData,
-                userId: session.user.id, // Ensure userId is passed from session
-            }),
+          body: JSON.stringify({
+            ...updatedIntroData,
+            userId: session.user.id, // Ensure userId is passed from session
+          }),
         },
       );
 
