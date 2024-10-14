@@ -1599,6 +1599,7 @@ async function seedCompanies() {
     for (let i = 0; i < 5; i++) {
         await prisma.companies.create({
             data: {
+                createdBy: uuidv4(), // hacking employerId to get it to work will be no related employer
                 company_id: uuidv4(),
                 industry_sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                 company_name: faker.company.name(),
