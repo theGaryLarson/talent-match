@@ -34,10 +34,9 @@ export async function POST(request: Request) {
             companyPhone,
             mission,
             vision,
-            size,
+            companySize,
             estimatedAnnualHires,
         } = body;
-        // const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone);
 
         await prisma.employers.upsert({
             where: {
@@ -81,7 +80,7 @@ export async function POST(request: Request) {
                 company_phone: companyPhone,
                 company_mission: mission,
                 company_vision: vision,
-                size: size,
+                size: companySize,
                 estimated_annual_hires: parseInt(estimatedAnnualHires, 10),
                 employers: {
                     connect: {
@@ -95,6 +94,7 @@ export async function POST(request: Request) {
                 }
             },
             create: {
+                createdBy: employerId,
                 company_id: companyId,
                 company_name: companyName,
                 company_logo_url:
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
                 company_phone: companyPhone,
                 company_mission: mission,
                 company_vision: vision,
-                size: size,
+                size: companySize,
                 estimated_annual_hires: parseInt(estimatedAnnualHires, 10),
                 is_approved: false,
                 employers: {
