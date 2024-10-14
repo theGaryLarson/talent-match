@@ -280,11 +280,6 @@ export default function CreateEmployerCompanyInfoPage() {
 
     // Update logoUrl state
     setLogoUrl(url);
-
-    // Update session properties if needed
-    updateSessionProperties({
-      image: url,
-    });
   };
 
   const handleSubmit = async (e: FormEvent) => {
