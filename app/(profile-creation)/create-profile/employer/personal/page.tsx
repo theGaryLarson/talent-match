@@ -42,6 +42,7 @@ export default function CreateEmployerPersonalPage() {
 
   useEffect(() => {
     if (!session?.user?.id) return;
+    devLog('session', session.user)
     const initializeFormFields = async () => {
       if (status === 'authenticated') {
         if (_.isEqual(personalStoreData, initialState.personal)) {
@@ -60,7 +61,7 @@ export default function CreateEmployerPersonalPage() {
                 firstName: firstName ?? '',
                 lastName: lastName ?? '',
                 email: email ?? '',
-                photoUrl: image ?? '',
+                photoUrl: image,
                 phoneCountryCode: 'United States +1'
               }));
             } else {
@@ -74,7 +75,7 @@ export default function CreateEmployerPersonalPage() {
                   lastName: lastName ?? '',
                   phone: result.phone,
                   phoneCountryCode: result.phoneCountryCode,
-                  photoUrl: image ?? '',
+                  photoUrl: image,
               }));
 
             }
@@ -92,7 +93,7 @@ export default function CreateEmployerPersonalPage() {
             : null,
         );
 
-        setAvatarUrl(personalData.photoUrl ?? session.user?.image?? '');
+        setAvatarUrl(personalData.photoUrl ?? session.user?.image!);
       }
     };
 
@@ -207,7 +208,7 @@ export default function CreateEmployerPersonalPage() {
               maxSizeMB={5}
               userId={session?.user.id!}
               onImageUpload={handleAvatarUpload}
-              initialImageUrl={session?.user?.image??''}
+              initialImageUrl={session?.user?.image!}
             />
           </fieldset>
           <fieldset>
