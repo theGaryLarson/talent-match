@@ -50,14 +50,21 @@ export type ReadAddressDTO = {
   city: string;
   state: string;
   stateCode: string;
-  zipCode: string;
+  zip: string;
   county: string;
   lat?: string;
   lon?: string;
 } | null;
 
 export type PostAddressDTO = {
-  zipCode: string;
+  addressId?: string;
+  city?: string;
+  state?: string;
+  stateCode?: string;
+  zip: string;
+  county?: string;
+  lat?: string;
+  lon?: string;
 };
 
 export type PostCompanyInfoDTO = {
@@ -101,6 +108,7 @@ export type ReadCompanyInfoDTO = {
   employeeCount?: string | null;
   estimatedAnnualHires?: string | null;
   isApproved?: boolean | null;
+  createdBy: string;
 };
 
 export type PostEmployerAboutDTO = {
