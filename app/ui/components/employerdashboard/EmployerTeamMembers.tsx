@@ -1,7 +1,7 @@
 'use server';
 import { getEmployersByCompanyId } from '@/app/lib/prisma';
 import { auth } from '@/auth';
-import Avatar from './Avatar';
+import Avatar from '../Avatar';
 
 export default async function EmployerTeamMembers() {
   let session = await auth();
