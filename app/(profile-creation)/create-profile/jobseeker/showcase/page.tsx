@@ -35,6 +35,7 @@ export default function CreateJobseekerProfileShowcasePage() {
   const [currentJobTitle, setCurrentJobTitle] = useState('');
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
+  const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
   const [portfolioUrl, setPortfolioUrl] = useState(
     showcaseData.portfolioUrl ?? '',
   );
@@ -60,9 +61,10 @@ export default function CreateJobseekerProfileShowcasePage() {
             } else {
               let fetchedData: JsShowcaseDTO = (await response.json()).result;
               showcaseData.userId = id!;
-              if (fetchedData.skills) {
+              if (fetchedData.skills.length !== 0) {
                 showcaseData.skills = fetchedData.skills;
                 setSkills(showcaseData.skills);
+                setFetchLoadedTags(showcaseData.skills);
               }
               if (fetchedData.portfolioUrl) {
                 showcaseData.portfolioUrl = fetchedData.portfolioUrl;
@@ -150,14 +152,12 @@ export default function CreateJobseekerProfileShowcasePage() {
 
             <div className="profile-form-grid">
               <InputTextWithLabel
-                  id="profile-creation-intro-headlines"
-                  onChange={(e) => {
-                    setIntroduction(e.target.value);
-                  }}
-                  placeholder="Type here"
-                  value={
-                    introduction
-                  }
+                id="profile-creation-intro-headlines"
+                onChange={(e) => {
+                  setIntroduction(e.target.value);
+                }}
+                placeholder="Type here"
+                value={introduction}
               >
                 Tell Your Story
               </InputTextWithLabel>
@@ -174,55 +174,53 @@ export default function CreateJobseekerProfileShowcasePage() {
               {/*  Current Position*/}
               {/*</InputTextWithLabel>*/}
             </div>
-
           </fieldset>
           <fieldset>
             <legend>
               <h2>Skills</h2>
             </legend>
             <div className="profile-form-grid">
-
               <TagsWithAutocomplete
-                  apiSearchRoute="/api/skills/search/"
-                  fieldLabel="Select your skills *"
-                  id="profile-creation-showcase-skills"
-                  maxTags={5}
-                  searchingText="Searching..."
-                  noResultsText="No skills found..."
-                  onChange={function (ev, val) {
-                    if (val.every((skill) => typeof skill !== 'string')) {
-                      setSkills(val as SkillDTO[]);
-                    }
-                  }}
-                  searchPlaceholder="Skill (ex: Java)"
-                  getTagLabel={(option: SkillDTO) => option.skill_name}
-                  getTagLink={(option: SkillDTO) => option.skill_info_url}
+                apiSearchRoute="/api/skills/search/"
+                fieldLabel="Select your skills *"
+                id="profile-creation-showcase-skills"
+                maxTags={5}
+                searchingText="Searching..."
+                noResultsText="No skills found..."
+                onChange={function (ev, val) {
+                  if (val.every((skill) => typeof skill !== 'string')) {
+                    setSkills(val as SkillDTO[]);
+                  }
+                }}
+                searchPlaceholder="Skill (ex: Java)"
+                addNewTags={fetchLoadedTags}
+                getTagLabel={(option: SkillDTO) => option.skill_name}
+                getTagLink={(option: SkillDTO) => option.skill_info_url}
               />
               <p>Select your top 5 skills from your skills list</p>
 
               <TextFieldWithSeparatedLabel
-                  id="profile-creation-showcase-portfolio"
-                  label="Portfolio"
-                  placeholder="Url"
-                  fullWidth
-                  value={portfolioUrl}
-                  onChange={(e) => {
-                    setPortfolioUrl(e.target.value);
-                  }}
+                id="profile-creation-showcase-portfolio"
+                label="Portfolio"
+                placeholder="Url"
+                fullWidth
+                value={portfolioUrl}
+                onChange={(e) => {
+                  setPortfolioUrl(e.target.value);
+                }}
               />
               <TextFieldWithSeparatedLabel
-                  id="profile-creation-showcase-password"
-                  label="Password if it is applicable"
-                  placeholder="Password"
-                  type="password"
-                  fullWidth
-                  value={portfolioPassword}
-                  onChange={(e) => {
-                    setPortfolioPassword(e.target.value);
-                  }}
+                id="profile-creation-showcase-password"
+                label="Password if it is applicable"
+                placeholder="Password"
+                type="password"
+                fullWidth
+                value={portfolioPassword}
+                onChange={(e) => {
+                  setPortfolioPassword(e.target.value);
+                }}
               />
             </div>
-
           </fieldset>
           <fieldset>
             <div className="profile-form-grid">
@@ -265,29 +263,35 @@ export default function CreateJobseekerProfileShowcasePage() {
             */}
 
               <TextFieldWithNoLabel
-                  id="profile-creation-showcase-video"
-                  placeholder="Upload your video url"
-                  fullWidth
-                  value={videoUrl}
-                  onChange={(e) => {
-                    setVideoUrl(e.target.value);
-                  }}
+                id="profile-creation-showcase-video"
+                placeholder="Upload your video url"
+                fullWidth
+                value={videoUrl}
+                onChange={(e) => {
+                  setVideoUrl(e.target.value);
+                }}
               />
             </div>
           </fieldset>
           <div>
             Resume *
             <InputFileDropzone
-                id="profile-creation-intro-resume"
-                fileTypeText="PDF, DOC, DOCX, TXT or RTF"
-                accept=".pdf,.doc,.docx,.txt,.rtf"
-                maxSizeMB={5}
-                userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
-                onDocUpload={handleResumeUpload}
+              id="profile-creation-intro-resume"
+              fileTypeText="PDF, DOC, DOCX, TXT or RTF"
+              accept=".pdf,.doc,.docx,.txt,.rtf"
+              maxSizeMB={5}
+              userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
+              onDocUpload={handleResumeUpload}
             />
           </div>
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => {
+                router.push('/create-profile/jobseeker/work-experience');
+              }}
+            >
               Previous
             </Button>
             <Button pill type="submit">

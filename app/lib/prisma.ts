@@ -341,6 +341,25 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
   }
 }
 
+export async function getSkillsFromList(skillNames: string[]): Promise<SkillDTO[]> {
+  if (skillNames.length === 0) {
+    return [];
+  } else {
+    const skillList = (
+      await prisma.skills.findMany({
+        where: {
+          OR: skillNames.map(skillName => ({
+            skill_name: {
+              equals: skillName,
+            },
+          }))
+        }
+      })
+    );
+    return skillList;
+  }
+}
+
 export const jobSeekerCardViewSelect = {
   jobseeker_id: true,
   user_id: true,

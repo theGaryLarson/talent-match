@@ -9,13 +9,23 @@ import {
   JsPreferencesDTO,
   JsShowcaseDTO,
   JsWorkExpDTO,
+  JsWorkDTO,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+
+interface JsWorkExpStringDateDTO extends Omit<JsWorkExpDTO, 'workExperiences'> {
+  workExperiences?: JsWorkStringDateDTO[];
+}
+
+interface JsWorkStringDateDTO extends Omit<JsWorkDTO, 'startDate' | 'endDate'> {
+  startDate: string;
+  endDate: string | null;
+}
 
 // Define a type for the slice state
 export interface JobseekerState {
   introduction: JsIntroPostDTO;
   education: JsEducationPageDTO;
-  workExperience: JsWorkExpDTO;
+  workExperience: JsWorkExpStringDateDTO;
   showcase: JsShowcaseDTO;
   preferences: JsPreferencesDTO;
   disclosures: JsDisclosuresPostDTO;
@@ -94,7 +104,10 @@ export const jobseekerSlice = createSlice({
     setEducation: (state, action: PayloadAction<JsEducationPageDTO>) => {
       state.education = action.payload;
     },
-    setWorkExperience: (state, action: PayloadAction<JsWorkExpDTO>) => {
+    setWorkExperience: (
+      state,
+      action: PayloadAction<JsWorkExpStringDateDTO>,
+    ) => {
       state.workExperience = action.payload;
     },
     setShowcase: (state, action: PayloadAction<JsShowcaseDTO>) => {

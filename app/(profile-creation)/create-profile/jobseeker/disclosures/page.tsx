@@ -42,16 +42,17 @@ export default function CreateJobseekerProfileDisclosuresPage() {
     (state: RootState) => state.jobseeker.disclosures,
   );
   const disclosuresData = { ...disclosuresStoreData };
-  const [error, setError] = useState<{ error: string | null }>({error: null});
+  const [error, setError] = useState<{ error: string | null }>({ error: null });
 
   const [veteranStatus, setVeteranStatus] = useState(disclosuresData.isVeteran);
-  const [disabilityStatus, setDisabilityStatus] = useState<String>('undisclosed')
+  const [disabilityStatus, setDisabilityStatus] =
+    useState<String>('undisclosed');
   const [disabilityType, setDisabilityType] = useState(
     disclosuresData.disability,
   );
   const [gender, setGender] = useState(disclosuresData.gender);
   const [race, setRace] = useState(disclosuresData.race);
-  const [ethnicity, setEthnicity] = useState(disclosuresData.ethnicity)
+  const [ethnicity, setEthnicity] = useState(disclosuresData.ethnicity);
   const [termsAccepted, setTermsAccepted] = useState(
     disclosuresData.hasReadTerms,
   );
@@ -119,7 +120,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
 
     if (!termsAccepted) {
       setOpen(true);
-      return
+      return;
     }
 
     disclosuresData.userId = session.user.id;
@@ -145,11 +146,11 @@ export default function CreateJobseekerProfileDisclosuresPage() {
         dispatch(setDisclosures(disclosuresData));
       } else {
         const errorMessage = `Failed to submit disclosure info. Status: ${response.status} - ${response.statusText}`;
-        setError({error: errorMessage});
+        setError({ error: errorMessage });
       }
       router.push('/create-profile/jobseeker/congratulations');
     } catch (e: any) {
-      setError({error: `An unexpected error occurred: ${e.message}`});
+      setError({ error: `An unexpected error occurred: ${e.message}` });
     }
   }
 
@@ -176,9 +177,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
           variant="alert"
           message={
             <div>
-              <Typography variant="body1">
-                Must agree to terms!
-              </Typography>
+              <Typography variant="body1">Must agree to terms!</Typography>
               <Typography variant="body2">
                 To finish creating your profile, you must agree to the terms.
               </Typography>
@@ -210,7 +209,10 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 options={[
                   { label: 'Male', value: 'male' },
                   { label: 'Female', value: 'female' },
-                  { label: 'Do not identify as male or female', value: 'Do not identify as male or female' },
+                  {
+                    label: 'Do not identify as male or female',
+                    value: 'Do not identify as male or female',
+                  },
                   { label: 'I prefer not to say', value: 'undisclosed' },
                 ]}
                 placeholder="Please select"
@@ -252,26 +254,41 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 required
               />
               <SelectWithLabel
-                  id="profile-creation-disclosures-race"
-                  fullWidth
-                  label="Race"
-                  value={race}
-                  onChange={(event) => {
-                    setRace(event.target.value);
-                  }}
-                  options={[
-                    { label: 'Asian', value: 'Asian',},
-                    { label: 'Black or African American', value: 'Black or African American' },
-                    { label: 'White / Caucasian', value: 'White / Caucasian' },
-                    { label: 'Native Hawaiian or Pacific Islander', value: 'Native Hawaiian or Pacific Islander' },
-                    { label: 'Hispanic', value: 'Hispanic' },
-                    { label: 'American Indian or Alaska Native', value: 'American Indian or Alaska Native' },
-                    { label: 'Multi-race', value: 'Multi-race' },
-                    { label: 'Not Elsewhere Classified / Other', value: 'Not Elsewhere Classified / Other' },
-                    { label: 'Not Specified / Unknown', value: 'Not Specified / Unknown' },
-                  ]}
-                  placeholder="Please select"
-                  required
+                id="profile-creation-disclosures-race"
+                fullWidth
+                label="Race"
+                value={race}
+                onChange={(event) => {
+                  setRace(event.target.value);
+                }}
+                options={[
+                  { label: 'Asian', value: 'Asian' },
+                  {
+                    label: 'Black or African American',
+                    value: 'Black or African American',
+                  },
+                  { label: 'White / Caucasian', value: 'White / Caucasian' },
+                  {
+                    label: 'Native Hawaiian or Pacific Islander',
+                    value: 'Native Hawaiian or Pacific Islander',
+                  },
+                  { label: 'Hispanic', value: 'Hispanic' },
+                  {
+                    label: 'American Indian or Alaska Native',
+                    value: 'American Indian or Alaska Native',
+                  },
+                  { label: 'Multi-race', value: 'Multi-race' },
+                  {
+                    label: 'Not Elsewhere Classified / Other',
+                    value: 'Not Elsewhere Classified / Other',
+                  },
+                  {
+                    label: 'Not Specified / Unknown',
+                    value: 'Not Specified / Unknown',
+                  },
+                ]}
+                placeholder="Please select"
+                required
               />
             </div>
           </fieldset>
@@ -340,67 +357,67 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             </ul>
             <FormControl component="fieldset">
               <FormLabel
-                  className="mb-2 mt-5"
-                  id="profile-creation-disclosures-require-disability-label"
-                  component="legend"
-                  sx={{ color: '#000000ff' }}
+                className="mb-2 mt-5"
+                id="profile-creation-disclosures-require-disability-label"
+                component="legend"
+                sx={{ color: '#000000ff' }}
               >
                 Please select one of the options below: *
               </FormLabel>
               <RadioGroup
-                  aria-labelledby="profile-creation-disclosures-require-disability-label"
-                  defaultValue="undisclosed"
-                  value={disabilityStatus}
-                  onChange={(event) => {
-                    setDisabilityStatus(event.target.value);
-                    if (event.target.value !== 'yes') {
-                      setDisabilityType(event.target.value);
-                    }
-                  }}
-                  name="profile-creation-disclosures-require-disability"
+                aria-labelledby="profile-creation-disclosures-require-disability-label"
+                defaultValue="undisclosed"
+                value={disabilityStatus}
+                onChange={(event) => {
+                  setDisabilityStatus(event.target.value);
+                  if (event.target.value !== 'yes') {
+                    setDisabilityType(event.target.value);
+                  }
+                }}
+                name="profile-creation-disclosures-require-disability"
               >
                 <FormControlLabel
-                    value="yes"
-                    control={<Radio />}
-                    label="Yes, I have a disability, or have had one in the past"
+                  value="yes"
+                  control={<Radio />}
+                  label="Yes, I have a disability, or have had one in the past"
                 />
                 <FormControlLabel
-                    value="none"
-                    control={<Radio />}
-                    label="No, I do not have a disability and have not had one in the past"
+                  value="none"
+                  control={<Radio />}
+                  label="No, I do not have a disability and have not had one in the past"
                 />
                 <FormControlLabel
-                    value="undisclosed"
-                    control={<Radio />}
-                    label="I do not want to answer"
+                  value="undisclosed"
+                  control={<Radio />}
+                  label="I do not want to answer"
                 />
               </RadioGroup>
             </FormControl>
-            { disabilityStatus === 'yes' &&
+            {disabilityStatus === 'yes' && (
               <div className="mb-2 mt-5">
-                  <SelectWithLabel
-                      id="profile-creation-disclosures-require-disability-label"
-                      fullWidth
-                      label="Please specify: *"
-                      value={disabilityType}
-                      onChange={(event) => {
-                        setDisabilityType(event.target.value);
-                      }}
-                      options={[
-                        {label: 'I prefer not to say', value: 'undisclosed'},
-                        {label: 'Cognitive', value: 'cognitive'},
-                        {label: 'Emotional', value: 'emotional'},
-                        {label: 'Hearing', value: 'hearing'},
-                        {label: 'Mental', value: 'mental'},
-                        {label: 'Physical', value: 'physical'},
-                        {label: 'Visual', value: 'visual'},
-                        {label: 'Other', value: 'other'},
-                      ]}
-                      placeholder="Please select"
-                      required
-                  />
+                <SelectWithLabel
+                  id="profile-creation-disclosures-require-disability-label"
+                  fullWidth
+                  label="Please specify: *"
+                  value={disabilityType}
+                  onChange={(event) => {
+                    setDisabilityType(event.target.value);
+                  }}
+                  options={[
+                    { label: 'I prefer not to say', value: 'undisclosed' },
+                    { label: 'Cognitive', value: 'cognitive' },
+                    { label: 'Emotional', value: 'emotional' },
+                    { label: 'Hearing', value: 'hearing' },
+                    { label: 'Mental', value: 'mental' },
+                    { label: 'Physical', value: 'physical' },
+                    { label: 'Visual', value: 'visual' },
+                    { label: 'Other', value: 'other' },
+                  ]}
+                  placeholder="Please select"
+                  required
+                />
               </div>
-            }
+            )}
           </fieldset>
           <fieldset>
             <legend>
@@ -416,7 +433,13 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             </Label>
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => {
+                router.push('/create-profile/jobseeker/preferences');
+              }}
+            >
               Previous
             </Button>
             <Button pill type="submit">

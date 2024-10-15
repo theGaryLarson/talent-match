@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
 import { Button, Label } from 'flowbite-react';
@@ -14,7 +14,10 @@ import InternshipExperiences, {
   defaultInternshipExperienceData,
   InternshipExperienceData,
 } from '@/app/ui/form-field-groups/InternshipExperiences';
-import { JsWorkExpDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {
+  JsWorkDTO,
+  JsWorkExpDTO,
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,7 +31,7 @@ import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
 interface Data {
-  yearsWorkExperience: string | number;
+  yearsWorkExperience: string;
   monthsInternshipExperience: string | number;
   workExperiences: WorkExperienceData[];
   internshipExperiences: WorkExperienceData[];
@@ -40,10 +43,25 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const dispatch = useDispatch();
-  const workExperienceStoreData = useSelector(
+  const originalWorkExperienceStoreData = useSelector(
     (state: RootState) => state.jobseeker.workExperience,
   );
-  let workExperienceData = { ...workExperienceStoreData };
+  const workExperienceStoreData = useMemo(
+    (): JsWorkExpDTO => ({
+      ...originalWorkExperienceStoreData,
+      workExperiences: originalWorkExperienceStoreData.workExperiences?.map(
+        (workExperience) => ({
+          ...workExperience,
+          startDate: new Date(workExperience.startDate),
+          endDate: workExperience.endDate
+            ? new Date(workExperience.endDate)
+            : null,
+        }),
+      ),
+    }),
+    [originalWorkExperienceStoreData],
+  );
+  let workExperienceData: JsWorkExpDTO = { ...workExperienceStoreData };
   const [error, setError] = useState<string | null>(null);
 
   const [data, setData] = useState<Data>({
@@ -235,7 +253,6 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     const userId = session.user.id!;
     const jobseekerId = session.user.jobseekerId!;
     devLog(data.workExperiences);
-    // TODO: industry sector and tech-area look ups being set with redux store values
     const workExperiences = data.workExperiences?.map((workExp) => ({
       workId: workExp.workId, //fixme: generate uuid on the backend or is this fine?
       jobseekerId: jobseekerId,
@@ -245,8 +262,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       isInternship: false,
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
-      startDate: new Date(workExp.startDate!.toISOString()),
-      endDate: workExp.endDate ? new Date(workExp.endDate?.toISOString()) : null,
+      startDate: workExp.startDate!.toDate(),
+      endDate: workExp.endDate ? workExp.endDate.toDate() : null,
       responsibilities: workExp.responsibilities,
     }));
 
@@ -260,8 +277,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         isInternship: true,
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
-        startDate: new Date(internshipExp.startDate!.toISOString()),
-        endDate: internshipExp.endDate ? new Date(internshipExp.endDate?.toISOString()) : null,
+        startDate: internshipExp.startDate!.toDate(),
+        endDate: internshipExp.endDate ? internshipExp.endDate.toDate() : null,
         responsibilities: internshipExp.responsibilities,
       }),
     );
@@ -288,7 +305,18 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       });
 
       if (response.ok) {
-        dispatch(setWorkExperience(workExperienceData));
+        dispatch(
+          setWorkExperience({
+            ...workExperienceData,
+            workExperiences: workExperienceData.workExperiences?.map(
+              (workExperience) => ({
+                ...workExperience,
+                startDate: workExperience.startDate.toISOString(),
+                endDate: workExperience.endDate?.toISOString() ?? null,
+              }),
+            ),
+          }),
+        );
       } else {
         const errorMessage = `Failed to submit work experiences. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -397,6 +425,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     name="isAuthorizedToWorkUsa"
                     value="yes"
                     onChange={handleInputUpdate}
+                    checked={
+                      typeof data.isAuthorizedToWorkUsa === 'boolean'
+                        ? data.isAuthorizedToWorkUsa
+                        : false
+                    }
                     required
                   />{' '}
                   Yes
@@ -406,6 +439,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     name="isAuthorizedToWorkUsa"
                     value="no"
                     onChange={handleInputUpdate}
+                    checked={
+                      typeof data.isAuthorizedToWorkUsa === 'boolean'
+                        ? !data.isAuthorizedToWorkUsa
+                        : false
+                    }
                     required
                   />{' '}
                   No
@@ -424,6 +462,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     name="requiresSponsorship"
                     value="yes"
                     onChange={handleInputUpdate}
+                    checked={
+                      typeof data.requiresSponsorship === 'boolean'
+                        ? data.requiresSponsorship
+                        : false
+                    }
                     required
                   />{' '}
                   Yes
@@ -433,6 +476,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     name="requiresSponsorship"
                     value="no"
                     onChange={handleInputUpdate}
+                    checked={
+                      typeof data.requiresSponsorship === 'boolean'
+                        ? !data.requiresSponsorship
+                        : false
+                    }
                     required
                   />{' '}
                   No
@@ -441,7 +489,13 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             </div>
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => {
+                router.push('/create-profile/jobseeker/education');
+              }}
+            >
               Previous
             </Button>
             <Button pill type="submit">
