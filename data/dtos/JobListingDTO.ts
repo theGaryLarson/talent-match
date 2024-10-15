@@ -1,8 +1,8 @@
-export type JobListingDTO = {
+export type JobPostCreationDTO = {
     job_posting_id?: string;        // Optional: for updates or responses
-    location_id?: string;
-    tech_area_id?: string;
-    sector_id?: string;
+    //location_id?: string;
+    //tech_area_id?: string;
+    //sector_id?: string;
     job_title: string;
     job_description: string;
     is_internship?: boolean;
@@ -10,11 +10,11 @@ export type JobListingDTO = {
     employment_type?: string;
     location: string;
     salary_range: string;
-    county: string;
+    //county: string;
     zip: string;
-    publish_date?: Date;
+    //publish_date?: Date;
     unpublish_date?: Date;
     job_post_url?: string;
     assessment_url?: string;
-    skillIds?: string[];             // Array of skill IDs to associate with the job
+    //skillIds?: string[];             // Array of skill IDs to associate with the job
   }

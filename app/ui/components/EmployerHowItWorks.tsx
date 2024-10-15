@@ -21,7 +21,7 @@ export default function EmployerHowItWorks() {
           article={
             "Connect with top tech talent right in your area. Simply define your desired search radius, and we'll present you with a curated list of local candidates. Through our advanced filters, you can search for the exact skills and experience you need, ensuring a perfect match for your needs."
           }
-          link={'/services/employers/dashboard/listview'}
+          link={'/services/talent-search'}
         />
         <Step
           buttonText={'Start Hiring'}

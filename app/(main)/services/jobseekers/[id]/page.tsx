@@ -5,6 +5,7 @@ import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import { auth } from '@/auth';
 import { format } from 'path';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
+import { getResumeUrl } from '@/app/lib/services/azureBlobService';
 const monthNames = [
   'Jan',
   'Feb',
@@ -31,6 +32,7 @@ function formatUrl(url: string) {
 }
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
+  let resume_url = await getResumeUrl(jobseeker?.users.id??'');
   const session = await auth();
   let videoID = '';
   if (jobseeker?.video_url) {
@@ -245,8 +247,8 @@ export default async function page({ params }: { params: { id: string } }) {
           </div>
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 className="text-2xl font-bold">Resume</h1>
-            {jobseeker?.resume_url ? (
-              <a href={jobseeker?.resume_url}>View Resume</a>
+            {resume_url ? (
+              <a href={resume_url}>View Resume</a>
             ) : (
               ''
             )}

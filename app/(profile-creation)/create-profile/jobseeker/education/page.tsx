@@ -1,6 +1,6 @@
 'use client';
 
-import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
@@ -120,8 +120,10 @@ export default function CreateJobseekerProfileEducationPage() {
     ),
   });
 
-  function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>)  {
-      setHighestLevelOfStudy(mapToEnumOrThrow(event.target.value, HighestCompletedEducationLevel));
+  function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>) {
+    setHighestLevelOfStudy(
+      mapToEnumOrThrow(event.target.value, HighestCompletedEducationLevel),
+    );
   }
 
   function addNewLicense() {
@@ -206,92 +208,87 @@ export default function CreateJobseekerProfileEducationPage() {
                   fetchedData.highestLevelOfStudy;
                 setHighestLevelOfStudy(educationData.highestLevelOfStudy);
               }
-              if (fetchedData.educations) {
+              if (fetchedData.educations?.length !== 0) {
                 educationData.educations = fetchedData.educations;
-                setData({
-                  ...data,
-                  educations: [
-                    ...data.educations,
-                    ...educationData.educations.map(
-                      (education): EducationData => ({
-                        id: education.id,
-                        edLevel: education.edLevel ?? EducationLevel.Unselected,
-                        edProviderObject: {
-                          id: education.edProviderId ?? '',
-                          name: education.edProviderName ?? '',
-                        },
-                        edProviderId: education.edProviderId,
-                        edProviderName: education.edProviderName ?? '',
-                        isEnrolled: education.isEnrolled,
-                        startDate: dayjs(education.startDate),
-                        gradDate: dayjs(education.gradDate),
-                        degreeType:
-                          mapToEnum(
-                            education.degreeType ?? null,
-                            HighSchoolDegreeType,
-                          ) ??
-                          mapToEnumOrThrow(
-                            education.degreeType ?? null,
-                            CollegeDegreeType,
-                          ),
-                        programObject: {
-                          id: education.programId,
-                          title: education.programName,
-                        },
-                        programName: education.programName,
-                        programId: education.programId,
-                        preAppEdSystem: education.preAppEdSystem,
-                        description: education.description,
-                        gpa: education.gpa,
-                        isTechDegree: undefined,
-                      }),
-                    ),
-                  ],
-                });
               }
-              if (fetchedData.projects) {
+              if (fetchedData.projects?.length !== 0) {
                 educationData.projects = fetchedData.projects;
-                setData({
-                  ...data,
-                  projectExperiences: [
-                    ...data.projectExperiences,
-                    ...educationData.projects.map(
-                      (project): ProjectExperienceData => ({
-                        projectId: project.projectId,
-                        projectTitle: project.projTitle,
-                        projectRole: project.projectRole,
-                        startDate: dayjs(project.startDate),
-                        completionDate: dayjs(project.completionDate),
-                        reference: project.repoUrl ?? '',
-                        problemSolvedDescription:
-                          project.problemSolvedDescription,
-                        teamSize: project.teamSize,
-                        skills: project.skills,
-                      }),
-                    ),
-                  ],
-                });
               }
-              if (fetchedData.certifications) {
+              if (fetchedData.certifications?.length !== 0) {
                 educationData.certifications = fetchedData.certifications;
-                setData({
-                  ...data,
-                  licenses: [
-                    ...data.licenses,
-                    ...educationData.certifications.map(
-                      (cert): LicenseData => ({
-                        certId: cert.certId,
-                        name: cert.name,
-                        issuingOrg: cert.issuingOrg,
-                        credentialId: cert.credentialId ?? '',
-                        credentialUrl: cert.credentialUrl ?? '',
-                        issueDate: dayjs(cert.issueDate),
-                        expiryDate: dayjs(cert.expiryDate),
-                      }),
-                    ),
-                  ],
-                });
               }
+
+              setData({
+                ...data,
+                educations: [
+                  ...data.educations,
+                  ...educationData.educations.map(
+                    (education): EducationData => ({
+                      id: education.id,
+                      edLevel: education.edLevel ?? EducationLevel.Unselected,
+                      edProviderObject: {
+                        id: education.edProviderId ?? '',
+                        name: education.edProviderName ?? '',
+                      },
+                      edProviderId: education.edProviderId,
+                      edProviderName: education.edProviderName ?? '',
+                      isEnrolled: education.isEnrolled,
+                      startDate: dayjs(education.startDate),
+                      gradDate: dayjs(education.gradDate),
+                      degreeType:
+                        mapToEnum(
+                          education.degreeType ?? null,
+                          HighSchoolDegreeType,
+                        ) ??
+                        mapToEnumOrThrow(
+                          education.degreeType ?? null,
+                          CollegeDegreeType,
+                        ),
+                      programObject: {
+                        id: education.programId,
+                        title: education.programName,
+                      },
+                      programName: education.programName,
+                      programId: education.programId,
+                      preAppEdSystem: education.preAppEdSystem,
+                      description: education.description,
+                      gpa: education.gpa,
+                      isTechDegree: undefined,
+                    }),
+                  ),
+                ],
+                projectExperiences: [
+                  ...data.projectExperiences,
+                  ...educationData.projects.map(
+                    (project): ProjectExperienceData => ({
+                      projectId: project.projectId,
+                      projectTitle: project.projTitle,
+                      projectRole: project.projectRole,
+                      startDate: dayjs(project.startDate),
+                      completionDate: dayjs(project.completionDate),
+                      reference: project.repoUrl ?? '',
+                      problemSolvedDescription:
+                        project.problemSolvedDescription,
+                      teamSize: project.teamSize,
+                      skills: project.skills,
+                    }),
+                  ),
+                ],
+                licenses: [
+                  ...data.licenses,
+                  ...educationData.certifications.map(
+                    (cert): LicenseData => ({
+                      certId: cert.certId,
+                      name: cert.name,
+                      issuingOrg: cert.issuingOrg,
+                      credentialId: cert.credentialId ?? '',
+                      credentialUrl: cert.credentialUrl ?? '',
+                      issueDate: dayjs(cert.issueDate),
+                      expiryDate: dayjs(cert.expiryDate),
+                    }),
+                  ),
+                ],
+              });
             }
           } catch (error) {
             console.error(error);
@@ -418,10 +415,11 @@ export default function CreateJobseekerProfileEducationPage() {
             <SelectOptionsWithLabel
               id="profile-creation-education-highest-completed"
               className="w-full"
-              options={(Object.values(HighestCompletedEducationLevel) as string[])
+              options={(
+                Object.values(HighestCompletedEducationLevel) as string[]
+              )
                 .filter(
-                  (value) =>
-                    value !== 'Certificate (less than two years)', // TODO: review to see if needs included for WJI grant reporting.
+                  (value) => value !== 'Certificate (less than two years)', // TODO: review to see if needs included for WJI grant reporting.
                 )
                 .map((value) => ({ label: value, value }))}
               placeholder="Please select"

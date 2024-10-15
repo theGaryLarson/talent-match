@@ -1,18 +1,26 @@
-import { FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import React from "react";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import React from 'react';
 
 interface Props<ValueType> {
-  id: string,
-  apiAutoloadRoute: string,
-  label: string,
-  value: ValueType | null,
-  onChange: ((val:ValueType | null) => void),
-  placeholder?: string,
-  loadingText?: string,
-  getOptionLabel: ((option:ValueType) => string),
-  getOptionFromLabel: ((options:ValueType[], label:string) => ValueType),
-  [key: string]: any,
+  id: string;
+  apiAutoloadRoute: string;
+  label: string;
+  value: ValueType | null;
+  onChange: (val: ValueType | null) => void;
+  placeholder?: string;
+  loadingText?: string;
+  getOptionLabel: (option: ValueType) => string;
+  getOptionId: (option: ValueType) => string;
+  getOptionFromId: (options: ValueType[], label: string) => ValueType | null;
+  [key: string]: any;
 }
 
 export default function SelectAutoload<ValueType>({
@@ -22,28 +30,30 @@ export default function SelectAutoload<ValueType>({
   value,
   onChange,
   placeholder,
-  loadingText="Loading dropdown...",
+  loadingText = 'Loading dropdown...',
   getOptionLabel,
-  getOptionFromLabel,
+  getOptionId,
+  getOptionFromId,
   ...rest
-}:Props<ValueType>) {
-  const [selectValue, setSelectValue] = React.useState<string>(value ? getOptionLabel(value) : '');
+}: Props<ValueType>) {
+  const [selectValue, setSelectValue] = React.useState<string>(
+    value ? getOptionId(value) : '',
+  );
   const [options, setOptions] = React.useState<ValueType[]>([]);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const {
       target: { value },
     } = event;
     setSelectValue(value);
-    onChange(getOptionFromLabel(options, value));
+    onChange(getOptionFromId(options, value));
   };
 
   // Load the inital filter values
   React.useEffect(() => {
     const autoload = async () => {
       try {
-        setLoading(true);
         const response = await fetch(apiAutoloadRoute);
         const data: ValueType[] = await response.json();
 
@@ -53,57 +63,57 @@ export default function SelectAutoload<ValueType>({
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-    }
+    };
     autoload();
   }, []);
 
   return (
     <div>
-      <FormControl fullWidth variant="outlined" >
+      <FormControl fullWidth variant="outlined">
         <InputLabel htmlFor={id} shrink>
           {label}
         </InputLabel>
-        <Select
-          id={id}
-          displayEmpty
-          value={selectValue}
-          onChange={handleChange}
-          input={<OutlinedInput notched label={label} />}
-          renderValue={(selected) => {
-            if (!selected) {
-              return <span className="text-gray-500">{placeholder}</span>;
-            }
+        {loading ? (
+          <Select
+            displayEmpty
+            renderValue={(selected) => (
+              <span className="text-gray-500">
+                <CircularProgress color="inherit" size={20} /> {loadingText}
+              </span>
+            )}
+          >
+            <MenuItem disabled>
+              <span>
+                <CircularProgress color="inherit" size={20} /> {loadingText}
+              </span>
+            </MenuItem>
+          </Select>
+        ) : (
+          <Select
+            id={id}
+            displayEmpty
+            value={selectValue}
+            onChange={handleChange}
+            input={<OutlinedInput notched label={label} />}
+            renderValue={(selected) => {
+              if (!selected) {
+                return <span className="text-gray-500">{placeholder}</span>;
+              }
 
-            return selected;
-          }}
-          inputProps={{ 'aria-label': label }}
-          {...rest}
-        >
-          {
-            (loading)?
-              (
-                <MenuItem disabled>
-                  <span><CircularProgress color="inherit" size={20} /> {loadingText}</span>
-                </MenuItem>
-              )
-            : 
-              (
-                <MenuItem disabled>
-                  {placeholder}
-                </MenuItem>
-              )
-          }
-          {
-            options.map((option) => (
-              <MenuItem
-                key={getOptionLabel(option)}
-                value={getOptionLabel(option)}
-              >
+              let option = getOptionFromId(options, selected);
+              return (option && getOptionLabel(option)) ?? '';
+            }}
+            inputProps={{ 'aria-label': label }}
+            {...rest}
+          >
+            <MenuItem disabled>{placeholder}</MenuItem>
+            {options.map((option) => (
+              <MenuItem key={getOptionId(option)} value={getOptionId(option)}>
                 {getOptionLabel(option)}
               </MenuItem>
-            ))
-          }
-        </Select>
+            ))}
+          </Select>
+        )}
       </FormControl>
     </div>
   );
