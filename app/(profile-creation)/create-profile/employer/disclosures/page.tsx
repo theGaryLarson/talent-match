@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
 import { EmployerState } from '@/lib/features/profileCreation/employerSlice';
@@ -16,7 +16,7 @@ import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
 import { CompanyAddressDropdownDTO } from '@/data/dtos/CompanyAddressDropdownDTO';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { PostEmployerWorkDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import {PostEmployerWorkDTO, ReadAddressDTO} from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
   setDisclosures,
   initialState,
@@ -25,7 +25,7 @@ import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 import CircularProgress from "@mui/material/CircularProgress";
 
-const formNamePrefix = 'profile-creation-company-';
+const formNamePrefix = 'profile-creation-disclosures-';
 
 export default function CreateEmployerCompanyInfoDisclosurePage() {
   const disclosuresStoreData = useSelector(
@@ -48,7 +48,8 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
 
   const [companyName, setCompanyName] = useState<string>('');
   const [workAddress, setWorkAddress] =
-    useState<CompanyAddressDropdownDTO | null>(null);
+    useState<ReadAddressDTO>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const initializeFormFields = async () => {
@@ -95,17 +96,27 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     };
     initializeFormFields();
     devLog(disclosuresData);
-  }, [session?.user?.id]);
+  }, [session?.user?.id, pathname]);
 
   const handleFieldChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+      e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    console.log(name, value);
+    devLog(name, value)
     const fieldName = name.substring(formNamePrefix.length);
+
+    let updatedValue: any = value; // Declare a flexible type for the updated value
+
+    // Check for specific fields to parse or cast values appropriately
+    if (fieldName === 'hasAgreedTerms') {
+      updatedValue = value; // For checkboxes or boolean fields
+    }
+
     if (disclosuresData.hasOwnProperty(fieldName)) {
-      disclosuresData[fieldName as keyof PostEmployerWorkDTO] = value;
-      setDisclosuresData({ ...disclosuresData });
+      setDisclosuresData((prevState) => ({
+        ...prevState,
+        [fieldName]: updatedValue, // Assign the correctly parsed or casted value
+      }));
     }
   };
 
@@ -119,7 +130,12 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
       console.error('User session is not available.');
       return;
     }
-    setDisclosuresData({ ...disclosuresData });
+    
+    // setDisclosuresData( prevState => ({
+    //   ...prevState,
+    //   hasAgreedTerms: termsAccepted,
+    // }));
+    
     devLog('disclosuresData', disclosuresData);
 
     try {
@@ -130,7 +146,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(disclosuresData),
+          body: JSON.stringify({ ...disclosuresData, hasAgreedTerms: termsAccepted }),
         },
       );
 
@@ -186,7 +202,6 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               <InputTextWithLabel
                 id="profile-creation-company-name"
                 placeholder="Automated"
-                onChange={handleFieldChange}
                 value={companyStoreData.companyName}
                 disabled={!!companyStoreData.companyName}
                 required
@@ -195,7 +210,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               </InputTextWithLabel>
               <h2>Last thing...</h2>
               <InputTextWithLabel
-                id="profile-creation-company-currentJobTitle"
+                id={`${formNamePrefix}currentJobTitle`}
                 placeholder="Job Title"
                 onChange={handleFieldChange}
                 value={disclosuresData.currentJobTitle}
@@ -205,54 +220,44 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               </InputTextWithLabel>
               <div>
                 {status === 'loading' ? (
-                    <CircularProgress/>  // Show a loader until the session is loaded
+                  <CircularProgress /> // Show a loader until the session is loaded
                 ) : (
-                    <SelectAutoload
-                        id="profile-creation-workAddressId"
-                        apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
-                        label="Work Address *"
-                        getOptionLabel={(option: CompanyAddressDropdownDTO) =>
-                            `${option.city}, ${option.stateCode} ${option.zip}`
-                        }
-                        getOptionFromLabel={(options: CompanyAddressDropdownDTO[], label: string) => {
-                          const matchedOption = options.find(
-                              (item) => `${item.city}, ${item.stateCode} ${item.zip}` === label,
-                          );
-                          return (
-                              matchedOption || {
-                                companyAddressId: '',
-                                city: '',
-                                stateCode: '',
-                                zip: '',
-                              }
-                          );
-                        }}
-                        placeholder="Your work location"
-                        value={workAddress}
-                        onChange={(val) => setWorkAddress(val)}
-                        required
-                    />
+                  <SelectAutoload
+                    id={`${formNamePrefix}workAddressId`}
+                    apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
+                    label="Work Location *"
+                    value={workAddress}
+                    onChange={(val) => {
+                      setWorkAddress(val);
+                      setDisclosuresData((prevState) => ({
+                        ...prevState,
+                        workAddressId: val?.addressId!,
+                      }));
+                    }}
+                    placeholder="Your work location"
+                    loadingText="Retrieving work locations..."
+                    getOptionLabel={(option: ReadAddressDTO) =>
+                      `${option?.city}, ${option?.stateCode} ${option?.zip}`
+                    }
+                    getOptionId={(option: ReadAddressDTO) => option?.addressId!}
+                    getOptionFromId={(
+                      options: ReadAddressDTO[],
+                      id: string,
+                    ) => {
+                      return (
+                        options.find((item) => item?.addressId === id) || null
+                      );
+                    }}
+                    required
+                  />
                 )}
               </div>
-              {/*<InputTextWithLabel*/}
-              {/*  id="profile-creation-company-work-location"*/}
-              {/*  placeholder="98362"*/}
-              {/*  onChange={handleFieldChange}*/}
-              {/*  value={getFieldValue(*/}
-              {/*    fields,*/}
-              {/*    'profile-creation-company-work-location',*/}
-              {/*    '',*/}
-              {/*  )}*/}
-              {/*  required*/}
-              {/*>*/}
-              {/*  Work Location Zip Code **/}
-              {/*</InputTextWithLabel>*/}
               <InputTextWithLabel
-                  id="profile-creation-company-linkedInUrl"
-                  placeholder="www.linkedin.com/username"
-                  onChange={handleFieldChange}
-                  value={disclosuresData.linkedInUrl}
-                  required
+                id={`${formNamePrefix}linkedInUrl`}
+                placeholder="www.linkedin.com/username"
+                onChange={handleFieldChange}
+                value={disclosuresData.linkedInUrl}
+                required
               >
                 LinkedIn URL *
               </InputTextWithLabel>
@@ -264,7 +269,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           </legend>
           <Label className="block">
             <Checkbox
-                name="profile-creation-disclosures-require-terms"
+              name={`${formNamePrefix}hasAgreedTerms`}
               checked={termsAccepted}
               onChange={(event) => setTermsAccepted(event.target.checked)}
             />{' '}
