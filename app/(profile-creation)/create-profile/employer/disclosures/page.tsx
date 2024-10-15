@@ -212,18 +212,18 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                         apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
                         label="Work Address *"
                         getOptionLabel={(option: CompanyAddressDropdownDTO) =>
-                            `${option.city}, ${option.stateCode} ${option.zipCode}`
+                            `${option.city}, ${option.stateCode} ${option.zip}`
                         }
                         getOptionFromLabel={(options: CompanyAddressDropdownDTO[], label: string) => {
                           const matchedOption = options.find(
-                              (item) => `${item.city}, ${item.stateCode} ${item.zipCode}` === label,
+                              (item) => `${item.city}, ${item.stateCode} ${item.zip}` === label,
                           );
                           return (
                               matchedOption || {
                                 companyAddressId: '',
                                 city: '',
                                 stateCode: '',
-                                zipCode: '',
+                                zip: '',
                               }
                           );
                         }}
