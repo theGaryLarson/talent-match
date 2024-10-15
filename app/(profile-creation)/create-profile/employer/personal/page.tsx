@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
@@ -34,11 +34,14 @@ export default function CreateEmployerPersonalPage() {
   const [personalData, setPersonalData] = useState({ ...personalStoreData });
   const dispatch = useDispatch();
   const router = useRouter();
-  const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
+    const [birthdate, setBirthdate] = useState<Dayjs | null>(
+        personalData.birthDate === '' ? null : dayjs(personalData.birthDate),
+    );
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -99,7 +102,7 @@ export default function CreateEmployerPersonalPage() {
 
     initializeFormFields();
     devLog(personalData);
-  }, [session?.user?.id]);
+  }, [session?.user?.id, pathname]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
