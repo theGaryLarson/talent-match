@@ -122,12 +122,12 @@ export async function searchCompanies(searchTerm: string): Promise<
   {
     companyId: string;
     companyEmail: string;
-    companyLogoUrl: string | null;
+    logoUrl: string | null;
     companyPhone: string | null;
     industrySectorId: string | null;
     companyName: string;
     predictedHires: number | null;
-    companyWebsite: string | null;
+    websiteUrl: string | null;
     yearFounded: number;
     companySize: string;
     approvedCompany: boolean;
@@ -143,9 +143,9 @@ export async function searchCompanies(searchTerm: string): Promise<
     results.map((company) => ({
       companyId: company.company_id,
       companyName: company.company_name,
-      companyLogoUrl: company.company_logo_url,
+      logoUrl: company.company_logo_url,
       industrySectorId: company.industry_sector_id,
-      companyWebsite: company.company_website_url,
+      websiteUrl: company.company_website_url,
       companyEmail: company.company_email,
       companyPhone: company.company_phone,
       yearFounded: company.year_founded,
@@ -198,7 +198,7 @@ export async function searchPrograms(
   });
 }
 
-export async function searchPostalGeoData(
+export async function searchLocations(
   postalCode: string,
   field: keyof PostalGeoData = 'zip',
 ): Promise<PostalGeoData[]> {
@@ -679,6 +679,7 @@ export async function removeDeletionMarker() {
         is_marked_deletion: null,
       },
     });
+    return NextResponse.json(`Successfully validated jobseeker profile.` , {status: 200});
   } catch (e: any) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === 'P2025') {

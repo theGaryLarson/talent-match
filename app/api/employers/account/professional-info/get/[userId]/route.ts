@@ -89,7 +89,7 @@ export async function GET(
         state: employerAddress.locationData.state,
         stateCode: employerAddress.locationData.stateCode,
         county: employerAddress.locationData.county,
-        zipCode: employerAddress.locationData.zip,
+        zip: employerAddress.locationData.zip,
       } : undefined,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });

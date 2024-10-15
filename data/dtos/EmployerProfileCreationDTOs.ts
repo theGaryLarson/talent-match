@@ -26,6 +26,7 @@ export type PostEmployerWorkDTO = {
   currentJobTitle: string;
   linkedInUrl: string;
   workAddressId?: string;
+  hasAgreedTerms: boolean;
 };
 
 export type ReadEmployerWorkDTO = {
@@ -50,14 +51,21 @@ export type ReadAddressDTO = {
   city: string;
   state: string;
   stateCode: string;
-  zipCode: string;
+  zip: string;
   county: string;
   lat?: string;
   lon?: string;
 } | null;
 
 export type PostAddressDTO = {
-  zipCode: string;
+  addressId?: string;
+  city?: string;
+  state?: string;
+  stateCode?: string;
+  zip: string;
+  county?: string;
+  lat?: string;
+  lon?: string;
 };
 
 export type PostCompanyInfoDTO = {
@@ -78,7 +86,7 @@ export type PostCompanyInfoDTO = {
   companyPhone?: string | null;
   mission?: string | null;
   vision?: string | null;
-  size: string;
+  companySize: string;
   estimatedAnnualHires: string;
 };
 
@@ -101,6 +109,7 @@ export type ReadCompanyInfoDTO = {
   employeeCount?: string | null;
   estimatedAnnualHires?: string | null;
   isApproved?: boolean | null;
+  createdBy: string;
 };
 
 export type PostEmployerAboutDTO = {
@@ -114,7 +123,7 @@ export type ReadEmployerAboutDTO = {
 };
 
 export type PostEmployerMissionDTO = {
-  companyId: string;
+  // companyId: string;
   mission: string;
 };
 

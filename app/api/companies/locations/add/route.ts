@@ -14,9 +14,9 @@ export async function POST(request: Request) {
         const companyId: string | null | undefined = session?.user.companyId;
         
         const body: PostAddressDTO & {companyId: string} = await request.json();
-        const { zipCode, } = body;
+        const { zip, } = body;
 
-        if (!companyId || !zipCode) {
+        if (!companyId || !zip) {
             return NextResponse.json({success: false, error: `A uuidv4 companyId and zip code is required.`}, {status: 400});
         }
         if (!session?.user.employeeIsApproved) {
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
             where: {
                 company_id_zip: { // compound unique field for company_id and zip
                     company_id: companyId,
-                    zip: zipCode,
+                    zip: zip,
                 },
             },
             update: {
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
             create: {
               company_address_id: uuidv4(),
               company_id: companyId,
-              zip: zipCode,
+              zip: zip,
             },
             select: {
                 company_address_id: true,
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
             city: newLocation.locationData.city,
             state: newLocation.locationData.state,
             stateCode: newLocation.locationData.stateCode,
-            zipCode: newLocation.locationData.zip,
+            zip: newLocation.locationData.zip,
             county: newLocation.locationData.county,
         }
 

@@ -87,7 +87,7 @@ export async function POST(request: Request) {
         city: upsertedEmployer?.companies?.company_addresses[0].locationData.city,
         state: upsertedEmployer?.companies?.company_addresses[0].locationData.state,
         stateCode: upsertedEmployer.companies?.company_addresses[0].locationData.stateCode,
-        zipCode: upsertedEmployer?.companies?.company_addresses[0].locationData.zip,
+        zip: upsertedEmployer?.companies?.company_addresses[0].locationData.zip,
         county: upsertedEmployer.companies?.company_addresses[0].locationData.county,
       } as ReadAddressDTO : undefined,
     };

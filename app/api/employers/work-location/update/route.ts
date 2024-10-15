@@ -88,7 +88,7 @@ export async function PATCH(request: Request) {
                 state: employerAddress?.locationData.state,
                 stateCode: employerAddress?.locationData.stateCode,
                 county: employerAddress?.locationData.county,
-                zipCode: employerAddress?.locationData.zip
+                zip: employerAddress?.locationData.zip
             } as ReadAddressDTO : undefined
 
         }

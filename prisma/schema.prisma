@@ -158,6 +158,7 @@ model companies {
   size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
   estimated_annual_hires Int?
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
+  createdBy              String                 @db.UniqueIdentifier
   industry_sectors       industry_sectors?      @relation(fields: [industry_sector_id], references: [industry_sector_id], onUpdate: NoAction, map: "fk_company_industry_sectors1")
   company_addresses      company_addresses[]
   company_social_links   company_social_links[]

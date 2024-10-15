@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
@@ -34,14 +34,18 @@ export default function CreateEmployerPersonalPage() {
   const [personalData, setPersonalData] = useState({ ...personalStoreData });
   const dispatch = useDispatch();
   const router = useRouter();
-  const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
+    const [birthdate, setBirthdate] = useState<Dayjs | null>(
+        personalData.birthDate === '' ? null : dayjs(personalData.birthDate),
+    );
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!session?.user?.id) return;
+    devLog('session', session.user)
     const initializeFormFields = async () => {
       if (status === 'authenticated') {
         if (_.isEqual(personalStoreData, initialState.personal)) {
@@ -60,7 +64,7 @@ export default function CreateEmployerPersonalPage() {
                 firstName: firstName ?? '',
                 lastName: lastName ?? '',
                 email: email ?? '',
-                photoUrl: image ?? '',
+                photoUrl: image,
                 phoneCountryCode: 'United States +1'
               }));
             } else {
@@ -74,7 +78,7 @@ export default function CreateEmployerPersonalPage() {
                   lastName: lastName ?? '',
                   phone: result.phone,
                   phoneCountryCode: result.phoneCountryCode,
-                  photoUrl: image ?? '',
+                  photoUrl: image,
               }));
 
             }
@@ -92,13 +96,13 @@ export default function CreateEmployerPersonalPage() {
             : null,
         );
 
-        setAvatarUrl(personalData.photoUrl ?? session.user?.image?? '');
+        setAvatarUrl(personalData.photoUrl ?? session.user?.image!);
       }
     };
 
     initializeFormFields();
     devLog(personalData);
-  }, [session?.user?.id]);
+  }, [session?.user?.id, pathname]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -207,7 +211,7 @@ export default function CreateEmployerPersonalPage() {
               maxSizeMB={5}
               userId={session?.user.id!}
               onImageUpload={handleAvatarUpload}
-              initialImageUrl={session?.user?.image??''}
+              initialImageUrl={session?.user?.image!}
             />
           </fieldset>
           <fieldset>

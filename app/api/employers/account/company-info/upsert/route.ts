@@ -34,10 +34,9 @@ export async function POST(request: Request) {
             companyPhone,
             mission,
             vision,
-            size,
+            companySize,
             estimatedAnnualHires,
         } = body;
-        // const formattedPhone = formatPhoneE164(phoneCountryCode, companyPhone);
 
         await prisma.employers.upsert({
             where: {
@@ -81,7 +80,7 @@ export async function POST(request: Request) {
                 company_phone: companyPhone,
                 company_mission: mission,
                 company_vision: vision,
-                size: size,
+                size: companySize,
                 estimated_annual_hires: parseInt(estimatedAnnualHires, 10),
                 employers: {
                     connect: {
@@ -95,6 +94,7 @@ export async function POST(request: Request) {
                 }
             },
             create: {
+                createdBy: employerId,
                 company_id: companyId,
                 company_name: companyName,
                 company_logo_url:
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
                 company_phone: companyPhone,
                 company_mission: mission,
                 company_vision: vision,
-                size: size,
+                size: companySize,
                 estimated_annual_hires: parseInt(estimatedAnnualHires, 10),
                 is_approved: false,
                 employers: {
@@ -143,9 +143,19 @@ export async function POST(request: Request) {
                 size: true,
                 estimated_annual_hires: true,
                 is_approved: true,
+                createdBy: true,
             },
         }
         );
+
+        await prisma.employers.update({
+            where: {
+                employer_id: session?.user.employerId!,
+            },
+            data: {
+                is_verified_employee: true,
+            }
+        })
 
         if (!upsertedCompany) {
             return NextResponse.json({
@@ -159,15 +169,15 @@ export async function POST(request: Request) {
                 where: {
                     company_id_zip: {
                         company_id: companyId,
-                        zip: address.zipCode,
+                        zip: address.zip,
                     },
                 },
                 update: {
-                    zip: address.zipCode,
+                    zip: address.zip,
                 },
                 create: {
                     company_address_id: uuidv4(),
-                    zip: address.zipCode,
+                    zip: address.zip,
                     company_id: upsertedCompany.company_id,
                 },
                 select: {
@@ -217,7 +227,7 @@ export async function POST(request: Request) {
                 state: address.locationData.state,
                 stateCode: address.locationData.stateCode,
                 city: address.locationData.city,
-                zipCode: address.locationData.zip,
+                zip: address.locationData.zip,
                 county: address.locationData.county,
             })) || [] as ReadAddressDTO[],
             logoUrl: upsertedCompany.company_logo_url,
@@ -233,6 +243,7 @@ export async function POST(request: Request) {
             employeeCount: upsertedCompany.size,
             estimatedAnnualHires: upsertedCompany?.estimated_annual_hires?.toString(),
             isApproved: upsertedCompany.is_approved,
+            createdBy: upsertedCompany.createdBy,
         };
 
         // Fixme: Update session with new employerId and companyId. Session returning null.

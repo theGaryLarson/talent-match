@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {employers, PrismaClient} from '@prisma/client';
 import { auth } from '@/auth';
+import {PostEmployerWorkDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -14,16 +15,16 @@ export async function PATCH(request: Request, {params}: { params: { } }) {
         if (!employerId) {
             return NextResponse.json({success: false, error: `A uuidv4 employerId  is required.`}, {status: 400})
         }
-        const body: Partial<employers> = await request.json();
-        const { job_title, linkedin_url, work_address_id, hasAgreedTerms } = body;
+        const body: PostEmployerWorkDTO = await request.json();
+        const { currentJobTitle, linkedInUrl, workAddressId, hasAgreedTerms } = body;
         const result = await prisma.employers.update({
             where: {
                 employer_id: employerId,
             },
             data: {
-                job_title,
-                linkedin_url,
-                work_address_id,
+                job_title: currentJobTitle,
+                linkedin_url: linkedInUrl,
+                work_address_id: workAddressId,
                 hasAgreedTerms,
             },
             select: {

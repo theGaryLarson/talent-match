@@ -40,6 +40,7 @@ export async function GET(request: Request, { params }: { params: { companyId: s
                 size: true,
                 estimated_annual_hires: true,
                 is_approved: true,
+                createdBy: true,
                 company_addresses: {
                     select: {
                         locationData: {
@@ -97,12 +98,13 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             employeeCount: companyInfo.size,
             estimatedAnnualHires: companyInfo?.estimated_annual_hires?.toString(),
             isApproved: companyInfo.is_approved,
+            createdBy: companyInfo.createdBy,
             companyAddresses: updatedAddresses?.map(address => ({
                 addressId: address.company_address_id,
                 state: address.locationData.state,
                 stateCode: address.locationData.stateCode,
                 city: address.locationData.city,
-                zipCode: address.locationData.zip,
+                zip: address.locationData.zip,
                 county: address.locationData.county
             })) || [] as ReadAddressDTO[]
 

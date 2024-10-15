@@ -36,7 +36,10 @@ export default function AvatarUpload({
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null) {
       const file = event.target.files[0];
-      setFileSelected(file.name);
+      if (file.name !== '') {
+        setFileSelected(file.name);
+      }
+
 
       if (filePath) URL.revokeObjectURL(filePath);
       setFilePath(URL.createObjectURL(file));

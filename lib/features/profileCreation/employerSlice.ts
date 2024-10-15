@@ -50,7 +50,7 @@ export const initialState: EmployerState = {
     companyPhone: null,
     mission: null, //MISSION
     vision: null,
-    size: '',
+    companySize: '',
     estimatedAnnualHires: '',
   },
   about: {
@@ -58,7 +58,7 @@ export const initialState: EmployerState = {
     aboutUs: '',
   },
   mission: {
-    companyId: '',
+    // companyId: '',
     mission: '',
   },
   disclosures: {
@@ -66,6 +66,7 @@ export const initialState: EmployerState = {
     currentJobTitle: '',
     linkedInUrl: '',
     workAddressId: '',
+    hasAgreedTerms: false,
   },
   video: {
     companyId: '',

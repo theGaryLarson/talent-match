@@ -64,7 +64,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
               console.log('fetchedData', result);
               setMissionData({
                 ...missionData,
-                companyId: result.companyId,
+                // companyId: result.companyId,
                 mission: result.mission ?? '',
               });
             }
@@ -84,6 +84,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
     const { name, value } = e.target;
     console.log(name, value);
     const fieldName = name.substring(formNamePrefix.length);
+    console.log('fieldName', fieldName)
     if (missionData.hasOwnProperty(fieldName)) {
       missionData[fieldName as keyof PostEmployerMissionDTO] = value;
       setMissionData({ ...missionData });
@@ -133,7 +134,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
           <div className="profile-form-grid">
             <fieldset>
               <TextareaWithLabel
-                id="profile-creation-company-mission"
+                id="profile-creation-company-mission-mission"
                 placeholder="Tell your company mission"
                 rows="16"
                 required
