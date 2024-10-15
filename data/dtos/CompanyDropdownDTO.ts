@@ -10,4 +10,5 @@ export type CompanyDropdownDTO = {
   companySize: string;
   estimatedAnnualHires: string;
   approvedCompany: boolean;
+  createdBy: string; //employerId uuidv4
 };
