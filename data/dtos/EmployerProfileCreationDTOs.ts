@@ -26,6 +26,7 @@ export type PostEmployerWorkDTO = {
   currentJobTitle: string;
   linkedInUrl: string;
   workAddressId?: string;
+  hasAgreedTerms: boolean;
 };
 
 export type ReadEmployerWorkDTO = {
