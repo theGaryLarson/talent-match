@@ -19,13 +19,10 @@ export default function Page() {
       employment_type: formData.get('employment_type') as string,
       location: formData.get('location') as string,
       salary_range: formData.get('salary_range') as string,
-      county: formData.get('county') as string,
       zip: formData.get('zip') as string,
-      publish_date: formData.get('publish_date') ? new Date(formData.get('publish_date') as string) : undefined,
       unpublish_date: formData.get('unpublish_date') ? new Date(formData.get('unpublish_date') as string) : undefined,
       job_post_url: formData.get('job_post_url') as string,
       assessment_url: formData.get('assessment_url') as string,
-      skillIds: formData.get('skillIds') ? (formData.get('skillIds') as string).split(',') : [],
     };
 console.log("look here: ", jobListingData)
     try {
@@ -106,10 +103,27 @@ console.log("look here: ", jobListingData)
           </div>
     
           {/* Location */}
-          <div>
-            <label htmlFor="location">Location</label>
-            <input type="text" name="location" required />
-          </div>
+<div>
+  <label>Location</label>
+  <div>
+    <label>
+      <input type="radio" name="location" value="remote" required />
+      Remote
+    </label>
+  </div>
+  <div>
+    <label>
+      <input type="radio" name="location" value="on-site" />
+      On-Site
+    </label>
+  </div>
+  <div>
+    <label>
+      <input type="radio" name="location" value="hybrid" />
+      Hybrid
+    </label>
+  </div>
+</div>
     
           {/* Salary Range */}
           <div>
@@ -118,23 +132,12 @@ console.log("look here: ", jobListingData)
           </div>
     
           {/* County */}
-          <div>
-            <label htmlFor="county">County</label>
-            <input type="text" name="county" required />
-          </div>
     
           {/* ZIP Code */}
           <div>
             <label htmlFor="zip">ZIP Code</label>
             <input type="text" name="zip" required />
           </div>
-    
-          {/* Publish Date */}
-          <div>
-            <label htmlFor="publish_date">Publish Date</label>
-            <input type="date" name="publish_date" />
-          </div>
-    
           {/* Unpublish Date */}
           <div>
             <label htmlFor="unpublish_date">Unpublish Date</label>
@@ -154,10 +157,6 @@ console.log("look here: ", jobListingData)
           </div>
     
           {/* Skill IDs */}
-          <div>
-            <label htmlFor="skillIds">Skill IDs (Comma Separated)</label>
-            <input type="text" name="skillIds" />
-          </div>
     
           {/* Submit Button */}
           <div>

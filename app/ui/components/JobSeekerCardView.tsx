@@ -7,6 +7,7 @@ import { JobSeekerCardViewDTO } from '@/data/dtos/JobSeekerCardViewDTO';
 import ShareButton from './ShareButton';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { ProgramEnrollmentStatus } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 
 export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerCardViewDTO }) {
   const { data: session } = useSession();
@@ -28,7 +29,7 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
   let school = "";
   if (jobseeker?.jobseeker_education && jobseeker.jobseeker_education.length > 0) {
     // Check if the jobseeker is currently enrolled in any education program
-    const enrolledEducation = jobseeker.jobseeker_education.find((edu) => edu.isEnrolled);
+    const enrolledEducation = jobseeker.jobseeker_education.find((edu) => edu.enrollmentStatus == ProgramEnrollmentStatus.Enrolled);
 
     if (enrolledEducation) {
       // If there is an enrolled program, prioritize that

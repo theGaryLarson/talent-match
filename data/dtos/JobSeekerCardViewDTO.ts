@@ -1,4 +1,5 @@
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
+import { ProgramEnrollmentStatus } from './JobSeekerProfileCreationDTOs';
 
 export type JobSeekerCardViewDTO = {
   jobseeker_id: string;
@@ -35,7 +36,7 @@ export type JobSeekerCardViewDTO = {
           name: string;
         } | null;
         edLevel: string | null;
-        isEnrolled: boolean | null;
+        enrollmentStatus?: ProgramEnrollmentStatus;
         startDate: string | null;
         gradDate: string | null;
         degreeType: string | null;

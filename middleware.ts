@@ -69,7 +69,7 @@ export default auth((req) => {
     "/services",
     "/services/employers",
     "/services/employers/faq",
-    "/services/employers/dashboard/listview",
+    "/services/talent-search",
     "/services/jobseekers",
 
     "/api/jobseekers/query",

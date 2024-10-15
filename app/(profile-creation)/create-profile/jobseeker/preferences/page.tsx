@@ -242,7 +242,13 @@ export default function CreateJobseekerProfilePreferencesPage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => {
+                router.push('/create-profile/jobseeker/showcase');
+              }}
+            >
               Previous
             </Button>
             <Button pill type="submit">

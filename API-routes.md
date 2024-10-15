@@ -10,7 +10,7 @@ This section provides detailed information on the available API routes for the C
 
 #### Jobseeker List View Query
 
-_This route is used to generate the cards on the listview page. On the server side it filters based on skills and years
+_This route is used to generate the cards on the talent-search page. On the server side it filters based on skills and years
 work experience. Also, it will also filter out any jobseeker accounts that have been marked for deletion._
 
 **Endpoint**: `/api/jobseekers/query`
