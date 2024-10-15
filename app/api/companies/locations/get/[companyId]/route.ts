@@ -43,7 +43,7 @@ export async function GET(request: Request, {params}: { params: { companyId: str
             city: address.locationData.city,
             state: address.locationData.state,
             stateCode: address.locationData.stateCode,
-            zipCode: address.locationData.zip,
+            zip: address.locationData.zip,
             county: address.locationData.county,
         }));
 
