@@ -57,8 +57,13 @@ export default function CreateEmployerCompanyInfoPage() {
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
     null,
   );
-  const [companyLocations, setCompanyLocations] = useState<ReadAddressDTO[]>([]);
-  const [workLocationData, setWorkLocationData] = useState<ReadAddressDTO | string>('');  // Track user input in state
+  const [selectedWorkLocation, setSelectedWorkLocation] = useState<PostAddressDTO>({
+    city:'',
+    state: '',
+    stateCode: '',
+    zip: '',
+    county: '',
+  } as PostAddressDTO);
 
   const pathname = usePathname();
   // using to track whether selectCompanyDropDownData is a string or object. In this way I can prevent Basic Info section
@@ -67,7 +72,7 @@ export default function CreateEmployerCompanyInfoPage() {
 
   useEffect(() => {
     if (!session?.user?.id) return;
-
+    devLog(session)
     const fetchCompanyData = async (companyId: string) => {
       try {
         const response = await fetch(`/api/employers/account/company-info/get/${companyId}`);
@@ -80,8 +85,8 @@ export default function CreateEmployerCompanyInfoPage() {
         const fetchedData: ReadCompanyInfoDTO = (await response.json()).result;
         devLog('fetchedData', fetchedData)
         const companyZips: PostAddressDTO[] = (fetchedData?.companyAddresses || [])
-            .filter((addr): addr is ReadAddressDTO => addr?.zipCode !== undefined)  // Filter out addresses with undefined zipCode
-            .map(addr => ({ zipCode: addr?.zipCode! }));
+            .filter((addr): addr is ReadAddressDTO => addr?.zip !== undefined)  // Filter out addresses with undefined zipCode
+            .map(addr => ({ city: addr?.city, stateCode: addr?.stateCode, zip: addr?.zip! }));
         devLog('companyZips', companyZips)
         const updatedCompanyData: PostCompanyInfoDTO = {
           userId: session?.user?.id!,
@@ -107,7 +112,7 @@ export default function CreateEmployerCompanyInfoPage() {
         devLog('updatedCompanyData', updatedCompanyData);
         setCompanyData(prevState => ({
           ...prevState,
-          ...updatedCompanyData
+          ...updatedCompanyData,
         }));
         devLog('setCompanyData', companyData)
         setYearFounded(fetchedData.yearFounded ? dayjs().year(parseInt(fetchedData.yearFounded)) : null);
@@ -122,7 +127,8 @@ export default function CreateEmployerCompanyInfoPage() {
           companyPhone: fetchedData.companyPhone || '',
           companySize: fetchedData.employeeCount || '',
           estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
-          approvedCompany: fetchedData.isApproved ?? false
+          approvedCompany: fetchedData.isApproved ?? false,
+          createdBy: fetchedData.createdBy
         });
 
         setIndustry({
@@ -237,25 +243,47 @@ export default function CreateEmployerCompanyInfoPage() {
         [fieldName]: value
       });
     }
+
+    // added for editing existing
+    if (typeof selectCompanyDropdownData === 'object' && selectCompanyDropdownData?.hasOwnProperty(fieldName)) {
+      setSelectCompanyDropdownData({
+        ...selectCompanyDropdownData,
+        [fieldName]: value
+      });
+    }
   };
 
+  // Handle address selection from autocomplete
   // Handle address selection from autocomplete
   const handleAddressSelection = (
       e: SyntheticEvent<Element, Event>,
       val: string | ReadAddressDTO | null
   ) => {
-    if (val && typeof val === 'object' && 'zipCode' in val) {
-      const selectedLocation = val as ReadAddressDTO;
-
-      // Append the selected location to the array if it's not already selected
-      setCompanyLocations((prevLocations) => {
-        const alreadyExists = prevLocations.some(
-            (location) => location?.zipCode === selectedLocation?.zipCode
+    console.log('handleAddressSelection')
+    if (val && typeof val === 'object' && 'zip' in val) {
+      setSelectedWorkLocation((prevState) => ({
+        ...prevState,
+        zip: val.zip!,
+      }));
+      const selectedZipCode = val.zip; // Only extract the zipCode
+      // Append the selected zipCode to companyAddresses if it's not already there
+      setCompanyData((prevData) => {
+        const alreadyExists = prevData.companyAddresses?.some(
+            (location) => location.zip === selectedZipCode
         );
+
         if (!alreadyExists) {
-          return [...prevLocations, selectedLocation];
+          const updatedAddresses = prevData.companyAddresses
+              ? [...prevData.companyAddresses, val]
+              : [val];
+
+          return {
+            ...prevData,
+            companyAddresses: updatedAddresses,
+          };
         }
-        return prevLocations;  // Avoid adding duplicates
+
+        return prevData; // Return unchanged if already exists
       });
     }
   };
@@ -484,7 +512,7 @@ export default function CreateEmployerCompanyInfoPage() {
                   ? selectCompanyDropdownData.logoUrl
                   : (logoUrl ?? '') // fixme: use placeholder image for logo instead of empty string ''
               }
-              disabled={typeof selectCompanyDropdownData === 'object'}
+              disabled={session?.user?.employeeIsApproved || session?.user?.employerId === (selectCompanyDropdownData as CompanyDropdownDTO ).createdBy}
             />
           </fieldset>
           <fieldset>
@@ -499,7 +527,7 @@ export default function CreateEmployerCompanyInfoPage() {
                     ? selectCompanyDropdownData.websiteUrl
                     : companyData.websiteUrl) ?? ''
                 }
-                disabled={typeof selectCompanyDropdownData === 'object'}
+                disabled={session?.user?.employeeIsApproved}
                 required
               >
                 Company Website *
@@ -514,7 +542,7 @@ export default function CreateEmployerCompanyInfoPage() {
                     ? selectCompanyDropdownData.companyEmail
                     : companyData.companyEmail) ?? ''
                 }
-                disabled={typeof selectCompanyDropdownData === 'object'}
+                disabled={session?.user?.employeeIsApproved}
                 required
               >
                 Company Email *
@@ -529,7 +557,7 @@ export default function CreateEmployerCompanyInfoPage() {
                     ? selectCompanyDropdownData.companyPhone
                     : companyData.companyPhone) ?? ''
                 }
-                disabled={typeof selectCompanyDropdownData === 'object'}
+                disabled={session?.user?.employeeIsApproved}
                 required
               >
                 Company Phone Number *
@@ -546,7 +574,7 @@ export default function CreateEmployerCompanyInfoPage() {
                   });
                 }}
                 className="year-picker"
-                disabled={typeof selectCompanyDropdownData === 'object'}
+                disabled={session?.user?.employeeIsApproved}
               />
 
               {/* <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel> */}
@@ -568,7 +596,7 @@ export default function CreateEmployerCompanyInfoPage() {
                     ? selectCompanyDropdownData.companySize
                     : companyData.companySize) ?? ''
                 }
-                disabled={typeof selectCompanyDropdownData === 'object'}
+                disabled={session?.user?.employeeIsApproved}
               >
                 Company Size *
               </SelectOptionsWithLabel>
@@ -582,38 +610,32 @@ export default function CreateEmployerCompanyInfoPage() {
                     : companyData.estimatedAnnualHires) ?? ''
                 }
                 required
-                disabled={typeof selectCompanyDropdownData === 'object'}
+                disabled={session?.user?.employeeIsApproved}
               >
                 Predicted Annual Hire *
               </InputTextWithLabel>
               <TextFieldWithAutocomplete
-                  apiSearchRoute={`/api/post-geo-data/zip/search/`} // Use generic search API
+                  apiSearchRoute={`/api/postal-geo-data/zip/search/`} // Use generic search API
                   fieldLabel="Company Location*"
                   id="profile-creation-company-companyAddresses"
                   searchingText="Searching..."
                   noResultsText="No postal code found..."
-                  value={workLocationData ?? ''} // Control the value via searchTerm, similar to selectCompanyDropdownData for company name
+                  value={selectedWorkLocation?.zip ?? ''} // Control the value via searchTerm, similar to selectCompanyDropdownData for company name
                   onChange={(e, val) => {
                     // Handle the selected address and set the searchTerm
-                    handleAddressSelection(e, val);
-
-                    // Update the searchTerm based on the selected value
-                    if (val && typeof val === 'object' && 'zipCode' in val) {
-                      setWorkLocationData(val.zipCode);  // Set searchTerm to selected ZIP code
-                    } else if (typeof val === 'string') {
-                      setWorkLocationData(val);  // Set searchTerm directly if it's a string
-                    }
+                    devLog('val', val);
+                    handleAddressSelection(e, val)
                   }}
                   searchPlaceholder="Company Location Postal Code"
                   getOptionLabel={(option: ReadAddressDTO) =>
-                      `${option?.city}, ${option?.stateCode} ${option?.zipCode}`
+                      `${option?.city}, ${option?.stateCode} ${option?.zip}`
                   }
               />
               {/* Display the selected addresses below */}
               <div className="selected-locations">
-                {companyLocations.map((location, index) => (
+                {companyData?.companyAddresses?.map((location, index) => (
                     <div key={index} className="location-tag">
-                      {location?.city}, {location?.stateCode} {location?.zipCode}
+                      {location?.city}, {location?.stateCode} {location?.zip}
                     </div>
                 ))}
               </div>
