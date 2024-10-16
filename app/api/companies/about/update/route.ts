@@ -26,7 +26,7 @@ export async function PATCH(request: Request) {
         })
 
         // have to allow permission for the creator of the company to edit as they are making it.
-        if (!session?.user.employeeIsApproved && companyInQuestion?.createdBy !== session?.user.employerId) {
+        if (!session?.user.employeeIsApproved && companyInQuestion?.createdBy !== session?.user.id) {
             return NextResponse.json({success: false, error: `Employee needs to be approved to edit this company.`}, {status: 401});
         }
 
