@@ -9,7 +9,7 @@ export default async function EmployerRecentJobPosts() {
       </div>
     <div className="p-4 bg-white rounded-[10px] shadow gap-2 divide-y">
       {jobPostings.map((job)=>{
-        return <SingleJobPost jobtitle={job.job_title}/>
+        return <SingleJobPost jobtitle={job.job_title} key={job.job_posting_id}/>
       })}
     </div>
   </div>;
