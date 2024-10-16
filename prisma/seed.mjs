@@ -20,10 +20,9 @@ const __dirname = path.dirname(__filename);
 /////////////////////////////////////////////////
 
 const roles = [
-    'Admin',
-    'Educator',
-    'Jobseeker',
-    'Employer',
+    'EDUCATOR',
+    'JOBSEEKER',
+    'EMPLOYER',
 ]
 const edPrograms = [
     'None',
@@ -278,7 +277,7 @@ const highestDegreeType = [
 ]
 
 const itOccupationTechnologyAreas = [
-    { id: "f23b7623-60ba-4a5b-a0a4-6cb588dbf6bd", name: "N/A" },
+    { id: "f23b7623-60ba-4a5b-a0a4-6cb588dbf6bd", name: "Other" },
     { id: "f18b7623-60ba-4a5b-a0a4-6cb588bdf6db", name: "Cybersecurity" },
     { id: "7e3b01fc-7c6a-4baf-b755-e47b07ad9191", name: "Cloud Computing" },
     { id: "48d5b1e9-2f36-4c2a-89bb-3b6b063fdd77", name: "Data Science" },
@@ -293,7 +292,257 @@ const itOccupationTechnologyAreas = [
     { id: "907a2f50-becb-472f-b045-03f22cc92611", name: "System Analysis" },
     { id: "7f61d839-d63a-44d7-8ef9-45726f401f16", name: "IT Project Management" },
     { id: "c4d5c8a8-79d2-4429-960b-4991f1175462", name: "Machine Learning" },
-    { id: "dd832f38-9020-42f7-b59c-fb39f9a4b28f", name: "Big Data Analytics" }
+    { id: "dd832f38-9020-42f7-b59c-fb39f9a4b28f", name: "Big Data Analytics" },
+    { id: "bb832f38-8172-5681-c43b-ab29f9a4b29e", name: "N/A Not an IT role" }
+
+];
+
+const techAreasWithCategories = [
+    {
+        category: 'Cybersecurity',
+        subcategories: [
+            { name: 'Identity and Access Management' },
+            { name: 'Network Security' },
+            { name: 'Malware Protection' },
+            { name: 'Log Management' },
+            { name: 'Penetration Testing', newEntry: true },
+            { name: 'Security Auditing', newEntry: true },
+            { name: 'Incident Response', newEntry: true },
+            { name: 'Digital Forensics', newEntry: true }
+        ]
+    },
+    {
+        category: 'Cloud Computing',
+        subcategories: [
+            { name: 'Cloud Solutions' },
+            { name: 'Distributed Computing' },
+            { name: 'Data Storage' },
+            { name: 'Virtualization and Virtual Machines' },
+            { name: 'Serverless Computing', newEntry: true },
+            { name: 'Cloud Security', newEntry: true },
+            { name: 'Cloud Migration', newEntry: true },
+            { name: 'Platform as a Service (PaaS)', newEntry: true },
+            { name: 'Infrastructure as a Service (IaaS)', newEntry: true }
+        ]
+    },
+    {
+        category: 'Data Science',
+        subcategories: [
+            { name: 'Data Collection' },
+            { name: 'Data Management' },
+            { name: 'Data Storage' },
+            { name: 'Big Data Analytics' },
+            { name: 'ETL (Extraction, Transformation, and Loading)' },
+            { name: 'Data Mining', newEntry: true },
+            { name: 'Statistical Analysis', newEntry: true },
+            { name: 'Data Visualization', newEntry: true },
+            { name: 'Predictive Modeling', newEntry: true }
+        ]
+    },
+    {
+        category: 'Artificial Intelligence',
+        subcategories: [
+            { name: 'Artificial Intelligence and Machine Learning (AI/ML)' },
+            { name: 'Natural Language Processing (NLP)', newEntry: true },
+            { name: 'Deep Learning', newEntry: true },
+            { name: 'Computer Vision', newEntry: true },
+            { name: 'Robotics', newEntry: true },
+            { name: 'AI Ethics', newEntry: true },
+            { name: 'Reinforcement Learning', newEntry: true },
+            { name: 'Neural Networks', newEntry: true }
+        ]
+    },
+    {
+        category: 'Network Administration',
+        subcategories: [
+            { name: 'General Networking' },
+            { name: 'Networking Hardware' },
+            { name: 'Networking Software' },
+            { name: 'Network Protocols' },
+            { name: 'Telecommunications' },
+            { name: 'Wireless Networks', newEntry: true },
+            { name: 'Network Monitoring', newEntry: true },
+            { name: 'Software-Defined Networking (SDN)', newEntry: true },
+            { name: 'Voice over IP (VoIP)', newEntry: true }
+        ]
+    },
+    {
+        category: 'Software Development',
+        subcategories: [
+            { name: 'Agile Software Development' },
+            { name: 'Application Programming Interfaces (API)' },
+            { name: 'C and C++' },
+            { name: 'Java' },
+            { name: 'JavaScript and jQuery' },
+            { name: 'Scripting Languages' },
+            { name: 'Other Programming Languages' },
+            { name: 'Software Development Tools' },
+            { name: 'Middleware' },
+            { name: 'Operating Systems' },
+            { name: 'Integrated Development Environments (IDEs)' },
+            { name: 'Version Control' },
+            { name: 'Unit Testing', newEntry: true },
+            { name: 'Software Architecture', newEntry: true },
+            { name: 'Microservices', newEntry: true },
+            { name: 'Full Stack Development', newEntry: true },
+            { name: 'Mobile Development' },
+            { name: 'DevOps' }
+        ]
+    },
+    {
+        category: 'Database Management',
+        subcategories: [
+            { name: 'Database Architecture and Administration' },
+            { name: 'Databases' },
+            { name: 'Query Languages' },
+            { name: 'Data Warehousing', newEntry: true },
+            { name: 'Relational Databases (SQL)', newEntry: true },
+            { name: 'NoSQL Databases', newEntry: true },
+            { name: 'Data Modeling', newEntry: true },
+            { name: 'Database Security', newEntry: true },
+            { name: 'Database Performance Tuning', newEntry: true }
+        ]
+    },
+    {
+        category: 'DevOps',
+        subcategories: [
+            { name: 'Configuration Management' },
+            { name: 'IT Automation' },
+            { name: 'Test Automation' },
+            { name: 'Backup Software' },
+            { name: 'Version Control' },
+            { name: 'Continuous Integration/Continuous Delivery (CI/CD)', newEntry: true },
+            { name: 'Containerization (Docker/Kubernetes)', newEntry: true },
+            { name: 'Infrastructure as Code (IaC)', newEntry: true },
+            { name: 'Monitoring and Logging', newEntry: true }
+        ]
+    },
+    {
+        category: 'Web Development',
+        subcategories: [
+            { name: 'Web Design and Development' },
+            { name: 'Web Services' },
+            { name: 'Web Content' },
+            { name: 'Search Engines' },
+            { name: 'Content Management Systems' },
+            { name: 'Frontend Development', newEntry: true },
+            { name: 'Backend Development', newEntry: true },
+            { name: 'Web Frameworks (React, Angular, Vue)', newEntry: true },
+            { name: 'Responsive Design', newEntry: true },
+            { name: 'Progressive Web Apps (PWA)', newEntry: true }
+        ]
+    },
+    {
+        category: 'Mobile App Development',
+        subcategories: [
+            { name: 'Mobile Development' },
+            { name: 'iOS Development' },
+            { name: 'Android Development', newEntry: true },
+            { name: 'Cross-Platform Mobile Development', newEntry: true },
+            { name: 'Mobile User Experience (UX)', newEntry: true },
+            { name: 'Mobile Security', newEntry: true },
+            { name: 'App Store Optimization', newEntry: true }
+        ]
+    },
+    {
+        category: 'IT Support',
+        subcategories: [
+            { name: 'Technical Support and Services' },
+            { name: 'Computer Hardware' },
+            { name: 'Basic Technical Knowledge' },
+            { name: 'Help Desk Support', newEntry: true },
+            { name: 'IT Troubleshooting', newEntry: true },
+            { name: 'IT Service Management (ITSM)', newEntry: true },
+            { name: 'Remote Support', newEntry: true },
+            { name: 'End-User Training', newEntry: true },
+            { name: 'Ticketing Systems', newEntry: true }
+        ]
+    },
+    {
+        category: 'System Analysis',
+        subcategories: [
+            { name: 'System Design and Implementation' },
+            { name: 'Systems Administration' },
+            { name: 'IT Management' },
+            { name: 'Enterprise Application Management' },
+            { name: 'Enterprise Information Management' },
+            { name: 'Business Process Modeling', newEntry: true },
+            { name: 'Systems Integration', newEntry: true },
+            { name: 'Requirements Analysis', newEntry: true },
+            { name: 'Systems Testing', newEntry: true }
+        ]
+    },
+    {
+        category: 'IT Project Management',
+        subcategories: [
+            { name: 'IT Management' },
+            { name: 'Collaborative Software' },
+            { name: 'Agile Project Management', newEntry: true },
+            { name: 'Waterfall Project Management', newEntry: true },
+            { name: 'Scrum', newEntry: true },
+            { name: 'Kanban', newEntry: true },
+            { name: 'Risk Management', newEntry: true },
+            { name: 'Stakeholder Management', newEntry: true },
+            { name: 'Budgeting and Scheduling', newEntry: true }
+        ]
+    },
+    {
+        category: 'Machine Learning',
+        subcategories: [
+            { name: 'Artificial Intelligence and Machine Learning (AI/ML)' },
+            { name: 'Deep Learning', newEntry: true },
+            { name: 'Data Collection' },
+            { name: 'Supervised Learning', newEntry: true },
+            { name: 'Unsupervised Learning', newEntry: true },
+            { name: 'Reinforcement Learning', newEntry: true },
+            { name: 'Neural Networks', newEntry: true },
+            { name: 'Feature Engineering', newEntry: true },
+            { name: 'Model Deployment', newEntry: true }
+        ]
+    },
+    {
+        category: 'Big Data Analytics',
+        subcategories: [
+            { name: 'Data Management' },
+            { name: 'Big Data Analytics' },
+            { name: 'Data Storage' },
+            { name: 'Hadoop', newEntry: true },
+            { name: 'Spark', newEntry: true },
+            { name: 'NoSQL', newEntry: true },
+            { name: 'Data Lakes', newEntry: true },
+            { name: 'Data Warehousing', newEntry: true },
+            { name: 'Real-Time Analytics', newEntry: true }
+        ]
+    },
+    {
+        category: 'Blockchain',
+        subcategories: [
+            { name: 'Blockchain' },
+            { name: 'Distributed Ledger Technology (DLT)', newEntry: true },
+            { name: 'Smart Contracts', newEntry: true },
+            { name: 'Cryptography', newEntry: true },
+            { name: 'Blockchain Development', newEntry: true },
+            { name: 'Decentralized Applications (DApps)', newEntry: true },
+            { name: 'Blockchain Security', newEntry: true },
+            { name: 'Consensus Mechanisms', newEntry: true },
+            { name: 'Tokenomics', newEntry: true }
+        ]
+    },
+    {
+        category: 'Other',
+        subcategories: [
+            { name: 'Blockchain' },
+            { name: 'Geospatial Information and Technology' },
+            { name: 'Firmware' },
+            { name: 'Virtualization and Virtual Machines' },
+            { name: 'Video and Web Conferencing' },
+            { name: 'Wireless Technologies' },
+            { name: 'Backup Software' },
+            { name: 'Mainframe Technologies' },
+            { name: 'Search Engines' },
+            { name: 'Telecommunications' }
+        ]
+    }
 ];
 
 const predefinedResponsibilities = [
@@ -1596,10 +1845,28 @@ async function seedIndustrySectors() {
 
 async function seedCompanies() {
     const sectors = await prisma.industry_sectors.findMany();
+    const cfaAdmin = await prisma.user.create({
+        data: {
+            id: uuidv4(),
+            first_name: 'CFA',
+            last_name: 'ADMIN',
+            birthdate: faker.date.birthdate({min: 18, max: 65, mode: "age"}),
+            email: 'admin@computingforall.org',
+            role: 'ADMIN',
+            phone: generatePhoneNumber(),
+            photo_url: getRandomUserPhoto(),
+            locationData: {
+                connect: {
+                    zip: '98004',
+                }
+            },
+            createdAt: new Date().toISOString()
+        }
+    });
     for (let i = 0; i < 5; i++) {
         await prisma.companies.create({
             data: {
-                createdBy: uuidv4(), // hacking employerId to get it to work will be no related employer
+                createdBy: cfaAdmin.id, // hacking employerId to get it to work will be no related employer
                 company_id: uuidv4(),
                 industry_sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                 company_name: faker.company.name(),
