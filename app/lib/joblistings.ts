@@ -72,17 +72,14 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
           new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()), //if closing date is not provided auto set to 1 year in the futrue
         job_post_url: jobData.job_post_url,
         assessment_url: jobData.assessment_url,
-        job_listing_has_skills: {
-          create:jobData.skillIds?.map(skill=>{
-            return{
-            job_listing_has_skill_id: uuidv4(),
-            skill_id:skill,
-            }  })
+        skills:{
+          connect: jobData.skillIds?.map((skillId:string)=>({skill_id:skillId}))
         }
+        
     }});
-    //console.log('new jobs listing: ', newJobListing);
+
     return newJobListing;
-    //jobData.skillIds?.map((skill)=>{return {create:{}}})},
+
   } catch (error) {
     console.error('Error creating job listing with skills:', error);
     // throw new Error('Failed to create job listing with associated skills');
@@ -96,7 +93,7 @@ export async function getJobListingById(joblistingId: string) {
         job_posting_id: joblistingId,
       },
       include:{
-        job_listing_has_skills:true
+        skills:true
       },
     });
     return joblisting;

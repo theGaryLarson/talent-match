@@ -289,44 +289,33 @@ model industry_sectors {
   job_postings       job_postings[]
 }
 
-model job_listing_has_skills {
-  job_listing_has_skill_id String       @id(clustered: false, map: "job_listing_has_skills_PRIMARY") @unique(map: "job_listing_has_skills_job_listing_has_skill_category_id_UNIQUE") @db.UniqueIdentifier
-  job_listing_id           String       @db.UniqueIdentifier
-  skill_id                 String       @db.UniqueIdentifier
-  job_postings             job_postings @relation(fields: [job_listing_id], references: [job_posting_id], onUpdate: NoAction, map: "fk_job_listing_has_skill_category_job_listing1")
-  skills                   skills       @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_job_listing_has_skill_category_skill1")
-
-  @@index([job_listing_id], map: "job_listing_has_skills_fk_job_listing_has_skill_category_job_listing1_idx")
-  @@index([skill_id], map: "job_listing_has_skills_fk_job_listing_has_skill_category_skill1_idx")
-}
-
 model job_postings {
-  job_posting_id         String                   @id(clustered: false, map: "job_postings_PRIMARY") @unique(map: "job_postings_job_listing_id_UNIQUE") @db.UniqueIdentifier
-  company_id             String                   @db.UniqueIdentifier
-  location_id            String                   @db.UniqueIdentifier
-  employer_id            String                   @db.UniqueIdentifier
-  tech_area_id           String?                  @db.UniqueIdentifier
-  sector_id              String?                  @db.UniqueIdentifier
-  job_title              String                   @db.VarChar(255)
-  job_description        String                   @db.VarChar(255)
-  is_internship          Boolean                  @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
-  is_paid                Boolean                  @default(true, map: "DF__job_posti__is_pa__5812160E") @db.Bit
-  employment_type        String                   @default("N'full-time'", map: "DF__job_posti__emplo__59063A47") @db.NVarChar(255)
-  location               String                   @db.NVarChar(255)
-  salary_range           String                   @db.VarChar(45)
-  county                 String                   @db.VarChar(255)
-  zip                    String                   @db.VarChar(45)
-  publish_date           DateTime                 @db.DateTime
-  unpublish_date         DateTime                 @db.DateTime
-  job_post_url           String?                  @db.VarChar(255)
-  assessment_url         String?                  @db.VarChar(255)
-  job_listing_has_skills job_listing_has_skills[]
-  companies              companies                @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_job_postings_companies1")
-  employers              employers                @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, map: "fk_job_postings_employers1")
-  techArea               technology_areas?        @relation(fields: [tech_area_id], references: [id], onUpdate: NoAction, map: "fk_job_postings_technology_areas1")
-  company_addresses      company_addresses        @relation(fields: location_id, references: [company_address_id], onUpdate: NoAction, map: "fk_job_postings_company_addresses1")
-  industry_sectors       industry_sectors?        @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, map: "fk_job_postings_industry_sectors1")
-  BookmarkedJobPosting   BookmarkedJobPosting[]
+  job_posting_id       String                 @id(clustered: false, map: "job_postings_PRIMARY") @unique(map: "job_postings_job_listing_id_UNIQUE") @db.UniqueIdentifier
+  company_id           String                 @db.UniqueIdentifier
+  location_id          String                 @db.UniqueIdentifier
+  employer_id          String                 @db.UniqueIdentifier
+  tech_area_id         String?                @db.UniqueIdentifier
+  sector_id            String?                @db.UniqueIdentifier
+  job_title            String                 @db.VarChar(255)
+  job_description      String                 @db.VarChar(255)
+  is_internship        Boolean                @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
+  is_paid              Boolean                @default(true, map: "DF__job_posti__is_pa__5812160E") @db.Bit
+  employment_type      String                 @default("N'full-time'", map: "DF__job_posti__emplo__59063A47") @db.NVarChar(255)
+  location             String                 @db.NVarChar(255)
+  salary_range         String                 @db.VarChar(45)
+  county               String                 @db.VarChar(255)
+  zip                  String                 @db.VarChar(45)
+  publish_date         DateTime               @db.DateTime
+  unpublish_date       DateTime               @db.DateTime
+  job_post_url         String?                @db.VarChar(255)
+  assessment_url       String?                @db.VarChar(255)
+  skills               skills[]               @relation("JobPostingSkills") // Direct One-directional reference to skills to skills
+  companies            companies              @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_job_postings_companies1")
+  employers            employers              @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, map: "fk_job_postings_employers1")
+  techArea             technology_areas?      @relation(fields: [tech_area_id], references: [id], onUpdate: NoAction, map: "fk_job_postings_technology_areas1")
+  company_addresses    company_addresses      @relation(fields: location_id, references: [company_address_id], onUpdate: NoAction, map: "fk_job_postings_company_addresses1")
+  industry_sectors     industry_sectors?      @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, map: "fk_job_postings_industry_sectors1")
+  BookmarkedJobPosting BookmarkedJobPosting[]
 
   @@index([location_id], map: "fk_job_postings_company_addresses1_idx")
   @@index([company_id], map: "fk_job_postings_companies1_idx")
@@ -576,7 +565,7 @@ model skills {
   skill_subcategory_id        String                        @db.UniqueIdentifier
   skill_name                  String                        @db.VarChar(255)
   skill_info_url              String                        @default("") @db.VarChar(255)
-  job_listing_has_skills      job_listing_has_skills[]
+  job_postings                job_postings[]                @relation("JobPostingSkills")
   jobseeker_has_skills        jobseeker_has_skills[]
   pathway_has_skills          pathway_has_skills[]
   project_has_skills          project_has_skills[]
