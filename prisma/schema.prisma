@@ -39,6 +39,7 @@ model User {
   Session            Session[]
   // Optional for WebAuthn support
   Authenticator      Authenticator[]
+  companies          companies[]
 
   @@map("users")
 }
@@ -159,6 +160,7 @@ model companies {
   estimated_annual_hires Int?
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
   createdBy              String                 @db.UniqueIdentifier
+  createdByUser          User                   @relation(fields: [createdBy], references: [id], onDelete: NoAction)
   industry_sectors       industry_sectors?      @relation(fields: [industry_sector_id], references: [industry_sector_id], onUpdate: NoAction, map: "fk_company_industry_sectors1")
   company_addresses      company_addresses[]
   company_social_links   company_social_links[]
