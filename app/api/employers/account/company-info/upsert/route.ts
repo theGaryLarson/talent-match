@@ -18,6 +18,7 @@ export async function POST(request: Request) {
         const userId: string = session?.user.id!;
         const employerId: string = session?.user.employerId!;
 
+
         const body: PostCompanyInfoDTO = await request.json();
         const {
             companyId,
@@ -87,14 +88,21 @@ export async function POST(request: Request) {
                         user_id: userId,
                     },
                 },
-                industry_sectors: {
-                    connect: {
-                        industry_sector_id: industrySectorId!,
-                    }
-                }
+                // Only connect if industrySectorId exists
+                ...(industrySectorId && {
+                    industry_sectors: {
+                        connect: {
+                            industry_sector_id: industrySectorId,
+                        },
+                    },
+                }),
             },
             create: {
-                createdBy: employerId,
+                createdByUser:{
+                    connect: {
+                        id: userId,
+                    }
+                } ,
                 company_id: companyId,
                 company_name: companyName,
                 company_logo_url:
@@ -115,11 +123,14 @@ export async function POST(request: Request) {
                         user_id: userId,
                     },
                 },
-                industry_sectors: {
-                    connect: {
-                        industry_sector_id: industrySectorId!,
-                    }
-                }
+                // Only connect if industrySectorId exists
+                ...(industrySectorId && {
+                    industry_sectors: {
+                        connect: {
+                            industry_sector_id: industrySectorId,
+                        },
+                    },
+                }),
             },
             select: {
                 company_id: true,
