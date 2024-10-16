@@ -1,23 +1,26 @@
-export default function EmployerRecentJobPosts() {
+import { getMyJobListings } from "@/app/lib/joblistings";
+
+export default async function EmployerRecentJobPosts() {
     //TODO add in dynamic data
+    let jobPostings = await getMyJobListings();
   return <div>
     <div className="text-xl font-medium leading-relaxed text-black/90">
         Recent Job Posts
       </div>
     <div className="p-4 bg-white rounded-[10px] shadow gap-2 divide-y">
-    <SingleJobPost/>
-    <SingleJobPost/>
-    <SingleJobPost/>
+      {jobPostings.map((job)=>{
+        return <SingleJobPost jobtitle={job.job_title}/>
+      })}
     </div>
   </div>;
 }
 
-function SingleJobPost() {
+function SingleJobPost(props:{jobtitle:string}) {
   return (
     <div className="flex items-center justify-between bg-white p-2">
       <div className="flex h-[17px] items-center justify-start gap-2">
         <div className="font-['Roboto'] text-sm font-semibold leading-[16.80px] tracking-tight text-[#047f9c]">
-          Software Engineer
+          {props.jobtitle}
         </div>
         <div className="font-['Roboto'] text-sm font-normal leading-[16.80px] tracking-tight text-[#181818]">
           |
