@@ -608,7 +608,7 @@ export default function CreateEmployerCompanyInfoPage() {
                             ? selectCompanyDropdownData.estimatedAnnualHires
                             : companyData.estimatedAnnualHires) || ''
                     }
-                    required
+                    
                     disabled={session?.user?.employeeIsApproved}
                 >
                   Estimated Annual Hires *

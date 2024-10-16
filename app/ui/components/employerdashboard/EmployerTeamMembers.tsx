@@ -1,7 +1,7 @@
 'use server';
 import { getEmployersByCompanyId } from '@/app/lib/prisma';
 import { auth } from '@/auth';
-import Avatar from './Avatar';
+import Avatar from '../Avatar';
 
 export default async function EmployerTeamMembers() {
   let session = await auth();
@@ -12,7 +12,7 @@ export default async function EmployerTeamMembers() {
       <div className="text-xl font-medium leading-relaxed text-black/90">
         My team
       </div>
-      <div className="flex gap-[16px] p-4 bg-white rounded-[10px] shadow">
+      <div className="flex flex-wrap gap-[16px] p-4 bg-white rounded-[10px] shadow">
         <div className="flex items-center gap-[8px]">
           <Avatar imgsrc={'/images/plusIcon.png'} scale={0.75} />
           <div className="text-sm font-semibold tracking-tight">

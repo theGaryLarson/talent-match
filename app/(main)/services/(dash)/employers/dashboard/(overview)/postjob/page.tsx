@@ -1,8 +1,12 @@
 'use client'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
+import { SkillDTO } from '@/data/dtos/SkillDTO';
 export default function Page() {
   const router = useRouter()
+  const [skills, setSkills] = useState<SkillDTO[]>();
+  const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
       event.preventDefault();
       
@@ -23,8 +27,9 @@ export default function Page() {
       unpublish_date: formData.get('unpublish_date') ? new Date(formData.get('unpublish_date') as string) : undefined,
       job_post_url: formData.get('job_post_url') as string,
       assessment_url: formData.get('assessment_url') as string,
+      skillIds: skills?.map((v)=> v.skill_id)
     };
-console.log("look here: ", jobListingData)
+//console.log("look here: ", jobListingData)
     try {
       // Send job listing data to server
       
@@ -43,7 +48,7 @@ console.log("look here: ", jobListingData)
       }else{
         // Await the response JSON
       const data = await response.json();
-      console.log('Job listing created:', data);
+      //console.log('Job listing created:', data);
       router.push('/services/joblistings/'+data.job_posting_id)
       }
     } catch (error) {
@@ -156,7 +161,26 @@ console.log("look here: ", jobListingData)
             <input type="text" name="assessment_url" />
           </div>
     
-          {/* Skill IDs */}
+          {/* Skills */}
+          <TagsWithAutocomplete
+                apiSearchRoute="/api/skills/search/"
+                fieldLabel="Select your skills *"
+                id="profile-creation-showcase-skills"
+                maxTags={5}
+                searchingText="Searching..."
+                noResultsText="No skills found..."
+                onChange={function (ev, val) {
+                  if (val.every((skill) => typeof skill !== 'string')) {
+                    setSkills(val as SkillDTO[]);
+                  }
+                }}
+                searchPlaceholder="Skill (ex: Java)"
+                addNewTags={fetchLoadedTags}
+                getTagLabel={(option: SkillDTO) => option.skill_name}
+                getTagLink={(option: SkillDTO) => option.skill_info_url}
+              />
+              <p>Select your top 5 skills from your skills list</p>
+
     
           {/* Submit Button */}
           <div>

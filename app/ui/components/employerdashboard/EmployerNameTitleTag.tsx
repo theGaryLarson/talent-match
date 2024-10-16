@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import Avatar from './Avatar';
+import Avatar from '../Avatar'
 export default function EmployerNameTitleTag(props: {
   name: string | null | undefined;
   title: string;

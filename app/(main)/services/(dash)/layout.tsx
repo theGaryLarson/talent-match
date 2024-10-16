@@ -10,7 +10,7 @@ export default async function layout({ children }: { children: React.ReactNode }
   if(session?.user.employerId){
   return (
     <div className="flex">
-      <div className="flex w-[230px] flex-col text-[#047f9c]">
+      <div className="flex min-w-[230px] flex-col text-[#047f9c]">
         <Link
           href="/services/employers/dashboard"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"

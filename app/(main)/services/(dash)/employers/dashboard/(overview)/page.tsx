@@ -1,9 +1,10 @@
-import EmployerNameTitleTag from '@/app/ui/components/EmployerNameTitleTag';
+import EmployerNameTitleTag from '@/app/ui/components/employerdashboard/EmployerNameTitleTag';
 import ScoreCard from '@/app/ui/components/ScoreCard';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
 import { getCompanyById, getEmployerById } from '@/app/lib/prisma';
-import EmployerTeamMembers from '@/app/ui/components/EmployerTeamMembers';
+import EmployerTeamMembers from '@/app/ui/components/employerdashboard/EmployerTeamMembers';
 import { auth } from '@/auth';
+import EmployerRecentJobPosts from '@/app/ui/components/employerdashboard/EmployerRecentJobPosts';
 //employer dashboard
 export const metadata = {
   title: "My Dashboard"
@@ -28,6 +29,7 @@ export default async function Page() {
         {<ScoreCard title="Saved Candidates" val={3} />}
         {<ScoreCard title="Job Applications " val={5} />}
       </div>
+      <EmployerRecentJobPosts/>
       <EmployerTeamMembers/>
     </main>
   );

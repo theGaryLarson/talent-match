@@ -6,6 +6,7 @@ import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { v4 as uuidv4 } from 'uuid';
 import { auth } from '@/auth';
 import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
+import Skills from '../ui/components/Skills';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
@@ -46,19 +47,20 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
       where: { zip: jobData.zip },
     });
 
-    console.log('Employer ID:', Session.user.employerId);
-    console.log('Company ID:', Session.user.companyId);
+    //console.log('Employer ID:', Session.user.employerId);
+    //console.log('Company ID:', Session.user.companyId);
     const now = new Date();
+    const jobListingId = uuidv4()
     const newJobListing = await prisma.job_postings.create({
       data: {
-        job_posting_id: uuidv4(),
+        job_posting_id: jobListingId,
         company_id: Session.user.companyId,
         location_id: companyAddress.company_address_id,
         employer_id: Session?.user.employerId,
         job_title: jobData.job_title,
         job_description: jobData.job_description,
-        is_internship: jobData.is_internship || false,
-        is_paid: jobData.is_paid || true,
+        is_internship: jobData.is_internship ?? false,
+        is_paid: jobData.is_paid ?? true,
         zip: jobData.zip,
         employment_type: jobData.employment_type || 'full-time',
         location: jobData.location,
@@ -67,13 +69,17 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         publish_date: now,
         unpublish_date:
           jobData.unpublish_date ??
-          new Date(now.getFullYear() + 1, now.getMonth(), now.getDay()), //if closing date is not provided auto set to 1 year in the futrue
+          new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()), //if closing date is not provided auto set to 1 year in the futrue
         job_post_url: jobData.job_post_url,
         assessment_url: jobData.assessment_url,
-      },
-    });
-    console.log('new jobs listing: ', newJobListing);
+        skills:{
+          connect: jobData.skillIds?.map((skillId:string)=>({skill_id:skillId}))
+        }
+        
+    }});
+
     return newJobListing;
+
   } catch (error) {
     console.error('Error creating job listing with skills:', error);
     // throw new Error('Failed to create job listing with associated skills');
@@ -85,6 +91,9 @@ export async function getJobListingById(joblistingId: string) {
     const joblisting = await prisma.job_postings.findUnique({
       where: {
         job_posting_id: joblistingId,
+      },
+      include:{
+        skills:true
       },
     });
     return joblisting;
