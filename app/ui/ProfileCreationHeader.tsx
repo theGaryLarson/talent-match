@@ -8,7 +8,7 @@ import { SessionProvider } from 'next-auth/react';
 export default function ProfileCreationHeader() {
   const { data: session } = useSession();
   const dashboardLink = session?.user.roles.includes(Role.EMPLOYER)
-    ? '/services/employer/dashboard'
+    ? '/services/employers/dashboard'
     : '/services/jobseekers/dashboard';
 
   return (
@@ -31,11 +31,11 @@ export default function ProfileCreationHeader() {
 
           <div className="flex flex-1 justify-end">
             <Link
-              className="mt-1 inline-block h-fit rounded-full bg-cyan-600 px-4 py-2 text-white hover:bg-red-800"
+              className="mt-1 inline-block h-fit rounded-full bg-cyan-700 px-4 py-2 text-white hover:bg-red-800"
               href={dashboardLink}
               target="_self"
             >
-              Skip Profile Setup
+              Skip
             </Link>
           </div>
         </nav>

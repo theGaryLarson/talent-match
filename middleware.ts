@@ -25,17 +25,14 @@ export default auth((req) => {
     "/create-profile/jobseeker/work-experience",
 
     "/services/jobseekers/dashboard",
-
-
+    "/services/jobseekers/",
     "/services/joblistings",
 
     "/api/jobseekers/",
-
-    "/api/edu-providers/", //fixme: had to add so jobseeker can see list of colleges in TextFieldAutoComplete component
-    "/api/skills/search/",  //fixme: had to add so jobseeker can see list of skills in TextFieldAutoComplete component
-    "/api/employers/technology-areas", //fixme: had to add so jobseeker can see list of tech-areas in TextFieldAutoComplete component
-    "/services/jobseekers",  // fixme: had to add to view own profile. Need to validate that id is theirs to view the page.
-    "/api/users/avatar/upload" // fixme: had to add so jobseeker can update their avatar image.
+    "/api/edu-providers/",
+    "/api/skills/search/",
+    "/api/employers/technology-areas",
+    "/api/users/avatar/upload",
   ];
 
   const employerRoutes = [ // Routes for logged in users with EMPLOYER role
@@ -51,13 +48,12 @@ export default auth((req) => {
     "/services/employers/dashboard",
     "/services/jobseekers/",
     "/services/joblistings",
+
     "/api/joblistings/add",
     "/api/employers/",
-
-    "/api/companies",  //fixme: had to add so employer can see list of existing companies in TextFieldAutoComplete component
-    "/api/users/avatar/upload", //fixme: had to add so employer can upload an image
-    "/api/skills/search/", // fixme: had to add so employer can search based on skills
-    "/api/postal-geo-data/zip/search/", // fixme: had to add so employer can select work location.
+    "/api/companies",
+    "/api/users/avatar/upload",
+    "/api/skills/search/",
   ];
 
   const publicRoutes = [ // Routes for anyone, logged in or not
@@ -75,6 +71,7 @@ export default auth((req) => {
 
     "/api/jobseekers/query",
     "/api/employers/industry-sectors",
+    "/api/postal-geo-data/zip/search/",
   ];
 
   function userIsGuest() { return userRoles.includes(Role.GUEST) /* || userRoles.includes(Role.ADMIN)*/; }
@@ -132,7 +129,8 @@ export default auth((req) => {
 
   else if (userIsJobseeker()) { // Route checking for jobseeker routes
     if (pathIsJobseekerRoute()) {
-      if (pathname.startsWith("/services/jobseekers/")) { // Jobseekers can only access their own profile
+      if (pathname != "/services/jobseekers/dashboard" // allow dashboard
+        && pathname.startsWith("/services/jobseekers/")) { // Jobseekers can only access their own profile
         const requestedId = pathname.replace("/services/jobseekers/", "");
         if (requestedId != jobseekerId) {
           console.log("Access denied: Jobseeker can only access their own profile");
