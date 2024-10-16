@@ -39,16 +39,16 @@ describe('ProfileCreationHeader', () => {
         renderWithProviders(<ProfileCreationHeader />, Role.JOBSEEKER);
         expect(screen.getByRole('banner')).toBeDefined();
         expect(screen.getByAltText('Tech Workforce Coalition')).toBeDefined();
-        expect(screen.getByText('Skip Profile Setup')).toBeDefined();
+        expect(screen.getByText('Skip')).toBeDefined();
     });
 
     it('links to the correct dashboard for employers', () => {
         renderWithProviders(<ProfileCreationHeader />, Role.EMPLOYER);
-        expect(screen.getByText('Skip Profile Setup').closest('a')).toHaveProperty('pathname', '/services/employer/dashboard');
+        expect(screen.getByText('Skip').closest('a')).toHaveProperty('pathname', '/services/employers/dashboard');
     });
 
     it('links to the correct dashboard for jobseekers', () => {
         renderWithProviders(<ProfileCreationHeader />, Role.JOBSEEKER);
-        expect(screen.getByText('Skip Profile Setup').closest('a')).toHaveProperty('pathname', '/services/jobseekers/dashboard');
+        expect(screen.getByText('Skip').closest('a')).toHaveProperty('pathname', '/services/jobseekers/dashboard');
     });
 });
