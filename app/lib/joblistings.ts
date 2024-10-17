@@ -146,3 +146,18 @@ try{
     console.error(e)
   }
 }
+
+//TODO needs DB update
+export async function ApplyToJob(jobPostingId:string) {
+  let Session = await auth();
+  try {
+    if (!Session?.user.jobseekerId) {
+      throw new Error('Failed to delete job listing: jobseeker ID not found in session');
+    }
+
+    //do prisma stuff here
+    return 
+  } catch (error) {
+    console.error(error)
+  }
+}
