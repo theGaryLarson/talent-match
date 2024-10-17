@@ -1,13 +1,31 @@
 'use client'
 import { deleteJobListing } from "@/app/lib/joblistings";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
 
 export default function JobPostingCard(params:{
     jobTitle:string,
     jobDescription:string,
     jobPostingId:string
-    remove:(a: string) => void
 }){
+    const [isDeleted, setIsDeleted] = useState(false);
+const removeJob = async ()=>{
+        try {
+            const response = await fetch(`/api/joblistings/delete/${params.jobPostingId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            console.log('Item deleted successfully: ',response);
+            setIsDeleted(true)
+          } catch (error) {
+            console.error('There was a problem with the delete request:', error);
+          }
+        }
+    if(isDeleted){
+        return
+    }
+        
 
     return(
         <div className="border">
@@ -15,7 +33,7 @@ export default function JobPostingCard(params:{
             <p>
                 {params.jobDescription}
             </p>
-            <button onClick={()=>{params.remove(params.jobPostingId)}}>Delete</button>
+            <button onClick={removeJob}>Delete</button>
         </div>
     );
 }

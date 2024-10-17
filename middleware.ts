@@ -50,6 +50,7 @@ export default auth((req) => {
     "/services/joblistings",
 
     "/api/joblistings/add",
+    "/api/joblistings/delete",
     "/api/employers/",
     "/api/companies",
     "/api/users/avatar/upload",
