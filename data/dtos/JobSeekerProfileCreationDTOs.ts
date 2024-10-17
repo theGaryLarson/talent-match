@@ -1,5 +1,4 @@
 import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { WorkExperience } from '@prisma/client';
 
 export type JsIntroDTO = {
   userId: string;
