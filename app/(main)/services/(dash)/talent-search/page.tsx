@@ -32,13 +32,17 @@ async function fetchFilteredJobSeekerCardView(
   maxResults: number = resultsPerPage,
   page: number = 1,
 ): Promise<JobSeekerQueryResult> {
+  // Filter based on pools
+  const pool1 = true, pool2 = true, pool3 = false;
+
   if (yearsWorkExpMax == 5) yearsWorkExpMax = undefined; // API expects undefined for max to handle 5+ yearsExp
   const response = await fetch('/api/jobseekers/query', { // Make the request
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ skills, industrySector, educationLevel, yearsWorkExpMin, yearsWorkExpMax, zipCode, sortBy, maxResults, page })
+    body: JSON.stringify({ skills, industrySector, educationLevel, yearsWorkExpMin, yearsWorkExpMax, 
+                           zipCode, sortBy, maxResults, page, pool1, pool2, pool3 })
   });
   if (!response.ok) {
     throw new Error('Failed to fetch data');
