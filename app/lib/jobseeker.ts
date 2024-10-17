@@ -1,10 +1,10 @@
 import { auth } from '@/auth';
-import {JobseekerPoolAssignment, JobseekerPoolVars, SelectJobseekerPoolCatResult} from '@/app/lib/poolAssignment';
+import { JobseekerPoolVars, SelectJobseekerPoolCatResult } from '@/app/lib/poolAssignment';
 import { selectJobseekerPoolCategory } from '@/app/lib/poolAssignment';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {
   edu_providers,
-  jobseekers_education, PrismaClient,
+  jobseekers_education,
   technology_areas,
   WorkExperience,
 } from '@prisma/client';
@@ -14,7 +14,6 @@ import {
   ProgramEnrollmentStatus,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { devLog } from '@/app/lib/utils';
-import {NextResponse} from "next/server";
 
 const prisma = getPrismaClient();
 
@@ -25,7 +24,6 @@ const prisma = getPrismaClient();
  * @returns {Promise<JobseekerPoolVars>} - A Promise that resolves with the aggregated JobseekerPoolVars object.
  */
 export const aggregateJobseekerPoolVars = async (jobseekerId: string): Promise<JobseekerPoolVars> => {
-  const session = await auth();
 
   if (!jobseekerId) {
     throw new TypeError(
@@ -132,7 +130,7 @@ export const setPoolAndUnflagDeletion = async (): Promise<void> => {
   // await prisma.$transaction(async (prisma: PrismaClient) => {
     const poolVars = await aggregateJobseekerPoolVars(jobseekerId)
     const categoryOutput = selectJobseekerPoolCategory(poolVars);
-    await updatePoolUnflagDeletion(jobseekerId, categoryOutput);;
+    await updatePoolUnflagDeletion(jobseekerId, categoryOutput);
   // });
 }
 
