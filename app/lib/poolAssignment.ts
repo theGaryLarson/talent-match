@@ -1,3 +1,5 @@
+import {devLog} from "@/app/lib/utils";
+
 /**
  * Represents the variables associated with jobseeker pool assignment.
  * @interface
@@ -11,22 +13,41 @@ export interface JobseekerPoolVars {
 }
 
 /**
+ * Defines the structure of pool assignments for easy use.
+ * @interface
+ */
+export interface JobseekerPoolAssignment {
+    pool1: boolean;
+    pool2: boolean;
+    pool3: boolean;
+}
+
+export interface SelectJobseekerPoolCatResult {
+    poolAssignment: JobseekerPoolAssignment;
+    careerPrepTrackRecommendation: CareerPrepTrack | null
+}
+
+/**
  * Generates a unique key for a jobseeker based on their profile information.
  * @param {JobseekerPoolVars} user - The jobseeker's relevant profile information
  * @returns {string} - The generated key for the jobseeker
  */
 export const generatePoolKey = (user: JobseekerPoolVars): string => {
+    devLog('generatePoolKey', `${user.enrolledWithPartner}_${user.completedPartnerProgram}_${user.prevTechExperience}_${user.hasDegreeOrTechProgram}_${user.completeCareerPrep}`)
     return `${user.enrolledWithPartner}_${user.completedPartnerProgram}_${user.prevTechExperience}_${user.hasDegreeOrTechProgram}_${user.completeCareerPrep}`;
 };
 
 
+
 /**
- * Assigns a user to a jobseeker pool and retrieves the corresponding career preparation recommendation.
+ * Function that selects the jobseeker pool category for a given user based on certain criteria.
+ * If a category is found for the user, it returns the pool assignment and career preparation track recommendation.
+ * If no category is found, it defaults to 'Pool 3' with a 'Standard' recommendation.
  *
- * @param {JobseekerPoolVars} user - The user information to assign to a pool.
- * @returns {object} An object containing the assigned pool and career prep recommendation for the user.
+ * @param {JobseekerPoolVars} user - The user object containing information for selecting the category.
+ * @returns {Object} An object containing the pool assignment and career preparation track recommendation.
  */
-export const assignUserToPool = (user: JobseekerPoolVars): object => {
+export const selectJobseekerPoolCategory = (user: JobseekerPoolVars): SelectJobseekerPoolCatResult => {
     const key = generatePoolKey(user);
 
     // Use the dictionary to find the corresponding pool and career prep recommendation, or default to 'Pool 3' with 'Standard' recommendation
@@ -35,8 +56,20 @@ export const assignUserToPool = (user: JobseekerPoolVars): object => {
         careerPrepTrackRecommendation: CareerPrepTrack.STANDARD,
     };
 
+    devLog('assignUserToPool\n', { poolAssignment, careerPrepTrackRecommendation });
+
+    // Convert poolAssignment string into JobseekerPoolAssignment object
+    const poolAssignmentResult: JobseekerPoolAssignment = {
+        pool1: poolAssignment === PoolCategories.POOL1,
+        pool2: poolAssignment === PoolCategories.POOL2,
+        pool3: poolAssignment === PoolCategories.POOL3,
+    };
+
+    devLog('poolAssignmentResult\n', poolAssignmentResult);
+
+
     return {
-        poolAssignment,
+        poolAssignment: poolAssignmentResult,
         careerPrepTrackRecommendation, // The recommendation comes directly from the dictionary
     };
 };
@@ -72,8 +105,8 @@ const enum CareerPrepTrack {
  * https://docs.google.com/spreadsheets/d/1kF1bor4geEgCVsKKUxf0LgFpLUnxE3CWxV-meZv5rJc/edit?usp=sharing
  * @type {Object.<string, { poolAssignment: string, careerPrepTrackRecommendation: string | null }>}
  */
-const poolAssignmentMap: { [key: string]: { poolAssignment: string; careerPrepTrackRecommendation: string | null } } = {
-    // enrolledWithProvider_completedPartnerProgram_prevTechExperience_hasDegreeOrTechProgram_completeCareerPrep
+const poolAssignmentMap: { [key: string]: { poolAssignment: PoolCategories; careerPrepTrackRecommendation: CareerPrepTrack | null } } = {
+    // enrolledWithPartner_completedPartnerProgram_prevTechExperience_hasDegreeOrTechProgram_completeCareerPrep
     'true_true_true_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
     'true_true_true_true_false': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
     'true_true_true_false_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
@@ -103,7 +136,7 @@ const poolAssignmentMap: { [key: string]: { poolAssignment: string; careerPrepTr
     'false_false_true_false_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
     'false_false_true_false_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.FAST },
     'false_false_false_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'false_false_false_true_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: null },
+    'false_false_false_true_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'false_false_false_false_true': { poolAssignment: PoolCategories.POOL3, careerPrepTrackRecommendation: null },
     'false_false_false_false_false': { poolAssignment: PoolCategories.POOL3, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
 };
