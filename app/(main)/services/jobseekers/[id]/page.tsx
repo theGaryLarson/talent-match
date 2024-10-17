@@ -248,7 +248,7 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 className="text-2xl font-bold">Resume</h1>
             {resume_url ? (
-              <a href={resume_url}>View Resume</a>
+              <a href={resume_url} target='_blank'>View Resume</a>
             ) : (
               ''
             )}
@@ -257,7 +257,7 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 className="text-2xl font-bold">Portfolio</h1>
             {jobseeker?.portfolio_url ? (
-              <a href={formatUrl(jobseeker?.portfolio_url)}>
+              <a href={formatUrl(jobseeker?.portfolio_url)} target='_blank'>
                 {jobseeker?.portfolio_url}
               </a>
             ) : (
