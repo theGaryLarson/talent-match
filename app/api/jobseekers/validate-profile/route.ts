@@ -1,5 +1,7 @@
-import { removeDeletionMarker} from "@/app/lib/prisma";
+import { validateUserProfile} from "@/app/lib/user";
+
+
 
 export async function PATCH() {
-    return await removeDeletionMarker();
+    await validateUserProfile();
 }
