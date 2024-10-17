@@ -20,7 +20,6 @@ const vectorImgSrc = '/images/signup/jobseeker-vector.png';
 
 export default function JobseekerSignupFinishPage() {
   let [resident, setResident] = useState(false);
-  let [education, setEducation] = useState(false);
   let [termsAgree, setTermsAgree] = useState(false);
   const { data: session, status, update } = useSession();
   const updateSessionProperties = useUpdateSession();
@@ -64,46 +63,9 @@ export default function JobseekerSignupFinishPage() {
             </fieldset>
             <fieldset
               className="flex flex-col gap-3 disabled:text-gray-400"
-              disabled={!resident}
+              disabled={!(resident)}
             >
-              <div className="inline">
-                <p className="inline">Education or Training Status </p>
-                <p className="inline text-gray-400">(required)</p>
-              </div>
-              <label>
-                <input
-                  type="radio"
-                  name="education"
-                  value="completed"
-                  onClick={() => setEducation(true)}
-                />{' '}
-                Completed college or technical training within the past 5 years.
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="education"
-                  value="nearCompletion"
-                  onClick={() => setEducation(true)}
-                />{' '}
-                Will complete college or technical training program within 1
-                year.
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="education"
-                  value="neither"
-                  onClick={() => setEducation(false)}
-                />{' '}
-                Neither applies
-              </label>
-            </fieldset>
-            <fieldset
-              className="flex flex-col gap-3 disabled:text-gray-400"
-              disabled={!(resident && education)}
-            >
-              <p>Notification</p>
+              <p>Notifications</p>
               <div>
                 <input type="checkbox" id="jobNotifications" defaultChecked />
                 <label htmlFor="jobNotifications">
@@ -176,7 +138,7 @@ export default function JobseekerSignupFinishPage() {
               }
             }}
               className="mx-auto my-8 rounded-full focus:ring-0"
-              disabled={!(education && resident && termsAgree)}
+              disabled={!(resident && termsAgree)}
             >
               Create account
             </Button>

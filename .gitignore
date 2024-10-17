@@ -38,4 +38,4 @@ next-env.d.ts
 /package-lock.json
 
 # temp git hash file
-# app/generatedGitInfo.json # This file is required by app/ui/Footer.tsx and cannot be ignored; otherwise, the Vitest fails during build if generatedGitInfo.json doesn't exist
+app/generatedGitInfo.json
