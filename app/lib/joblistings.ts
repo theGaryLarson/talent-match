@@ -172,3 +172,13 @@ export async function ApplyToJob(jobPostingId:string) {
     console.error(error)
   }
 }
+
+
+export async function getAllJobPosts(){
+  try {
+    let results = prisma.job_postings.findMany();
+    return results;
+  } catch (error) {
+    console.error(error)
+  }
+}
