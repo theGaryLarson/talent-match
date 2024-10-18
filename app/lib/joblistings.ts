@@ -155,8 +155,19 @@ export async function ApplyToJob(jobPostingId:string) {
       throw new Error('Failed to delete job listing: jobseeker ID not found in session');
     }
 
+    const updatedJobPosting = await prisma.job_postings.update({
+      where: {
+        job_posting_id: jobPostingId,
+      },
+      data: {
+        applicants: {
+          connect: { jobseeker_id: Session.user.jobseekerId},  // Add the jobseeker to the applicants array
+        },
+      },
+    });
+
     //do prisma stuff here
-    return 
+    return updatedJobPosting;
   } catch (error) {
     console.error(error)
   }

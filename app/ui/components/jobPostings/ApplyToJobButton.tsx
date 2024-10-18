@@ -2,7 +2,7 @@
 export default function SaveJobPostButton(params: {id:string}){
     const save = async () => {
         try {
-            const response = await fetch(`/api/jobseekers/saveJobPost/${params.id}`, {
+            const response = await fetch(`/api/joblistings/apply/${params.id}`, {
               method: 'POST', // or 'PUT', depending on the behavior of your API
               headers: {
                 'Content-Type': 'application/json'

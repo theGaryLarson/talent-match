@@ -1,4 +1,5 @@
 import { getJobListingById } from "@/app/lib/joblistings";
+import ApplyToJobButton from "@/app/ui/components/jobPostings/ApplyToJobButton";
 import SaveJobPostButton from "@/app/ui/components/jobPostings/SaveJobPostButton";
 import { auth } from "@/auth";
 
@@ -13,6 +14,7 @@ export default async function page({params}:{params: {id:string}}){
             {JSON.stringify(jobListing).split(',').map((e)=><p key={e}>{e}</p>)}
             {session?.user.jobseekerId?
             <SaveJobPostButton id={params.id}/>:null}
+            <ApplyToJobButton id={params.id}/>
         </main>
 
 

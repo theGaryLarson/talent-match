@@ -29,6 +29,7 @@ export default auth((req) => {
     '/services/jobseekers/dashboard',
     '/services/jobseekers/',
     '/services/joblistings',
+    '/api/joblistings/apply',
 
     '/api/jobseekers/',
     '/api/edu-providers/',

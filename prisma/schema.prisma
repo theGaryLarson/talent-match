@@ -318,6 +318,7 @@ model job_postings {
   company_addresses    company_addresses      @relation(fields: location_id, references: [company_address_id], onUpdate: NoAction, map: "fk_job_postings_company_addresses1")
   industry_sectors     industry_sectors?      @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, map: "fk_job_postings_industry_sectors1")
   BookmarkedJobPosting BookmarkedJobPosting[]
+  applicants           jobseekers[]           @relation("AppliedJobs") 
 
   @@index([location_id], map: "fk_job_postings_company_addresses1_idx")
   @@index([company_id], map: "fk_job_postings_companies1_idx")
@@ -373,7 +374,7 @@ model jobseekers {
   jobseeker_education                jobseekers_education[]
   BookmarkedJobseeker                BookmarkedJobseeker[]
   BookmarkedJobPosting               BookmarkedJobPosting[]
-
+  appliedJobs                        job_postings[]                       @relation("AppliedJobs")                  
   @@index([targeted_pathway], map: "jobseekers_fk_jobseeker_Pathways1_idx")
   @@index([user_id], map: "jobseekers_fk_learner_user1_idx")
 }
