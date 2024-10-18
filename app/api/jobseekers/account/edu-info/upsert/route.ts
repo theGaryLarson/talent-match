@@ -20,6 +20,7 @@ import {normalizeDate} from "@/app/lib/utils";
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
 import { auth } from '@/auth';
+import { setPool } from "@/app/lib/jobseeker";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -397,6 +398,7 @@ export async function POST(request: Request) {
         console.log(e.message);
         return NextResponse.json({error: `Failed to create jobseeker education.\n${e.message} `}, {status: 500});
     } finally {
+        await setPool();
         await prisma.$disconnect();
     }
 }
