@@ -29,7 +29,7 @@ model User {
   updatedAt          DateTime?       @map("updated_at") @db.DateTime
   is_marked_deletion DateTime?       @db.DateTime
   locationData       PostalGeoData?  @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
-  cfa_admin          cfa_admin[]
+  cfa_admin          CfaAdmin[]
   educators          educators[]
   employers          employers[]
   jobseekers         jobseekers[]
@@ -107,15 +107,17 @@ model Authenticator {
 ////////////// End Auth.js models ///////////////////
 /////////////////////////////////////////////////////
 
-model case_mgmt {
-  case_mgmt_id         String     @id(clustered: false, map: "case_mgmt_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobseeker_learner_id String     @db.UniqueIdentifier
-  cfa_admin_id         String     @db.UniqueIdentifier
-  cfa_admin            cfa_admin  @relation(fields: [cfa_admin_id], references: [admin_id], onUpdate: NoAction, map: "fk_case_mgmt_admin1")
-  jobseekers           jobseekers @relation(fields: [jobseeker_learner_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_case_mgmt_jobseeker1")
+model CaseMgmt {
+  id                      String     @id(clustered: false, map: "case_mgmt_PRIMARY") @default(dbgenerated("newid()")) @map("case_mgmt_id") @db.UniqueIdentifier
+  jobseekerId             String     @map("jobseeker_id") @db.UniqueIdentifier
+  adminId                 String     @map("cfa_admin_id") @db.UniqueIdentifier
+  careePrepCompletionDate DateTime?  @db.DateTime
+  cfa_admin               CfaAdmin   @relation(fields: [adminId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_admin1")
+  jobseekers              jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_case_mgmt_jobseeker1")
 
-  @@index([cfa_admin_id], map: "fk_case_mgmt_admin1_idx")
-  @@index([jobseeker_learner_id], map: "fk_case_mgmt_jobseeker1_idx")
+  @@index([adminId], map: "fk_case_mgmt_admin1_idx")
+  @@index([jobseekerId], map: "fk_case_mgmt_jobseeker1_idx")
+  @@map("case_mgmt")
 }
 
 model certificates {
@@ -134,13 +136,14 @@ model certificates {
   @@index([jobSeekerId], map: "fk_certificates_jobseeker1_idx")
 }
 
-model cfa_admin {
-  admin_id  String      @id(clustered: false, map: "cfa_admin_PRIMARY") @db.UniqueIdentifier
-  user_id   String      @db.UniqueIdentifier
-  case_mgmt case_mgmt[]
-  users     User        @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_admin_contacts1")
+model CfaAdmin {
+  id        String     @id(clustered: false, map: "cfa_admin_PRIMARY") @map("admin_id") @db.UniqueIdentifier
+  userId    String     @map("user_id") @db.UniqueIdentifier
+  case_mgmt CaseMgmt[]
+  users     User       @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "fk_admin_contacts1")
 
-  @@index([user_id], map: "cfa_admin_fk_admin_contacts1_idx")
+  @@index([userId], map: "cfa_admin_fk_admin_contacts1_idx")
+  @@map("cfa_admin")
 }
 
 model companies {
@@ -358,9 +361,11 @@ model jobseekers {
   pool1                              Boolean                              @default(false) @db.Bit
   pool2                              Boolean                              @default(false) @db.Bit
   pool3                              Boolean                              @default(false) @db.Bit
+  careerPrepComplete                 Boolean                              @default(false) @db.Bit
+  careerPrepTrackRecommendation      String?                              @db.VarChar(25)
   createdAt                          DateTime                             @default(now()) @map("created_at")
   updatedAt                          DateTime?                            @map("updated_at")
-  case_mgmt                          case_mgmt[]
+  caseMgmt                           CaseMgmt[]
   certificates                       certificates[]
   jobseeker_has_skills               jobseeker_has_skills[]
   pathways                           pathways?                            @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
