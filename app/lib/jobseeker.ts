@@ -5,6 +5,7 @@ import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {
   edu_providers,
   jobseekers_education,
+  PrismaClient,
   technology_areas,
   WorkExperience,
 } from '@prisma/client';
@@ -14,6 +15,7 @@ import {
   ProgramEnrollmentStatus,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { devLog } from '@/app/lib/utils';
+import { NextResponse } from "next/server";
 
 const prisma = getPrismaClient();
 
@@ -37,6 +39,11 @@ export const aggregateJobseekerPoolVars = async (jobseekerId: string): Promise<J
       jobseekerId: jobseekerId,
     },
     select: {
+      jobseekers: {
+        select: {
+          careerPrepComplete: true,
+        }
+      },
       enrollmentStatus: true,
       degreeType: true,
       eduProviders: {
@@ -95,7 +102,7 @@ export const aggregateJobseekerPoolVars = async (jobseekerId: string): Promise<J
         educationRank[HighestCompletedEducationLevel.Certificate],
     ),
     // TODO: store Career Prep program completion in database.
-    completeCareerPrep: false,
+    careerPrepComplete: education.jobseekers?.careerPrepComplete??false,
   };
 
   devLog('Calculated Pool Vars\n', jobseekerPoolVars);
@@ -110,27 +117,37 @@ export const aggregateJobseekerPoolVars = async (jobseekerId: string): Promise<J
  * @param {SelectJobseekerPoolCatResult} poolCategoryResult - The pool assignment details to update.
  * @returns {Promise<void>} - A Promise that resolves once the pool assignments are updated.
  */
-const updatePoolUnflagDeletion = async (jobseekerId: string, poolCategoryResult: SelectJobseekerPoolCatResult) => {
+const updatePool = async (
+  jobseekerId: string,
+  poolCategoryResult: SelectJobseekerPoolCatResult,
+): Promise<void> => {
   await prisma.jobseekers.update({
     where: {
-      jobseeker_id: jobseekerId
+      jobseeker_id: jobseekerId,
     },
     data: {
       pool1: poolCategoryResult.poolAssignment.pool1,
       pool2: poolCategoryResult.poolAssignment.pool2,
       pool3: poolCategoryResult.poolAssignment.pool3,
-      is_marked_deletion: null,
-    }
-  })
-}
-export const setPoolAndUnflagDeletion = async (): Promise<void> => {
+      careerPrepTrackRecommendation: poolCategoryResult.careerPrepTrackRecommendation,
+    },
+  });
+};
+export const setPool = async (): Promise<NextResponse | void> => {
   const session = await auth();
-  const jobseekerId =  session?.user?.jobseekerId || '837DC4C1-2942-4E97-805A-80D198B86DBF'
+  const jobseekerId =  session?.user?.jobseekerId || '6EA3CEEC-AB0E-4460-9014-0259BECAEF1D'
+  try {
+    await prisma.$transaction(async (prisma: PrismaClient) => {
+      const poolVars = await aggregateJobseekerPoolVars(jobseekerId)
+      const categoryOutput = selectJobseekerPoolCategory(poolVars);
+      await updatePool(jobseekerId, categoryOutput);
+    });
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (e: any) {
+    return NextResponse.json({ error: `Failed to set jobseeker pool.\n${e.message} ` }, { status: 500 });
+  } finally {
+    prisma.$disconnect()
+  }
 
-  // await prisma.$transaction(async (prisma: PrismaClient) => {
-    const poolVars = await aggregateJobseekerPoolVars(jobseekerId)
-    const categoryOutput = selectJobseekerPoolCategory(poolVars);
-    await updatePoolUnflagDeletion(jobseekerId, categoryOutput);
-  // });
 }
 
