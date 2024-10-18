@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {auth} from "@/auth";
 import {NextResponse} from "next/server";
-import {setPoolAndUnflagDeletion} from "@/app/lib/jobseeker";
+import {setPool} from "@/app/lib/jobseeker";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -151,7 +151,7 @@ export async function getUserByEmail(
   }
 }
 
-export async function removeDeletionMarker() {
+export async function unflagDeletion() {
   const session = await auth();
   if (!session?.user?.id){
     return NextResponse.json({ error: 'Unable to retrieve user id from session' }, { status: 409 })
@@ -185,7 +185,7 @@ export async function removeDeletionMarker() {
 export async function validateUserProfile() {
   const session = await auth();
   if (session?.user.roles.includes('JOBSEEKER')) {
-    await setPoolAndUnflagDeletion();
+    await setPool();
     return Response.json(
         { success: true},
         {
@@ -193,6 +193,6 @@ export async function validateUserProfile() {
         },
     );
   } else {
-    return await removeDeletionMarker();
+    return await unflagDeletion();
   }
 }
