@@ -25,7 +25,6 @@ import { setPool } from "@/app/lib/jobseeker";
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
-    let session = await auth();
     try {
         // Get essentials from session, not the request
         let session = await auth();
