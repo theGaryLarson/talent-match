@@ -90,8 +90,8 @@ export const educationRank: Record<HighestCompletedEducationLevel, number> = {
 
 // included for WJI grant reporting (do not modify)
 export enum ProgramEnrollmentStatus {
-  Applied = 'Admitted, not yet enrolled.',
-  Enrolled = 'Currently active in program.',
+  Applied = 'Admitted, not yet enrolled',
+  Enrolled = 'Currently active in program',
   Graduated = 'Graduated / Completed',
   Withdrawn = 'Withdrawn / terminated',
 }
