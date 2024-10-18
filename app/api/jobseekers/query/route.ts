@@ -21,6 +21,9 @@ export async function POST(request: Request) {
     sortBy = 'yearsExp',
     maxResults = 50,
     page = 1,
+    pool1 = true,
+    pool2 = true,
+    pool3 = false,
   } = await request.json();
 
   const normalizedSkills: string[] = skills.filter(
@@ -28,7 +31,14 @@ export async function POST(request: Request) {
   );
 
   const andConditions: any[] = [];
-  andConditions.push({ is_marked_deletion: null });
+  andConditions.push({
+    OR: [
+      { pool1: pool1 },
+      { pool2: pool2 }
+    ],
+    pool3: pool3, // Ensure pool3 is false to exclude them
+    is_marked_deletion: null
+  });
 
   if (normalizedSkills.length > 0) {
     // Here we are checking if the skills are highlighted in projects or listed as their top five
