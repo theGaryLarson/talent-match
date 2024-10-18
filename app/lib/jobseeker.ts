@@ -5,7 +5,6 @@ import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {
   edu_providers,
   jobseekers_education,
-  PrismaClient,
   technology_areas,
   WorkExperience,
 } from '@prisma/client';
@@ -137,7 +136,7 @@ export const setPool = async (): Promise<NextResponse | void> => {
   const session = await auth();
   const jobseekerId =  session?.user?.jobseekerId || '6EA3CEEC-AB0E-4460-9014-0259BECAEF1D'
   try {
-    await prisma.$transaction(async (prisma: PrismaClient) => {
+    await prisma.$transaction(async () => {
       const poolVars = await aggregateJobseekerPoolVars(jobseekerId)
       const categoryOutput = selectJobseekerPoolCategory(poolVars);
       await updatePool(jobseekerId, categoryOutput);
