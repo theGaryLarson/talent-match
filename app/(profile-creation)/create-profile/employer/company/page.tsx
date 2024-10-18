@@ -237,7 +237,7 @@ export default function CreateEmployerCompanyInfoPage() {
     console.log(fieldName)
     if (companyData.hasOwnProperty(fieldName)) {
       setCompanyData(prevState => ({
-        ...companyData,
+        ...prevState,
         [fieldName]: value
       }));
     }
