@@ -157,7 +157,6 @@ export default function CreateJobseekerProfileIntroPage() {
                 placeholder="Youtube link url"
                 onChange={handleFieldChange}
                 value={videoData.videoUrl}
-                required
               >
                 Youtube Link
               </InputTextWithLabel>
