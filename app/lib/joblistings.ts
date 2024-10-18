@@ -93,7 +93,10 @@ export async function getJobListingById(joblistingId: string) {
         job_posting_id: joblistingId,
       },
       include:{
-        skills:true
+        skills:true,
+        industry_sectors:true,
+        companies:true,
+        techArea:true
       },
     });
     return joblisting;
