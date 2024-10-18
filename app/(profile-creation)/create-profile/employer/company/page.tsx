@@ -38,7 +38,7 @@ export default function CreateEmployerCompanyInfoPage() {
   const companyStoreData = useSelector(
       (state: RootState) => state.employer.company,
   );
-  const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({
+    const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({
     ...companyStoreData,
   });
   const dispatch = useDispatch();
