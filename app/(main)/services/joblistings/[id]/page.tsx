@@ -1,11 +1,10 @@
-import { getJobListingById, getJobSeekerBookmarkedJobs } from "@/app/lib/joblistings";
+import { getJobListingById } from "@/app/lib/joblistings";
 import ApplyToJobButton from "@/app/ui/components/jobPostings/ApplyToJobButton";
 import SaveJobPostButton from "@/app/ui/components/jobPostings/SaveJobPostButton";
 import { auth } from "@/auth";
 
 export default async function page({params}:{params: {id:string}}){
     const jobListing = await getJobListingById(params.id);
-    const myBookmarks = await getJobSeekerBookmarkedJobs();
     const session = await auth();
     console.log(jobListing)
     return(

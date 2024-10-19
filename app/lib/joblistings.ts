@@ -200,3 +200,21 @@ export async function getJobSeekerBookmarkedJobs(){
       console.error(error)
   }
 }
+
+
+export async function getJobSeekerAppliedJobs() {
+  const session = await auth();
+  if(!session?.user.jobseekerId){
+    return
+  }
+  try {
+    const result = await prisma.jobseekers.findUnique({select:{
+        appliedJobs:true
+    }, where:{
+      jobseeker_id: session.user.jobseekerId
+    }})
+    return result;
+  } catch (error) {
+      console.error(error)
+  }
+}
