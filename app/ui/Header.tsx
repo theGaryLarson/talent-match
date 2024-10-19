@@ -17,6 +17,7 @@ const TopLevelLinks = [
   { name: 'Talent Showcase', href: '/services/talent-search' },
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
+  { name: 'Find a Job', href: '/services/joblistings' },
   // { name: 'Explore', href: '/underconstruction' },
   // {
   //   name: "Contact Us",

@@ -147,7 +147,6 @@ try{
   }
 }
 
-//TODO needs DB update
 export async function ApplyToJob(jobPostingId:string) {
   let Session = await auth();
   try {
@@ -180,5 +179,24 @@ export async function getAllJobPosts(){
     return results;
   } catch (error) {
     console.error(error)
+  }
+}
+
+
+export async function getJobSeekerBookmarkedJobs(){
+  const session = await auth();
+  if(!session?.user.jobseekerId){
+    return
+  }
+  try {
+    const result = await prisma.jobseekers.findUnique({select:{
+        BookmarkedJobs:true
+    }, where:{
+      jobseeker_id: session.user.jobseekerId
+    }})
+    console.log("here",result)
+    return result;
+  } catch (error) {
+      console.error(error)
   }
 }
