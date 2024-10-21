@@ -1256,7 +1256,7 @@ function getRandomUserPhoto() {
 /////////////   seed functions  /////////////////
 /////////////////////////////////////////////////
 
-async function seedUsers(numUsers = 4) {
+async function seedMockUsers(numUsers = 4) {
     console.log('Seeding Users...')
     const waLocations = await prisma.postalGeoData.findMany({
         where: {
@@ -1416,7 +1416,7 @@ async function seedPrograms() {
     }
 }
 
-async function SeedEdProvidersAddresses() {
+async function SeedMockEdProvidersAddresses() {
     console.log(`Seeding Institution Addresses...`);
     const edInstitutions = await prisma.edu_providers.findMany({
         select: {
@@ -1679,7 +1679,7 @@ async function seedJobSeekersEducation() {
     console.log(`Created ${edCount} jobseeker education records.\n`);
 }
 
-async function seedWorkExperiences() {
+async function seedJobseekerWorkExperiences() {
     try {
         const jobseekers = await prisma.jobseekers.findMany();
         const industry_sectors = await prisma.industry_sectors.findMany({
@@ -2130,41 +2130,80 @@ async function seedPostalGeoData(jsonFilePath, logFrequency = 10, batchSize = 10
     await prisma.$disconnect();
 }
 
-
-/////////////////////////////////////////////////
-
-async function main() {
-    console.log(`Start seeding ...\n`);
-    await seedPathways(); // use in production
-    await seedTechnologyAreas(); // use in production
-    await seedIndustrySectors(); // use in production
-    await seedSubcategories(); // use in production
-    await seedSkills(); // use in production
+/**
+ * Seeds foundational tables with initial data.
+ * Uses the following methods to populate tables in production environment:
+ * - seedPathways
+ * - seedTechnologyAreas
+ * - seedIndustrySectors
+ * - seedSubcategories
+ * - seedSkills
+ * - seedPostalGeoData
+ * - seedSocialMediaPlatforms
+ * - seedPrograms
+ * - seedEduProviders
+ * - seedCompanies
+ *
+ * @return {Promise<void>} A promise that resolves when all tables are successfully seeded.
+ */
+async function seedFoundationalTables() {
+    await seedPathways(); // TODO: add pathway subcategories (i.e. Software Dev consists of Web Dev, Mobile Dev etc.)
+    await seedTechnologyAreas();
+    await seedIndustrySectors();
+    await seedSubcategories();
+    await seedSkills(); // TODO: associate skills with a pathway
     await seedPostalGeoData("../data/postal_geo_data.json"); // use in production
-    await seedSocialMediaPlatforms(); // use in production
-    await seedUsers(250);
-    await seedPrograms(); // use in production
-    await seedEduProviders(); // use in production
-    await SeedEdProvidersAddresses();
+    await seedSocialMediaPlatforms();
+    await seedPrograms();
+    await seedEduProviders(); // TODO: get updated list of training provider partners to use in production
+    await seedCompanies(); // TODO: get a list of pre-approved companies to use in production
+}
+
+/**
+ * Seeds mock data for jobseekers including jobseekers, private data, skills, education, work experiences,
+ * certificates, project experiences, and project skills.
+ **/
+async function seedMockJobseekerData() {
+    // TODO: add self-assessments and associate with a pathway
+    // TODO: add jobseeker self-assessment and info session questions
     await seedJobSeekers();
     await seedJobSeekersPrivateData();
     await seedJobSeekerSkills();
     await seedJobSeekersEducation();
-    await seedWorkExperiences();
+    await seedJobseekerWorkExperiences();
     await seedJobSeekerCertificates();
     await seedProjectExperiences();
     await seedProjectSkills();
-    // TODO: add self-assessments and associate with a pathway
-    // TODO: add jobseeker self-assessment and info session questions
-    // TODO: add pathway subcategories (i.e. Software Dev consists of Web Dev, Mobile Dev etc.)
-    // TODO: associate skills with a pathway
-    // Employer data
-    await seedCompanies(); // TODO: get a list of companies to use in production
+}
+
+/**
+ * Seeds mock employer data into the database by using helper functions to populate employers, company addresses,
+ * company testimonials, company social links, and job postings.
+ *
+ * @return {Promise<void>} A Promise that resolves when all mock employer data has been successfully seeded.
+ */
+async function seedMockEmployerData() {
     await seedEmployers();
     await seedCompanyAddresses();
     await seedCompanyTestimonials();
     await seedCompanySocialLinks();
     await seedJobPostings();
+}
+
+/////////////////////////////////////////////////
+
+/**
+ * Asynchronously runs seeding process for database with fundamental data and mock user information.
+ *
+ * @return {Promise<void>} A Promise that resolves when the seeding process is completed.
+ */
+async function main() {
+    console.log(`Start seeding ...\n`);
+    await seedFoundationalTables();
+    await SeedMockEdProvidersAddresses();
+    await seedMockUsers(250);
+    await seedMockJobseekerData();
+    await seedMockEmployerData();
     console.log("Finished seeding.\n")
 
 }
