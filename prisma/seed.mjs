@@ -1319,15 +1319,19 @@ async function seedUsers(numUsers = 4) {
 
 async function seedPathways() {
     const pathways = [
-        "Cybersecurity",
-        "Data Analytics",
-        "Data Center Operations",
-        "IT & Cloud Computing",
-        "Digital Marketing",
-        "UI/UX",
-        "Project Management",
-        "Software Development",
-        "Other",
+        "Cloud Support Associate",
+        "Software Developer",
+        "Data Analyst",
+        "Cybersecurity Analyst",
+        // "Cybersecurity",
+        // "Data Analytics",
+        // "Data Center Operations",
+        // "IT & Cloud Computing",
+        // "Digital Marketing",
+        // "UI/UX",
+        // "Project Management",
+        // "Software Development",
+        // "Other",
     ]
     console.log('Seeding Pathways...')
     const uuids = [
