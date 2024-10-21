@@ -770,13 +770,16 @@ export async function bookmarkJobPosting(jobPostId: string) {
     return NextResponse.json({ error: 'Access denied. Please create a jobseeker profile.' }, { status: 409 })
   }
   try {
-    const savedJobPost = await prisma.bookmarkedJobPosting.create({
+    const savedJobPost = await prisma.jobseekers.update({
+      where: {
+        jobseeker_id:session.user.jobseekerId
+      },
       data: {
-        id: uuidv4(),
-        jobseekerId: session.user.jobseekerId!,
-        jobPostId: jobPostId
-      }
-    });
+        BookmarkedJobs:{
+          connect:{job_posting_id:jobPostId}
+        }
+      },
+    })
     return NextResponse.json({ success: true, savedJobPost }, { status: 200 })
   } catch (e: any) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
