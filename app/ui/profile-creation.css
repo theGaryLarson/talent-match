@@ -133,11 +133,16 @@ h2 {
   margin-bottom: 4px;
 } */
 
+.text-field-autocomplete > div > div,
 .year-picker > div,
 .date-picker > div {
   font-size: 0.875rem;
   line-height: 1.25rem;
   border-radius: 0.5rem;
+}
+
+.text-field-autocomplete > div > label {
+  font-size: 0.875rem;
 }
 
 .phone-code > div > select,
