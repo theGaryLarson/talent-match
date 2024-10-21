@@ -16,14 +16,17 @@ import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
 import { CompanyAddressDropdownDTO } from '@/data/dtos/CompanyAddressDropdownDTO';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import {PostEmployerWorkDTO, ReadAddressDTO} from '@/data/dtos/EmployerProfileCreationDTOs';
+import {
+  PostEmployerWorkDTO,
+  ReadAddressDTO,
+} from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
   setDisclosures,
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-import CircularProgress from "@mui/material/CircularProgress";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const formNamePrefix = 'profile-creation-disclosures-';
 
@@ -31,8 +34,10 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   const disclosuresStoreData = useSelector(
     (state: RootState) => state.employer.disclosures,
   );
-  const companyStoreData = useSelector((state: RootState) => state.employer.company);
-  devLog(companyStoreData)
+  const companyStoreData = useSelector(
+    (state: RootState) => state.employer.company,
+  );
+  devLog(companyStoreData);
   const [disclosuresData, setDisclosuresData] = useState<PostEmployerWorkDTO>({
     ...disclosuresStoreData,
   });
@@ -47,8 +52,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   const [open, setOpen] = useState<boolean>(false);
 
   const [companyName, setCompanyName] = useState<string>('');
-  const [workAddress, setWorkAddress] =
-    useState<ReadAddressDTO>(null);
+  const [workAddress, setWorkAddress] = useState<ReadAddressDTO>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -99,10 +103,10 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   }, [session?.user?.id, pathname]);
 
   const handleFieldChange = (
-      e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    devLog(name, value)
+    devLog(name, value);
     const fieldName = name.substring(formNamePrefix.length);
 
     let updatedValue: any = value; // Declare a flexible type for the updated value
@@ -130,12 +134,12 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
       console.error('User session is not available.');
       return;
     }
-    
+
     // setDisclosuresData( prevState => ({
     //   ...prevState,
     //   hasAgreedTerms: termsAccepted,
     // }));
-    
+
     devLog('disclosuresData', disclosuresData);
 
     try {
@@ -146,7 +150,10 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ ...disclosuresData, hasAgreedTerms: termsAccepted }),
+          body: JSON.stringify({
+            ...disclosuresData,
+            hasAgreedTerms: termsAccepted,
+          }),
         },
       );
 
@@ -224,6 +231,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 ) : (
                   <SelectAutoload
                     id={`${formNamePrefix}workAddressId`}
+                    className="select-autoload"
                     apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
                     label="Work Location *"
                     value={workAddress}

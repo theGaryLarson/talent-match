@@ -134,6 +134,7 @@ h2 {
 } */
 
 .text-field-autocomplete > div > div,
+.select-autoload > div > div,
 .year-picker > div,
 .date-picker > div {
   font-size: 0.875rem;
