@@ -126,9 +126,6 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!termsAccepted) {
-      setOpen(true);
-    }
 
     if (!session || !session.user) {
       console.error('User session is not available.');
@@ -142,29 +139,33 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
 
     devLog('disclosuresData', disclosuresData);
 
-    try {
-      const response = await fetch(
-        `/api/employers/account/disclosures/update/${session?.user?.employerId}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
+    if (!termsAccepted) {
+      setOpen(true);
+    } else {
+      try {
+        const response = await fetch(
+          `/api/employers/account/disclosures/update/${session?.user?.employerId}`,
+          {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ...disclosuresData,
+              hasAgreedTerms: termsAccepted,
+            }),
           },
-          body: JSON.stringify({
-            ...disclosuresData,
-            hasAgreedTerms: termsAccepted,
-          }),
-        },
-      );
+        );
 
-      if (response.ok) {
-        const result = await response.json();
-        dispatch(setDisclosures(disclosuresData));
-        router.push('/create-profile/employer/congratulations');
-      } else {
-        const errorData = await response.json();
-      }
-    } catch (error) {}
+        if (response.ok) {
+          const result = await response.json();
+          dispatch(setDisclosures(disclosuresData));
+          router.push('/create-profile/employer/congratulations');
+        } else {
+          const errorData = await response.json();
+        }
+      } catch (error) {}
+    }
   };
 
   const handleClose = (
