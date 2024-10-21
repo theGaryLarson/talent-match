@@ -11,6 +11,7 @@ import React from 'react';
 
 interface Props<ValueType> {
   id: string;
+  className?: string;
   apiAutoloadRoute: string;
   label: string;
   value: ValueType | null;
@@ -25,6 +26,7 @@ interface Props<ValueType> {
 
 export default function SelectAutoload<ValueType>({
   id,
+  className = '',
   apiAutoloadRoute,
   label,
   value,
@@ -68,7 +70,7 @@ export default function SelectAutoload<ValueType>({
   }, []);
 
   return (
-    <div>
+    <div className={className}>
       <FormControl fullWidth variant="outlined">
         <InputLabel htmlFor={id} shrink>
           {label}
