@@ -19,5 +19,5 @@ export default function SaveJobPostButton(params: {id:string}){
             console.error('Error saving job post:', error);
           }
     }
-return <button onClick={save}>Apply</button>
+return <button className="box-border w-fit rounded-full bg-blue-background px-10 py-3 text-white hover:bg-blue-400" onClick={save}>Apply</button>
 }
