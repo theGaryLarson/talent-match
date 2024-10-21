@@ -493,6 +493,7 @@ export default function CreateEmployerCompanyInfoPage() {
                   id="profile-creation-company-industrySectorTitle"
                   apiAutoloadRoute="/api/employers/industry-sectors"
                   label="Industry Sector *"
+                  className="select-autoload"
                   value={industry}
                   onChange={(val) => {
                     setIndustry(val);
