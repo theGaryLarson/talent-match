@@ -7,6 +7,7 @@ import {
   jobseekers_education,
   technology_areas,
   WorkExperience,
+  ProjectExperiences,
 } from '@prisma/client';
 import {
   educationRank,
@@ -15,6 +16,8 @@ import {
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { devLog } from '@/app/lib/utils';
 import { NextResponse } from "next/server";
+import projectExperiences from "@/app/ui/form-field-groups/ProjectExperiences";
+import {Role} from "@/data/dtos/UserInfoDTO";
 
 const prisma = getPrismaClient();
 
@@ -149,4 +152,126 @@ export const setPool = async (): Promise<NextResponse | void> => {
   }
 
 }
+
+/**
+ * Delete a jobseeker and associated data from the database.
+ * If the jobseeker is a coalition member, perform a soft delete by marking deletion date.
+ * If the jobseeker is not a coalition member, delete all related data to avoid foreign key constraints.
+ * Check if the user has other roles and delete the user if no other roles exist.
+ * If the user has other roles, update the user's role field to remove the jobseeker role.
+ *
+ * @param {string} userId - The ID of the user associated with the jobseeker to be deleted.
+ * @returns {Promise<void>}
+ */
+export const deleteJobseeker = async (userId: string): Promise<void> => {
+  // Find the jobseeker by userId
+  const jobseeker = await prisma.jobseekers.findUnique({
+    where: { user_id: userId },
+  });
+  if (!jobseeker) {
+    throw new Error('Jobseeker not found');
+  }
+
+  const jobseeker_id = jobseeker.jobseeker_id;
+
+  // Check if any EduProvider is a coalition member
+  const coalitionMemberExists = await prisma.jobseekers_education.findFirst({
+    where: {
+      jobseekerId: jobseeker_id,
+      eduProviders: {
+        isCoalitionMember: true,
+      },
+    },
+  });
+
+  if (coalitionMemberExists) {
+    // Perform soft delete
+    await prisma.jobseekers.update({
+      where: { jobseeker_id: jobseeker_id },
+      data: { is_marked_deletion: new Date() }, // TODO: set out cron job to delete users from db far enough to ensure grant reporting data is submitted.
+    });
+  } else {
+    // Delete related data in order to avoid foreign key constraints
+
+    // First, get project IDs associated with the jobseeker
+    const projects = await prisma.projectExperiences.findMany({
+      where: { jobseekerId: jobseeker_id },
+      select: { projectId: true },
+    });
+    const projectIds = projects.map((p: ProjectExperiences) => p.projectId);
+
+    await prisma.$transaction([
+      prisma.jobseeker_has_skills.deleteMany({ where: { jobseeker_id } }),
+      prisma.certificates.deleteMany({ where: { jobSeekerId: jobseeker_id } }),
+      prisma.jobseekers_private_data.deleteMany({ where: { jobseeker_id } }),
+      prisma.jobseekers_skill_gap_data.deleteMany({ where: { jobseeker_id } }),
+      prisma.learner_proj_based_tech_assessment.deleteMany({
+        where: { jobseeker_id },
+      }),
+      prisma.project_has_skills.deleteMany({
+        where: {
+          proj_exp_id: { in: projectIds },
+        },
+      }),
+      prisma.projectExperiences.deleteMany({
+        where: { jobseekerId: jobseeker_id },
+      }),
+      prisma.workExperience.deleteMany({
+        where: { jobseekerId: jobseeker_id },
+      }),
+      prisma.jobseekers_education.deleteMany({
+        where: { jobseekerId: jobseeker_id },
+      }),
+      prisma.caseMgmt.deleteMany({ where: { jobseekerId: jobseeker_id } }),
+      prisma.bookmarkedJobseeker.deleteMany({
+        where: { jobseekerId: jobseeker_id },
+      }),
+      prisma.bookmarkedJobPosting.deleteMany({
+        where: { jobseekerId: jobseeker_id },
+      }),
+      prisma.jobseekers.delete({ where: { jobseeker_id: jobseeker_id } }),
+    ]);
+
+    // Check if User has other roles
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        role: true,
+        cfa_admin: true,
+        educators: true,
+        employers: true,
+        eduProviders: true,
+        volunteers: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const hasOtherRoles =
+      user.cfa_admin.length > 0 ||
+      user.educators.length > 0 ||
+      user.employers.length > 0 ||
+      user.eduProviders.length > 0 ||
+      user.volunteers.length > 0;
+
+    if (!hasOtherRoles) {
+      // Delete User
+      await prisma.user.delete({ where: { id: userId } });
+    } else {
+      // Update User's role field
+      const roles = user.role.split(',');
+      const newRoles = roles
+        .filter((r: Role) => r.trim() !== Role.JOBSEEKER)
+        .join(',');
+      await prisma.user.update({
+        where: { id: userId },
+        data: { role: newRoles },
+      });
+    }
+  }
+};
+
+
 
