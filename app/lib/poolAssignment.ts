@@ -23,7 +23,7 @@ export interface JobseekerPoolAssignment {
 }
 
 export interface SelectJobseekerPoolCatResult {
-    poolAssignment: JobseekerPoolAssignment;
+    poolAssignment: PoolCategories;
     careerPrepTrackRecommendation: CareerPrepTrack | null
 }
 
@@ -47,29 +47,22 @@ export const generatePoolKey = (user: JobseekerPoolVars): string => {
  * @param {JobseekerPoolVars} user - The user object containing information for selecting the category.
  * @returns {Object} An object containing the pool assignment and career preparation track recommendation.
  */
-export const selectJobseekerPoolCategory = (user: JobseekerPoolVars): SelectJobseekerPoolCatResult => {
+export const selectJobseekerPoolCategory = (user: JobseekerPoolVars) => {
     const key = generatePoolKey(user);
 
     // Use the dictionary to find the corresponding pool and career prep recommendation, or default to 'Pool 3' with 'Standard' recommendation
     const { poolAssignment, careerPrepTrackRecommendation } = poolAssignmentMap[key] || {
-        poolAssignment: PoolCategories.POOL3,
+        poolAssignment: PoolCategories.NotJobReady,
         careerPrepTrackRecommendation: CareerPrepTrack.STANDARD,
     };
 
     devLog('assignUserToPool\n', { poolAssignment, careerPrepTrackRecommendation });
 
-    // Convert poolAssignment string into JobseekerPoolAssignment object
-    const poolAssignmentResult: JobseekerPoolAssignment = {
-        pool1: poolAssignment === PoolCategories.POOL1,
-        pool2: poolAssignment === PoolCategories.POOL2,
-        pool3: poolAssignment === PoolCategories.POOL3,
-    };
 
-    devLog('poolAssignmentResult\n', poolAssignmentResult);
 
 
     return {
-        poolAssignment: poolAssignmentResult,
+        poolAssignment,
         careerPrepTrackRecommendation, // The recommendation comes directly from the dictionary
     };
 };
@@ -83,9 +76,9 @@ export const selectJobseekerPoolCategory = (user: JobseekerPoolVars): SelectJobs
  * - POOL3: Represents Not Ready Candidates
  */
 const enum PoolCategories {
-    POOL1 = 'Pool 1',
-    POOL2 = 'Pool 2',
-    POOL3 = 'Pool 3',
+    Recommended = 'Pool1',
+    JobReady = 'Pool2',
+    NotJobReady = 'Pool3',
 }
 
 /**
@@ -109,36 +102,36 @@ const enum CareerPrepTrack {
  */
 const poolAssignmentMap: { [key: string]: { poolAssignment: PoolCategories; careerPrepTrackRecommendation: CareerPrepTrack | null } } = {
     // enrolledWithPartner_completedPartnerProgram_prevTechExperience_hasDegreeOrTechProgram_completeCareerPrep
-    'true_true_true_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'true_true_true_true_false': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
-    'true_true_true_false_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'true_true_true_false_false': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
-    'true_true_false_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'true_true_false_true_false': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
-    'true_true_false_false_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'true_true_false_false_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
-    'true_false_true_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'true_false_true_true_false': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
-    'true_false_true_false_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'true_false_true_false_false': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
-    'true_false_false_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'true_false_false_true_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
-    'true_false_false_false_true': { poolAssignment: PoolCategories.POOL3, careerPrepTrackRecommendation: null },
-    'true_false_false_false_false': { poolAssignment: PoolCategories.POOL3, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
-    'false_true_true_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'false_true_true_true_false': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
-    'false_true_true_false_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'false_true_true_false_false': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
-    'false_true_false_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'false_true_false_true_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
-    'false_true_false_false_true': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: null },
-    'false_true_false_false_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
-    'false_false_true_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'false_false_true_true_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
-    'false_false_true_false_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'false_false_true_false_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
-    'false_false_false_true_true': { poolAssignment: PoolCategories.POOL1, careerPrepTrackRecommendation: null },
-    'false_false_false_true_false': { poolAssignment: PoolCategories.POOL2, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
-    'false_false_false_false_true': { poolAssignment: PoolCategories.POOL3, careerPrepTrackRecommendation: null }, // contradiction. Never logically true
-    'false_false_false_false_false': { poolAssignment: PoolCategories.POOL3, careerPrepTrackRecommendation: null },
+    'true_true_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'true_true_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'true_true_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'true_true_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'true_true_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'true_true_false_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'true_true_false_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'true_true_false_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'true_false_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'true_false_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'true_false_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'true_false_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'true_false_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'true_false_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'true_false_false_false_true': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: null },
+    'true_false_false_false_false': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
+    'false_true_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'false_true_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'false_true_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'false_true_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'false_true_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'false_true_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'false_true_false_false_true': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: null },
+    'false_true_false_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'false_false_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'false_false_true_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'false_false_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'false_false_true_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
+    'false_false_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
+    'false_false_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'false_false_false_false_true': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: null }, // contradiction. Never logically true
+    'false_false_false_false_false': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: null },
 };
