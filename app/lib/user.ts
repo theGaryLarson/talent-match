@@ -22,7 +22,7 @@ export async function createUser(
         last_name: lastName,
         email: email,
         photo_url: image,
-        role: roles[0].toUpperCase().trim(), // fixme: modify database to handle multiple roles.
+        role: roles.map(role => role.toUpperCase().trim()).join(', '), // concatenate roles with a comma,
         createdAt: new Date(),
         is_marked_deletion: new Date(
           new Date().setDate(new Date().getDate() + 30),
@@ -125,8 +125,11 @@ export async function getUserByEmail(
       return null;
     }
 
-    const roles: Role[] = [];
-    roles.push(data.role.toUpperCase() as Role);
+    // Split the concatenated role string by comma, map to format each role correctly, and add to roles array
+    const roles: Role[] = []
+    roles.push(
+    ...data.role.split(',').map((role: string) => role.toUpperCase().trim() as Role)
+    );
 
     const result: ReadUserInfoDTO = {
       userId: data.id,
@@ -184,7 +187,7 @@ export async function unflagDeletion() {
 
 export async function validateUserProfile() {
   const session = await auth();
-  if (session?.user.roles.includes('JOBSEEKER')) {
+  if (session?.user.roles.includes(Role.JOBSEEKER)) {
     await setPool();
     return Response.json(
         { success: true},
@@ -196,3 +199,27 @@ export async function validateUserProfile() {
     return await unflagDeletion();
   }
 }
+
+export async function removeRoleFromUser(userId: string, roleToRemove: Role): Promise<void> {
+  // Fetch the user by ID
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // Split and map roles from the user, ensuring formatting consistency
+  const roles = user.role.split(',').map((r: string) => r.trim().toUpperCase() as Role);
+
+  // Filter out the role to remove
+  const newRoles = roles
+      .filter((r: Role) => r !== roleToRemove)
+      .join(',');
+
+  // Update the user's roles in the database
+  await prisma.user.update({
+    where: { id: userId },
+    data: { role: newRoles },
+  });
+}
+
