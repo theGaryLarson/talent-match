@@ -64,9 +64,9 @@ export default function CreateEmployerCompanyInfoPage() {
   const updateSessionProperties = useUpdateSession(); // TODO: update session with companyId and isApproved value if company exists
 
   const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
-    CompanyDropdownDTO | string
-  >('');
-  const [companyId, setCompanyId] = useState<string | null>(null); // State for companyId
+    PostCompanyInfoDTO | string
+  >('');  // Step 1: convert this datatype into a ReadCompanyInfoDTO rather than CompanyDropdownDTO. Step 2. Transform data in Read object into Post object in handleSubmit
+  const [companyId, setCompanyId] = useState<string | null>(null); // State for companyId // set this on the companyData object inside handleSubmit and remove this. Use a new uuidv4() if its a new company. Otherwise the companyId is set in companyData from the drop down.
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
     null,
   );
@@ -129,7 +129,7 @@ export default function CreateEmployerCompanyInfoPage() {
           companyPhone: fetchedData.companyPhone || undefined,
           mission: fetchedData.mission || undefined,
           vision: fetchedData.vision || undefined,
-          companySize: fetchedData.employeeCount || '',
+          companySize: fetchedData.companySize || '',
           estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
         };
         devLog('updatedCompanyData', updatedCompanyData);
@@ -144,21 +144,19 @@ export default function CreateEmployerCompanyInfoPage() {
             : null,
         );
         setSelectCompanyDropdownData({
+          userId: session.user.id!,
           companyId: fetchedData.companyId,
           companyName: fetchedData.companyName,
           logoUrl: fetchedData.logoUrl || undefined,
           industrySectorId: fetchedData.industrySectorId || undefined,
           websiteUrl: fetchedData.websiteUrl || '',
-          yearFounded: fetchedData.yearFounded
-            ? parseInt(fetchedData.yearFounded)
-            : null,
+          yearFounded: fetchedData.yearFounded ? fetchedData.yearFounded : '',
           companyEmail: fetchedData.companyEmail || '',
           companyPhone: fetchedData.companyPhone || '',
-          companySize: fetchedData.employeeCount || '',
+          companySize: fetchedData.companySize || '',
           estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
-          approvedCompany: fetchedData.isApproved ?? false,
-          createdBy: fetchedData.createdBy,
         });
+
 
         setIndustry({
           industry_sector_id: fetchedData.industrySectorId ?? '',
@@ -200,6 +198,7 @@ export default function CreateEmployerCompanyInfoPage() {
     dispatch(setPageSaved('company'));
   }, [session?.user.id, pathname]);
 
+  // used to manage changes on selectCompanyDropDownData depending on its type (object or string).
   useEffect(() => {
     if (
       typeof selectCompanyDropdownData === 'object' &&
@@ -208,7 +207,7 @@ export default function CreateEmployerCompanyInfoPage() {
       // Company selected from dropdown
       const companyObj = selectCompanyDropdownData;
       setYearFounded(
-        companyObj.yearFounded ? dayjs().year(companyObj.yearFounded) : null,
+        companyObj.yearFounded ? dayjs().year(parseInt(companyObj.yearFounded, 10)) : null,
       );
       setCompanyData({
         ...companyData,
@@ -217,7 +216,7 @@ export default function CreateEmployerCompanyInfoPage() {
         yearFounded: companyObj.yearFounded?.toString() || '',
         websiteUrl: companyObj.websiteUrl,
       });
-      setIndustry({
+      setIndustry({ // do this inside of companyData object rather than separate state. First ensure companyDataObject has been transformed to a PostCompanyInfoDTO
         industry_sector_id: companyObj.industrySectorId ?? '',
         sector_title: '', // Not needed; only ID is required
       });
@@ -494,7 +493,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 setSelectCompanyDropdownData(val ?? '');
               }}
               searchPlaceholder="Company name"
-              getOptionLabel={(option: CompanyDropdownDTO) =>
+              getOptionLabel={(option: ReadCompanyInfoDTO) =>
                 option.companyName ?? ''
               }
             />
