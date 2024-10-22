@@ -65,7 +65,7 @@ export default function CreateEmployerCompanyInfoPage() {
 
   const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
     PostCompanyInfoDTO | string
-  >('');  // Step 1: convert this datatype into a ReadCompanyInfoDTO rather than CompanyDropdownDTO. Step 2. Transform data in Read object into Post object in handleSubmit
+  >(''); // REVIEW Step 1: convert this datatype into a ReadCompanyInfoDTO rather than CompanyDropdownDTO. Step 2. Transform data in Read object into Post object in handleSubmit
   const [companyId, setCompanyId] = useState<string | null>(null); // State for companyId // set this on the companyData object inside handleSubmit and remove this. Use a new uuidv4() if its a new company. Otherwise the companyId is set in companyData from the drop down.
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
     null,
@@ -157,7 +157,6 @@ export default function CreateEmployerCompanyInfoPage() {
           estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
         });
 
-
         setIndustry({
           industry_sector_id: fetchedData.industrySectorId ?? '',
           sector_title: fetchedData.industrySectorTitle || '',
@@ -167,6 +166,12 @@ export default function CreateEmployerCompanyInfoPage() {
       }
     };
 
+    /* ANCHOR - core logic of initial form, checks if 
+    (a) no prior company data in store => use defaults and session data
+      (b) if user & companyId => fetch companyData
+      (c) else if no user & companyId => creates new company id, but may not need to be created if prior dropdown company selected?
+    (d) prior data exists => use prior data
+    */
     const initializeFormFields = () => {
       // if no company data for the employer (companyStoreData contains redux store init values)
       if (_.isEqual(companyStoreData, initialState.company)) {
@@ -207,7 +212,9 @@ export default function CreateEmployerCompanyInfoPage() {
       // Company selected from dropdown
       const companyObj = selectCompanyDropdownData;
       setYearFounded(
-        companyObj.yearFounded ? dayjs().year(parseInt(companyObj.yearFounded, 10)) : null,
+        companyObj.yearFounded
+          ? dayjs().year(parseInt(companyObj.yearFounded, 10))
+          : null,
       );
       setCompanyData({
         ...companyData,
@@ -216,7 +223,8 @@ export default function CreateEmployerCompanyInfoPage() {
         yearFounded: companyObj.yearFounded?.toString() || '',
         websiteUrl: companyObj.websiteUrl,
       });
-      setIndustry({ // do this inside of companyData object rather than separate state. First ensure companyDataObject has been transformed to a PostCompanyInfoDTO
+      setIndustry({
+        // do this inside of companyData object rather than separate state. First ensure companyDataObject has been transformed to a PostCompanyInfoDTO
         industry_sector_id: companyObj.industrySectorId ?? '',
         sector_title: '', // Not needed; only ID is required
       });
@@ -286,7 +294,6 @@ export default function CreateEmployerCompanyInfoPage() {
   };
 
   // Handle address selection from autocomplete
-  // Handle address selection from autocomplete
   const handleAddressSelection = (
     e: SyntheticEvent<Element, Event>,
     val: string | ReadAddressDTO | null,
@@ -344,6 +351,7 @@ export default function CreateEmployerCompanyInfoPage() {
     setLogoUrl(url);
   };
 
+  //ANCHOR - handle submit, finalizes data that will be updated in store/database
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     devLog('yearFounded', yearFounded); // Ensure that year_founded is correctly updated
@@ -352,10 +360,15 @@ export default function CreateEmployerCompanyInfoPage() {
       return;
     }
 
+    // REVIEW - at this point, we spread company data as PostCompanyInfoDTO? If we are using PostCompanyInfoDTO from the start does that change anything?
     const chosenCompanyData: PostCompanyInfoDTO = { ...companyData };
 
     chosenCompanyData.employerId = session?.user.employerId!;
 
+    /* NOTE - core form logic currently, we use dot operator on chosenCompanyData an update either with 
+    (a) selectCompanyDropdownData - aka existing company, or 
+    (b) companyData - aka user manual input
+    */
     // company exists in selection
     if (typeof selectCompanyDropdownData !== 'string') {
       chosenCompanyData.employerId = session.user.employerId!;
@@ -376,7 +389,9 @@ export default function CreateEmployerCompanyInfoPage() {
       devLog(chosenCompanyData);
       // new company: values stored in companyData from page inputs
     } else {
-      chosenCompanyData.companyId = companyData.companyId; // newCompanyId is created for a new company
+      // REVIEW - @Gary I think for new company companyId we can add this line below to create new companyId here and only here? or do we need elsewhere
+      chosenCompanyData.companyId = uuidv4();
+      // chosenCompanyData.companyId = companyData.companyId; // newCompanyId is created for a new company
       chosenCompanyData.companyName = selectCompanyDropdownData; // string data type because company doesn't exist in db
       chosenCompanyData.industrySectorId = industry?.industry_sector_id;
       chosenCompanyData.logoUrl = companyData.logoUrl;
@@ -388,6 +403,7 @@ export default function CreateEmployerCompanyInfoPage() {
       chosenCompanyData.estimatedAnnualHires = companyData.estimatedAnnualHires;
     }
 
+    //ANCHOR - on submit, try to upsert chosenCompanyData, finalized/corrected data above
     try {
       console.log(chosenCompanyData);
       const response = await fetch(
