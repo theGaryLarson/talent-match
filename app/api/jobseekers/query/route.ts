@@ -7,6 +7,7 @@ import {
 import { educationRank } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { HighestCompletedEducationLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {devLog} from "@/app/lib/utils";
+import {PoolCategories} from "@/app/lib/poolAssignment";
 
 const prisma = new PrismaClient();
 
@@ -33,10 +34,10 @@ export async function POST(request: Request) {
   const andConditions: any[] = [];
   andConditions.push({
     OR: [
-      { pool1: pool1 },
-      { pool2: pool2 }
+      { assignedPool: PoolCategories.Recommended }, // pool1 is now assignedPool with Recommended category
+      { assignedPool: PoolCategories.JobReady }     // pool2 is now assignedPool with JobReady category
     ],
-    pool3: pool3, // Ensure pool3 is false to exclude them
+    assignedPool: { not: PoolCategories.NotJobReady }, // Ensure assignedPool is not "pool3"
     is_marked_deletion: null
   });
 
