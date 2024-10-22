@@ -10,7 +10,6 @@ import SignupHeader from '@/app/ui/SignupHeader';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Role } from '@/data/dtos/UserInfoDTO';
-import { mapToEnumOrThrow } from '@/app/lib/utils';
 
 // interface Data {
 //   userId: string;
@@ -18,7 +17,7 @@ import { mapToEnumOrThrow } from '@/app/lib/utils';
 // }
 
 export default function SignupPage() {
-  const [choice, setChoice] = useState('');
+  const [choice, setChoice] = useState<Role>(Role.GUEST);
   const { data: session, status, update } = useSession();
   const router = useRouter();
   const checkIcon = (
@@ -38,10 +37,9 @@ export default function SignupPage() {
   }, [router]);
 
   let handleSubmit = async () => {
-    let newRole = choice === 'employer' ? Role.EMPLOYER : Role.JOBSEEKER;
     if (session) {
-        if (newRole === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
-        if (newRole === Role.EMPLOYER) router.push(`/signup/employer`);
+        if (choice === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
+        if (choice === Role.EMPLOYER) router.push(`/signup/employer`);
     }
   };
 
@@ -57,7 +55,7 @@ export default function SignupPage() {
               type="radio"
               name="account-role"
               id="account-employer"
-              onClick={() => setChoice('employer')}
+              onClick={() => setChoice(Role.EMPLOYER)}
               className="peer hidden"
             />
             <label
@@ -72,7 +70,7 @@ export default function SignupPage() {
                 className="mx-auto py-6"
               />
               <p className="text-center">
-                {choice === 'employer' && checkIcon}An employer
+                {choice === Role.EMPLOYER && checkIcon}An employer
               </p>
             </label>
           </div>
@@ -81,7 +79,7 @@ export default function SignupPage() {
               type="radio"
               name="account-role"
               id="account-jobseeker"
-              onClick={() => setChoice('jobseeker')}
+              onClick={() => setChoice(Role.JOBSEEKER)}
               className="peer hidden"
             />
             <label
@@ -96,13 +94,13 @@ export default function SignupPage() {
                 className="mx-auto py-6"
               />
               <p className="text-center">
-                {choice === 'jobseeker' && checkIcon}A job candidate
+                {choice === Role.JOBSEEKER && checkIcon}A job candidate
               </p>
             </label>
           </div>
         </fieldset>
         <Button
-          disabled={choice === ''}
+          disabled={choice === Role.GUEST}
           onClick={handleSubmit}
           className="mx-auto mt-4 w-fit rounded-3xl focus:ring-0"
         >
