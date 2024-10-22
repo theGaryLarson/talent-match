@@ -132,9 +132,7 @@ const updatePool = async (
       jobseeker_id: jobseekerId,
     },
     data: {
-      pool1: poolCategoryResult.poolAssignment.pool1,
-      pool2: poolCategoryResult.poolAssignment.pool2,
-      pool3: poolCategoryResult.poolAssignment.pool3,
+      assignedPool: poolCategoryResult.poolAssignment,
       careerPrepTrackRecommendation:
         poolCategoryResult.careerPrepTrackRecommendation,
     },
