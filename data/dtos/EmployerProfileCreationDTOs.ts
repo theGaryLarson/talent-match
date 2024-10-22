@@ -106,7 +106,7 @@ export type ReadCompanyInfoDTO = {
   companyPhone?: string | null;
   mission?: string | null;
   vision?: string | null;
-  employeeCount?: string | null;
+  companySize?: string | null;
   estimatedAnnualHires?: string | null;
   isApproved?: boolean | null;
   createdBy: string;
