@@ -47,24 +47,26 @@ export const generatePoolKey = (user: JobseekerPoolVars): string => {
  * @param {JobseekerPoolVars} user - The user object containing information for selecting the category.
  * @returns {Object} An object containing the pool assignment and career preparation track recommendation.
  */
-export const selectJobseekerPoolCategory = (user: JobseekerPoolVars) => {
-    const key = generatePoolKey(user);
+export const selectJobseekerPoolCategory = (user: JobseekerPoolVars): SelectJobseekerPoolCatResult  => {
+  const key = generatePoolKey(user);
 
-    // Use the dictionary to find the corresponding pool and career prep recommendation, or default to 'Pool 3' with 'Standard' recommendation
-    const { poolAssignment, careerPrepTrackRecommendation } = poolAssignmentMap[key] || {
-        poolAssignment: PoolCategories.NotJobReady,
-        careerPrepTrackRecommendation: CareerPrepTrack.STANDARD,
-    };
+  // Use the dictionary to find the corresponding pool and career prep recommendation, or default to 'Pool 3' with 'Standard' recommendation
+  const { poolAssignment, careerPrepTrackRecommendation } = poolAssignmentMap[
+    key
+  ] || {
+    poolAssignment: PoolCategories.NotJobReady,
+    careerPrepTrackRecommendation: CareerPrepTrack.STANDARD,
+  };
 
-    devLog('assignUserToPool\n', { poolAssignment, careerPrepTrackRecommendation });
+  devLog('assignUserToPool\n', {
+    poolAssignment,
+    careerPrepTrackRecommendation,
+  });
 
-
-
-
-    return {
-        poolAssignment,
-        careerPrepTrackRecommendation, // The recommendation comes directly from the dictionary
-    };
+  return {
+    poolAssignment,
+    careerPrepTrackRecommendation, // The recommendation comes directly from the dictionary
+  };
 };
 
 /**
@@ -75,10 +77,10 @@ export const selectJobseekerPoolCategory = (user: JobseekerPoolVars) => {
  * - POOL2: Represents Job Ready Candidates
  * - POOL3: Represents Not Ready Candidates
  */
-const enum PoolCategories {
-    Recommended = 'Pool1',
-    JobReady = 'Pool2',
-    NotJobReady = 'Pool3',
+export const enum PoolCategories {
+    Recommended = 'pool1',
+    JobReady = 'pool2',
+    NotJobReady = 'pool3',
 }
 
 /**
@@ -87,7 +89,6 @@ const enum PoolCategories {
  * @enum {string}
  */
 const enum CareerPrepTrack {
-
     TARGETED = 'TARGETED',
     ACCELERATED = 'ACCELERATED',
     STANDARD = 'STANDARD',
