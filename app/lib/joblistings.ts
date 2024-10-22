@@ -146,3 +146,75 @@ try{
     console.error(e)
   }
 }
+
+export async function ApplyToJob(jobPostingId:string) {
+  let Session = await auth();
+  try {
+    if (!Session?.user.jobseekerId) {
+      throw new Error('Failed to delete job listing: jobseeker ID not found in session');
+    }
+
+    const updatedJobPosting = await prisma.job_postings.update({
+      where: {
+        job_posting_id: jobPostingId,
+      },
+      data: {
+        applicants: {
+          connect: { jobseeker_id: Session.user.jobseekerId},  // Add the jobseeker to the applicants array
+        },
+      },
+    });
+
+    //do prisma stuff here
+    return updatedJobPosting;
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
+export async function getAllJobPosts(){
+  try {
+    let results = prisma.job_postings.findMany();
+    return results;
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
+export async function getJobSeekerBookmarkedJobs(){
+  const session = await auth();
+  if(!session?.user.jobseekerId){
+    return
+  }
+  try {
+    const result = await prisma.jobseekers.findUnique({select:{
+        BookmarkedJobs:true
+    }, where:{
+      jobseeker_id: session.user.jobseekerId
+    }})
+    console.log("here",result)
+    return result;
+  } catch (error) {
+      console.error(error)
+  }
+}
+
+
+export async function getJobSeekerAppliedJobs() {
+  const session = await auth();
+  if(!session?.user.jobseekerId){
+    return
+  }
+  try {
+    const result = await prisma.jobseekers.findUnique({select:{
+        appliedJobs:true
+    }, where:{
+      jobseeker_id: session.user.jobseekerId
+    }})
+    return result;
+  } catch (error) {
+      console.error(error)
+  }
+}

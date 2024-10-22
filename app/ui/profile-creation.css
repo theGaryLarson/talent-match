@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 h1 {
-  @apply text-5xl my-2;
+  @apply my-2 text-5xl;
   font-weight: 700;
-  
+
   /* From Figma Properties */
   /* 
   font-size: 34px;
@@ -14,11 +14,10 @@ h1 {
   letter-spacing: 0.25px;
   text-align: left;
   */
-
 }
 
 h2 {
-  @apply text-2xl my-2;
+  @apply my-2 text-2xl;
   /* From Figma Properties */
   /* font-size: 24px;
   font-weight: 400;
@@ -33,17 +32,17 @@ h2 {
 
 .profile-form-section {
   /* TODO: removed from MVP, on reimplement review xl:w-3/5 p-5 xl:pr-80*/
-  @apply w-full py-10 px-3 max-w-3xl;
+  @apply w-full max-w-3xl px-3 py-10;
   /*   @apply hidden laptop:w-2/5 laptop:block laptop:pl-80; */
   /*   @apply w-full laptop:w-3/5 p-5 laptop:pr-80; */
 }
 
 .profile-form-progress-btn-group {
-  @apply flex justify-between my-10;
+  @apply my-10 flex justify-between;
 }
 
 .profile-form-grid {
-  @apply grid gap-6 my-3;
+  @apply my-3 grid gap-6;
 }
 
 .alert-title {
@@ -68,7 +67,7 @@ h2 {
 }
 
 .subtitle-congrats {
-  @apply mt-5 mb-5;
+  @apply mb-5 mt-5;
   font-size: 16px;
   font-weight: 400;
   line-height: 26px;
@@ -83,28 +82,32 @@ h2 {
   font-weight: 400;
   line-height: 19.2px;
   letter-spacing: 0.15000000596046448px;
-  text-align: left;  
+  text-align: left;
   color: #00000099;
 }
-  
+
 /* Figma Button colors */
 .custom-outline-btn {
-  color: #047F9C;
-  border-color: #047F9C;
+  color: #047f9c;
+  border-color: #047f9c;
   background-color: transparent;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
-.custom-outline-btn.selected, .custom-outline-btn:hover.selected {
-  background-color: #047F9C!important;
+.custom-outline-btn.selected,
+.custom-outline-btn:hover.selected {
+  background-color: #047f9c !important;
   color: #fff;
   border-color: #000000;
 }
 
 .custom-outline-btn:hover {
-  color: #047F9C;
+  color: #047f9c;
   background-color: #f3f4f6 !important;
-  border-color: #047F9C;
+  border-color: #047f9c;
 }
 
 .main-content {
@@ -130,17 +133,31 @@ h2 {
   margin-bottom: 4px;
 } */
 
-.year-picker > div, .date-picker > div {
+.text-field-autocomplete > div > div,
+.select-autoload > div > div,
+.year-picker > div,
+.date-picker > div {
   font-size: 0.875rem;
   line-height: 1.25rem;
   border-radius: 0.5rem;
 }
 
-
-.year-picker > label, .phone-code > div > select, .date-picker > label {
-  @apply text-sm text-gray-500 pt-1;
+.text-field-autocomplete > div > label {
+  font-size: 0.875rem;
 }
 
-.date-picker > div > input, .year-picker > div > input {
+.phone-code > div > select,
+.year-picker > label,
+.date-picker > label {
+  @apply text-sm text-gray-500;
+}
+
+.year-picker > label,
+.date-picker > label {
+  @apply pt-1;
+}
+
+.date-picker > div > input,
+.year-picker > div > input {
   height: 14px;
 }

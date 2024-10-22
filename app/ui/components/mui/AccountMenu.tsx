@@ -118,6 +118,18 @@ export default function AccountMenu() {
         ) : (
           ''
         )}
+        {role?.includes(Role.JOBSEEKER) || role?.includes(Role.ADMIN) ? (
+          <Link href="/services/jobseekers/dashboard">
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <DashboardIcon fontSize="small" />
+              </ListItemIcon>
+              Dashboard
+            </MenuItem>
+          </Link>
+        ) : (
+          ''
+        )}
 
         {role?.includes(Role.JOBSEEKER) || role?.includes(Role.ADMIN) ? (
           <Link href={'/services/jobseekers/' + session?.user.jobseekerId}>

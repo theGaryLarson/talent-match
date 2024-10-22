@@ -23,7 +23,7 @@ import {
 } from '@/lib/features/profileCreation/employerSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-import {JsIntroDTO} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { JsIntroDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 
 const formNamePrefix = 'profile-creation-personal-';
 
@@ -34,9 +34,9 @@ export default function CreateEmployerPersonalPage() {
   const [personalData, setPersonalData] = useState({ ...personalStoreData });
   const dispatch = useDispatch();
   const router = useRouter();
-    const [birthdate, setBirthdate] = useState<Dayjs | null>(
-        personalData.birthDate === '' ? null : dayjs(personalData.birthDate),
-    );
+  const [birthdate, setBirthdate] = useState<Dayjs | null>(
+    personalData.birthDate === '' ? null : dayjs(personalData.birthDate),
+  );
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
@@ -45,7 +45,7 @@ export default function CreateEmployerPersonalPage() {
 
   useEffect(() => {
     if (!session?.user?.id) return;
-    devLog('session', session.user)
+    devLog('session', session.user);
     const initializeFormFields = async () => {
       if (status === 'authenticated') {
         if (_.isEqual(personalStoreData, initialState.personal)) {
@@ -65,22 +65,21 @@ export default function CreateEmployerPersonalPage() {
                 lastName: lastName ?? '',
                 email: email ?? '',
                 photoUrl: image,
-                phoneCountryCode: 'United States +1'
+                phoneCountryCode: 'United States +1',
               }));
             } else {
               let { result } = await response.json();
-              setPersonalData( (prevPersonalData) => ({
-                  ...prevPersonalData,
-                  userId: result.userId,
-                  birthDate: result.birthDate ?? '',
-                  email: email!,
-                  firstName: firstName ?? '',
-                  lastName: lastName ?? '',
-                  phone: result.phone,
-                  phoneCountryCode: result.phoneCountryCode,
-                  photoUrl: image,
+              setPersonalData((prevPersonalData) => ({
+                ...prevPersonalData,
+                userId: result.userId,
+                birthDate: result.birthDate ?? '',
+                email: email!,
+                firstName: firstName ?? '',
+                lastName: lastName ?? '',
+                phone: result.phone,
+                phoneCountryCode: result.phoneCountryCode,
+                photoUrl: image,
               }));
-
             }
           } catch (error) {
             // dispatch(submitFormFailure('Failed to submit the form'));
@@ -109,40 +108,44 @@ export default function CreateEmployerPersonalPage() {
   ) => {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
-    console.log('name', name, 'value', value, 'fieldName,', fieldName)
+    console.log('name', name, 'value', value, 'fieldName,', fieldName);
     if (personalData.hasOwnProperty(fieldName)) {
-        personalData[fieldName as keyof PostEmployerPersonalDTO] = value;
-      setPersonalData(prevPersonalData  => ({
+      personalData[fieldName as keyof PostEmployerPersonalDTO] = value;
+      setPersonalData((prevPersonalData) => ({
         ...prevPersonalData,
         [fieldName]: value,
       }));
     }
   };
 
-    const handleAvatarUpload = (url: string) => {
-        console.log("Uploaded Image URL:", url);
-        updateSessionProperties({
-            image: url,
-        }).then(() => {
-            setAvatarUrl(url);
-            setPersonalData( prevPersonalData => ({
-                ...prevPersonalData,
-                photoUrl: url
-            }))
-        }).catch((error) => console.error('Failed to update session image:', error));
-    };
+  const handleAvatarUpload = (url: string) => {
+    console.log('Uploaded Image URL:', url);
+    updateSessionProperties({
+      image: url,
+    })
+      .then(() => {
+        setAvatarUrl(url);
+        setPersonalData((prevPersonalData) => ({
+          ...prevPersonalData,
+          photoUrl: url,
+        }));
+      })
+      .catch((error) =>
+        console.error('Failed to update session image:', error),
+      );
+  };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!session || !session.user) {
       console.error('User session is not available.');
       return;
     }
-    setPersonalData(prevPersonalData => ({
+    setPersonalData((prevPersonalData) => ({
       ...prevPersonalData,
       birthDate: birthdate?.toISOString() ?? '',
       photoUrl: avatarUrl,
     }));
-    devLog('personalData', personalData)
+    devLog('personalData', personalData);
     // Extract firstName, lastName, and name from Redux state fields
 
     const firstName = personalData.firstName;
@@ -158,19 +161,21 @@ export default function CreateEmployerPersonalPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-              ...personalData,
-              birthDate: birthdate?.toISOString() ?? '',
+            ...personalData,
+            birthDate: birthdate?.toISOString() ?? '',
           }),
         },
       );
-        devLog('personalData\n', personalData);
+      devLog('personalData\n', personalData);
       if (response.ok) {
         const { result } = await response.json();
 
-        dispatch(setPersonal({
+        dispatch(
+          setPersonal({
             ...personalData,
             birthDate: birthdate?.toISOString() ?? '',
-        }));
+          }),
+        );
 
         if (session && status === 'authenticated') {
           await updateSessionProperties({
