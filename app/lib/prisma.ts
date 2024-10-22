@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
+import {ReadCompanyInfoDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -116,20 +117,20 @@ export async function searchEduProviders(
   );
 }
 
-export async function searchCompanies(searchTerm: string): Promise<
-  {
-    companyId: string;
-    companyEmail: string;
-    logoUrl: string | null;
-    companyPhone: string | null;
-    industrySectorId: string | null;
-    companyName: string;
-    predictedHires: number | null;
-    websiteUrl: string | null;
-    yearFounded: number;
-    companySize: string;
-    approvedCompany: boolean;
-  }[]
+export async function searchCompanies(searchTerm: string): Promise< ReadCompanyInfoDTO[]
+  // {
+  //   companyId: string;
+  //   companyEmail: string;
+  //   logoUrl: string | null;
+  //   companyPhone: string | null;
+  //   industrySectorId: string | null;
+  //   companyName: string;
+  //   predictedHires: number | null;
+  //   websiteUrl: string | null;
+  //   yearFounded: number;
+  //   companySize: string;
+  //   approvedCompany: boolean;
+  // }[]
 > {
   return genericSearch<companies>({
     searchTerm,
@@ -140,16 +141,18 @@ export async function searchCompanies(searchTerm: string): Promise<
   }).then((results) =>
     results.map((company) => ({
       companyId: company.company_id,
+      industrySectorId: company.industry_sector_id,
       companyName: company.company_name,
       logoUrl: company.company_logo_url,
-      industrySectorId: company.industry_sector_id,
       websiteUrl: company.company_website_url,
       companyEmail: company.company_email,
       companyPhone: company.company_phone,
-      yearFounded: company.year_founded,
+      yearFounded: company.year_founded.toString(),
       companySize: company.size,
       predictedHires: company.estimated_annual_hires,
       approvedCompany: company.is_approved,
+      aboutUs: company.about_us,
+      createdBy: company.createdBy,
     })),
   );
 }
