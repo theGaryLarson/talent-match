@@ -11,15 +11,16 @@ export default function Page() {
       event.preventDefault();
       
     const formData = new FormData(event.currentTarget);
-
+    const submitButton = event.currentTarget.querySelector('button[type="submit"]') as HTMLButtonElement;;
+    if (submitButton) submitButton.disabled = true;
     // Convert FormData to a JobListingDTO object
     const jobListingData = {
       //location_id: formData.get('location_id') as string,
       //employer_id: formData.get('employer_id') as string,
       job_title: formData.get('job_title') as string,
       job_description: formData.get('job_description') as string,
-      is_internship: formData.get('is_internship') === 'on', // Checkboxes return "on"
-      is_paid: formData.get('is_paid') === 'on',
+      is_internship: formData.get('is_internship') === 'yes', // Radio is yes or no
+      is_paid: formData.get('is_paid') === 'yes',
       employment_type: formData.get('employment_type') as string,
       location: formData.get('location') as string,
       salary_range: formData.get('salary_range') as string,
@@ -60,14 +61,6 @@ export default function Page() {
    
     return  (
         <form onSubmit={onSubmit}>
-          {/* Company ID */}
-       
-    
-          {/* Location ID */}
-  
-    
-          {/* Employer ID */}
-        
     
           {/* Job Title */}
           <div>
@@ -76,26 +69,41 @@ export default function Page() {
           </div>
     
           {/* Job Description */}
-          <div>
+          <div className='flex'>
             <label htmlFor="job_description">Job Description</label>
             <textarea name="job_description" required />
           </div>
     
           {/* Internship */}
           <div>
-            <label>
-              <input type="checkbox" name="is_internship" />
-              Is Internship?
-            </label>
-          </div>
+  <label>Is this an internship?</label>
+  <div>
+    <label>
+      <input type="radio" name="is_internship" value="yes" required />
+      Yes
+    </label>
+    <label>
+      <input type="radio" name="is_internship" value="no" required />
+      No
+    </label>
+  </div>
+</div>
     
           {/* Paid */}
           <div>
-            <label>
-              <input type="checkbox" name="is_paid" defaultChecked />
-              Is Paid?
-            </label>
-          </div>
+  <label>Is this a paid position?</label>
+  <div>
+    <label>
+      <input type="radio" name="is_paid" value="yes" required />
+      Yes
+    </label>
+    <label>
+      <input type="radio" name="is_paid" value="no" required />
+      No
+    </label>
+  </div>
+</div>
+
     
           {/* Employment Type */}
           <div>

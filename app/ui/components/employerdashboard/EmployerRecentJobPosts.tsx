@@ -12,14 +12,14 @@ export default async function EmployerRecentJobPosts() {
     <div className="p-4 bg-white rounded-[10px] shadow gap-2 divide-y">
       {
       (jobPostings.length > 0)?jobPostings.map((job)=>{
-        return <SingleJobPost jobtitle={job.job_title} key={job.job_posting_id}/>
+        return <SingleJobPost jobtitle={job.job_title} key={job.job_posting_id} industry={job.industry_sectors?.sector_title??''}/>
       }):<AddJobLink/>
       }
     </div>
   </div>;
 }
 
-function SingleJobPost(props:{jobtitle:string}) {
+function SingleJobPost(props:{jobtitle:string, industry:string}) {
   return (
     <div className="flex items-center justify-between bg-white p-2">
       <div className="flex h-[17px] items-center justify-start gap-2">
@@ -30,7 +30,7 @@ function SingleJobPost(props:{jobtitle:string}) {
           |
         </div>
         <div className="font-['Roboto'] text-sm font-normal leading-[16.80px] tracking-tight text-[#181818]">
-          Cloud Operations + Innovation (CO+I)
+          {props.industry}
         </div>
         <div className="font-['Roboto'] text-xs font-normal leading-[14.40px] tracking-tight text-[#797979]">
           Posted 1 day ago

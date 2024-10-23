@@ -115,6 +115,9 @@ export async function getMyJobListings() {
     let results = prisma.job_postings.findMany({
       where:{
         employer_id: Session?.user.employerId
+      }, include:{
+        industry_sectors:true,
+        
       }
     })
     return results;
