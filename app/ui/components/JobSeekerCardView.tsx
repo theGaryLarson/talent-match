@@ -8,6 +8,8 @@ import ShareButton from './ShareButton';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { ProgramEnrollmentStatus } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import { Role } from '@/data/dtos/UserInfoDTO';
+import Bookmark from './Bookmark';
 
 export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerCardViewDTO }) {
   const { data: session } = useSession();
@@ -24,6 +26,18 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
   const highestDegree: string = jobseeker.highest_level_of_study_completed ?? '';
   const skills: SkillDTO[] = jobseeker?.jobseeker_has_skills ?
     jobseeker?.jobseeker_has_skills.map((item: JobseekerSkillDTO) => item.skills) : [];
+  let isBookmarked: boolean = false;
+
+  // are they bookmarked?
+  if (jobseeker.BookmarkedJobseeker != undefined) {
+    // we get back all bookmarks related to this jobseeker, so filter by company/employer ID
+    for (let i = 0; i < jobseeker.BookmarkedJobseeker?.length; i++) {
+      if (jobseeker.BookmarkedJobseeker[i].companyId == session?.user.companyId &&
+        jobseeker.BookmarkedJobseeker[i].employerId == session.user.employerId)
+        isBookmarked = true;
+      break;
+    }
+  }
 
   // Decide what school to show
   let school = "";
@@ -44,6 +58,17 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
         (firstEducation?.program?.title ? ' | ' + firstEducation.program.title : '');
     }
   }
+
+  const showViewProfile =
+    session?.user.roles.includes(Role.EMPLOYER) || // check role for permissions
+    session?.user.roles.includes(Role.ADMIN) ||
+    session?.user.roles.includes(Role.EDUCATOR) ||
+    (sessionJobseekerId != undefined && sessionJobseekerId == id); // or it's our own profile
+
+  const showBookmarks =
+    session?.user.roles.includes(Role.EMPLOYER) && // check role for permissions
+    session.user.companyId != undefined &&  // company is set
+    session?.user.employeeIsApproved; // employee must be approved to edit this company
 
   return (
     <div className="w-full rounded-lg border border-2 border-cyan-600 p-2 phone:p-4">
@@ -66,19 +91,21 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
 
         {/* view and share */}
         <div className="flex flex-col">
-          {sessionJobseekerId == undefined || sessionJobseekerId == id ? // only show View Profile if it's your Jobseeker profile
+          {showViewProfile ? // only show View Profile if it's your Jobseeker profile
             <div className="w-max h-min">
               <Link // view profile should redirect to login and then continue to candidate after account create
                 href={'/services/jobseekers/' + id}
                 className="border border-2 border-cyan-600 inline-block w-fit rounded-full bg-white py-2 px-2 tablet:px-4 laptop:px-6 text-sm tablet:text-base laptop:text-lg text-cyan-600 hover:bg-gray-200">
                 <strong>View Profile</strong>
               </Link>
-            </div> : "" }
-          <div className="w-min mt-2 mr-2 text-cyan-600 place-self-end">
+            </div> : ""}
+          <div className="flex flex-row mt-2 mr-2 text-cyan-600 place-self-end">
+            { showBookmarks ?
+              <Bookmark bookmarked={isBookmarked}
+                addUrl={'/api/companies/bookmark/addJobseeker/' + jobseeker.jobseeker_id}
+                removeUrl={'/api/companies/bookmark/removeJobseeker/' + jobseeker.jobseeker_id}>
+              </Bookmark> : "" }
             <ShareButton href={'/services/jobseekers/' + id} />
-            {/* <div className="p-2 rounded-full hover:bg-slate-200">
-              <BookmarkIcon className="h-10 w-10 stroke-2 REPLACE-BEFORE-RELEASE" />
-            </div> */}
           </div>
         </div>
       </div>
