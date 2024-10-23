@@ -389,7 +389,7 @@ export default function CreateJobseekerProfileEducationPage() {
 
         dispatch(setEducation(educationData));
 
-        router.push('/create-profile/jobseeker/work-experience');
+        router.push('/edit-profile/jobseeker/work-experience');
       } else {
         const errorMessage = await response.text(); // Get the error message from the response
         setError(`Failed to save data:\n${errorMessage}`);
@@ -477,7 +477,7 @@ export default function CreateJobseekerProfileEducationPage() {
               pill
               color="gray"
               onClick={() => {
-                router.push('/create-profile/jobseeker/introduction');
+                router.push('/edit-profile/jobseeker/introduction');
               }}
             >
               Previous{' '}

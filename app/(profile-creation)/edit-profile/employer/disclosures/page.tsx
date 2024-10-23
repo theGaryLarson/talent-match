@@ -160,7 +160,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
         if (response.ok) {
           const result = await response.json();
           dispatch(setDisclosures(disclosuresData));
-          router.push('/create-profile/employer/congratulations');
+          router.push('/edit-profile/employer/congratulations');
         } else {
           const errorData = await response.json();
         }

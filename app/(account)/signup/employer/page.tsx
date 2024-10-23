@@ -89,7 +89,7 @@ export default function EmployerSignUpFinish() {
                     employerId: uuidv4(),
                     roles: rolesArray,
                   });
-                  router.push('/create-profile/employer/personal');
+                  router.push('/edit-profile/employer/personal');
               }
             }}
               className="mx-auto my-8 rounded-full focus:ring-0"

@@ -186,7 +186,7 @@ export default function CreateEmployerPersonalPage() {
           });
         }
 
-        router.push('/create-profile/employer/company');
+        router.push('/edit-profile/employer/company');
       } else {
         const errorData = await response.json();
       }

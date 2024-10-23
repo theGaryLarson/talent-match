@@ -171,7 +171,7 @@ creates or updates all the data in entire introduction page._
 
 #### Read Jobseeker Introduction Page
 
-_This route is meant to be used with the `/create-profile/jobseeker/intro` page for initial load if there is preexisting
+_This route is meant to be used with the `/edit-profile/jobseeker/intro` page for initial load if there is preexisting
 data._
 
 **Endpoint**: `/api/jobseekers/account/introduction/get/<userId>`
@@ -223,7 +223,7 @@ data._
 
 #### Create or Update Jobseeker Education Page
 
-_This route is meant to be used with the `/create-profile/jobseeker/education` page for creating or updating any data on
+_This route is meant to be used with the `/edit-profile/jobseeker/education` page for creating or updating any data on
 this page._
 
 If the institution does not currently exist in our database an entry is created in the `edu_institutions` table using
@@ -408,7 +408,7 @@ institution.
 
 #### Read Jobseeker Education Profile Page
 
-_This route is meant to be used with the `/create-profile/jobseeker/education` page for initial loading of preexisting
+_This route is meant to be used with the `/edit-profile/jobseeker/education` page for initial loading of preexisting
 data, if any._
 
 **Endpoint**: `/api/jobseekers/account/edu-info/get/<userId>`
@@ -504,7 +504,7 @@ data, if any._
 
 #### Delete Jobseeker Education Record
 
-_This will delete a jobseeker education record. It is intended for use within the `/create-profile/jobseeker/education`
+_This will delete a jobseeker education record. It is intended for use within the `/edit-profile/jobseeker/education`
 page using the key from the respective jobseeker education entry._
 
 **Endpoint**: `/api/jobseekers/education/remove/<eduId>`
@@ -540,7 +540,7 @@ page using the key from the respective jobseeker education entry._
 #### Delete Jobseeker Certification
 
 _This will delete a jobseeker certification record. It is intended for use within
-the `/create-profile/jobseeker/education` page using the key from the respective certification entry._
+the `/edit-profile/jobseeker/education` page using the key from the respective certification entry._
 
 **Endpoint**: `/api/jobseekers/certifications/remove/<certificateId>`
 
@@ -571,7 +571,7 @@ the `/create-profile/jobseeker/education` page using the key from the respective
 #### Delete Jobseeker Project Experience
 
 _This will delete a jobseeker project experience record. It is intended for use within
-the `/create-profile/jobseeker/education` page using the key from the respective project experience entry. It will also
+the `/edit-profile/jobseeker/education` page using the key from the respective project experience entry. It will also
 delete the associated skills from within the `project_has_skills` table._
 
 **Endpoint**: `/api/jobseekers/projects/remove/<projectId>`
@@ -611,7 +611,7 @@ delete the associated skills from within the `project_has_skills` table._
 
 #### Upsert Jobseeker Work Profile Page
 
-_This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for creating or updating
+_This route is meant to be used with the `/edit-profile/jobseeker/work-experience` page for creating or updating
 data._
 
 **Endpoint**: `/api/jobseekers/account/work-info/upsert`
@@ -707,7 +707,7 @@ data._
 
 #### Read Jobseeker Work Experience Profile Page
 
-_This route is meant to be used with the `/create-profile/jobseeker/work-experience` page for initial load of data, if
+_This route is meant to be used with the `/edit-profile/jobseeker/work-experience` page for initial load of data, if
 any._
 
 **Endpoint**: `/api/jobseekers/account/work-info/get/<userId>`
@@ -797,7 +797,7 @@ _This route is intended for use by a jobseeker to delete a Work Experience from 
 
 #### Read Showcase page
 
-_This route is meant to be used with the `/create-profile/jobseeker/showcase` page for initial load of data, if any._
+_This route is meant to be used with the `/edit-profile/jobseeker/showcase` page for initial load of data, if any._
 
 **Endpoint**: `/api/jobseekers/account/showcase/get/<userId>`
 
@@ -850,7 +850,7 @@ _This route is meant to be used with the `/create-profile/jobseeker/showcase` pa
 
 #### Upsert Showcase Page
 
-_This route is meant to be used with the `/create-profile/jobseeker/showcase` page for updating or creating data._
+_This route is meant to be used with the `/edit-profile/jobseeker/showcase` page for updating or creating data._
 
 **Endpoint**: `/api/jobseekers/account/showcase/upsert`
 
@@ -1006,7 +1006,7 @@ _Used to push jobseeker selected skills into the database_
 
 #### Delete Jobseeker Skill
 
-_This route is intended for use with the `/create-profile/jobseeker/showcase` page. It can be used anywhere skills
+_This route is intended for use with the `/edit-profile/jobseeker/showcase` page. It can be used anywhere skills
 needs unassociated with a jobseeker._
 
 **Endpoint**: `/api/skills/remove`
@@ -1053,7 +1053,7 @@ needs unassociated with a jobseeker._
 
 #### Jobseeker Video Delete
 
-_This route is meant to be used with the `/create-profile/jobseeker/showcase` page. It will set the jobseekers.video_url
+_This route is meant to be used with the `/edit-profile/jobseeker/showcase` page. It will set the jobseekers.video_url
 property to null and mark it for
 deletion in blob storage._
 
@@ -1085,7 +1085,7 @@ deletion in blob storage._
 
 #### Read Preferences
 
-_This route is intended to load the `/create-profile/jobseeker/preferences` page with preexisting data, if any_
+_This route is intended to load the `/edit-profile/jobseeker/preferences` page with preexisting data, if any_
 
 **Endpoint**: `/api/jobseekers/account/preferences/get/<userId>`
 
@@ -1111,7 +1111,7 @@ _This route is intended to load the `/create-profile/jobseeker/preferences` page
 
 #### Upsert Jobseeker Preferences
 
-_This is intended for use updating or creating Jobseeker preferences on the `/create-profile/jobseeker/preferences`
+_This is intended for use updating or creating Jobseeker preferences on the `/edit-profile/jobseeker/preferences`
 page_
 
 **Endpoint**: `/api/jobseekers/account/preferences/upsert`
@@ -1154,7 +1154,7 @@ page_
 
 #### Read Jobseeker Disclosures
 
-_Intended to load Jobseeker disclosures data in `/create-profile/jobseeker/disclosures` page, if any._
+_Intended to load Jobseeker disclosures data in `/edit-profile/jobseeker/disclosures` page, if any._
 
 **Endpoint**: `/api/jobseekers/account/disclosures/get/<userId>`
 
@@ -1182,7 +1182,7 @@ _Intended to load Jobseeker disclosures data in `/create-profile/jobseeker/discl
 
 #### Upsert Disclosures
 
-_Intended to be used with the `/create-profile/jobseeker/disclosures` page to update or create disclosure data._
+_Intended to be used with the `/edit-profile/jobseeker/disclosures` page to update or create disclosure data._
 
 **Endpoint**: `/api/jobseekers/account/disclosures/upsert`
 
