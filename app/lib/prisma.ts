@@ -772,7 +772,7 @@ export async function bookmarkJobseeker(jobseekerId: string) {
   }
 }
 
-export async function unbookmarkJobseeker(jobseekerId: string) {
+export async function removeJobseekerBookmark(jobseekerId: string) {
   const session = await auth();
   if (!session?.user?.employeeIsApproved) {
     return NextResponse.json({ error: 'Access denied. Please check that you have been given approval by your coworkers or CFA Admin.' }, { status: 409 })
