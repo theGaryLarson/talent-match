@@ -12,13 +12,13 @@ export default function EmployerNameTitleTag(props: {
       <Avatar imgsrc={props.pfp} scale={0.69} />
       <div className="flex w-full flex-wrap items-center justify-between p-4">
         <h2 className="font-bold">
-          {props.name} | {props.title} | 
+          {props.name} | {props.title} |
           <span className="font-light"> {props.company}</span>
         </h2>
         <p>
           <Link
             className="text-[#1e88e5]"
-            href="/create-profile/employer/personal"
+            href="/edit-profile/employer/personal"
           >
             Edit My Profile
           </Link>{' '}
