@@ -14,6 +14,10 @@ import {
   setVideo,
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
@@ -71,6 +75,7 @@ export default function CreateJobseekerProfileIntroPage() {
       }
     };
     initializeFormFields();
+    dispatch(setPageSaved('video'));
     devLog(videoData);
   }, [session?.user?.id]);
 
@@ -79,6 +84,7 @@ export default function CreateJobseekerProfileIntroPage() {
   ) => {
     const { name, value } = e.target;
     console.log(name, value);
+    dispatch(setPageDirty('video'));
     const fieldName = name.substring(formNamePrefix.length);
     if (videoData.hasOwnProperty(fieldName)) {
       videoData[fieldName as keyof PostEmployerVideoDTO] = value;
@@ -106,6 +112,7 @@ export default function CreateJobseekerProfileIntroPage() {
 
       if (response.ok) {
         const result = await response.json();
+        dispatch(setPageSaved('video'));
         dispatch(setVideo(videoData));
         router.push('/edit-profile/employer/disclosures');
       } else {
