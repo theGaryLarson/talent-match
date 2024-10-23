@@ -121,7 +121,7 @@ export default function CreateJobseekerProfileShowcasePage() {
 
         dispatch(setShowcase(showcaseData));
 
-        router.push('/create-profile/jobseeker/preferences');
+        router.push('/edit-profile/jobseeker/preferences');
       } else {
         const errorMessage = `Failed to submit showcase info. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -289,7 +289,7 @@ export default function CreateJobseekerProfileShowcasePage() {
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/create-profile/jobseeker/work-experience');
+                router.push('/edit-profile/jobseeker/work-experience');
               }}
             >
               Previous

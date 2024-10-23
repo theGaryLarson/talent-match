@@ -145,7 +145,7 @@ export default function AccountMenu() {
         )}
 
         {role?.includes(Role.JOBSEEKER) || role?.includes(Role.ADMIN) ? (
-          <Link href={'/create-profile/jobseeker/introduction'}>
+          <Link href={'/edit-profile/jobseeker/introduction'}>
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <EditIcon fontSize="small" />
@@ -158,7 +158,7 @@ export default function AccountMenu() {
         )}
 
         {role?.includes(Role.EMPLOYER) || role?.includes(Role.ADMIN) ? (
-          <Link href="/create-profile/employer/personal">
+          <Link href="/edit-profile/employer/personal">
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <EditIcon fontSize="small" />

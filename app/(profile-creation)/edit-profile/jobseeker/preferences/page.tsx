@@ -120,7 +120,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
 
         dispatch(setPreferences(preferencesData));
 
-        router.push('/create-profile/jobseeker/disclosures');
+        router.push('/edit-profile/jobseeker/disclosures');
       } else {
         const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -246,7 +246,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/create-profile/jobseeker/showcase');
+                router.push('/edit-profile/jobseeker/showcase');
               }}
             >
               Previous

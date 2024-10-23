@@ -201,7 +201,7 @@ export default function CreateJobseekerProfileIntroPage() {
           image: introData.photoUrl,
         });
 
-        router.push('/create-profile/jobseeker/education');
+        router.push('/edit-profile/jobseeker/education');
       } else {
         const errorMessage = `Failed to submit basic info. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);

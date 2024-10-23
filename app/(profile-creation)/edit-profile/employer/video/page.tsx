@@ -107,7 +107,7 @@ export default function CreateJobseekerProfileIntroPage() {
       if (response.ok) {
         const result = await response.json();
         dispatch(setVideo(videoData));
-        router.push('/create-profile/employer/disclosures');
+        router.push('/edit-profile/employer/disclosures');
       } else {
         const errorData = await response.json();
       }

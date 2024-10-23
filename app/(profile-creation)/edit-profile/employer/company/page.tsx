@@ -415,9 +415,9 @@ export default function CreateEmployerCompanyInfoPage() {
         }
 
         if (typeof selectCompanyDropdownData === 'object') {
-          router.push('/create-profile/employer/disclosures');
+          router.push('/edit-profile/employer/disclosures');
         } else {
-          router.push('/create-profile/employer/about');
+          router.push('/edit-profile/employer/about');
         }
       } else {
         const errorData = await response.json();

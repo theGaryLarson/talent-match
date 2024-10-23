@@ -323,7 +323,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       }
 
       const result = await response.json();
-      router.push('/create-profile/jobseeker/showcase');
+      router.push('/edit-profile/jobseeker/showcase');
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
@@ -493,7 +493,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/create-profile/jobseeker/education');
+                router.push('/edit-profile/jobseeker/education');
               }}
             >
               Previous

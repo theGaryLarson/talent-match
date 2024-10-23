@@ -148,7 +148,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
         const errorMessage = `Failed to submit disclosure info. Status: ${response.status} - ${response.statusText}`;
         setError({ error: errorMessage });
       }
-      router.push('/create-profile/jobseeker/congratulations');
+      router.push('/edit-profile/jobseeker/congratulations');
     } catch (e: any) {
       setError({ error: `An unexpected error occurred: ${e.message}` });
     }
@@ -437,7 +437,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/create-profile/jobseeker/preferences');
+                router.push('/edit-profile/jobseeker/preferences');
               }}
             >
               Previous

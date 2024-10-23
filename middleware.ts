@@ -18,13 +18,13 @@ export default auth((req) => {
 
   const jobseekerRoutes = [
     // Routes for logged in users with JOBSEEKER role
-    '/create-profile/jobseeker/congratulations',
-    '/create-profile/jobseeker/disclosures',
-    '/create-profile/jobseeker/education',
-    '/create-profile/jobseeker/introduction',
-    '/create-profile/jobseeker/preferences',
-    '/create-profile/jobseeker/showcase',
-    '/create-profile/jobseeker/work-experience',
+    '/edit-profile/jobseeker/congratulations',
+    '/edit-profile/jobseeker/disclosures',
+    '/edit-profile/jobseeker/education',
+    '/edit-profile/jobseeker/introduction',
+    '/edit-profile/jobseeker/preferences',
+    '/edit-profile/jobseeker/showcase',
+    '/edit-profile/jobseeker/work-experience',
 
     '/services/jobseekers/dashboard',
     '/services/jobseekers/',
@@ -40,14 +40,14 @@ export default auth((req) => {
 
   const employerRoutes = [
     // Routes for logged in users with EMPLOYER role
-    '/create-profile/employer/personal',
-    '/create-profile/employer/company',
-    '/create-profile/employer/professional-info',
-    '/create-profile/employer/about',
-    '/create-profile/employer/disclosures',
-    '/create-profile/employer/mission',
-    '/create-profile/employer/video',
-    '/create-profile/employer/congratulations',
+    '/edit-profile/employer/personal',
+    '/edit-profile/employer/company',
+    '/edit-profile/employer/professional-info',
+    '/edit-profile/employer/about',
+    '/edit-profile/employer/disclosures',
+    '/edit-profile/employer/mission',
+    '/edit-profile/employer/video',
+    '/edit-profile/employer/congratulations',
 
     '/services/employers/dashboard',
     '/services/jobseekers/',
