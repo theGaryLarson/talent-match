@@ -1,4 +1,5 @@
 import {
+  Prisma,
   PrismaClient,
 } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
@@ -7,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { auth } from '@/auth';
 import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
 import Skills from '../ui/components/Skills';
+import { NextResponse } from 'next/server';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
@@ -96,7 +98,12 @@ export async function getJobListingById(joblistingId: string) {
         skills:true,
         industry_sectors:true,
         companies:true,
-        techArea:true
+        techArea:true,
+        jobseekersThatBookMarked:{
+          select:{
+            jobseeker_id:true
+          }
+        }
       },
     });
     return joblisting;
@@ -175,7 +182,62 @@ export async function ApplyToJob(jobPostingId:string) {
   }
 }
 
-
+export async function bookmarkJobPosting(jobPostId: string) {
+  const Session = await auth();
+  try {
+    if (!Session?.user.jobseekerId) {
+      throw new Error('Failed to delete job listing: jobseeker ID not found in session');
+    }
+    const savedJobPost = await prisma.jobseekers.update({
+      where: {
+        jobseeker_id:Session.user.jobseekerId
+      },
+      data: {
+        BookmarkedJobs:{
+          connect:{job_posting_id:jobPostId}
+        }
+      },
+    })
+    return savedJobPost;
+  } catch (e: any) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code == 'P2002') {
+        console.error(e)
+        return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
+      }
+      // Add specific Prisma errors as needed
+      console.error('Unexpected error:', e);
+      return NextResponse.json({ error: `Failed to bookmark job post.\n${e.message} ` }, { status: 500 });
+    }
+  } finally {
+    prisma.$disconnect()
+  }
+}
+export async function unbookmarkJobPosting(jobPostId: string) {
+  const Session = await auth();
+  try {
+    if (!Session?.user.jobseekerId) {
+      throw new Error('Failed to delete job listing: jobseeker ID not found in session');
+    }
+    const result = await prisma.jobseekers.update({
+      where: {
+        jobseeker_id: Session.user.jobseekerId
+      },
+      data: {
+        BookmarkedJobs:{
+          disconnect:{
+            job_posting_id:jobPostId
+          }
+        }
+      }
+    })
+    return result;
+  } catch (error) {
+    console.error(error)
+  } finally{
+    prisma.$disconnect();
+  }
+}
 export async function getAllJobPosts(){
   try {
     let results = prisma.job_postings.findMany();

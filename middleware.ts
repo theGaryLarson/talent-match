@@ -30,6 +30,8 @@ export default auth((req) => {
     '/services/jobseekers/',
     '/services/joblistings',
     '/api/joblistings/apply',
+    '/api/joblistings/bookmark/add/',
+    '/api/joblistings/bookmark/remove/',
 
     '/api/jobseekers/',
     '/api/edu-providers/',
