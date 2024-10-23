@@ -17,6 +17,10 @@ import {
   initialState,
   setShowcase,
 } from '@/lib/features/profileCreation/jobseekerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import { devLog } from '@/app/lib/utils';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
@@ -86,7 +90,7 @@ export default function CreateJobseekerProfileShowcasePage() {
           console.log('fetching from store');
         }
       };
-
+      dispatch(setPageSaved('showcase'));
       initializeFormFields();
     }
   }, [session?.user?.id]);
@@ -119,6 +123,7 @@ export default function CreateJobseekerProfileShowcasePage() {
         const result = await response.json();
         devLog(JSON.stringify(result, null, 2));
 
+        dispatch(setPageSaved('showcase'));
         dispatch(setShowcase(showcaseData));
 
         router.push('/edit-profile/jobseeker/preferences');
@@ -133,6 +138,7 @@ export default function CreateJobseekerProfileShowcasePage() {
 
   const handleResumeUpload = (url: string) => {
     // Update the local state with the uploaded image URL
+    dispatch(setPageDirty('showcase'));
     setResumeUrl(url);
   };
 
