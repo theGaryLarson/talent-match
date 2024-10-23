@@ -1,4 +1,6 @@
 import { getMyJobListings } from "@/app/lib/joblistings";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 export default async function EmployerRecentJobPosts() {
     //TODO add in dynamic data
@@ -46,11 +48,12 @@ function SingleJobPost(props:{jobtitle:string}) {
 }
 function AddJobLink(){
   return(
-    <div className="flex items-center justify-between bg-white p-2">
-      <div className="flex h-[17px] items-center justify-start gap-2">
-        <div className="font-['Roboto'] text-sm font-semibold leading-[16.80px] tracking-tight text-[#047f9c]">
-          Post a Job
-        </div>
+    <div className="flex items-center bg-white p-2">
+      <div className="flex h-[17px]">
+        <Link href={'/services/employers/dashboard/postjob'}className="text-sm font-semibold text-[#047f9c] flex items-center gap-1">
+        Post a Job
+          <PlusCircleIcon width={20}/>
+        </Link>
       </div>
     </div>
   );
