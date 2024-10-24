@@ -207,33 +207,6 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
     const projectIds = projects.map((p: ProjectExperiences) => p.projectId);
 
     await prisma.$transaction([
-      prisma.jobseeker_has_skills.deleteMany({ where: { jobseeker_id } }),
-      prisma.certificates.deleteMany({ where: { jobSeekerId: jobseeker_id } }),
-      prisma.jobseekers_private_data.deleteMany({ where: { jobseeker_id } }),
-      prisma.learner_proj_based_tech_assessment.deleteMany({
-        where: { jobseeker_id },
-      }),
-      prisma.project_has_skills.deleteMany({
-        where: {
-          proj_exp_id: { in: projectIds },
-        },
-      }),
-      prisma.projectExperiences.deleteMany({
-        where: { jobseekerId: jobseeker_id },
-      }),
-      prisma.workExperience.deleteMany({
-        where: { jobseekerId: jobseeker_id },
-      }),
-      prisma.jobseekers_education.deleteMany({
-        where: { jobseekerId: jobseeker_id },
-      }),
-      prisma.case_mgmt.deleteMany({ where: { jobseekerId: jobseeker_id } }),
-      prisma.bookmarkedJobseeker.deleteMany({
-        where: { jobseekerId: jobseeker_id },
-      }),
-      prisma.bookmarkedJobPosting.deleteMany({
-        where: { jobseekerId: jobseeker_id },
-      }),
       prisma.jobseekers.delete({ where: { jobseeker_id: jobseeker_id } }),
     ]);
 
