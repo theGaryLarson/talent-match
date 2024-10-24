@@ -152,7 +152,7 @@ export type PostCompanyTestimonialsDTO = {
 export type ReadCompanyTestimonialsDTO = {
   testimonyId: string;
   companyId?: string;
-  employerId?: string;
+  employerId?: string | null;
   text?: string;
   author?: string;
 };
@@ -168,7 +168,7 @@ export type ReadCompanySocialLinkDTO = {
   companySocialId?: string;
   socialPlatformId?: string;
   companyId?: string;
-  employerId?: string;
+  employerId?: string | null;
   socialUrl?: string;
   platform?: string;
   platformIconUrl?: string;
