@@ -911,6 +911,9 @@ export async function getEmployerById(employerId: string) {
             photo_url: true,
           },
         },
+        BookmarkedJobseeker:{select:{
+          jobseekerId:true
+        }}
       },
     });
 
