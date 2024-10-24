@@ -42,16 +42,16 @@ export const deleteEmployer = async (userId: string): Promise<void> => {
                 .map((role) => role.trim() as Role);
 
             // Remove the EMPLOYER role
-            const newRolesArray = userRolesArray.filter((role) => role !== Role.EMPLOYER);
+            const filteredRolesArray = userRolesArray.filter((role) => role !== Role.EMPLOYER);
 
-            if (newRolesArray.length === 0) {
+            if (filteredRolesArray.length === 0) {
                 // Delete the user if no roles are left
                 await prisma.user.delete({ where: { id: userId } });
             } else {
                 // Update the user's roles
                 await prisma.user.update({
                     where: { id: userId },
-                    data: { role: newRolesArray.join(',') },
+                    data: { role: filteredRolesArray.join(',') },
                 });
             }
         });
