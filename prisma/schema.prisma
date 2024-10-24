@@ -113,7 +113,7 @@ model CaseMgmt {
   adminId                 String     @map("cfa_admin_id") @db.UniqueIdentifier
   careePrepCompletionDate DateTime?  @db.DateTime
   cfa_admin               CfaAdmin   @relation(fields: [adminId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_admin1")
-  jobseekers              jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_case_mgmt_jobseeker1")
+  jobseekers              jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_case_mgmt_jobseeker1")
 
   @@index([adminId], map: "fk_case_mgmt_admin1_idx")
   @@index([jobseekerId], map: "fk_case_mgmt_jobseeker1_idx")
@@ -131,7 +131,7 @@ model certificates {
   issueDate     DateTime?  @map("issue_date") @db.DateTime
   expiryDate    DateTime?  @map("expiration_date") @db.DateTime
   description   String?    @db.NText
-  jobseekers    jobseekers @relation(fields: [jobSeekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_certificates_jobseeker1")
+  jobseekers    jobseekers @relation(fields: [jobSeekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_certificates_jobseeker1")
 
   @@index([jobSeekerId], map: "fk_certificates_jobseeker1_idx")
 }
@@ -179,10 +179,10 @@ model BookmarkedJobseeker {
   id          String     @id(clustered: false, map: "bookmarked_jobseekers_PRIMARY") @db.UniqueIdentifier
   jobseekerId String     @map("jobseeker_id") @db.UniqueIdentifier
   companyId   String     @map("company_id") @db.UniqueIdentifier
-  employerId  String     @map("employer_id") @db.UniqueIdentifier
+  employerId  String?    @map("employer_id") @db.UniqueIdentifier
   jobseeker   jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseekers1")
   company     companies  @relation(fields: [companyId], references: [company_id], onUpdate: NoAction, map: "fk_companies1")
-  employer    employers  @relation(fields: [employerId], references: [employer_id], onUpdate: NoAction, map: "fk_employers1")
+  employer    employers? @relation(fields: [employerId], references: [employer_id], onUpdate: NoAction, onDelete: SetNull, map: "fk_employers1")
 
   @@map("bookmarked_jobseekers")
 }
@@ -203,25 +203,25 @@ model company_addresses {
 model company_social_links {
   social_media_id        String                 @id(clustered: false, map: "company_social_links_PRIMARY") @db.UniqueIdentifier
   company_id             String                 @db.UniqueIdentifier
-  employer_id            String                 @db.UniqueIdentifier
+  employer_id            String?                @db.UniqueIdentifier
   social_platform_id     String                 @db.UniqueIdentifier
   social_url             String                 @db.VarChar(255)
   companies              companies              @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_social_media_company_company1")
   social_media_platforms social_media_platforms @relation(fields: [social_platform_id], references: [social_platform_id], onUpdate: NoAction, map: "fk_social_media_company_social_media_platform1")
-  employers              employers              @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, map: "fk_social_media_employer_employer1")
+  employers              employers?             @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, onDelete: SetNull, map: "fk_social_media_employer_employer1")
 
   @@index([company_id], map: "company_social_links_fk_social_media_company_company1_idx")
   @@index([social_platform_id], map: "company_social_links_fk_social_media_company_social_media_platform1_idx")
 }
 
 model company_testimonials {
-  testimonial_id String    @id(clustered: false, map: "company_testimonials_PRIMARY") @db.UniqueIdentifier
-  company_id     String    @db.UniqueIdentifier
-  employer_id    String    @db.UniqueIdentifier
-  text           String    @db.VarChar(255)
-  author         String    @db.VarChar(255)
-  companies      companies @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_testimonials_company1")
-  employers      employers @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, map: "fk_company_testimonals_employer1")
+  testimonial_id String     @id(clustered: false, map: "company_testimonials_PRIMARY") @db.UniqueIdentifier
+  company_id     String     @db.UniqueIdentifier
+  employer_id    String?    @db.UniqueIdentifier
+  text           String     @db.VarChar(255)
+  author         String     @db.VarChar(255)
+  companies      companies  @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_testimonials_company1")
+  employers      employers? @relation(fields: [employer_id], references: [employer_id], onUpdate: Cascade, onDelete: SetNull, map: "fk_company_testimonals_employer1")
 
   @@index([company_id], map: "fk_company_testimonials_company1_idx")
 }
@@ -298,7 +298,7 @@ model job_postings {
   job_posting_id           String            @id(clustered: false, map: "job_postings_PRIMARY") @unique(map: "job_postings_job_listing_id_UNIQUE") @db.UniqueIdentifier
   company_id               String            @db.UniqueIdentifier
   location_id              String            @db.UniqueIdentifier
-  employer_id              String            @db.UniqueIdentifier
+  employer_id              String?           @db.UniqueIdentifier
   tech_area_id             String?           @db.UniqueIdentifier
   sector_id                String?           @db.UniqueIdentifier
   job_title                String            @db.VarChar(255)
@@ -316,10 +316,10 @@ model job_postings {
   assessment_url           String?           @db.VarChar(255)
   skills                   skills[]          @relation("JobPostingSkills") // Direct One-directional reference to skills to skills
   companies                companies         @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_job_postings_companies1")
-  employers                employers         @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, map: "fk_job_postings_employers1")
+  employers                employers?        @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, onDelete: SetNull, map: "fk_job_postings_employers1")
   techArea                 technology_areas? @relation(fields: [tech_area_id], references: [id], onUpdate: NoAction, map: "fk_job_postings_technology_areas1")
   company_addresses        company_addresses @relation(fields: location_id, references: [company_address_id], onUpdate: NoAction, map: "fk_job_postings_company_addresses1")
-  industry_sectors         industry_sectors? @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, map: "fk_job_postings_industry_sectors1")
+  industry_sectors         industry_sectors? @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, onDelete: NoAction, map: "fk_job_postings_industry_sectors1")
   jobseekersThatBookMarked jobseekers[]      @relation("BookMarkedJobs")
   applicants               jobseekers[]      @relation("AppliedJobs")
 
@@ -332,7 +332,7 @@ model job_postings {
 model jobseeker_has_skills {
   jobseeker_id String     @db.UniqueIdentifier
   skill_id     String     @db.UniqueIdentifier
-  jobseekers   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_has_skill_jobseeker1")
+  jobseekers   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_jobseeker_has_skill_jobseeker1")
   skills       skills     @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_jobseeker_has_skill_skill1")
 
   @@id([jobseeker_id, skill_id], map: "jobseeker_has_skills_PRIMARY", clustered: false)
@@ -341,43 +341,42 @@ model jobseeker_has_skills {
 }
 
 model jobseekers {
-  jobseeker_id                       String                               @id(clustered: false, map: "jobseekers_PRIMARY") @unique(map: "jobseekers_learner_id_UNIQUE") @db.UniqueIdentifier
-  user_id                            String                               @unique @db.UniqueIdentifier
-  targeted_pathway                   String?                              @db.UniqueIdentifier
-  is_enrolled_ed_program             Boolean                              @db.Bit
-  highest_level_of_study_completed   String?                              @db.VarChar(255)
-  current_grade_level                String?                              @db.VarChar(45)
-  current_enrolled_ed_program        String?                              @db.VarChar(255)
-  intern_hours_required              Int                                  @default(0, map: "DF__jobseeker__inter__6383C8BA") @db.SmallInt
-  intro_headline                     String?                              @db.VarChar(max)
-  current_job_title                  String?                              @db.VarChar(255)
-  resume_url                         String?                              @db.VarChar(max)
-  years_work_exp                     Int?                                 @db.SmallInt
-  months_internship_exp              Int?                                 @db.SmallInt
-  portfolio_url                      String?                              @db.VarChar(255)
-  portfolio_password                 String?                              @db.NVarChar(255)
-  video_url                          String?                              @db.VarChar(255)
-  employment_type_sought             String?                              @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
-  is_marked_deletion                 DateTime?                            @db.DateTime
-  assignedPool                       String?                              @db.VarChar(5)
-  careerPrepComplete                 Boolean                              @default(false) @db.Bit
-  careerPrepTrackRecommendation      String?                              @db.VarChar(25)
-  createdAt                          DateTime                             @default(now()) @map("created_at")
-  updatedAt                          DateTime?                            @map("updated_at")
-  caseMgmt                           CaseMgmt[]
-  certificates                       certificates[]
-  jobseeker_has_skills               jobseeker_has_skills[]
-  pathways                           pathways?                            @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
-  users                              User                                 @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_learner_user1")
-  jobseekers_private_data            jobseekers_private_data[]
-  jobseekers_skill_gap_data          jobseekers_skill_gap_data[]
-  learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
-  project_experiences                ProjectExperiences[]
-  work_experiences                   WorkExperience[]
-  jobseeker_education                jobseekers_education[]
-  BookmarkedJobseeker                BookmarkedJobseeker[]
-  BookmarkedJobs                     job_postings[]                       @relation("BookMarkedJobs")
-  appliedJobs                        job_postings[]                       @relation("AppliedJobs")
+  jobseeker_id                     String                    @id(clustered: false, map: "jobseekers_PRIMARY") @unique(map: "jobseekers_learner_id_UNIQUE") @db.UniqueIdentifier
+  user_id                          String                    @unique @db.UniqueIdentifier
+  targeted_pathway                 String?                   @db.UniqueIdentifier
+  is_enrolled_ed_program           Boolean                   @db.Bit
+  highest_level_of_study_completed String?                   @db.VarChar(255)
+  current_grade_level              String?                   @db.VarChar(45)
+  current_enrolled_ed_program      String?                   @db.VarChar(255)
+  intern_hours_required            Int                       @default(0, map: "DF__jobseeker__inter__6383C8BA") @db.SmallInt
+  intro_headline                   String?                   @db.VarChar(max)
+  current_job_title                String?                   @db.VarChar(255)
+  resume_url                       String?                   @db.VarChar(max)
+  years_work_exp                   Int?                      @db.SmallInt
+  months_internship_exp            Int?                      @db.SmallInt
+  portfolio_url                    String?                   @db.VarChar(255)
+  portfolio_password               String?                   @db.NVarChar(255)
+  video_url                        String?                   @db.VarChar(255)
+  employment_type_sought           String?                   @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
+  is_marked_deletion               DateTime?                 @db.DateTime
+  assignedPool                     String?                   @db.VarChar(5)
+  careerPrepComplete               Boolean                   @default(false) @db.Bit
+  careerPrepTrackRecommendation    String?                   @db.VarChar(25)
+  createdAt                        DateTime                  @default(now()) @map("created_at")
+  updatedAt                        DateTime?                 @map("updated_at")
+  caseMgmt                         CaseMgmt[]
+  certificates                     certificates[]
+  jobseeker_has_skills             jobseeker_has_skills[]
+  pathways                         pathways?                 @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
+  users                            User                      @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_learner_user1")
+  jobseekers_private_data          jobseekers_private_data[]
+  // learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
+  project_experiences              ProjectExperiences[]
+  work_experiences                 WorkExperience[]
+  jobseeker_education              jobseekers_education[]
+  BookmarkedJobseeker              BookmarkedJobseeker[]
+  BookmarkedJobs                   job_postings[]            @relation("BookMarkedJobs")
+  appliedJobs                      job_postings[]            @relation("AppliedJobs")
 
   @@index([targeted_pathway], map: "jobseekers_fk_jobseeker_Pathways1_idx")
   @@index([user_id], map: "jobseekers_fk_learner_user1_idx")
@@ -394,7 +393,7 @@ model jobseekers_private_data {
   gender                       String     @default("undisclosed") @db.VarChar(45)
   race                         String     @default("undisclosed") @db.VarChar(45)
   ethnicity                    String     @default("undisclosed") @db.VarChar(45)
-  jobseekers                   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_user_learner_private_data_user1")
+  jobseekers                   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_user_learner_private_data_user1")
 
   @@index([jobseeker_id], map: "jobseekers_private_data_fk_user_learner_private_data_user1")
 }
@@ -416,34 +415,34 @@ model jobseekers_education {
   minor            String?       @db.NVarChar(45) // TODO: remove from table
   gpa              String?       @db.NVarChar(45)
   description      String?       @db.NText
-  jobseekers       jobseekers    @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseeker_education_jobseeker1")
-  eduProviders     edu_providers @relation(fields: [eduProviderId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_edu_institution1")
+  jobseekers       jobseekers    @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_jobseeker_education_jobseeker1")
+  eduProviders     edu_providers @relation(fields: [eduProviderId], references: [id], onUpdate: Cascade, map: "fk_jobseeker_education_edu_institution1")
   program          programs?     @relation(fields: [programId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_programs1")
 
   @@index([jobseekerId], map: "fk_jobseeker_education_jobseeker1_idx")
   @@index([eduProviderId], map: "fk_jobseeker_education_edu_institution1_idx")
 }
 
-model jobseekers_skill_gap_data {
-  jobseeker_skill_gap_data_id String     @id(clustered: false, map: "jobseekers_skill_gap_data_PRIMARY") @unique(map: "jobseekers_skill_gap_data_learner_skill_gap_data_id_UNIQUE") @db.UniqueIdentifier
-  jobseeker_id                String     @db.UniqueIdentifier
-  jobseekers                  jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_learner_skill_gap_data_learner1")
+// model jobseekers_skill_gap_data {
+//   jobseeker_skill_gap_data_id String     @id(clustered: false, map: "jobseekers_skill_gap_data_PRIMARY") @unique(map: "jobseekers_skill_gap_data_learner_skill_gap_data_id_UNIQUE") @db.UniqueIdentifier
+//   jobseeker_id                String     @db.UniqueIdentifier
+//   jobseekers                  jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_learner_skill_gap_data_learner1")
+//
+//   @@index([jobseeker_id], map: "jobseekers_skill_gap_data_fk_learner_skill_gap_data_learner1")
+// }
 
-  @@index([jobseeker_id], map: "jobseekers_skill_gap_data_fk_learner_skill_gap_data_learner1")
-}
-
-model learner_proj_based_tech_assessment {
-  learner_proj_based_tech_assessment_id String                      @id(clustered: false, map: "learner_proj_based_tech_assessment_PRIMARY") @unique(map: "learner_proj_based_tech_assessment_id_UNIQUE") @db.UniqueIdentifier
-  jobseeker_id                          String                      @db.UniqueIdentifier
-  proj_based_tech_assessment_id         String                      @db.UniqueIdentifier
-  attempt_date                          DateTime                    @db.DateTime
-  has_passed                            Boolean                     @db.Bit
-  proj_based_tech_assessments           proj_based_tech_assessments @relation(fields: [proj_based_tech_assessment_id], references: [proj_based_tech_assessment_id], onUpdate: NoAction, map: "fk_user_has_proj_based_tech_assessment_proj_based_tech_asse1")
-  jobseekers                            jobseekers                  @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_user_has_proj_based_tech_assessment_user1")
-
-  @@index([proj_based_tech_assessment_id], map: "learner_proj_based_tech_assessment_fk_user_has_proj_based_tech_assessment_proj_based_tech_as_idx")
-  @@index([jobseeker_id], map: "learner_proj_based_tech_assessment_fk_user_has_proj_based_tech_assessment_user1_idx")
-}
+// model learner_proj_based_tech_assessment {
+//   learner_proj_based_tech_assessment_id String                      @id(clustered: false, map: "learner_proj_based_tech_assessment_PRIMARY") @unique(map: "learner_proj_based_tech_assessment_id_UNIQUE") @db.UniqueIdentifier
+//   jobseeker_id                          String                      @db.UniqueIdentifier
+//   proj_based_tech_assessment_id         String                      @db.UniqueIdentifier
+//   attempt_date                          DateTime                    @db.DateTime
+//   has_passed                            Boolean                     @db.Bit
+//   proj_based_tech_assessments           proj_based_tech_assessments @relation(fields: [proj_based_tech_assessment_id], references: [proj_based_tech_assessment_id], onUpdate: NoAction, map: "fk_user_has_proj_based_tech_assessment_proj_based_tech_asse1")
+//   jobseekers                            jobseekers                  @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, map: "fk_user_has_proj_based_tech_assessment_user1")
+//
+//   @@index([proj_based_tech_assessment_id], map: "learner_proj_based_tech_assessment_fk_user_has_proj_based_tech_assessment_proj_based_tech_as_idx")
+//   @@index([jobseeker_id], map: "learner_proj_based_tech_assessment_fk_user_has_proj_based_tech_assessment_user1_idx")
+// }
 
 model pathway_has_skills {
   pathway_id String   @db.UniqueIdentifier
@@ -479,12 +478,12 @@ model pathways {
 }
 
 model proj_based_tech_assessments {
-  proj_based_tech_assessment_id      String                               @id(clustered: false, map: "proj_based_tech_assessments_PRIMARY") @unique(map: "proj_based_tech_assessments_proj_based_tech_assessment_id_UNIQUE") @db.UniqueIdentifier
-  pathway_id                         String                               @db.UniqueIdentifier
-  url                                String                               @db.VarChar(255)
-  title                              String                               @db.VarChar(255)
-  learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
-  pathways                           pathways                             @relation(fields: [pathway_id], references: [pathway_id], onUpdate: NoAction, map: "fk_proj_based_tech_assessments_Pathways1")
+  proj_based_tech_assessment_id String   @id(clustered: false, map: "proj_based_tech_assessments_PRIMARY") @unique(map: "proj_based_tech_assessments_proj_based_tech_assessment_id_UNIQUE") @db.UniqueIdentifier
+  pathway_id                    String   @db.UniqueIdentifier
+  url                           String   @db.VarChar(255)
+  title                         String   @db.VarChar(255)
+  // learner_proj_based_tech_assessment learner_proj_based_tech_assessment[]
+  pathways                      pathways @relation(fields: [pathway_id], references: [pathway_id], onUpdate: NoAction, map: "fk_proj_based_tech_assessments_Pathways1")
 
   @@index([pathway_id], map: "fk_proj_based_tech_assessments_Pathways1_idx")
 }
@@ -500,7 +499,7 @@ model ProjectExperiences {
   teamSize                 Int                  @map("team_size") @db.SmallInt
   repoUrl                  String?              @map("repo_url") @db.VarChar(255)
   demoUrl                  String?              @map("demo_url") @db.VarChar(255)
-  jobseekers               jobseekers           @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_project_experience_jobseeker1")
+  jobseekers               jobseekers           @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_project_experience_jobseeker1")
   project_has_skills       project_has_skills[]
 
   @@index([jobseekerId], map: "project_experiences_fk_project_experience_jobseeker1_idx")
@@ -510,7 +509,7 @@ model ProjectExperiences {
 model project_has_skills {
   proj_exp_id         String             @db.UniqueIdentifier
   skill_id            String             @db.UniqueIdentifier
-  project_experiences ProjectExperiences @relation(fields: [proj_exp_id], references: [projectId], onUpdate: NoAction, map: "fk_project_experience_has_skill_project_experience1")
+  project_experiences ProjectExperiences @relation(fields: [proj_exp_id], references: [projectId], onUpdate: NoAction, onDelete: Cascade, map: "fk_project_experience_has_skill_project_experience1")
   skills              skills             @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_project_experience_has_skill_skill1")
 
   @@id([proj_exp_id, skill_id], map: "project_has_skills_PRIMARY", clustered: false)
@@ -650,7 +649,7 @@ model WorkExperience {
   startDate        DateTime          @map("start_date") @db.DateTime
   endDate          DateTime?         @map("end_date") @db.DateTime
   responsibilities String            @db.NText
-  jobseekers       jobseekers        @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_work_experience_jobseeker1")
+  jobseekers       jobseekers        @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_work_experience_jobseeker1")
   techArea         technology_areas? @relation(fields: [techAreaId], references: [id], onUpdate: NoAction, map: "fk_work_experiences_technology_areas1")
   industrySector   industry_sectors? @relation(fields: [sectorId], references: [industry_sector_id], onUpdate: NoAction, map: "fk_work_eperiences_industry_sectors1")
 
