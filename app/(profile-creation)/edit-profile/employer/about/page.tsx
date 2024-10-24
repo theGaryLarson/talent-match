@@ -17,6 +17,10 @@ import {
   setAbout,
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
@@ -72,6 +76,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
         } else {
           console.log('fetching from redux store');
         }
+        dispatch(setPageSaved('about'));
       }
       // if (session && status === 'authenticated') {
       //   updateSession();
@@ -85,6 +90,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
+    dispatch(setPageDirty('about'));
     console.log(name, value);
     const fieldName = name.substring(formNamePrefix.length);
     if (aboutData.hasOwnProperty(fieldName)) {
@@ -114,6 +120,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
 
       if (response.ok) {
         const result = await response.json();
+        dispatch(setPageSaved('about'));
         dispatch(setAbout(aboutData));
         router.push('/edit-profile/employer/mission');
       } else {

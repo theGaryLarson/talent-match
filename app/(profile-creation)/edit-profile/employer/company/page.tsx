@@ -38,6 +38,10 @@ import {
   setCompany,
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
@@ -193,6 +197,7 @@ export default function CreateEmployerCompanyInfoPage() {
     };
 
     initializeFormFields();
+    dispatch(setPageSaved('company'));
   }, [session?.user.id, pathname]);
 
   useEffect(() => {
@@ -247,7 +252,9 @@ export default function CreateEmployerCompanyInfoPage() {
         });
       }
     }
-
+    if (prevSelectCompanyDropdownData.current !== selectCompanyDropdownData) {
+      dispatch(setPageDirty('company'));
+    }
     // Update the previous value
     prevSelectCompanyDropdownData.current = selectCompanyDropdownData;
   }, [selectCompanyDropdownData, pathname]);
@@ -259,6 +266,7 @@ export default function CreateEmployerCompanyInfoPage() {
     console.log(name, value);
     const fieldName = name.substring(formNamePrefix.length);
     console.log(fieldName);
+    dispatch(setPageDirty('company'));
     if (companyData.hasOwnProperty(fieldName)) {
       setCompanyData((prevState) => ({
         ...companyData,
@@ -284,6 +292,7 @@ export default function CreateEmployerCompanyInfoPage() {
     e: SyntheticEvent<Element, Event>,
     val: string | ReadAddressDTO | null,
   ) => {
+    dispatch(setPageDirty('company'));
     console.log('handleAddressSelection');
     if (val && typeof val === 'object' && 'zip' in val) {
       setSelectedWorkLocation((prevState) => ({
@@ -314,6 +323,7 @@ export default function CreateEmployerCompanyInfoPage() {
   };
 
   const handleImageUpload = (url: string) => {
+    dispatch(setPageDirty('company'));
     // Update companyData.logoUrl in all cases
     setCompanyData((prevState) => ({
       ...prevState,
@@ -419,6 +429,8 @@ export default function CreateEmployerCompanyInfoPage() {
         } else {
           router.push('/edit-profile/employer/about');
         }
+
+        dispatch(setPageSaved('company'));
       } else {
         const errorData = await response.json();
       }

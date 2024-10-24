@@ -18,6 +18,10 @@ import {
   setMission,
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
@@ -75,6 +79,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
       }
     };
     initializeFormFields();
+    dispatch(setPageSaved('mission'));
     devLog(missionData);
   }, [session?.user?.id]);
 
@@ -83,6 +88,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
   ) => {
     const { name, value } = e.target;
     console.log(name, value);
+    dispatch(setPageDirty('mission'));
     const fieldName = name.substring(formNamePrefix.length);
     console.log('fieldName', fieldName)
     if (missionData.hasOwnProperty(fieldName)) {
@@ -111,6 +117,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
 
       if (response.ok) {
         const result = await response.json();
+        dispatch(setPageSaved('mission'));
         dispatch(setMission(missionData));
         router.push('/edit-profile/employer/video');
       } else {

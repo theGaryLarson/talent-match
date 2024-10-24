@@ -24,6 +24,10 @@ import {
   setDisclosures,
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -99,6 +103,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
       }
     };
     initializeFormFields();
+    dispatch(setPageSaved('disclosures'));
     devLog(disclosuresData);
   }, [session?.user?.id, pathname]);
 
@@ -107,6 +112,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   ) => {
     const { name, value } = e.target;
     devLog(name, value);
+    dispatch(setPageDirty('disclosures'));
     const fieldName = name.substring(formNamePrefix.length);
 
     let updatedValue: any = value; // Declare a flexible type for the updated value
@@ -159,6 +165,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
 
         if (response.ok) {
           const result = await response.json();
+          dispatch(setPageSaved('disclosures'));
           dispatch(setDisclosures(disclosuresData));
           router.push('/edit-profile/employer/congratulations');
         } else {

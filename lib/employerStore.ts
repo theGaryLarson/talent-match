@@ -3,6 +3,7 @@ import { Middleware } from '@reduxjs/toolkit';
 import { useMemo } from 'react';
 import { configureStore } from '@reduxjs/toolkit'
 import employerReducer, { EmployerState } from './features/profileCreation/employerSlice'
+import saveReducer, { SaveState } from './features/profileCreation/saveSlice'
 
 interface PreloadedState {
     employer: EmployerState,
@@ -13,6 +14,7 @@ interface PreloadedState {
 export const makeStore = (preloadedState?:PreloadedState) => configureStore({
     reducer: {
         employer: employerReducer,
+        save: saveReducer,
     },
     preloadedState,
     devTools: process.env.NODE_ENV !== 'production',

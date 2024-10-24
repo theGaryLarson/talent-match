@@ -41,6 +41,10 @@ import {
   initialState,
   setEducation,
 } from '@/lib/features/profileCreation/jobseekerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import dayjs, { Dayjs } from 'dayjs';
 import _ from 'lodash';
 
@@ -124,6 +128,7 @@ export default function CreateJobseekerProfileEducationPage() {
     setHighestLevelOfStudy(
       mapToEnumOrThrow(event.target.value, HighestCompletedEducationLevel),
     );
+    dispatch(setPageDirty('education'));
   }
 
   function addNewLicense() {
@@ -132,6 +137,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...data,
       licenses: [...data.licenses, newLicenseData],
     });
+    dispatch(setPageDirty('education'));
   }
 
   function removeLicense(byUid: string) {
@@ -139,6 +145,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...data,
       licenses: data.licenses.filter(({ certId: uid }) => uid !== byUid),
     });
+    dispatch(setPageDirty('education'));
   }
 
   function addNewProjectExperience() {
@@ -150,6 +157,7 @@ export default function CreateJobseekerProfileEducationPage() {
         newProjectExperienceData,
       ],
     });
+    dispatch(setPageDirty('education'));
   }
 
   function removeProjectExperience(byUid: string) {
@@ -159,6 +167,7 @@ export default function CreateJobseekerProfileEducationPage() {
         ({ projectId: uid }) => uid !== byUid,
       ),
     });
+    dispatch(setPageDirty('education'));
   }
 
   function addNewEducation() {
@@ -167,6 +176,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...data,
       educations: [...data.educations, newEducationData],
     });
+    dispatch(setPageDirty('education'));
   }
 
   function removeEducation(byUid: string) {
@@ -174,6 +184,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...data,
       educations: data.educations.filter(({ id: uid }) => uid !== byUid),
     });
+    dispatch(setPageDirty('education'));
   }
 
   const handleUpdate = useCallback((key: string, value: any) => {
@@ -181,6 +192,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...prevData,
       [key]: value,
     }));
+    dispatch(setPageDirty('education'));
   }, []);
 
   useEffect(() => {
@@ -297,7 +309,7 @@ export default function CreateJobseekerProfileEducationPage() {
           devLog('fetching from store');
         }
       };
-
+      dispatch(setPageSaved('education'));
       initializeFormFields();
     }
   }, [session?.user?.id]);
@@ -387,6 +399,7 @@ export default function CreateJobseekerProfileEducationPage() {
         const data = await response.json();
         devLog(JSON.stringify(data, null, 2));
 
+        dispatch(setPageSaved('education'));
         dispatch(setEducation(educationData));
 
         router.push('/edit-profile/jobseeker/work-experience');
