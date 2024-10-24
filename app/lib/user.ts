@@ -168,7 +168,7 @@ export async function unflagDeletion() {
         is_marked_deletion: null,
       },
     });
-    // return NextResponse.json(`Successfully validated jobseeker profile.` , {status: 200});
+    return NextResponse.json(`Successfully validated jobseeker profile.` , {status: 200});
   } catch (e: any) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === 'P2025') {
