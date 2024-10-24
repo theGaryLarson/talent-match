@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {auth} from "@/auth";
 import {NextResponse} from "next/server";
-import {setPool} from "@/app/lib/jobseeker";
+import { setPoolWithSession } from "@/app/lib/jobseeker";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -188,7 +188,7 @@ export async function unflagDeletion() {
 export async function validateUserProfile() {
   const session = await auth();
   if (session?.user.roles.includes(Role.JOBSEEKER)) {
-    await setPool();
+    await setPoolWithSession();
     return Response.json(
         { success: true},
         {
