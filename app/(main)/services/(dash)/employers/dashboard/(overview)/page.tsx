@@ -26,7 +26,7 @@ export default async function Page() {
         pfp={session?.user.image ?? undefined}
       />
       <div className="flex flex-wrap justify-evenly gap-5">
-        {<ScoreCard title="Saved Candidates" val={3} />}
+        {<ScoreCard title="Saved Candidates" val={proInfo.BookmarkedJobseeker.length} />}
         {<ScoreCard title="Job Applications " val={5} />}
       </div>
       <EmployerRecentJobPosts/>

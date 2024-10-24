@@ -801,36 +801,33 @@ export async function removeJobseekerBookmark(jobseekerId: string) {
   }
 }
 
-export async function bookmarkJobPosting(jobPostId: string) {
+export async function getJobseekerBookmarkByCompany() {
   const session = await auth();
-  if (!session?.user?.jobseekerId) {
-    return NextResponse.json({ error: 'Access denied. Please create a jobseeker profile.' }, { status: 409 })
+try {
+  if(!session?.user.companyId){
+    throw new Error('Failed to get joseeker bookmarks, company id is not in session');
   }
-  try {
-    const savedJobPost = await prisma.jobseekers.update({
-      where: {
-        jobseeker_id:session.user.jobseekerId
-      },
-      data: {
-        BookmarkedJobs:{
-          connect:{job_posting_id:jobPostId}
-        }
-      },
-    })
-    return NextResponse.json({ success: true, savedJobPost }, { status: 200 })
-  } catch (e: any) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code == 'P2002') {
-        console.error(e)
-        return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
+  if(!session.user.employerId){
+    throw new Error('Failed to get joseeker bookmarks, employer id is not in session');
+  }
+  const results = await prisma.bookmarkedJobseeker.findMany({where:{
+    companyId:session.user.companyId
+  }, include:{
+    jobseeker:{
+      include:{
+        users:true,
+        jobseeker_has_skills:true,
+        jobseeker_education:true,
+        BookmarkedJobseeker:true, pathways:true, work_experiences:true
       }
-      // Add specific Prisma errors as needed
-      console.error('Unexpected error:', e);
-      return NextResponse.json({ error: `Failed to bookmark job post.\n${e.message} ` }, { status: 500 });
     }
-  } finally {
-    prisma.$disconnect()
-  }
+  }})
+  return results;
+} catch (error) {
+  console.error(error)
+}finally{
+  prisma.$disconnect()
+}
 }
 
 
@@ -914,6 +911,9 @@ export async function getEmployerById(employerId: string) {
             photo_url: true,
           },
         },
+        BookmarkedJobseeker:{select:{
+          jobseekerId:true
+        }}
       },
     });
 
