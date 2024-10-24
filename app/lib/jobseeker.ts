@@ -19,7 +19,6 @@ import {
 import { devLog } from '@/app/lib/utils';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
-import { removeRoleFromUser } from '@/app/lib/user';
 
 const prisma = getPrismaClient();
 
@@ -214,24 +213,24 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
     }
 
     // Split the comma-separated list of roles and check for specific roles
-    const userRolesArray: Role[] = user.roles
+    const userRolesArray: Role[] = user.role
       .split(',')
       .map((role: Role) => role);
 
-    // Get all roles from the Role enum
-    const allRoles: Role[] = Object.values(Role);
+    // Remove the JOBSEEKER role
+    const filteredRolesArray: Role[] = userRolesArray.filter((role) => role !== Role.JOBSEEKER);
 
-    // Check if any of the roles in userRolesArray match a defined role in the Role enum
-    const hasOtherRoles = userRolesArray.some((role: Role) =>
-      allRoles.includes(role),
-    );
-
-    if (!hasOtherRoles) {
-      // Delete User
+    if (filteredRolesArray.length === 0) {
+      // Delete the user if no roles are left
       await prisma.user.delete({ where: { id: userId } });
     } else {
-      // Update User's role field
-      await removeRoleFromUser(userId, Role.JOBSEEKER);
+      // Update the user's roles
+      await prisma.user.update({
+        where: { id: userId },
+        data: { role: filteredRolesArray.join(',') },
+      });
+
+
     }
   }
 };
