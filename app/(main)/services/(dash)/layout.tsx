@@ -4,6 +4,8 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { auth } from '@/auth';
+import { BookmarkIcon, BookmarkSquareIcon, PencilIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import Bookmark from '@/app/ui/components/Bookmark';
 export default async function layout({ children }: { children: React.ReactNode }) {
   let session = await auth()
   console.log(session)
@@ -37,12 +39,12 @@ export default async function layout({ children }: { children: React.ReactNode }
           href="/services/employers/dashboard/savedcandidates"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
-          <FolderOutlinedIcon />
+          <BookmarkIcon width={24}/>
           Saved Candidates
         </Link>
         <Link
           href="/services/employers/dashboard"
-          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
+          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200 REPLACE-BEFORE-RELEASE"
         >
           <EmailOutlinedIcon />
           Inbox
@@ -51,7 +53,7 @@ export default async function layout({ children }: { children: React.ReactNode }
           href="/services/employers/dashboard/postjob"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
         >
-          <EmailOutlinedIcon />
+          <PencilSquareIcon width={24}/>
           Post a job
         </Link>
       </div>

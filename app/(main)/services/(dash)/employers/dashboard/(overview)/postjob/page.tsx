@@ -62,15 +62,15 @@ export default function Page() {
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className='space-y-3'>
       {/* Job Title */}
-      <div>
+      <div className="grid grid-cols-1">
         <label htmlFor="job_title">Job Title</label>
         <input type="text" name="job_title" required />
       </div>
 
       {/* Job Description */}
-      <div className="flex">
+      <div className="grid grid-cols-1">
         <label htmlFor="job_description">Job Description</label>
         <textarea name="job_description" required />
       </div>
@@ -139,7 +139,7 @@ export default function Page() {
       </div>
 
       {/* Salary Range */}
-      <div>
+      <div className="grid grid-cols-1">
         <label htmlFor="salary_range">Salary Range</label>
         <input type="text" name="salary_range" required />
       </div>
@@ -147,33 +147,35 @@ export default function Page() {
       {/* County */}
 
       {/* ZIP Code */}
-      <div>
-        <label htmlFor="zip">ZIP Code</label>
+      <div className="grid grid-cols-1">
+        <label htmlFor="zip" >ZIP Code</label>
         <input type="text" name="zip" required />
       </div>
       {/* Unpublish Date */}
-      <div>
+      <div className="grid grid-cols-1">
         <label htmlFor="unpublish_date">Unpublish Date</label>
-        <input type="date" name="unpublish_date" />
+        <input type="date" name="unpublish_date" min={new Date().toISOString().split("T")[0]}/>
       </div>
 
       {/* Job Post URL */}
-      <div>
+      <div className="grid grid-cols-1">
         <label htmlFor="job_post_url">Job Post URL</label>
         <input type="text" name="job_post_url" />
       </div>
 
       {/* Assessment URL */}
-      <div>
+      <div >
         <label htmlFor="assessment_url">Assessment URL</label>
         <input type="text" name="assessment_url" />
       </div>
 
       {/* Skills */}
+      <div>
+        <label htmlFor="job-listing-skills">What skills are needed for this role?</label>
       <TagsWithAutocomplete
         apiSearchRoute="/api/skills/search/"
-        fieldLabel="Select your skills *"
-        id="profile-creation-showcase-skills"
+        fieldLabel="Select the top 5 skills"
+        id="job-listing-skills"
         maxTags={5}
         searchingText="Searching..."
         noResultsText="No skills found..."
@@ -188,7 +190,7 @@ export default function Page() {
         getTagLink={(option: SkillDTO) => option.skill_info_url}
       />
       <p>Select your top 5 skills from your skills list</p>
-
+</div>
       {/* Submit Button */}
       <div>
         <button type="submit">Create Job Listing</button>
