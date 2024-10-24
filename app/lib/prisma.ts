@@ -370,6 +370,13 @@ export const jobSeekerCardViewSelect = {
       pathway_title: true,
     },
   },
+  BookmarkedJobseeker: {
+    select: {
+      jobseekerId: true,
+      companyId: true,
+      employerId: true,
+    },
+  },
   work_experiences: {
     select: {
       industrySector: {
@@ -655,11 +662,41 @@ export async function bookmarkJobseeker(jobseekerId: string) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code == 'P2002') {
         console.error(e)
+        console.log(jobseekerId, session.user.employerId, session.user.companyId )
         return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
       }
       // Add specific Prisma errors as needed
       console.error('Unexpected error:', e);
       return NextResponse.json({ error: `Failed to bookmark jobseeker.\n${e.message} ` }, { status: 500 });
+    }
+  } finally {
+    prisma.$disconnect()
+  }
+}
+
+export async function removeJobseekerBookmark(jobseekerId: string) {
+  const session = await auth();
+  if (!session?.user?.employeeIsApproved) {
+    return NextResponse.json({ error: 'Access denied. Please check that you have been given approval by your coworkers or CFA Admin.' }, { status: 409 })
+  }
+  try {
+    const removedJobseeker = await prisma.bookmarkedJobseeker.deleteMany({
+      where: {
+        jobseekerId: jobseekerId,
+        employerId: session.user.employerId!,
+        companyId: session.user.companyId!,
+      }
+    });
+    return NextResponse.json({ success: true, removedJobseeker }, { status: 200 })
+  } catch (e: any) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code == 'P2002') {
+        console.error(e)
+        return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
+      }
+      // Add specific Prisma errors as needed
+      console.error('Unexpected error:', e);
+      return NextResponse.json({ error: `Failed to unbookmark jobseeker.\n${e.message} ` }, { status: 500 });
     }
   } finally {
     prisma.$disconnect()

@@ -139,7 +139,7 @@ export default function JobseekerSignupFinishPage() {
                     jobseekerId: uuidv4(),
                     roles: rolesArray,
                   });
-                  router.push('/create-profile/jobseeker/introduction');
+                  router.push('/edit-profile/jobseeker/introduction');
               }
             }}
               className="mx-auto my-8 rounded-full focus:ring-0"

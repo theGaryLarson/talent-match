@@ -7,8 +7,7 @@ export default auth((req) => {
   const userRoles = req.auth?.user?.roles || [];
   const jobseekerId = req.auth?.user?.jobseekerId;
 
-  const guestRoutes = [
-    // Routes for logged in users with GUEST role
+  const guestRoutes = [ // Routes for logged in users with GUEST role
     '/signup',
     '/signup/jobseeker',
     '/signup/employer',
@@ -16,15 +15,14 @@ export default auth((req) => {
     '/api/users/',
   ];
 
-  const jobseekerRoutes = [
-    // Routes for logged in users with JOBSEEKER role
-    '/create-profile/jobseeker/congratulations',
-    '/create-profile/jobseeker/disclosures',
-    '/create-profile/jobseeker/education',
-    '/create-profile/jobseeker/introduction',
-    '/create-profile/jobseeker/preferences',
-    '/create-profile/jobseeker/showcase',
-    '/create-profile/jobseeker/work-experience',
+  const jobseekerRoutes = [ // Routes for logged in users with JOBSEEKER role
+    '/edit-profile/jobseeker/congratulations',
+    '/edit-profile/jobseeker/disclosures',
+    '/edit-profile/jobseeker/education',
+    '/edit-profile/jobseeker/introduction',
+    '/edit-profile/jobseeker/preferences',
+    '/edit-profile/jobseeker/showcase',
+    '/edit-profile/jobseeker/work-experience',
 
     '/services/jobseekers/dashboard',
     '/services/jobseekers/',
@@ -38,16 +36,15 @@ export default auth((req) => {
     '/api/users/avatar/upload',
   ];
 
-  const employerRoutes = [
-    // Routes for logged in users with EMPLOYER role
-    '/create-profile/employer/personal',
-    '/create-profile/employer/company',
-    '/create-profile/employer/professional-info',
-    '/create-profile/employer/about',
-    '/create-profile/employer/disclosures',
-    '/create-profile/employer/mission',
-    '/create-profile/employer/video',
-    '/create-profile/employer/congratulations',
+  const employerRoutes = [ // Routes for logged in users with EMPLOYER role
+    '/edit-profile/employer/personal',
+    '/edit-profile/employer/company',
+    '/edit-profile/employer/professional-info',
+    '/edit-profile/employer/about',
+    '/edit-profile/employer/disclosures',
+    '/edit-profile/employer/mission',
+    '/edit-profile/employer/video',
+    '/edit-profile/employer/congratulations',
 
     '/services/employers/dashboard',
     '/services/jobseekers/',
@@ -62,8 +59,7 @@ export default auth((req) => {
     '/api/postal-geo-data/zip/search',
   ];
 
-  const publicRoutes = [
-    // Routes for anyone, logged in or not
+  const publicRoutes = [ // Routes for anyone, logged in or not
     '/',
     '/underconstruction',
 
@@ -82,19 +78,13 @@ export default auth((req) => {
   ];
 
   function userIsGuest() {
-    return userRoles.includes(
-      Role.GUEST,
-    ) /* || userRoles.includes(Role.ADMIN)*/;
+    return userRoles.includes(Role.GUEST) || userRoles.includes(Role.ADMIN);
   }
   function userIsJobseeker() {
-    return userRoles.includes(
-      Role.JOBSEEKER,
-    ) /* || userRoles.includes(Role.ADMIN)*/;
+    return userRoles.includes(Role.JOBSEEKER) || userRoles.includes(Role.ADMIN);
   }
   function userIsEmployer() {
-    return userRoles.includes(
-      Role.EMPLOYER,
-    ) /* || userRoles.includes(Role.ADMIN)*/;
+    return userRoles.includes(Role.EMPLOYER) || userRoles.includes(Role.ADMIN);
   }
 
   function pathIsGuestRoute() {
@@ -118,15 +108,15 @@ export default auth((req) => {
   // SPECIFIC REDIRECTS ------------ Handling special cases
 
   if (!req.auth && pathname === '/signout') {
-    // If you're at signout and logged out, reroute to the main page
-    return NextResponse.redirect(homeUrl);
-  } else if (req.auth && pathname === '/signin') {
-    // If you're at signin and logged in
-    if (userRoles.includes(Role.GUEST)) {
-      // If you're signed in and haven't picked a role, you gotta
+    return NextResponse.redirect(homeUrl); // If you're at signout and logged out, reroute to the main page
+  }
+  else if (req.auth && pathname === '/signin') {
+    if (userRoles.includes(Role.GUEST)) { // If you're signed in and haven't picked a role, you gotta
       return NextResponse.redirect(new URL('/signup', req.nextUrl.origin));
-    } else return NextResponse.redirect(homeUrl); // Everyone else, reroute to the main page after signin
-  } else if (!req.auth && pathname.startsWith('/services/jobseekers/')) {
+    }
+    else return NextResponse.redirect(homeUrl); // Everyone else, reroute to the main page after signin
+  }
+  else if (!req.auth && pathname.startsWith('/services/jobseekers/')) {
     // Caught someone! Create account to view jobseeker
     return NextResponse.redirect(new URL('/signin', req.nextUrl.origin));
   }
@@ -138,57 +128,49 @@ export default auth((req) => {
   }
 
   // ROLE BASED ROUTING ------------ Check most permissive roles first, least permissive roles last
-  else if (userIsEmployer()) {
-    // Route checking for employer routes
+  
+  else if (userRoles.includes(Role.ADMIN)) { // Route checking for ADMIN routes
+    console.log('Admin role recognized! *Do not* use ADMIN to test other roles!!')
+    return NextResponse.next();
+  }
+
+  else if (userIsEmployer()) { // Route checking for EMPLOYER routes
     if (pathIsEmployerRoute()) return NextResponse.next();
     else {
-      console.log(
-        'Access denied: Employer role does not have permission to access - ' +
-          pathname,
-      );
+      console.log('Access denied: Employer role does not have permission to access - ' + pathname);
       return NextResponse.redirect(homeUrl);
     }
-  } else if (userIsJobseeker()) {
-    // Route checking for jobseeker routes
+  }
+
+  else if (userIsJobseeker()) { // Route checking for JOBSEEKER routes
     if (pathIsJobseekerRoute()) {
-      if (
-        pathname != '/services/jobseekers/dashboard' && // allow dashboard
-        pathname.startsWith('/services/jobseekers/')
-      ) {
-        // Jobseekers can only access their own profile
+      if ( pathname != '/services/jobseekers/dashboard' && // allow dashboard
+           pathname.startsWith('/services/jobseekers/') ) {
+        
         const requestedId = pathname.replace('/services/jobseekers/', '');
-        if (requestedId != jobseekerId) {
-          console.log(
-            'Access denied: Jobseeker can only access their own profile',
-          );
+        if (requestedId != jobseekerId) { // Jobseekers can only access their own profile
+          console.log('Access denied: Jobseeker can only access their own profile');
           return NextResponse.redirect(homeUrl);
         }
       }
       return NextResponse.next();
     } else {
-      console.log(
-        'Access denied: Jobseeker role does not have permission to access - ' +
-          pathname,
-      );
+      console.log('Access denied: Jobseeker role does not have permission to access - ' + pathname);
       return NextResponse.redirect(homeUrl);
     }
-  } else if (userIsGuest()) {
-    // Route checking for guest routes
+  }
+
+  else if (userIsGuest()) { // Route checking for GUEST routes
     if (pathIsGuestRoute()) return NextResponse.next();
     else {
-      console.log(
-        'Access denied: User does not have permission to access - ' + pathname,
-      );
+      console.log('Access denied: User does not have permission to access - ' + pathname);
       return NextResponse.redirect(homeUrl);
     }
   }
 
   // FAILED ALL CHECKS, REDIRECT HOME ------------ Do not pass GO, do not collect $200
   else {
-    console.log(
-      "Access denied: User's role does not have permission to access - " +
-        pathname,
-    );
+    console.log("Access denied: User's role does not have permission to access - " + pathname);
     return NextResponse.redirect(homeUrl);
   }
 });
@@ -201,7 +183,6 @@ export default auth((req) => {
  * - favicon.ico, sitemap.xml, robots.txt (metadata files)
  */
 export const config = {
-  // TODO: route guard the API...
   matcher: [
     '/((?!api/auth|_next/static|_next/image|images|favicon.ico|ess).*)',
   ],
