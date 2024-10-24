@@ -50,12 +50,12 @@ export const generatePoolKey = (user: JobseekerPoolVars): string => {
 export const selectJobseekerPoolCategory = (user: JobseekerPoolVars): SelectJobseekerPoolCatResult  => {
   const key = generatePoolKey(user);
 
-  // Use the dictionary to find the corresponding pool and career prep recommendation, or default to 'Pool 3' with 'Standard' recommendation
+  // Use the dictionary to find the corresponding pool and career prep recommendation, or default to 'Pool 3' with no recommendation
   const { poolAssignment, careerPrepTrackRecommendation } = poolAssignmentMap[
     key
   ] || {
     poolAssignment: PoolCategories.NotJobReady,
-    careerPrepTrackRecommendation: CareerPrepTrack.STANDARD,
+    careerPrepTrackRecommendation: null,
   };
 
   devLog('assignUserToPool\n', {
