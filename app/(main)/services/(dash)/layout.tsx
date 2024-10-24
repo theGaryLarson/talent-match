@@ -33,7 +33,13 @@ export default async function layout({ children }: { children: React.ReactNode }
           <FolderOutlinedIcon />
           My Job Posts
         </Link>
-
+        <Link
+          href="/services/employers/dashboard/savedcandidates"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <FolderOutlinedIcon />
+          Saved Candidates
+        </Link>
         <Link
           href="/services/employers/dashboard"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
