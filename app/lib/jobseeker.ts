@@ -197,14 +197,6 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
       data: { is_marked_deletion: new Date() }, // TODO: set out cron job to delete users from db far enough to ensure grant reporting data is submitted.
     });
   } else {
-    // Delete related data in order to avoid foreign key constraints
-
-    // First, get project IDs associated with the jobseeker
-    const projects = await prisma.projectExperiences.findMany({
-      where: { jobseekerId: jobseeker_id },
-      select: { projectId: true },
-    });
-    const projectIds = projects.map((p: ProjectExperiences) => p.projectId);
 
     await prisma.$transaction([
       prisma.jobseekers.delete({ where: { jobseeker_id: jobseeker_id } }),
