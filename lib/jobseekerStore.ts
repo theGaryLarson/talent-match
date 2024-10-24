@@ -3,6 +3,7 @@ import { Middleware } from '@reduxjs/toolkit';
 import { useMemo } from 'react';
 import { configureStore } from '@reduxjs/toolkit'
 import jobseekerReducer, { JobseekerState } from './features/profileCreation/jobseekerSlice'
+import saveReducer, { SaveState } from './features/profileCreation/saveSlice'
 
 
 interface PreloadedState {
@@ -14,6 +15,7 @@ interface PreloadedState {
 export const makeStore = (preloadedState?:PreloadedState) => configureStore({
     reducer: {
         jobseeker: jobseekerReducer,
+        save: saveReducer,
     },
     preloadedState,
     devTools: process.env.NODE_ENV !== 'production',

@@ -26,6 +26,10 @@ import {
   initialState,
   setWorkExperience,
 } from '@/lib/features/profileCreation/jobseekerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import dayjs, { Dayjs } from 'dayjs';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
@@ -116,6 +120,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       ...data,
       workExperiences: [...data.workExperiences, newWorkExperienceData],
     });
+    dispatch(setPageDirty('work-experience'));
   }
 
   function removeWorkExperience(byUid: string) {
@@ -125,6 +130,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         ({ workId: uid }) => uid !== byUid,
       ),
     });
+    dispatch(setPageDirty('work-experience'));
   }
 
   function addNewInternshipExperience() {
@@ -136,6 +142,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         newInternshipExperienceData,
       ],
     });
+    dispatch(setPageDirty('work-experience'));
   }
 
   function removeInternshipExperience(byUid: string) {
@@ -145,6 +152,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         ({ workId: uid }) => uid !== byUid,
       ),
     });
+    dispatch(setPageDirty('work-experience'));
   }
 
   const handleUpdate = useCallback((key: string, value: any) => {
@@ -152,7 +160,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       ...prevData,
       [key]: value,
     }));
-  }, []);
+    dispatch(setPageDirty('work-experience'));
+  }, [dispatch]);
 
   const handleInputUpdate = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,8 +170,9 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         ...prevData,
         [name]: type === 'radio' ? value === 'yes' : value, // setting boolean values for radio type
       }));
+      dispatch(setPageDirty('work-experience'));
     },
-    [],
+    [dispatch],
   );
 
   useEffect(() => {
@@ -238,8 +248,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
           devLog('fetching from store');
         }
       };
-
       initializeFormFields();
+      dispatch(setPageSaved('work-experience'));
     }
   }, [session?.user?.id]);
 
@@ -305,6 +315,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       });
 
       if (response.ok) {
+        dispatch(setPageSaved('work-experience'));
         dispatch(
           setWorkExperience({
             ...workExperienceData,

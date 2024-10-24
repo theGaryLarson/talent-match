@@ -31,6 +31,10 @@ import {
   initialState,
   setDisclosures,
 } from '@/lib/features/profileCreation/jobseekerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
@@ -107,6 +111,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
         }
       };
 
+      dispatch(setPageSaved('disclosures'));
       initializeFormFields();
     }
   }, [session?.user?.id]);
@@ -143,6 +148,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
         },
       );
       if (response.ok) {
+        dispatch(setPageSaved('disclosures'));
         dispatch(setDisclosures(disclosuresData));
       } else {
         const errorMessage = `Failed to submit disclosure info. Status: ${response.status} - ${response.statusText}`;
@@ -204,6 +210,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 label="Gender"
                 value={gender}
                 onChange={(event) => {
+                  dispatch(setPageDirty('disclosures'));
                   setGender(event.target.value);
                 }}
                 options={[
@@ -224,6 +231,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 label="Veterans"
                 value={veteranStatus}
                 onChange={(event) => {
+                  dispatch(setPageDirty('disclosures'));
                   setVeteranStatus(event.target.value);
                 }}
                 options={[
@@ -240,6 +248,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 label="Ethnicity"
                 value={ethnicity}
                 onChange={(event) => {
+                  dispatch(setPageDirty('disclosures'));
                   setEthnicity(event.target.value);
                 }}
                 options={[
@@ -259,6 +268,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 label="Race"
                 value={race}
                 onChange={(event) => {
+                  dispatch(setPageDirty('disclosures'));
                   setRace(event.target.value);
                 }}
                 options={[
@@ -371,6 +381,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 onChange={(event) => {
                   setDisabilityStatus(event.target.value);
                   if (event.target.value !== 'yes') {
+                    dispatch(setPageDirty('disclosures'));
                     setDisabilityType(event.target.value);
                   }
                 }}
@@ -401,6 +412,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   label="Please specify: *"
                   value={disabilityType}
                   onChange={(event) => {
+                    dispatch(setPageDirty('disclosures'));
                     setDisabilityType(event.target.value);
                   }}
                   options={[

@@ -21,6 +21,10 @@ import {
   setPersonal,
   initialState,
 } from '@/lib/features/profileCreation/employerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 import { JsIntroDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
@@ -100,6 +104,7 @@ export default function CreateEmployerPersonalPage() {
     };
 
     initializeFormFields();
+    dispatch(setPageSaved('personal'));
     devLog(personalData);
   }, [session?.user?.id, pathname]);
 
@@ -108,6 +113,8 @@ export default function CreateEmployerPersonalPage() {
   ) => {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
+    dispatch(setPageDirty('personal'));
+
     console.log('name', name, 'value', value, 'fieldName,', fieldName);
     if (personalData.hasOwnProperty(fieldName)) {
       personalData[fieldName as keyof PostEmployerPersonalDTO] = value;
@@ -124,6 +131,7 @@ export default function CreateEmployerPersonalPage() {
       image: url,
     })
       .then(() => {
+        dispatch(setPageDirty('personal'));
         setAvatarUrl(url);
         setPersonalData((prevPersonalData) => ({
           ...prevPersonalData,
@@ -176,6 +184,8 @@ export default function CreateEmployerPersonalPage() {
             birthDate: birthdate?.toISOString() ?? '',
           }),
         );
+
+        dispatch(setPageSaved('personal'));
 
         if (session && status === 'authenticated') {
           await updateSessionProperties({

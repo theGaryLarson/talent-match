@@ -24,6 +24,10 @@ import {
   initialState,
   setPreferences,
 } from '@/lib/features/profileCreation/jobseekerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
 
@@ -85,7 +89,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
           devLog('fetching from store');
         }
       };
-
+      dispatch(setPageSaved('preferences'));
       initializeFormFields();
     }
   }, [session?.user?.id]);
@@ -118,6 +122,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
         const result = await response.json();
         devLog(JSON.stringify(result, null, 2));
 
+        dispatch(setPageSaved('preferences'));
         dispatch(setPreferences(preferencesData));
 
         router.push('/edit-profile/jobseeker/disclosures');

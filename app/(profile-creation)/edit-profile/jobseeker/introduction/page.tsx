@@ -24,6 +24,10 @@ import {
   setIntroduction,
   initialState,
 } from '@/lib/features/profileCreation/jobseekerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 
 const formNamePrefix = 'profile-creation-intro-';
@@ -118,6 +122,7 @@ export default function CreateJobseekerProfileIntroPage() {
         }
       };
 
+      dispatch(setPageSaved('introduction'));
       initializeFormFields();
     }
   }, [session?.user?.id, pathname]); //using pathname as a dependency to trigger useEffect when user clicks back button.
@@ -132,6 +137,7 @@ export default function CreateJobseekerProfileIntroPage() {
         ...introData,
         [fieldName]: value,
       });
+      dispatch(setPageDirty('introduction'));
     }
   };
 
@@ -146,6 +152,7 @@ export default function CreateJobseekerProfileIntroPage() {
           ...introData,
           photoUrl: url,
         });
+        dispatch(setPageDirty('introduction'));
       })
       .catch((error) =>
         console.error('Failed to update session image:', error),
@@ -191,6 +198,7 @@ export default function CreateJobseekerProfileIntroPage() {
         const result = await response.json();
 
         // Update the redux state
+        dispatch(setPageSaved('introduction'));
         dispatch(setIntroduction(introData));
 
         // Update session properties using the custom hook
