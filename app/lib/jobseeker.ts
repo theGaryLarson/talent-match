@@ -8,7 +8,6 @@ import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {
   edu_providers,
   jobseekers_education,
-  ProjectExperiences,
   technology_areas,
   WorkExperience,
 } from '@prisma/client';
