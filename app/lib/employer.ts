@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { Role } from '@/data/dtos/UserInfoDTO'; // Adjust the import path for your Role enum
