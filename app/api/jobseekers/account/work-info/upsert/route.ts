@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { JsWorkExpDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { auth } from '@/auth';
-import { setPool } from "@/app/lib/jobseeker";
+import { setPoolWithSession } from "@/app/lib/jobseeker";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -141,7 +141,7 @@ export async function POST(request: Request) {
         console.error('Unexpected error:', e);
         return NextResponse.json({error: `Failed to create work experiences.\n${e.message} `}, {status: 500});
     } finally {
-        await setPool()
+        await setPoolWithSession()
         await prisma.$disconnect();
     }
 }
