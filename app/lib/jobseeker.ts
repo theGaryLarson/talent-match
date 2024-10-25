@@ -1,0 +1,264 @@
+import { auth } from '@/auth';
+import {
+  JobseekerPoolVars,
+  selectJobseekerPoolCategory,
+  SelectJobseekerPoolCatResult,
+} from '@/app/lib/poolAssignment';
+import getPrismaClient from '@/app/lib/prismaClient.mjs';
+import { PrismaClient } from '@prisma/client';
+import {
+  educationRank,
+  HighestCompletedEducationLevel,
+  ProgramEnrollmentStatus,
+} from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import { devLog } from '@/app/lib/utils';
+import { NextResponse } from 'next/server';
+import { Role } from '@/data/dtos/UserInfoDTO';
+
+const prisma: PrismaClient = getPrismaClient();
+
+/**
+ * Asynchronously aggregates jobseeker pool variables based on the provided jobseekerId.
+ *
+ * @param {string} jobseekerId - The unique identifier of the jobseeker.
+ * @returns {Promise<JobseekerPoolVars>} - A Promise that resolves with the aggregated JobseekerPoolVars object.
+ */
+export const aggregateJobseekerPoolVars = async (
+  jobseekerId: string,
+): Promise<JobseekerPoolVars> => {
+  if (!jobseekerId) {
+    throw new TypeError(
+      `A uuidv4 jobseekerId is required which is not present in session data`,
+    );
+  }
+
+  // Fetch jobseeker education and work experience details
+  const education = await prisma.jobseekers_education.findMany({
+    where: {
+      jobseekerId: jobseekerId,
+    },
+    select: {
+      jobseekers: {
+        select: {
+          careerPrepComplete: true,
+        },
+      },
+      enrollmentStatus: true,
+      degreeType: true,
+      eduProviders: {
+        select: {
+          isCoalitionMember: true, // Fetch isCoalitionMember flag
+        },
+      },
+    },
+  });
+
+  const workExperience = await prisma.workExperience.findMany({
+    where: {
+      jobseekerId: jobseekerId,
+    },
+    select: {
+      techArea: {
+        select: {
+          title: true,
+        },
+      },
+    },
+  });
+
+  devLog('aggregated data:', { education, workExperience });
+
+  // Evaluate the JobseekerPoolVars values based on the fetched data
+  const jobseekerPoolVars: JobseekerPoolVars = {
+    enrolledWithPartner: education.some(
+      (edu) =>
+        edu.eduProviders?.isCoalitionMember &&
+        edu.enrollmentStatus === ProgramEnrollmentStatus.Enrolled,
+    ),
+    //TODO: include jobseeker/signup value instead
+    completedPartnerProgram: education.some(
+      (edu) =>
+        edu.eduProviders?.isCoalitionMember &&
+        edu.enrollmentStatus === ProgramEnrollmentStatus.Graduated,
+    ),
+    prevTechExperience: workExperience.some(
+      (exp) =>
+        exp.techArea &&
+        exp.techArea.title &&
+        exp.techArea.title !== 'N/A Not an IT role',
+    ),
+    hasDegreeOrTechProgram: education.some(
+      (edu) =>
+        educationRank[edu.degreeType as HighestCompletedEducationLevel] >=
+        educationRank[HighestCompletedEducationLevel.Certificate],
+    ),
+    // TODO: store Career Prep program completion in database.
+    careerPrepComplete: education.some((edu) => edu.jobseekers?.careerPrepComplete ?? false),
+  };
+
+  devLog('Calculated Pool Vars\n', jobseekerPoolVars);
+
+  return jobseekerPoolVars;
+};
+
+/**
+ * Updates the pool assignments for a jobseeker by unflagging the deletion of the assigned pools.
+ *
+ * @param {string} jobseekerId - The ID of the jobseeker.
+ * @param {SelectJobseekerPoolCatResult} poolCategoryResult - The pool assignment details to update.
+ * @returns {Promise<void>} - A Promise that resolves once the pool assignments are updated.
+ */
+const updatePool = async (
+  jobseekerId: string,
+  poolCategoryResult: SelectJobseekerPoolCatResult,
+): Promise<void> => {
+  await prisma.jobseekers.update({
+    where: {
+      jobseeker_id: jobseekerId,
+    },
+    data: {
+      assignedPool: poolCategoryResult.poolAssignment,
+      careerPrepTrackRecommendation:
+        poolCategoryResult.careerPrepTrackRecommendation,
+    },
+  });
+};
+
+/**
+ * Assigns a jobseeker session to a connection pool, if the user is authenticated.
+ * @returns {Promise<NextResponse>} A promise that resolves to the next response after setting the pool with the session.
+ */
+export const setPoolWithSession = async (): Promise<NextResponse> => {
+  const session = await auth();
+
+  // Check if the user is authenticated
+  if (!session?.user?.jobseekerId) {
+    return NextResponse.json({ error: 'No jobseeker id exists for user.' }, { status: 400 });
+  }
+
+  const jobseekerId = session.user.jobseekerId;
+
+  return setPool(jobseekerId);
+}
+
+
+/**
+ * Asynchronously sets the jobseeker pool for a given jobseeker ID.
+ * This function aggregates jobseeker pool variables, selects the jobseeker pool category,
+ * and updates the pool in the database.
+ *
+ * @param {string} jobseekerId - The ID of the jobseeker for whom the pool needs to be set.
+ * @returns {Promise<NextResponse>} A Promise that resolves to a NextResponse object indicating the success or failure of setting the jobseeker pool.
+ */
+export const setPool = async (jobseekerId: string): Promise<NextResponse> => {
+
+  try {
+    await prisma.$transaction(async () => {
+      const poolVars = await aggregateJobseekerPoolVars(jobseekerId);
+      const categoryOutput = selectJobseekerPoolCategory(poolVars);
+      await updatePool(jobseekerId, categoryOutput);
+    });
+
+    //return success response
+    return NextResponse.json({ success: true }, { status: 200 });
+
+  } catch (e: any) {
+    // Log the error for debugging
+    console.error('Error setting jobseeker pool:', e);
+
+    // Return a clear error response, avoiding exposing internal details
+    return NextResponse.json(
+        { error: 'Failed to set jobseeker pool. Please try again later.' },
+        { status: 500 }
+    );
+  } finally {
+    prisma.$disconnect();
+  }
+};
+
+/**
+ * Delete a jobseeker and associated data from the database.
+ * If the jobseeker is a coalition member, perform a soft delete by marking deletion date.
+ * If the jobseeker is not a coalition member, delete all related data to avoid foreign key constraints.
+ * Check if the user has other roles and delete the user if no other roles exist.
+ * If the user has other roles, update the user's role field to remove the jobseeker role.
+ *
+ * @param {string} userId - The ID of the user associated with the jobseeker to be deleted.
+ * @returns {Promise<void>}
+ */
+export const deleteJobseeker = async (userId: string): Promise<void> => {
+  // Find the jobseeker by userId
+  const jobseeker = await prisma.jobseekers.findUnique({
+    where: { user_id: userId },
+  });
+
+  if (!jobseeker) {
+    throw new Error('Jobseeker not found');
+  }
+
+  const jobseeker_id = jobseeker.jobseeker_id;
+
+  // Check if any EduProvider is a coalition member
+  const coalitionMemberExists = await prisma.jobseekers_education.findFirst({
+    where: {
+      jobseekerId: jobseeker_id,
+      eduProviders: {
+        isCoalitionMember: true,
+      },
+    },
+  });
+
+  if (coalitionMemberExists) {
+    // Perform soft delete
+    await prisma.jobseekers.update({
+      where: { jobseeker_id: jobseeker_id },
+      data: { is_marked_deletion: new Date() },
+    });
+  } else {
+    try {
+      // Start a transaction
+      await prisma.$transaction(async (prisma) => {
+        // Delete the jobseeker record
+        await prisma.jobseekers.delete({ where: { user_id: userId } });
+
+        // Fetch the user's roles
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            role: true, // Returns string -> comma-separated list of roles
+          },
+        });
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        // Split the comma-separated list of roles and check for specific roles
+        const userRolesArray: Role[] = user.role
+            .split(',')
+            .map((role: string) => role.trim() as Role);
+
+        // Remove the JOBSEEKER role
+        const filteredRolesArray = userRolesArray.filter(
+            (role) => role !== Role.JOBSEEKER,
+        );
+
+        if (filteredRolesArray.length === 0) {
+          // Delete the user if no roles are left
+          await prisma.user.delete({ where: { id: userId } });
+        } else {
+          // Update the user's roles by removing JOBSEEKER
+          await prisma.user.update({
+            where: { id: userId },
+            data: { role: filteredRolesArray.join(',') },
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Error handling transaction for jobseeker and user:', error);
+      throw error;
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+};

@@ -56,6 +56,7 @@ export async function getSession() {
   return await verify(session);
 }
 
+// TODO: Ask Keith if this is deprecated?
 export async function updateSession(request: NextRequest) {
   const session = request.cookies.get('session')?.value;
   if (!session) return;

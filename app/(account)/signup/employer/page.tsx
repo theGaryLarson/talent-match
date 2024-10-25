@@ -84,7 +84,12 @@ export default function EmployerSignUpFinish() {
                 });
                 // console.log('response:', response);
                 if (response.ok) {
-                  let rolesArray = [mapToEnumOrThrow(Role.EMPLOYER, Role)] as Role[];
+                  let rolesArray = session?.user.roles || []
+                  rolesArray = rolesArray.filter((role: Role) => role !== Role.GUEST)
+                  // Add the new role if it's not already in the roles array
+                  if (!rolesArray.includes(Role.EMPLOYER)) {
+                    rolesArray.push(Role.EMPLOYER);
+                  }
                   await updateSessionProperties({
                     employerId: uuidv4(),
                     roles: rolesArray,

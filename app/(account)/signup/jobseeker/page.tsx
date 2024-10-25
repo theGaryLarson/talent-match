@@ -129,7 +129,12 @@ export default function JobseekerSignupFinishPage() {
                   }),
                 });
                 if (response.ok) {
-                  let rolesArray = [mapToEnumOrThrow(Role.JOBSEEKER, Role)] as Role[];
+                  let rolesArray = session?.user.roles || []
+                  rolesArray = rolesArray.filter((role: Role) => role !== Role.GUEST)
+                  // Add the new role if it's not already in the roles array
+                  if (!rolesArray.includes(Role.JOBSEEKER)) {
+                    rolesArray.push(Role.JOBSEEKER);
+                  }
                   await updateSessionProperties({
                     jobseekerId: uuidv4(),
                     roles: rolesArray,

@@ -4,12 +4,10 @@ import {
   PostalGeoData, Prisma,
   PrismaClient,
   programs,
-  skills,
 } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
-import { CompanyDropdownDTO } from '@/data/dtos/CompanyDropdownDTO';
 
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { v4 as uuidv4 } from 'uuid';
@@ -585,70 +583,6 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
   return empView;
 }
 
-// // intended for use with the search bar. Currently, supports searching by combinations of skills and work experience.
-// // If skills is [] or contains empty strings [''] will disregard and only focus on work experience.
-// // If work experience is not a query parameter it will be set to 0
-// export async function getFilteredJobSeekerCardView(
-//   skills: string[] = [],
-//   yearsWorkExp: number = 0,
-// ) {
-//   // Normalize skills array
-//   const normalizedSkills = skills.filter(
-//     (skill) => skill && skill.trim() !== '',
-//   );
-//   // TODO: add other options from Jobseeker talent-search
-//   // Construct the AND conditions array
-//   const andConditions: any[] = [];
-//
-//   // If skills are provided, add the OR condition for skills
-//   if (normalizedSkills.length > 0) {
-//     const orConditions = [
-//       {
-//         jobseeker_has_skills: {
-//           some: {
-//             skills: {
-//               skill_name: {
-//                 in: normalizedSkills,
-//               },
-//             },
-//           },
-//         },
-//       },
-//       {
-//         project_experiences: {
-//           some: {
-//             project_has_skills: {
-//               some: {
-//                 skills: {
-//                   skill_name: {
-//                     in: normalizedSkills,
-//                   },
-//                 },
-//               },
-//             },
-//           },
-//         },
-//       },
-//     ];
-//     andConditions.push({ OR: orConditions });
-//   }
-//
-//   // Add the condition for years of work experience
-//   andConditions.push({
-//     years_work_exp: {
-//       gte: yearsWorkExp,
-//     },
-//   });
-//
-//   // Filter jobseekers based on skills and years of work experience
-//   const filteredJobSeekers = await prisma.jobseekers.findMany({
-//     where: andConditions.length > 0 ? { AND: andConditions } : undefined,
-//     select: jobSeekerCardViewSelect,
-//   });
-//
-//   return filteredJobSeekers;
-// }
-
 // returns those jobseekers with at least yearsExp in a profession
 export async function getJobSeekerCardViewByWorkExperience() { }
 
@@ -672,38 +606,6 @@ export async function getTechnologyAreas() {
     },
   });
   return technologyAreas;
-}
-
-export async function removeDeletionMarker() {
-  const session = await auth();
-  if (!session?.user?.id){
-    return NextResponse.json({ error: 'Unable to retrieve user id from session' }, { status: 409 })
-  }
-  try {
-    const industrySectors = await prisma.user.update({
-      where: {
-        id: session.user.id!,
-      },
-      data: {
-        is_marked_deletion: null,
-      },
-    });
-    return NextResponse.json(`Successfully validated jobseeker profile.` , {status: 200});
-  } catch (e: any) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === 'P2025') {
-        // Record not found
-        console.error('Record not found:', e);
-        return NextResponse.json({error: 'The user was not found.'}, {status: 404});
-      }
-      // Add specific Prisma errors as needed
-      console.error('Unexpected error:', e);
-      return NextResponse.json({error: `Failed to validate jobseeker profile.\n${e.message} `}, {status: 500});
-    }
-  } finally {
-    prisma.$disconnect()
-  }
-
 }
 
 export async function deleteUser(role: Role, userId: string) {
