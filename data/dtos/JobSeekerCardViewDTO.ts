@@ -33,7 +33,7 @@ export type JobSeekerCardViewDTO = {
       zip: string;
       state: string | null;
       city: string | null;
-    };
+    } | null;
   } | null;
   jobseeker_education:
     | {
