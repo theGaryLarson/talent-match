@@ -1,7 +1,20 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import generatedGitInfo from '../generatedGitInfo.json';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation'
+
 export default function Footer() {
+
+  const pathname = usePathname();
+  const baseIssueURL = "https://github.com/Computing-For-All/nextjs-issue-tracker/issues/new?assignees=&labels=uat&projects=Computing-For-All%2Fnextjs-issue-tracker&template=application.yml";
+  const [issueURL, setIssueURL] = useState<string>(baseIssueURL);
+  useEffect(() => { // window is accessible here.
+    setIssueURL(baseIssueURL.concat("&issue_url=" + encodeURI(window.location.toString())));
+  }, [pathname]);
+  
   return (
     <div className="flex w-full flex-col flex-wrap items-center bg-primary-600 px-[16px] py-[16px] font-['Roboto'] text-white sm-tablet:grid sm-tablet:grid-cols-3">
       <Link href="/">
@@ -30,7 +43,7 @@ export default function Footer() {
         <Link href='/underconstruction' className=" text-white underline REPLACE-BEFORE-RELEASE">Privacy Policy</Link>
         <p className="text-white">© Copyright 2024. All rights reserved.</p>
         <div className="git-info">
-          <p><code>{generatedGitInfo.gitCommitHash}</code></p>
+          <p><a href={issueURL + "&version=" + generatedGitInfo.gitCommitHash} target="_blank"><code>{generatedGitInfo.gitCommitHash}</code></a></p>
         </div>
       </div>
     </div>
