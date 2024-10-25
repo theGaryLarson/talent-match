@@ -51,15 +51,20 @@ export default function CreateEmployerCompanyInfoPage() {
   const companyStoreData = useSelector(
     (state: RootState) => state.employer.company,
   );
+
+  //TODO: to simplify this page we need to reduce the number of state variables, and have one master object
+  // the education page does this by, not  creating companyData as a state variable... however educationData is still a variable? unsure if this has room for error
   const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({
     ...companyStoreData,
   });
   const dispatch = useDispatch();
   const router = useRouter();
+
+  // const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  //NOTE: per review yearFounded potentially may not be reduced into master object
   const [yearFounded, setYearFounded] = useState<Dayjs | null>(
     companyData.yearFounded === '' ? null : dayjs(companyData.yearFounded),
   );
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession(); // TODO: update session with companyId and isApproved value if company exists
 
@@ -195,7 +200,8 @@ export default function CreateEmployerCompanyInfoPage() {
         setYearFounded(
           companyData.yearFounded ? dayjs(companyData.yearFounded) : null,
         );
-        setLogoUrl(companyData.logoUrl ?? null);
+        // REVIEW: commented out for testing; should be set with setCompanyData already?
+        // setLogoUrl(companyData.logoUrl ?? null);
       }
     };
 
@@ -347,8 +353,9 @@ export default function CreateEmployerCompanyInfoPage() {
       });
     }
 
+    // REVIEW: commented out for testing; should be set with setCompanyData(prevState) above already?
     // Update logoUrl state
-    setLogoUrl(url);
+    // setLogoUrl(url);
   };
 
   //ANCHOR - handle submit, finalizes data that will be updated in store/database
@@ -417,8 +424,7 @@ export default function CreateEmployerCompanyInfoPage() {
             ...chosenCompanyData,
             userId: session.user.id,
             employerId: session.user.employerId,
-            logoUrl:
-              chosenCompanyData.logoUrl || companyData.logoUrl || logoUrl, // couldn't find why this isn't passed. Hack fix to ensure its set...
+            logoUrl: chosenCompanyData.logoUrl || companyData.logoUrl, // couldn't find why this isn't passed. Hack fix to ensure its set...
           }),
         },
       );
@@ -568,7 +574,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 selectCompanyDropdownData !== null &&
                 selectCompanyDropdownData.logoUrl
                   ? selectCompanyDropdownData.logoUrl
-                  : (logoUrl ?? '') // fixme: use placeholder image for logo instead of empty string ''
+                  : '' // fixme: use placeholder image for logo instead of empty string ''
               }
               disabled={
                 session?.user?.employeeIsApproved ||
