@@ -1,8 +1,11 @@
 // src/app/services/userService.ts
-import { PrismaClient } from '@prisma/client';
+import {Prisma, PrismaClient} from '@prisma/client';
 import { CreateUserDTO, ReadUserInfoDTO, Role } from '@/data/dtos/UserInfoDTO';
 import { v4 as uuidv4 } from 'uuid';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
+import {auth} from "@/auth";
+import {NextResponse} from "next/server";
+import { setPoolWithSession } from "@/app/lib/jobseeker";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -19,7 +22,7 @@ export async function createUser(
         last_name: lastName,
         email: email,
         photo_url: image,
-        role: roles[0].toUpperCase().trim(), // fixme: modify database to handle multiple roles.
+        role: roles.map(role => role.toUpperCase().trim()).join(', '), // concatenate roles with a comma,
         createdAt: new Date(),
         is_marked_deletion: new Date(
           new Date().setDate(new Date().getDate() + 30),
@@ -122,8 +125,11 @@ export async function getUserByEmail(
       return null;
     }
 
-    const roles: Role[] = [];
-    roles.push(data.role.toUpperCase() as Role);
+    // Split the concatenated role string by comma, map to format each role correctly, and add to roles array
+    const roles: Role[] = []
+    roles.push(
+    ...data.role.split(',').map((role: string) => role.toUpperCase().trim() as Role)
+    );
 
     const result: ReadUserInfoDTO = {
       userId: data.id,
@@ -148,72 +154,72 @@ export async function getUserByEmail(
   }
 }
 
-export async function clearUserDeletionFlag(
-  userId: string,
-): Promise<ReadUserInfoDTO | null> {
-  // TODO: how to get session data server side
-  //  ensure terms have been agreed to as well
+export async function unflagDeletion() {
+  const session = await auth();
+  if (!session?.user?.id){
+    return NextResponse.json({ error: 'Unable to retrieve user id from session' }, { status: 409 })
+  }
   try {
-    const data = await prisma.user.update({
-      where: { id: userId },
-      data: {
-        updatedAt: new Date(),
-        is_marked_deletion: null,// no longer marked for deletion
+    await prisma.user.update({
+      where: {
+        id: session.user.id!,
       },
-      select: {
-        id: true,
-        role: true,
-        first_name: true,
-        last_name: true,
-        email: true,
-        photo_url: true,
-        is_marked_deletion: true,
-        jobseekers: {
-          select: {
-            jobseeker_id: true,
-          },
-        },
-        employers: {
-          select: {
-            employer_id: true,
-            company_id: true,
-            is_verified_employee: true,
-            companies: {
-              select: {
-                is_approved: true,
-              },
-            },
-          },
-        },
+      data: {
+        is_marked_deletion: null,
       },
     });
-
-    if (!data?.id) {
-      return null;
-    }
-
-    const responseRoles: Role[] = [];
-    responseRoles.push(data.role.toUpperCase() as Role);
-
-    const result: ReadUserInfoDTO = {
-      userId: data.id,
-      roles: responseRoles,
-      firstName: data.first_name,
-      lastName: data.last_name,
-      email: data.email,
-      image: data.photo_url || undefined,
-      isMarkedDeletion: data.is_marked_deletion,
-      jobseekerId: data.jobseekers?.[0]?.jobseeker_id || null,
-      employerId: data.employers?.[0]?.employer_id || null,
-      companyId: data.employers?.[0]?.company_id || null,
-      companyIsApproved: data.employers?.[0]?.companies?.is_approved || false,
-      employeeIsApproved: data.employers?.[0]?.is_verified_employee || false,
-    };
-
-    return result;
+    return NextResponse.json(`Successfully validated jobseeker profile.` , {status: 200});
   } catch (e: any) {
-    throw new Error(`Failed to create user record. ${e.message}`);
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2025') {
+        // Record not found
+        console.error('Record not found:', e);
+        return NextResponse.json({error: 'The user was not found.'}, {status: 404});
+      }
+      // Add specific Prisma errors as needed
+      console.error('Unexpected error:', e);
+      return NextResponse.json({error: `Failed to validate jobseeker profile.\n${e.message} `}, {status: 500});
+    }
   } finally {
-    await prisma.$disconnect();
+    prisma.$disconnect()
   }
 }
+
+export async function validateUserProfile() {
+  const session = await auth();
+  if (session?.user.roles.includes(Role.JOBSEEKER)) {
+    await setPoolWithSession();
+    return Response.json(
+        { success: true},
+        {
+          status: 200,
+        },
+    );
+  } else {
+    return await unflagDeletion();
+  }
+}
+
+export async function removeRoleFromUser(userId: string, roleToRemove: Role): Promise<void> {
+  // Fetch the user by ID
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // Split and map roles from the user, ensuring formatting consistency
+  const roles = user.role.split(',').map((r: string) => r.trim().toUpperCase() as Role);
+
+  // Filter out the role to remove
+  const newRoles = roles
+      .filter((r: Role) => r !== roleToRemove)
+      .join(',');
+
+  // Update the user's roles in the database
+  await prisma.user.update({
+    where: { id: userId },
+    data: { role: newRoles },
+  });
+}
+

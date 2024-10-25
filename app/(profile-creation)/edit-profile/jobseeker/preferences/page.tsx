@@ -222,24 +222,24 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   }}
                 >
                   <FormControlLabel
-                    value="Software Development"
+                    value="Software Developer"
                     control={<Radio />}
-                    label="Software Development"
+                    label="Software Developer"
                   />
                   <FormControlLabel
-                    value="IT & Cloud Computing"
+                    value="Cloud Support Associate"
                     control={<Radio />}
-                    label="IT & Cloud Computing"
+                    label="Cloud Support Associate"
                   />
                   <FormControlLabel
-                    value="Cybersecurity"
+                    value="Cybersecurity Analyst"
                     control={<Radio />}
-                    label="Cybersecurity"
+                    label="Cybersecurity Analyst"
                   />
                   <FormControlLabel
-                    value="Data Analytics"
+                    value="Data Analyst"
                     control={<Radio />}
-                    label="Data Analytics"
+                    label="Data Analyst"
                   />
                 </RadioGroup>
               </FormControl>

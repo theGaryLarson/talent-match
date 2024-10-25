@@ -7,6 +7,7 @@ import {
 import { educationRank } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { HighestCompletedEducationLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import {devLog} from "@/app/lib/utils";
+import {PoolCategories} from "@/app/lib/poolAssignment";
 
 const prisma = new PrismaClient();
 
@@ -21,6 +22,9 @@ export async function POST(request: Request) {
     sortBy = 'yearsExp',
     maxResults = 50,
     page = 1,
+    pool1 = true,
+    pool2 = true,
+    pool3 = false,
   } = await request.json();
 
   const normalizedSkills: string[] = skills.filter(
@@ -28,7 +32,14 @@ export async function POST(request: Request) {
   );
 
   const andConditions: any[] = [];
-  andConditions.push({ is_marked_deletion: null });
+  andConditions.push({
+    OR: [
+      { assignedPool: PoolCategories.Recommended }, // pool1 is now assignedPool with Recommended category
+      { assignedPool: PoolCategories.JobReady }     // pool2 is now assignedPool with JobReady category
+    ],
+    assignedPool: { not: PoolCategories.NotJobReady }, // Ensure assignedPool is not "pool3"
+    is_marked_deletion: null
+  });
 
   if (normalizedSkills.length > 0) {
     // Here we are checking if the skills are highlighted in projects or listed as their top five
