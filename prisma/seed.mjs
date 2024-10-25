@@ -7,7 +7,6 @@ import fs from 'fs';
 import {fileURLToPath} from 'url';
 import path from "node:path";
 
-
 faker.seed(123); // set seed so generated data is deterministic
 const prisma = getPrismaClient();
 
@@ -1519,8 +1518,6 @@ async function seedJobSeekers() {
             pathway_id: true,
         }
     });
-
-
     console.log('Seeding jobseekers...')
     for (const jobSeeker of jobSeekers) {
         const isEnrolledEdProgram = Math.random() < 0.6; // 60% chance of being enrolled in ed program.
@@ -1549,6 +1546,7 @@ async function seedJobSeekers() {
             years_work_exp: faker.number.int({min: 0, max: 3}), // years of experience
             portfolio_url: faker.internet.url(),
             video_url: faker.internet.url(),
+            assignedPool: faker.helpers.arrayElement(['pool1', 'pool2', 'pool3']),
             employment_type_sought: faker.helpers.arrayElement(['Full-time', 'Part-time', 'Internship', 'Contract', 'Any']),
         };
 
@@ -2189,6 +2187,7 @@ async function seedMockEmployerData() {
     await seedCompanySocialLinks();
     await seedJobPostings();
 }
+
 
 /////////////////////////////////////////////////
 
