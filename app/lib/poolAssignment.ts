@@ -54,7 +54,7 @@ export const selectJobseekerPoolCategory = (user: JobseekerPoolVars): SelectJobs
   const { poolAssignment, careerPrepTrackRecommendation } = poolAssignmentMap[
     key
   ] || {
-    poolAssignment: PoolCategories.NotJobReady,
+    poolAssignment: PoolCategories.None,
     careerPrepTrackRecommendation: null,
   };
 
@@ -78,6 +78,7 @@ export const selectJobseekerPoolCategory = (user: JobseekerPoolVars): SelectJobs
  * - POOL3: Represents Not Ready Candidates
  */
 export const enum PoolCategories {
+    None = 'None',
     Recommended = 'pool1',
     JobReady = 'pool2',
     NotJobReady = 'pool3',
