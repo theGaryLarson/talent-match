@@ -3,25 +3,22 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
+import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 export default function Page() {
   const router = useRouter();
   const [skills, setSkills] = useState<SkillDTO[]>();
   const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     const formData = new FormData(event.currentTarget);
     const submitButton = event.currentTarget.querySelector(
       'button[type="submit"]',
     ) as HTMLButtonElement;
     if (submitButton) submitButton.disabled = true;
-    // Convert FormData to a JobListingDTO object
     const jobListingData = {
-      //location_id: formData.get('location_id') as string,
-      //employer_id: formData.get('employer_id') as string,
       job_title: formData.get('job_title') as string,
       job_description: formData.get('job_description') as string,
-      is_internship: formData.get('is_internship') === 'yes', // Radio is yes or no
+      is_internship: formData.get('is_internship') === 'yes',
       is_paid: formData.get('is_paid') === 'yes',
       employment_type: formData.get('employment_type') as string,
       location: formData.get('location') as string,
@@ -34,10 +31,7 @@ export default function Page() {
       assessment_url: formData.get('assessment_url') as string,
       skillIds: skills?.map((v) => v.skill_id),
     };
-    //console.log("look here: ", jobListingData)
     try {
-      // Send job listing data to server
-
       const response = await fetch('/api/joblistings/add', {
         method: 'POST',
         headers: {

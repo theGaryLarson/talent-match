@@ -14,8 +14,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import { JobSeekerCardViewDTO } from '@/data/dtos/JobSeekerCardViewDTO';
-import { tree } from 'next/dist/build/templates/app-page';
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();

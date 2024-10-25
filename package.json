@@ -3,7 +3,7 @@
   "scripts": {
     "git-info": "node gitInfo.cjs",
     "build": "npm run git-info && cross-env NODE_ENV=production next build",
-    "dev": "npm run git-info && cross-env NODE_ENV=development next dev",
+    "dev": "npm run git-info && cross-env NODE_ENV=development next dev --turbo",
     "prettier": "prettier --write --ignore-unknown .",
     "prettier:check": "prettier --check --ignore-unknown .",
     "start": "cross-env NODE_ENV=production next start",

@@ -38,12 +38,12 @@ export type JobSeekerCardViewDTO = {
   jobseeker_education:
     | {
         eduProviders: {
-          name: string;
+          name: string|null;
         } | null;
         edLevel: string | null;
-        enrollmentStatus?: ProgramEnrollmentStatus;
-        startDate: string | null;
-        gradDate: string | null;
+        enrollmentStatus?: ProgramEnrollmentStatus|string;
+        startDate: string | null| Date;
+        gradDate: string | null| Date;
         degreeType: string | null;
         program: {
           id: string;

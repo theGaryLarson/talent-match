@@ -1,15 +1,20 @@
 import { deleteJobListing, getMyJobListings } from "@/app/lib/joblistings";
 import { getJobseekerBookmarkByCompany } from "@/app/lib/prisma";
+import { mapToEnumOrThrow } from "@/app/lib/utils";
 import JobPostingCard from "@/app/ui/components/jobPostings/JobPostingCard";
 import JobSeekerCardView from "@/app/ui/components/JobSeekerCardView";
 import { ProgramEnrollmentStatus } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 export default async function Page(){
     const jobseekers = await getJobseekerBookmarkByCompany();
 return(
-<div>
+<main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8 w-full">
+    <h1 className="text-2xl font-medium">
+        My Dashboard
+      </h1>
+    
+    <div className="space-y-4">
     {jobseekers?.map((jobseeker)=>{
 return(
-    <div className="space-y-4">
 <JobSeekerCardView jobseeker={{
             jobseeker_id: jobseeker.jobseekerId,
             user_id: jobseeker.jobseeker.user_id,
@@ -20,12 +25,11 @@ return(
             pathways: jobseeker.jobseeker.pathways,
             work_experiences: jobseeker.jobseeker.work_experiences,
             users: jobseeker.jobseeker.users,
-            jobseeker_education:null,// jobseeker.jobseeker.jobseeker_education,//TODO needs fixing to match dtos 
+            jobseeker_education: jobseeker.jobseeker.jobseeker_education,//TODO needs fixing to match dtos 
             jobseeker_has_skills: jobseeker.jobseeker.jobseeker_has_skills
         }}/>
-        </div>
 );})}
-    
-</div>
+    </div>
+</main>
     );
 }
