@@ -1,3 +1,4 @@
+"use client"
 import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/20/solid';
 import { useState } from 'react';
