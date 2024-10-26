@@ -5,7 +5,7 @@ import {
   SelectJobseekerPoolCatResult,
 } from '@/app/lib/poolAssignment';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { PrismaClient } from '@prisma/client';
+import {Prisma, PrismaClient} from '@prisma/client';
 import {
   educationRank,
   HighestCompletedEducationLevel,
@@ -14,7 +14,6 @@ import {
 import { devLog } from '@/app/lib/utils';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
-
 const prisma: PrismaClient = getPrismaClient();
 
 /**
@@ -128,17 +127,18 @@ const updatePool = async (
  * Assigns a jobseeker session to a connection pool, if the user is authenticated.
  * @returns {Promise<NextResponse>} A promise that resolves to the next response after setting the pool with the session.
  */
-export const setPoolWithSession = async (): Promise<NextResponse> => {
+export const setPoolWithSession = async (): Promise<void> => {
   const session = await auth();
-
-  // Check if the user is authenticated
-  if (!session?.user?.jobseekerId) {
-    return NextResponse.json({ error: 'No jobseeker id exists for user.' }, { status: 400 });
+  try {
+    if (!session?.user?.jobseekerId) {
+      throw new Error("No jobseeker id found in session")
+    }
+    const jobseekerId = session.user.jobseekerId;
+    await setPool(jobseekerId);
+  } catch(error: any) {
+    console.error('Error setting jobseeker pool:', error);
+    throw error;
   }
-
-  const jobseekerId = session.user.jobseekerId;
-
-  return setPool(jobseekerId);
 }
 
 
@@ -150,7 +150,7 @@ export const setPoolWithSession = async (): Promise<NextResponse> => {
  * @param {string} jobseekerId - The ID of the jobseeker for whom the pool needs to be set.
  * @returns {Promise<NextResponse>} A Promise that resolves to a NextResponse object indicating the success or failure of setting the jobseeker pool.
  */
-export const setPool = async (jobseekerId: string): Promise<NextResponse> => {
+export const setPool = async (jobseekerId: string): Promise<void> => {
 
   try {
     await prisma.$transaction(async () => {
@@ -158,19 +158,10 @@ export const setPool = async (jobseekerId: string): Promise<NextResponse> => {
       const categoryOutput = selectJobseekerPoolCategory(poolVars);
       await updatePool(jobseekerId, categoryOutput);
     });
-
-    //return success response
-    return NextResponse.json({ success: true }, { status: 200 });
-
   } catch (e: any) {
     // Log the error for debugging
     console.error('Error setting jobseeker pool:', e);
-
-    // Return a clear error response, avoiding exposing internal details
-    return NextResponse.json(
-        { error: 'Failed to set jobseeker pool. Please try again later.' },
-        { status: 500 }
-    );
+    throw new Error('Failed to set jobseeker pool. Please try again later.', e)
   } finally {
     prisma.$disconnect();
   }
@@ -193,7 +184,7 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
   });
 
   if (!jobseeker) {
-    throw new Error('Jobseeker not found');
+    throw new Error('User associated with jobseeker id not found');
   }
 
   const jobseeker_id = jobseeker.jobseeker_id;
@@ -247,7 +238,7 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
           // Delete the user if no roles are left
           await prisma.user.delete({ where: { id: userId } });
         } else {
-          // Update the user's roles by removing JOBSEEKER
+          // Update the user's roles
           await prisma.user.update({
             where: { id: userId },
             data: { role: filteredRolesArray.join(',') },
@@ -255,10 +246,27 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
         }
       });
     } catch (error) {
-      console.error('Error handling transaction for jobseeker and user:', error);
+      console.error('Error deleting jobseeker:', error);
       throw error;
     } finally {
       await prisma.$disconnect();
     }
   }
 };
+
+export const deleteJobseekerWithSession = async () : Promise<void> => {
+    const session = await auth();
+    try {
+      const userId = session?.user.id
+      if (!userId) {
+        throw new Error("User id not found in session. ")
+      }
+      await deleteJobseeker(userId);
+    } catch (error: any) {
+      console.error('Error deleting jobseeker with session:', error);
+      throw error;
+
+    } finally {
+      prisma.$disconnect()
+    }
+}
