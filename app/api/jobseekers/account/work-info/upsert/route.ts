@@ -120,7 +120,8 @@ export async function POST(request: Request) {
                 workExperiences: createdWorkExperiences,
             }
         });
-
+        // Trigger setPoolWithSession in the background
+        setPoolWithSession().catch(error => console.error('Error in setPoolWithSession:', error));
         return NextResponse.json({
             success: true,
             result
@@ -141,7 +142,6 @@ export async function POST(request: Request) {
         console.error('Unexpected error:', e);
         return NextResponse.json({error: `Failed to create work experiences.\n${e.message} `}, {status: 500});
     } finally {
-        await setPoolWithSession()
         await prisma.$disconnect();
     }
 }

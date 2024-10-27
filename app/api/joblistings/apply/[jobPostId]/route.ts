@@ -1,5 +1,4 @@
 import {NextResponse} from "next/server";
-import {bookmarkJobPosting} from "@/app/lib/prisma";
 import { ApplyToJob } from "@/app/lib/joblistings";
 
 export async function POST(request: Request, {params}: {params: {jobPostId: string}}) {
