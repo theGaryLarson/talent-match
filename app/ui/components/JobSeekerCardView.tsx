@@ -101,10 +101,12 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
             </div> : ""}
           <div className="flex flex-row mt-2 mr-2 text-cyan-600 place-self-end">
             { showBookmarks ?
-              <Bookmark bookmarked={isBookmarked}
-                addUrl={'/api/companies/bookmark/addJobseeker/' + jobseeker.jobseeker_id}
-                removeUrl={'/api/companies/bookmark/removeJobseeker/' + jobseeker.jobseeker_id}>
-              </Bookmark> : "" }
+                <Bookmark
+                    bookmarked={isBookmarked}
+                    addUrl={'/api/companies/bookmark/addJobseeker/' + jobseeker.jobseeker_id}
+                    removeUrl={'/api/companies/bookmark/removeJobseeker/' + jobseeker.jobseeker_id}
+                />
+               : "" }
             <ShareButton href={'/services/jobseekers/' + id} />
           </div>
         </div>
