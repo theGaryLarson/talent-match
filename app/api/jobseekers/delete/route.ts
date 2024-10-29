@@ -1,18 +1,11 @@
 import { NextResponse } from 'next/server';
-import { deleteJobseeker } from '@/app/lib/jobseeker';
-import { auth } from '@/auth';
+import { deleteJobseekerWithSession } from '@/app/lib/jobseeker';
 
 export async function DELETE() {
-  const session = await auth();
-  const userId = session?.user.id;
-
-  if (!userId) {
-    return NextResponse.json({ error: 'userId is required.' }, { status: 400 });
-  }
-
   try {
+
     // Call deleteJobseeker and wait for its resolution
-    await deleteJobseeker(userId);
+    await deleteJobseekerWithSession();
     // If successful, return a success response
     return NextResponse.json(
       { success: true, message: 'Jobseeker deleted successfully.' },

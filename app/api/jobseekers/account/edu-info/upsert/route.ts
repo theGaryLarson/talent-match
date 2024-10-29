@@ -389,6 +389,9 @@ export async function POST(request: Request) {
             return result
         });
 
+        // Trigger setPoolWithSession in the background
+        setPoolWithSession().catch(error => console.error('Error in setPoolWithSession:', error));
+
         return NextResponse.json({
             success: true,
             result
@@ -397,7 +400,6 @@ export async function POST(request: Request) {
         console.log(e.message);
         return NextResponse.json({error: `Failed to create jobseeker education.\n${e.message} `}, {status: 500});
     } finally {
-        await setPoolWithSession();
         await prisma.$disconnect();
     }
 }

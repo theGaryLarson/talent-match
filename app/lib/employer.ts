@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { Role } from '@/data/dtos/UserInfoDTO'; // Adjust the import path for your Role enum
+import { Role } from '@/data/dtos/UserInfoDTO';
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -55,11 +56,37 @@ export const deleteEmployer = async (userId: string): Promise<void> => {
                 });
             }
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error deleting employer:', error);
         throw error;
     } finally {
         await prisma.$disconnect();
     }
+};
+
+/**
+ * Deletes the employer associated with the current user session.
+ *
+ * This function first authenticates the user session to obtain the user ID.
+ * If the user ID is not found in the session, an error is logged and an exception is thrown.
+ * Then it attempts to delete the employer with the obtained user ID.
+ * If an error occurs during the deletion process, the error is logged and rethrown.
+ *
+ * @returns {Promise<void>} A promise that resolves when the employer is successfully deleted.
+ */
+export const deleteEmployerWithSession = async (): Promise<void> => {
+  const session = await auth();
+  const userId = session?.user.id;
+
+  if (!userId) {
+    console.error('No user id found in session. Could not delete employer');
+    throw Error('No userId found in session. Could not delete employer');
+  }
+  try {
+    await deleteEmployer(userId);
+  } catch (error: any) {
+    console.error('Error deleting employer with session:', error);
+    throw error;
+  }
 };
 
