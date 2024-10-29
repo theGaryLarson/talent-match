@@ -7,9 +7,9 @@ import { ProgramEnrollmentStatus } from "@/data/dtos/JobSeekerProfileCreationDTO
 export default async function Page(){
     const jobseekers = await getJobseekerBookmarkByCompany();
 return(
-<main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8 w-full">
+<main className="m-2 space-y-4 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8 w-full">
     <h1 className="text-2xl font-medium">
-        My Dashboard
+        Saved Candidates
       </h1>
     
     <div className="space-y-4">

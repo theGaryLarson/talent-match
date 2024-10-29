@@ -7,7 +7,7 @@ export type JobSeekerCardViewDTO = {
   BookmarkedJobseeker: { // bookmarked by current user's company?
     jobseekerId: string;
     companyId: string;
-    employerId: string;
+    employerId: string|null;
   }[] | null;
   intro_headline: string | null;
   years_work_exp: number | null;
