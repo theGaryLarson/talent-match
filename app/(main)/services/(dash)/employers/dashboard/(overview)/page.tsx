@@ -16,9 +16,9 @@ export default async function Page() {
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <DeletionFlag deletionDate={undefined} />
-      <div className="font-['Roboto'] text-2xl font-medium leading-[28.80px] text-black/90">
+      <h1 className="text-2xl font-medium">
         My Dashboard
-      </div>
+      </h1>
       <EmployerNameTitleTag
         name={session?.user.name}
         title={proInfo?.job_title??''}
