@@ -16,10 +16,10 @@ export default async function EmployerRecentJobPosts() {
       </div>
     <div className="p-4 bg-white rounded-[10px] shadow gap-2 divide-y">
       {
-      (jobPostings.length > 0)?jobPostings.map((job)=>{
+      jobPostings.map((job)=>{
         return <SingleJobPost jobtitle={job.job_title} joblistingId={job.job_posting_id} days={getDaysSince(job.publish_date)} key={job.job_posting_id} industry={job.industry_sectors?.sector_title??''}/>
-      }):<AddJobLink/>
-      }
+      })
+      }<AddJobLink/>
     </div>
   </div>;
 }
@@ -39,7 +39,7 @@ function SingleJobPost(props:{jobtitle:string, industry:string, days:number, job
   return (
     <div className="flex justify-between px-2">
     <Link className="flex items-center" href={"/services/joblistings/"+props.joblistingId}>
-      <div className="flex h-[17px] items-center justify-start gap-2">
+      <div className="flex items-center justify-start gap-2">
         <div className="font-['Roboto'] text-sm font-semibold leading-[16.80px] tracking-tight text-[#047f9c]">
           {props.jobtitle}
         </div>
