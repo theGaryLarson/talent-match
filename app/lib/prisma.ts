@@ -851,7 +851,12 @@ export async function getEmployerById(employerId: string) {
         },
         BookmarkedJobseeker:{select:{
           jobseekerId:true
-        }}
+        }},
+        job_postings:{
+          select:{
+            job_posting_id:true
+          }
+        }
       },
     });
 
