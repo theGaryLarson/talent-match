@@ -1,5 +1,4 @@
 import { getJobseekerBookmarkByCompany } from '@/app/lib/prisma';
-import RevalidateButton from '@/app/ui/components/employerdashboard/RevalidateButton';
 import JobSeekerCardView from '@/app/ui/components/JobSeekerCardView';
 import Link from 'next/link';
 
