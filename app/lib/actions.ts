@@ -5,7 +5,6 @@ import { NextResponse, NextRequest } from 'next/server';
 // !IMPORTANT this needs to be an env variable
 const secretKey = 'secret';
 const key = new TextEncoder().encode(secretKey);
-
 // a signed JWT is not encrypted, it's just proof that
 // the content comes from us
 // The purpose here is to make sure that the authorization granted
@@ -73,3 +72,4 @@ export async function updateSession(request: NextRequest) {
   });
   return res;
 }
+

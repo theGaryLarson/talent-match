@@ -3,7 +3,6 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 export default function Page() {
   const router = useRouter();
   const [skills, setSkills] = useState<SkillDTO[]>();

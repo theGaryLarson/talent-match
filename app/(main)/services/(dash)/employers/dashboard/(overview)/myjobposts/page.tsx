@@ -1,24 +1,10 @@
-import { deleteJobListing, getMyJobListings } from "@/app/lib/joblistings";
-import JobPostingCard from "@/app/ui/components/jobPostings/JobPostingCard";
+import EmployerRecentJobPosts from "@/app/ui/components/employerdashboard/EmployerRecentJobPosts";
 
-export default async function Page(){
-    let jobPostings = await getMyJobListings();
-    console.log(jobPostings)
+export default function Page(){
     return(
-<div>
-{jobPostings.length > 0 ? (
-                jobPostings.map((job) => (
-                    <JobPostingCard
-                        key={job.job_posting_id}
-                        jobTitle={job.job_title}
-                        jobDescription={job.job_description} // Fixed typo here
-                        jobPostingId={job.job_posting_id}
-                    />
-                ))
-            ) : (
-                <p>No job postings available.</p>
-            )}
-</div>
+<main className="w-full m-2 mb-0 w-full space-y-4 pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">
+<EmployerRecentJobPosts/>
+</main>
     );
 }
 

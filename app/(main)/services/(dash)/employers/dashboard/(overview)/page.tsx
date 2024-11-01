@@ -5,6 +5,7 @@ import { getCompanyById, getEmployerById } from '@/app/lib/prisma';
 import EmployerTeamMembers from '@/app/ui/components/employerdashboard/EmployerTeamMembers';
 import { auth } from '@/auth';
 import EmployerRecentJobPosts from '@/app/ui/components/employerdashboard/EmployerRecentJobPosts';
+import Link from 'next/link';
 //employer dashboard
 export const metadata = {
   title: "My Dashboard"
@@ -26,8 +27,10 @@ export default async function Page() {
         pfp={session?.user.image ?? undefined}
       />
       <div className="flex flex-wrap justify-evenly gap-5">
-        {<ScoreCard title="Saved Candidates" val={proInfo.BookmarkedJobseeker.length} />}
-        {<ScoreCard title="Job Applications " val={5} />}
+        <Link href='/services/employers/dashboard/savedcandidates'>
+        {<ScoreCard title="Saved Candidates" val={proInfo.BookmarkedJobseeker.length} />}</Link>
+        <Link href="/services/employers/dashboard/myjobposts">
+        {<ScoreCard title="Job Listings" val={proInfo.job_postings.length} />}</Link>
       </div>
       <EmployerRecentJobPosts/>
       <EmployerTeamMembers/>
