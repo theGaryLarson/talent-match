@@ -371,7 +371,11 @@ export default function CreateEmployerCompanyInfoPage() {
     const chosenCompanyData: PostCompanyInfoDTO = { ...companyData };
 
     chosenCompanyData.employerId = session?.user.employerId!;
-
+    if (chosenCompanyData.companyName === '' || null) {
+      // TODO: if chosenCompany does not have name, it does not exist, setup warning Toast for existing company or contact CFA to be added
+      console.error('Company name is not available.');
+      return;
+    }
     /* NOTE - core form logic currently, we use dot operator on chosenCompanyData an update either with 
     (a) selectCompanyDropdownData - aka existing company, or 
     (b) companyData - aka user manual input
@@ -507,7 +511,8 @@ export default function CreateEmployerCompanyInfoPage() {
               id="profile-creation-company-companyName"
               className="text-field-autocomplete"
               searchingText="Searching..."
-              noResultsText="No company found..."
+              noResultsText="No company found, existing company required. Please contact administrator."
+              allowNewOption={false}
               value={selectCompanyDropdownData ?? ''}
               onChange={(e, val) => {
                 // logic predominately handled in useEffect
