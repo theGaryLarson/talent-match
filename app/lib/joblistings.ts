@@ -58,6 +58,8 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_posting_id: jobListingId,
         company_id: Session.user.companyId,
         location_id: companyAddress.company_address_id,
+        tech_area_id:jobData.tech_area_id,
+        sector_id:jobData.sector_id,
         employer_id: Session?.user.employerId,
         job_title: jobData.job_title,
         job_description: jobData.job_description,
@@ -96,9 +98,17 @@ export async function getJobListingById(joblistingId: string) {
       },
       include:{
         skills:true,
-        industry_sectors:true,
+        industry_sectors:{
+          select:{
+            sector_title:true
+          }
+        },
         companies:true,
-        techArea:true,
+        techArea:{
+          select:{
+            title:true
+          }
+        },
         jobseekersThatBookMarked:{
           select:{
             jobseeker_id:true

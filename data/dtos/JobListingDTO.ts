@@ -1,8 +1,8 @@
 export type JobPostCreationDTO = {
     job_posting_id?: string;        // Optional: for updates or responses
     //location_id?: string;
-    //tech_area_id?: string;
-    //sector_id?: string;
+    tech_area_id?: string;
+    sector_id?: string;
     job_title: string;
     job_description: string;
     is_internship?: boolean;
