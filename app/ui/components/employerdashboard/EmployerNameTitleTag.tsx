@@ -22,13 +22,13 @@ export default function EmployerNameTitleTag(props: {
           >
             Edit My Profile
           </Link>{' '}
-          |{' '}
+          {/* |{' '}
           <Link
             className="text-red-600"
             href="/underconstruction"
           >
             Edit Company Profile
-          </Link>
+          </Link> */}
         </p>
       </div>
     </div>

@@ -3,7 +3,6 @@ import Avatar from '@/app/ui/components/Avatar';
 import Skills from '@/app/ui/components/Skills';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import { auth } from '@/auth';
-import { format } from 'path';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
 import { getResumeUrl } from '@/app/lib/services/azureBlobService';
 const monthNames = [

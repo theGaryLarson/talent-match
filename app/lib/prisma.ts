@@ -712,18 +712,54 @@ try {
   if(!session.user.employerId){
     throw new Error('Failed to get joseeker bookmarks, employer id is not in session');
   }
-  const results = await prisma.bookmarkedJobseeker.findMany({where:{
-    companyId:session.user.companyId
-  }, include:{
-    jobseeker:{
-      include:{
-        users:true,
-        jobseeker_has_skills:true,
-        jobseeker_education:true,
-        BookmarkedJobseeker:true, pathways:true, work_experiences:true
+  const results = await prisma.bookmarkedJobseeker.findMany({
+    where: {
+      companyId: session.user.companyId
+    },
+    include: {
+      jobseeker: {
+        include: {
+          users: {
+            include: {
+              locationData: true
+            }
+          },
+          BookmarkedJobseeker: true,
+          pathways: true,
+          jobseeker_education: {
+            select: {
+              eduProviders: {
+                select: {
+                  name: true
+                }
+              },
+              program: {
+                select: {
+                  id: true,
+                  title: true
+                }
+              },
+              edLevel: true,
+              enrollmentStatus: true,
+              startDate: true, 
+              gradDate: true, 
+              degreeType: true
+            }
+          },
+          work_experiences: {
+            include: {
+              industrySector: true
+            }
+          },
+          jobseeker_has_skills: {
+            include: {
+              skills: true
+            }
+          }
+        }
       }
     }
-  }})
+  });
   return results;
 } catch (error) {
   console.error(error)
@@ -815,7 +851,12 @@ export async function getEmployerById(employerId: string) {
         },
         BookmarkedJobseeker:{select:{
           jobseekerId:true
-        }}
+        }},
+        job_postings:{
+          select:{
+            job_posting_id:true
+          }
+        }
       },
     });
 
