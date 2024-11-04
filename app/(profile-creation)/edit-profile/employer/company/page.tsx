@@ -54,7 +54,9 @@ export default function CreateEmployerCompanyInfoPage() {
 
   //TODO: to simplify this page we need to reduce the number of state variables, and have one master object
   // the education page does this by, not  creating companyData as a state variable... however educationData is still a variable? unsure if this has room for error
-  const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({
+  const [companyData, setCompanyData] = useState<
+    PostCompanyInfoDTO | PostCompanyInfoDTO
+  >({
     ...companyStoreData,
   });
   const dispatch = useDispatch();
@@ -69,7 +71,7 @@ export default function CreateEmployerCompanyInfoPage() {
   const updateSessionProperties = useUpdateSession(); // TODO: update session with companyId and isApproved value if company exists
 
   const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
-    PostCompanyInfoDTO | string
+    ReadCompanyInfoDTO | string
   >(''); // REVIEW Step 1: convert this datatype into a ReadCompanyInfoDTO rather than CompanyDropdownDTO. Step 2. Transform data in Read object into Post object in handleSubmit
   const [companyId, setCompanyId] = useState<string | null>(null); // State for companyId // set this on the companyData object inside handleSubmit and remove this. Use a new uuidv4() if its a new company. Otherwise the companyId is set in companyData from the drop down.
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
@@ -149,7 +151,7 @@ export default function CreateEmployerCompanyInfoPage() {
             : null,
         );
         setSelectCompanyDropdownData({
-          userId: session.user.id!,
+          // userId: session.user.id!,
           companyId: fetchedData.companyId,
           companyName: fetchedData.companyName,
           logoUrl: fetchedData.logoUrl || undefined,
@@ -160,6 +162,7 @@ export default function CreateEmployerCompanyInfoPage() {
           companyPhone: fetchedData.companyPhone || '',
           companySize: fetchedData.companySize || '',
           estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
+          createdBy: fetchedData.createdBy || '',
         });
 
         setIndustry({
@@ -171,7 +174,7 @@ export default function CreateEmployerCompanyInfoPage() {
       }
     };
 
-    /* ANCHOR - core logic of initial form, checks if 
+    /* ANCHOR - core logic of initial form, checks if
     (a) no prior company data in store => use defaults and session data
       (b) if user & companyId => fetch companyData
       (c) else if no user & companyId => creates new company id, but may not need to be created if prior dropdown company selected?
@@ -235,39 +238,42 @@ export default function CreateEmployerCompanyInfoPage() {
         sector_title: '', // Not needed; only ID is required
       });
       setCompanyId(companyObj.companyId);
-    } else {
-      // selectCompanyDropdownData is a string (new company name)
-      // Check if previous value was an object
-      if (
-        !companyData.companyId ||
-        (typeof prevSelectCompanyDropdownData.current === 'object' &&
-          prevSelectCompanyDropdownData.current !== null)
-      ) {
-        // Transitioned from object to string - reset inputs
-        const newCompanyId = uuidv4();
-        setCompanyData({
-          ...initialState.company,
-          companyId: newCompanyId,
-          employerId: session?.user.employerId!,
-          companyName: selectCompanyDropdownData as string,
-        });
-        setCompanyId(newCompanyId);
-        setYearFounded(null);
-        setIndustry({
-          industry_sector_id: '',
-          sector_title: '',
-        });
-      } else {
-        // Continuing to type a new company name - update companyName only
-        setCompanyData({
-          ...companyData,
-          companyName: selectCompanyDropdownData as string,
-        });
-      }
     }
     if (prevSelectCompanyDropdownData.current !== selectCompanyDropdownData) {
       dispatch(setPageDirty('company'));
     }
+
+    // NOTE: No longer allowing string / new company name
+    // selectCompanyDropdownData is a string (new company name)
+    // Check if previous value was an object
+    // else {
+    //   if (
+    //     !companyData.companyId ||
+    //     (typeof prevSelectCompanyDropdownData.current === 'object' &&
+    //       prevSelectCompanyDropdownData.current !== null)
+    //   ) {
+    //     // Transitioned from object to string - reset inputs
+    //     const newCompanyId = uuidv4();
+    //     setCompanyData({
+    //       ...initialState.company,
+    //       companyId: newCompanyId,
+    //       employerId: session?.user.employerId!,
+    //       companyName: selectCompanyDropdownData as string,
+    //     });
+    //     setCompanyId(newCompanyId);
+    //     setYearFounded(null);
+    //     setIndustry({
+    //       industry_sector_id: '',
+    //       sector_title: '',
+    //     });
+    //   } else {
+    //     // Continuing to type a new company name - update companyName only
+    //     setCompanyData({
+    //       ...companyData,
+    //       companyName: selectCompanyDropdownData as string,
+    //     });
+    //   }
+    // }
     // Update the previous value
     prevSelectCompanyDropdownData.current = selectCompanyDropdownData;
   }, [selectCompanyDropdownData, pathname]);
@@ -376,8 +382,8 @@ export default function CreateEmployerCompanyInfoPage() {
       console.error('Company name is not available.');
       return;
     }
-    /* NOTE - core form logic currently, we use dot operator on chosenCompanyData an update either with 
-    (a) selectCompanyDropdownData - aka existing company, or 
+    /* NOTE - core form logic currently, we use dot operator on chosenCompanyData an update either with
+    (a) selectCompanyDropdownData - aka existing company, or
     (b) companyData - aka user manual input
     */
     // company exists in selection
@@ -394,9 +400,10 @@ export default function CreateEmployerCompanyInfoPage() {
       chosenCompanyData.yearFounded = selectCompanyDropdownData.yearFounded
         ? selectCompanyDropdownData.yearFounded.toString()
         : '';
-      chosenCompanyData.companySize = selectCompanyDropdownData.companySize;
+      chosenCompanyData.companySize =
+        selectCompanyDropdownData.companySize ?? ''; //not sure why null needed here
       chosenCompanyData.estimatedAnnualHires =
-        selectCompanyDropdownData.estimatedAnnualHires;
+        selectCompanyDropdownData.estimatedAnnualHires ?? ''; // not sure why null needed here
       devLog(chosenCompanyData);
       // new company: values stored in companyData from page inputs
     } else {
@@ -439,7 +446,7 @@ export default function CreateEmployerCompanyInfoPage() {
           // company selection from drop-down exists. use the dropdown object data
           await updateSessionProperties({
             companyId: selectCompanyDropdownData.companyId,
-            companyIsApproved: selectCompanyDropdownData.approvedCompany,
+            companyIsApproved: selectCompanyDropdownData.isApproved,
           });
         } else {
           //company drop down selection doesn't exist. use generated companyId instead
@@ -583,8 +590,9 @@ export default function CreateEmployerCompanyInfoPage() {
               }
               disabled={
                 session?.user?.employeeIsApproved ||
-                session?.user?.employerId ===
-                  (selectCompanyDropdownData as CompanyDropdownDTO).createdBy
+                (typeof selectCompanyDropdownData !== 'string' &&
+                  session?.user?.employerId ===
+                    selectCompanyDropdownData.createdBy)
               }
             />
           </fieldset>
@@ -684,12 +692,13 @@ export default function CreateEmployerCompanyInfoPage() {
                     : companyData.estimatedAnnualHires) || ''
                 }
                 disabled={session?.user?.employeeIsApproved}
+                // required
               >
                 Estimated Annual Hires *
               </InputTextWithLabel>
               <TextFieldWithAutocomplete
                 apiSearchRoute={`/api/postal-geo-data/zip/search/`} // Use generic search API
-                fieldLabel="Company Location*"
+                fieldLabel="Company Location *"
                 id="profile-creation-company-companyAddresses"
                 className="text-field-autocomplete"
                 searchingText="Searching..."
