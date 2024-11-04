@@ -90,9 +90,9 @@ export const enum PoolCategories {
  * @enum {string}
  */
 const enum CareerPrepTrack {
-    TARGETED = 'TARGETED',
     ACCELERATED = 'ACCELERATED',
     STANDARD = 'STANDARD',
+    EXTENDED = 'EXTENDED',
 }
 
 /**
@@ -105,35 +105,35 @@ const enum CareerPrepTrack {
 const poolAssignmentMap: { [key: string]: { poolAssignment: PoolCategories; careerPrepTrackRecommendation: CareerPrepTrack | null } } = {
     // enrolledWithPartner_completedPartnerProgram_prevTechExperience_hasDegreeOrTechProgram_completeCareerPrep
     'true_true_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'true_true_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'true_true_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
     'true_true_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'true_true_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'true_true_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
     'true_true_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'true_true_false_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'true_true_false_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'true_true_false_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'true_true_false_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'true_true_false_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'true_false_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'true_false_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'true_false_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
     'true_false_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'true_false_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'true_false_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'true_false_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'true_false_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'true_false_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'true_false_false_false_true': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: null },
-    'true_false_false_false_false': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
+    'true_false_false_false_false': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: CareerPrepTrack.EXTENDED },
     'false_true_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'false_true_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'false_true_true_true_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
     'false_true_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'false_true_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'false_true_true_false_false': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
     'false_true_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'false_true_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'false_true_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
     'false_true_false_false_true': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: null },
-    'false_true_false_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'false_true_false_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'false_false_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'false_false_true_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.TARGETED },
+    'false_false_true_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
     'false_false_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'false_false_true_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
+    'false_false_true_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.EXTENDED },
     'false_false_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'false_false_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
+    'false_false_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'false_false_false_false_true': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: null }, // contradiction. Never logically true
     'false_false_false_false_false': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: null },
 };
