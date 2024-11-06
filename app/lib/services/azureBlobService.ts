@@ -13,8 +13,8 @@ const blobServiceClient =
   BlobServiceClient.fromConnectionString(connectionString);
 
 const imageContainerName = 'image-storage';
-const resumeContainerName = 'resume-storage';
-const docFileExtensionsAllowed = ['.pdf', '.doc', '.docx', '.txt', '.rtf'];
+const pdfContainerName = 'resume-storage';
+const docFileExtensionsAllowed = ['.pdf'];
 const imagFileExtensionsAllowed = [
   '.svg',
   '.png',
@@ -25,9 +25,10 @@ const imagFileExtensionsAllowed = [
 ];
 
 // Enum to define possible prefixes for different types of files
-enum BlobPrefix {
+export enum BlobPrefix {
   Avatar = 'avatar',
   Resume = 'resume',
+  CoverLetter = 'coverLetter'
 }
 
 // Needed to map the correct content-type property based on file extension
@@ -60,8 +61,25 @@ export async function uploadResume(
     userId,
     BlobPrefix.Resume,
     docFileExtensionsAllowed,
-    resumeContainerName,
+    pdfContainerName,
     true,
+  );
+}
+
+// Upload cover letter method using the generalized uploadFile function with SAS token
+export async function uploadCoverLetter(
+    file: Buffer,
+    fileName: string,
+    userId: string,
+): Promise<string> {
+  return await uploadFile(
+      file,
+      fileName,
+      userId,
+      BlobPrefix.CoverLetter,
+      docFileExtensionsAllowed,
+      pdfContainerName,
+      true,
   );
 }
 
@@ -69,7 +87,14 @@ export async function uploadResume(
 export async function getResumeUrl(userId: string): Promise<string | null> {
   if (userId.length < 1) return null;
   const blobPrefix = `${userId}/${BlobPrefix.Resume}`; // Common prefix for resumes
-  return await getBlobUrlWithSas(resumeContainerName, blobPrefix);
+  return await getBlobUrlWithSas(pdfContainerName, blobPrefix);
+}
+
+// Method to get a link to the cover letter  with a SAS token
+export async function getCoverLetterUrl(userId: string): Promise<string | null> {
+  if (userId.length < 1) return null;
+  const blobPrefix = `${userId}/${BlobPrefix.CoverLetter}`; // Common prefix for cover letters
+  return await getBlobUrlWithSas(pdfContainerName, blobPrefix);
 }
 
 // Upload avatar method using the generalized uploadFile function without SAS token
