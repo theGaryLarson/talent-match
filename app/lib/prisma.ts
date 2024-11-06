@@ -488,7 +488,6 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
       years_work_exp: true,
       employment_type_sought: true,
       targeted_pathway: true,
-      resume_url: true,
       portfolio_url: true,
       users: {
         select: {
