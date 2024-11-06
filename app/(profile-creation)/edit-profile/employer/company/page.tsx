@@ -52,8 +52,7 @@ export default function CreateEmployerCompanyInfoPage() {
     (state: RootState) => state.employer.company,
   );
 
-  //TODO: to simplify this page we need to reduce the number of state variables, and have one master object
-  // the education page does this by, not  creating companyData as a state variable... however educationData is still a variable? unsure if this has room for error
+  //NOTE: companyData is the master object for this entire page
   const [companyData, setCompanyData] = useState<
     PostCompanyInfoDTO | PostCompanyInfoDTO
   >({
@@ -62,7 +61,6 @@ export default function CreateEmployerCompanyInfoPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // const [logoUrl, setLogoUrl] = useState<string | null>(null);
   //NOTE: per review yearFounded potentially may not be reduced into master object
   const [yearFounded, setYearFounded] = useState<Dayjs | null>(
     companyData.yearFounded === '' ? null : dayjs(companyData.yearFounded),
@@ -72,7 +70,7 @@ export default function CreateEmployerCompanyInfoPage() {
 
   const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
     ReadCompanyInfoDTO | string
-  >(''); // REVIEW Step 1: convert this datatype into a ReadCompanyInfoDTO rather than CompanyDropdownDTO. Step 2. Transform data in Read object into Post object in handleSubmit
+  >('');
   const [companyId, setCompanyId] = useState<string | null>(null); // State for companyId // set this on the companyData object inside handleSubmit and remove this. Use a new uuidv4() if its a new company. Otherwise the companyId is set in companyData from the drop down.
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
     null,
@@ -239,41 +237,11 @@ export default function CreateEmployerCompanyInfoPage() {
       });
       setCompanyId(companyObj.companyId);
     }
+
     if (prevSelectCompanyDropdownData.current !== selectCompanyDropdownData) {
       dispatch(setPageDirty('company'));
     }
 
-    // NOTE: No longer allowing string / new company name
-    // selectCompanyDropdownData is a string (new company name)
-    // Check if previous value was an object
-    // else {
-    //   if (
-    //     !companyData.companyId ||
-    //     (typeof prevSelectCompanyDropdownData.current === 'object' &&
-    //       prevSelectCompanyDropdownData.current !== null)
-    //   ) {
-    //     // Transitioned from object to string - reset inputs
-    //     const newCompanyId = uuidv4();
-    //     setCompanyData({
-    //       ...initialState.company,
-    //       companyId: newCompanyId,
-    //       employerId: session?.user.employerId!,
-    //       companyName: selectCompanyDropdownData as string,
-    //     });
-    //     setCompanyId(newCompanyId);
-    //     setYearFounded(null);
-    //     setIndustry({
-    //       industry_sector_id: '',
-    //       sector_title: '',
-    //     });
-    //   } else {
-    //     // Continuing to type a new company name - update companyName only
-    //     setCompanyData({
-    //       ...companyData,
-    //       companyName: selectCompanyDropdownData as string,
-    //     });
-    //   }
-    // }
     // Update the previous value
     prevSelectCompanyDropdownData.current = selectCompanyDropdownData;
   }, [selectCompanyDropdownData, pathname]);
@@ -407,7 +375,7 @@ export default function CreateEmployerCompanyInfoPage() {
       devLog(chosenCompanyData);
       // new company: values stored in companyData from page inputs
     } else {
-      // REVIEW - @Gary I think for new company companyId we can add this line below to create new companyId here and only here? or do we need elsewhere
+      // REVIEW: new companyId here and only here? or do we need elsewhere
       chosenCompanyData.companyId = uuidv4();
       // chosenCompanyData.companyId = companyData.companyId; // newCompanyId is created for a new company
       chosenCompanyData.companyName = selectCompanyDropdownData; // string data type because company doesn't exist in db
