@@ -177,6 +177,7 @@ export type JsShowcaseDTO = {
   portfolioUrl?: string | null;
   portfolioPassword?: string | null; // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
   video_url?: string | null;
+  linkedin_url?: string | null;
 };
 
 export type JsPreferencesDTO = {
