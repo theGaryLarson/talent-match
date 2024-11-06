@@ -53,15 +53,13 @@ export default function CreateEmployerCompanyInfoPage() {
   );
 
   //NOTE: companyData is the master object for this entire page
-  const [companyData, setCompanyData] = useState<
-    PostCompanyInfoDTO | PostCompanyInfoDTO
-  >({
+  const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({
     ...companyStoreData,
   });
   const dispatch = useDispatch();
   const router = useRouter();
 
-  //NOTE: per review yearFounded potentially may not be reduced into master object
+  //NOTE: per review yearFounded potentially may not be reduced into master object due to Dayjs
   const [yearFounded, setYearFounded] = useState<Dayjs | null>(
     companyData.yearFounded === '' ? null : dayjs(companyData.yearFounded),
   );
@@ -71,7 +69,6 @@ export default function CreateEmployerCompanyInfoPage() {
   const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
     ReadCompanyInfoDTO | string
   >('');
-  const [companyId, setCompanyId] = useState<string | null>(null); // State for companyId // set this on the companyData object inside handleSubmit and remove this. Use a new uuidv4() if its a new company. Otherwise the companyId is set in companyData from the drop down.
   const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
     null,
   );
@@ -187,7 +184,6 @@ export default function CreateEmployerCompanyInfoPage() {
         } else {
           // No company data exists; generate a new companyId
           const newCompanyId = uuidv4();
-          setCompanyId(newCompanyId);
           setCompanyData((prevState) => ({
             ...prevState,
             ...initialState.company,
@@ -235,7 +231,6 @@ export default function CreateEmployerCompanyInfoPage() {
         industry_sector_id: companyObj.industrySectorId ?? '',
         sector_title: '', // Not needed; only ID is required
       });
-      setCompanyId(companyObj.companyId);
     }
 
     if (prevSelectCompanyDropdownData.current !== selectCompanyDropdownData) {
@@ -341,7 +336,7 @@ export default function CreateEmployerCompanyInfoPage() {
       return;
     }
 
-    // REVIEW - at this point, we spread company data as PostCompanyInfoDTO? If we are using PostCompanyInfoDTO from the start does that change anything?
+    // REVIEW: chosenCompanyData spreads everything we have in the master object companyData. We needed to do this because.. we had issues with it being a string?
     const chosenCompanyData: PostCompanyInfoDTO = { ...companyData };
 
     chosenCompanyData.employerId = session?.user.employerId!;
@@ -350,10 +345,7 @@ export default function CreateEmployerCompanyInfoPage() {
       console.error('Company name is not available.');
       return;
     }
-    /* NOTE - core form logic currently, we use dot operator on chosenCompanyData an update either with
-    (a) selectCompanyDropdownData - aka existing company, or
-    (b) companyData - aka user manual input
-    */
+
     // company exists in selection
     if (typeof selectCompanyDropdownData !== 'string') {
       chosenCompanyData.employerId = session.user.employerId!;
@@ -374,20 +366,20 @@ export default function CreateEmployerCompanyInfoPage() {
         selectCompanyDropdownData.estimatedAnnualHires ?? ''; // not sure why null needed here
       devLog(chosenCompanyData);
       // new company: values stored in companyData from page inputs
-    } else {
-      // REVIEW: new companyId here and only here? or do we need elsewhere
-      chosenCompanyData.companyId = uuidv4();
-      // chosenCompanyData.companyId = companyData.companyId; // newCompanyId is created for a new company
-      chosenCompanyData.companyName = selectCompanyDropdownData; // string data type because company doesn't exist in db
-      chosenCompanyData.industrySectorId = industry?.industry_sector_id;
-      chosenCompanyData.logoUrl = companyData.logoUrl;
-      chosenCompanyData.websiteUrl = companyData.websiteUrl;
-      chosenCompanyData.companyEmail = companyData.companyEmail;
-      chosenCompanyData.companyPhone = companyData.companyPhone;
-      // chosenCompanyData.yearFounded = yearFounded?.toString()!;
-      // chosenCompanyData.companySize = companyData.companySize;
-      chosenCompanyData.estimatedAnnualHires = companyData.estimatedAnnualHires;
     }
+    // REVIEW: new companyId here and only here? or do we need elsewhere
+    // else {
+    //   chosenCompanyData.companyId = uuidv4();
+    //   chosenCompanyData.companyName = selectCompanyDropdownData; // string data type because company doesn't exist in db
+    //   chosenCompanyData.industrySectorId = industry?.industry_sector_id;
+    //   chosenCompanyData.logoUrl = companyData.logoUrl;
+    //   chosenCompanyData.websiteUrl = companyData.websiteUrl;
+    //   chosenCompanyData.companyEmail = companyData.companyEmail;
+    //   chosenCompanyData.companyPhone = companyData.companyPhone;
+    //   // chosenCompanyData.yearFounded = yearFounded?.toString()!;
+    //   // chosenCompanyData.companySize = companyData.companySize;
+    //   chosenCompanyData.estimatedAnnualHires = companyData.estimatedAnnualHires;
+    // }
 
     //ANCHOR - on submit, try to upsert chosenCompanyData, finalized/corrected data above
     try {
@@ -416,12 +408,15 @@ export default function CreateEmployerCompanyInfoPage() {
             companyId: selectCompanyDropdownData.companyId,
             companyIsApproved: selectCompanyDropdownData.isApproved,
           });
-        } else {
+        }
+        //REVIEW: this case may no longer be allowed, may potentially remove this else
+        else {
           //company drop down selection doesn't exist. use generated companyId instead
-          await updateSessionProperties({
-            companyId: chosenCompanyData.companyId, // new uuidv4() generated above
-            companyIsApproved: false,
-          });
+          // await updateSessionProperties({
+          //   companyId: chosenCompanyData.companyId, // new uuidv4() generated above
+          //   companyIsApproved: false,
+          // });
+          console.error('Company may not exist');
         }
 
         if (typeof selectCompanyDropdownData === 'object') {
@@ -547,7 +542,7 @@ export default function CreateEmployerCompanyInfoPage() {
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
-              userId={companyId!}
+              userId={companyData.companyId!}
               onImageUpload={handleImageUpload}
               initialImageUrl={
                 typeof selectCompanyDropdownData === 'object' &&
