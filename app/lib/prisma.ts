@@ -1,19 +1,13 @@
-import {
-  companies,
-  edu_providers,
-  PostalGeoData, Prisma,
-  PrismaClient,
-  programs,
-} from '@prisma/client';
+import {companies, edu_providers, PostalGeoData, Prisma, PrismaClient, programs,} from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
+import {SkillDTO} from '@/data/dtos/SkillDTO';
+import {EducationProviderDTO} from '@/data/dtos/EducationProviderDTO';
 
-import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
-import { v4 as uuidv4 } from 'uuid';
-import { Role } from "@/data/dtos/UserInfoDTO";
-import { auth } from "@/auth";
-import { NextResponse } from "next/server";
+import {GeneralProgramDTO} from '@/data/dtos/GeneralProgramDTO';
+import {v4 as uuidv4} from 'uuid';
+import {Role} from "@/data/dtos/UserInfoDTO";
+import {auth} from "@/auth";
+import {NextResponse} from "next/server";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -606,8 +600,18 @@ export async function getTechnologyAreas() {
 }
 
 export async function deleteUser(role: Role, userId: string) {
-  // TODO: create delete user & remove jobseeker/soft-delete from api-routes
-  // jobseeker cannot be deleted if they have participated in a partner training provider program (i.e. edu_provider.iscoalitionmember = true)
+  try {
+    if (role === Role.JOBSEEKER) {
+      await deleteJobseeker(userId);
+    }
+
+    if (role === Role.EMPLOYER) {
+      await deleteEmployer(userId);
+    }
+  } catch (e) {
+    
+  }
+  
 }
 
 async function deleteJobseeker(userId: string) {
