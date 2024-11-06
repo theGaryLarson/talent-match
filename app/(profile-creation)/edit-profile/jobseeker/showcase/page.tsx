@@ -285,7 +285,7 @@ export default function CreateJobseekerProfileShowcasePage() {
             <InputFileDropzone
               id="profile-creation-intro-resume"
               fileTypeText="PDF"
-              blobPrefix={BlobPrefix.Resume}
+              blobPrefix={'resume' as BlobPrefix}
               accept=".pdf"
               maxSizeMB={5}
               userId={session?.user?.id!}
