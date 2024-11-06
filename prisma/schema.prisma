@@ -351,7 +351,8 @@ model jobseekers {
   intern_hours_required            Int                       @default(0, map: "DF__jobseeker__inter__6383C8BA") @db.SmallInt
   intro_headline                   String?                   @db.VarChar(max)
   current_job_title                String?                   @db.VarChar(255)
-  resume_url                       String?                   @db.VarChar(max)
+  // resume_url                       String?                   @db.VarChar(max)
+  linkedin_url                     String?                   @db.VarChar(255)
   years_work_exp                   Int?                      @db.SmallInt
   months_internship_exp            Int?                      @db.SmallInt
   portfolio_url                    String?                   @db.VarChar(255)
