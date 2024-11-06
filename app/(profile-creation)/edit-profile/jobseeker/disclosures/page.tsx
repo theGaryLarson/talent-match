@@ -207,7 +207,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <SelectWithLabel
                 id="profile-creation-disclosures-gender"
                 fullWidth
-                label="Gender"
+                label="Gender *"
                 value={gender}
                 onChange={(event) => {
                   dispatch(setPageDirty('disclosures'));
@@ -228,7 +228,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <SelectWithLabel
                 id="profile-creation-disclosures-veterans"
                 fullWidth
-                label="Veterans"
+                label="Veterans *"
                 value={veteranStatus}
                 onChange={(event) => {
                   dispatch(setPageDirty('disclosures'));
@@ -245,7 +245,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <SelectWithLabel
                 id="profile-creation-disclosures-ethnicity"
                 fullWidth
-                label="Ethnicity"
+                label="Ethnicity *"
                 value={ethnicity}
                 onChange={(event) => {
                   dispatch(setPageDirty('disclosures'));
@@ -265,7 +265,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <SelectWithLabel
                 id="profile-creation-disclosures-race"
                 fullWidth
-                label="Race"
+                label="Race *"
                 value={race}
                 onChange={(event) => {
                   dispatch(setPageDirty('disclosures'));
@@ -391,16 +391,19 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   value="yes"
                   control={<Radio />}
                   label="Yes, I have a disability, or have had one in the past"
+                  required
                 />
                 <FormControlLabel
                   value="none"
                   control={<Radio />}
                   label="No, I do not have a disability and have not had one in the past"
+                  required
                 />
                 <FormControlLabel
                   value="undisclosed"
                   control={<Radio />}
                   label="I do not want to answer"
+                  required
                 />
               </RadioGroup>
             </FormControl>
