@@ -181,24 +181,24 @@ export default function CreateEmployerCompanyInfoPage() {
         if (session?.user?.companyId) {
           devLog('session.user.companyId: ', session.user.companyId);
           fetchCompanyData(session.user.companyId);
-        } else {
-          // No company data exists; generate a new companyId
-          const newCompanyId = uuidv4();
-          setCompanyData((prevState) => ({
-            ...prevState,
-            ...initialState.company,
-            employerId: session.user.employerId!,
-            companyId: newCompanyId,
-          }));
         }
+        // REVIEW: section still needed without new company to generate?
+        // else {
+        //   // No company data exists; generate a new companyId
+        //   const newCompanyId = uuidv4();
+        //   setCompanyData((prevState) => ({
+        //     ...prevState,
+        //     ...initialState.company,
+        //     employerId: session.user.employerId!,
+        //     companyId: newCompanyId,
+        //   }));
+        // }
       } else {
         // redux store contains company data
         setCompanyData(companyStoreData);
         setYearFounded(
           companyData.yearFounded ? dayjs(companyData.yearFounded) : null,
         );
-        // REVIEW: commented out for testing; should be set with setCompanyData already?
-        // setLogoUrl(companyData.logoUrl ?? null);
       }
     };
 
@@ -321,10 +321,6 @@ export default function CreateEmployerCompanyInfoPage() {
         logoUrl: url,
       });
     }
-
-    // REVIEW: commented out for testing; should be set with setCompanyData(prevState) above already?
-    // Update logoUrl state
-    // setLogoUrl(url);
   };
 
   //ANCHOR - handle submit, finalizes data that will be updated in store/database
