@@ -6,3 +6,16 @@ export enum TimeUntilCompletion {
     NineToTwelveMonths = "9-12 months",
     TwelvePlusMonths = "12+ months"
 }
+
+export enum CareerPrepStatus {
+    Applied = "Applied",
+    SentAssessment = "Sent Assessment",
+    CreatingPlan = "Creating Plan",
+    MeetingScheduled = "Meeting Scheduled",
+    MetCareerNavigator = "Met Career Navigator",
+    SentIntakeForm = "Sent Intake Form",
+    Enrolled = "Enrolled",
+    Completed = "Completed",
+    Rejected = "Rejected",
+    Withdrawn = "Withdrawn"
+}
