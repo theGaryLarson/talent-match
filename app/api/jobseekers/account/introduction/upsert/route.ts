@@ -31,7 +31,6 @@ export async function POST(request: Request) {
       email,
       introHeadline,
       currentJobTitle,
-      resumeUrl,
     } = body;
 
     // const formattedPhone = formatPhoneE164(phoneCountryCode, phone);
@@ -92,7 +91,6 @@ export async function POST(request: Request) {
         update: {
           intro_headline: introHeadline,
           current_job_title: currentJobTitle,
-          resume_url: resumeUrl,
           users: {
             connect: {
               id: userId,
@@ -114,7 +112,6 @@ export async function POST(request: Request) {
           intern_hours_required: undefined,
           intro_headline: introHeadline, // TODO: remove and add to Showcase route
           current_job_title: currentJobTitle,
-          resume_url: resumeUrl,
           years_work_exp: undefined,
           portfolio_url: undefined,
           video_url: undefined,
@@ -137,7 +134,6 @@ export async function POST(request: Request) {
         email: user.email,
         introHeadline: jobseeker.intro_headline,
         currentJobTitle: jobseeker.current_job_title,
-        resumeUrl: jobseeker?.resume_url ?? null,
       };
 
       const meta = {
