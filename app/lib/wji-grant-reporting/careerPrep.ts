@@ -17,5 +17,11 @@ export enum CareerPrepStatus {
     Enrolled = "Enrolled",
     Completed = "Completed",
     Rejected = "Rejected",
-    Withdrawn = "Withdrawn"
+    Withdrawn = "Withdrawn" // additional option from what was given.
+}
+
+export enum NoteType {
+    MEETING = 'Meeting',
+    REVIEW = 'Review',
+    FOLLOWUP='Follow-up'
 }
