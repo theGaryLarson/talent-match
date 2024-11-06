@@ -280,7 +280,7 @@ export default function CreateJobseekerProfileShowcasePage() {
             </div>
           </fieldset>
           <div>
-            Resume *
+            Resume
             <InputFileDropzone
               id="profile-creation-intro-resume"
               fileTypeText="PDF, DOC, DOCX, TXT or RTF"

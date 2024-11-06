@@ -254,24 +254,22 @@ export default function CreateJobseekerProfileIntroPage() {
                 placeholder="Your first name"
                 onChange={handleFieldChange}
                 value={introData.firstName}
-                required
               >
-                First Name *
+                First Name
               </InputTextWithLabel>
               <InputTextWithLabel
                 id="profile-creation-intro-lastName"
                 placeholder="Your last name"
                 onChange={handleFieldChange}
                 value={introData.lastName}
-                required
               >
-                Last Name *
+                Last Name
               </InputTextWithLabel>
             </div>
 
             <div className="profile-form-grid">
               <DatePicker
-                label="Birth Date *"
+                label="Birth Date"
                 value={birthdate}
                 onChange={setBirthdate}
               />
@@ -283,10 +281,9 @@ export default function CreateJobseekerProfileIntroPage() {
                 placeholder="Zipcode"
                 onChange={handleFieldChange}
                 value={introData.zipCode}
-                required
                 pattern="\d{5}(-\d{4})?"
               >
-                Zip Code *
+                Zip Code
               </InputTextWithLabel>
             </div>
 
@@ -663,7 +660,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 ]}
                 value={introData.phoneCountryCode ?? 'United States +1'}
               >
-                Country Phone Code *
+                Country Phone Code
               </SelectOptionsWithLabel>
               <InputTextWithLabel
                 id="profile-creation-intro-phone"
@@ -671,9 +668,8 @@ export default function CreateJobseekerProfileIntroPage() {
                 placeholder="Phone number"
                 onChange={handleFieldChange}
                 value={introData.phone ?? ''}
-                required
               >
-                Phone Number *
+                Phone Number
               </InputTextWithLabel>
             </div>
           </fieldset>

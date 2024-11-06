@@ -438,9 +438,8 @@ export default function CreateJobseekerProfileEducationPage() {
               placeholder="Please select"
               onChange={handleLevelOfStudy}
               value={highestLevelOfStudy}
-              required
             >
-              What is your highest completed level of study? *
+              What is your highest completed level of study?
             </SelectOptionsWithLabel>
           </fieldset>
           <fieldset>

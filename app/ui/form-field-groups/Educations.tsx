@@ -217,7 +217,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             />
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/high-school/search/"
-              fieldLabel="What is your program? *"
+              fieldLabel="What is your program?"
               id="profile-creation-education-high-school-program"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
@@ -238,10 +238,9 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e) =>
                 handleChange(index, classDegreeType, e.target.value)
               }
-              required
               value={education[classDegreeType] as string}
             >
-              What is your degree type? *
+              What is your degree type?
             </SelectOptionsWithLabel>
 
             {/*added for WJI data collection alignment (Please do not modify data).*/}
@@ -328,7 +327,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             />
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/college/search/"
-              fieldLabel="What is your program? *"
+              fieldLabel="What is your program?"
               id="profile-creation-education-college-program"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
@@ -349,10 +348,9 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e) =>
                 handleChange(index, classDegreeType, e.target.value)
               }
-              required
               value={education[classDegreeType] as string}
             >
-              What is your degree type? *
+              What is your degree type?
             </SelectOptionsWithLabel>
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
@@ -437,7 +435,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             />
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/training-programs/search/"
-              fieldLabel="What is your training program? *"
+              fieldLabel="What is your training program?"
               id="profile-creation-education-training-provider-program-name"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
@@ -539,14 +537,13 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e) =>
                 handleChange(index, classPreAppEdSystem, e.target.value)
               }
-              required
               value={education[classPreAppEdSystem]?.toString() ?? ''}
             >
-              What is your education system? *
+              What is your education system?
             </SelectOptionsWithLabel>
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/pre-apprenticeship/search/"
-              fieldLabel="What is your program? *"
+              fieldLabel="What is your program?"
               id="profile-creation-education-preapprenticeship-program"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."

@@ -123,7 +123,7 @@ export default memo(function ProjectExperiences({
           }
           value={projectExperience[classReferenceUrl]}
         >
-          Reference url
+          Reference URL
         </InputTextWithLabel>
         <InputTextWithLabel
           id={
@@ -136,8 +136,9 @@ export default memo(function ProjectExperiences({
             handleChange(index, classDescription, e.target.value)
           }
           value={projectExperience[classDescription]}
+          required
         >
-          Description/Problem solved
+          Description/Problem solved *
         </InputTextWithLabel>
         <InputTextWithLabel
           type="number"
@@ -146,14 +147,15 @@ export default memo(function ProjectExperiences({
           }
           onChange={(e) => handleChange(index, classTeamSize, e.target.value)}
           value={projectExperience[classTeamSize] ?? ''}
+          required
         >
-          Team Size
+          Team Size *
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid">
         <TagsWithAutocomplete
           apiSearchRoute="/api/skills/search/"
-          fieldLabel="Skills/Tech stack"
+          fieldLabel="Skills/Tech stack *"
           id={
             classNamePrefix +
             projectExperience.projectId +

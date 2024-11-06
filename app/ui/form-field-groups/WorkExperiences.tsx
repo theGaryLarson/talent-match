@@ -98,7 +98,7 @@ export default memo(function WorkExperiences({
             classNamePrefix + workExperience.workId + '-' + classCompanyIndustry
           }
           apiAutoloadRoute="/api/employers/industry-sectors"
-          label="Industry Sector *"
+          label="Industry Sector"
           getOptionLabel={(option: IndustrySectorDropdownDTO) =>
             option.sector_title
           }
@@ -110,7 +110,6 @@ export default memo(function WorkExperiences({
           }
           placeholder="Your company's industry sector"
           onChange={(val) => handleChange(index, classCompanyIndustry, val)}
-          required
           value={workExperience[classCompanyIndustry]}
           loadingText="Retrieving industry sectors..."
         />
@@ -119,7 +118,7 @@ export default memo(function WorkExperiences({
             classNamePrefix + workExperience.workId + '-' + classCompanyTechArea
           }
           apiAutoloadRoute="/api/employers/technology-areas"
-          label="Technical Expertise *"
+          label="Technical Expertise"
           getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
           getOptionId={(option: TechnologyAreaDropdownDTO) => option.id}
           getOptionFromId={(options: TechnologyAreaDropdownDTO[], id: string) =>
@@ -127,7 +126,6 @@ export default memo(function WorkExperiences({
           }
           placeholder="Your job role's area of technical expertise"
           onChange={(val) => handleChange(index, classCompanyTechArea, val)}
-          required
           value={workExperience[classCompanyTechArea]}
           loadingText="Retrieving technology areas..."
         />
@@ -154,7 +152,7 @@ export default memo(function WorkExperiences({
           onChange={(val) => handleChange(index, classStarts, val)}
         />
         <DatePicker
-          label={'Ends *'}
+          label={'Ends'}
           views={['month', 'year']}
           value={
             workExperience[classEnds]?.isValid()
