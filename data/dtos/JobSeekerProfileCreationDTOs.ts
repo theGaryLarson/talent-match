@@ -15,7 +15,6 @@ export type JsIntroDTO = {
   email: string;
   introHeadline?: string | null;
   currentJobTitle?: string | null;
-  resumeUrl?: string | null;
 };
 
 export type JsIntroPostDTO = {
@@ -33,7 +32,6 @@ export type JsIntroPostDTO = {
   email: string;
   introHeadline?: string | null;
   currentJobTitle?: string | null;
-  resumeUrl?: string | null;
 };
 
 export type CertDTO = {
@@ -66,7 +64,7 @@ export enum HighestCompletedEducationLevel {
   // VocationalQualification = 'Vocational Qualification / Certification',
   NoFormalEducation = 'Less than high school diploma',
   GED = 'GED',
-  HighSchool = 'High School',
+  HighSchool = 'High School Graduate',
   PostHighSchool = 'Some post high school, no degree or certificate',
   Certificate = 'Certificate (less than two years)',
   Associates = 'Associates',
@@ -179,7 +177,6 @@ export type JsShowcaseDTO = {
   portfolioUrl?: string | null;
   portfolioPassword?: string | null; // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
   video_url?: string | null;
-  resume_url?: string | null;
 };
 
 export type JsPreferencesDTO = {
