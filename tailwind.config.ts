@@ -30,7 +30,8 @@ const config: Config = {
           text: "#457996",
           textdark: "#014361",
           text2: "#047F9C",
-          trans: "#457996BF"
+          trans: "#457996BF",
+          link: "#1e88e5"
           
 
         },

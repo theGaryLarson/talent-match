@@ -1,5 +1,5 @@
 'use client'
-export default function SaveJobPostButton(params: {id:string}){
+export default function ApplyToJobButton(params: {id:string}){
     const save = async () => {
         try {
             const response = await fetch(`/api/joblistings/apply/${params.id}`, {

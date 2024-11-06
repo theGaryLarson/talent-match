@@ -1,7 +1,3 @@
-import {ArrowRightIcon} from '@heroicons/react/24/outline';
-import {lusitana} from '@/app/ui/fonts';
-import Link from 'next/link';
-import Image from 'next/image';
 import PageBanner from '../ui/components/PageBannner';
 import RoundedButtonCard from '../ui/components/RoundedButtonCard';
 //entire TWC landing page

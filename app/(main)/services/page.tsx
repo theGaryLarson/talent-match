@@ -1,7 +1,5 @@
-import ArticleStub from '@/app/ui/components/ArticleStub';
 import PageBanner from '@/app/ui/components/PageBannner';
 import RoundedButtonCard from '@/app/ui/components/RoundedButtonCard';
-import VideoBlock from '@/app/ui/components/VideoBlock';
 
 //landing page for career services
 export default function Page() {

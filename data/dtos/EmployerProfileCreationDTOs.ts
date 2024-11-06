@@ -97,7 +97,7 @@ export type ReadCompanyInfoDTO = {
   companyName: string;
   companyAddresses?: ReadAddressDTO[];
   logoUrl?: string | null;
-  aboutUs: string;
+  aboutUs?: string;
   companyEmail: string;
   yearFounded: string;
   websiteUrl?: string | null;
@@ -106,7 +106,7 @@ export type ReadCompanyInfoDTO = {
   companyPhone?: string | null;
   mission?: string | null;
   vision?: string | null;
-  employeeCount?: string | null;
+  companySize?: string | null;
   estimatedAnnualHires?: string | null;
   isApproved?: boolean | null;
   createdBy: string;

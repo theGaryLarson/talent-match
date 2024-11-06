@@ -1,6 +1,7 @@
 import { getMyJobListings } from "@/app/lib/joblistings";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import DeleteJobPostingButton from "../jobPostings/DeleteJobPostingButton";
 const getDaysSince= (d:Date)=> {
       return Math.floor((Date.now() - d.getTime()) / 86400000)
     }
@@ -15,10 +16,10 @@ export default async function EmployerRecentJobPosts() {
       </div>
     <div className="p-4 bg-white rounded-[10px] shadow gap-2 divide-y">
       {
-      (jobPostings.length > 0)?jobPostings.map((job)=>{
+      jobPostings.map((job)=>{
         return <SingleJobPost jobtitle={job.job_title} joblistingId={job.job_posting_id} days={getDaysSince(job.publish_date)} key={job.job_posting_id} industry={job.industry_sectors?.sector_title??''}/>
-      }):<AddJobLink/>
-      }
+      })
+      }<AddJobLink/>
     </div>
   </div>;
 }
@@ -36,8 +37,9 @@ function SingleJobPost(props:{jobtitle:string, industry:string, days:number, job
       dayPostedText =  `Posted ${props.days} Ago`
   }
   return (
-    <Link className="flex items-center bg-white p-2" href={"/services/joblistings/"+props.joblistingId}>
-      <div className="flex h-[17px] items-center justify-start gap-2">
+    <div className="flex justify-between px-2">
+    <Link className="flex items-center" href={"/services/joblistings/"+props.joblistingId}>
+      <div className="flex items-center justify-start gap-2">
         <div className="font-['Roboto'] text-sm font-semibold leading-[16.80px] tracking-tight text-[#047f9c]">
           {props.jobtitle}
         </div>
@@ -51,14 +53,9 @@ function SingleJobPost(props:{jobtitle:string, industry:string, days:number, job
           {dayPostedText}
         </div>
       </div>
-      <div className="flex h-5 w-5 items-center justify-center">
-        <div className="inline-flex h-5 w-5 items-center justify-center">
-          <div className="inline-flex h-5 w-5 items-center justify-center">
-            <div className="relative flex h-5 w-5 flex-col items-start justify-start" />
-          </div>
-        </div>
-      </div>
     </Link>
+    <DeleteJobPostingButton id={props.joblistingId}/>
+    </div>
   );
 }
 function AddJobLink(){

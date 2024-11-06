@@ -7,7 +7,7 @@ export type JobSeekerCardViewDTO = {
   BookmarkedJobseeker: { // bookmarked by current user's company?
     jobseekerId: string;
     companyId: string;
-    employerId: string;
+    employerId: string|null;
   }[] | null;
   intro_headline: string | null;
   years_work_exp: number | null;
@@ -33,17 +33,17 @@ export type JobSeekerCardViewDTO = {
       zip: string;
       state: string | null;
       city: string | null;
-    };
+    } | null;
   } | null;
   jobseeker_education:
     | {
         eduProviders: {
-          name: string;
+          name: string|null;
         } | null;
         edLevel: string | null;
-        enrollmentStatus?: ProgramEnrollmentStatus;
-        startDate: string | null;
-        gradDate: string | null;
+        enrollmentStatus?: ProgramEnrollmentStatus|string;
+        startDate: string | null| Date;
+        gradDate: string | null| Date;
         degreeType: string | null;
         program: {
           id: string;

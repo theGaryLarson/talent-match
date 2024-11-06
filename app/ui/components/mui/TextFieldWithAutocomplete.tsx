@@ -17,6 +17,7 @@ interface Props<ValueType> {
   className?: string;
   maxTags?: number;
   noResultsText?: string | undefined;
+  allowNewOption?: boolean;
   value: string | ValueType;
   onChange: (
     event: SyntheticEvent<Element, Event>,
@@ -35,6 +36,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
   id,
   className = '',
   noResultsText,
+  allowNewOption = true,
   value = '',
   onChange,
   searchingText,
@@ -76,7 +78,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
   return (
     <Autocomplete
       className={'flex flex-1 ' + className}
-      freeSolo
+      freeSolo={allowNewOption}
       autoComplete
       autoSelect
       filterSelectedOptions
@@ -96,9 +98,15 @@ export default function TextFieldWithAutocomplete<ValueType>({
                 val.toLowerCase().trim(),
             );
             if (optionIndex !== -1) {
+              //if result is found
               onChange(ev, options[optionIndex], reason, details);
             } else {
-              onChange(ev, val, reason, details);
+              if (!allowNewOption) {
+                //if allowNewOption is set to false
+                onChange(ev, null, reason, details);
+              } else {
+                onChange(ev, val, reason, details);
+              }
             }
           }
         } else if (reason === 'clear') {
