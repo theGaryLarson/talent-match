@@ -281,7 +281,7 @@ model OtherPriorityPopulations {
 
 //////////////////////////// Career Prep Additions //////////////////////
 
-model CareerPrepApplication {
+model CareerPrepAssessment {
   jobseekerId             String     @id(clustered: false, map: "career_prep_app_PRIMARY") @default(dbgenerated("newid()")) @map("career_prep_app_id") @db.UniqueIdentifier
   applicationDate         DateTime
   pronouns                String     @db.VarChar(15)
@@ -294,20 +294,19 @@ model CareerPrepApplication {
 }
 
 model CaseMgmt {
-  id                               String                 @id(clustered: false, map: "case_mgmt_PRIMARY") @default(dbgenerated("newid()")) @map("case_mgmt_id") @db.UniqueIdentifier
-  managerId                        String                 @map("cfa_admin_id") @db.UniqueIdentifier
-  jobseekerId                      String                 @map("jobseeker_id") @db.UniqueIdentifier
-  prepEnrollmentStatus             String                 @db.VarChar(30)
-  ratingTechSkill                  Int?                   @db.TinyInt
-  ratingCareerReadiness            Int?                   @db.TinyInt
-  ratingSoftSkills                 Int?                   @db.TinyInt
-  careerPrepTrack                  String                 @db.VarChar(15)
-  prepStartDate                    DateTime?              @db.DateTime
-  prepExpectedEndDate              DateTime?              @db.DateTime
-  user                             User                   @relation(fields: [managerId], references: [id], onUpdate: NoAction, onDelete: NoAction, map: "fk_case_mgmt_user1")
-  CaseMgmtNotes                    CaseMgmtNotes[]
-  CareerPrepApplication            CareerPrepApplication? @relation(fields: [careerPrepApplicationJobseekerId], references: [jobseekerId])
-  careerPrepApplicationJobseekerId String?                @db.UniqueIdentifier
+  id                    String                @id(clustered: false, map: "case_mgmt_PRIMARY") @default(dbgenerated("newid()")) @map("case_mgmt_id") @db.UniqueIdentifier
+  managerId             String                @map("cfa_admin_id") @db.UniqueIdentifier
+  jobseekerId           String                @map("jobseeker_id") @db.UniqueIdentifier
+  prepEnrollmentStatus  String                @db.VarChar(30)
+  ratingTechSkill       Int?                  @db.TinyInt
+  ratingCareerReadiness Int?                  @db.TinyInt
+  ratingSoftSkills      Int?                  @db.TinyInt
+  careerPrepTrack       String                @db.VarChar(15)
+  prepStartDate         DateTime?             @db.DateTime
+  prepExpectedEndDate   DateTime?             @db.DateTime
+  user                  User                  @relation(fields: [managerId], references: [id], onUpdate: NoAction, onDelete: NoAction, map: "fk_case_mgmt_user1")
+  CaseMgmtNotes         CaseMgmtNotes[]
+  CareerPrepAssessment  CareerPrepAssessment? @relation(fields: [jobseekerId], references: [jobseekerId])
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
   @@index([jobseekerId], map: "fk_case_mgmt_jobseeker1_idx")
@@ -439,7 +438,7 @@ model jobseekers {
   BookmarkedJobs                   job_postings[]            @relation("BookMarkedJobs")
   appliedJobs                      job_postings[]            @relation("AppliedJobs")
   TraineeDetail                    TraineeDetail[]
-  CareerPrepApplication            CareerPrepApplication[]
+  CareerPrepAssessment             CareerPrepAssessment[]
   JobPlacement                     JobPlacement[]
 
   @@index([targeted_pathway], map: "jobseekers_fk_jobseeker_Pathways1_idx")
