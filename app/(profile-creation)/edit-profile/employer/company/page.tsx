@@ -430,7 +430,7 @@ export default function CreateEmployerCompanyInfoPage() {
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const handleClick = () => {
+  const openSnackbar = () => {
     setOpen(true);
   };
 
@@ -453,8 +453,6 @@ export default function CreateEmployerCompanyInfoPage() {
         <h1>Company Info</h1>
         <p className="subtitle">* Indicates a required field</p>
 
-        {/* TODO: Snackbar needs to be tied to autofill function, can be shown below */}
-        {/* <Button onClick={handleClick}>Test Button Open Snackbar</Button> */}
         <SnackbarWithIcon
           open={open}
           onClose={handleClose}
@@ -463,7 +461,7 @@ export default function CreateEmployerCompanyInfoPage() {
             <div>
               <Typography variant="body1">Autofill completed!</Typography>
               <Typography variant="body2">
-                All changes have been saved.
+                Company info has been loaded.
               </Typography>
             </div>
           }
@@ -484,6 +482,9 @@ export default function CreateEmployerCompanyInfoPage() {
                 // logic predominately handled in useEffect
                 // Always update the dropdown value whether an existing company (object) or new company (string)
                 setSelectCompanyDropdownData(val ?? '');
+                if (selectCompanyDropdownData !== '') {
+                  openSnackbar();
+                }
               }}
               searchPlaceholder="Company name"
               getOptionLabel={(option: ReadCompanyInfoDTO) =>
