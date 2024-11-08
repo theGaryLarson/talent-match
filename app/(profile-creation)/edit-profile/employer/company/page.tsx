@@ -182,17 +182,6 @@ export default function CreateEmployerCompanyInfoPage() {
           devLog('session.user.companyId: ', session.user.companyId);
           fetchCompanyData(session.user.companyId);
         }
-        // REVIEW: section still needed without new company to generate?
-        // else {
-        //   // No company data exists; generate a new companyId
-        //   const newCompanyId = uuidv4();
-        //   setCompanyData((prevState) => ({
-        //     ...prevState,
-        //     ...initialState.company,
-        //     employerId: session.user.employerId!,
-        //     companyId: newCompanyId,
-        //   }));
-        // }
       } else {
         // redux store contains company data
         setCompanyData(companyStoreData);
@@ -332,11 +321,8 @@ export default function CreateEmployerCompanyInfoPage() {
       return;
     }
 
-    // REVIEW: chosenCompanyData spreads everything we have in the master object companyData. We needed to do this because.. we had issues with it being a string?
-    const chosenCompanyData: PostCompanyInfoDTO = { ...companyData };
-
-    chosenCompanyData.employerId = session?.user.employerId!;
-    if (chosenCompanyData.companyName === '' || null) {
+    companyData.employerId = session?.user.employerId!;
+    if (companyData.companyName === '' || null) {
       // TODO: if chosenCompany does not have name, it does not exist, setup warning Toast for existing company or contact CFA to be added
       console.error('Company name is not available.');
       return;
@@ -344,42 +330,27 @@ export default function CreateEmployerCompanyInfoPage() {
 
     // company exists in selection
     if (typeof selectCompanyDropdownData !== 'string') {
-      chosenCompanyData.employerId = session.user.employerId!;
-      chosenCompanyData.companyId = selectCompanyDropdownData.companyId;
-      chosenCompanyData.companyName = selectCompanyDropdownData.companyName;
-      chosenCompanyData.industrySectorId =
-        selectCompanyDropdownData.industrySectorId;
-      chosenCompanyData.logoUrl = selectCompanyDropdownData.logoUrl;
-      chosenCompanyData.websiteUrl = selectCompanyDropdownData.websiteUrl;
-      chosenCompanyData.companyEmail = selectCompanyDropdownData.companyEmail;
-      chosenCompanyData.companyPhone = selectCompanyDropdownData.companyPhone;
-      chosenCompanyData.yearFounded = selectCompanyDropdownData.yearFounded
+      companyData.employerId = session.user.employerId!;
+      companyData.companyId = selectCompanyDropdownData.companyId;
+      companyData.companyName = selectCompanyDropdownData.companyName;
+      companyData.industrySectorId = selectCompanyDropdownData.industrySectorId;
+      companyData.logoUrl = selectCompanyDropdownData.logoUrl;
+      companyData.websiteUrl = selectCompanyDropdownData.websiteUrl;
+      companyData.companyEmail = selectCompanyDropdownData.companyEmail;
+      companyData.companyPhone = selectCompanyDropdownData.companyPhone;
+      companyData.yearFounded = selectCompanyDropdownData.yearFounded
         ? selectCompanyDropdownData.yearFounded.toString()
         : '';
-      chosenCompanyData.companySize =
-        selectCompanyDropdownData.companySize ?? ''; //not sure why null needed here
-      chosenCompanyData.estimatedAnnualHires =
+      companyData.companySize = selectCompanyDropdownData.companySize ?? ''; //not sure why null needed here
+      companyData.estimatedAnnualHires =
         selectCompanyDropdownData.estimatedAnnualHires ?? ''; // not sure why null needed here
-      devLog(chosenCompanyData);
+      devLog(companyData);
       // new company: values stored in companyData from page inputs
     }
-    // REVIEW: new companyId here and only here? or do we need elsewhere
-    // else {
-    //   chosenCompanyData.companyId = uuidv4();
-    //   chosenCompanyData.companyName = selectCompanyDropdownData; // string data type because company doesn't exist in db
-    //   chosenCompanyData.industrySectorId = industry?.industry_sector_id;
-    //   chosenCompanyData.logoUrl = companyData.logoUrl;
-    //   chosenCompanyData.websiteUrl = companyData.websiteUrl;
-    //   chosenCompanyData.companyEmail = companyData.companyEmail;
-    //   chosenCompanyData.companyPhone = companyData.companyPhone;
-    //   // chosenCompanyData.yearFounded = yearFounded?.toString()!;
-    //   // chosenCompanyData.companySize = companyData.companySize;
-    //   chosenCompanyData.estimatedAnnualHires = companyData.estimatedAnnualHires;
-    // }
 
     //ANCHOR - on submit, try to upsert chosenCompanyData, finalized/corrected data above
     try {
-      console.log(chosenCompanyData);
+      console.log(companyData);
       const response = await fetch(
         '/api/employers/account/company-info/upsert',
         {
@@ -388,30 +359,23 @@ export default function CreateEmployerCompanyInfoPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            ...chosenCompanyData,
+            ...companyData,
             userId: session.user.id,
             employerId: session.user.employerId,
-            logoUrl: chosenCompanyData.logoUrl || companyData.logoUrl, // couldn't find why this isn't passed. Hack fix to ensure its set...
+            logoUrl: companyData.logoUrl || companyData.logoUrl, // couldn't find why this isn't passed. Hack fix to ensure its set...
           }),
         },
       );
 
       if (response.ok) {
-        dispatch(setCompany(chosenCompanyData));
+        dispatch(setCompany(companyData));
         if (typeof selectCompanyDropdownData !== 'string') {
           // company selection from drop-down exists. use the dropdown object data
           await updateSessionProperties({
             companyId: selectCompanyDropdownData.companyId,
             companyIsApproved: selectCompanyDropdownData.isApproved,
           });
-        }
-        //REVIEW: this case may no longer be allowed, may potentially remove this else
-        else {
-          //company drop down selection doesn't exist. use generated companyId instead
-          // await updateSessionProperties({
-          //   companyId: chosenCompanyData.companyId, // new uuidv4() generated above
-          //   companyIsApproved: false,
-          // });
+        } else {
           console.error('Company may not exist');
         }
 
@@ -477,7 +441,7 @@ export default function CreateEmployerCompanyInfoPage() {
               searchingText="Searching..."
               noResultsText="No company found, existing company required. Please contact administrator."
               allowNewOption={false}
-              value={selectCompanyDropdownData ?? ''}
+              value={selectCompanyDropdownData ?? companyData.companyName ?? ''}
               onChange={(e, val) => {
                 // logic predominately handled in useEffect
                 // Always update the dropdown value whether an existing company (object) or new company (string)
