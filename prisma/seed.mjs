@@ -259,7 +259,8 @@ const colleges = [
     "University of Washington",
     "University of Washington, Bothell",
     "Vancouver Island University",
-    "Seattle University"
+    "Seattle University",
+    "Other"
 ];
 
 const highestDegreeType = [

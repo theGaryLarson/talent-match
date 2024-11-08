@@ -265,8 +265,14 @@ model TrainingPartnerDetail {
 
 model TraineeDetail {
   jobseekerId              String                     @id(clustered: false, map: "traineeDetail_PRIMARY") @db.UniqueIdentifier
-  nonCompletionReason      String?                    @db.VarChar(45)
   isVerified               Boolean                    @default(false, map: "DF_trainee_isVerified") @db.Bit
+  firstName                String                     @db.VarChar(45)
+  lastName                 String                     @db.VarChar(45)
+  programTitle             String                     @db.VarChar(45)
+  enrollmentStatus         String                     @db.VarChar(45)
+  startDate                DateTime                   @db.Date
+  exitDate                 DateTime                   @db.Date
+  nonCompletionReason      String?                    @db.VarChar(45)
   jobseeker                jobseekers                 @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_traineeDetail_jobseekers1")
   OtherPriorityPopulations OtherPriorityPopulations[] @relation("OtherPriorityPopulations")
 }
@@ -291,6 +297,7 @@ model CareerPrepAssessment {
   experienceInIT          Boolean    @db.Bit
   jobseeker               jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
   CaseMgmt                CaseMgmt[]
+  Meeting                 Meeting[]
 }
 
 model CaseMgmt {
@@ -307,6 +314,7 @@ model CaseMgmt {
   user                  User                  @relation(fields: [managerId], references: [id], onUpdate: NoAction, onDelete: NoAction, map: "fk_case_mgmt_user1")
   CaseMgmtNotes         CaseMgmtNotes[]
   CareerPrepAssessment  CareerPrepAssessment? @relation(fields: [jobseekerId], references: [jobseekerId])
+  Meeting               Meeting[]
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
   @@index([jobseekerId], map: "fk_case_mgmt_jobseeker1_idx")
@@ -323,6 +331,19 @@ model CaseMgmtNotes {
   updatedAt   DateTime  @updatedAt @db.DateTime
   caseMgmt    CaseMgmt  @relation(fields: [caseMgmtId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
   user        User      @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
+}
+
+model Meeting {
+  id            String   @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()"))
+  jobseekerId   String   @db.UniqueIdentifier
+  caseMgmtId    String   @db.UniqueIdentifier
+  title         String   @db.VarChar(45)
+  meetingAgenda String?  @db.NText
+  meetingDate   DateTime @db.DateTime
+  duration      DateTime @db.Time
+
+  jobseeker CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_career_prep_assessment1")
+  caseMgmt  CaseMgmt             @relation(fields: [caseMgmtId], references: [id], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
 }
 
 //////////////////////////////////////////////////////////////////////////
