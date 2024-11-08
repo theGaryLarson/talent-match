@@ -441,7 +441,7 @@ export default function CreateEmployerCompanyInfoPage() {
               searchingText="Searching..."
               noResultsText="No company found, existing company required. Please contact administrator."
               allowNewOption={false}
-              value={selectCompanyDropdownData ?? companyData.companyName ?? ''}
+              value={selectCompanyDropdownData || companyData.companyName || ''}
               onChange={(e, val) => {
                 // logic predominately handled in useEffect
                 // Always update the dropdown value whether an existing company (object) or new company (string)
