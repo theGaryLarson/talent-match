@@ -73,6 +73,11 @@ export default auth((req) => {
     '/services/employers/faq',
     '/services/talent-search',
     '/services/jobseekers',
+    '/services/careers',
+    '/services/careers/cybersecurity',
+    '/services/careers/data-analytics',
+    '/services/careers/it-cloud-support',
+    '/services/careers/software-developer',
 
     '/api/jobseekers/query',
     '/api/employers/industry-sectors',
