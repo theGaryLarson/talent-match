@@ -99,13 +99,6 @@ export default function CreateEmployerPersonalPage() {
             ? dayjs(personalData.birthDate)
             : null,
         );
-        console.log(
-          'useEffect on load: ',
-          birthdate,
-          dayjs(birthdate).isValid(),
-          dayjs(personalData.birthDate).format('YYYY-MM-DD'),
-          dayjs(personalData.birthDate).isValid(),
-        );
         setAvatarUrl(personalData.photoUrl ?? session.user?.image!);
       }
     };
@@ -133,7 +126,6 @@ export default function CreateEmployerPersonalPage() {
   };
 
   const handleAvatarUpload = (url: string) => {
-    console.log('Uploaded Image URL:', url);
     updateSessionProperties({
       image: url,
     })
@@ -172,11 +164,6 @@ export default function CreateEmployerPersonalPage() {
     const name = `${firstName} ${lastName}`;
 
     try {
-      console.log(
-        'handleSubmit try ',
-        dayjs(birthdate).isValid(),
-        dayjs(personalData.birthDate).isValid(),
-      );
       const response = await fetch(
         '/api/employers/account/personal-info/upsert',
         {
