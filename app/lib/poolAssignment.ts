@@ -13,15 +13,9 @@ export interface JobseekerPoolVars {
 }
 
 /**
- * Defines the structure of pool assignments for easy use.
+ * Represents the result of selecting a jobseeker from a pool category.
  * @interface
  */
-export interface JobseekerPoolAssignment {
-    pool1: boolean;
-    pool2: boolean;
-    pool3: boolean;
-}
-
 export interface SelectJobseekerPoolCatResult {
     poolAssignment: PoolCategories;
     careerPrepTrackRecommendation: CareerPrepTrack | null
@@ -79,9 +73,9 @@ export const selectJobseekerPoolCategory = (user: JobseekerPoolVars): SelectJobs
  */
 export const enum PoolCategories {
     None = 'None',
-    Recommended = 'pool1',
-    JobReady = 'pool2',
-    NotJobReady = 'pool3',
+    Recommended = 'Recommended', // pool1
+    JobReady = 'Job Ready', // pool2
+    NotJobReady = 'Not Job Ready', // pool3
 }
 
 /**
