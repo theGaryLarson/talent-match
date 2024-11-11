@@ -254,7 +254,7 @@ export default function CreateEmployerPersonalPage() {
             <div className="profile-form-grid">
               <DatePicker
                 label="Birthdate *"
-                value={birthdate}
+                value={birthdate || dayjs(personalData.birthDate)}
                 onChange={(newDate) => setBirthdate(newDate)}
                 className="date-picker"
               />
