@@ -40,7 +40,6 @@ model User {
   // Optional for WebAuthn support
   Authenticator      Authenticator[]
   companies          companies[]
-  CaseMgmt           CaseMgmt[]
   CaseMgmtNotes      CaseMgmtNotes[]
 
   @@map("users")
@@ -117,6 +116,7 @@ model certificates {
   issuingOrg    String     @map("issuing_org") @db.VarChar(255)
   credentialId  String?    @map("credential_id") @db.VarChar(255)
   credentialUrl String?    @map("credential_url") @db.VarChar(255)
+  status        String?    @db.VarChar(45)
   issueDate     DateTime?  @map("issue_date") @db.DateTime
   expiryDate    DateTime?  @map("expiration_date") @db.DateTime
   description   String?    @db.NText
@@ -289,21 +289,20 @@ model OtherPriorityPopulations {
 
 model CareerPrepAssessment {
   jobseekerId             String     @id(clustered: false, map: "career_prep_app_PRIMARY") @default(dbgenerated("newid()")) @map("career_prep_app_id") @db.UniqueIdentifier
-  applicationDate         DateTime
+  assessmentDate          DateTime
   pronouns                String     @db.VarChar(15)
   expectedEduCompletion   String?    @db.VarChar(45)
   experienceWithApplying  Boolean    @db.Bit
   experienceWithInterview Boolean    @db.Bit
   experienceInIT          Boolean    @db.Bit
   jobseeker               jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
-  CaseMgmt                CaseMgmt[]
+  CaseMgmt                CaseMgmt?
   Meeting                 Meeting[]
 }
 
 model CaseMgmt {
-  id                    String                @id(clustered: false, map: "case_mgmt_PRIMARY") @default(dbgenerated("newid()")) @map("case_mgmt_id") @db.UniqueIdentifier
+  jobseekerId           String                @id(clustered: false, map: "case_mgmt_PRIMARY") @map("jobseeker_id") @db.UniqueIdentifier
   managerId             String                @map("cfa_admin_id") @db.UniqueIdentifier
-  jobseekerId           String                @map("jobseeker_id") @db.UniqueIdentifier
   prepEnrollmentStatus  String                @db.VarChar(30)
   ratingTechSkill       Int?                  @db.TinyInt
   ratingCareerReadiness Int?                  @db.TinyInt
@@ -311,9 +310,8 @@ model CaseMgmt {
   careerPrepTrack       String                @db.VarChar(15)
   prepStartDate         DateTime?             @db.DateTime
   prepExpectedEndDate   DateTime?             @db.DateTime
-  user                  User                  @relation(fields: [managerId], references: [id], onUpdate: NoAction, onDelete: NoAction, map: "fk_case_mgmt_user1")
-  CaseMgmtNotes         CaseMgmtNotes[]
   CareerPrepAssessment  CareerPrepAssessment? @relation(fields: [jobseekerId], references: [jobseekerId])
+  CaseMgmtNotes         CaseMgmtNotes[]
   Meeting               Meeting[]
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
@@ -321,29 +319,31 @@ model CaseMgmt {
 }
 
 model CaseMgmtNotes {
-  id          String    @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()")) @map("case_mgmt_notes_id") @db.UniqueIdentifier
+  jobseekerId String    @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()")) @map("case_mgmt_notes_id") @db.UniqueIdentifier
   caseMgmtId  String    @db.UniqueIdentifier
+  meetingId   String?   @db.UniqueIdentifier
   createdBy   String    @db.UniqueIdentifier
   noteType    String    @db.VarChar(15)
   noteContent String    @db.NText
   meetingDate DateTime? @db.DateTime
   createdAt   DateTime  @default(now()) @db.DateTime
   updatedAt   DateTime  @updatedAt @db.DateTime
-  caseMgmt    CaseMgmt  @relation(fields: [caseMgmtId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
-  user        User      @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
+  CaseMgmt    CaseMgmt  @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
+  User        User      @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
+  Meeting     Meeting?  @relation(fields: [meetingId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_meeting1")
 }
 
 model Meeting {
-  id            String   @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()"))
+  id            String   @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
   jobseekerId   String   @db.UniqueIdentifier
-  caseMgmtId    String   @db.UniqueIdentifier
   title         String   @db.VarChar(45)
   meetingAgenda String?  @db.NText
   meetingDate   DateTime @db.DateTime
   duration      DateTime @db.Time
 
-  jobseeker CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_career_prep_assessment1")
-  caseMgmt  CaseMgmt             @relation(fields: [caseMgmtId], references: [id], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
+  jobseeker     CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_career_prep_assessment1")
+  caseMgmt      CaseMgmt             @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
+  CaseMgmtNotes CaseMgmtNotes[]
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -442,7 +442,7 @@ model jobseekers {
   video_url                        String?                   @db.VarChar(255)
   employment_type_sought           String?                   @default("N'any'", map: "DF__jobseeker__emplo__6477ECF3") @db.NVarChar(255)
   is_marked_deletion               DateTime?                 @db.DateTime
-  assignedPool                     String?                   @db.VarChar(5)
+  assignedPool                     String?                   @db.VarChar(20)
   careerPrepComplete               Boolean                   @default(false) @db.Bit
   careerPrepTrackRecommendation    String?                   @db.VarChar(25)
   createdAt                        DateTime                  @default(now()) @map("created_at")
@@ -459,8 +459,8 @@ model jobseekers {
   BookmarkedJobs                   job_postings[]            @relation("BookMarkedJobs")
   appliedJobs                      job_postings[]            @relation("AppliedJobs")
   TraineeDetail                    TraineeDetail[]
-  CareerPrepAssessment             CareerPrepAssessment[]
   JobPlacement                     JobPlacement[]
+  CareerPrepAssessment             CareerPrepAssessment[]
 
   @@index([targeted_pathway], map: "jobseekers_fk_jobseeker_Pathways1_idx")
   @@index([user_id], map: "jobseekers_fk_learner_user1_idx")

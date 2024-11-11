@@ -1186,6 +1186,21 @@ const companySizeOptions = [
     '1001-5000'
 ];
 
+const CareerPrepTrack = [
+    'ACCELERATED',
+    'STANDARD',
+    'EXTENDED',
+];
+
+export const TimeUntilCompletion = [
+    "N/A",
+    "0-3 months",
+    "3-6 months",
+    "6-9 months",
+    "9-12 months",
+    "12+ months"
+];
+
 /////////////////////////////////////////////////
 ////////////   helper functions  ////////////////
 /////////////////////////////////////////////////
@@ -1529,6 +1544,7 @@ async function seedJobSeekers() {
         } else {
             currentJobTitle = faker.person.jobTitle();
         }
+        const assignedPool = faker.helpers.arrayElement(['Recommended', 'Job Ready', 'Not Job Ready']);
         const jobSeekerData = {
             jobseeker_id: uuidv4(),
             user_id: jobSeeker.id,
@@ -1543,11 +1559,11 @@ async function seedJobSeekers() {
             }) : 0,
             intro_headline: generateSalesPitch(jobSeeker.first_name, jobSeeker.last_name),
             current_job_title: currentJobTitle,
-            resume_url: null,
             years_work_exp: faker.number.int({min: 0, max: 3}), // years of experience
             portfolio_url: faker.internet.url(),
             video_url: faker.internet.url(),
-            assignedPool: faker.helpers.arrayElement(['pool1', 'pool2', 'pool3']),
+            assignedPool: assignedPool,
+            careerPrepTrackRecommendation: assignedPool === 'Job Ready' ? CareerPrepTrack[0] : (assignedPool === 'Not Job Ready' ? CareerPrepTrack[1] : (assignedPool === 'Not Job Ready' ? CareerPrepTrack[2] : null)),
             employment_type_sought: faker.helpers.arrayElement(['Full-time', 'Part-time', 'Internship', 'Contract', 'Any']),
         };
 
@@ -2192,6 +2208,38 @@ async function seedMockEmployerData() {
 
 /////////////////////////////////////////////////
 
+/////////////////////////////////////////////////
+//////////////   career prep  ///////////////////
+/////////////////////////////////////////////////
+
+async function seedCareerPrepStudents() {
+    console.log('Seeding Career Prep Students')
+    const potentialStudents = await prisma.jobseekers.findMany({
+        where: {
+            careerPrepTrackRecommendation: "ACCELERATED"
+        }
+    });
+    for (const ps of potentialStudents) {
+        await prisma.careerPrepAssessment.create({
+            data: {
+                assessmentDate: new Date(Date.now()),
+                pronouns: faker.helpers.arrayElement(['he/him', 'they/them', 'she/her', 'she/her/they']),
+                experienceWithApplying: faker.datatype.boolean({probability: 0.5}),
+                experienceWithInterview: faker.datatype.boolean({probability: 0.5}),
+                experienceInIT: faker.datatype.boolean({probability: 0.5}),
+                expectedEduCompletion: faker.helpers.arrayElement(TimeUntilCompletion),
+                jobseeker: {
+                    connect: {
+                        jobseeker_id: ps.jobseeker_id,
+                    }
+                }
+            }
+        })
+    }
+    console.log(`Finished seeding ${potentialStudents.length} Career Prep students.\n`)
+}
+
+/////////////////////////////////////////////////
 /**
  * Asynchronously runs seeding process for database with fundamental data and mock user information.
  *
@@ -2204,6 +2252,7 @@ async function main() {
     await seedMockUsers(250);
     await seedMockJobseekerData();
     await seedMockEmployerData();
+    await seedCareerPrepStudents();
     console.log("Finished seeding.\n")
 
 }
