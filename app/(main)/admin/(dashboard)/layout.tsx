@@ -13,14 +13,14 @@ export default async function layout({ children }: { children: React.ReactNode }
     <div className="flex">
       <div className="flex min-w-[230px] flex-col text-[#047f9c]">
         <Link
-          href="/services/employers/dashboard"
+          href="/admin"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
           <PersonOutlineOutlinedIcon />
           Home
         </Link>
         <Link
-          href="/services/talent-search"
+          href="/admin"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
         >
           <SearchOutlinedIcon />
@@ -28,28 +28,28 @@ export default async function layout({ children }: { children: React.ReactNode }
         </Link>
 
         <Link
-          href="/services/employers/dashboard/myjobposts"
+          href="/admin"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
           <FolderOutlinedIcon />
           My Job Posts
         </Link>
         <Link
-          href="/services/employers/dashboard/savedcandidates"
+          href="/admin"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
           <BookmarkIcon width={24}/>
           Saved Candidates
         </Link>
-        <Link
-          href="/services/employers/dashboard"
+        {/* <Link
+          href="/admin"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200 REPLACE-BEFORE-RELEASE"
         >
           <EmailOutlinedIcon />
           Inbox
-        </Link>
+        </Link> */}
         <Link
-          href="/services/employers/dashboard/postjob"
+          href="/admin/postjob"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
         >
           <PencilSquareIcon width={24}/>
