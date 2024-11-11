@@ -40,8 +40,8 @@ model User {
   // Optional for WebAuthn support
   Authenticator      Authenticator[]
   companies          companies[]
-  CaseMgmtNotes      CaseMgmtNotes[]
   CaseMgmt           CaseMgmt[]
+  CaseMgmtNotes      CaseMgmtNotes[]
 
   @@map("users")
 }
@@ -289,16 +289,17 @@ model OtherPriorityPopulations {
 //////////////////////////// Career Prep Additions //////////////////////
 
 model CareerPrepAssessment {
-  jobseekerId             String     @id(clustered: false, map: "career_prep_app_PRIMARY") @default(dbgenerated("newid()")) @map("career_prep_app_id") @db.UniqueIdentifier
+  jobseekerId             String          @id(clustered: false, map: "career_prep_app_PRIMARY") @default(dbgenerated("newid()")) @map("career_prep_app_id") @db.UniqueIdentifier
   assessmentDate          DateTime
-  pronouns                String     @db.VarChar(15)
-  expectedEduCompletion   String?    @db.VarChar(45)
-  experienceWithApplying  Boolean    @db.Bit
-  experienceWithInterview Boolean    @db.Bit
-  experienceInIT          Boolean    @db.Bit
-  jobseeker               jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
+  pronouns                String          @db.VarChar(15)
+  expectedEduCompletion   String?         @db.VarChar(45)
+  experienceWithApplying  Boolean         @db.Bit
+  experienceWithInterview Boolean         @db.Bit
+  experienceInIT          Boolean         @db.Bit
+  jobseeker               jobseekers      @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
   CaseMgmt                CaseMgmt?
   Meeting                 Meeting[]
+  CaseMgmtNotes           CaseMgmtNotes[]
 }
 
 model CaseMgmt {
@@ -313,7 +314,6 @@ model CaseMgmt {
   prepExpectedEndDate   DateTime?            @db.DateTime
   CareerPrepAssessment  CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
   CaseManager           User                 @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
-  CaseMgmtNotes         CaseMgmtNotes[]
   Meeting               Meeting[]
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
@@ -321,18 +321,19 @@ model CaseMgmt {
 }
 
 model CaseMgmtNotes {
-  jobseekerId String    @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()")) @map("case_mgmt_notes_id") @db.UniqueIdentifier
-  caseMgmtId  String    @db.UniqueIdentifier
-  meetingId   String?   @db.UniqueIdentifier
-  createdBy   String    @db.UniqueIdentifier
-  noteType    String    @db.VarChar(15)
-  noteContent String    @db.NText
-  meetingDate DateTime? @db.DateTime
-  createdAt   DateTime  @default(now()) @db.DateTime
-  updatedAt   DateTime  @updatedAt @db.DateTime
-  CaseMgmt    CaseMgmt  @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
-  User        User      @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
-  Meeting     Meeting?  @relation(fields: [meetingId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_meeting1")
+  id          String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()"))
+  jobseekerId String               @db.UniqueIdentifier
+  caseMgmtId  String               @db.UniqueIdentifier
+  meetingId   String?              @db.UniqueIdentifier
+  createdBy   String               @db.UniqueIdentifier
+  noteType    String               @db.VarChar(15)
+  noteContent String               @db.NText
+  meetingDate DateTime?            @db.DateTime
+  createdAt   DateTime             @default(now()) @db.DateTime
+  updatedAt   DateTime             @updatedAt @db.DateTime
+  CaseMgmt    CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
+  User        User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
+  Meeting     Meeting?             @relation(fields: [meetingId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_meeting1")
 }
 
 model Meeting {
