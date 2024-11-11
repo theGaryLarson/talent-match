@@ -141,12 +141,16 @@ export const updateCareerPrepStatusCardView = async (jobseekerId: string, status
                 prepEnrollmentStatus: status,
             },
             create: {
-                managerId: session?.user.id!,
                 prepEnrollmentStatus: status,
                 careerPrepTrack: data?.jobseeker.careerPrepTrackRecommendation!,
                 CareerPrepAssessment: {
                     connect: {
                         jobseekerId: jobseekerId,
+                    }
+                },
+                CaseManager: {
+                    connect: {
+                        id: session?.user.id!
                     }
                 }
             }
