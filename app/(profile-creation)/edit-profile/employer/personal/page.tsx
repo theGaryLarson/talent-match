@@ -84,6 +84,7 @@ export default function CreateEmployerPersonalPage() {
                 phoneCountryCode: result.phoneCountryCode,
                 photoUrl: image,
               }));
+              setBirthdate(dayjs(result.birthDate));
             }
           } catch (error) {
             // dispatch(submitFormFailure('Failed to submit the form'));
@@ -98,7 +99,6 @@ export default function CreateEmployerPersonalPage() {
             ? dayjs(personalData.birthDate)
             : null,
         );
-
         setAvatarUrl(personalData.photoUrl ?? session.user?.image!);
       }
     };
@@ -126,7 +126,6 @@ export default function CreateEmployerPersonalPage() {
   };
 
   const handleAvatarUpload = (url: string) => {
-    console.log('Uploaded Image URL:', url);
     updateSessionProperties({
       image: url,
     })
@@ -146,6 +145,10 @@ export default function CreateEmployerPersonalPage() {
     e.preventDefault();
     if (!session || !session.user) {
       console.error('User session is not available.');
+      return;
+    }
+    if (!birthdate || !birthdate.isValid()) {
+      console.error('Birthdate error');
       return;
     }
     setPersonalData((prevPersonalData) => ({
@@ -170,7 +173,11 @@ export default function CreateEmployerPersonalPage() {
           },
           body: JSON.stringify({
             ...personalData,
-            birthDate: birthdate?.toISOString() ?? '',
+            birthDate: dayjs(birthdate).isValid()
+              ? dayjs(birthdate)
+              : dayjs(personalData.birthDate).isValid()
+                ? dayjs(personalData.birthDate)
+                : null,
           }),
         },
       );
@@ -254,9 +261,12 @@ export default function CreateEmployerPersonalPage() {
             <div className="profile-form-grid">
               <DatePicker
                 label="Birthdate *"
-                value={birthdate || dayjs(personalData.birthDate)}
+                value={
+                  birthdate !== null ? birthdate : dayjs(personalData.birthDate)
+                }
                 onChange={(newDate) => setBirthdate(newDate)}
                 className="date-picker"
+                // renderInput={(params) => <TextField {...params} required />}
               />
 
               <InputTextWithLabel
