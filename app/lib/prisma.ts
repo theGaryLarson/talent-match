@@ -117,20 +117,20 @@ export async function searchEduProviders(
   );
 }
 
-export async function searchCompanies(searchTerm: string): Promise< ReadCompanyInfoDTO[]
-  // {
-  //   companyId: string;
-  //   companyEmail: string;
-  //   logoUrl: string | null;
-  //   companyPhone: string | null;
-  //   industrySectorId: string | null;
-  //   companyName: string;
-  //   predictedHires: number | null;
-  //   websiteUrl: string | null;
-  //   yearFounded: number;
-  //   companySize: string;
-  //   approvedCompany: boolean;
-  // }[]
+export async function searchCompanies(searchTerm: string): Promise< ReadCompanyInfoDTO[] |
+  {
+    companyId: string;
+    companyEmail: string;
+    logoUrl: string | null;
+    companyPhone: string | null;
+    industrySectorId: string | null;
+    companyName: string;
+    predictedHires: number | null;
+    websiteUrl: string | null;
+    yearFounded: number;
+    companySize: string;
+    approvedCompany: boolean;
+  }[]
 > {
   return genericSearch<companies>({
     searchTerm,
