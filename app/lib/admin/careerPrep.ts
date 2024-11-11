@@ -4,7 +4,7 @@ import {
     HighestCompletedEducationLevel,
     ProgramEnrollmentStatus
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
-import {PoolCategories} from "@/app/lib/poolAssignment";
+import {CareerPrepTrack, PoolCategories} from "@/app/lib/poolAssignment";
 import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { auth } from "@/auth";
@@ -89,6 +89,7 @@ export interface CareerPrepJobseekerCardViewDTO {
     firstName: string;
     lastName: string;
     pronouns: string;
+    careerPrepTrack: CareerPrepTrack | null
     careerPrepAssessmentDate: Date;
     careerPrepEnrollmentStatus: CareerPrepStatus;
     careerPrepExpectedEndDate: Date | null;
@@ -107,6 +108,7 @@ export const getCareerPrepStudentsCardView = async (): Promise<CareerPrepJobseek
             firstName: item.jobseeker?.users?.first_name || '',
             lastName: item.jobseeker?.users?.last_name || '',
             pronouns: item.pronouns,
+            careerPrepTrack: item.jobseeker.careerPrepTrackRecommendation as CareerPrepTrack,
             careerPrepAssessmentDate: item.assessmentDate,
             careerPrepEnrollmentStatus: item.CaseMgmt?.prepEnrollmentStatus as CareerPrepStatus,
             careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
@@ -122,7 +124,47 @@ export const getCareerPrepStudentsCardView = async (): Promise<CareerPrepJobseek
     }
 }
 
+export const updateCareerPrepStatusCardView = async (jobseekerId: string, status: CareerPrepStatus)=> {
+    const session = await auth();
+    try {
+        const data = await prisma.careerPrepAssessment.findUnique({
+            where: {
+                jobseekerId: jobseekerId
+            },
+            select: selectCareerPrepStudentDetail
+        })
+        const studentStatus = await prisma.caseMgmt.upsert({
+            where: {
+                jobseekerId: jobseekerId,
+            },
+            update: {
+                prepEnrollmentStatus: status,
+            },
+            create: {
+                managerId: session?.user.id!,
+                prepEnrollmentStatus: status,
+                careerPrepTrack: data?.jobseeker.careerPrepTrackRecommendation!,
+                CareerPrepAssessment: {
+                    connect: {
+                        jobseekerId: jobseekerId,
+                    }
+                }
+            }
+        })
+        return studentStatus.prepEnrollmentStatus
+    } catch (e) {
+
+    } finally {
+        prisma.$disconnect()
+    }
+}
+
+/**
+ * Select statement to retrieve data for Career Prep Student Card.
+ * It contains various properties to to collect data for CareerPrepJobseekerCardViewDTO[].
+ */
 const selectCareerPrepStudentCardView = {
+    // initial table CareerPrepAssessment
     pronouns: true,
     assessmentDate: true,
     expectedEduCompletion: true,
@@ -135,6 +177,7 @@ const selectCareerPrepStudentCardView = {
     jobseeker: {
         select: {
             assignedPool: true,
+            careerPrepTrackRecommendation: true,
             users: {
                 select: {
                     first_name: true,
@@ -169,6 +212,7 @@ const selectCareerPrepStudentDetail = {
             portfolio_url: true,
             linkedin_url: true,
             assignedPool: true,
+            careerPrepTrackRecommendation: true,
             users: {
                 select: {
                     first_name: true,
