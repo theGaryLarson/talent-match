@@ -25,7 +25,7 @@ export default auth((req) => {
     '/edit-profile/jobseeker/preferences',
     '/edit-profile/jobseeker/showcase',
     '/edit-profile/jobseeker/work-experience',
-
+    
     '/services/jobseekers/dashboard',
     '/services/jobseekers/',
     '/services/joblistings',
@@ -62,6 +62,8 @@ export default auth((req) => {
     '/api/users/avatar/upload',
     '/api/skills/search/',
     '/api/postal-geo-data/zip/search',
+    '/api/joblistings/sectors',
+    '/api/joblistings/techarea',
   ];
 
   const publicRoutes = [
