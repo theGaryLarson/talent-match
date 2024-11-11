@@ -84,6 +84,7 @@ export default function CreateEmployerPersonalPage() {
                 phoneCountryCode: result.phoneCountryCode,
                 photoUrl: image,
               }));
+              setBirthdate(dayjs(result.birthDate));
             }
           } catch (error) {
             // dispatch(submitFormFailure('Failed to submit the form'));
@@ -98,7 +99,13 @@ export default function CreateEmployerPersonalPage() {
             ? dayjs(personalData.birthDate)
             : null,
         );
-
+        console.log(
+          'useEffect on load: ',
+          birthdate,
+          dayjs(birthdate).isValid(),
+          dayjs(personalData.birthDate).format('YYYY-MM-DD'),
+          dayjs(personalData.birthDate).isValid(),
+        );
         setAvatarUrl(personalData.photoUrl ?? session.user?.image!);
       }
     };
@@ -148,6 +155,10 @@ export default function CreateEmployerPersonalPage() {
       console.error('User session is not available.');
       return;
     }
+    if (!birthdate || !birthdate.isValid()) {
+      console.error('Birthdate error');
+      return;
+    }
     setPersonalData((prevPersonalData) => ({
       ...prevPersonalData,
       birthDate: birthdate?.toISOString() ?? '',
@@ -161,6 +172,11 @@ export default function CreateEmployerPersonalPage() {
     const name = `${firstName} ${lastName}`;
 
     try {
+      console.log(
+        'handleSubmit try ',
+        dayjs(birthdate).isValid(),
+        dayjs(personalData.birthDate).isValid(),
+      );
       const response = await fetch(
         '/api/employers/account/personal-info/upsert',
         {
@@ -170,7 +186,11 @@ export default function CreateEmployerPersonalPage() {
           },
           body: JSON.stringify({
             ...personalData,
-            birthDate: birthdate?.toISOString() ?? '',
+            birthDate: dayjs(birthdate).isValid()
+              ? dayjs(birthdate)
+              : dayjs(personalData.birthDate).isValid()
+                ? dayjs(personalData.birthDate)
+                : null,
           }),
         },
       );
@@ -254,9 +274,12 @@ export default function CreateEmployerPersonalPage() {
             <div className="profile-form-grid">
               <DatePicker
                 label="Birthdate *"
-                value={birthdate || dayjs(personalData.birthDate)}
+                value={
+                  birthdate !== null ? birthdate : dayjs(personalData.birthDate)
+                }
                 onChange={(newDate) => setBirthdate(newDate)}
                 className="date-picker"
+                // renderInput={(params) => <TextField {...params} required />}
               />
 
               <InputTextWithLabel
