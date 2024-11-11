@@ -9,7 +9,7 @@ export interface JobseekerPoolVars {
     completedPartnerProgram: boolean; // check edu_providers.enrollmentStatus and if edu_providers.isCoalitionMember
     prevTechExperience: boolean; // check work_experience -> technology_areas != "N/A Not an IT role"
     hasDegreeOrTechProgram: boolean; // check gte HighestCompletedEducationLevel.Certificate
-    careerPrepComplete: boolean; // add to db in Bethany's records.
+    careerPrepComplete: boolean;
 }
 
 /**
@@ -83,7 +83,7 @@ export const enum PoolCategories {
  *
  * @enum {string}
  */
-const enum CareerPrepTrack {
+export const enum CareerPrepTrack {
     ACCELERATED = 'ACCELERATED',
     STANDARD = 'STANDARD',
     EXTENDED = 'EXTENDED',
