@@ -144,6 +144,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
         if (!data) {
             return { error: 'Career Prep student not found.', status: 404}
         }
+        devLog('StudentDetailView', data);
         const transformedData: CareerPrepJobseekerDetailViewDTO = {
             jobseekerId: data.jobseekerId,
             assessmentDate: data.assessmentDate.toISOString(),
@@ -156,7 +157,13 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
             emailAddress: data.Jobseeker?.users.email!,
             pathway: data.Jobseeker?.pathways?.pathway_title ?? '',
             education: data.Jobseeker?.highest_level_of_study_completed as HighestCompletedEducationLevel,
-            // eduProviders: ,// TODO: map correctly
+            // eduProviders: data.Jobseeker?.jobseeker_education.map((edData) => ({
+            //     partnerTrainingProvider: edData.eduProviders.name??'',
+            //     trainingProgramTitle: edData.program,
+            //     educationLevel: edData.edLevel,
+            //     status: edData.edLevel as EducationLevel,
+            //
+            // })),
             expectedEduCompletion: data?.expectedEduCompletion as TimeUntilCompletion,
             technicalCertificates: data.Jobseeker?.certificates.map((cert) => ({
                 name: cert.name,
