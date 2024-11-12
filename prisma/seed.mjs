@@ -2226,9 +2226,9 @@ async function seedCareerPrepStudents() {
                 pronouns: faker.helpers.arrayElement(['he/him', 'they/them', 'she/her', 'she/her/they']),
                 experienceWithApplying: faker.datatype.boolean({probability: 0.5}),
                 experienceWithInterview: faker.datatype.boolean({probability: 0.5}),
-                experienceInIT: faker.datatype.boolean({probability: 0.5}),
+                prevWorkExperience: faker.datatype.boolean({probability: 0.75}),
                 expectedEduCompletion: faker.helpers.arrayElement(TimeUntilCompletion),
-                jobseeker: {
+                Jobseeker: {
                     connect: {
                         jobseeker_id: ps.jobseeker_id,
                     }
