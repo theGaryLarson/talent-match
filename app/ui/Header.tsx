@@ -19,6 +19,7 @@ const TopLevelLinks = [
   { name: 'For Job Seekers', href: '/services/jobseekers' },
   { name: 'Careers', href: '/services/careers' },
   { name: 'Find a Job', href: 'https://cfajobs.powerappsportals.com/', target: '_blank', rel: 'oopener noreferrer' },
+  { name: 'Join Our Community', href: 'https://forum.watechwfcoalition.org/', target: '_blank', rel: 'oopener noreferrer' },
   // { name: 'Explore', href: '/underconstruction' },
   // {
   //   name: "Contact Us",
