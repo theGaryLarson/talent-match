@@ -160,6 +160,7 @@ model companies {
   employers              employers[]
   job_postings           job_postings[]
   BookmarkedJobseeker    BookmarkedJobseeker[]
+  JobPlacement           JobPlacement[]
 
   @@index([industry_sector_id], map: "companies_fk_company_industry_sectors1_idx")
 }
@@ -289,17 +290,145 @@ model OtherPriorityPopulations {
 //////////////////////////// Career Prep Additions //////////////////////
 
 model CareerPrepAssessment {
-  jobseekerId             String          @id(clustered: false, map: "career_prep_app_PRIMARY") @default(dbgenerated("newid()")) @map("career_prep_app_id") @db.UniqueIdentifier
+  jobseekerId             String                @id(clustered: false, map: "career_prep_app_PRIMARY") @db.UniqueIdentifier
   assessmentDate          DateTime
-  pronouns                String          @db.VarChar(15)
-  expectedEduCompletion   String?         @db.VarChar(45)
-  experienceWithApplying  Boolean         @db.Bit
-  experienceWithInterview Boolean         @db.Bit
-  experienceInIT          Boolean         @db.Bit
-  jobseeker               jobseekers      @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
+  pronouns                String                @db.VarChar(15)
+  expectedEduCompletion   String?               @db.VarChar(45)
+  experienceWithApplying  Boolean               @db.Bit
+  experienceWithInterview Boolean               @db.Bit
+  prevWorkExperience      Boolean               @default(false) @db.Bit
+  Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
   CaseMgmt                CaseMgmt?
   Meeting                 Meeting[]
   CaseMgmtNotes           CaseMgmtNotes[]
+  CybersecurityRating     CybersecurityRating[]
+  DataAnalyticsRating     DataAnalyticsRating[]
+  ITCloudRating           ITCloudRating[]
+  SoftwareDevRating       SoftwareDevRating[]
+  DurableSkillsRating     DurableSkillsRating[]
+  BrandingRating          BrandingRating[]
+}
+
+model CybersecurityRating {
+  jobseekerId           String               @id(clustered: false, map: "cybersecurity_rating_PRIMARY") @db.UniqueIdentifier
+  networking            String               @db.VarChar(20)
+  projectManagement     String               @db.VarChar(20)
+  securityTools         String               @db.VarChar(20)
+  operatingSystems      String               @db.VarChar(20)
+  programming           String               @db.VarChar(20)
+  cryptography          String               @db.VarChar(20)
+  cloudSecurity         String               @db.VarChar(20)
+  incidentResponse      String               @db.VarChar(20)
+  dataSecurity          String               @db.VarChar(20)
+  computationalThinking String               @db.VarChar(20)
+  apiUsage              String               @db.VarChar(20)
+  Jobseeker             CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1")
+}
+
+model DataAnalyticsRating {
+  jobseekerId           String               @id(clustered: false, map: "data_analytics_rating_PRIMARY") @db.UniqueIdentifier
+  dataAnalysis          String               @db.VarChar(20)
+  sqlProgramming        String               @db.VarChar(20)
+  pythonPackages        String               @db.VarChar(20)
+  dataScience           String               @db.VarChar(20)
+  dataEngineering       String               @db.VarChar(20)
+  tableau               String               @db.VarChar(20)
+  machineLearning       String               @db.VarChar(20)
+  rProgramming          String               @db.VarChar(20)
+  projectManagement     String               @db.VarChar(20)
+  dataVisualization     String               @db.VarChar(20)
+  dataStructures        String               @db.VarChar(20)
+  bigOComplexity        String               @db.VarChar(20)
+  sortingAlgorithms     String               @db.VarChar(20)
+  databases             String               @db.VarChar(20)
+  computationalThinking String               @db.VarChar(20)
+  Jobseeker             CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1")
+}
+
+model ITCloudRating {
+  jobseekerId           String               @id(clustered: false, map: "it_cloud_rating_PRIMARY") @db.UniqueIdentifier
+  techSupport           String               @db.VarChar(20)
+  activeDirectory       String               @db.VarChar(20)
+  projectManagement     String               @db.VarChar(20)
+  helpDeskSupport       String               @db.VarChar(20)
+  windowsServers        String               @db.VarChar(20)
+  sqlProgramming        String               @db.VarChar(20)
+  computerHardware      String               @db.VarChar(20)
+  operatingSystems      String               @db.VarChar(20)
+  systemAdmin           String               @db.VarChar(20)
+  networkAdmin          String               @db.VarChar(20)
+  virtualization        String               @db.VarChar(20)
+  coreCloudServices     String               @db.VarChar(20)
+  apiUsage              String               @db.VarChar(20)
+  httpResponseCodes     String               @db.VarChar(20)
+  computationalThinking String               @db.VarChar(20)
+  Jobseeker             CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1")
+}
+
+model SoftwareDevRating {
+  jobseekerId                  String               @id(clustered: false, map: "software_dev_rating_PRIMARY") @db.UniqueIdentifier
+  softwareEngineering          String               @db.VarChar(20)
+  softwareDevelopmentLifecycle String               @db.VarChar(20)
+  programmingLanguages         String               @db.VarChar(20)
+  dataStructuresAndAlgorithms  String               @db.VarChar(20)
+  softwareArchitecture         String               @db.VarChar(20)
+  versionControl               String               @db.VarChar(20)
+  databaseManagement           String               @db.VarChar(20)
+  devOps                       String               @db.VarChar(20)
+  cloudComputing               String               @db.VarChar(20)
+  conceptualSystemsThinking    String               @db.VarChar(20)
+  problemSolving               String               @db.VarChar(20)
+  fundamentalCodingConcepts    String               @db.VarChar(20)
+  debugging                    String               @db.VarChar(20)
+  computationalThinking        String               @db.VarChar(20)
+  softwareOptimization         String               @db.VarChar(20)
+  Jobseeker                    CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1")
+}
+
+model DurableSkillsRating {
+  jobseekerId            String               @id(clustered: false, map: "durable_skills_rating_PRIMARY") @db.UniqueIdentifier
+  emotionManagement      String               @db.VarChar(20)
+  empathy                String               @db.VarChar(20)
+  goalSetting            String               @db.VarChar(20)
+  timeManagement         String               @db.VarChar(20)
+  adaptability           String               @db.VarChar(20)
+  criticalThinking       String               @db.VarChar(20)
+  creativity             String               @db.VarChar(20)
+  resilience             String               @db.VarChar(20)
+  communication          String               @db.VarChar(20)
+  activeListening        String               @db.VarChar(20)
+  conflictResolution     String               @db.VarChar(20)
+  nonverbalCommunication String               @db.VarChar(20)
+  teamwork               String               @db.VarChar(20)
+  trustBuilding          String               @db.VarChar(20)
+  leadership             String               @db.VarChar(20)
+  perspectiveTaking      String               @db.VarChar(20)
+  culturalAwareness      String               @db.VarChar(20)
+  relationshipBuilding   String               @db.VarChar(20)
+  documentationSkills    String               @db.VarChar(20)
+  Jobseeker              CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1")
+}
+
+model BrandingRating {
+  jobseekerId              String               @id(clustered: false, map: "branding_rating_PRIMARY") @db.UniqueIdentifier
+  personalBrand            String               @db.VarChar(20)
+  onlinePresence           String               @db.VarChar(20)
+  elevatorPitch            String               @db.VarChar(20)
+  resumeEffectiveness      String               @db.VarChar(20)
+  coverLetterEffectiveness String               @db.VarChar(20)
+  interviewExperience      String               @db.VarChar(20)
+  responseTechnique        String               @db.VarChar(20)
+  followUpImportance       String               @db.VarChar(20)
+  onlineNetworking         String               @db.VarChar(20)
+  eventNetworking          String               @db.VarChar(20)
+  relationshipManagement   String               @db.VarChar(20)
+  jobSearchStrategy        String               @db.VarChar(20)
+  materialDistribution     String               @db.VarChar(20)
+  networkingTechniques     String               @db.VarChar(20)
+  onboardingBestPractices  String               @db.VarChar(20)
+  developmentPlan          String               @db.VarChar(20)
+  mentorship               String               @db.VarChar(20)
+  Jobseeker                CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1")
 }
 
 model CaseMgmt {
@@ -309,7 +438,7 @@ model CaseMgmt {
   ratingTechSkill       Int?                 @db.TinyInt
   ratingCareerReadiness Int?                 @db.TinyInt
   ratingSoftSkills      Int?                 @db.TinyInt
-  careerPrepTrack       String               @db.VarChar(15)
+  careerPrepTrack       String?              @db.VarChar(15)
   prepStartDate         DateTime?            @db.DateTime
   prepExpectedEndDate   DateTime?            @db.DateTime
   CareerPrepAssessment  CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
@@ -513,16 +642,17 @@ model jobseekers_education {
 ///////////////////////////// JOB PLACEMENT //////////////////////////////
 
 model JobPlacement {
-  jobseekerId      String    @id(clustered: false, map: "job_placement_PRIMARY") @default(dbgenerated("newid()")) @map("job_placement_id") @db.UniqueIdentifier
-  employmentStatus String?   @db.VarChar(45)
-  jobStartDate     DateTime? @db.DateTime
-  employmentType   String?   @db.VarChar(45)
-  earnLearnType    String?   @db.VarChar(45)
-  naicsCode        String?   @db.VarChar(45)
-  employerName     String    @db.VarChar(45)
-  hourlyEarnings   String    @db.VarChar(15)
-
-  jobseeker jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_job_placement_jobseeker1")
+  jobseekerId      String     @id(clustered: false, map: "job_placement_PRIMARY") @default(dbgenerated("newid()")) @map("job_placement_id") @db.UniqueIdentifier
+  companyId        String?    @db.UniqueIdentifier
+  employmentStatus String?    @db.VarChar(45)
+  jobStartDate     DateTime?  @db.DateTime
+  employmentType   String?    @db.VarChar(45)
+  earnLearnType    String?    @db.VarChar(45)
+  naicsCode        String?    @db.VarChar(45)
+  employerName     String     @db.VarChar(45)
+  hourlyEarnings   String     @db.VarChar(15)
+  Jobseeker        jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_job_placement_jobseeker1")
+  Company          companies? @relation(fields: [companyId], references: [company_id], onUpdate: NoAction, map: "fk_job_placement_companies1")
 }
 
 //////////////////////////////////////////////////////////////////////////
