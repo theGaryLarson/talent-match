@@ -48,7 +48,6 @@ export const initialState: JobseekerState = {
     email: '',
     introHeadline: null,
     currentJobTitle: null,
-    resumeUrl: null,
   },
   education: {
     userId: '',

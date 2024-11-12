@@ -30,7 +30,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-
+import { TechPathways } from '@/app/lib/admin/careerPrep'
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -210,7 +210,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   component="legend"
                   sx={{ color: '#000000ff' }}
                 >
-                  What is your tech role/targeted pathway?
+                  What technology path most interests you?
                 </FormLabel>
                 <RadioGroup
                   aria-labelledby="profile-creation-preferences-require-role"
@@ -222,24 +222,24 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   }}
                 >
                   <FormControlLabel
-                    value="Software Developer"
+                    value={TechPathways.SoftwareDevelopment}
                     control={<Radio />}
-                    label="Software Developer"
+                    label={TechPathways.SoftwareDevelopment}
                   />
                   <FormControlLabel
-                    value="Cloud Support Associate"
+                    value={TechPathways.ITCloudComputing}
                     control={<Radio />}
-                    label="Cloud Support Associate"
+                    label={TechPathways.ITCloudComputing}
                   />
                   <FormControlLabel
-                    value="Cybersecurity Analyst"
+                    value={TechPathways.Cybersecurity}
                     control={<Radio />}
-                    label="Cybersecurity Analyst"
+                    label={TechPathways.Cybersecurity}
                   />
                   <FormControlLabel
-                    value="Data Analyst"
+                    value={TechPathways.DataAnalytics}
                     control={<Radio />}
-                    label="Data Analyst"
+                    label={TechPathways.DataAnalytics}
                   />
                 </RadioGroup>
               </FormControl>
