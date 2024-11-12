@@ -32,7 +32,6 @@ export default async function RootLayout({
             <ThemeProvider theme={theme}>
               <CssBaseline>
                 <Header />
-                <Nav />
                 {children}
                 <Footer />
               </CssBaseline>
