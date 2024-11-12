@@ -365,14 +365,14 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <li>Short stature (dwarfism)</li>
               <li>Traumatic brain injury</li>
             </ul>
-            <FormControl component="fieldset">
+            <FormControl component="fieldset" required>
               <FormLabel
                 className="mb-2 mt-5"
                 id="profile-creation-disclosures-require-disability-label"
                 component="legend"
                 sx={{ color: '#000000ff' }}
               >
-                Please select one of the options below: *
+                Please select one of the options below:
               </FormLabel>
               <RadioGroup
                 aria-labelledby="profile-creation-disclosures-require-disability-label"
@@ -389,21 +389,21 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               >
                 <FormControlLabel
                   value="yes"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="Yes, I have a disability, or have had one in the past"
-                  required
+                  required={false}
                 />
                 <FormControlLabel
                   value="none"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="No, I do not have a disability and have not had one in the past"
-                  required
+                  required={false}
                 />
                 <FormControlLabel
                   value="undisclosed"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="I do not want to answer"
-                  required
+                  required={false}
                 />
               </RadioGroup>
             </FormControl>
@@ -444,7 +444,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 checked={termsAccepted}
                 onChange={(event) => setTermsAccepted(event.target.checked)}
               />{' '}
-              Yes, I have read and consent to the terms and conditions*
+              Yes, I have read and consent to the terms and conditions *
             </Label>
           </fieldset>
           <div className="profile-form-progress-btn-group">
