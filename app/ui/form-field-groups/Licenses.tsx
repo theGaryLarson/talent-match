@@ -56,7 +56,7 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
   return data.map((license, index) => (
     <fieldset key={classNamePrefix + license.certId + '-key'}>
       <legend className="flex w-full justify-between">
-        <h3>License {index + 1}</h3>
+        <h3>License or Certification {index + 1}</h3>
         <Button
           onClick={() => onRemove(license.certId)}
           size="xs"
@@ -71,22 +71,22 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
         <InputTextWithLabel
           id={classNamePrefix + license.certId + '-' + classForName}
           className="w-full"
-          placeholder="Ex: Microsoft certified network associate security"
+          placeholder="Example: Microsoft certified network associate security"
           onChange={(e) => handleChange(index, classForName, e.target.value)}
           required
           value={license[classForName]}
         >
-          Name *
+          Name: *
         </InputTextWithLabel>
         <InputTextWithLabel
           id={classNamePrefix + license.certId + '-' + classIssuingOrg}
           className="w-full"
-          placeholder="Ex: Microsoft"
+          placeholder="Example: Microsoft"
           onChange={(e) => handleChange(index, classIssuingOrg, e.target.value)}
           required
           value={license[classIssuingOrg]}
         >
-          Issuing organization *
+          Issuing organization: *
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">
@@ -97,7 +97,7 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
           }
           value={license[classCredentialId]}
         >
-          Credential ID
+          Credential ID:
         </InputTextWithLabel>
         <InputTextWithLabel
           id={classNamePrefix + license.certId + '-' + classCredentialUrl}
@@ -106,7 +106,7 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
           }
           value={license[classCredentialUrl]}
         >
-          Credential URL
+          Credential URL:
         </InputTextWithLabel>
         <DatePicker
           label={'Issue date'}

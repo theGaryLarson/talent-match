@@ -423,7 +423,7 @@ export default function CreateJobseekerProfileEducationPage() {
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Highest Education</h2>
+              <h2>Highest Level of Education</h2>
             </legend>
             <SelectOptionsWithLabel
               id="profile-creation-education-highest-completed"
@@ -440,12 +440,12 @@ export default function CreateJobseekerProfileEducationPage() {
               value={highestLevelOfStudy}
               required
             >
-              What is your highest completed level of study? *
+              What is the highest degree you’ve earned or schooling completed? *
             </SelectOptionsWithLabel>
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Educations</h2>
+              <h2>Education Details</h2>
             </legend>
             <Educations
               data={data.educations}
@@ -454,12 +454,12 @@ export default function CreateJobseekerProfileEducationPage() {
             />
             <Button pill color="gray" onClick={addNewEducation}>
               <MdAdd className="mr-2 h-5 w-5" />
-              Add education
+              Add education detail
             </Button>
           </fieldset>
           <fieldset className="license-groups">
             <legend>
-              <h2>Licenses &amp; certificates</h2>
+              <h2>Licenses &amp; Certifications</h2>
             </legend>
             <Licenses
               data={data.licenses}
@@ -468,12 +468,16 @@ export default function CreateJobseekerProfileEducationPage() {
             />
             <Button pill color="gray" onClick={addNewLicense}>
               <MdAdd className="mr-2 h-5 w-5" />
-              Add license
+              Add license or certification
             </Button>
           </fieldset>
           <fieldset className="project-experience-groups">
             <legend>
               <h2>Project experience</h2>
+              <p>
+                Share your experience creating or contributing to a project as a
+                student, apprentice, or intern.
+              </p>
             </legend>
             <ProjectExperiences
               data={data.projectExperiences}

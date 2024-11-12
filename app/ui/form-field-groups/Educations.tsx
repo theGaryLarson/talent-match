@@ -9,7 +9,8 @@ import {
   HighSchoolDegreeType,
   EducationLevel,
   PreAEduSystem,
-  JsEducationInfoDTO, ProgramEnrollmentStatus,
+  JsEducationInfoDTO,
+  ProgramEnrollmentStatus,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { edu_providers, educators, provider_programs } from '@prisma/client';
 import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
@@ -128,7 +129,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
   return data.map((education, index) => (
     <fieldset key={classNamePrefix + education.id + '-key'}>
       <legend className="flex w-full justify-between">
-        <h3>Education {index + 1}</h3>
+        <h3>Education Detail {index + 1}</h3>
         <Button
           onClick={() => onRemove(education.id)}
           size="xs"
@@ -141,7 +142,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
       </legend>
 
       <div>
-        What type of program is this education? *
+        Type of school or program: *
         <Label className="block">
           <Radio
             name="profile-creation-education-currently-enrolled"
@@ -202,7 +203,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="What is your high school? *"
+              fieldLabel="Name of high school *"
               id="profile-creation-education-high-school-name"
               searchingText="Searching..."
               noResultsText="No education providers found..."
@@ -210,7 +211,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classEdProviderObject, val)
               }
-              searchPlaceholder="High school name"
+              searchPlaceholder="Example: Chief Sealth High School"
               getOptionLabel={(option: EducationProviderDTO) =>
                 option.name ?? ''
               }
@@ -234,34 +235,33 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               options={(Object.values(HighSchoolDegreeType) as string[]).map(
                 (value) => ({ label: value, value }),
               )}
-              placeholder="Degree type"
+              placeholder="Please select"
               onChange={(e) =>
                 handleChange(index, classDegreeType, e.target.value)
               }
               required
               value={education[classDegreeType] as string}
             >
-              What is your degree type? *
+              Type of degree earned: *
             </SelectOptionsWithLabel>
 
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Please select"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
-              What is your enrollment status? *
+              Enrollment status: *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
-
           </div>
           <div className="profile-form-grid md:grid-cols-2">
             <DatePicker
@@ -297,11 +297,11 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               id={'profile-creation-education-high-school-gpa'}
               type="text"
               className="w-full"
-              placeholder="Your GPA (ex: 4.0)"
+              placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
               value={education[classGPA] ?? ''}
             >
-              What is your grade?
+              Grade Point Average (GPA):
             </InputTextWithLabel>
           </div>
         </div>
@@ -313,7 +313,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="What is your college? *"
+              fieldLabel="Name of college: *"
               id="profile-creation-education-college-name"
               searchingText="Searching..."
               noResultsText="No education providers found..."
@@ -321,14 +321,14 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classEdProviderObject, val)
               }
-              searchPlaceholder="College name"
+              searchPlaceholder="Example: University of Washington"
               getOptionLabel={(option: EducationProviderDTO) =>
                 option.name ?? ''
               }
             />
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/college/search/"
-              fieldLabel="What is your program? *"
+              fieldLabel="Program major or concentration: *"
               id="profile-creation-education-college-program"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
@@ -336,7 +336,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classProgramObject, val)
               }
-              searchPlaceholder="Program name"
+              searchPlaceholder="Example: Computer Science"
               getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
             />
             <SelectOptionsWithLabel
@@ -345,30 +345,30 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               options={(Object.values(CollegeDegreeType) as string[]).map(
                 (value) => ({ label: value, value }),
               )}
-              placeholder="Degree type"
+              placeholder="Please select"
               onChange={(e) =>
                 handleChange(index, classDegreeType, e.target.value)
               }
               required
               value={education[classDegreeType] as string}
             >
-              What is your degree type? *
+              Type of degree earned: *
             </SelectOptionsWithLabel>
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Please select"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
-              What is your enrollment status? *
+              Enrollment status: *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
@@ -406,11 +406,11 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               id={'profile-creation-education-college-gpa'}
               type="text"
               className="w-full"
-              placeholder="Your GPA (ex: 4.0)"
+              placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
               value={education[classGPA] ?? ''}
             >
-              What is your grade?
+              Grade Point Average (GPA):
             </InputTextWithLabel>
           </div>
         </div>
@@ -422,7 +422,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="Who is your training provider? *"
+              fieldLabel="Training or bootcamp provider: *"
               id="profile-creation-education-training-provider-name"
               searchingText="Searching..."
               noResultsText="No education providers found..."
@@ -430,14 +430,14 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classEdProviderObject, val)
               }
-              searchPlaceholder="Training provider name"
+              searchPlaceholder="Example: CompTIA"
               getOptionLabel={(option: EducationProviderDTO) =>
                 option.name ?? ''
               }
             />
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/training-programs/search/"
-              fieldLabel="What is your training program? *"
+              fieldLabel="Program or training track subject: *"
               id="profile-creation-education-training-provider-program-name"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
@@ -445,24 +445,24 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classProgramObject, val)
               }
-              searchPlaceholder="Training program name"
+              searchPlaceholder="Example: Cybersecurity"
               getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Please select"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
-              What is your enrollment status? *
+              Enrollment status: *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
@@ -500,11 +500,11 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               id={'profile-creation-education-training-program-gpa'}
               type="text"
               className="w-full"
-              placeholder="Your GPA (ex: 4.0)"
+              placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
               value={education[classGPA] ?? ''}
             >
-              What is your grade?
+              Grade Point Average (GPA):
             </InputTextWithLabel>
           </div>
         </div>
@@ -516,7 +516,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="Who is your pre-apprenticeship provider? *"
+              fieldLabel="Pre-apprenticeship provider: *"
               id="profile-creation-education-preapprenticeship-name"
               searchingText="Searching..."
               noResultsText="No education providers found..."
@@ -524,7 +524,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classEdProviderObject, val)
               }
-              searchPlaceholder="Pre-apprenticeship name (e.g.: Computing for All)"
+              searchPlaceholder="Example: Computing for All"
               getOptionLabel={(option: EducationProviderDTO) =>
                 option.name ?? ''
               }
@@ -535,18 +535,18 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               options={(Object.values(PreAEduSystem) as string[]).map(
                 (value) => ({ label: value, value }),
               )}
-              placeholder="Education system"
+              placeholder="Please select"
               onChange={(e) =>
                 handleChange(index, classPreAppEdSystem, e.target.value)
               }
               required
               value={education[classPreAppEdSystem]?.toString() ?? ''}
             >
-              What is your education system? *
+              Affiliated school system: *
             </SelectOptionsWithLabel>
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/pre-apprenticeship/search/"
-              fieldLabel="What is your program? *"
+              fieldLabel="Program or training track subject: *"
               id="profile-creation-education-preapprenticeship-program"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
@@ -554,24 +554,24 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classProgramObject, val)
               }
-              searchPlaceholder="Program name"
+              searchPlaceholder="Example: Full stack web development"
               getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Please select"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
-              What is your enrollment status? *
+              Enrollment status: *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
@@ -609,11 +609,11 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               id={'profile-creation-education-preapprenticeship-gpa'}
               type="text"
               className="w-full"
-              placeholder="Your GPA (ex: 4.0)"
+              placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
               value={education[classGPA] ?? ''}
             >
-              What is your grade?
+              Grade Point Average (GPA):
             </InputTextWithLabel>
           </div>
         </div>
@@ -625,7 +625,7 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
           <div className="profile-form-grid">
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="Who is your education provider? *"
+              fieldLabel="Name of education provider: *"
               id="profile-creation-education-other-provider-name"
               searchingText="Searching..."
               noResultsText="No education providers found..."
@@ -633,14 +633,14 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classEdProviderObject, val)
               }
-              searchPlaceholder="Education provider name"
+              searchPlaceholder="Example: edX"
               getOptionLabel={(option: EducationProviderDTO) =>
                 option.name ?? ''
               }
             />
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/other/search/"
-              fieldLabel="What is your education provider's program? *"
+              fieldLabel="Program or training track subject: *"
               id="profile-creation-education-other-provider-program-name"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
@@ -648,24 +648,24 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               onChange={(e, val) =>
                 handleChange(index, classProgramObject, val)
               }
-              searchPlaceholder="Education provider program name"
+              searchPlaceholder="Example: Computer Science"
               getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Please select"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
-              What is your enrollment status? *
+              Enrollment status: *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
@@ -703,11 +703,11 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
               id={'profile-creation-education-other-gpa'}
               type="text"
               className="w-full"
-              placeholder="Your GPA (ex: 4.0)"
+              placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
               value={education[classGPA] ?? ''}
             >
-              What is your grade?
+              Grade Point Average (GPA):
             </InputTextWithLabel>
           </div>
         </div>

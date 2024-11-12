@@ -64,14 +64,14 @@ export type ProjectExpDTO = {
 // Updated to match WJI grant reporting data (do not modify)
 export enum HighestCompletedEducationLevel {
   // VocationalQualification = 'Vocational Qualification / Certification',
-  NoFormalEducation = 'Less than high school diploma',
+  NoFormalEducation = 'Not yet completed High School',
   GED = 'GED',
-  HighSchool = 'High School',
-  PostHighSchool = 'Some post high school, no degree or certificate',
+  HighSchool = 'High School Diploma',
+  PostHighSchool = 'Some training or study post high school',
   Certificate = 'Certificate (less than two years)',
-  Associates = 'Associates',
-  Bachelors = 'Bachelors',
-  Masters = 'Masters',
+  Associates = "Associates's Degree",
+  Bachelors = "Bachelor's Degree",
+  Masters = "Master's Degree",
   Doctorate = 'Doctorate',
 }
 

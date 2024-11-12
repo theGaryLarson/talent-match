@@ -71,7 +71,7 @@ export default memo(function WorkExperiences({
   return data.map((workExperience, index) => (
     <fieldset key={classNamePrefix + workExperience.workId + '-key'}>
       <legend className="flex w-full justify-between">
-        <h3>Experience {index + 1}</h3>
+        <h3>Work Experience {index + 1}</h3>
         <Button
           onClick={() => onRemove(workExperience.workId)}
           size="xs"
@@ -86,19 +86,19 @@ export default memo(function WorkExperiences({
         <InputTextWithLabel
           id={classNamePrefix + workExperience.workId + '-' + classCompany}
           className="w-full"
-          placeholder="Your company name"
+          placeholder="Example: Microsoft"
           onChange={(e) => handleChange(index, classCompany, e.target.value)}
           required
           value={workExperience[classCompany]}
         >
-          Company *
+          Company Name: *
         </InputTextWithLabel>
         <SelectAutoload
           id={
             classNamePrefix + workExperience.workId + '-' + classCompanyIndustry
           }
           apiAutoloadRoute="/api/employers/industry-sectors"
-          label="Industry Sector *"
+          label="Industry Sector: *"
           getOptionLabel={(option: IndustrySectorDropdownDTO) =>
             option.sector_title
           }
@@ -108,7 +108,7 @@ export default memo(function WorkExperiences({
           getOptionFromId={(options: IndustrySectorDropdownDTO[], id: string) =>
             options.find((item) => item.industry_sector_id === id) || null
           }
-          placeholder="Your company's industry sector"
+          placeholder="Please select"
           onChange={(val) => handleChange(index, classCompanyIndustry, val)}
           required
           value={workExperience[classCompanyIndustry]}
@@ -119,13 +119,13 @@ export default memo(function WorkExperiences({
             classNamePrefix + workExperience.workId + '-' + classCompanyTechArea
           }
           apiAutoloadRoute="/api/employers/technology-areas"
-          label="Technical Expertise *"
+          label="Job Role or Department: *"
           getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
           getOptionId={(option: TechnologyAreaDropdownDTO) => option.id}
           getOptionFromId={(options: TechnologyAreaDropdownDTO[], id: string) =>
             options.find((item) => item.id === id) || null
           }
-          placeholder="Your job role's area of technical expertise"
+          placeholder="Please select"
           onChange={(val) => handleChange(index, classCompanyTechArea, val)}
           required
           value={workExperience[classCompanyTechArea]}
@@ -134,17 +134,17 @@ export default memo(function WorkExperiences({
         <InputTextWithLabel
           id={classNamePrefix + workExperience.workId + '-' + classTitle}
           className="w-full"
-          placeholder="Your title"
+          placeholder="Example: Frontend Developer"
           onChange={(e) => handleChange(index, classTitle, e.target.value)}
           required
           value={workExperience[classTitle]}
         >
-          Title *
+          Your Job Title: *
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">
         <DatePicker
-          label={'Starts *'}
+          label={'Start Date *'}
           views={['month', 'year']}
           value={
             workExperience[classStarts]?.isValid()
@@ -154,7 +154,7 @@ export default memo(function WorkExperiences({
           onChange={(val) => handleChange(index, classStarts, val)}
         />
         <DatePicker
-          label={'Ends *'}
+          label={'End Date'}
           views={['month', 'year']}
           value={
             workExperience[classEnds]?.isValid()
@@ -171,19 +171,19 @@ export default memo(function WorkExperiences({
           checked={workExperience[classCurrent]}
           onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
         />
-        Current
+        Currently Employed in this Position
       </Label>
       <div className="profile-form-grid">
         <TextareaWithLabel
           id={classNamePrefix + workExperience.workId + '-' + classExperience}
-          placeholder="Your specific experience"
+          placeholder="Example: Write CSS for design changes"
           onChange={(e: { target: { value: any } }) =>
             handleChange(index, classExperience, e.target.value)
           }
           required
           value={workExperience[classExperience]}
         >
-          Experience *
+          Job Responsibilities: *
         </TextareaWithLabel>
       </div>
     </fieldset>

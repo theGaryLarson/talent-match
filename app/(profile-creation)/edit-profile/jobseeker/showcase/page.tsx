@@ -153,7 +153,11 @@ export default function CreateJobseekerProfileShowcasePage() {
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Introduction to Employers</h2>
+              <h2>Introduce Yourself</h2>
+              <p>
+                This text will appear under your name in job candidate search
+                listings and on your profile page.
+              </p>
             </legend>
 
             <div className="profile-form-grid">
@@ -162,10 +166,10 @@ export default function CreateJobseekerProfileShowcasePage() {
                 onChange={(e) => {
                   setIntroduction(e.target.value);
                 }}
-                placeholder="Type here"
+                placeholder="Example: I am a software engineer ..."
                 value={introduction}
               >
-                Tell Your Story
+                Introduction
               </InputTextWithLabel>
               {/*<InputTextWithLabel*/}
               {/*  id="profile-creation-intro-current-position"*/}
@@ -188,7 +192,7 @@ export default function CreateJobseekerProfileShowcasePage() {
             <div className="profile-form-grid">
               <TagsWithAutocomplete
                 apiSearchRoute="/api/skills/search/"
-                fieldLabel="Select your skills *"
+                fieldLabel="Select your top five skills: *"
                 id="profile-creation-showcase-skills"
                 maxTags={5}
                 searchingText="Searching..."
@@ -198,17 +202,16 @@ export default function CreateJobseekerProfileShowcasePage() {
                     setSkills(val as SkillDTO[]);
                   }
                 }}
-                searchPlaceholder="Skill (ex: Java)"
+                searchPlaceholder="Example: Java"
                 addNewTags={fetchLoadedTags}
                 getTagLabel={(option: SkillDTO) => option.skill_name}
                 getTagLink={(option: SkillDTO) => option.skill_info_url}
               />
-              <p>Select your top 5 skills from your skills list</p>
 
               <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-portfolio"
                 label="Portfolio"
-                placeholder="Url"
+                placeholder="Example: https://my.portfolio.website/"
                 fullWidth
                 value={portfolioUrl}
                 onChange={(e) => {
@@ -217,7 +220,7 @@ export default function CreateJobseekerProfileShowcasePage() {
               />
               <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-password"
-                label="Password if it is applicable"
+                label="Portfolio Password (if applicable):"
                 placeholder="Password"
                 type="password"
                 fullWidth
@@ -268,9 +271,10 @@ export default function CreateJobseekerProfileShowcasePage() {
             <DividerWithText>or</DividerWithText>
             */}
 
-              <TextFieldWithNoLabel
+              <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-video"
-                placeholder="Upload your video url"
+                label="Video URL:"
+                placeholder="Example: https://www.youtube.com/watch"
                 fullWidth
                 value={videoUrl}
                 onChange={(e) => {
@@ -280,7 +284,7 @@ export default function CreateJobseekerProfileShowcasePage() {
             </div>
           </fieldset>
           <div>
-            Resume *
+            Resume: *
             <InputFileDropzone
               id="profile-creation-intro-resume"
               fileTypeText="PDF, DOC, DOCX, TXT or RTF"
