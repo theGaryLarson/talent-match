@@ -25,7 +25,7 @@ export default function EmployerHowItWorks() {
         />
         <Step
           buttonText={'Start Hiring'}
-          title={'Connect With EaseConnect With Ease'}
+          title={'Connect With Ease'}
           article={
             "Once you've found the perfect candidate, our Portal makes connecting effortless. Directly initiate contact through our messaging system, streamlining communication and ensuring a smooth hiring process."
           }
