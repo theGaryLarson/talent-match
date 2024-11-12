@@ -1334,18 +1334,18 @@ async function seedMockUsers(numUsers = 4) {
 
 async function seedPathways() {
     const pathways = [
-        "Cloud Support Associate",
-        "Software Developer",
-        "Data Analyst",
-        "Cybersecurity Analyst",
-        // "Cybersecurity",
-        // "Data Analytics",
+        // "Cloud Support Associate",
+        // "Software Developer",
+        // "Data Analyst",
+        // "Cybersecurity Analyst",
+        "Cybersecurity",
+        "Data Analytics",
         // "Data Center Operations",
-        // "IT & Cloud Computing",
+        "IT & Cloud Computing",
         // "Digital Marketing",
         // "UI/UX",
         // "Project Management",
-        // "Software Development",
+        "Software Development",
         // "Other",
     ]
     console.log('Seeding Pathways...')
