@@ -83,8 +83,8 @@ export default function Page({ params }: { params: { occupation: string } }) {
           <Box mb={2}>
             <Box sx={{ mb: 3 }}>
               <Button sx={{ my: 2 }} variant="contained"
-                LinkComponent={NextLink} onClick={() => router.back()}>
-                Go Back
+                LinkComponent={NextLink} onClick={() => router.push('/ess/pathways')}>
+                See other Pathways
               </Button>
               <Typography variant="h2" component="h2" fontWeight="bold" sx={{ wordBreak: "break-word" }}>
                 {data.cfa_name}
