@@ -100,20 +100,20 @@ export interface CareerPrepJobseekerCardViewDTO {
 export const getCareerPrepStudentsCardView = async (): Promise<CareerPrepJobseekerCardViewDTO[] | null> => {
     try {
         const data = await prisma.careerPrepAssessment.findMany({
-            select: selectCareerPrepStudentCardView
+            select: selectCareerPrepStudentCardView,
         });
         devLog('career prep card view', data)
         // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
         const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(item => ({
-            firstName: item.jobseeker?.users?.first_name || '',
-            lastName: item.jobseeker?.users?.last_name || '',
+            firstName: item.Jobseeker?.users?.first_name || '',
+            lastName: item.Jobseeker?.users?.last_name || '',
             pronouns: item.pronouns,
-            careerPrepTrack: item.jobseeker.careerPrepTrackRecommendation as CareerPrepTrack,
+            careerPrepTrack: item.Jobseeker.careerPrepTrackRecommendation as CareerPrepTrack,
             careerPrepAssessmentDate: item.assessmentDate,
             careerPrepEnrollmentStatus: item.CaseMgmt?.prepEnrollmentStatus as CareerPrepStatus,
             careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
             expectedEduCompletion: item.expectedEduCompletion as TimeUntilCompletion,
-            assignedPool: item.jobseeker?.assignedPool as PoolCategories || '',
+            assignedPool: item.Jobseeker?.assignedPool as PoolCategories || '',
         }));
         return transformedData
     } catch (e) {
@@ -124,42 +124,19 @@ export const getCareerPrepStudentsCardView = async (): Promise<CareerPrepJobseek
     }
 }
 
-export const updateCareerPrepStatusCardView = async (jobseekerId: string, status: CareerPrepStatus)=> {
-    const session = await auth();
+
+export const getCareerPrepStudentsDetailView = async(jobseekerId: string)=> {
     try {
         const data = await prisma.careerPrepAssessment.findUnique({
             where: {
-                jobseekerId: jobseekerId
-            },
-            select: selectCareerPrepStudentDetail
-        })
-        const studentStatus = await prisma.caseMgmt.upsert({
-            where: {
                 jobseekerId: jobseekerId,
             },
-            update: {
-                prepEnrollmentStatus: status,
-            },
-            create: {
-                prepEnrollmentStatus: status,
-                careerPrepTrack: data?.jobseeker.careerPrepTrackRecommendation!,
-                CareerPrepAssessment: {
-                    connect: {
-                        jobseekerId: jobseekerId,
-                    }
-                },
-                CaseManager: {
-                    connect: {
-                        id: session?.user.id!
-                    }
-                }
-            }
+            select: selectCareerPrepStudentDetailView
         })
-        return studentStatus.prepEnrollmentStatus
     } catch (e) {
 
     } finally {
-        prisma.$disconnect()
+        prisma.$disconnect();
     }
 }
 
@@ -178,7 +155,7 @@ const selectCareerPrepStudentCardView = {
             prepExpectedEndDate: true,
         }
     },
-    jobseeker: {
+    Jobseeker: {
         select: {
             assignedPool: true,
             careerPrepTrackRecommendation: true,
@@ -193,10 +170,60 @@ const selectCareerPrepStudentCardView = {
 }
 
 /**
+ * Updates the career preparation status card view for a specific jobseeker.
+ *
+ * @param {string} jobseekerId - The ID of the jobseeker for whom the status card view is being updated.
+ * @param {CareerPrepStatus} status - The new career preparation status to be updated. Pass 'null' if not changing.
+ * @param {Date} expectedEndDate - The expected end date for the current status. Pass 'null' if not changing.
+ * @returns An object containing the updated status and expected end date.
+ */
+export const updateCareerPrepStatusCardView = async (jobseekerId: string, status?: CareerPrepStatus, expectedEndDate?: Date)=> {
+    const session = await auth();
+    try {
+        const data = await prisma.careerPrepAssessment.findUnique({
+            where: {
+                jobseekerId: jobseekerId
+            },
+            select: selectCareerPrepStudentCardView
+        })
+        const studentStatus = await prisma.caseMgmt.upsert({
+          where: {
+            jobseekerId: jobseekerId,
+          },
+          update: {
+              ...(status ? { prepEnrollmentStatus: status } : {}),
+              ...(expectedEndDate ? { expectedEndDate: expectedEndDate } : {}),
+          },
+          create: {
+            ...(status ? { prepEnrollmentStatus: status } : {prepEnrollmentStatus: CareerPrepStatus.Applied}),
+            ...(expectedEndDate ? { expectedEndDate: expectedEndDate } : {}),
+            careerPrepTrack: data?.Jobseeker.careerPrepTrackRecommendation!,
+            CareerPrepAssessment: {
+              connect: {
+                jobseekerId: jobseekerId,
+              },
+            },
+            CaseManager: {
+              connect: {
+                id: session?.user.id!,
+              },
+            },
+          },
+        });
+        return {  status: studentStatus.prepEnrollmentStatus, prepExpectedEndDate: studentStatus.prepExpectedEndDate }
+    } catch (e) {
+
+    } finally {
+        prisma.$disconnect()
+    }
+}
+
+
+/**
  * Select statement to retrieve Career Prep student details.
  * Accessed through prisma.careerPrepAssessment model.
  */
-const selectCareerPrepStudentDetail = {
+const selectCareerPrepStudentDetailView = {
     jobseekerId: true,
     assessmentDate: true,
     pronouns: true,
@@ -326,6 +353,19 @@ export interface MeetingDTO {
 }
 
 /**
+ * Represents the different types of notes that can be associated with a task or event.
+ * - Meeting: Note associated with a specific meeting
+ * - Review: Note associated with review for case manager tracking
+ * - Follow-up: follow-up notes for case manager
+ * @enum {string}
+ */
+export enum NoteType {
+    MEETING = 'Meeting',
+    REVIEW = 'Review',
+    FOLLOWUP='Follow-up'
+}
+
+/**
  * Represents a note that can be associated with a case management ID.
  *
  * @property {string} id - The unique identifier for the note.
@@ -343,7 +383,7 @@ export interface Note {
     caseMgmtId: string; // VARCHAR(38)
     meetingId?: string // VARCHAR(38)
     noteType: NoteType;
-    date?: Date // if needs associated with a meeting date or other date that is not the same as creation date.
+    date?: Date // if needs associated with a date that is not the same as creation date.
     createdBy: string; // case manager full name
     createdAt: Date // DATETIME
     updatedBy: string // full name of updater
@@ -352,14 +392,183 @@ export interface Note {
 }
 
 /**
- * Represents the different types of notes that can be associated with a task or event.
- * - Meeting: Note associated with a specific meeting
- * - Review: Note associated with review for case manager tracking
- * - Follow-up: follow-up notes for case manager
- * @enum {string}
+ * Represents a data transfer object for Career Prep Skills Assessment information.
  */
-export enum NoteType {
-    MEETING = 'Meeting',
-    REVIEW = 'Review',
-    FOLLOWUP='Follow-up'
+export type CareerPrepSkillsAssessmentDTO = {
+    jobseekerId: string; // Unique identifier for the user completing the form
+    basicInformation: {
+        firstName: string;
+        lastName: string;
+        pronouns: string;
+        expectedEduCompletion: TimeUntilCompletion; // how many months until completing education program
+    };
+    workExperienceAndMaterials: {
+        hasWorkExperience: boolean; // technical or non-technical work experience
+        hasResume: boolean; // will use getResumeUrl(userId) to confirm
+        // resumeLink?: string; // open link with getResumeUrl(userId)
+        hasPortfolio: boolean; // check jobseekers.portfolioUrl
+        portfolioLink?: string; // Optional, only if 'hasPortfolio' is true
+        hasCoverLetter: boolean; // will use getCoverLetter(userId) to confirm
+        // coverLetterLink?: string; // open link with getCoverLetter(userId)
+        hasLinkedInProfile: boolean; // check jobseekers.linkedInUrl
+        linkedInLink?: string; // use value in jobseekers.linkedInUrl
+        hasTechApplicationExperience: boolean;
+        hasInterviewExperience: boolean;
+    };
+    technicalSelfAssessment: {
+        interestPathway: TechPathways;
+        skillRatings: {
+            cybersecurity?: CybersecuritySkills;
+            dataAnalytics?: DataAnalyticsSkills;
+            itAndCloudComputing?: ITAndCloudComputingSkills;
+            softwareDevelopment?: SoftwareDevelopmentSkills;
+        };
+    };
+    durableSkills: DurableSkillsRatings;
+    professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
+};
+
+export enum TechPathways {
+    Cybersecurity = "Cybersecurity",
+    DataAnalytics = "Data Analytics",
+    ITCloudComputing = "IT & Cloud Computing",
+    SoftwareDevelopment = "Software Development"
+}
+
+// Define specific DTOs for skill categories
+export type CybersecuritySkills = {
+    networking: SkillProficiency;
+    projectManagement: SkillProficiency;
+    securityTools: SkillProficiency;
+    operatingSystems: SkillProficiency;
+    programming: SkillProficiency;
+    cryptography: SkillProficiency;
+    cloudSecurity: SkillProficiency;
+    incidentResponse: SkillProficiency;
+    dataSecurity: SkillProficiency;
+    computationalThinking: SkillProficiency;
+    apiUsage: SkillProficiency;
+};
+
+export type DataAnalyticsSkills = {
+    dataAnalysis: SkillProficiency;
+    sqlProgramming: SkillProficiency;
+    pythonPackages: SkillProficiency;
+    dataScience: SkillProficiency;
+    dataEngineering: SkillProficiency;
+    tableau: SkillProficiency;
+    machineLearning: SkillProficiency;
+    rProgramming: SkillProficiency;
+    projectManagement: SkillProficiency;
+    dataVisualization: SkillProficiency;
+    dataStructures: SkillProficiency;
+    bigOComplexity: SkillProficiency;
+    sortingAlgorithms: SkillProficiency;
+    databases: SkillProficiency;
+    computationalThinking: SkillProficiency;
+};
+
+export type ITAndCloudComputingSkills = {
+    techSupport: SkillProficiency;
+    activeDirectory: SkillProficiency;
+    projectManagement: SkillProficiency;
+    helpDeskSupport: SkillProficiency;
+    windowsServers: SkillProficiency;
+    sqlProgramming: SkillProficiency;
+    computerHardware: SkillProficiency;
+    operatingSystems: SkillProficiency;
+    systemAdmin: SkillProficiency;
+    networkAdmin: SkillProficiency;
+    virtualization: SkillProficiency;
+    coreCloudServices: SkillProficiency;
+    apiUsage: SkillProficiency;
+    httpResponseCodes: SkillProficiency;
+    computationalThinking: SkillProficiency;
+};
+
+export type SoftwareDevelopmentSkills = {
+    softwareEngineering: SkillProficiency;
+    softwareDevelopmentLifecycle: SkillProficiency;
+    programmingLanguages: SkillProficiency;
+    dataStructuresAndAlgorithms: SkillProficiency;
+    softwareArchitecture: SkillProficiency;
+    versionControl: SkillProficiency;
+    databaseManagement: SkillProficiency;
+    devOps: SkillProficiency;
+    cloudComputing: SkillProficiency;
+    conceptualSystemsThinking: SkillProficiency;
+    problemSolving: SkillProficiency;
+    fundamentalCodingConcepts: SkillProficiency;
+    debugging: SkillProficiency;
+    computationalThinking: SkillProficiency;
+    softwareOptimization: SkillProficiency;
+};
+
+export type DurableSkillsRatings = {
+    emotionManagement: SkillLevel;
+    empathy: SkillLevel;
+    goalSetting: SkillLevel;
+    timeManagement: SkillLevel;
+    adaptability: SkillLevel;
+    criticalThinking: SkillLevel;
+    creativity: SkillLevel;
+    resilience: SkillLevel;
+    communication: SkillLevel;
+    activeListening: SkillLevel;
+    conflictResolution: SkillLevel;
+    nonverbalCommunication: SkillLevel;
+    teamwork: SkillLevel;
+    trustBuilding: SkillLevel;
+    leadership: SkillLevel;
+    perspectiveTaking: SkillLevel;
+    culturalAwareness: SkillLevel;
+    relationshipBuilding: SkillLevel;
+    documentationSkills: SkillLevel;
+};
+
+// Enum for durable skill levels
+export enum SkillLevel {
+    NeedsImprovement = "Needs Improvement",
+    Developing = "Developing",
+    Fair = "Fair",
+    Good = "Good",
+    Exceptional = "Exceptional",
+}
+
+export type ProfessionalBrandingRatings = {
+    personalBrand: AgreementLevel;
+    onlinePresence: AgreementLevel;
+    elevatorPitch: AgreementLevel;
+    resumeEffectiveness: AgreementLevel;
+    coverLetterEffectiveness: AgreementLevel;
+    interviewExperience: AgreementLevel;
+    responseTechnique: AgreementLevel;
+    followUpImportance: AgreementLevel;
+    onlineNetworking: AgreementLevel;
+    eventNetworking: AgreementLevel;
+    relationshipManagement: AgreementLevel;
+    jobSearchStrategy: AgreementLevel;
+    materialDistribution: AgreementLevel;
+    networkingTechniques: AgreementLevel;
+    onboardingBestPractices: AgreementLevel;
+    developmentPlan: AgreementLevel;
+    mentorship: AgreementLevel;
+};
+
+// Enum for agreement levels
+export enum AgreementLevel {
+    StronglyDisagree = "Strongly Disagree",
+    Disagree = "Disagree",
+    Neutral = "Neutral",
+    Agree = "Agree",
+    StronglyAgree = "Strongly Agree",
+}
+
+// Enum for skill proficiency levels
+export enum SkillProficiency {
+    NotProficient = "Not Proficient",
+    Novice = "Novice",
+    AdvancedBeginner = "Advanced Beginner",
+    Competent = "Competent",
+    Proficient = "Proficient",
 }
