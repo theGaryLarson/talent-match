@@ -157,13 +157,13 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
             emailAddress: data.Jobseeker?.users.email!,
             pathway: data.Jobseeker?.pathways?.pathway_title ?? '',
             education: data.Jobseeker?.highest_level_of_study_completed as HighestCompletedEducationLevel,
-            // eduProviders: data.Jobseeker?.jobseeker_education.map((edData) => ({
-            //     partnerTrainingProvider: edData.eduProviders.name??'',
-            //     trainingProgramTitle: edData.program,
-            //     educationLevel: edData.edLevel,
-            //     status: edData.edLevel as EducationLevel,
-            //
-            // })),
+            eduProviders: data.Jobseeker?.jobseeker_education.map((edData) => ({
+                partnerTrainingProvider: edData.eduProviders.name!,
+                trainingProgramTitle: edData?.program?.title!,
+                educationLevel: edData.edLevel  as EducationLevel,
+                status: edData.enrollmentStatus as ProgramEnrollmentStatus,
+
+            })),
             expectedEduCompletion: data?.expectedEduCompletion as TimeUntilCompletion,
             technicalCertificates: data.Jobseeker?.certificates.map((cert) => ({
                 name: cert.name,
