@@ -18,7 +18,7 @@ const TopLevelLinks = [
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
   { name: 'Careers', href: '/services/careers' },
-  { name: 'Find a Job', href: '/services/joblistings' },
+  { name: 'Find a Job', href: 'https://cfajobs.powerappsportals.com/', target: '_blank', rel: 'oopener noreferrer' },
   // { name: 'Explore', href: '/underconstruction' },
   // {
   //   name: "Contact Us",
@@ -110,6 +110,8 @@ export default function Header() {
                 key={link.name}
                 href={link.href}
                 className="text-sm font-semibold leading-6  "
+                target={link.target || '_self'}
+                rel={link.rel || ''}
               >
                 {link.name}
               </Link>
@@ -172,6 +174,8 @@ export default function Header() {
                         key={link.name}
                         href={link.href}
                         className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7   hover:bg-gray-50"
+                        target={link.target || '_self'}
+                        rel={link.rel || ''}
                       >
                         {link.name}
                       </Link>
