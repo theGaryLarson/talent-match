@@ -297,6 +297,7 @@ model CareerPrepAssessment {
   experienceWithApplying  Boolean               @db.Bit
   experienceWithInterview Boolean               @db.Bit
   prevWorkExperience      Boolean               @default(false) @db.Bit
+  updatedAt               DateTime              @updatedAt @db.DateTime
   Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
   CaseMgmt                CaseMgmt?
   Meeting                 Meeting[]
@@ -322,7 +323,8 @@ model CybersecurityRating {
   dataSecurity          String               @db.VarChar(20)
   computationalThinking String               @db.VarChar(20)
   apiUsage              String               @db.VarChar(20)
-  Jobseeker             CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1")
+  updatedAt             DateTime             @updatedAt @db.DateTime
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1")
 }
 
 model DataAnalyticsRating {
@@ -342,7 +344,8 @@ model DataAnalyticsRating {
   sortingAlgorithms     String               @db.VarChar(20)
   databases             String               @db.VarChar(20)
   computationalThinking String               @db.VarChar(20)
-  Jobseeker             CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1")
+  updatedAt             DateTime             @updatedAt @db.DateTime
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1")
 }
 
 model ITCloudRating {
@@ -362,7 +365,8 @@ model ITCloudRating {
   apiUsage              String               @db.VarChar(20)
   httpResponseCodes     String               @db.VarChar(20)
   computationalThinking String               @db.VarChar(20)
-  Jobseeker             CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1")
+  updatedAt             DateTime             @updatedAt @db.DateTime
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1")
 }
 
 model SoftwareDevRating {
@@ -382,7 +386,8 @@ model SoftwareDevRating {
   debugging                    String               @db.VarChar(20)
   computationalThinking        String               @db.VarChar(20)
   softwareOptimization         String               @db.VarChar(20)
-  Jobseeker                    CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1")
+  updatedAt                    DateTime             @updatedAt @db.DateTime
+  PrepAssessment               CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1")
 }
 
 model DurableSkillsRating {
@@ -406,7 +411,8 @@ model DurableSkillsRating {
   culturalAwareness      String               @db.VarChar(20)
   relationshipBuilding   String               @db.VarChar(20)
   documentationSkills    String               @db.VarChar(20)
-  Jobseeker              CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1")
+  updatedAt              DateTime             @updatedAt @db.DateTime
+  PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1")
 }
 
 model BrandingRating {
@@ -428,21 +434,23 @@ model BrandingRating {
   onboardingBestPractices  String               @db.VarChar(20)
   developmentPlan          String               @db.VarChar(20)
   mentorship               String               @db.VarChar(20)
-  Jobseeker                CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1")
+  updatedAt                DateTime             @updatedAt @db.DateTime
+  PrepAssessment           CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1")
 }
 
 model CaseMgmt {
   jobseekerId           String               @id(clustered: false, map: "case_mgmt_PRIMARY") @map("jobseeker_id") @db.UniqueIdentifier
-  managerId             String               @map("cfa_admin_id") @db.UniqueIdentifier
+  managerId             String?              @map("cfa_admin_id") @db.UniqueIdentifier
   prepEnrollmentStatus  String               @db.VarChar(30)
-  ratingTechSkill       Int?                 @db.TinyInt
-  ratingCareerReadiness Int?                 @db.TinyInt
-  ratingSoftSkills      Int?                 @db.TinyInt
+  ratingTechSkill       Int?                 @db.TinyInt // TODO: Ask Bethany if these are the average rating of the  assessments e.g. TechPathwayAssessments 1 of 4
+  ratingCareerReadiness Int?                 @db.TinyInt // TODO: Ask Bethany if these are the average rating of the  assessments e.g. Professional Branding Assessment 1 of 1
+  ratingSoftSkills      Int?                 @db.TinyInt // TODO: Ask Bethany if these are the average rating of the  assessments e.g. Durable Skills Assessment 1 of 1
   careerPrepTrack       String?              @db.VarChar(15)
   prepStartDate         DateTime?            @db.DateTime
   prepExpectedEndDate   DateTime?            @db.DateTime
-  CareerPrepAssessment  CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
-  CaseManager           User                 @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
+  updatedAt             DateTime             @updatedAt @db.DateTime
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
+  CaseManager           User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
   Meeting               Meeting[]
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
@@ -472,6 +480,7 @@ model Meeting {
   meetingAgenda String?  @db.NText
   meetingDate   DateTime @db.DateTime
   duration      DateTime @db.Time
+  updatedAt     DateTime @updatedAt @db.DateTime
 
   jobseeker     CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_career_prep_assessment1")
   caseMgmt      CaseMgmt             @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
