@@ -20,9 +20,9 @@ export default async function Page() {
       <h1 className="text-2xl font-medium">
         My Dashboard
       </h1>
-      
-      {/* <EmployerRecentJobPosts/>
-      <EmployerTeamMembers/> */}
+      <p>
+        Admin Dash Perhaps
+      </p>
     </main>
   );
 }
