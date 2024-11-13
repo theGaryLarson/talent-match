@@ -7,6 +7,6 @@ export async function PATCH(request: Request, {params}: {params: {jobseekerId: s
         return NextResponse.json({ error: 'jobseekerId is required.' }, { status: 400 });
     }
 
-    const data = await updateCareerPrepStatusCardView(jobseekerId, status, expectedEndDate);
+    const data = await updateCareerPrepStatusCardView(jobseekerId, status);
     return NextResponse.json(data);
 }
