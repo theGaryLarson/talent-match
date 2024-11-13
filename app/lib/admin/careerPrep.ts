@@ -47,13 +47,12 @@ export enum TechCertificateStatus {
  * Enum representing the different status options for a career preparation process.
  * @enum {string}
  */
-export enum CareerPrepStatus { // TODO: modify with Bethany
-    Applied = 'Applied',
-    SentAssessment = 'Sent Assessment',
+export enum CareerPrepStatus {
+    Applied = 'Applied', // submitting assessment will be Applied
     CreatingPlan = 'Creating Plan',
     MeetingScheduled = 'Meeting Scheduled',
     MetCareerNavigator = 'Met Career Navigator',
-    SentIntakeForm = 'Sent Intake Form',
+    SentEnrollmentForm = 'Sent Enrollment Form',
     Enrolled = 'Enrolled',
     Completed = 'Completed',
     Rejected = 'Rejected',
@@ -75,7 +74,7 @@ export interface AdminCareerPrepDTO {
  */
 export interface StudentSummary {
     studentDetail: CareerPrepJobseekerDetailViewDTO;
-    meetings: MeetingDTO[] | null;
+    // meetings: MeetingDTO[] | null;
     meetingNotes: Note[] | null; // will filter notes by NoteType on backend
     followUpNotes: Note[] | null;
     reviewNotes: Note[] | null;
@@ -167,7 +166,6 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
             expectedEduCompletion: data?.expectedEduCompletion as TimeUntilCompletion,
             technicalCertificates: data.Jobseeker?.certificates.map((cert) => ({
                 name: cert.name,
-                status: cert.status as TechCertificateStatus,
             })),
             portfolio: data.Jobseeker?.portfolio_url??'',
             linkedin: data.Jobseeker?.linkedin_url??'',
@@ -246,7 +244,7 @@ export const updateCareerPrepStatusCardView = async (
             create: {
                 ...(status
                     ? {prepEnrollmentStatus: status}
-                    : {prepEnrollmentStatus: CareerPrepStatus.SentAssessment}), // TODO: May update after talking with Bethany. What is default step after student submits assessment?
+                    : {prepEnrollmentStatus: CareerPrepStatus.Applied}),
                 ...(expectedEndDate ? {expectedEndDate: expectedEndDate} : {}),
                 careerPrepTrack: data?.Jobseeker.careerPrepTrackRecommendation!,
                 PrepAssessment: {
@@ -354,7 +352,7 @@ export interface CareerPrepJobseekerDetailViewDTO {
     education: HighestCompletedEducationLevel;
     eduProviders?: PartnerTrainingProvider[];
     expectedEduCompletion: TimeUntilCompletion;
-    technicalCertificates: { name: string; status: TechCertificateStatus }[];    // resume: omitted but will be retrieved with blob storage function call getResumeUrl().
+    technicalCertificates: { name: string }[];    // resume: omitted but will be retrieved with blob storage function call getResumeUrl().
     // coverLetter: omitted but will be retrieved with blob storage function call getCoverLetterUrl().
     portfolio: string; // URL
     linkedin: string; // URL
@@ -368,7 +366,6 @@ export interface CareerPrepJobseekerDetailViewDTO {
  * @interface
  */
 export interface PartnerTrainingProvider {
-    // TODO: Discuss with Bethany. Consolidate degree and nondegree
     partnerTrainingProvider: string;
     trainingProgramTitle: string;
     educationLevel: EducationLevel; // differentiate between degree and nondegree education/training
@@ -412,9 +409,9 @@ export interface MeetingDTO {
  * @enum {string}
  */
 export enum NoteType {
-    MEETING = 'Meeting',
-    REVIEW = 'Review',
-    FOLLOWUP = 'Follow-up',
+    MEETING = 'Meeting',  // associated with meetings
+    GENERAL = 'General', // for general purpose
+    FOLLOWUP = 'Follow-up', // communication notes
 }
 
 /**
@@ -575,7 +572,6 @@ const upsertCaseMgmtRecord = async (jobseekerId: string): Promise<{ success: boo
                 jobseekerId,
             },
             update: {
-
                 PrepAssessment: {
                     connect: {
                         jobseekerId
@@ -583,8 +579,8 @@ const upsertCaseMgmtRecord = async (jobseekerId: string): Promise<{ success: boo
                 },
             },
             create: {
-                prepEnrollmentStatus: CareerPrepStatus.SentAssessment, // TODO: Modify after discussion with Bethany.
-                ratingTechSkill: 0, // TODO: fix the zeros after discussion with Bethany.
+                prepEnrollmentStatus: CareerPrepStatus.Applied,
+                ratingTechSkill: 0, // fixme: fix the zeros after discussion with Bethany. average assessment scores
                 ratingCareerReadiness: 0,
                 ratingSoftSkills: 0,
                 careerPrepTrack: jobseeker?.careerPrepTrackRecommendation || null,
@@ -1208,15 +1204,6 @@ export type DurableSkillsRatings = {
     documentationSkills: SkillLevel;
 };
 
-// Enum for durable skill levels
-export enum SkillLevel {
-    NeedsImprovement = 'Needs Improvement',
-    Developing = 'Developing',
-    Fair = 'Fair',
-    Good = 'Good',
-    Exceptional = 'Exceptional',
-}
-
 export type ProfessionalBrandingRatings = {
     personalBrand: AgreementLevel;
     onlinePresence: AgreementLevel;
@@ -1237,20 +1224,61 @@ export type ProfessionalBrandingRatings = {
     mentorship: AgreementLevel;
 };
 
+export function getLabel<T extends number | string>(
+    score: T,
+    labels: Record<T, string>
+): string {
+    return labels[score] || "Unknown";
+}
+
 // Enum for agreement levels
 export enum AgreementLevel {
-    StronglyDisagree = 'Strongly Disagree',
-    Disagree = 'Disagree',
-    Neutral = 'Neutral',
-    Agree = 'Agree',
-    StronglyAgree = 'Strongly Agree',
+    StronglyDisagree = 1,
+    Disagree = 2,
+    Neutral = 3,
+    Agree = 4,
+    StronglyAgree = 5,
 }
+
+const AgreementLevelLabels: Record<AgreementLevel, string> = {
+    [AgreementLevel.StronglyDisagree]: "Strongly Disagree",
+    [AgreementLevel.Disagree]: "Disagree",
+    [AgreementLevel.Neutral]: "Neutral",
+    [AgreementLevel.Agree]: "Agree",
+    [AgreementLevel.StronglyAgree]: "Strongly Agree",
+};
 
 // Enum for skill proficiency levels
 export enum SkillProficiency {
-    NotProficient = 'Not Proficient',
-    Novice = 'Novice',
-    AdvancedBeginner = 'Advanced Beginner',
-    Competent = 'Competent',
-    Proficient = 'Proficient',
+    NotProficient = 1,
+    Novice = 2,
+    AdvancedBeginner = 3,
+    Competent = 4,
+    Proficient = 5,
 }
+
+ export const SkillProficiencyLabels: Record<SkillProficiency, string> = {
+    [SkillProficiency.NotProficient]: "Not Proficient",
+    [SkillProficiency.Novice]: "Novice",
+    [SkillProficiency.AdvancedBeginner]: "Advanced Beginner",
+    [SkillProficiency.Competent]: "Competent",
+    [SkillProficiency.Proficient]: "Proficient",
+};
+
+// Enum for durable skill levels
+export enum SkillLevel {
+    NeedsImprovement = 1,
+    Developing = 2,
+    Fair = 3,
+    Good = 4,
+    Exceptional = 5,
+}
+
+// Label mapping for user-friendly display
+const SkillLevelLabels: Record<SkillLevel, string> = {
+    [SkillLevel.NeedsImprovement]: "Needs Improvement",
+    [SkillLevel.Developing]: "Developing",
+    [SkillLevel.Fair]: "Fair",
+    [SkillLevel.Good]: "Good",
+    [SkillLevel.Exceptional]: "Exceptional",
+};
