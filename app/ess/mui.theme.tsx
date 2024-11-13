@@ -58,7 +58,7 @@ let theme = createTheme({
                 }
             }
         },
-        dark: {
+        /*dark: {
             palette: {
                 primary: {
                     main: '#047F9C',
@@ -88,7 +88,7 @@ let theme = createTheme({
                     main: '#047F9C',
                 }
             }
-        },
+        },*/
     }
 });
 

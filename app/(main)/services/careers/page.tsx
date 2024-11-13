@@ -14,7 +14,7 @@ export default function Page() {
             <div className="p-8 px-12">
                 <div className="self-stretch h-44 flex-col justify-center items-start gap-2.5 flex">
                     <div className="self-stretch mb-4 text-sky-900 text-6xl font-normal font-['Roboto'] leading-10">Careers In IT & Cybersecurity</div>
-                    <div className="self-stretch text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">Explore impactful careers that shape the future of technology. Whether you're a developer at heart or a data guru, we have a place for you. Dive into the roles, find your fit, and embark on a career journey that resonates with your skills and aspirations. Each career path offers unique opportunities to innovate, solve problems, and lead in the digital age.</div>
+                    <div className="self-stretch text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">{"Explore impactful careers that shape the future of technology. Whether you're a developer at heart or a data guru, we have a place for you. Dive into the roles, find your fit, and embark on a career journey that resonates with your skills and aspirations. Each career path offers unique opportunities to innovate, solve problems, and lead in the digital age."}</div>
                 </div>
 
 
