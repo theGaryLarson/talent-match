@@ -1,14 +1,17 @@
-import {certificates, Prisma, PrismaClient} from '@prisma/client';
+import { certificates, Prisma, PrismaClient } from '@prisma/client';
 import {
-    EducationLevel,
-    HighestCompletedEducationLevel,
-    ProgramEnrollmentStatus,
+  EducationLevel,
+  HighestCompletedEducationLevel,
+  ProgramEnrollmentStatus,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import {CareerPrepTrack, PoolCategories} from '@/app/lib/poolAssignment';
+import { CareerPrepTrack, PoolCategories } from '@/app/lib/poolAssignment';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import {auth} from '@/auth';
-import {devLog} from '@/app/lib/utils';
-import {NextResponse} from "next/server";
+import { auth } from '@/auth';
+import { devLog } from '@/app/lib/utils';
+import {
+  getCoverLetterUrl,
+  getResumeUrl,
+} from '@/app/lib/services/azureBlobService';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -23,12 +26,12 @@ const prisma: PrismaClient = getPrismaClient();
  * - TwelvePlusMonths: More than 12 months to completion
  */
 export enum TimeUntilCompletion {
-    NA = 'N/A',
-    ZeroToThreeMonths = '0-3 months',
-    ThreeToSixMonths = '3-6 months',
-    SixToNineMonths = '6-9 months',
-    NineToTwelveMonths = '9-12 months',
-    TwelvePlusMonths = '12+ months',
+  NA = 'N/A',
+  ZeroToThreeMonths = '0-3 months',
+  ThreeToSixMonths = '3-6 months',
+  SixToNineMonths = '6-9 months',
+  NineToTwelveMonths = '9-12 months',
+  TwelvePlusMonths = '12+ months',
 }
 
 /**
@@ -38,9 +41,9 @@ export enum TimeUntilCompletion {
  * - Obtained: Certificate has been obtained
  */
 export enum TechCertificateStatus {
-    NA = 'N/A',
-    InProgress = 'In Progress',
-    Obtained = 'Obtained',
+  NA = 'N/A',
+  InProgress = 'In Progress',
+  Obtained = 'Obtained',
 }
 
 /**
@@ -48,15 +51,15 @@ export enum TechCertificateStatus {
  * @enum {string}
  */
 export enum CareerPrepStatus {
-    Applied = 'Applied', // submitting assessment will be Applied
-    CreatingPlan = 'Creating Plan',
-    MeetingScheduled = 'Meeting Scheduled',
-    MetCareerNavigator = 'Met Career Navigator',
-    SentEnrollmentForm = 'Sent Enrollment Form',
-    Enrolled = 'Enrolled',
-    Completed = 'Completed',
-    Rejected = 'Rejected',
-    Withdrawn = 'Withdrawn', // additional option from what was given.
+  Applied = 'Applied', // submitting assessment will be Applied
+  CreatingPlan = 'Creating Plan',
+  MeetingScheduled = 'Meeting Scheduled',
+  MetCareerNavigator = 'Met Career Navigator',
+  SentEnrollmentForm = 'Sent Enrollment Form',
+  Enrolled = 'Enrolled',
+  Completed = 'Completed',
+  Rejected = 'Rejected',
+  Withdrawn = 'Withdrawn', // additional option from what was given.
 }
 
 /**
@@ -64,7 +67,7 @@ export enum CareerPrepStatus {
  * This will be used to load all Jobseekers who have completed an Assessment for Career Prep
  */
 export interface AdminCareerPrepDTO {
-    students: CareerPrepJobseekerCardViewDTO[];
+  students: CareerPrepJobseekerCardViewDTO[];
 }
 
 /**
@@ -73,10 +76,10 @@ export interface AdminCareerPrepDTO {
  * @interface
  */
 export interface StudentSummary {
-    studentDetail?: CareerPrepJobseekerDetailViewDTO;
-    generalNotes: NoteDTO[] | null; // will filter notes by NoteType on backend
-    meetingNotes: NoteDTO[] | null;
-    followUpNotes: NoteDTO[] | null;
+  studentDetail?: CareerPrepJobseekerDetailViewDTO;
+  generalNotes: NoteDTO[] | null; // will filter notes by NoteType on backend
+  meetingNotes: NoteDTO[] | null;
+  followUpNotes: NoteDTO[] | null;
 }
 
 /**
@@ -85,156 +88,168 @@ export interface StudentSummary {
  * @param {string} jobseekerId - The ID of the jobseeker to retrieve information for
  * @returns {Promise<StudentSummary | null>} A Promise that resolves to a StudentSummary object
  */
-export const getCareerPrepStudentSummary = async (jobseekerId: string): Promise<StudentSummary | null> => {
-    const studentDetail = await getCareerPrepStudentDetailView(jobseekerId);
-    const notes = await getCareerPrepStudentNotes(jobseekerId);
-    // Handle error case for student detail
-    if (!studentDetail.success) {
-        console.error(studentDetail.error);
-        return null;
-    }
+export const getCareerPrepStudentSummary = async (
+  jobseekerId: string,
+): Promise<StudentSummary | null> => {
+  const studentDetail = await getCareerPrepStudentDetailView(jobseekerId);
+  const notes = await getCareerPrepStudentNotes(jobseekerId);
+  // Handle error case for student detail
+  if (!studentDetail.success) {
+    console.error(studentDetail.error);
+    return null;
+  }
 
-
-
-    return {
-        studentDetail: studentDetail.data,
-        generalNotes: notes.generalNotes,
-        meetingNotes: notes.meetingNotes,
-        followUpNotes: notes.followUpNotes,
-    };
-}
+  return {
+    studentDetail: studentDetail.data,
+    generalNotes: notes.generalNotes,
+    meetingNotes: notes.meetingNotes,
+    followUpNotes: notes.followUpNotes,
+  };
+};
 
 /**
  * Interface representing a data transfer object for Jobseeker Card View in Career Prep module.
  * @interface CareerPrepJobseekerCardViewDTO
  */
 export interface CareerPrepJobseekerCardViewDTO {
-    jobseekerId: string;
-    firstName: string;
-    lastName: string;
-    pronouns: string;
-    careerPrepTrack: CareerPrepTrack | null;
-    careerPrepAssessmentDate: Date;
-    careerPrepEnrollmentStatus: CareerPrepStatus;
-    careerPrepExpectedEndDate: Date | null;
-    expectedEduCompletion: TimeUntilCompletion;
-    assignedPool: PoolCategories;
+  jobseekerId: string;
+  firstName: string;
+  lastName: string;
+  pronouns: string;
+  careerPrepTrack: CareerPrepTrack | null;
+  careerPrepAssessmentDate: Date;
+  careerPrepEnrollmentStatus: CareerPrepStatus;
+  careerPrepExpectedEndDate: Date | null;
+  expectedEduCompletion: TimeUntilCompletion;
+  assignedPool: PoolCategories;
 }
 
 export const getCareerPrepStudentsCardView = async (): Promise<
-    CareerPrepJobseekerCardViewDTO[] | null
+  CareerPrepJobseekerCardViewDTO[] | null
 > => {
-    try {
-        const data = await prisma.careerPrepAssessment.findMany({
-            select: selectCareerPrepStudentCardView,
-        });
-        devLog('career prep card view', data);
-        // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
-        const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
-            (item) => ({
-                jobseekerId: item.jobseekerId,
-                firstName: item.Jobseeker?.users?.first_name || '',
-                lastName: item.Jobseeker?.users?.last_name || '',
-                pronouns: item.pronouns,
-                careerPrepTrack: item.Jobseeker
-                    .careerPrepTrackRecommendation as CareerPrepTrack,
-                careerPrepAssessmentDate: item.assessmentDate,
-                careerPrepEnrollmentStatus: item.CaseMgmt
-                    ?.prepEnrollmentStatus as CareerPrepStatus,
-                careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
-                expectedEduCompletion:
-                    item.expectedEduCompletion as TimeUntilCompletion,
-                assignedPool:
-                    (item.Jobseeker?.assignedPool as PoolCategories) ||
-                    PoolCategories.None,
-            }),
-        );
-        return transformedData;
-    } catch (e) {
-        console.error('Error fetching career prep students card view:', e);
-        return null;
-    } finally {
-        prisma.$disconnect();
-    }
+  try {
+    const data = await prisma.careerPrepAssessment.findMany({
+      select: selectCareerPrepStudentCardView,
+    });
+    devLog('career prep card view', data);
+    // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
+    const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
+      (item) => ({
+        jobseekerId: item.jobseekerId,
+        firstName: item.Jobseeker?.users?.first_name || '',
+        lastName: item.Jobseeker?.users?.last_name || '',
+        pronouns: item.pronouns,
+        careerPrepTrack: item.Jobseeker
+          .careerPrepTrackRecommendation as CareerPrepTrack,
+        careerPrepAssessmentDate: item.assessmentDate,
+        careerPrepEnrollmentStatus: item.CaseMgmt
+          ?.prepEnrollmentStatus as CareerPrepStatus,
+        careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
+        expectedEduCompletion:
+          item.expectedEduCompletion as TimeUntilCompletion,
+        assignedPool:
+          (item.Jobseeker?.assignedPool as PoolCategories) ||
+          PoolCategories.None,
+      }),
+    );
+    return transformedData;
+  } catch (e) {
+    console.error('Error fetching career prep students card view:', e);
+    return null;
+  } finally {
+    prisma.$disconnect();
+  }
 };
 
 export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
-    try {
-        const data = await prisma.careerPrepAssessment.findUnique({
-            where: {
-                jobseekerId: jobseekerId,
-            },
-            select: selectCareerPrepStudentDetailView,
-        });
-        if (!data) {
-            return { success: false, error: 'Career Prep student not found.', status: 404 };
-        }
-        devLog('StudentDetailView', data);
-        const transformedData: CareerPrepJobseekerDetailViewDTO = {
-            jobseekerId: data.jobseekerId,
-            assessmentDate: data.assessmentDate.toISOString(),
-            prepEnrollmentStatus: data.CaseMgmt?.prepEnrollmentStatus as CareerPrepStatus,
-            prepStartDate: data.CaseMgmt?.prepStartDate?.toISOString(),
-            prepExpectedEndDate: data.CaseMgmt?.prepExpectedEndDate?.toISOString(),
-            firstName: data.Jobseeker?.users?.first_name!,
-            lastName: data.Jobseeker?.users?.last_name!,
-            pronouns: data.pronouns,
-            emailAddress: data.Jobseeker?.users.email!,
-            pathway: data.Jobseeker?.pathways?.pathway_title ?? '',
-            education: data.Jobseeker?.highest_level_of_study_completed as HighestCompletedEducationLevel,
-            eduProviders: data.Jobseeker?.jobseeker_education.map((edData) => ({
-                partnerTrainingProvider: edData.eduProviders.name!,
-                trainingProgramTitle: edData?.program?.title!,
-                educationLevel: edData.edLevel  as EducationLevel,
-                status: edData.enrollmentStatus as ProgramEnrollmentStatus,
-
-            })),
-            expectedEduCompletion: data?.expectedEduCompletion as TimeUntilCompletion,
-            technicalCertificates: data.Jobseeker?.certificates.map((cert) => ({
-                name: cert.name,
-            })),
-            portfolio: data.Jobseeker?.portfolio_url??'',
-            linkedin: data.Jobseeker?.linkedin_url??'',
-            applicationExperience: data.experienceWithApplying,
-            interviewExperience: data.experienceWithInterview,
-            poolAssignment: data.Jobseeker?.assignedPool as PoolCategories,
-        }
-        return { success: true, data: transformedData };
-    } catch (e) {
-        console.error('Unable to retrieve student detail view', e)
-        return { success: false, error: 'An unexpected error occurred', status: 500 };
+  try {
+    const data = await prisma.careerPrepAssessment.findUnique({
+      where: {
+        jobseekerId: jobseekerId,
+      },
+      select: selectCareerPrepStudentDetailView,
+    });
+    if (!data) {
+      return {
+        success: false,
+        error: 'Career Prep student not found.',
+        status: 404,
+      };
     }
+    devLog('StudentDetailView', data);
+    const transformedData: CareerPrepJobseekerDetailViewDTO = {
+      jobseekerId: data.jobseekerId,
+      assessmentDate: data.assessmentDate.toISOString(),
+      careerPrepTrack: data.CaseMgmt?.careerPrepTrack as CareerPrepTrack,
+      prepEnrollmentStatus: data.CaseMgmt
+        ?.prepEnrollmentStatus as CareerPrepStatus,
+      prepStartDate: data.CaseMgmt?.prepStartDate?.toISOString(),
+      prepExpectedEndDate: data.CaseMgmt?.prepExpectedEndDate?.toISOString(),
+      prepActualEndDate: data.CaseMgmt?.prepActualEndDate?.toISOString(),
+      firstName: data.Jobseeker?.users?.first_name!,
+      lastName: data.Jobseeker?.users?.last_name!,
+      pronouns: data.pronouns,
+      emailAddress: data.Jobseeker?.users.email!,
+      pathway: data.Jobseeker?.pathways?.pathway_title ?? '',
+      education: data.Jobseeker
+        ?.highest_level_of_study_completed as HighestCompletedEducationLevel,
+      eduProviders: data.Jobseeker?.jobseeker_education.map((edData) => ({
+        partnerTrainingProvider: edData.eduProviders.name!,
+        trainingProgramTitle: edData?.program?.title!,
+        educationLevel: edData.edLevel as EducationLevel,
+        status: edData.enrollmentStatus as ProgramEnrollmentStatus,
+      })),
+      expectedEduCompletion: data?.expectedEduCompletion as TimeUntilCompletion,
+      technicalCertificates: data.Jobseeker?.certificates.map((cert) => ({
+        name: cert.name,
+      })),
+      portfolio: data.Jobseeker?.portfolio_url ?? '',
+      linkedin: data.Jobseeker?.linkedin_url ?? '',
+      applicationExperience: data.experienceWithApplying,
+      interviewExperience: data.experienceWithInterview,
+      poolAssignment: data.Jobseeker?.assignedPool as PoolCategories,
+    };
+    return { success: true, data: transformedData };
+  } catch (e) {
+    console.error('Unable to retrieve student detail view', e);
+    return {
+      success: false,
+      error: 'An unexpected error occurred',
+      status: 500,
+    };
+  }
 };
 
 /**
  * Select statement to retrieve data for Career Prep Student Card.
  * It contains various properties to collect data for CareerPrepJobseekerCardViewDTO[].
  */
-const selectCareerPrepStudentCardView/*: Prisma.CareerPrepAssessmentSelect*/ = {
+const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
+  {
     // initial table CareerPrepAssessment
     jobseekerId: true,
     pronouns: true,
     assessmentDate: true,
     expectedEduCompletion: true,
     CaseMgmt: {
-        select: {
-            prepEnrollmentStatus: true,
-            prepExpectedEndDate: true,
-        },
+      select: {
+        prepEnrollmentStatus: true,
+        prepExpectedEndDate: true,
+      },
     },
     Jobseeker: {
-        select: {
-            assignedPool: true,
-            careerPrepTrackRecommendation: true,
-            users: {
-                select: {
-                    first_name: true,
-                    last_name: true,
-                },
-            },
+      select: {
+        assignedPool: true,
+        careerPrepTrackRecommendation: true,
+        users: {
+          select: {
+            first_name: true,
+            last_name: true,
+          },
         },
+      },
     },
-};
+  };
 
 /**
  * Update the career preparation status card view for a jobseeker.
@@ -246,61 +261,62 @@ const selectCareerPrepStudentCardView/*: Prisma.CareerPrepAssessmentSelect*/ = {
  * @returns {Promise<{ status: CareerPrepStatus, prepExpectedEndDate: Date | null } | null>} Object containing the updated status and expected end date, or null if update fails.
  */
 export const updateCareerPrepStatusCardView = async (
-    jobseekerId: string,
-    status?: CareerPrepStatus,
-    expectedEndDate?: Date,
-): Promise<{ status: CareerPrepStatus, expectedEndDate: Date | null } | null> => {
-    const session = await auth();
-    try {
-        const data = await prisma.careerPrepAssessment.findUnique({
-            where: {
-                jobseekerId: jobseekerId,
-            },
-            select: selectCareerPrepStudentCardView,
-        });
-        const studentStatus = await prisma.caseMgmt.upsert({
-            where: {
-                jobseekerId: jobseekerId,
-            },
-            update: {
-                ...(status ? {prepEnrollmentStatus: status} : {}),
-                ...(expectedEndDate ? {expectedEndDate: expectedEndDate} : {}),
-            },
-            create: {
-                ...(status
-                    ? {prepEnrollmentStatus: status}
-                    : {prepEnrollmentStatus: CareerPrepStatus.Applied}),
-                ...(expectedEndDate ? {expectedEndDate: expectedEndDate} : {}),
-                careerPrepTrack: data?.Jobseeker.careerPrepTrackRecommendation!,
-                PrepAssessment: {
-                    connect: {
-                        jobseekerId: jobseekerId,
-                    },
-                },
-                CaseManager: {
-                    connect: {
-                        id: session?.user.id!,
-                    },
-                },
-            },
-        });
-        return {
-            status: studentStatus.prepEnrollmentStatus as CareerPrepStatus,
-            expectedEndDate: studentStatus.prepExpectedEndDate,
-        };
-    } catch (e) {
-        console.error('Could not update student card view', e)
-        return null;
-    } finally {
-        prisma.$disconnect();
-    }
+  jobseekerId: string,
+  status?: CareerPrepStatus,
+): Promise<{
+  status: CareerPrepStatus;
+  expectedEndDate: Date | null;
+} | null> => {
+  const session = await auth();
+  try {
+    const data = await prisma.careerPrepAssessment.findUnique({
+      where: {
+        jobseekerId: jobseekerId,
+      },
+      select: selectCareerPrepStudentCardView,
+    });
+    const studentStatus = await prisma.caseMgmt.upsert({
+      where: {
+        jobseekerId: jobseekerId,
+      },
+      update: {
+        ...(status ? { prepEnrollmentStatus: status } : {}),
+      },
+      create: {
+        ...(status
+          ? { prepEnrollmentStatus: status }
+          : { prepEnrollmentStatus: CareerPrepStatus.Applied }),
+        careerPrepTrack: data?.Jobseeker.careerPrepTrackRecommendation!,
+        PrepAssessment: {
+          connect: {
+            jobseekerId: jobseekerId,
+          },
+        },
+        CaseManager: {
+          connect: {
+            id: session?.user.id!,
+          },
+        },
+      },
+    });
+    return {
+      status: studentStatus.prepEnrollmentStatus as CareerPrepStatus,
+      expectedEndDate: studentStatus.prepExpectedEndDate,
+    };
+  } catch (e) {
+    console.error('Could not update student card view', e);
+    return null;
+  } finally {
+    prisma.$disconnect();
+  }
 };
 
 /**
  * Select statement to retrieve Career Prep student details.
  * Accessed through prisma.careerPrepAssessment model.
  */
-const selectCareerPrepStudentDetailView/*: Prisma.CareerPrepAssessmentSelect*/ = {
+const selectCareerPrepStudentDetailView /*: Prisma.CareerPrepAssessmentSelect*/ =
+  {
     jobseekerId: true,
     assessmentDate: true,
     pronouns: true,
@@ -308,82 +324,86 @@ const selectCareerPrepStudentDetailView/*: Prisma.CareerPrepAssessmentSelect*/ =
     experienceWithApplying: true,
     experienceWithInterview: true,
     CaseMgmt: {
-        select: {
-            prepEnrollmentStatus: true,
-            prepStartDate: true,
-            prepExpectedEndDate: true,
-        },
+      select: {
+        prepEnrollmentStatus: true,
+        prepStartDate: true,
+        prepExpectedEndDate: true,
+        prepActualEndDate: true,
+        careerPrepTrack: true,
+      },
     },
     Jobseeker: {
-        select: {
-            highest_level_of_study_completed: true,
-            portfolio_url: true,
-            linkedin_url: true,
-            assignedPool: true,
-            careerPrepTrackRecommendation: true,
-            users: {
-                select: {
-                    first_name: true,
-                    last_name: true,
-                    email: true,
-                },
-            },
-            pathways: {
-                select: {
-                    pathway_title: true,
-                },
-            },
-            jobseeker_education: {
-                select: {
-                    edLevel: true,
-                    enrollmentStatus: true,
-                    eduProviders: {
-                        select: {
-                            name: true,
-                        },
-                    },
-                    program: {
-                        select: {
-                            title: true,
-                        },
-                    },
-                },
-            },
-            certificates: {
-                select: {
-                    name: true,
-                    status: true,
-                },
-            },
+      select: {
+        highest_level_of_study_completed: true,
+        portfolio_url: true,
+        linkedin_url: true,
+        assignedPool: true,
+        careerPrepTrackRecommendation: true,
+        users: {
+          select: {
+            first_name: true,
+            last_name: true,
+            email: true,
+          },
         },
+        pathways: {
+          select: {
+            pathway_title: true,
+          },
+        },
+        jobseeker_education: {
+          select: {
+            edLevel: true,
+            enrollmentStatus: true,
+            eduProviders: {
+              select: {
+                name: true,
+              },
+            },
+            program: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
+        certificates: {
+          select: {
+            name: true,
+            status: true,
+          },
+        },
+      },
     },
-};
+  };
 
 /**
  * Represents the detailed view of a jobseeker in the Career Prep program.
  * @interface CareerPrepJobseekerDetailViewDTO
  */
 export interface CareerPrepJobseekerDetailViewDTO {
-    jobseekerId: string;
-    assessmentDate: string; //DateIsoString
-    prepEnrollmentStatus: CareerPrepStatus;
-    prepStartDate?: string; //DateIsoString
-    prepExpectedEndDate?: string; //DateIsoString
-    firstName: string;
-    lastName: string;
-    pronouns: string;
-    emailAddress: string;
-    pathway: string;
-    education: HighestCompletedEducationLevel;
-    eduProviders?: PartnerTrainingProvider[];
-    expectedEduCompletion: TimeUntilCompletion;
-    technicalCertificates: { name: string }[];    // resume: omitted but will be retrieved with blob storage function call getResumeUrl().
-    // coverLetter: omitted but will be retrieved with blob storage function call getCoverLetterUrl().
-    portfolio: string; // URL
-    linkedin: string; // URL
-    applicationExperience: boolean;
-    interviewExperience: boolean;
-    poolAssignment: PoolCategories;
+  jobseekerId: string;
+  assessmentDate: string; //DateIsoString
+  prepEnrollmentStatus: CareerPrepStatus;
+  prepStartDate?: string; //DateIsoString
+  careerPrepTrack: CareerPrepTrack;
+  prepExpectedEndDate?: string; // DateIsoString System startDate + Track Length.
+  prepActualEndDate?: string; // DateIsoString Entered manually
+  firstName: string;
+  lastName: string;
+  pronouns: string;
+  emailAddress: string;
+  pathway: string;
+  education: HighestCompletedEducationLevel;
+  eduProviders?: PartnerTrainingProvider[];
+  expectedEduCompletion: TimeUntilCompletion;
+  technicalCertificates: { name: string }[]; // resume: omitted but will be retrieved with blob storage function call getResumeUrl().
+  // coverLetter: omitted but will be retrieved with blob storage function call getCoverLetterUrl().
+  portfolio: string; // URL
+  linkedin: string; // URL
+  applicationExperience: boolean;
+  interviewExperience: boolean;
+  poolAssignment: PoolCategories;
 }
 
 /**
@@ -391,10 +411,10 @@ export interface CareerPrepJobseekerDetailViewDTO {
  * @interface
  */
 export interface PartnerTrainingProvider {
-    partnerTrainingProvider: string;
-    trainingProgramTitle: string;
-    educationLevel: EducationLevel; // differentiate between degree and nondegree education/training
-    status: ProgramEnrollmentStatus;
+  partnerTrainingProvider: string;
+  trainingProgramTitle: string;
+  educationLevel: EducationLevel; // differentiate between degree and nondegree education/training
+  status: ProgramEnrollmentStatus;
 }
 
 // /**
@@ -427,22 +447,22 @@ export interface PartnerTrainingProvider {
 // }
 
 export type NoteDTO = {
-    id: string;
-    jobseekerId: string;
-    createdBy: string;
-    noteType: NoteType;
-    noteContent: string;
-    createdAt: string;
-    updatedAt: string;
-    date: string | null;
-    authorName: string;
+  id: string;
+  jobseekerId: string;
+  createdBy: string;
+  noteType: NoteType;
+  noteContent: string;
+  createdAt: string;
+  updatedAt: string;
+  date?: string | null;
+  authorName: string;
 };
 
 export type CategorizedNotes = {
-    generalNotes: NoteDTO[];
-    meetingNotes:  NoteDTO[];
-    followUpNotes:  NoteDTO[];
-}
+  generalNotes: NoteDTO[];
+  meetingNotes: NoteDTO[];
+  followUpNotes: NoteDTO[];
+};
 
 /**
  * Fetches notes for a specific jobseeker based on the provided jobseekerId.
@@ -450,51 +470,60 @@ export type CategorizedNotes = {
  * @param {string} jobseekerId - The ID of the jobseeker for whom notes need to be retrieved.
  * @return {Promise<NoteDTO[]>} - A promise that resolves to an array of NoteDTO objects representing the notes.
  */
-export const getCareerPrepStudentNotes = async (jobseekerId: string): Promise<CategorizedNotes> => {
-    const notes = await prisma.caseMgmtNotes.findMany({
-        where: {
-            jobseekerId: jobseekerId,
+export const getCareerPrepStudentNotes = async (
+  jobseekerId: string,
+): Promise<CategorizedNotes> => {
+  const notes = await prisma.caseMgmtNotes.findMany({
+    where: {
+      jobseekerId: jobseekerId,
+    },
+    select: {
+      id: true,
+      jobseekerId: true,
+      createdBy: true,
+      noteType: true,
+      noteContent: true,
+      createdAt: true,
+      updatedAt: true,
+      date: true,
+      Author: {
+        select: {
+          first_name: true,
+          last_name: true,
         },
-        select:{
-            id: true,
-            jobseekerId: true,
-            createdBy: true,
-            noteType: true,
-            noteContent: true,
-            createdAt:true,
-            updatedAt: true,
-            date: true,
-            Author: {
-                select: {
-                    first_name: true,
-                    last_name: true,
-                }
-            },
-        },
-        orderBy: {
-            createdAt: 'desc',
-        }
-    });
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
 
-    // Map notes to NoteDTO
-    const flattenedNotes: NoteDTO[] = notes.map(note => ({
-        id: note.id,
-        jobseekerId: note.jobseekerId,
-        createdBy: note.createdBy,
-        noteType: note.noteType as NoteType,
-        noteContent: note.noteContent,
-        createdAt: note.createdAt.toISOString(),
-        updatedAt: note.updatedAt.toISOString(),
-        date: note.date ? note.date.toISOString() : null,
-        authorName: `${note.Author?.first_name || ''} ${note.Author?.last_name || ''}`.trim(),
-    }));
+  // Map notes to NoteDTO
+  const flattenedNotes: NoteDTO[] = notes.map((note) => ({
+    id: note.id,
+    jobseekerId: note.jobseekerId,
+    createdBy: note.createdBy,
+    noteType: note.noteType as NoteType,
+    noteContent: note.noteContent,
+    createdAt: note.createdAt.toISOString(),
+    updatedAt: note.updatedAt.toISOString(),
+    date: note.date ? note.date.toISOString() : null,
+    authorName:
+      `${note.Author?.first_name || ''} ${note.Author?.last_name || ''}`.trim(),
+  }));
 
-    const sortedNotes: CategorizedNotes = {
-        generalNotes: flattenedNotes.filter(note => note.noteType === NoteType.GENERAL),
-        meetingNotes: flattenedNotes.filter(note => note.noteType === NoteType.MEETING),
-        followUpNotes: flattenedNotes.filter(note => note.noteType === NoteType.FOLLOWUP),
-    }
-    return sortedNotes;
+  const sortedNotes: CategorizedNotes = {
+    generalNotes: flattenedNotes.filter(
+      (note) => note.noteType === NoteType.GENERAL,
+    ),
+    meetingNotes: flattenedNotes.filter(
+      (note) => note.noteType === NoteType.MEETING,
+    ),
+    followUpNotes: flattenedNotes.filter(
+      (note) => note.noteType === NoteType.FOLLOWUP,
+    ),
+  };
+  return sortedNotes;
 };
 
 /**
@@ -502,45 +531,96 @@ export const getCareerPrepStudentNotes = async (jobseekerId: string): Promise<Ca
  * @enum {string}
  */
 export enum NoteType {
-    GENERAL = 'General', // for general purpose
-    MEETING = 'Meeting',  // associated with meetings
-    FOLLOWUP = 'Follow-up', // communication notes
+  GENERAL = 'General', // for general purpose
+  MEETING = 'Meeting', // associated with meetings
+  FOLLOWUP = 'Follow-up', // communication notes
 }
 
 /**
  * Represents a data transfer object for Career Prep Skills Assessment information.
  */
 export type CareerPrepSkillsAssessmentDTO = {
-    jobseekerId: string; // Unique identifier for the user completing the form
-    basicInformation: {
-        pronouns: string;
-        expectedEduCompletion: TimeUntilCompletion; // how many months until completing education program
+  jobseekerId: string; // Unique identifier for the user completing the form
+  basicInformation: {
+    pronouns: string;
+    expectedEduCompletion: TimeUntilCompletion; // how many months until completing education program
+  };
+  workExperienceAndMaterials: {
+    hasWorkExperience: boolean; // technical or non-technical work experience
+    hasResume: boolean; // will use getResumeUrl(userId) to confirm
+    // resumeLink?: string; // open link with getResumeUrl(userId)
+    hasPortfolio: boolean; // check jobseekers.portfolioUrl
+    portfolioLink?: string; // Optional, only if 'hasPortfolio' is true
+    hasCoverLetter: boolean; // will use getCoverLetter(userId) to confirm
+    // coverLetterLink?: string; // open link with getCoverLetter(userId)
+    hasLinkedInProfile: boolean; // check jobseekers.linkedInUrl
+    linkedInLink?: string; // use value in jobseekers.linkedInUrl
+    experienceWithApplying: boolean;
+    experienceWithInterviewing: boolean;
+  };
+  technicalSelfAssessment: {
+    interestPathway: TechPathways;
+    skillRatings: {
+      cybersecurity?: CybersecuritySkills;
+      dataAnalytics?: DataAnalyticsSkills;
+      itAndCloudComputing?: ITAndCloudComputingSkills;
+      softwareDevelopment?: SoftwareDevelopmentSkills;
     };
-    workExperienceAndMaterials: {
-        hasWorkExperience: boolean; // technical or non-technical work experience
-        hasResume: boolean; // will use getResumeUrl(userId) to confirm
-        // resumeLink?: string; // open link with getResumeUrl(userId)
-        hasPortfolio: boolean; // check jobseekers.portfolioUrl
-        portfolioLink?: string; // Optional, only if 'hasPortfolio' is true
-        hasCoverLetter: boolean; // will use getCoverLetter(userId) to confirm
-        // coverLetterLink?: string; // open link with getCoverLetter(userId)
-        hasLinkedInProfile: boolean; // check jobseekers.linkedInUrl
-        linkedInLink?: string; // use value in jobseekers.linkedInUrl
-        experienceWithApplying: boolean;
-        experienceWithInterviewing: boolean;
-    };
-    technicalSelfAssessment: {
-        interestPathway: TechPathways;
-        skillRatings: {
-            cybersecurity?: CybersecuritySkills;
-            dataAnalytics?: DataAnalyticsSkills;
-            itAndCloudComputing?: ITAndCloudComputingSkills;
-            softwareDevelopment?: SoftwareDevelopmentSkills;
-        };
-    };
-    durableSkills: DurableSkillsRatings;
-    professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
+  };
+  durableSkills: DurableSkillsRatings;
+  professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
 };
+
+///////////////////////////////////////////////////
+// DO NOT NEED CAN BE INFERRED FROM ACCOUNT INFO //
+///////////////////////////////////////////////////
+// export type jobseekerAccountDataDTO = {
+//   interestPathway: TechPathways;
+//   hasResume: boolean; // have to call getResumeUrl(session.user.id)
+//   // resumeLink: (userId: string) => Promise<string | null>;
+//   hasCoverLetter: boolean; // have to call getCoverLetter(session.user.id)
+//   // coverLetterLink: (userId: string) => Promise<string | null>;
+//   hasPortfolio: boolean;
+//   portfolioLink: string | null;
+//   hasLinkedInProfile: boolean;
+//   linkedInLink: string | null;
+// };
+//
+// export const getJobseekerAccountData = async (
+//   jobseekerId: string,
+// ): Promise<{
+//   success: boolean;
+//   data: jobseekerAccountDataDTO | null;
+// }> => {
+//   const jobseekerData = await prisma.jobseekers.findUnique({
+//     where: {
+//       jobseeker_id: jobseekerId,
+//     },
+//     include: {
+//       pathways: true
+//     }
+//   });
+//   if (!jobseekerData) {
+//     return { success: false, data: null };
+//   }
+//   const userId = jobseekerData.user_id!;
+//   const resumeLink = await getResumeUrl(userId);
+//   const coverLetterLink = await getCoverLetterUrl(userId);
+//   return {
+//     success: true,
+//     data: {
+//       interestPathway: jobseekerData?.pathways?.pathway_title as TechPathways,
+//       hasResume: resumeLink !== null,
+//       // resumeLink: getResumeUrl,
+//       hasCoverLetter: false, // Call similar function if available
+//       // coverLetterLink:  getCoverLetterUrl, // Assign based on a function similar to getResumeUrl
+//       hasPortfolio: !!jobseekerData.portfolio_url, // Set based on your criteria
+//       portfolioLink: jobseekerData.portfolio_url, // Populate if portfolio link is available
+//       hasLinkedInProfile: !!jobseekerData.linkedin_url, // Set based on your criteria
+//       linkedInLink: jobseekerData.portfolio_url, // Populate if LinkedIn link is available
+//     },
+//   };
+// };
 
 /**
  * Submits a career preparation skills assessment with session data.
@@ -548,72 +628,72 @@ export type CareerPrepSkillsAssessmentDTO = {
  * @param {CareerPrepSkillsAssessmentDTO} data - The data of career preparation skills assessment to be submitted.
  */
 export const submitCareerPrepAssessmentWithSession = async (
-    data: CareerPrepSkillsAssessmentDTO,
+  data: CareerPrepSkillsAssessmentDTO,
 ) => {
-    const session = await auth();
-    const jobseekerId = session?.user.jobseekerId;
-    if (!jobseekerId) {
-        console.error('No jobseeker id was provided from session data...');
-        return null;
-    }
-    await submitCareerPrepAssessment(jobseekerId, data);
+  const session = await auth();
+  const jobseekerId = session?.user.jobseekerId;
+  if (!jobseekerId) {
+    console.error('No jobseeker id was provided from session data...');
+    return null;
+  }
+  await submitCareerPrepAssessment(jobseekerId, data);
 };
 export const submitCareerPrepAssessment = async (
-    jobseekerId: string,
-    data: CareerPrepSkillsAssessmentDTO,
-): Promise<{ success: boolean, status: number } | null> => {
-    try {
-        const result = await prisma.$transaction(async (prisma) => {
-            const assessmentData = prisma.careerPrepAssessment.upsert({
-                where: {
-                    jobseekerId: data.jobseekerId,
-                },
-                update: {
-                    pronouns: data.basicInformation.pronouns,
-                    experienceWithApplying:
-                    data.workExperienceAndMaterials.experienceWithApplying,
-                    experienceWithInterview:
-                    data.workExperienceAndMaterials.experienceWithInterviewing,
-                    prevWorkExperience: data.workExperienceAndMaterials.hasWorkExperience,
-                },
-                create: {
-                    assessmentDate: new Date(Date.now()),
-                    pronouns: data.basicInformation.pronouns,
-                    experienceWithApplying:
-                    data.workExperienceAndMaterials.experienceWithApplying,
-                    experienceWithInterview:
-                    data.workExperienceAndMaterials.experienceWithInterviewing,
-                    prevWorkExperience: data.workExperienceAndMaterials.hasWorkExperience,
-                    Jobseeker: {
-                        connect: {
-                            jobseeker_id: jobseekerId,
-                        },
-                    },
-                },
-            });
+  jobseekerId: string,
+  data: CareerPrepSkillsAssessmentDTO,
+): Promise<{ success: boolean; status: number } | null> => {
+  try {
+    const result = await prisma.$transaction(async (prisma) => {
+      const assessmentData = prisma.careerPrepAssessment.upsert({
+        where: {
+          jobseekerId: data.jobseekerId,
+        },
+        update: {
+          pronouns: data.basicInformation.pronouns,
+          experienceWithApplying:
+            data.workExperienceAndMaterials.experienceWithApplying,
+          experienceWithInterview:
+            data.workExperienceAndMaterials.experienceWithInterviewing,
+          prevWorkExperience: data.workExperienceAndMaterials.hasWorkExperience,
+        },
+        create: {
+          assessmentDate: new Date(Date.now()),
+          pronouns: data.basicInformation.pronouns,
+          experienceWithApplying:
+            data.workExperienceAndMaterials.experienceWithApplying,
+          experienceWithInterview:
+            data.workExperienceAndMaterials.experienceWithInterviewing,
+          prevWorkExperience: data.workExperienceAndMaterials.hasWorkExperience,
+          Jobseeker: {
+            connect: {
+              jobseeker_id: jobseekerId,
+            },
+          },
+        },
+      });
 
-            const durableResponse = await upsertDurableSkillRatings(
-                jobseekerId,
-                data.durableSkills,
-            );
+      const durableResponse = await upsertDurableSkillRatings(
+        jobseekerId,
+        data.durableSkills,
+      );
 
-            const brandResponse = await upsertBrandRatings(
-                jobseekerId,
-                data.professionalBrandingAndJobMarketReadiness,
-            );
+      const brandResponse = await upsertBrandRatings(
+        jobseekerId,
+        data.professionalBrandingAndJobMarketReadiness,
+      );
 
-            const assessmentResponse = await upsertPathwayRatings(
-                jobseekerId,
-                data.technicalSelfAssessment,
-            );
-            //TODO: determine case manager with least amount of assigned jobseekers
-            await upsertCaseMgmtRecord(jobseekerId)
-        });
-        return {success: true, status: 200}
-    } catch (e) {
-        console.error('Failed to submit Career Prep Assessment', e)
-        return null
-    }
+      const assessmentResponse = await upsertPathwayRatings(
+        jobseekerId,
+        data.technicalSelfAssessment,
+      );
+      //TODO: determine case manager with least amount of assigned jobseekers
+      await upsertCaseMgmtRecord(jobseekerId);
+    });
+    return { success: true, status: 200 };
+  } catch (e) {
+    console.error('Failed to submit Career Prep Assessment', e);
+    return null;
+  }
 };
 
 /**
@@ -622,50 +702,51 @@ export const submitCareerPrepAssessment = async (
  * @param {string} jobseekerId - The ID of the jobseeker for whom the case management record will be upserted.
  * @returns {Promise<{ success: boolean, status: number }>} A promise that resolves with an object indicating the success and status of the upsert operation.
  */
-const upsertCaseMgmtRecord = async (jobseekerId: string): Promise<{ success: boolean, status: number }> => {
-    try {
+const upsertCaseMgmtRecord = async (
+  jobseekerId: string,
+): Promise<{ success: boolean; status: number }> => {
+  try {
+    //get necessary info from jobseeker table
+    const jobseeker = await prisma.jobseekers.findUnique({
+      where: {
+        jobseeker_id: jobseekerId,
+      },
+    });
 
-        //get necessary info from jobseeker table
-        const jobseeker = await prisma.jobseekers.findUnique({
-            where: {
-                jobseeker_id: jobseekerId,
-            }
-        })
-
-        const caseMgmtEntry = await prisma.caseMgmt.upsert({
-            where: {
-                jobseekerId,
-            },
-            update: {
-                PrepAssessment: {
-                    connect: {
-                        jobseekerId
-                    }
-                },
-            },
-            create: {
-                prepEnrollmentStatus: CareerPrepStatus.Applied,
-                ratingTechSkill: 0, // fixme: fix the zeros after discussion with Bethany. average assessment scores
-                ratingCareerReadiness: 0,
-                ratingSoftSkills: 0,
-                careerPrepTrack: jobseeker?.careerPrepTrackRecommendation || null,
-                PrepAssessment: {
-                    connect: {
-                        jobseekerId
-                    }
-                },
-                CaseManager: {
-                    connect: {
-                        id: undefined, // TODO: auto assign Case Manager with least case load.
-                    }
-                }
-            },
-        });
-        return {success: true, status: 200};
-    } catch (e) {
-        console.error('Failed to upsert Case Management record', e);
-        return {success: false, status: 500};
-    }
+    const caseMgmtEntry = await prisma.caseMgmt.upsert({
+      where: {
+        jobseekerId,
+      },
+      update: {
+        PrepAssessment: {
+          connect: {
+            jobseekerId,
+          },
+        },
+      },
+      create: {
+        prepEnrollmentStatus: CareerPrepStatus.Applied,
+        ratingTechSkill: 0, // fixme: fix the zeros after discussion with Bethany. average assessment scores
+        ratingCareerReadiness: 0,
+        ratingSoftSkills: 0,
+        careerPrepTrack: jobseeker?.careerPrepTrackRecommendation || null,
+        PrepAssessment: {
+          connect: {
+            jobseekerId,
+          },
+        },
+        CaseManager: {
+          connect: {
+            id: undefined, // TODO: auto assign Case Manager with least case load.
+          },
+        },
+      },
+    });
+    return { success: true, status: 200 };
+  } catch (e) {
+    console.error('Failed to upsert Case Management record', e);
+    return { success: false, status: 500 };
+  }
 };
 
 /**
@@ -675,95 +756,95 @@ const upsertCaseMgmtRecord = async (jobseekerId: string): Promise<{ success: boo
  * @returns {Promise<ProfessionalBrandingRatings | null>} - The updated Professional Brand Ratings or null if failed.
  */
 const upsertBrandRatings = async (
-    jobseekerId: string,
-    brand: ProfessionalBrandingRatings,
+  jobseekerId: string,
+  brand: ProfessionalBrandingRatings,
 ): Promise<{
-    success: boolean;
-    status: number;
+  success: boolean;
+  status: number;
 }> => {
-    try {
-        const updatedBrandRatings = await prisma.brandingRating.upsert({
-            where: {
-                jobseekerId,
-            },
-            update: {
-                personalBrand: brand.personalBrand,
-                onlinePresence: brand.onlinePresence,
-                elevatorPitch: brand.elevatorPitch,
-                resumeEffectiveness: brand.resumeEffectiveness,
-                coverLetterEffectiveness: brand.coverLetterEffectiveness,
-                interviewExperience: brand.interviewExperience,
-                responseTechnique: brand.responseTechnique,
-                followUpImportance: brand.followUpImportance,
-                onlineNetworking: brand.onlineNetworking,
-                eventNetworking: brand.eventNetworking,
-                relationshipManagement: brand.relationshipManagement,
-                jobSearchStrategy: brand.jobSearchStrategy,
-                materialDistribution: brand.materialDistribution,
-                networkingTechniques: brand.networkingTechniques,
-                onboardingBestPractices: brand.onboardingBestPractices,
-                developmentPlan: brand.developmentPlan,
-                mentorship: brand.mentorship,
-            },
-            create: {
-                personalBrand: brand.personalBrand,
-                onlinePresence: brand.onlinePresence,
-                elevatorPitch: brand.elevatorPitch,
-                resumeEffectiveness: brand.resumeEffectiveness,
-                coverLetterEffectiveness: brand.coverLetterEffectiveness,
-                interviewExperience: brand.interviewExperience,
-                responseTechnique: brand.responseTechnique,
-                followUpImportance: brand.followUpImportance,
-                onlineNetworking: brand.onlineNetworking,
-                eventNetworking: brand.eventNetworking,
-                relationshipManagement: brand.relationshipManagement,
-                jobSearchStrategy: brand.jobSearchStrategy,
-                materialDistribution: brand.materialDistribution,
-                networkingTechniques: brand.networkingTechniques,
-                onboardingBestPractices: brand.onboardingBestPractices,
-                developmentPlan: brand.developmentPlan,
-                mentorship: brand.mentorship,
-                PrepAssessment: {
-                    connect: {
-                        jobseekerId,
-                    },
-                },
-            },
-        });
-        const transformedData: ProfessionalBrandingRatings = {
-            personalBrand: updatedBrandRatings.personalBrand as AgreementLevel,
-            onlinePresence: updatedBrandRatings.onlinePresence as AgreementLevel,
-            elevatorPitch: updatedBrandRatings.elevatorPitch as AgreementLevel,
-            resumeEffectiveness:
-                updatedBrandRatings.resumeEffectiveness as AgreementLevel,
-            coverLetterEffectiveness:
-                updatedBrandRatings.coverLetterEffectiveness as AgreementLevel,
-            interviewExperience:
-                updatedBrandRatings.interviewExperience as AgreementLevel,
-            responseTechnique:
-                updatedBrandRatings.responseTechnique as AgreementLevel,
-            followUpImportance:
-                updatedBrandRatings.followUpImportance as AgreementLevel,
-            onlineNetworking: updatedBrandRatings.onlineNetworking as AgreementLevel,
-            eventNetworking: updatedBrandRatings.eventNetworking as AgreementLevel,
-            relationshipManagement:
-                updatedBrandRatings.relationshipManagement as AgreementLevel,
-            jobSearchStrategy:
-                updatedBrandRatings.jobSearchStrategy as AgreementLevel,
-            materialDistribution:
-                updatedBrandRatings.materialDistribution as AgreementLevel,
-            networkingTechniques:
-                updatedBrandRatings.networkingTechniques as AgreementLevel,
-            onboardingBestPractices:
-                updatedBrandRatings.onboardingBestPractices as AgreementLevel,
-            developmentPlan: updatedBrandRatings.developmentPlan as AgreementLevel,
-            mentorship: updatedBrandRatings.mentorship as AgreementLevel,
-        };
-        return {success: true, status: 200};
-    } catch (e) {
-        console.error('Failed to submit Professional Brand Ratings', e);
-        return {success: false, status: 500};
-    }
+  try {
+    const updatedBrandRatings = await prisma.brandingRating.upsert({
+      where: {
+        jobseekerId,
+      },
+      update: {
+        personalBrand: brand.personalBrand,
+        onlinePresence: brand.onlinePresence,
+        elevatorPitch: brand.elevatorPitch,
+        resumeEffectiveness: brand.resumeEffectiveness,
+        coverLetterEffectiveness: brand.coverLetterEffectiveness,
+        interviewExperience: brand.interviewExperience,
+        responseTechnique: brand.responseTechnique,
+        followUpImportance: brand.followUpImportance,
+        onlineNetworking: brand.onlineNetworking,
+        eventNetworking: brand.eventNetworking,
+        relationshipManagement: brand.relationshipManagement,
+        jobSearchStrategy: brand.jobSearchStrategy,
+        materialDistribution: brand.materialDistribution,
+        networkingTechniques: brand.networkingTechniques,
+        onboardingBestPractices: brand.onboardingBestPractices,
+        developmentPlan: brand.developmentPlan,
+        mentorship: brand.mentorship,
+      },
+      create: {
+        personalBrand: brand.personalBrand,
+        onlinePresence: brand.onlinePresence,
+        elevatorPitch: brand.elevatorPitch,
+        resumeEffectiveness: brand.resumeEffectiveness,
+        coverLetterEffectiveness: brand.coverLetterEffectiveness,
+        interviewExperience: brand.interviewExperience,
+        responseTechnique: brand.responseTechnique,
+        followUpImportance: brand.followUpImportance,
+        onlineNetworking: brand.onlineNetworking,
+        eventNetworking: brand.eventNetworking,
+        relationshipManagement: brand.relationshipManagement,
+        jobSearchStrategy: brand.jobSearchStrategy,
+        materialDistribution: brand.materialDistribution,
+        networkingTechniques: brand.networkingTechniques,
+        onboardingBestPractices: brand.onboardingBestPractices,
+        developmentPlan: brand.developmentPlan,
+        mentorship: brand.mentorship,
+        PrepAssessment: {
+          connect: {
+            jobseekerId,
+          },
+        },
+      },
+    });
+    const transformedData: ProfessionalBrandingRatings = {
+      personalBrand: updatedBrandRatings.personalBrand as AgreementLevel,
+      onlinePresence: updatedBrandRatings.onlinePresence as AgreementLevel,
+      elevatorPitch: updatedBrandRatings.elevatorPitch as AgreementLevel,
+      resumeEffectiveness:
+        updatedBrandRatings.resumeEffectiveness as AgreementLevel,
+      coverLetterEffectiveness:
+        updatedBrandRatings.coverLetterEffectiveness as AgreementLevel,
+      interviewExperience:
+        updatedBrandRatings.interviewExperience as AgreementLevel,
+      responseTechnique:
+        updatedBrandRatings.responseTechnique as AgreementLevel,
+      followUpImportance:
+        updatedBrandRatings.followUpImportance as AgreementLevel,
+      onlineNetworking: updatedBrandRatings.onlineNetworking as AgreementLevel,
+      eventNetworking: updatedBrandRatings.eventNetworking as AgreementLevel,
+      relationshipManagement:
+        updatedBrandRatings.relationshipManagement as AgreementLevel,
+      jobSearchStrategy:
+        updatedBrandRatings.jobSearchStrategy as AgreementLevel,
+      materialDistribution:
+        updatedBrandRatings.materialDistribution as AgreementLevel,
+      networkingTechniques:
+        updatedBrandRatings.networkingTechniques as AgreementLevel,
+      onboardingBestPractices:
+        updatedBrandRatings.onboardingBestPractices as AgreementLevel,
+      developmentPlan: updatedBrandRatings.developmentPlan as AgreementLevel,
+      mentorship: updatedBrandRatings.mentorship as AgreementLevel,
+    };
+    return { success: true, status: 200 };
+  } catch (e) {
+    console.error('Failed to submit Professional Brand Ratings', e);
+    return { success: false, status: 500 };
+  }
 };
 
 /**
@@ -775,94 +856,94 @@ const upsertBrandRatings = async (
  * @returns {Promise<DurableSkillsRatings | null>} - The updated durable skills ratings or null if an error occurs.
  */
 const upsertDurableSkillRatings = async (
-    jobseekerId: string,
-    softSkills: CareerPrepSkillsAssessmentDTO['durableSkills'],
+  jobseekerId: string,
+  softSkills: CareerPrepSkillsAssessmentDTO['durableSkills'],
 ): Promise<{ success: boolean; status: number }> => {
-    try {
-        const updatedDurableSkills = await prisma.durableSkillsRating.upsert({
-            where: {
-                jobseekerId,
-            },
-            update: {
-                emotionManagement: softSkills.emotionManagement,
-                empathy: softSkills.empathy,
-                goalSetting: softSkills.goalSetting,
-                timeManagement: softSkills.timeManagement,
-                adaptability: softSkills.adaptability,
-                criticalThinking: softSkills.criticalThinking,
-                creativity: softSkills.creativity,
-                resilience: softSkills.resilience,
-                communication: softSkills.communication,
-                activeListening: softSkills.activeListening,
-                conflictResolution: softSkills.conflictResolution,
-                nonverbalCommunication: softSkills.nonverbalCommunication,
-                teamwork: softSkills.teamwork,
-                trustBuilding: softSkills.trustBuilding,
-                leadership: softSkills.leadership,
-                perspectiveTaking: softSkills.perspectiveTaking,
-                culturalAwareness: softSkills.culturalAwareness,
-                relationshipBuilding: softSkills.relationshipBuilding,
-                documentationSkills: softSkills.documentationSkills,
-            },
-            create: {
-                emotionManagement: softSkills.emotionManagement,
-                empathy: softSkills.empathy,
-                goalSetting: softSkills.goalSetting,
-                timeManagement: softSkills.timeManagement,
-                adaptability: softSkills.adaptability,
-                criticalThinking: softSkills.criticalThinking,
-                creativity: softSkills.creativity,
-                resilience: softSkills.resilience,
-                communication: softSkills.communication,
-                activeListening: softSkills.activeListening,
-                conflictResolution: softSkills.conflictResolution,
-                nonverbalCommunication: softSkills.nonverbalCommunication,
-                teamwork: softSkills.teamwork,
-                trustBuilding: softSkills.trustBuilding,
-                leadership: softSkills.leadership,
-                perspectiveTaking: softSkills.perspectiveTaking,
-                culturalAwareness: softSkills.culturalAwareness,
-                relationshipBuilding: softSkills.relationshipBuilding,
-                documentationSkills: softSkills.documentationSkills,
-                PrepAssessment: {
-                    connect: {
-                        jobseekerId,
-                    },
-                },
-            },
-        });
+  try {
+    const updatedDurableSkills = await prisma.durableSkillsRating.upsert({
+      where: {
+        jobseekerId,
+      },
+      update: {
+        emotionManagement: softSkills.emotionManagement,
+        empathy: softSkills.empathy,
+        goalSetting: softSkills.goalSetting,
+        timeManagement: softSkills.timeManagement,
+        adaptability: softSkills.adaptability,
+        criticalThinking: softSkills.criticalThinking,
+        creativity: softSkills.creativity,
+        resilience: softSkills.resilience,
+        communication: softSkills.communication,
+        activeListening: softSkills.activeListening,
+        conflictResolution: softSkills.conflictResolution,
+        nonverbalCommunication: softSkills.nonverbalCommunication,
+        teamwork: softSkills.teamwork,
+        trustBuilding: softSkills.trustBuilding,
+        leadership: softSkills.leadership,
+        perspectiveTaking: softSkills.perspectiveTaking,
+        culturalAwareness: softSkills.culturalAwareness,
+        relationshipBuilding: softSkills.relationshipBuilding,
+        documentationSkills: softSkills.documentationSkills,
+      },
+      create: {
+        emotionManagement: softSkills.emotionManagement,
+        empathy: softSkills.empathy,
+        goalSetting: softSkills.goalSetting,
+        timeManagement: softSkills.timeManagement,
+        adaptability: softSkills.adaptability,
+        criticalThinking: softSkills.criticalThinking,
+        creativity: softSkills.creativity,
+        resilience: softSkills.resilience,
+        communication: softSkills.communication,
+        activeListening: softSkills.activeListening,
+        conflictResolution: softSkills.conflictResolution,
+        nonverbalCommunication: softSkills.nonverbalCommunication,
+        teamwork: softSkills.teamwork,
+        trustBuilding: softSkills.trustBuilding,
+        leadership: softSkills.leadership,
+        perspectiveTaking: softSkills.perspectiveTaking,
+        culturalAwareness: softSkills.culturalAwareness,
+        relationshipBuilding: softSkills.relationshipBuilding,
+        documentationSkills: softSkills.documentationSkills,
+        PrepAssessment: {
+          connect: {
+            jobseekerId,
+          },
+        },
+      },
+    });
 
-        // Transforming data directly from the updatedDurableSkills object
-        const transformedDurableSkills: DurableSkillsRatings = {
-            emotionManagement: updatedDurableSkills.emotionManagement as SkillLevel,
-            empathy: updatedDurableSkills.empathy as SkillLevel,
-            goalSetting: updatedDurableSkills.goalSetting as SkillLevel,
-            timeManagement: updatedDurableSkills.timeManagement as SkillLevel,
-            adaptability: updatedDurableSkills.adaptability as SkillLevel,
-            criticalThinking: updatedDurableSkills.criticalThinking as SkillLevel,
-            creativity: updatedDurableSkills.creativity as SkillLevel,
-            resilience: updatedDurableSkills.resilience as SkillLevel,
-            communication: updatedDurableSkills.communication as SkillLevel,
-            activeListening: updatedDurableSkills.activeListening as SkillLevel,
-            conflictResolution: updatedDurableSkills.conflictResolution as SkillLevel,
-            nonverbalCommunication:
-                updatedDurableSkills.nonverbalCommunication as SkillLevel,
-            teamwork: updatedDurableSkills.teamwork as SkillLevel,
-            trustBuilding: updatedDurableSkills.trustBuilding as SkillLevel,
-            leadership: updatedDurableSkills.leadership as SkillLevel,
-            perspectiveTaking: updatedDurableSkills.perspectiveTaking as SkillLevel,
-            culturalAwareness: updatedDurableSkills.culturalAwareness as SkillLevel,
-            relationshipBuilding:
-                updatedDurableSkills.relationshipBuilding as SkillLevel,
-            documentationSkills:
-                updatedDurableSkills.documentationSkills as SkillLevel,
-        };
+    // Transforming data directly from the updatedDurableSkills object
+    const transformedDurableSkills: DurableSkillsRatings = {
+      emotionManagement: updatedDurableSkills.emotionManagement as SkillLevel,
+      empathy: updatedDurableSkills.empathy as SkillLevel,
+      goalSetting: updatedDurableSkills.goalSetting as SkillLevel,
+      timeManagement: updatedDurableSkills.timeManagement as SkillLevel,
+      adaptability: updatedDurableSkills.adaptability as SkillLevel,
+      criticalThinking: updatedDurableSkills.criticalThinking as SkillLevel,
+      creativity: updatedDurableSkills.creativity as SkillLevel,
+      resilience: updatedDurableSkills.resilience as SkillLevel,
+      communication: updatedDurableSkills.communication as SkillLevel,
+      activeListening: updatedDurableSkills.activeListening as SkillLevel,
+      conflictResolution: updatedDurableSkills.conflictResolution as SkillLevel,
+      nonverbalCommunication:
+        updatedDurableSkills.nonverbalCommunication as SkillLevel,
+      teamwork: updatedDurableSkills.teamwork as SkillLevel,
+      trustBuilding: updatedDurableSkills.trustBuilding as SkillLevel,
+      leadership: updatedDurableSkills.leadership as SkillLevel,
+      perspectiveTaking: updatedDurableSkills.perspectiveTaking as SkillLevel,
+      culturalAwareness: updatedDurableSkills.culturalAwareness as SkillLevel,
+      relationshipBuilding:
+        updatedDurableSkills.relationshipBuilding as SkillLevel,
+      documentationSkills:
+        updatedDurableSkills.documentationSkills as SkillLevel,
+    };
 
-        return {success: true, status: 200};
-    } catch (e) {
-        console.error('Error in upsertDurableSkills:', e);
-        return {success: false, status: 500};
-    }
+    return { success: true, status: 200 };
+  } catch (e) {
+    console.error('Error in upsertDurableSkills:', e);
+    return { success: false, status: 500 };
+  }
 };
 
 /**
@@ -871,479 +952,484 @@ const upsertDurableSkillRatings = async (
  * @param {CareerPrepSkillsAssessmentDTO["technicalSelfAssessment"]} techAssessment - The technical self-assessment data
  */
 const upsertPathwayRatings = async (
-    jobseekerId: string,
-    techAssessment: CareerPrepSkillsAssessmentDTO['technicalSelfAssessment'],
+  jobseekerId: string,
+  techAssessment: CareerPrepSkillsAssessmentDTO['technicalSelfAssessment'],
 ): Promise<{ success: boolean; status: number }> => {
-    switch (techAssessment.interestPathway) {
-        case TechPathways.DataAnalytics:
-            await prisma.dataAnalyticsRating.upsert({
-                where: {jobseekerId},
-                update: {
-                    dataAnalysis:
-                    techAssessment.skillRatings?.dataAnalytics?.dataAnalysis,
-                    sqlProgramming:
-                    techAssessment.skillRatings?.dataAnalytics?.sqlProgramming,
-                    pythonPackages:
-                    techAssessment.skillRatings?.dataAnalytics?.pythonPackages,
-                    dataScience: techAssessment.skillRatings?.dataAnalytics?.dataScience,
-                    dataEngineering:
-                    techAssessment.skillRatings?.dataAnalytics?.dataEngineering,
-                    tableau: techAssessment.skillRatings?.dataAnalytics?.tableau,
-                    machineLearning:
-                    techAssessment.skillRatings?.dataAnalytics?.machineLearning,
-                    rProgramming:
-                    techAssessment.skillRatings?.dataAnalytics?.rProgramming,
-                    projectManagement:
-                    techAssessment.skillRatings?.dataAnalytics?.projectManagement,
-                    dataVisualization:
-                    techAssessment.skillRatings?.dataAnalytics?.dataVisualization,
-                    dataStructures:
-                    techAssessment.skillRatings?.dataAnalytics?.dataStructures,
-                    bigOComplexity:
-                    techAssessment.skillRatings?.dataAnalytics?.bigOComplexity,
-                    sortingAlgorithms:
-                    techAssessment.skillRatings?.dataAnalytics?.sortingAlgorithms,
-                    databases: techAssessment.skillRatings?.dataAnalytics?.databases,
-                    computationalThinking:
-                    techAssessment.skillRatings?.dataAnalytics?.computationalThinking,
-                },
-                create: {
-                    dataAnalysis:
-                        techAssessment.skillRatings?.dataAnalytics?.dataAnalysis!,
-                    sqlProgramming:
-                        techAssessment.skillRatings?.dataAnalytics?.sqlProgramming!,
-                    pythonPackages:
-                        techAssessment.skillRatings?.dataAnalytics?.pythonPackages!,
-                    dataScience: techAssessment.skillRatings?.dataAnalytics?.dataScience!,
-                    dataEngineering:
-                        techAssessment.skillRatings?.dataAnalytics?.dataEngineering!,
-                    tableau: techAssessment.skillRatings?.dataAnalytics?.tableau!,
-                    machineLearning:
-                        techAssessment.skillRatings?.dataAnalytics?.machineLearning!,
-                    rProgramming:
-                        techAssessment.skillRatings?.dataAnalytics?.rProgramming!,
-                    projectManagement:
-                        techAssessment.skillRatings?.dataAnalytics?.projectManagement!,
-                    dataVisualization:
-                        techAssessment.skillRatings?.dataAnalytics?.dataVisualization!,
-                    dataStructures:
-                        techAssessment.skillRatings?.dataAnalytics?.dataStructures!,
-                    bigOComplexity:
-                        techAssessment.skillRatings?.dataAnalytics?.bigOComplexity!,
-                    sortingAlgorithms:
-                        techAssessment.skillRatings?.dataAnalytics?.sortingAlgorithms!,
-                    databases: techAssessment.skillRatings?.dataAnalytics?.databases!,
-                    computationalThinking:
-                        techAssessment.skillRatings?.dataAnalytics?.computationalThinking!,
-                    PrepAssessment: {
-                        connect: {
-                            jobseekerId,
-                        },
-                    },
-                },
-            });
-            break;
+  switch (techAssessment.interestPathway) {
+    case TechPathways.DataAnalytics:
+      await prisma.dataAnalyticsRating.upsert({
+        where: { jobseekerId },
+        update: {
+          dataAnalysis:
+            techAssessment.skillRatings?.dataAnalytics?.dataAnalysis,
+          sqlProgramming:
+            techAssessment.skillRatings?.dataAnalytics?.sqlProgramming,
+          pythonPackages:
+            techAssessment.skillRatings?.dataAnalytics?.pythonPackages,
+          dataScience: techAssessment.skillRatings?.dataAnalytics?.dataScience,
+          dataEngineering:
+            techAssessment.skillRatings?.dataAnalytics?.dataEngineering,
+          tableau: techAssessment.skillRatings?.dataAnalytics?.tableau,
+          machineLearning:
+            techAssessment.skillRatings?.dataAnalytics?.machineLearning,
+          rProgramming:
+            techAssessment.skillRatings?.dataAnalytics?.rProgramming,
+          projectManagement:
+            techAssessment.skillRatings?.dataAnalytics?.projectManagement,
+          dataVisualization:
+            techAssessment.skillRatings?.dataAnalytics?.dataVisualization,
+          dataStructures:
+            techAssessment.skillRatings?.dataAnalytics?.dataStructures,
+          bigOComplexity:
+            techAssessment.skillRatings?.dataAnalytics?.bigOComplexity,
+          sortingAlgorithms:
+            techAssessment.skillRatings?.dataAnalytics?.sortingAlgorithms,
+          databases: techAssessment.skillRatings?.dataAnalytics?.databases,
+          computationalThinking:
+            techAssessment.skillRatings?.dataAnalytics?.computationalThinking,
+        },
+        create: {
+          dataAnalysis:
+            techAssessment.skillRatings?.dataAnalytics?.dataAnalysis!,
+          sqlProgramming:
+            techAssessment.skillRatings?.dataAnalytics?.sqlProgramming!,
+          pythonPackages:
+            techAssessment.skillRatings?.dataAnalytics?.pythonPackages!,
+          dataScience: techAssessment.skillRatings?.dataAnalytics?.dataScience!,
+          dataEngineering:
+            techAssessment.skillRatings?.dataAnalytics?.dataEngineering!,
+          tableau: techAssessment.skillRatings?.dataAnalytics?.tableau!,
+          machineLearning:
+            techAssessment.skillRatings?.dataAnalytics?.machineLearning!,
+          rProgramming:
+            techAssessment.skillRatings?.dataAnalytics?.rProgramming!,
+          projectManagement:
+            techAssessment.skillRatings?.dataAnalytics?.projectManagement!,
+          dataVisualization:
+            techAssessment.skillRatings?.dataAnalytics?.dataVisualization!,
+          dataStructures:
+            techAssessment.skillRatings?.dataAnalytics?.dataStructures!,
+          bigOComplexity:
+            techAssessment.skillRatings?.dataAnalytics?.bigOComplexity!,
+          sortingAlgorithms:
+            techAssessment.skillRatings?.dataAnalytics?.sortingAlgorithms!,
+          databases: techAssessment.skillRatings?.dataAnalytics?.databases!,
+          computationalThinking:
+            techAssessment.skillRatings?.dataAnalytics?.computationalThinking!,
+          PrepAssessment: {
+            connect: {
+              jobseekerId,
+            },
+          },
+        },
+      });
+      break;
 
-        case TechPathways.Cybersecurity:
-            await prisma.cybersecurityRating.upsert({
-                where: {jobseekerId},
-                update: {
-                    networking: techAssessment.skillRatings?.cybersecurity?.networking,
-                    projectManagement:
-                    techAssessment.skillRatings?.cybersecurity?.projectManagement,
-                    securityTools:
-                    techAssessment.skillRatings?.cybersecurity?.securityTools,
-                    operatingSystems:
-                    techAssessment.skillRatings?.cybersecurity?.operatingSystems,
-                    programming: techAssessment.skillRatings?.cybersecurity?.programming,
-                    cryptography:
-                    techAssessment.skillRatings?.cybersecurity?.cryptography,
-                    cloudSecurity:
-                    techAssessment.skillRatings?.cybersecurity?.cloudSecurity,
-                    incidentResponse:
-                    techAssessment.skillRatings?.cybersecurity?.incidentResponse,
-                    dataSecurity:
-                    techAssessment.skillRatings?.cybersecurity?.dataSecurity,
-                    computationalThinking:
-                    techAssessment.skillRatings?.cybersecurity?.computationalThinking,
-                    apiUsage: techAssessment.skillRatings?.cybersecurity?.apiUsage,
-                },
-                create: {
-                    networking: techAssessment.skillRatings?.cybersecurity?.networking!,
-                    projectManagement:
-                        techAssessment.skillRatings?.cybersecurity?.projectManagement!,
-                    securityTools:
-                        techAssessment.skillRatings?.cybersecurity?.securityTools!,
-                    operatingSystems:
-                        techAssessment.skillRatings?.cybersecurity?.operatingSystems!,
-                    programming: techAssessment.skillRatings?.cybersecurity?.programming!,
-                    cryptography:
-                        techAssessment.skillRatings?.cybersecurity?.cryptography!,
-                    cloudSecurity:
-                        techAssessment.skillRatings?.cybersecurity?.cloudSecurity!,
-                    incidentResponse:
-                        techAssessment.skillRatings?.cybersecurity?.incidentResponse!,
-                    dataSecurity:
-                        techAssessment.skillRatings?.cybersecurity?.dataSecurity!,
-                    computationalThinking:
-                        techAssessment.skillRatings?.cybersecurity?.computationalThinking!,
-                    apiUsage: techAssessment.skillRatings?.cybersecurity?.apiUsage!,
-                    PrepAssessment: {
-                        connect: {
-                            jobseekerId,
-                        },
-                    },
-                },
-            });
-            break;
+    case TechPathways.Cybersecurity:
+      await prisma.cybersecurityRating.upsert({
+        where: { jobseekerId },
+        update: {
+          networking: techAssessment.skillRatings?.cybersecurity?.networking,
+          projectManagement:
+            techAssessment.skillRatings?.cybersecurity?.projectManagement,
+          securityTools:
+            techAssessment.skillRatings?.cybersecurity?.securityTools,
+          operatingSystems:
+            techAssessment.skillRatings?.cybersecurity?.operatingSystems,
+          programming: techAssessment.skillRatings?.cybersecurity?.programming,
+          cryptography:
+            techAssessment.skillRatings?.cybersecurity?.cryptography,
+          cloudSecurity:
+            techAssessment.skillRatings?.cybersecurity?.cloudSecurity,
+          incidentResponse:
+            techAssessment.skillRatings?.cybersecurity?.incidentResponse,
+          dataSecurity:
+            techAssessment.skillRatings?.cybersecurity?.dataSecurity,
+          technicalSupport:
+            techAssessment.skillRatings?.cybersecurity?.technicalSupport,
+          computationalThinking:
+            techAssessment.skillRatings?.cybersecurity?.computationalThinking,
+          apiUsage: techAssessment.skillRatings?.cybersecurity?.apiUsage,
+        },
+        create: {
+          networking: techAssessment.skillRatings?.cybersecurity?.networking!,
+          projectManagement:
+            techAssessment.skillRatings?.cybersecurity?.projectManagement!,
+          securityTools:
+            techAssessment.skillRatings?.cybersecurity?.securityTools!,
+          operatingSystems:
+            techAssessment.skillRatings?.cybersecurity?.operatingSystems!,
+          programming: techAssessment.skillRatings?.cybersecurity?.programming!,
+          cryptography:
+            techAssessment.skillRatings?.cybersecurity?.cryptography!,
+          cloudSecurity:
+            techAssessment.skillRatings?.cybersecurity?.cloudSecurity!,
+          incidentResponse:
+            techAssessment.skillRatings?.cybersecurity?.incidentResponse!,
+          dataSecurity:
+            techAssessment.skillRatings?.cybersecurity?.dataSecurity!,
+          technicalSupport:
+          techAssessment.skillRatings?.cybersecurity?.technicalSupport!,
+          computationalThinking:
+            techAssessment.skillRatings?.cybersecurity?.computationalThinking!,
+          apiUsage: techAssessment.skillRatings?.cybersecurity?.apiUsage!,
+          PrepAssessment: {
+            connect: {
+              jobseekerId,
+            },
+          },
+        },
+      });
+      break;
 
-        case TechPathways.ITCloudComputing:
-            await prisma.iTCloudRating.upsert({
-                where: {jobseekerId},
-                update: {
-                    techSupport:
-                    techAssessment.skillRatings.itAndCloudComputing?.techSupport,
-                    activeDirectory:
-                    techAssessment.skillRatings.itAndCloudComputing?.activeDirectory,
-                    projectManagement:
-                    techAssessment.skillRatings.itAndCloudComputing?.projectManagement,
-                    helpDeskSupport:
-                    techAssessment.skillRatings.itAndCloudComputing?.helpDeskSupport,
-                    windowsServers:
-                    techAssessment.skillRatings.itAndCloudComputing?.windowsServers,
-                    sqlProgramming:
-                    techAssessment.skillRatings.itAndCloudComputing?.sqlProgramming,
-                    computerHardware:
-                    techAssessment.skillRatings.itAndCloudComputing?.computerHardware,
-                    operatingSystems:
-                    techAssessment.skillRatings.itAndCloudComputing?.operatingSystems,
-                    systemAdmin:
-                    techAssessment.skillRatings.itAndCloudComputing?.systemAdmin,
-                    networkAdmin:
-                    techAssessment.skillRatings.itAndCloudComputing?.networkAdmin,
-                    virtualization:
-                    techAssessment.skillRatings.itAndCloudComputing?.virtualization,
-                    coreCloudServices:
-                    techAssessment.skillRatings.itAndCloudComputing?.coreCloudServices,
-                    apiUsage: techAssessment.skillRatings.itAndCloudComputing?.apiUsage,
-                    httpResponseCodes:
-                    techAssessment.skillRatings.itAndCloudComputing?.httpResponseCodes,
-                    computationalThinking:
-                    techAssessment.skillRatings.itAndCloudComputing
-                        ?.computationalThinking,
-                },
-                create: {
-                    techSupport:
-                        techAssessment.skillRatings.itAndCloudComputing?.techSupport!,
-                    activeDirectory:
-                        techAssessment.skillRatings.itAndCloudComputing?.activeDirectory!,
-                    projectManagement:
-                        techAssessment.skillRatings.itAndCloudComputing?.projectManagement!,
-                    helpDeskSupport:
-                        techAssessment.skillRatings.itAndCloudComputing?.helpDeskSupport!,
-                    windowsServers:
-                        techAssessment.skillRatings.itAndCloudComputing?.windowsServers!,
-                    sqlProgramming:
-                        techAssessment.skillRatings.itAndCloudComputing?.sqlProgramming!,
-                    computerHardware:
-                        techAssessment.skillRatings.itAndCloudComputing?.computerHardware!,
-                    operatingSystems:
-                        techAssessment.skillRatings.itAndCloudComputing?.operatingSystems!,
-                    systemAdmin:
-                        techAssessment.skillRatings.itAndCloudComputing?.systemAdmin!,
-                    networkAdmin:
-                        techAssessment.skillRatings.itAndCloudComputing?.networkAdmin!,
-                    virtualization:
-                        techAssessment.skillRatings.itAndCloudComputing?.virtualization!,
-                    coreCloudServices:
-                        techAssessment.skillRatings.itAndCloudComputing?.coreCloudServices!,
-                    apiUsage: techAssessment.skillRatings.itAndCloudComputing?.apiUsage!,
-                    httpResponseCodes:
-                        techAssessment.skillRatings.itAndCloudComputing?.httpResponseCodes!,
-                    computationalThinking:
-                        techAssessment.skillRatings.itAndCloudComputing
-                            ?.computationalThinking!,
-                    PrepAssessment: {
-                        connect: {
-                            jobseekerId,
-                        },
-                    },
-                },
-            });
-            break;
+    case TechPathways.ITCloudComputing:
+      await prisma.iTCloudRating.upsert({
+        where: { jobseekerId },
+        update: {
+          techSupport:
+            techAssessment.skillRatings.itAndCloudComputing?.techSupport,
+          activeDirectory:
+            techAssessment.skillRatings.itAndCloudComputing?.activeDirectory,
+          projectManagement:
+            techAssessment.skillRatings.itAndCloudComputing?.projectManagement,
+          helpDeskSupport:
+            techAssessment.skillRatings.itAndCloudComputing?.helpDeskSupport,
+          windowsServers:
+            techAssessment.skillRatings.itAndCloudComputing?.windowsServers,
+          sqlProgramming:
+            techAssessment.skillRatings.itAndCloudComputing?.sqlProgramming,
+          computerHardware:
+            techAssessment.skillRatings.itAndCloudComputing?.computerHardware,
+          operatingSystems:
+            techAssessment.skillRatings.itAndCloudComputing?.operatingSystems,
+          systemAdmin:
+            techAssessment.skillRatings.itAndCloudComputing?.systemAdmin,
+          networkAdmin:
+            techAssessment.skillRatings.itAndCloudComputing?.networkAdmin,
+          virtualization:
+            techAssessment.skillRatings.itAndCloudComputing?.virtualization,
+          coreCloudServices:
+            techAssessment.skillRatings.itAndCloudComputing?.coreCloudServices,
+          apiUsage: techAssessment.skillRatings.itAndCloudComputing?.apiUsage,
+          httpResponseCodes:
+            techAssessment.skillRatings.itAndCloudComputing?.httpResponseCodes,
+          computationalThinking:
+            techAssessment.skillRatings.itAndCloudComputing
+              ?.computationalThinking,
+        },
+        create: {
+          techSupport:
+            techAssessment.skillRatings.itAndCloudComputing?.techSupport!,
+          activeDirectory:
+            techAssessment.skillRatings.itAndCloudComputing?.activeDirectory!,
+          projectManagement:
+            techAssessment.skillRatings.itAndCloudComputing?.projectManagement!,
+          helpDeskSupport:
+            techAssessment.skillRatings.itAndCloudComputing?.helpDeskSupport!,
+          windowsServers:
+            techAssessment.skillRatings.itAndCloudComputing?.windowsServers!,
+          sqlProgramming:
+            techAssessment.skillRatings.itAndCloudComputing?.sqlProgramming!,
+          computerHardware:
+            techAssessment.skillRatings.itAndCloudComputing?.computerHardware!,
+          operatingSystems:
+            techAssessment.skillRatings.itAndCloudComputing?.operatingSystems!,
+          systemAdmin:
+            techAssessment.skillRatings.itAndCloudComputing?.systemAdmin!,
+          networkAdmin:
+            techAssessment.skillRatings.itAndCloudComputing?.networkAdmin!,
+          virtualization:
+            techAssessment.skillRatings.itAndCloudComputing?.virtualization!,
+          coreCloudServices:
+            techAssessment.skillRatings.itAndCloudComputing?.coreCloudServices!,
+          apiUsage: techAssessment.skillRatings.itAndCloudComputing?.apiUsage!,
+          httpResponseCodes:
+            techAssessment.skillRatings.itAndCloudComputing?.httpResponseCodes!,
+          computationalThinking:
+            techAssessment.skillRatings.itAndCloudComputing
+              ?.computationalThinking!,
+          PrepAssessment: {
+            connect: {
+              jobseekerId,
+            },
+          },
+        },
+      });
+      break;
 
-        case TechPathways.SoftwareDevelopment:
-            await prisma.softwareDevRating.upsert({
-                where: {jobseekerId},
-                update: {
-                    softwareEngineering:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.softwareEngineering,
-                    softwareDevelopmentLifecycle:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.softwareDevelopmentLifecycle,
-                    programmingLanguages:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.programmingLanguages,
-                    dataStructuresAndAlgorithms:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.dataStructuresAndAlgorithms,
-                    softwareArchitecture:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.softwareArchitecture,
-                    versionControl:
-                    techAssessment.skillRatings?.softwareDevelopment?.versionControl,
-                    databaseManagement:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.databaseManagement,
-                    devOps: techAssessment.skillRatings?.softwareDevelopment?.devOps,
-                    cloudComputing:
-                    techAssessment.skillRatings?.softwareDevelopment?.cloudComputing,
-                    conceptualSystemsThinking:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.conceptualSystemsThinking,
-                    problemSolving:
-                    techAssessment.skillRatings?.softwareDevelopment?.problemSolving,
-                    fundamentalCodingConcepts:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.fundamentalCodingConcepts,
-                    debugging:
-                    techAssessment.skillRatings?.softwareDevelopment?.debugging,
-                    computationalThinking:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.computationalThinking,
-                    softwareOptimization:
-                    techAssessment.skillRatings?.softwareDevelopment
-                        ?.softwareOptimization,
-                },
-                create: {
-                    softwareEngineering:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.softwareEngineering!,
-                    softwareDevelopmentLifecycle:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.softwareDevelopmentLifecycle!,
-                    programmingLanguages:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.programmingLanguages!,
-                    dataStructuresAndAlgorithms:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.dataStructuresAndAlgorithms!,
-                    softwareArchitecture:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.softwareArchitecture!,
-                    versionControl:
-                        techAssessment.skillRatings?.softwareDevelopment?.versionControl!,
-                    databaseManagement:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.databaseManagement!,
-                    devOps: techAssessment.skillRatings?.softwareDevelopment?.devOps!,
-                    cloudComputing:
-                        techAssessment.skillRatings?.softwareDevelopment?.cloudComputing!,
-                    conceptualSystemsThinking:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.conceptualSystemsThinking!,
-                    problemSolving:
-                        techAssessment.skillRatings?.softwareDevelopment?.problemSolving!,
-                    fundamentalCodingConcepts:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.fundamentalCodingConcepts!,
-                    debugging:
-                        techAssessment.skillRatings?.softwareDevelopment?.debugging!,
-                    computationalThinking:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.computationalThinking!,
-                    softwareOptimization:
-                        techAssessment.skillRatings?.softwareDevelopment
-                            ?.softwareOptimization!,
-                    PrepAssessment: {
-                        connect: {
-                            jobseekerId,
-                        },
-                    },
-                },
-            });
-            break;
+    case TechPathways.SoftwareDevelopment:
+      await prisma.softwareDevRating.upsert({
+        where: { jobseekerId },
+        update: {
+          softwareEngineering:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.softwareEngineering,
+          softwareDevelopmentLifecycle:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.softwareDevelopmentLifecycle,
+          programmingLanguages:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.programmingLanguages,
+          dataStructuresAndAlgorithms:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.dataStructuresAndAlgorithms,
+          softwareArchitecture:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.softwareArchitecture,
+          versionControl:
+            techAssessment.skillRatings?.softwareDevelopment?.versionControl,
+          databaseManagement:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.databaseManagement,
+          devOps: techAssessment.skillRatings?.softwareDevelopment?.devOps,
+          cloudComputing:
+            techAssessment.skillRatings?.softwareDevelopment?.cloudComputing,
+          conceptualSystemsThinking:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.conceptualSystemsThinking,
+          problemSolving:
+            techAssessment.skillRatings?.softwareDevelopment?.problemSolving,
+          fundamentalCodingConcepts:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.fundamentalCodingConcepts,
+          debugging:
+            techAssessment.skillRatings?.softwareDevelopment?.debugging,
+          computationalThinking:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.computationalThinking,
+          softwareOptimization:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.softwareOptimization,
+        },
+        create: {
+          softwareEngineering:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.softwareEngineering!,
+          softwareDevelopmentLifecycle:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.softwareDevelopmentLifecycle!,
+          programmingLanguages:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.programmingLanguages!,
+          dataStructuresAndAlgorithms:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.dataStructuresAndAlgorithms!,
+          softwareArchitecture:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.softwareArchitecture!,
+          versionControl:
+            techAssessment.skillRatings?.softwareDevelopment?.versionControl!,
+          databaseManagement:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.databaseManagement!,
+          devOps: techAssessment.skillRatings?.softwareDevelopment?.devOps!,
+          cloudComputing:
+            techAssessment.skillRatings?.softwareDevelopment?.cloudComputing!,
+          conceptualSystemsThinking:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.conceptualSystemsThinking!,
+          problemSolving:
+            techAssessment.skillRatings?.softwareDevelopment?.problemSolving!,
+          fundamentalCodingConcepts:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.fundamentalCodingConcepts!,
+          debugging:
+            techAssessment.skillRatings?.softwareDevelopment?.debugging!,
+          computationalThinking:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.computationalThinking!,
+          softwareOptimization:
+            techAssessment.skillRatings?.softwareDevelopment
+              ?.softwareOptimization!,
+          PrepAssessment: {
+            connect: {
+              jobseekerId,
+            },
+          },
+        },
+      });
+      break;
 
-        default:
-            throw new Error(`Unsupported pathway: ${techAssessment.interestPathway}`);
-    }
-    return {success: true, status: 200};
+    default:
+      throw new Error(`Unsupported pathway: ${techAssessment.interestPathway}`);
+  }
+  return { success: true, status: 200 };
 };
 
 export enum TechPathways {
-    Cybersecurity = 'Cybersecurity',
-    DataAnalytics = 'Data Analytics',
-    ITCloudComputing = 'IT & Cloud Computing',
-    SoftwareDevelopment = 'Software Development',
+  Cybersecurity = 'Cybersecurity',
+  DataAnalytics = 'Data Analytics',
+  ITCloudComputing = 'IT & Cloud Computing',
+  SoftwareDevelopment = 'Software Development',
 }
 
 // Define specific DTOs for skill categories
 export type CybersecuritySkills = {
-    networking: SkillProficiency;
-    projectManagement: SkillProficiency;
-    securityTools: SkillProficiency;
-    operatingSystems: SkillProficiency;
-    programming: SkillProficiency;
-    cryptography: SkillProficiency;
-    cloudSecurity: SkillProficiency;
-    incidentResponse: SkillProficiency;
-    dataSecurity: SkillProficiency;
-    computationalThinking: SkillProficiency;
-    apiUsage: SkillProficiency;
+  networking: SkillProficiency;
+  projectManagement: SkillProficiency;
+  securityTools: SkillProficiency;
+  operatingSystems: SkillProficiency;
+  programming: SkillProficiency;
+  cryptography: SkillProficiency;
+  cloudSecurity: SkillProficiency;
+  incidentResponse: SkillProficiency;
+  dataSecurity: SkillProficiency;
+  technicalSupport: SkillProficiency;
+  computationalThinking: SkillProficiency;
+  apiUsage: SkillProficiency;
 };
 
 export type DataAnalyticsSkills = {
-    dataAnalysis: SkillProficiency;
-    sqlProgramming: SkillProficiency;
-    pythonPackages: SkillProficiency;
-    dataScience: SkillProficiency;
-    dataEngineering: SkillProficiency;
-    tableau: SkillProficiency;
-    machineLearning: SkillProficiency;
-    rProgramming: SkillProficiency;
-    projectManagement: SkillProficiency;
-    dataVisualization: SkillProficiency;
-    dataStructures: SkillProficiency;
-    bigOComplexity: SkillProficiency;
-    sortingAlgorithms: SkillProficiency;
-    databases: SkillProficiency;
-    computationalThinking: SkillProficiency;
+  dataAnalysis: SkillProficiency;
+  sqlProgramming: SkillProficiency;
+  pythonPackages: SkillProficiency;
+  dataScience: SkillProficiency;
+  dataEngineering: SkillProficiency;
+  tableau: SkillProficiency;
+  machineLearning: SkillProficiency;
+  rProgramming: SkillProficiency;
+  projectManagement: SkillProficiency;
+  dataVisualization: SkillProficiency;
+  dataStructures: SkillProficiency;
+  bigOComplexity: SkillProficiency;
+  sortingAlgorithms: SkillProficiency;
+  databases: SkillProficiency;
+  computationalThinking: SkillProficiency;
 };
 
 export type ITAndCloudComputingSkills = {
-    techSupport: SkillProficiency;
-    activeDirectory: SkillProficiency;
-    projectManagement: SkillProficiency;
-    helpDeskSupport: SkillProficiency;
-    windowsServers: SkillProficiency;
-    sqlProgramming: SkillProficiency;
-    computerHardware: SkillProficiency;
-    operatingSystems: SkillProficiency;
-    systemAdmin: SkillProficiency;
-    networkAdmin: SkillProficiency;
-    virtualization: SkillProficiency;
-    coreCloudServices: SkillProficiency;
-    apiUsage: SkillProficiency;
-    httpResponseCodes: SkillProficiency;
-    computationalThinking: SkillProficiency;
+  techSupport: SkillProficiency;
+  activeDirectory: SkillProficiency;
+  projectManagement: SkillProficiency;
+  helpDeskSupport: SkillProficiency;
+  windowsServers: SkillProficiency;
+  sqlProgramming: SkillProficiency;
+  computerHardware: SkillProficiency;
+  operatingSystems: SkillProficiency;
+  systemAdmin: SkillProficiency;
+  networkAdmin: SkillProficiency;
+  virtualization: SkillProficiency;
+  coreCloudServices: SkillProficiency;
+  apiUsage: SkillProficiency;
+  httpResponseCodes: SkillProficiency;
+  computationalThinking: SkillProficiency;
 };
 
 export type SoftwareDevelopmentSkills = {
-    softwareEngineering: SkillProficiency;
-    softwareDevelopmentLifecycle: SkillProficiency;
-    programmingLanguages: SkillProficiency;
-    dataStructuresAndAlgorithms: SkillProficiency;
-    softwareArchitecture: SkillProficiency;
-    versionControl: SkillProficiency;
-    databaseManagement: SkillProficiency;
-    devOps: SkillProficiency;
-    cloudComputing: SkillProficiency;
-    conceptualSystemsThinking: SkillProficiency;
-    problemSolving: SkillProficiency;
-    fundamentalCodingConcepts: SkillProficiency;
-    debugging: SkillProficiency;
-    computationalThinking: SkillProficiency;
-    softwareOptimization: SkillProficiency;
+  softwareEngineering: SkillProficiency;
+  softwareDevelopmentLifecycle: SkillProficiency;
+  programmingLanguages: SkillProficiency;
+  dataStructuresAndAlgorithms: SkillProficiency;
+  softwareArchitecture: SkillProficiency;
+  versionControl: SkillProficiency;
+  databaseManagement: SkillProficiency;
+  devOps: SkillProficiency;
+  cloudComputing: SkillProficiency;
+  conceptualSystemsThinking: SkillProficiency;
+  problemSolving: SkillProficiency;
+  fundamentalCodingConcepts: SkillProficiency;
+  debugging: SkillProficiency;
+  computationalThinking: SkillProficiency;
+  softwareOptimization: SkillProficiency;
 };
 
 export type DurableSkillsRatings = {
-    emotionManagement: SkillLevel;
-    empathy: SkillLevel;
-    goalSetting: SkillLevel;
-    timeManagement: SkillLevel;
-    adaptability: SkillLevel;
-    criticalThinking: SkillLevel;
-    creativity: SkillLevel;
-    resilience: SkillLevel;
-    communication: SkillLevel;
-    activeListening: SkillLevel;
-    conflictResolution: SkillLevel;
-    nonverbalCommunication: SkillLevel;
-    teamwork: SkillLevel;
-    trustBuilding: SkillLevel;
-    leadership: SkillLevel;
-    perspectiveTaking: SkillLevel;
-    culturalAwareness: SkillLevel;
-    relationshipBuilding: SkillLevel;
-    documentationSkills: SkillLevel;
+  emotionManagement: SkillLevel;
+  empathy: SkillLevel;
+  goalSetting: SkillLevel;
+  timeManagement: SkillLevel;
+  adaptability: SkillLevel;
+  criticalThinking: SkillLevel;
+  creativity: SkillLevel;
+  resilience: SkillLevel;
+  communication: SkillLevel;
+  activeListening: SkillLevel;
+  conflictResolution: SkillLevel;
+  nonverbalCommunication: SkillLevel;
+  teamwork: SkillLevel;
+  trustBuilding: SkillLevel;
+  leadership: SkillLevel;
+  perspectiveTaking: SkillLevel;
+  culturalAwareness: SkillLevel;
+  relationshipBuilding: SkillLevel;
+  documentationSkills: SkillLevel;
 };
 
 export type ProfessionalBrandingRatings = {
-    personalBrand: AgreementLevel;
-    onlinePresence: AgreementLevel;
-    elevatorPitch: AgreementLevel;
-    resumeEffectiveness: AgreementLevel;
-    coverLetterEffectiveness: AgreementLevel;
-    interviewExperience: AgreementLevel;
-    responseTechnique: AgreementLevel;
-    followUpImportance: AgreementLevel;
-    onlineNetworking: AgreementLevel;
-    eventNetworking: AgreementLevel;
-    relationshipManagement: AgreementLevel;
-    jobSearchStrategy: AgreementLevel;
-    materialDistribution: AgreementLevel;
-    networkingTechniques: AgreementLevel;
-    onboardingBestPractices: AgreementLevel;
-    developmentPlan: AgreementLevel;
-    mentorship: AgreementLevel;
+  personalBrand: AgreementLevel;
+  onlinePresence: AgreementLevel;
+  elevatorPitch: AgreementLevel;
+  resumeEffectiveness: AgreementLevel;
+  coverLetterEffectiveness: AgreementLevel;
+  interviewExperience: AgreementLevel;
+  responseTechnique: AgreementLevel;
+  followUpImportance: AgreementLevel;
+  onlineNetworking: AgreementLevel;
+  eventNetworking: AgreementLevel;
+  relationshipManagement: AgreementLevel;
+  jobSearchStrategy: AgreementLevel;
+  materialDistribution: AgreementLevel;
+  networkingTechniques: AgreementLevel;
+  onboardingBestPractices: AgreementLevel;
+  developmentPlan: AgreementLevel;
+  mentorship: AgreementLevel;
 };
 
 export function getLabel<T extends number | string>(
-    score: T,
-    labels: Record<T, string>
+  score: T,
+  labels: Record<T, string>,
 ): string {
-    return labels[score] || "Unknown";
+  return labels[score] || 'Unknown';
 }
 
 // Enum for agreement levels
 export enum AgreementLevel {
-    StronglyDisagree = 1,
-    Disagree = 2,
-    Neutral = 3,
-    Agree = 4,
-    StronglyAgree = 5,
+  StronglyDisagree = 1,
+  Disagree = 2,
+  Neutral = 3,
+  Agree = 4,
+  StronglyAgree = 5,
 }
 
 const AgreementLevelLabels: Record<AgreementLevel, string> = {
-    [AgreementLevel.StronglyDisagree]: "Strongly Disagree",
-    [AgreementLevel.Disagree]: "Disagree",
-    [AgreementLevel.Neutral]: "Neutral",
-    [AgreementLevel.Agree]: "Agree",
-    [AgreementLevel.StronglyAgree]: "Strongly Agree",
+  [AgreementLevel.StronglyDisagree]: 'Strongly Disagree',
+  [AgreementLevel.Disagree]: 'Disagree',
+  [AgreementLevel.Neutral]: 'Neutral',
+  [AgreementLevel.Agree]: 'Agree',
+  [AgreementLevel.StronglyAgree]: 'Strongly Agree',
 };
 
 // Enum for skill proficiency levels
 export enum SkillProficiency {
-    NotProficient = 1,
-    Novice = 2,
-    AdvancedBeginner = 3,
-    Competent = 4,
-    Proficient = 5,
+  NotProficient = 1,
+  Novice = 2,
+  AdvancedBeginner = 3,
+  Competent = 4,
+  Proficient = 5,
 }
 
- export const SkillProficiencyLabels: Record<SkillProficiency, string> = {
-    [SkillProficiency.NotProficient]: "Not Proficient",
-    [SkillProficiency.Novice]: "Novice",
-    [SkillProficiency.AdvancedBeginner]: "Advanced Beginner",
-    [SkillProficiency.Competent]: "Competent",
-    [SkillProficiency.Proficient]: "Proficient",
+export const SkillProficiencyLabels: Record<SkillProficiency, string> = {
+  [SkillProficiency.NotProficient]: 'Not Proficient',
+  [SkillProficiency.Novice]: 'Novice',
+  [SkillProficiency.AdvancedBeginner]: 'Advanced Beginner',
+  [SkillProficiency.Competent]: 'Competent',
+  [SkillProficiency.Proficient]: 'Proficient',
 };
 
 // Enum for durable skill levels
 export enum SkillLevel {
-    NeedsImprovement = 1,
-    Developing = 2,
-    Fair = 3,
-    Good = 4,
-    Exceptional = 5,
+  NeedsImprovement = 1,
+  Developing = 2,
+  Fair = 3,
+  Good = 4,
+  Exceptional = 5,
 }
 
 // Label mapping for user-friendly display
 const SkillLevelLabels: Record<SkillLevel, string> = {
-    [SkillLevel.NeedsImprovement]: "Needs Improvement",
-    [SkillLevel.Developing]: "Developing",
-    [SkillLevel.Fair]: "Fair",
-    [SkillLevel.Good]: "Good",
-    [SkillLevel.Exceptional]: "Exceptional",
+  [SkillLevel.NeedsImprovement]: 'Needs Improvement',
+  [SkillLevel.Developing]: 'Developing',
+  [SkillLevel.Fair]: 'Fair',
+  [SkillLevel.Good]: 'Good',
+  [SkillLevel.Exceptional]: 'Exceptional',
 };
