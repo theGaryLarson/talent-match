@@ -45,11 +45,10 @@ export default function CreateJobseekerProfileIntroPage() {
   const [introData, setIntroData] = useState<JsIntroPostDTO>({
     ...introStoreData,
   });
-  console.log('initialdata', introData);
+
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
     introData.birthDate === '' ? null : dayjs(introData.birthDate),
   );
-  console.log('initialbirthdate', birthdate);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     introData.photoUrl ?? null,
   );
@@ -253,7 +252,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-firstName"
                 placeholder="Your first name"
                 onChange={handleFieldChange}
-                value={introData.firstName}
+                value={introData.firstName ?? ''}
               >
                 First Name
               </InputTextWithLabel>
@@ -261,7 +260,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-lastName"
                 placeholder="Your last name"
                 onChange={handleFieldChange}
-                value={introData.lastName}
+                value={introData.lastName ?? ''}
               >
                 Last Name
               </InputTextWithLabel>
@@ -280,7 +279,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-zipCode"
                 placeholder="Zipcode"
                 onChange={handleFieldChange}
-                value={introData.zipCode}
+                value={introData.zipCode ?? ''}
                 pattern="\d{5}(-\d{4})?"
               >
                 Zip Code
