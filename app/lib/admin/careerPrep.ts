@@ -47,13 +47,12 @@ export enum TechCertificateStatus {
  * Enum representing the different status options for a career preparation process.
  * @enum {string}
  */
-export enum CareerPrepStatus { // TODO: modify with Bethany
-    Applied = 'Applied',
-    SentAssessment = 'Sent Assessment',
+export enum CareerPrepStatus {
+    Applied = 'Applied', // submitting assessment will be Applied
     CreatingPlan = 'Creating Plan',
     MeetingScheduled = 'Meeting Scheduled',
     MetCareerNavigator = 'Met Career Navigator',
-    SentIntakeForm = 'Sent Intake Form',
+    SentEnrollmentForm = 'Sent Enrollment Form',
     Enrolled = 'Enrolled',
     Completed = 'Completed',
     Rejected = 'Rejected',
@@ -74,11 +73,35 @@ export interface AdminCareerPrepDTO {
  * @interface
  */
 export interface StudentSummary {
-    studentDetail: CareerPrepJobseekerDetailViewDTO;
-    meetings: MeetingDTO[] | null;
-    meetingNotes: Note[] | null; // will filter notes by NoteType on backend
-    followUpNotes: Note[] | null;
-    reviewNotes: Note[] | null;
+    studentDetail?: CareerPrepJobseekerDetailViewDTO;
+    generalNotes: NoteDTO[] | null; // will filter notes by NoteType on backend
+    meetingNotes: NoteDTO[] | null;
+    followUpNotes: NoteDTO[] | null;
+}
+
+/**
+ * Retrieves a summary of career preparation information for a specific jobseeker.
+ * Including student details and notes filtered by NoteType
+ * @param {string} jobseekerId - The ID of the jobseeker to retrieve information for
+ * @returns {Promise<StudentSummary | null>} A Promise that resolves to a StudentSummary object
+ */
+export const getCareerPrepStudentSummary = async (jobseekerId: string): Promise<StudentSummary | null> => {
+    const studentDetail = await getCareerPrepStudentDetailView(jobseekerId);
+    const notes = await getCareerPrepStudentNotes(jobseekerId);
+    // Handle error case for student detail
+    if (!studentDetail.success) {
+        console.error(studentDetail.error);
+        return null;
+    }
+
+
+
+    return {
+        studentDetail: studentDetail.data,
+        generalNotes: notes.generalNotes,
+        meetingNotes: notes.meetingNotes,
+        followUpNotes: notes.followUpNotes,
+    };
 }
 
 /**
@@ -86,6 +109,7 @@ export interface StudentSummary {
  * @interface CareerPrepJobseekerCardViewDTO
  */
 export interface CareerPrepJobseekerCardViewDTO {
+    jobseekerId: string;
     firstName: string;
     lastName: string;
     pronouns: string;
@@ -108,6 +132,7 @@ export const getCareerPrepStudentsCardView = async (): Promise<
         // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
         const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
             (item) => ({
+                jobseekerId: item.jobseekerId,
                 firstName: item.Jobseeker?.users?.first_name || '',
                 lastName: item.Jobseeker?.users?.last_name || '',
                 pronouns: item.pronouns,
@@ -142,7 +167,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
             select: selectCareerPrepStudentDetailView,
         });
         if (!data) {
-            return { error: 'Career Prep student not found.', status: 404}
+            return { success: false, error: 'Career Prep student not found.', status: 404 };
         }
         devLog('StudentDetailView', data);
         const transformedData: CareerPrepJobseekerDetailViewDTO = {
@@ -167,7 +192,6 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
             expectedEduCompletion: data?.expectedEduCompletion as TimeUntilCompletion,
             technicalCertificates: data.Jobseeker?.certificates.map((cert) => ({
                 name: cert.name,
-                status: cert.status as TechCertificateStatus,
             })),
             portfolio: data.Jobseeker?.portfolio_url??'',
             linkedin: data.Jobseeker?.linkedin_url??'',
@@ -175,12 +199,10 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
             interviewExperience: data.experienceWithInterview,
             poolAssignment: data.Jobseeker?.assignedPool as PoolCategories,
         }
-        return transformedData
+        return { success: true, data: transformedData };
     } catch (e) {
         console.error('Unable to retrieve student detail view', e)
-        return null;
-    } finally {
-        prisma.$disconnect();
+        return { success: false, error: 'An unexpected error occurred', status: 500 };
     }
 };
 
@@ -190,6 +212,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
  */
 const selectCareerPrepStudentCardView/*: Prisma.CareerPrepAssessmentSelect*/ = {
     // initial table CareerPrepAssessment
+    jobseekerId: true,
     pronouns: true,
     assessmentDate: true,
     expectedEduCompletion: true,
@@ -214,9 +237,9 @@ const selectCareerPrepStudentCardView/*: Prisma.CareerPrepAssessmentSelect*/ = {
 };
 
 /**
- * Update the career preparation status card view for a job seeker.
+ * Update the career preparation status card view for a jobseeker.
  *
- * @param {string} jobseekerId - The ID of the job seeker.
+ * @param {string} jobseekerId - The ID of the jobseeker.
  * @param {CareerPrepStatus} [status] - The new career prep enrollment status.
  * @param {Date} [expectedEndDate] - The expected end date for the preparation.
  *
@@ -246,7 +269,7 @@ export const updateCareerPrepStatusCardView = async (
             create: {
                 ...(status
                     ? {prepEnrollmentStatus: status}
-                    : {prepEnrollmentStatus: CareerPrepStatus.SentAssessment}), // TODO: May update after talking with Bethany. What is default step after student submits assessment?
+                    : {prepEnrollmentStatus: CareerPrepStatus.Applied}),
                 ...(expectedEndDate ? {expectedEndDate: expectedEndDate} : {}),
                 careerPrepTrack: data?.Jobseeker.careerPrepTrackRecommendation!,
                 PrepAssessment: {
@@ -354,7 +377,7 @@ export interface CareerPrepJobseekerDetailViewDTO {
     education: HighestCompletedEducationLevel;
     eduProviders?: PartnerTrainingProvider[];
     expectedEduCompletion: TimeUntilCompletion;
-    technicalCertificates: { name: string; status: TechCertificateStatus }[];    // resume: omitted but will be retrieved with blob storage function call getResumeUrl().
+    technicalCertificates: { name: string }[];    // resume: omitted but will be retrieved with blob storage function call getResumeUrl().
     // coverLetter: omitted but will be retrieved with blob storage function call getCoverLetterUrl().
     portfolio: string; // URL
     linkedin: string; // URL
@@ -368,79 +391,120 @@ export interface CareerPrepJobseekerDetailViewDTO {
  * @interface
  */
 export interface PartnerTrainingProvider {
-    // TODO: Discuss with Bethany. Consolidate degree and nondegree
     partnerTrainingProvider: string;
     trainingProgramTitle: string;
     educationLevel: EducationLevel; // differentiate between degree and nondegree education/training
     status: ProgramEnrollmentStatus;
 }
 
-/**
- * Represents a data transfer object (DTO) for a meeting entity.
- *
- * @property {string} id - The unique identifier for the meeting.
- * @property {string} caseMgmtId - The case management ID associated with the meeting.
- * @property {string} attendee - The full name of the jobseeker attending the meeting.
- * @property {string} meetingTitle - The title of the meeting.
- * @property {string} [meetingAgenda] - An optional agenda for the meeting. This could be in a rich text format.
- * @property {Date} meetingDatetime - The date and time at which the meeting will occur.
- * @property {string} duration - The duration of the meeting, represented in the format HH:mm:ss.
- * @property {string} createdBy - The full name of the case manager who created the meeting.
- * @property {Date} createdAt - The date and time when the meeting was created.
- * @property {string} updatedBy - The full name of the person who last updated the meeting details.
- * @property {Date} updatedAt - The date and time when the meeting was last updated.
- */
-export interface MeetingDTO {
-    id: string; // VARCHAR(38), primary key
-    caseMgmtId: string; // CHAR(38)
-    attendee: string; // jobseeker full name
-    meetingTitle: string; // VARCHAR(45)
-    meetingAgenda?: string; // TEXT (Rich text functionality. Possibly utilize Quill)
-    meetingDatetime: Date; // DATETIME
-    duration: string; // TIME represented as "HH:mm:ss"
-    createdBy: string; // case manager full name
-    createdAt: Date; // DATETIME
-    updatedBy: string; // full name of updater
-    updatedAt: Date; // DATETIME
+// /**
+//  * Represents a data transfer object (DTO) for a meeting entity.
+//  *
+//  * @property {string} id - The unique identifier for the meeting.
+//  * @property {string} caseMgmtId - The case management ID associated with the meeting.
+//  * @property {string} attendee - The full name of the jobseeker attending the meeting.
+//  * @property {string} meetingTitle - The title of the meeting.
+//  * @property {string} [meetingAgenda] - An optional agenda for the meeting. This could be in a rich text format.
+//  * @property {Date} meetingDatetime - The date and time at which the meeting will occur.
+//  * @property {string} duration - The duration of the meeting, represented in the format HH:mm:ss.
+//  * @property {string} createdBy - The full name of the case manager who created the meeting.
+//  * @property {Date} createdAt - The date and time when the meeting was created.
+//  * @property {string} updatedBy - The full name of the person who last updated the meeting details.
+//  * @property {Date} updatedAt - The date and time when the meeting was last updated.
+//  */
+// export interface MeetingDTO {
+//     id: string; // VARCHAR(38), primary key
+//     caseMgmtId: string; // CHAR(38)
+//     attendee: string; // jobseeker full name
+//     meetingTitle: string; // VARCHAR(45)
+//     meetingAgenda?: string; // TEXT (Rich text functionality. Possibly utilize Quill)
+//     meetingDatetime: Date; // DATETIME
+//     duration: string; // TIME represented as "HH:mm:ss"
+//     createdBy: string; // case manager full name
+//     createdAt: Date; // DATETIME
+//     updatedBy: string; // full name of updater
+//     updatedAt: Date; // DATETIME
+// }
+
+export type NoteDTO = {
+    id: string;
+    jobseekerId: string;
+    createdBy: string;
+    noteType: NoteType;
+    noteContent: string;
+    createdAt: string;
+    updatedAt: string;
+    date: string | null;
+    authorName: string;
+};
+
+export type CategorizedNotes = {
+    generalNotes: NoteDTO[];
+    meetingNotes:  NoteDTO[];
+    followUpNotes:  NoteDTO[];
 }
+
+/**
+ * Fetches notes for a specific jobseeker based on the provided jobseekerId.
+ *
+ * @param {string} jobseekerId - The ID of the jobseeker for whom notes need to be retrieved.
+ * @return {Promise<NoteDTO[]>} - A promise that resolves to an array of NoteDTO objects representing the notes.
+ */
+export const getCareerPrepStudentNotes = async (jobseekerId: string): Promise<CategorizedNotes> => {
+    const notes = await prisma.caseMgmtNotes.findMany({
+        where: {
+            jobseekerId: jobseekerId,
+        },
+        select:{
+            id: true,
+            jobseekerId: true,
+            createdBy: true,
+            noteType: true,
+            noteContent: true,
+            createdAt:true,
+            updatedAt: true,
+            date: true,
+            Author: {
+                select: {
+                    first_name: true,
+                    last_name: true,
+                }
+            },
+        },
+        orderBy: {
+            createdAt: 'desc',
+        }
+    });
+
+    // Map notes to NoteDTO
+    const flattenedNotes: NoteDTO[] = notes.map(note => ({
+        id: note.id,
+        jobseekerId: note.jobseekerId,
+        createdBy: note.createdBy,
+        noteType: note.noteType as NoteType,
+        noteContent: note.noteContent,
+        createdAt: note.createdAt.toISOString(),
+        updatedAt: note.updatedAt.toISOString(),
+        date: note.date ? note.date.toISOString() : null,
+        authorName: `${note.Author?.first_name || ''} ${note.Author?.last_name || ''}`.trim(),
+    }));
+
+    const sortedNotes: CategorizedNotes = {
+        generalNotes: flattenedNotes.filter(note => note.noteType === NoteType.GENERAL),
+        meetingNotes: flattenedNotes.filter(note => note.noteType === NoteType.MEETING),
+        followUpNotes: flattenedNotes.filter(note => note.noteType === NoteType.FOLLOWUP),
+    }
+    return sortedNotes;
+};
 
 /**
  * Represents the different types of notes that can be associated with a task or event.
- * - Meeting: Note associated with a specific meeting
- * - Review: Note associated with review for case manager tracking
- * - Follow-up: follow-up notes for case manager
  * @enum {string}
  */
 export enum NoteType {
-    MEETING = 'Meeting',
-    REVIEW = 'Review',
-    FOLLOWUP = 'Follow-up',
-}
-
-/**
- * Represents a note that can be associated with a case management ID.
- *
- * @property {string} id - The unique identifier for the note.
- * @property {string} caseMgmtId - The case management ID associated with the note.
- * @property {NoteType} noteType - The type of the note.
- * @property {Date} [date] - An optional date associated with the note.
- * @property {string} createdBy - The full name of the case manager who created the note.
- * @property {Date} createdAt - The date and time the note was created.
- * @property {string} updatedBy - The full name of the case manager who last updated the note.
- * @property {Date} updatedAt - The date and time the note was last updated.
- * @property {string} noteContent - The content of the note, potentially using rich text formatting (e.g., Quill).
- */
-export interface Note {
-    id: string; // VARCHAR(38)
-    caseMgmtId: string; // VARCHAR(38)
-    meetingId?: string; // VARCHAR(38)
-    noteType: NoteType;
-    date?: Date; // if needs associated with a date that is not the same as creation date.
-    createdBy: string; // case manager full name
-    createdAt: Date; // DATETIME
-    updatedBy: string; // full name of updater
-    updatedAt: Date; // DATETIME
-    noteContent: string; // TEXT (Rich text functionality. Possibly utilize Quill)
+    GENERAL = 'General', // for general purpose
+    MEETING = 'Meeting',  // associated with meetings
+    FOLLOWUP = 'Follow-up', // communication notes
 }
 
 /**
@@ -449,8 +513,6 @@ export interface Note {
 export type CareerPrepSkillsAssessmentDTO = {
     jobseekerId: string; // Unique identifier for the user completing the form
     basicInformation: {
-        // firstName: string;
-        // lastName: string;
         pronouns: string;
         expectedEduCompletion: TimeUntilCompletion; // how many months until completing education program
     };
@@ -540,7 +602,7 @@ export const submitCareerPrepAssessment = async (
                 data.professionalBrandingAndJobMarketReadiness,
             );
 
-            const assessmentResponse = await upsertPathwaySkills(
+            const assessmentResponse = await upsertPathwayRatings(
                 jobseekerId,
                 data.technicalSelfAssessment,
             );
@@ -575,7 +637,6 @@ const upsertCaseMgmtRecord = async (jobseekerId: string): Promise<{ success: boo
                 jobseekerId,
             },
             update: {
-
                 PrepAssessment: {
                     connect: {
                         jobseekerId
@@ -583,8 +644,8 @@ const upsertCaseMgmtRecord = async (jobseekerId: string): Promise<{ success: boo
                 },
             },
             create: {
-                prepEnrollmentStatus: CareerPrepStatus.SentAssessment, // TODO: Modify after discussion with Bethany.
-                ratingTechSkill: 0, // TODO: fix the zeros after discussion with Bethany.
+                prepEnrollmentStatus: CareerPrepStatus.Applied,
+                ratingTechSkill: 0, // fixme: fix the zeros after discussion with Bethany. average assessment scores
                 ratingCareerReadiness: 0,
                 ratingSoftSkills: 0,
                 careerPrepTrack: jobseeker?.careerPrepTrackRecommendation || null,
@@ -809,7 +870,7 @@ const upsertDurableSkillRatings = async (
  * @param {string} jobseekerId - The ID of the jobseeker
  * @param {CareerPrepSkillsAssessmentDTO["technicalSelfAssessment"]} techAssessment - The technical self-assessment data
  */
-const upsertPathwaySkills = async (
+const upsertPathwayRatings = async (
     jobseekerId: string,
     techAssessment: CareerPrepSkillsAssessmentDTO['technicalSelfAssessment'],
 ): Promise<{ success: boolean; status: number }> => {
@@ -1208,15 +1269,6 @@ export type DurableSkillsRatings = {
     documentationSkills: SkillLevel;
 };
 
-// Enum for durable skill levels
-export enum SkillLevel {
-    NeedsImprovement = 'Needs Improvement',
-    Developing = 'Developing',
-    Fair = 'Fair',
-    Good = 'Good',
-    Exceptional = 'Exceptional',
-}
-
 export type ProfessionalBrandingRatings = {
     personalBrand: AgreementLevel;
     onlinePresence: AgreementLevel;
@@ -1237,20 +1289,61 @@ export type ProfessionalBrandingRatings = {
     mentorship: AgreementLevel;
 };
 
+export function getLabel<T extends number | string>(
+    score: T,
+    labels: Record<T, string>
+): string {
+    return labels[score] || "Unknown";
+}
+
 // Enum for agreement levels
 export enum AgreementLevel {
-    StronglyDisagree = 'Strongly Disagree',
-    Disagree = 'Disagree',
-    Neutral = 'Neutral',
-    Agree = 'Agree',
-    StronglyAgree = 'Strongly Agree',
+    StronglyDisagree = 1,
+    Disagree = 2,
+    Neutral = 3,
+    Agree = 4,
+    StronglyAgree = 5,
 }
+
+const AgreementLevelLabels: Record<AgreementLevel, string> = {
+    [AgreementLevel.StronglyDisagree]: "Strongly Disagree",
+    [AgreementLevel.Disagree]: "Disagree",
+    [AgreementLevel.Neutral]: "Neutral",
+    [AgreementLevel.Agree]: "Agree",
+    [AgreementLevel.StronglyAgree]: "Strongly Agree",
+};
 
 // Enum for skill proficiency levels
 export enum SkillProficiency {
-    NotProficient = 'Not Proficient',
-    Novice = 'Novice',
-    AdvancedBeginner = 'Advanced Beginner',
-    Competent = 'Competent',
-    Proficient = 'Proficient',
+    NotProficient = 1,
+    Novice = 2,
+    AdvancedBeginner = 3,
+    Competent = 4,
+    Proficient = 5,
 }
+
+ export const SkillProficiencyLabels: Record<SkillProficiency, string> = {
+    [SkillProficiency.NotProficient]: "Not Proficient",
+    [SkillProficiency.Novice]: "Novice",
+    [SkillProficiency.AdvancedBeginner]: "Advanced Beginner",
+    [SkillProficiency.Competent]: "Competent",
+    [SkillProficiency.Proficient]: "Proficient",
+};
+
+// Enum for durable skill levels
+export enum SkillLevel {
+    NeedsImprovement = 1,
+    Developing = 2,
+    Fair = 3,
+    Good = 4,
+    Exceptional = 5,
+}
+
+// Label mapping for user-friendly display
+const SkillLevelLabels: Record<SkillLevel, string> = {
+    [SkillLevel.NeedsImprovement]: "Needs Improvement",
+    [SkillLevel.Developing]: "Developing",
+    [SkillLevel.Fair]: "Fair",
+    [SkillLevel.Good]: "Good",
+    [SkillLevel.Exceptional]: "Exceptional",
+};
