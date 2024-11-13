@@ -300,7 +300,6 @@ model CareerPrepAssessment {
   updatedAt               DateTime              @updatedAt @db.DateTime
   Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
   CaseMgmt                CaseMgmt?
-  Meeting                 Meeting[]
   CaseMgmtNotes           CaseMgmtNotes[]
   CybersecurityRating     CybersecurityRating[]
   DataAnalyticsRating     DataAnalyticsRating[]
@@ -451,41 +450,37 @@ model CaseMgmt {
   updatedAt             DateTime             @updatedAt @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
   CaseManager           User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
-  Meeting               Meeting[]
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
   @@index([jobseekerId], map: "fk_case_mgmt_jobseeker1_idx")
 }
 
 model CaseMgmtNotes {
-  id          String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()"))
-  jobseekerId String               @db.UniqueIdentifier
-  caseMgmtId  String               @db.UniqueIdentifier
-  meetingId   String?              @db.UniqueIdentifier
-  createdBy   String               @db.UniqueIdentifier
-  noteType    String               @db.VarChar(15)
-  noteContent String               @db.NText
-  meetingDate DateTime?            @db.DateTime
-  createdAt   DateTime             @default(now()) @db.DateTime
-  updatedAt   DateTime             @updatedAt @db.DateTime
-  CaseMgmt    CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
-  User        User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
-  Meeting     Meeting?             @relation(fields: [meetingId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_meeting1")
+  id                   String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()"))
+  jobseekerId          String               @db.UniqueIdentifier
+  date                 DateTime?            @db.DateTime
+  noteType             String               @db.VarChar(15)
+  noteContent          String               @db.NText
+  createdBy            String               @db.UniqueIdentifier
+  createdAt            DateTime             @default(now()) @db.DateTime
+  updatedAt            DateTime             @updatedAt @db.DateTime
+  CareerPrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
+  Author               User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
 }
 
-model Meeting {
-  id            String   @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobseekerId   String   @db.UniqueIdentifier
-  title         String   @db.VarChar(45)
-  meetingAgenda String?  @db.NText
-  meetingDate   DateTime @db.DateTime
-  duration      DateTime @db.Time
-  updatedAt     DateTime @updatedAt @db.DateTime
-
-  jobseeker     CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_career_prep_assessment1")
-  caseMgmt      CaseMgmt             @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
-  CaseMgmtNotes CaseMgmtNotes[]
-}
+// model Meeting {
+//   id            String   @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
+//   jobseekerId   String   @db.UniqueIdentifier
+//   title         String   @db.VarChar(45)
+//   meetingAgenda String?  @db.NText
+//   meetingDate   DateTime @db.DateTime
+//   duration      DateTime @db.Time
+//   updatedAt     DateTime @updatedAt @db.DateTime
+//
+//   jobseeker     CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_career_prep_assessment1")
+//   caseMgmt      CaseMgmt             @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
+//   CaseMgmtNotes CaseMgmtNotes[]
+// }
 
 //////////////////////////////////////////////////////////////////////////
 
