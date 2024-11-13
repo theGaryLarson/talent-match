@@ -147,13 +147,18 @@ export default function CreateEmployerPersonalPage() {
       console.error('User session is not available.');
       return;
     }
-    if (!birthdate || !birthdate.isValid()) {
-      console.error('Birthdate error');
+    if (!birthdate && !personalData.birthDate) {
+      console.error(
+        'Birthdate error',
+        birthdate,
+        dayjs(personalData.birthDate).toISOString(),
+      );
       return;
     }
     setPersonalData((prevPersonalData) => ({
       ...prevPersonalData,
-      birthDate: birthdate?.toISOString() ?? '',
+      birthDate:
+        birthdate?.toISOString() ?? dayjs(personalData.birthDate).toISOString(),
       photoUrl: avatarUrl,
     }));
     devLog('personalData', personalData);
