@@ -49,8 +49,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
   const [error, setError] = useState<{ error: string | null }>({ error: null });
 
   const [veteranStatus, setVeteranStatus] = useState(disclosuresData.isVeteran);
-  const [disabilityStatus, setDisabilityStatus] =
-    useState<String>('undisclosed');
+  const [disabilityStatus, setDisabilityStatus] = useState('');
   const [disabilityType, setDisabilityType] = useState(
     disclosuresData.disability,
   );
@@ -365,18 +364,17 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <li>Short stature (dwarfism)</li>
               <li>Traumatic brain injury</li>
             </ul>
-            <FormControl component="fieldset" required>
+            <FormControl component="fieldset">
               <FormLabel
                 className="mb-2 mt-5"
                 id="profile-creation-disclosures-require-disability-label"
                 component="legend"
                 sx={{ color: '#000000ff' }}
               >
-                Please select one of the options below:
+                Please select one of the options below: *
               </FormLabel>
               <RadioGroup
                 aria-labelledby="profile-creation-disclosures-require-disability-label"
-                defaultValue="undisclosed"
                 value={disabilityStatus}
                 onChange={(event) => {
                   setDisabilityStatus(event.target.value);
@@ -391,19 +389,31 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   value="yes"
                   control={<Radio required />}
                   label="Yes, I have a disability, or have had one in the past"
-                  required={false}
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
                 <FormControlLabel
                   value="none"
                   control={<Radio required />}
                   label="No, I do not have a disability and have not had one in the past"
-                  required={false}
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
                 <FormControlLabel
                   value="undisclosed"
                   control={<Radio required />}
                   label="I do not want to answer"
-                  required={false}
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
               </RadioGroup>
             </FormControl>
