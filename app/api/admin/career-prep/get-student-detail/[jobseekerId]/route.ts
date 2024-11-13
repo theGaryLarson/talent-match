@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import {
-    CareerPrepStatus,
     getCareerPrepStudentDetailView,
-    updateCareerPrepStatusCardView
 } from "@/app/lib/admin/careerPrep";
 
 export async function GET(request: Request, { params }: { params: { jobseekerId: string } }) {
