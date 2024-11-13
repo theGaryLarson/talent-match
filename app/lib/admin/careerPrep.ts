@@ -1391,7 +1391,7 @@ export enum AgreementLevel {
   StronglyAgree = 5,
 }
 
-const AgreementLevelLabels: Record<AgreementLevel, string> = {
+export const AgreementLevelLabels: Record<AgreementLevel, string> = {
   [AgreementLevel.StronglyDisagree]: 'Strongly Disagree',
   [AgreementLevel.Disagree]: 'Disagree',
   [AgreementLevel.Neutral]: 'Neutral',
@@ -1426,7 +1426,7 @@ export enum SkillLevel {
 }
 
 // Label mapping for user-friendly display
-const SkillLevelLabels: Record<SkillLevel, string> = {
+export const SkillLevelLabels: Record<SkillLevel, string> = {
   [SkillLevel.NeedsImprovement]: 'Needs Improvement',
   [SkillLevel.Developing]: 'Developing',
   [SkillLevel.Fair]: 'Fair',
