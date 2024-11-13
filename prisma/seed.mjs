@@ -2297,6 +2297,10 @@ async function seedCaseMgmt() {
                         days: 20,
                         refDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
                     }),
+                    prepActualEndDate: faker.date.soon({
+                        days: 5,
+                        refDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
+                    }),
                     PrepAssessment: {
                         connect: {
                             jobseekerId: s.jobseekerId,

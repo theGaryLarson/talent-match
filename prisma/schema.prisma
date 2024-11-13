@@ -320,6 +320,7 @@ model CybersecurityRating {
   cloudSecurity         Int                  @db.TinyInt
   incidentResponse      Int                  @db.TinyInt
   dataSecurity          Int                  @db.TinyInt
+  technicalSupport      Int                  @db.TinyInt
   computationalThinking Int                  @db.TinyInt
   apiUsage              Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
@@ -447,6 +448,7 @@ model CaseMgmt {
   careerPrepTrack       String?              @db.VarChar(15)
   prepStartDate         DateTime?            @db.DateTime
   prepExpectedEndDate   DateTime?            @db.DateTime
+  prepActualEndDate     DateTime?            @db.DateTime
   updatedAt             DateTime             @updatedAt @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
   CaseManager           User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
