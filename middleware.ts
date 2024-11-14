@@ -27,7 +27,8 @@ export default auth((req) => {
     '/edit-profile/jobseeker/preferences',
     '/edit-profile/jobseeker/showcase',
     '/edit-profile/jobseeker/work-experience',
-
+    
+    '/services/jobseekers/career-prep-skill-assessment',
     '/services/jobseekers/dashboard',
     '/services/jobseekers/',
     '/services/joblistings',
@@ -163,7 +164,7 @@ export default auth((req) => {
 
   else if (userIsJobseeker()) { // Route checking for JOBSEEKER routes
     if (pathIsJobseekerRoute()) {
-      if ( pathname != '/services/jobseekers/dashboard' && // allow dashboard
+      if ( pathname != '/services/jobseekers/dashboard' && pathname != '/services/jobseekers/career-prep-skill-assessment' && // allow dashboard
            pathname.startsWith('/services/jobseekers/') ) {
         
         const requestedId = pathname.replace('/services/jobseekers/', '');
