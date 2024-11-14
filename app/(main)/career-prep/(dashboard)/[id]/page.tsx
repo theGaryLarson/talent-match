@@ -1,4 +1,5 @@
 import { getCareerPrepStudentDetailView, getCareerPrepStudentNotes } from "@/app/lib/admin/careerPrep";
+import MarkDownEditor from "@/app/ui/components/mdEditor/MarkDownEditor";
 
 export default async function page({ params }: { params: { id: string } }){
     const client = await getCareerPrepStudentDetailView(params.id);
@@ -14,6 +15,7 @@ export default async function page({ params }: { params: { id: string } }){
             {notes.followUpNotes.map((n)=><p>{n.noteContent}</p>)}
             <h3>Meeting Notes: </h3>
             {notes.meetingNotes.map((n)=><p>{n.noteContent}</p>)}
+            <MarkDownEditor/>
         </main>
     );
 }
