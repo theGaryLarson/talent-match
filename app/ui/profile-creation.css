@@ -41,6 +41,10 @@ h2 {
   @apply my-10 flex justify-between;
 }
 
+.profile-form-progress-btn-single-end {
+  @apply my-10 flex justify-end;
+}
+
 .profile-form-grid {
   @apply my-3 grid gap-6;
 }
