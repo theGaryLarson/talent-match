@@ -384,7 +384,7 @@ export default function Page() {
           <FormLabel>What technology pathway most interests you?</FormLabel>
           <RadioGroup
             name="technicalSelfAssessment.interestPathway"
-            onChange={handleInputChange}
+            onChange={handleTableChange}
             value={formData.technicalSelfAssessment.interestPathway}
           >
             {Object.entries(TechPathways).map(([value, label]) => (
