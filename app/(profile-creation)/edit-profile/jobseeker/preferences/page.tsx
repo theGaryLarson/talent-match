@@ -222,24 +222,24 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   }}
                 >
                   <FormControlLabel
-                    value={TechPathways.SoftwareDevelopment}
+                    value={TechPathways.SOFTWARE_DEVELOPMENT}
                     control={<Radio />}
-                    label={TechPathways.SoftwareDevelopment}
+                    label={TechPathways.SOFTWARE_DEVELOPMENT}
                   />
                   <FormControlLabel
-                    value={TechPathways.ITCloudComputing}
+                    value={TechPathways.IT_CLOUD_COMPUTING}
                     control={<Radio />}
-                    label={TechPathways.ITCloudComputing}
+                    label={TechPathways.IT_CLOUD_COMPUTING}
                   />
                   <FormControlLabel
-                    value={TechPathways.Cybersecurity}
+                    value={TechPathways.CYBERSECURITY}
                     control={<Radio />}
-                    label={TechPathways.Cybersecurity}
+                    label={TechPathways.CYBERSECURITY}
                   />
                   <FormControlLabel
-                    value={TechPathways.DataAnalytics}
+                    value={TechPathways.DATA_ANALYTICS}
                     control={<Radio />}
-                    label={TechPathways.DataAnalytics}
+                    label={TechPathways.DATA_ANALYTICS}
                   />
                 </RadioGroup>
               </FormControl>
