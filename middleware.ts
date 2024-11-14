@@ -15,6 +15,10 @@ export default auth((req) => {
     '/api/users/',
   ];
 
+  const caseManagerRoutes = [
+      '/api/admin'
+  ]
+
   const jobseekerRoutes = [ // Routes for logged in users with JOBSEEKER role
     '/edit-profile/jobseeker/congratulations',
     '/edit-profile/jobseeker/disclosures',
@@ -84,6 +88,10 @@ export default auth((req) => {
     '/api/postal-geo-data/zip/search/',
   ];
 
+  function userIsPrepCaseManager() {
+    return userRoles.includes(Role.CASE_MANAGER)
+  }
+
   function userIsGuest() {
     return userRoles.includes(Role.GUEST) || userRoles.includes(Role.ADMIN);
   }
@@ -102,6 +110,10 @@ export default auth((req) => {
   }
   function pathIsEmployerRoute() {
     return employerRoutes.some((route) => pathname.startsWith(route));
+  }
+
+  function pathIsCaseManagerRoute() {
+    return caseManagerRoutes.some((route) => pathname.startsWith(route))
   }
 
   const homeUrl = new URL('/', req.nextUrl.origin);
@@ -165,8 +177,13 @@ export default auth((req) => {
       console.log('Access denied: Jobseeker role does not have permission to access - ' + pathname);
       return NextResponse.redirect(homeUrl);
     }
+  } else if (userIsPrepCaseManager()) {
+    if (pathIsCaseManagerRoute()) return NextResponse.next();
+    else {
+      console.log('Access denied: User does not have permission to access - ' + pathname);
+      return NextResponse.redirect(homeUrl);
+    }
   }
-
   else if (userIsGuest()) { // Route checking for GUEST routes
     if (pathIsGuestRoute()) return NextResponse.next();
     else {
@@ -191,6 +208,6 @@ export default auth((req) => {
  */
 export const config = {
   matcher: [
-    '/((?!api/auth|_next/static|_next/image|images|favicon.ico|ess).*)',
+    '/((?!api|_next/static|_next/image|images|favicon.ico|ess).*)',
   ],
 };
