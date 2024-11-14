@@ -118,6 +118,9 @@ export interface CareerPrepJobseekerCardViewDTO {
   careerPrepExpectedEndDate: Date | null;
   expectedEduCompletion: TimeUntilCompletion;
   assignedPool: PoolCategories;
+  // techAssessmentAvg: number;
+  // durableSkillAssessmentAvg: number;
+  // brandingAssessmentAvg: number;
 }
 
 export const getCareerPrepStudentsCardView = async (): Promise<
@@ -724,6 +727,7 @@ export const submitCareerPrepAssessment = async (
         create: {
           assessmentDate: new Date(Date.now()),
           pronouns: data.basicInformation.pronouns,
+          expectedEduCompletion: data.basicInformation.expectedEduCompletion,
           experienceWithApplying:
             data.workExperienceAndMaterials.experienceWithApplying,
           experienceWithInterview:
