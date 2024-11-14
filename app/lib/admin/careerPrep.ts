@@ -1523,7 +1523,7 @@ export const getBrandingRatings = async (jobseekerId: string): Promise<Professio
 
 
 export enum TechPathways {
-  CYBERSECURITY = 'CYBERSECURITY',
+  CYBERSECURITY = 'Cybersecurity',
   DATA_ANALYTICS = 'Data Analytics',
   IT_CLOUD_COMPUTING = 'IT & Cloud Computing',
   SOFTWARE_DEVELOPMENT = 'Software Development',
