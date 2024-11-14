@@ -656,8 +656,12 @@ export default function CreateEmployerCompanyInfoPage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
-              Cancel
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => router.push('/edit-profile/employer/personal')}
+            >
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue
