@@ -293,7 +293,7 @@ model CareerPrepAssessment {
   jobseekerId             String                @id(clustered: false, map: "career_prep_app_PRIMARY") @db.UniqueIdentifier
   assessmentDate          DateTime
   pronouns                String                @db.VarChar(15)
-  expectedEduCompletion   String?               @db.VarChar(45)
+  expectedEduCompletion   String                @db.VarChar(45)
   experienceWithApplying  Boolean               @db.Bit
   experienceWithInterview Boolean               @db.Bit
   prevWorkExperience      Boolean               @default(false) @db.Bit
@@ -325,6 +325,8 @@ model CybersecurityRating {
   apiUsage              Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model DataAnalyticsRating {
@@ -346,6 +348,8 @@ model DataAnalyticsRating {
   computationalThinking Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model ITCloudRating {
@@ -367,6 +371,8 @@ model ITCloudRating {
   computationalThinking Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model SoftwareDevRating {
@@ -388,6 +394,8 @@ model SoftwareDevRating {
   softwareOptimization         Int                  @db.TinyInt
   updatedAt                    DateTime             @updatedAt @db.DateTime
   PrepAssessment               CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model DurableSkillsRating {
@@ -413,6 +421,8 @@ model DurableSkillsRating {
   documentationSkills    Int                  @db.TinyInt
   updatedAt              DateTime             @updatedAt @db.DateTime
   PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model BrandingRating {
@@ -436,6 +446,8 @@ model BrandingRating {
   mentorship               Int                  @db.TinyInt
   updatedAt                DateTime             @updatedAt @db.DateTime
   PrepAssessment           CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model CaseMgmt {
