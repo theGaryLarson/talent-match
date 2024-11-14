@@ -7,7 +7,7 @@ function SkipButton() {
   const currentPath = usePathname(); //returns full path ie: /edit-profile/jobseeker/introduction
   let pageSequence: string[] = [];
   let userPrefix: string = '';
-  if (currentPath.includes('/edit-profile/jobseeker')) {
+  if (currentPath && currentPath.includes('/edit-profile/jobseeker')) {
     pageSequence = [
       'introduction',
       'education',
@@ -17,7 +17,7 @@ function SkipButton() {
       'disclosures',
     ];
     userPrefix = 'jobseeker';
-  } else if (currentPath.includes('/edit-profile/employer')) {
+  } else if (currentPath && currentPath.includes('/edit-profile/employer')) {
     pageSequence = [
       'personal',
       'company',
