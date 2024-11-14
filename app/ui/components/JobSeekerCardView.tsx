@@ -63,6 +63,7 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
     session?.user.roles.includes(Role.EMPLOYER) || // check role for permissions
     session?.user.roles.includes(Role.ADMIN) ||
     session?.user.roles.includes(Role.EDUCATOR) ||
+    session?.user.roles.includes(Role.CASE_MANAGER)||
     (sessionJobseekerId != undefined && sessionJobseekerId == id); // or it's our own profile
 
   const showBookmarks =

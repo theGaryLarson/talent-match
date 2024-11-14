@@ -136,7 +136,19 @@ export default function AccountMenu() {
               <ListItemIcon>
                 <DashboardIcon fontSize="small" />
               </ListItemIcon>
-              Dashboard
+              Admin Dashboard
+            </MenuItem>
+          </Link>
+        ) : (
+          ''
+        )}
+        {role?.includes(Role.CASE_MANAGER) ? (
+          <Link href="/career-prep">
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <DashboardIcon fontSize="small" />
+              </ListItemIcon>
+              Career Prep Dashboard
             </MenuItem>
           </Link>
         ) : (

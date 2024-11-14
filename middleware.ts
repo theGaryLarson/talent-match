@@ -90,6 +90,14 @@ export default auth((req) => {
     '/api/postal-geo-data/zip/search/',
   ];
 
+
+
+  let caseManagerRoutes = [
+    '/career-prep',
+    '/services/jobseekers',
+    '/services/joblistings',
+
+  ]
   function userIsGuest() {
     return userRoles.includes(Role.GUEST) || userRoles.includes(Role.ADMIN);
   }
@@ -98,6 +106,9 @@ export default auth((req) => {
   }
   function userIsEmployer() {
     return userRoles.includes(Role.EMPLOYER) || userRoles.includes(Role.ADMIN);
+  }
+  function userIsCaseManager(){
+    return userRoles.includes(Role.CASE_MANAGER) || userRoles.includes(Role.ADMIN);
   }
 
   function pathIsGuestRoute() {
@@ -108,6 +119,9 @@ export default auth((req) => {
   }
   function pathIsEmployerRoute() {
     return employerRoutes.some((route) => pathname.startsWith(route));
+  }
+  function pathIsCaseMangerRoute(){
+    return caseManagerRoutes.some((route) => pathname.startsWith(route))
   }
 
   const homeUrl = new URL('/', req.nextUrl.origin);
@@ -144,6 +158,15 @@ export default auth((req) => {
       'Admin role recognized! *Do not* use ADMIN to test other roles!!',
     );
     return NextResponse.next();
+  }else if(userIsCaseManager()){
+    if(pathIsCaseMangerRoute()){
+      return NextResponse.next();
+    } 
+    else {
+      console.log("case manger is blocked from viewing ", pathname);
+      return NextResponse.redirect(homeUrl);
+    }
+    
   } else if (userIsEmployer()) {
     // Route checking for EMPLOYER routes
     if (pathIsEmployerRoute()) return NextResponse.next();
