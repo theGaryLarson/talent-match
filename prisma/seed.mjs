@@ -2289,9 +2289,6 @@ async function seedCaseMgmt() {
             await prisma.caseMgmt.create({
                 data: {
                     prepEnrollmentStatus: faker.helpers.arrayElement(CareerPrepStatus),
-                    ratingTechSkill: 0,
-                    ratingCareerReadiness: 0,
-                    ratingSoftSkills: 0,
                     prepStartDate: faker.date.recent({days: 5, refDate: Date.now().toString()}),
                     prepExpectedEndDate: faker.date.soon({
                         days: 20,
