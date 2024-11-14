@@ -28,7 +28,8 @@ const imagFileExtensionsAllowed = [
 export enum BlobPrefix {
   Avatar = 'avatar',
   Resume = 'resume',
-  CoverLetter = 'coverLetter'
+  CoverLetter = 'coverLetter',
+  DevPlan ='careerPrepDevPlan'
 }
 
 // Needed to map the correct content-type property based on file extension
@@ -66,6 +67,23 @@ export async function uploadResume(
   );
 }
 
+// Upload resume method using the generalized uploadFile function with SAS token
+export async function uploadDevPlan(
+    file: Buffer,
+    fileName: string,
+    userId: string,
+): Promise<string> {
+  return await uploadFile(
+      file,
+      fileName,
+      userId,
+      BlobPrefix.DevPlan,
+      docFileExtensionsAllowed,
+      pdfContainerName,
+      true,
+  );
+}
+
 // Upload cover letter method using the generalized uploadFile function with SAS token
 export async function uploadCoverLetter(
     file: Buffer,
@@ -94,6 +112,13 @@ export async function getResumeUrl(userId: string): Promise<string | null> {
 export async function getCoverLetterUrl(userId: string): Promise<string | null> {
   if (userId.length < 1) return null;
   const blobPrefix = `${userId}/${BlobPrefix.CoverLetter}`; // Common prefix for cover letters
+  return await getBlobUrlWithSas(pdfContainerName, blobPrefix);
+}
+
+// Method to get a link to the Career Prep professional development plan with a SAS token
+export async function getDevPlan(userId: string): Promise<string | null> {
+  if (userId.length < 1) return null;
+  const blobPrefix = `${userId}/${BlobPrefix.DevPlan}`; // Common prefix for resumes
   return await getBlobUrlWithSas(pdfContainerName, blobPrefix);
 }
 
