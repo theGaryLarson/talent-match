@@ -29,8 +29,20 @@ import {
 import { useSession } from 'next-auth/react';
 import { AgreementLevel, AgreementLevelLabels, CareerPrepSkillsAssessmentDTO, SkillLevel, SkillLevelLabels, SkillProficiencyLabels, TechPathways, TimeUntilCompletion } from '@/app/lib/admin/careerPrep';
 import { getCoverLetterUrl, getResumeUrl } from '@/app/lib/services/azureBlobService';
+import { useRouter } from 'next/navigation';
 
-const EvaluationTable = ({
+interface EvaluationTableProps {
+  questions: {
+    id: string;
+    text: string;
+  }[];
+  section: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  labels?: Record<number, string>;
+  formData: CareerPrepSkillsAssessmentDTO;
+}
+
+const EvaluationTable: React.FC<EvaluationTableProps> = ({
   questions,
   section,
   onChange,
@@ -51,18 +63,20 @@ const EvaluationTable = ({
     });
   }, []);
 
-  const handleResponseChange = (questionId, value) => {
-    onChange({
+  const handleResponseChange = (questionId: string, value: string): void => {
+    const syntheticEvent = {
       target: {
         name: `${section}.${questionId}`,
-        value: Number(value)
+        value
       }
-    });
+    } as React.ChangeEvent<HTMLInputElement>;
+    
+    onChange(syntheticEvent);
   };
 
-  const getCurrentValue = (questionId) => {
+  const getCurrentValue = (questionId: string): string => {
     const keys = section.split('.');
-    let current = formData;
+    let current: any = formData;
     for (const key of keys) {
       if (current[key] === undefined) return '';
       current = current[key];
@@ -117,6 +131,7 @@ const EvaluationTable = ({
 
 export default function Page() {
   const { data: session, update, status } = useSession();
+  const router = useRouter();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [formData, setFormData] = useState<CareerPrepSkillsAssessmentDTO>(
     {
@@ -261,15 +276,15 @@ export default function Page() {
 
   const handleTableChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+    const parsedValue = Number(value);
 
     setFormData((prevData) => {
-      const keys = name.split("."); // Split the name by dot notation
+      const keys = name.split(".");
       let updatedData = { ...prevData };
 
-      // Recursively update nested properties
       keys.reduce((acc: any, key, index) => {
         if (index === keys.length - 1) {
-          acc[key] = value;
+          acc[key] = parsedValue;
         } else {
           acc[key] = { ...acc[key] };
         }
@@ -585,6 +600,12 @@ export default function Page() {
       },
       body: JSON.stringify(formData),
     });
+    console.log(formData);
+    if (response.ok) {
+      router.push('/');
+    } else {
+      const errorData = await response.json();
+    }
     console.log('Form submitted:', response);
   };
 
