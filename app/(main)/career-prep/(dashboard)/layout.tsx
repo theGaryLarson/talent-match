@@ -1,12 +1,8 @@
 import Link from 'next/link';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import AddBusinessIcon from '@mui/icons-material/AddBusiness';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+
 import { auth } from '@/auth';
-import { BookmarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
-import { AddBusinessOutlined } from '@mui/icons-material';
+import { BookmarkIcon } from '@heroicons/react/24/outline';
 export default async function layout({ children }: { children: React.ReactNode }) {
   let session = await auth()
   console.log(session)
@@ -34,13 +30,6 @@ export default async function layout({ children }: { children: React.ReactNode }
         >
           <BookmarkIcon width={24}/>
           Unassigned Cases
-        </Link>
-        <Link
-          href="/career-prep/postjob"
-          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
-        >
-          <PencilSquareIcon width={24}/>
-          Post a job
         </Link>
       </div>
       {children}
