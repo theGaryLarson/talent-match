@@ -23,15 +23,15 @@ import { useRouter } from 'next/navigation';
 import Educations, {
   defaultEducationData,
   EducationData,
-} from '@/app/ui/form-field-groups/Educations';
+} from './form-field-groups/Educations';
 import Licenses, {
   defaultLicenseData,
   LicenseData,
-} from '@/app/ui/form-field-groups/Licenses';
+} from './form-field-groups/Licenses';
 import ProjectExperiences, {
   defaultProjectExperienceData,
   ProjectExperienceData,
-} from '@/app/ui/form-field-groups/ProjectExperiences';
+} from './form-field-groups/ProjectExperiences';
 import { devLog, mapToEnum, mapToEnumOrThrow } from '@/app/lib/utils';
 import { getSession, useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
@@ -80,6 +80,7 @@ export default function CreateJobseekerProfileEducationPage() {
         problemSolvedDescription: project.problemSolvedDescription,
         teamSize: project.teamSize,
         skills: project.skills,
+        fetchedSkills: project.skills,
       }),
     ),
     licenses: educationData.certifications.map(
@@ -245,6 +246,7 @@ export default function CreateJobseekerProfileEducationPage() {
                       edProviderId: education.edProviderId,
                       edProviderName: education.edProviderName ?? '',
                       isEnrolled: education.isEnrolled,
+                      enrollmentStatus: education.enrollmentStatus,
                       startDate: dayjs(education.startDate),
                       gradDate: dayjs(education.gradDate),
                       degreeType:
@@ -283,6 +285,7 @@ export default function CreateJobseekerProfileEducationPage() {
                         project.problemSolvedDescription,
                       teamSize: project.teamSize,
                       skills: project.skills,
+                      fetchedSkills: project.skills,
                     }),
                   ),
                 ],

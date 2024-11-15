@@ -1,8 +1,8 @@
 import React, { memo, useCallback } from 'react';
 import { Button } from 'flowbite-react';
 import { MdClose } from 'react-icons/md';
-import InputTextWithLabel from '../components/InputTextWithLabel';
-import TagsWithAutocomplete from '../components/mui/TagsWithAutocomplete';
+import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { v4 as uuidv4 } from 'uuid';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -28,6 +28,7 @@ export interface ProjectExperienceData {
   [classDescription]: string;
   [classTeamSize]: string;
   [classSkillsStack]: SkillDTO[];
+  fetchedSkills: SkillDTO[];
 }
 
 export function defaultProjectExperienceData() {
@@ -41,6 +42,7 @@ export function defaultProjectExperienceData() {
     [classDescription]: '',
     [classTeamSize]: '',
     [classSkillsStack]: [],
+    fetchedSkills: [],
   };
 }
 
@@ -167,7 +169,9 @@ export default memo(function ProjectExperiences({
             handleChange(index, classSkillsStack, val);
           }}
           searchPlaceholder="Skill (ex: Java)"
+          addNewTags={projectExperience.fetchedSkills}
           getTagLabel={(option: SkillDTO) => option.skill_name}
+          getTagLink={(option: SkillDTO) => option.skill_info_url}
         />
       </div>
       <div className="profile-form-grid md:grid-cols-2">

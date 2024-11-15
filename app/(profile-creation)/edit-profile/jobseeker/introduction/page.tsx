@@ -45,11 +45,10 @@ export default function CreateJobseekerProfileIntroPage() {
   const [introData, setIntroData] = useState<JsIntroPostDTO>({
     ...introStoreData,
   });
-  console.log('initialdata', introData);
+
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
     introData.birthDate === '' ? null : dayjs(introData.birthDate),
   );
-  console.log('initialbirthdate', birthdate);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     introData.photoUrl ?? null,
   );

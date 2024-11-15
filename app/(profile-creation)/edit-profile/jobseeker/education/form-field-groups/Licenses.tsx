@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import { Button } from 'flowbite-react';
 import { MdClose } from 'react-icons/md';
-import InputTextWithLabel from '../components/InputTextWithLabel';
+import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import { v4 as uuidv4 } from 'uuid';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';

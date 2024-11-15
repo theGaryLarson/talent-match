@@ -9,10 +9,11 @@ import {
   HighSchoolDegreeType,
   EducationLevel,
   PreAEduSystem,
-  JsEducationInfoDTO, ProgramEnrollmentStatus,
+  JsEducationInfoDTO,
+  ProgramEnrollmentStatus,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { edu_providers, educators, provider_programs } from '@prisma/client';
-import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
+import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
 import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -246,22 +247,21 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
 
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
-
           </div>
           <div className="profile-form-grid md:grid-cols-2">
             <DatePicker
@@ -356,17 +356,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             </SelectOptionsWithLabel>
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
@@ -450,17 +450,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
@@ -559,17 +559,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
@@ -653,17 +653,17 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
