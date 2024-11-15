@@ -21,8 +21,19 @@ export default async function Page() {
         My Dashboard
       </h1>
       <p>
-        Admin Dash Perhaps
+        Admin Dash 
       </p>
+      <p>
+        Reminder To add stats for nerds here like:
+      </p>
+      <ul>
+        <li>Total Number of Jobseekers</li>
+        <li>Gender makeup oj Jobseekers</li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+
     </main>
   );
 }

@@ -824,7 +824,7 @@ export async function getEmployersByCompanyId(companyId: string) {
  */
 export async function getCompanyById(companyId: string) {
   try {
-    const company = prisma.companies.findUnique(
+    const company = await prisma.companies.findUnique(
       {
         where: {
           company_id: companyId
@@ -879,7 +879,6 @@ export async function getEmployerById(employerId: string) {
     return employer;
   } catch (error) {
     console.error('Error fetching employer:', error);
-    throw new Error('Could not retrieve employer with the given ID.');
   }
 }
 
