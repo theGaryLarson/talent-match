@@ -69,9 +69,11 @@ export const initialState: JobseekerState = {
   showcase: {
     userId: '',
     skills: [],
+    introduction: null,
     portfolioUrl: null,
     portfolioPassword: null,
     video_url: null,
+    resume_url: null,
   },
   preferences: {
     userId: '',

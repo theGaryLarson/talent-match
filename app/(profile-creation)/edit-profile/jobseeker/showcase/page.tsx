@@ -34,12 +34,18 @@ export default function CreateJobseekerProfileShowcasePage() {
   );
   const showcaseData = { ...showcaseStoreData };
   const [error, setError] = useState<string | null>(null);
-  const [introduction, setIntroduction] = useState('');
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+  const [introduction, setIntroduction] = useState(
+    showcaseData.introduction ?? '',
+  );
+  const [resumeUrl, setResumeUrl] = useState<string | null>(
+    showcaseData.resume_url ?? '',
+  );
   const [currentJobTitle, setCurrentJobTitle] = useState('');
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
-  const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
+  const [fetchedTags, setFetchLoadedTags] = useState<SkillDTO[]>(
+    showcaseData.skills,
+  );
   const [portfolioUrl, setPortfolioUrl] = useState(
     showcaseData.portfolioUrl ?? '',
   );
@@ -51,7 +57,7 @@ export default function CreateJobseekerProfileShowcasePage() {
   useEffect(() => {
     if (session?.user?.id && status === 'authenticated') {
       const initializeFormFields = async () => {
-        if (_.isEqual(showcaseStoreData, initialState.preferences)) {
+        if (_.isEqual(showcaseStoreData, initialState.showcase)) {
           const { id } = session.user;
 
           try {
@@ -69,6 +75,16 @@ export default function CreateJobseekerProfileShowcasePage() {
                 showcaseData.skills = fetchedData.skills;
                 setSkills(showcaseData.skills);
                 setFetchLoadedTags(showcaseData.skills);
+              }
+              if (fetchedData.introduction) {
+                showcaseData.introduction = fetchedData.introduction;
+                setIntroduction(showcaseData.introduction);
+              }
+
+              console.log(fetchedData);
+              if (fetchedData.resume_url) {
+                showcaseData.resume_url = fetchedData.resume_url;
+                setResumeUrl(showcaseData.resume_url);
               }
               if (fetchedData.portfolioUrl) {
                 showcaseData.portfolioUrl = fetchedData.portfolioUrl;
@@ -199,7 +215,7 @@ export default function CreateJobseekerProfileShowcasePage() {
                   }
                 }}
                 searchPlaceholder="Skill (ex: Java)"
-                addNewTags={fetchLoadedTags}
+                addNewTags={fetchedTags}
                 getTagLabel={(option: SkillDTO) => option.skill_name}
                 getTagLink={(option: SkillDTO) => option.skill_info_url}
               />
@@ -288,6 +304,9 @@ export default function CreateJobseekerProfileShowcasePage() {
               maxSizeMB={5}
               userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
               onDocUpload={handleResumeUpload}
+              autoloadedUrl={
+                resumeUrl !== '' ? (resumeUrl ?? undefined) : undefined
+              }
             />
           </div>
           <div className="profile-form-progress-btn-group">
