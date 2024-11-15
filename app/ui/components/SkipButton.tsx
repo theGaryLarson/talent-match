@@ -5,9 +5,13 @@ import { usePathname } from 'next/navigation';
 
 function SkipButton() {
   const currentPath = usePathname(); //returns full path ie: /edit-profile/jobseeker/introduction
+  // Early return if currentPath is null or undefined
+  if (!currentPath) {
+    return null;
+  }
   let pageSequence: string[] = [];
   let userPrefix: string = '';
-  if (currentPath && currentPath.includes('/edit-profile/jobseeker')) {
+  if (currentPath.includes('/edit-profile/jobseeker')) {
     pageSequence = [
       'introduction',
       'education',
@@ -17,7 +21,7 @@ function SkipButton() {
       'disclosures',
     ];
     userPrefix = 'jobseeker';
-  } else if (currentPath && currentPath.includes('/edit-profile/employer')) {
+  } else if (currentPath.includes('/edit-profile/employer')) {
     pageSequence = [
       'personal',
       'company',
