@@ -193,7 +193,8 @@ export type JsPreferencesDTO = {
 export type JsDisclosuresDTO = {
   jobseekerId?: string | null; // jsDetails
   isVeteran?: string | null; // privateDetails
-  hasDisability?: string | null; // privateDetails
+  disability?: string | null; // privateDetails
+  disabilityStatus?: string | null; // privateDetails
   gender?: string | null;
   race?: string | null;
   ethnicity?: string | null; // users.ethnicity
@@ -204,6 +205,7 @@ export type JsDisclosuresPostDTO = {
   userId: string;
   isVeteran: string; // jobseekers[0].jobseekers_private_data[0].is_veteran
   disability: string; // jobseekers[0].jobseekers_private_data[0].has_disability
+  disabilityStatus: string;
   gender: string; // users.gender
   race: string; //users.race
   ethnicity: string;

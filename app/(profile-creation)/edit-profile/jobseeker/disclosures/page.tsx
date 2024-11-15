@@ -49,8 +49,9 @@ export default function CreateJobseekerProfileDisclosuresPage() {
   const [error, setError] = useState<{ error: string | null }>({ error: null });
 
   const [veteranStatus, setVeteranStatus] = useState(disclosuresData.isVeteran);
-  const [disabilityStatus, setDisabilityStatus] =
-    useState<String>('undisclosed');
+  const [disabilityStatus, setDisabilityStatus] = useState(
+    disclosuresData.disabilityStatus,
+  );
   const [disabilityType, setDisabilityType] = useState(
     disclosuresData.disability,
   );
@@ -84,21 +85,25 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 disclosuresData.gender = fetchedData.gender;
                 setGender(disclosuresData.gender);
               }
-              if (fetchedData.hasDisability) {
-                disclosuresData.disability = fetchedData.hasDisability;
+              if (fetchedData.disabilityStatus) {
+                disclosuresData.disabilityStatus = fetchedData.disabilityStatus;
+                setDisabilityStatus(disclosuresData.disabilityStatus);
+              }
+              if (fetchedData.disability) {
+                disclosuresData.disability = fetchedData.disability;
                 setDisabilityType(disclosuresData.disability);
               }
               if (fetchedData.isVeteran) {
                 disclosuresData.isVeteran = fetchedData.isVeteran;
                 setVeteranStatus(disclosuresData.isVeteran);
               }
+              if (fetchedData.ethnicity) {
+                disclosuresData.ethnicity = fetchedData.ethnicity;
+                setEthnicity(disclosuresData.ethnicity);
+              }
               if (fetchedData.race) {
                 disclosuresData.race = fetchedData.race;
                 setRace(disclosuresData.race);
-              }
-              if (fetchedData.ethnicity) {
-                disclosuresData.ethnicity = fetchedData.ethnicity;
-                setRace(disclosuresData.ethnicity);
               }
               disclosuresData.hasReadTerms = fetchedData.hasReadTerms;
               setTermsAccepted(disclosuresData.hasReadTerms);
@@ -130,6 +135,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
 
     disclosuresData.userId = session.user.id;
     disclosuresData.isVeteran = veteranStatus;
+    disclosuresData.disabilityStatus = disabilityStatus;
     disclosuresData.disability = disabilityType;
     disclosuresData.gender = gender;
     disclosuresData.race = race;
