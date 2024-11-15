@@ -291,9 +291,9 @@ model OtherPriorityPopulations {
 
 model CareerPrepAssessment {
   jobseekerId             String                @id(clustered: false, map: "career_prep_app_PRIMARY") @db.UniqueIdentifier
-  assessmentDate          DateTime
+  assessmentDate          DateTime              @default(now()) @db.DateTime
   pronouns                String                @db.VarChar(15)
-  expectedEduCompletion   String?               @db.VarChar(45)
+  expectedEduCompletion   String                @db.VarChar(45) // range of time do not change to date...
   experienceWithApplying  Boolean               @db.Bit
   experienceWithInterview Boolean               @db.Bit
   prevWorkExperience      Boolean               @default(false) @db.Bit
@@ -320,10 +320,13 @@ model CybersecurityRating {
   cloudSecurity         Int                  @db.TinyInt
   incidentResponse      Int                  @db.TinyInt
   dataSecurity          Int                  @db.TinyInt
+  technicalSupport      Int                  @db.TinyInt
   computationalThinking Int                  @db.TinyInt
   apiUsage              Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model DataAnalyticsRating {
@@ -345,6 +348,8 @@ model DataAnalyticsRating {
   computationalThinking Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model ITCloudRating {
@@ -366,6 +371,8 @@ model ITCloudRating {
   computationalThinking Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model SoftwareDevRating {
@@ -387,6 +394,8 @@ model SoftwareDevRating {
   softwareOptimization         Int                  @db.TinyInt
   updatedAt                    DateTime             @updatedAt @db.DateTime
   PrepAssessment               CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model DurableSkillsRating {
@@ -412,6 +421,8 @@ model DurableSkillsRating {
   documentationSkills    Int                  @db.TinyInt
   updatedAt              DateTime             @updatedAt @db.DateTime
   PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model BrandingRating {
@@ -435,21 +446,22 @@ model BrandingRating {
   mentorship               Int                  @db.TinyInt
   updatedAt                DateTime             @updatedAt @db.DateTime
   PrepAssessment           CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1")
+
+  overallAverage Float? @db.Float // Computed column
 }
 
 model CaseMgmt {
-  jobseekerId           String               @id(clustered: false, map: "case_mgmt_PRIMARY") @map("jobseeker_id") @db.UniqueIdentifier
-  managerId             String?              @map("cfa_admin_id") @db.UniqueIdentifier
-  prepEnrollmentStatus  String               @db.VarChar(30)
-  ratingTechSkill       Int?                 @db.TinyInt // TODO: Ask Bethany if these are the average rating of the  assessments e.g. TechPathwayAssessments 1 of 4
-  ratingCareerReadiness Int?                 @db.TinyInt // TODO: Ask Bethany if these are the average rating of the  assessments e.g. Professional Branding Assessment 1 of 1
-  ratingSoftSkills      Int?                 @db.TinyInt // TODO: Ask Bethany if these are the average rating of the  assessments e.g. Durable Skills Assessment 1 of 1
-  careerPrepTrack       String?              @db.VarChar(15)
-  prepStartDate         DateTime?            @db.DateTime
-  prepExpectedEndDate   DateTime?            @db.DateTime
-  updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
-  CaseManager           User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
+  jobseekerId          String               @id(clustered: false, map: "case_mgmt_PRIMARY") @db.UniqueIdentifier
+  managerId            String?              @db.UniqueIdentifier
+  prepEnrollmentStatus String               @db.VarChar(30)
+  careerPrepTrack      String?              @db.VarChar(15)
+  prepStartDate        DateTime?            @db.DateTime
+  prepExpectedEndDate  DateTime?            @db.DateTime
+  prepActualEndDate    DateTime?            @db.DateTime
+  createdAt            DateTime             @default(now()) @db.DateTime
+  updatedAt            DateTime             @updatedAt @db.DateTime
+  PrepAssessment       CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
+  CaseManager          User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
   @@index([jobseekerId], map: "fk_case_mgmt_jobseeker1_idx")

@@ -16,6 +16,14 @@ export default auth((req) => {
     '/api/users/',
   ];
 
+
+  const caseManagerRoutes = [
+      '/api/admin',
+      '/career-prep',
+    '/services/jobseekers',
+    '/services/joblistings',
+  ]
+
   const jobseekerRoutes = [
     // Routes for logged in users with JOBSEEKER role
     '/edit-profile/jobseeker/congratulations',
@@ -26,6 +34,7 @@ export default auth((req) => {
     '/edit-profile/jobseeker/showcase',
     '/edit-profile/jobseeker/work-experience',
     
+    '/services/jobseekers/career-prep-skill-assessment',
     '/services/jobseekers/dashboard',
     '/services/jobseekers/',
     '/services/joblistings',
@@ -90,14 +99,9 @@ export default auth((req) => {
     '/api/postal-geo-data/zip/search/',
   ];
 
-
-
-  let caseManagerRoutes = [
-    '/career-prep',
-    '/services/jobseekers',
-    '/services/joblistings',
-
-  ]
+  function userIsPrepCaseManager() {
+    return userRoles.includes(Role.CASE_MANAGER)
+  }
   function userIsGuest() {
     return userRoles.includes(Role.GUEST) || userRoles.includes(Role.ADMIN);
   }
@@ -120,7 +124,8 @@ export default auth((req) => {
   function pathIsEmployerRoute() {
     return employerRoutes.some((route) => pathname.startsWith(route));
   }
-  function pathIsCaseMangerRoute(){
+
+  function pathIsCaseManagerRoute() {
     return caseManagerRoutes.some((route) => pathname.startsWith(route))
   }
 
@@ -159,7 +164,7 @@ export default auth((req) => {
     );
     return NextResponse.next();
   }else if(userIsCaseManager()){
-    if(pathIsCaseMangerRoute()){
+    if(pathIsCaseManagerRoute()){
       return NextResponse.next();
     } 
     else {
@@ -231,6 +236,6 @@ export default auth((req) => {
  */
 export const config = {
   matcher: [
-    '/((?!api/auth|_next/static|_next/image|images|favicon.ico|ess).*)',
+    '/((?!api|_next/static|_next/image|images|favicon.ico|ess).*)',
   ],
 };
