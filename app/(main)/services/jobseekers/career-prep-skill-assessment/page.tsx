@@ -295,6 +295,17 @@ export default function Page() {
     });
   }
 
+  const handlePathwayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      technicalSelfAssessment: {
+        ...prevData.technicalSelfAssessment,
+        interestPathway: value as TechPathways,
+      },
+    }));
+  };
+
   const renderBasicInformation = (): JSX.Element => (
     <Box sx={{ p: 2 }}>
       <Typography variant="h6" sx={{ mb: 2 }}>Basic Information</Typography>
@@ -326,7 +337,7 @@ export default function Page() {
               onChange={handleInputChange}
             >
               {Object.entries(TimeUntilCompletion).map(([value, label]) => (
-                <MenuItem id={value + label} value={label}>
+                <MenuItem key={value + label} id={value + label} value={label}>
                   {label}
                 </MenuItem>
               ))}
@@ -399,7 +410,7 @@ export default function Page() {
           <FormLabel>What technology pathway most interests you?</FormLabel>
           <RadioGroup
             name="technicalSelfAssessment.interestPathway"
-            onChange={handleTableChange}
+            onChange={handlePathwayChange}
             value={formData.technicalSelfAssessment.interestPathway}
           >
             {Object.entries(TechPathways).map(([value, label]) => (
