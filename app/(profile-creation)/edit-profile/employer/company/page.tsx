@@ -320,8 +320,11 @@ export default function CreateEmployerCompanyInfoPage() {
       console.error('User session is not available.');
       return;
     }
+    setCompanyData({
+      ...companyData,
+      employerId: session?.user.employerId!,
+    });
 
-    companyData.employerId = session?.user.employerId!;
     if (companyData.companyName === '' || null) {
       // TODO: if chosenCompany does not have name, it does not exist, setup warning Toast for existing company or contact CFA to be added
       console.error('Company name is not available.');
@@ -330,20 +333,23 @@ export default function CreateEmployerCompanyInfoPage() {
 
     // company exists in selection
     if (typeof selectCompanyDropdownData !== 'string') {
-      companyData.employerId = session.user.employerId!;
-      companyData.companyId = selectCompanyDropdownData.companyId;
-      companyData.companyName = selectCompanyDropdownData.companyName;
-      companyData.industrySectorId = selectCompanyDropdownData.industrySectorId;
-      companyData.logoUrl = selectCompanyDropdownData.logoUrl;
-      companyData.websiteUrl = selectCompanyDropdownData.websiteUrl;
-      companyData.companyEmail = selectCompanyDropdownData.companyEmail;
-      companyData.companyPhone = selectCompanyDropdownData.companyPhone;
-      companyData.yearFounded = selectCompanyDropdownData.yearFounded
-        ? selectCompanyDropdownData.yearFounded.toString()
-        : '';
-      companyData.companySize = selectCompanyDropdownData.companySize ?? ''; //not sure why null needed here
-      companyData.estimatedAnnualHires =
-        selectCompanyDropdownData.estimatedAnnualHires ?? ''; // not sure why null needed here
+      setCompanyData({
+        ...companyData,
+        employerId: session.user.employerId!,
+        companyId: selectCompanyDropdownData.companyId,
+        companyName: selectCompanyDropdownData.companyName,
+        industrySectorId: selectCompanyDropdownData.industrySectorId,
+        logoUrl: selectCompanyDropdownData.logoUrl,
+        websiteUrl: selectCompanyDropdownData.websiteUrl,
+        companyEmail: selectCompanyDropdownData.companyEmail,
+        companyPhone: selectCompanyDropdownData.companyPhone,
+        yearFounded: selectCompanyDropdownData.yearFounded
+          ? selectCompanyDropdownData.yearFounded.toString()
+          : '',
+        companySize: selectCompanyDropdownData.companySize ?? '', //not sure why null needed here
+        estimatedAnnualHires:
+          selectCompanyDropdownData.estimatedAnnualHires ?? '', // not sure why null needed here
+      });
       devLog(companyData);
       // new company: values stored in companyData from page inputs
     }
