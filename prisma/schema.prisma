@@ -363,7 +363,7 @@ model jobseekers {
   careerPrepComplete               Boolean                   @default(false) @db.Bit
   careerPrepTrackRecommendation    String?                   @db.VarChar(25)
   createdAt                        DateTime                  @default(now()) @map("created_at")
-  updatedAt                        DateTime?                 @map("updated_at")
+  updatedAt                        DateTime?                 @updatedAt @map("updated_at")
   caseMgmt                         CaseMgmt[]
   certificates                     certificates[]
   jobseeker_has_skills             jobseeker_has_skills[]
@@ -389,8 +389,8 @@ model jobseekers_private_data {
   is_authorized_to_work_in_usa Boolean?   @db.Bit
   job_sponsorship_required     Boolean?   @db.Bit
   is_veteran                   String     @default("", map: "DF__jobseeker__is_ve__3E1D39E1") @db.VarChar(45)
-  disability                   String     @db.VarChar(45)
   disability_status            String     @default("") @db.VarChar(45)
+  disability                   String?    @db.VarChar(45)
   gender                       String     @default("") @db.VarChar(45)
   race                         String     @default("") @db.VarChar(45)
   ethnicity                    String     @default("") @db.VarChar(45)
