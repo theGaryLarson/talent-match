@@ -8,8 +8,8 @@ export default async function layout({ children }: { children: React.ReactNode }
   console.log(session)
 
   return (
-    <div className="flex capitalize">
-      <div className="flex min-w-[230px] flex-col text-[#047f9c]">
+    <div className="flex">
+      <div className="flex min-w-[230px] flex-col text-[#047f9c] capitalize">
         <Link
           href="/career-prep"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"

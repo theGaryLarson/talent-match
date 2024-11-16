@@ -1,6 +1,7 @@
-import { getCareerPrepStudentDetailView, getCareerPrepStudentNotes, NoteType } from "@/app/lib/admin/careerPrep";
+import { getCareerPrepStudentDetailView, getCareerPrepStudentNotes, NoteDTO, NoteType } from "@/app/lib/admin/careerPrep";
 import MarkDownEditor from "@/app/ui/components/mdEditor/MarkDownEditor";
 import Tabs from "@/app/ui/components/Tabs";
+import { ReactNode } from "react";
 
 export default async function page({ params }: { params: { id: string } }){
     const client = await getCareerPrepStudentDetailView(params.id);
@@ -15,17 +16,31 @@ export default async function page({ params }: { params: { id: string } }){
         <main className="space-y-3 pr-[200px] w-full">
             <h1 className="text-2xl">{client.data?.firstName} {client.data?.lastName} ({client.data?.pronouns})</h1>
             <h2>Status: {client.data?.prepEnrollmentStatus}</h2>
-            <h2>Email Adress: {client.data?.emailAddress}</h2>
+            <h2>Email address: {client.data?.emailAddress}</h2>
             <h2>Pool: {client.data?.poolAssignment}</h2>
             <div>
                 <Tabs tabs={
                 [
-                {label:"General Notes",content:<>{notes.generalNotes.map((n)=><p>{n.noteContent}</p>)}<MarkDownEditor title={"This is a title"} noteType={NoteType.GENERAL} jobseekerId={params.id}/></>},
-                {label:"Meeting Notes",content:<>{notes.meetingNotes.map((n)=><p>{n.noteContent}</p>)}<MarkDownEditor title={"This is a title"} noteType={NoteType.MEETING} jobseekerId={params.id}/> </>},
-                {label:"Follow Up Notes",content:<>{notes.followUpNotes.map((n)=><p>{n.noteContent}</p>)}<MarkDownEditor title={"This is a title"} noteType={NoteType.FOLLOWUP} jobseekerId={params.id}/></>}
+                {label:"General Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.GENERAL} jobseekerId={params.id}/>{notes.generalNotes.map((n)=><NoteCard {...n}/>)}</>},
+                {label:"Meeting Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.MEETING} jobseekerId={params.id}/>{notes.meetingNotes.map((n)=><NoteCard {...n}/>)} </>},
+                {label:"Follow Up Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.FOLLOWUP} jobseekerId={params.id}/>{notes.followUpNotes.map((n)=><NoteCard {...n}/>)}</>}
                 ]}/>
             </div> 
             
         </main>
     );
+}
+
+
+
+
+
+function NoteCard(props:NoteDTO){
+    return(
+        <div className="border">
+            <h3 className="text-sm text-gray-600">Author: {props.authorName} Posted: {props.updatedAt}</h3>
+            <hr/>
+        <div dangerouslySetInnerHTML={{__html:props.noteContent}}></div>
+        </div>
+   );
 }
