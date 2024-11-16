@@ -1,5 +1,6 @@
-import { getCareerPrepStudentDetailView, getCareerPrepStudentNotes } from "@/app/lib/admin/careerPrep";
+import { getCareerPrepStudentDetailView, getCareerPrepStudentNotes, NoteType } from "@/app/lib/admin/careerPrep";
 import MarkDownEditor from "@/app/ui/components/mdEditor/MarkDownEditor";
+import Tabs from "@/app/ui/components/Tabs";
 
 export default async function page({ params }: { params: { id: string } }){
     const client = await getCareerPrepStudentDetailView(params.id);
@@ -11,24 +12,20 @@ export default async function page({ params }: { params: { id: string } }){
      * allow edit/delete of prevous notes
      */
     return(
-        <main className="space-y-3 pr-[200px]">
+        <main className="space-y-3 pr-[200px] w-full">
             <h1 className="text-2xl">{client.data?.firstName} {client.data?.lastName} ({client.data?.pronouns})</h1>
             <h2>Status: {client.data?.prepEnrollmentStatus}</h2>
             <h2>Email Adress: {client.data?.emailAddress}</h2>
             <h2>Pool: {client.data?.poolAssignment}</h2>
             <div>
-            <h3>Follow Up Notes:</h3>
-            {notes.followUpNotes.map((n)=><p>{n.noteContent}</p>)}
-            </div>
-            <div>
-            <h3>General Notes: </h3>
-            {notes.followUpNotes.map((n)=><p>{n.noteContent}</p>)}
-            </div>
-            <div>
-            <h3>Meeting Notes: </h3>
-            {notes.meetingNotes.map((n)=><p>{n.noteContent}</p>)}
-            </div>
-            <MarkDownEditor title={"This is a title"}/>
+                <Tabs tabs={
+                [
+                {label:"General Notes",content:<>{notes.generalNotes.map((n)=><p>{n.noteContent}</p>)}<MarkDownEditor title={"This is a title"} noteType={NoteType.GENERAL} jobseekerId={params.id}/></>},
+                {label:"Meeting Notes",content:<>{notes.meetingNotes.map((n)=><p>{n.noteContent}</p>)}<MarkDownEditor title={"This is a title"} noteType={NoteType.MEETING} jobseekerId={params.id}/> </>},
+                {label:"Follow Up Notes",content:<>{notes.followUpNotes.map((n)=><p>{n.noteContent}</p>)}<MarkDownEditor title={"This is a title"} noteType={NoteType.FOLLOWUP} jobseekerId={params.id}/></>}
+                ]}/>
+            </div> 
+            
         </main>
     );
 }

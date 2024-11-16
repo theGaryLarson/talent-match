@@ -526,6 +526,11 @@ export type NoteDTO = {
   date?: string | null;
   authorName: string;
 };
+export type CreateNoteDTO = {
+  jobseekerId: string;
+  noteType: NoteType;
+  noteContent: string;
+};
 
 export type CategorizedNotes = {
   generalNotes: NoteDTO[];
@@ -595,6 +600,43 @@ export const getCareerPrepStudentNotes = async (
   return sortedNotes;
 };
 
+/**
+ * model CaseMgmtNotes {
+  id                   String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()"))
+  jobseekerId          String               @db.UniqueIdentifier
+  date                 DateTime?            @db.DateTime
+  noteType             String               @db.VarChar(15)
+  noteContent          String               @db.NText
+  createdBy            String               @db.UniqueIdentifier
+  createdAt            DateTime             @default(now()) @db.DateTime
+  updatedAt            DateTime             @updatedAt @db.DateTime
+  CareerPrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
+  Author               User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
+}
+ */
+
+export const addCareerPrepStudentNotes = async (jobseekerId:string, noteContent:string, noteType:string)=>{
+  const Session = await auth();
+  try{
+if(Session?.user.id == undefined || Session.user.id == null){
+  throw new Error("id was null or undefinded")
+}
+  
+  const result = await prisma.caseMgmtNotes.create({
+    data:{
+      jobseekerId: jobseekerId,
+      date: new Date(),
+      noteType: noteType,
+      noteContent: noteContent,
+      createdBy: Session.user.id,
+      updatedAt: new Date(),
+
+    }
+  })
+}catch(e){
+  console.error(e)
+}
+}
 /**
  * Represents the different types of notes that can be associated with a task or event.
  * @enum {string}
