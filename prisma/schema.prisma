@@ -386,13 +386,14 @@ model jobseekers_private_data {
   jobseeker_private_data_id    String     @id(clustered: false, map: "jobseekers_private_data_PRIMARY") @unique(map: "jobseekers_private_data_learner_private_data_id_UNIQUE") @db.UniqueIdentifier
   jobseeker_id                 String     @unique @db.UniqueIdentifier
   ssn                          String?    @db.VarChar(255)
-  is_authorized_to_work_in_usa Boolean    @default(false, map: "DF__jobseeker__is_au__3C34F16F") @db.Bit
-  job_sponsorship_required     Boolean    @default(false, map: "DF__jobseeker__job_s__3D2915A8") @db.Bit
-  is_veteran                   String     @default("prefer not to say", map: "DF__jobseeker__is_ve__3E1D39E1") @db.VarChar(45)
-  disability                   String     @default("prefer not to say", map: "DF__jobseeker__has_d__3F115E1A") @db.VarChar(45)
-  gender                       String     @default("undisclosed") @db.VarChar(45)
-  race                         String     @default("undisclosed") @db.VarChar(45)
-  ethnicity                    String     @default("undisclosed") @db.VarChar(45)
+  is_authorized_to_work_in_usa Boolean?   @db.Bit
+  job_sponsorship_required     Boolean?   @db.Bit
+  is_veteran                   String     @default("", map: "DF__jobseeker__is_ve__3E1D39E1") @db.VarChar(45)
+  disability                   String     @db.VarChar(45)
+  disability_status            String     @default("") @db.VarChar(45)
+  gender                       String     @default("") @db.VarChar(45)
+  race                         String     @default("") @db.VarChar(45)
+  ethnicity                    String     @default("") @db.VarChar(45)
   jobseekers                   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_user_learner_private_data_user1")
 
   @@index([jobseeker_id], map: "jobseekers_private_data_fk_user_learner_private_data_user1")
