@@ -39,8 +39,8 @@ interface Data {
   monthsInternshipExperience: string | number;
   workExperiences: WorkExperienceData[];
   internshipExperiences: WorkExperienceData[];
-  isAuthorizedToWorkUsa?: boolean;
-  requiresSponsorship?: boolean;
+  isAuthorizedToWorkUsa?: boolean | null;
+  requiresSponsorship?: boolean | null;
 }
 
 export default function CreateJobseekerProfileWorkExperiencePage() {
