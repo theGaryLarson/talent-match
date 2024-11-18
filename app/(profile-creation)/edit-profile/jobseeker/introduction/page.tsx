@@ -204,7 +204,7 @@ export default function CreateJobseekerProfileIntroPage() {
           image: introData.photoUrl,
         });
 
-        router.push('/edit-profile/jobseeker/education');
+        router.push('/edit-profile/jobseeker/preferences');
       } else {
         const errorMessage = `Failed to submit basic info. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -673,10 +673,10 @@ export default function CreateJobseekerProfileIntroPage() {
             </div>
           </fieldset>
 
-          <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+          <div className="profile-form-progress-btn-single-end">
+            {/* <Button pill className="custom-outline-btn">
               Cancel
-            </Button>
+            </Button> */}
             <Button pill type="submit">
               Save and continue
             </Button>
