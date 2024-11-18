@@ -599,11 +599,17 @@ model provider_program_has_skills {
 
 model provider_programs {
   training_program_id         String                        @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
+  program_id                  String                        @db.UniqueIdentifier
   edu_provider_id             String                        @db.UniqueIdentifier
   pathway_id                  String?                       @db.UniqueIdentifier
+  // url                         String?                       @db.VarChar(255)
+  target_job_roles            String?                       @db.Text
+  description                 String?                       @db.Text
+  target_population           String?                       @db.Text
   provider_program_has_skills provider_program_has_skills[]
   pathways                    pathways?                     @relation(fields: [pathway_id], references: [pathway_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_training_program_Pathways1")
   edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
+  Program                     programs                      @relation(fields: [program_id], references: [id], onUpdate: NoAction, map: "fk_provider_programs_programs1")
 
   @@index([edu_provider_id], map: "training_programs_fk_training_program_training_provider1_idx")
   @@index([pathway_id], map: "training_programs_fk_training_program_Pathways1_idx")
@@ -611,8 +617,9 @@ model provider_programs {
 
 model programs {
   id                   String                 @id @unique(map: "programs_id_UNIQUE") @default(uuid()) @db.UniqueIdentifier
-  title                String                 @db.NVarChar(255)
+  title                String                 @unique @db.NVarChar(255)
   jobseekers_education jobseekers_education[]
+  provider_programs    provider_programs[]
 }
 
 model volunteer_has_skills {

@@ -798,7 +798,6 @@ const waStateCountiesWithZipCodes = [
     }
 ];
 
-//TODO: add legit logo_urls
 const itCertifications = [
     {
         name: "AWS Certified Solutions Architect",
@@ -1165,18 +1164,6 @@ const frontendProjectSkills = [
     },
 ];
 
-const raceOptions = [
-    "White",
-    "Black or African American",
-    "American Indian or Alaska Native",
-    "Asian",
-    "Native Hawaiian or Other Pacific Islander",
-    "Hispanic or Latino",
-    "Middle Eastern or North African",
-    "Mixed Race",
-    "Other"
-];
-
 const companySizeOptions = [
     '1-10',
     '11-50',
@@ -1371,9 +1358,9 @@ async function seedTechnologyAreas() {
     console.log(`Seeded ${itOccupationTechnologyAreas.length} technology areas.\n`)
 }
 
-async function seedEduProviders() {
+async function seedGeneralEdProviders() {
     try {
-        console.log('Seeding Education Providers...')
+        console.log('Seeding General Education Providers...')
         // Insert high schools
         const highSchoolResult = await prisma.edu_providers.createMany({
             data: highSchools.map(school => ({
@@ -1391,12 +1378,18 @@ async function seedEduProviders() {
         });
 
         console.log(`Seeded ${highSchoolResult.count} High schools.`);
-        console.log(`Seeded ${collegeResult.count} Colleges.\n`);
+        console.log(`Seeded ${collegeResult.count} Colleges.`);
+        console.log(`Finished seeding ${highSchoolResult.count + collegeResult.count} general WA state training providers.\n`)
     } catch (error) {
         console.error('Error inserting data:', error);
     } finally {
         await prisma.$disconnect();
     }
+}
+
+async function seedPartnerEdProvidersAndPrograms() {
+    // TODO: seed training provider partners into edu_providers table. Ensure no duplicates from previous function call to seedGeneralEdProviders. Comment out fields that don't currently exist in the schema.prisma models
+    // TODO: seed provider_programs connecting to programs table based on provider_programs.title matching programs[idx].name in partnerProvidersAndPrograms
 }
 
 async function seedGeneralPrograms() {
@@ -1434,11 +1427,11 @@ async function seedPartnerPrograms() {
                 // pathways: program.pathways.join(', ') // TODO: Add pathways to database schema if needed
             }))
         );
-        console.log('programsData', JSON.stringify(programsData, null, 2));
         // Filter out duplicate program names
         const uniquePrograms = Array.from(
             new Map(programsData.map(program => [program.title, program])).values()
         );
+        console.log('uniquePrograms\n', uniquePrograms);
 
         // Check for existing programs in the database
         const existingPrograms = await prisma.programs.findMany({
@@ -2205,7 +2198,8 @@ async function seedFoundationalTables() {
     await seedSocialMediaPlatforms();
     await seedGeneralPrograms();
     await seedPartnerPrograms();
-    await seedEduProviders(); // TODO: get updated list of training provider partners to use in production
+    await seedGeneralEdProviders(); // TODO: get updated list of training provider partners to use in production
+    await seedPartnerEdProvidersAndPrograms();
     await seedCompanies(); // TODO: get a list of pre-approved companies to use in production
 }
 
@@ -2252,11 +2246,10 @@ async function main() {
     console.log(`Start seeding ...\n`);
     await seedFoundationalTables();
     if (process.env.NODE_ENV === 'production') {
-        console.log('Finished seeding foundational tables.')
-        console.log('Skipping seeding mock data in production...');
+        console.log('Skipping seeding mock data...');
+        console.log('Finished seeding foundational tables.\n')
         return;
     }
-
 
     await SeedMockEdProvidersAddresses();
     await seedMockUsers(250);
