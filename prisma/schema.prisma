@@ -609,7 +609,6 @@ model provider_programs {
   @@index([pathway_id], map: "training_programs_fk_training_program_Pathways1_idx")
 }
 
-// // TODO: Add a general list of programs to use as a drop down educators can associate these with their programs and provide more detail in the provider_programs table.
 model programs {
   id                   String                 @id @unique(map: "programs_id_UNIQUE") @default(uuid()) @db.UniqueIdentifier
   title                String                 @db.NVarChar(255)
