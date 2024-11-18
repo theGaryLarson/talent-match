@@ -27,7 +27,7 @@ export default auth((req) => {
     '/edit-profile/jobseeker/preferences',
     '/edit-profile/jobseeker/showcase',
     '/edit-profile/jobseeker/work-experience',
-    
+
     '/services/jobseekers/career-prep-skill-assessment',
     '/services/jobseekers/dashboard',
     '/services/jobseekers/',
@@ -35,6 +35,7 @@ export default auth((req) => {
     '/api/joblistings/apply',
     '/api/joblistings/bookmark/add/',
     '/api/joblistings/bookmark/remove/',
+    '/api/assessment/submit',
 
     '/api/jobseekers/',
     '/api/edu-providers/',
@@ -148,7 +149,7 @@ export default auth((req) => {
   }
 
   // ROLE BASED ROUTING ------------ Check most permissive roles first, least permissive roles last
-  
+
   else if (userRoles.includes(Role.ADMIN)) { // Route checking for ADMIN routes
     console.log('Admin role recognized! *Do not* use ADMIN to test other roles!!')
     return NextResponse.next();
@@ -166,7 +167,7 @@ export default auth((req) => {
     if (pathIsJobseekerRoute()) {
       if ( pathname != '/services/jobseekers/dashboard' && pathname != '/services/jobseekers/career-prep-skill-assessment' && // allow dashboard
            pathname.startsWith('/services/jobseekers/') ) {
-        
+
         const requestedId = pathname.replace('/services/jobseekers/', '');
         if (requestedId != jobseekerId) { // Jobseekers can only access their own profile
           console.log('Access denied: Jobseeker can only access their own profile');
