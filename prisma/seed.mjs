@@ -1,4 +1,5 @@
 import skillsData_v2 from '../data/skills_v2.mjs';
+import partnerProvidersAndPrograms from '../data/partnerProvidersAndPrograms.mjs'
 import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
@@ -1398,16 +1399,66 @@ async function seedEduProviders() {
     }
 }
 
-async function seedPrograms() {
+async function seedGeneralPrograms() {
     try {
-        console.log('Seeding Provider Programs...')
+        console.log('Seeding General Programs...')
         // Insert high schools
         const programsResult = await prisma.programs.createMany({
             data: programs.map(program => ({
                 title: program,
             })),
         });
-        console.log(`Seeded ${programsResult.count} provider programs.\n`);
+        console.log(`Seeded ${programsResult.count} general programs.\n`);
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+async function seedPartnerPrograms() {
+    try {
+        console.log('Seeding Provider Programs...');
+
+        // Extract unique program names from partnerProvidersAndPrograms
+        const programsData = partnerProvidersAndPrograms.flatMap(provider =>
+            provider.programs.map(program => ({
+                title: program.name,
+                // providerName: provider.eduProvider, // TODO: Add providerName to database schema if needed
+                // description: program.programDescription || '', // TODO: Add description to database schema if needed
+                // url: program.url || '', // TODO: Add URL to database schema if needed
+                // targetedJobRoles: program.targetedJobRoles.join(', '), // TODO: Add targetedJobRoles to database schema if needed
+                // length: program.length || '', // TODO: Add length to database schema if needed
+                // targetPopulation: program.targetPopulation || '', // TODO: Add targetPopulation to database schema if needed
+                // areaLocation: program.area_location || '', // TODO: Add areaLocation to database schema if needed
+                // pathways: program.pathways.join(', ') // TODO: Add pathways to database schema if needed
+            }))
+        );
+        console.log('programsData', JSON.stringify(programsData, null, 2));
+        // Filter out duplicate program names
+        const uniquePrograms = Array.from(
+            new Map(programsData.map(program => [program.title, program])).values()
+        );
+
+        // Check for existing programs in the database
+        const existingPrograms = await prisma.programs.findMany({
+            select: { title: true }
+        });
+        const existingProgramNames = new Set(existingPrograms.map(p => p.title));
+
+        // Add only new programs to the database
+        const newPrograms = uniquePrograms.filter(
+            program => !existingProgramNames.has(program.title)
+        );
+
+        if (newPrograms.length > 0) {
+            const programsResult = await prisma.programs.createMany({
+                data: newPrograms
+            });
+            console.log(`Seeded ${programsResult.count} new programs.`);
+        } else {
+            console.log('No new programs to seed.');
+        }
     } catch (error) {
         console.error('Error inserting data:', error);
     } finally {
@@ -2152,7 +2203,8 @@ async function seedFoundationalTables() {
     await seedSkills(); // TODO: associate skills with a pathway
     await seedPostalGeoData("../data/postal_geo_data.json"); // use in production
     await seedSocialMediaPlatforms();
-    await seedPrograms();
+    await seedGeneralPrograms();
+    await seedPartnerPrograms();
     await seedEduProviders(); // TODO: get updated list of training provider partners to use in production
     await seedCompanies(); // TODO: get a list of pre-approved companies to use in production
 }
@@ -2199,6 +2251,13 @@ async function seedMockEmployerData() {
 async function main() {
     console.log(`Start seeding ...\n`);
     await seedFoundationalTables();
+    if (process.env.NODE_ENV === 'production') {
+        console.log('Finished seeding foundational tables.')
+        console.log('Skipping seeding mock data in production...');
+        return;
+    }
+
+
     await SeedMockEdProvidersAddresses();
     await seedMockUsers(250);
     await seedMockJobseekerData();
