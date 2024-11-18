@@ -31,7 +31,7 @@ export async function GET(
               select: {
                 is_veteran: true,
                 disability: true,
-                // disability_status: true,
+                disability_status: true,
                 gender: true,
                 race: true,
                 ethnicity: true,
@@ -81,7 +81,7 @@ export async function GET(
           jobseekerDetails.jobseekers_private_data[0];
         result.isVeteran = privateDetails.is_veteran;
         result.disability = privateDetails.disability;
-        result.disabilityStatus = ''; // privateDetails.disability_status;
+        result.disabilityStatus = privateDetails.disability_status;
         result.gender = privateDetails.gender;
         result.race = privateDetails.race;
         result.ethnicity = privateDetails.ethnicity;

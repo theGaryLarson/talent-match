@@ -72,7 +72,7 @@ export async function POST(request: Request) {
                   },
                   data: {
                     is_veteran: isVeteran,
-                    // disability_status: disabilityStatus,
+                    disability_status: disabilityStatus,
                     disability: disability,
                     gender: gender,
                     race: race,
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
             jobseekers_private_data: {
               select: {
                 is_veteran: true,
-                // disability_status: true,
+                disability_status: true,
                 disability: true,
                 gender: true,
                 race: true,
@@ -115,7 +115,7 @@ export async function POST(request: Request) {
       ethnicity: privateDetails?.ethnicity || null,
       hasReadTerms: has_agreed_terms || false,
       isVeteran: privateDetails?.is_veteran || null,
-      disabilityStatus: null, // privateDetails?.disability_status || null,
+      disabilityStatus: privateDetails?.disability_status || null,
       disability: privateDetails?.disability || null,
     };
 

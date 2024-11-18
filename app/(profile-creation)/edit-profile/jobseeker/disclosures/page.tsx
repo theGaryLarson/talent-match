@@ -319,7 +319,13 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               include, but are not limited to:
             </p>
 
-            <ul className="list-inside list-disc">
+            <ul
+              className="list-inside list-disc"
+              style={{
+                paddingBottom: '1em',
+                paddingLeft: '1em',
+              }}
+            >
               <li>
                 Alcohol or other substance use disorder (not currently using
                 drugs illegally)
@@ -395,18 +401,33 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               >
                 <FormControlLabel
                   value="yes"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="Yes, I have a disability, or have had one in the past"
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
                 <FormControlLabel
                   value="none"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="No, I do not have a disability and have not had one in the past"
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
                 <FormControlLabel
                   value="undisclosed"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="I do not want to answer"
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
               </RadioGroup>
             </FormControl>
