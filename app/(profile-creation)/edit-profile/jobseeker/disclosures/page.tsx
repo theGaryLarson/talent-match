@@ -388,7 +388,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   setDisabilityStatus(event.target.value);
                   if (event.target.value !== 'yes') {
                     dispatch(setPageDirty('disclosures'));
-                    setDisabilityType(event.target.value);
+                    setDisabilityType('');
                   }
                 }}
                 name="profile-creation-disclosures-require-disability"
@@ -447,7 +447,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 checked={termsAccepted}
                 onChange={(event) => setTermsAccepted(event.target.checked)}
               />{' '}
-              Yes, I have read and consent to the terms and conditions*
+              Yes, I have read and consent to the terms and conditions *
             </Label>
           </fieldset>
           <div className="profile-form-progress-btn-group">
