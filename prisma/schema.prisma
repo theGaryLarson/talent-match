@@ -292,6 +292,7 @@ model OtherPriorityPopulations {
 model CareerPrepAssessment {
   jobseekerId             String                @id(clustered: false, map: "career_prep_app_PRIMARY") @db.UniqueIdentifier
   assessmentDate          DateTime              @default(now()) @db.DateTime
+  interestPathway         String?               @db.VarChar(45)
   pronouns                String                @db.VarChar(15)
   expectedEduCompletion   String                @db.VarChar(45) // range of time do not change to date...
   experienceWithApplying  Boolean               @db.Bit
