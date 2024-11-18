@@ -915,6 +915,7 @@ const upsertCareerPrepAssessment = async (
       experienceWithInterview:
         data.workExperienceAndMaterials.experienceWithInterviewing,
       prevWorkExperience: data.workExperienceAndMaterials.hasWorkExperience,
+      interestPathway: data.technicalSelfAssessment.interestPathway,
     },
     create: {
       pronouns: data.basicInformation.pronouns,
@@ -924,6 +925,7 @@ const upsertCareerPrepAssessment = async (
       experienceWithInterview:
         data.workExperienceAndMaterials.experienceWithInterviewing,
       prevWorkExperience: data.workExperienceAndMaterials.hasWorkExperience,
+      interestPathway: data.technicalSelfAssessment.interestPathway,
       Jobseeker: {
         connect: {
           jobseeker_id: jobseekerId,
@@ -1051,63 +1053,9 @@ const upsertPathwayRatings = async (
         where: { jobseekerId },
         update: {
           ...techAssessment.skillRatings?.dataAnalytics,
-          // dataAnalysis:
-          //   techAssessment.skillRatings?.dataAnalytics?.dataAnalysis,
-          // sqlProgramming:
-          //   techAssessment.skillRatings?.dataAnalytics?.sqlProgramming,
-          // pythonPackages:
-          //   techAssessment.skillRatings?.dataAnalytics?.pythonPackages,
-          // dataScience: techAssessment.skillRatings?.dataAnalytics?.dataScience,
-          // dataEngineering:
-          //   techAssessment.skillRatings?.dataAnalytics?.dataEngineering,
-          // tableau: techAssessment.skillRatings?.dataAnalytics?.tableau,
-          // machineLearning:
-          //   techAssessment.skillRatings?.dataAnalytics?.machineLearning,
-          // rProgramming:
-          //   techAssessment.skillRatings?.dataAnalytics?.rProgramming,
-          // projectManagement:
-          //   techAssessment.skillRatings?.dataAnalytics?.projectManagement,
-          // dataVisualization:
-          //   techAssessment.skillRatings?.dataAnalytics?.dataVisualization,
-          // dataStructures:
-          //   techAssessment.skillRatings?.dataAnalytics?.dataStructures,
-          // bigOComplexity:
-          //   techAssessment.skillRatings?.dataAnalytics?.bigOComplexity,
-          // sortingAlgorithms:
-          //   techAssessment.skillRatings?.dataAnalytics?.sortingAlgorithms,
-          // databases: techAssessment.skillRatings?.dataAnalytics?.databases,
-          // computationalThinking:
-          //   techAssessment.skillRatings?.dataAnalytics?.computationalThinking,
         },
         create: {
           ...techAssessment.skillRatings?.dataAnalytics!,
-          // dataAnalysis:
-          //   techAssessment.skillRatings?.dataAnalytics?.dataAnalysis!,
-          // sqlProgramming:
-          //   techAssessment.skillRatings?.dataAnalytics?.sqlProgramming!,
-          // pythonPackages:
-          //   techAssessment.skillRatings?.dataAnalytics?.pythonPackages!,
-          // dataScience: techAssessment.skillRatings?.dataAnalytics?.dataScience!,
-          // dataEngineering:
-          //   techAssessment.skillRatings?.dataAnalytics?.dataEngineering!,
-          // tableau: techAssessment.skillRatings?.dataAnalytics?.tableau!,
-          // machineLearning:
-          //   techAssessment.skillRatings?.dataAnalytics?.machineLearning!,
-          // rProgramming:
-          //   techAssessment.skillRatings?.dataAnalytics?.rProgramming!,
-          // projectManagement:
-          //   techAssessment.skillRatings?.dataAnalytics?.projectManagement!,
-          // dataVisualization:
-          //   techAssessment.skillRatings?.dataAnalytics?.dataVisualization!,
-          // dataStructures:
-          //   techAssessment.skillRatings?.dataAnalytics?.dataStructures!,
-          // bigOComplexity:
-          //   techAssessment.skillRatings?.dataAnalytics?.bigOComplexity!,
-          // sortingAlgorithms:
-          //   techAssessment.skillRatings?.dataAnalytics?.sortingAlgorithms!,
-          // databases: techAssessment.skillRatings?.dataAnalytics?.databases!,
-          // computationalThinking:
-          //   techAssessment.skillRatings?.dataAnalytics?.computationalThinking!,
           PrepAssessment: {
             connect: {
               jobseekerId,
@@ -1122,51 +1070,9 @@ const upsertPathwayRatings = async (
         where: { jobseekerId },
         update: {
           ...techAssessment.skillRatings?.cybersecurity,
-          // networking: techAssessment.skillRatings?.cybersecurity?.networking,
-          // projectManagement:
-          //   techAssessment.skillRatings?.cybersecurity?.projectManagement,
-          // securityTools:
-          //   techAssessment.skillRatings?.cybersecurity?.securityTools,
-          // operatingSystems:
-          //   techAssessment.skillRatings?.cybersecurity?.operatingSystems,
-          // programming: techAssessment.skillRatings?.cybersecurity?.programming,
-          // cryptography:
-          //   techAssessment.skillRatings?.cybersecurity?.cryptography,
-          // cloudSecurity:
-          //   techAssessment.skillRatings?.cybersecurity?.cloudSecurity,
-          // incidentResponse:
-          //   techAssessment.skillRatings?.cybersecurity?.incidentResponse,
-          // dataSecurity:
-          //   techAssessment.skillRatings?.cybersecurity?.dataSecurity,
-          // technicalSupport:
-          //   techAssessment.skillRatings?.cybersecurity?.technicalSupport,
-          // computationalThinking:
-          //   techAssessment.skillRatings?.cybersecurity?.computationalThinking,
-          // apiUsage: techAssessment.skillRatings?.cybersecurity?.apiUsage,
         },
         create: {
           ...techAssessment.skillRatings?.cybersecurity!,
-          // networking: techAssessment.skillRatings?.cybersecurity?.networking!,
-          // projectManagement:
-          //   techAssessment.skillRatings?.cybersecurity?.projectManagement!,
-          // securityTools:
-          //   techAssessment.skillRatings?.cybersecurity?.securityTools!,
-          // operatingSystems:
-          //   techAssessment.skillRatings?.cybersecurity?.operatingSystems!,
-          // programming: techAssessment.skillRatings?.cybersecurity?.programming!,
-          // cryptography:
-          //   techAssessment.skillRatings?.cybersecurity?.cryptography!,
-          // cloudSecurity:
-          //   techAssessment.skillRatings?.cybersecurity?.cloudSecurity!,
-          // incidentResponse:
-          //   techAssessment.skillRatings?.cybersecurity?.incidentResponse!,
-          // dataSecurity:
-          //   techAssessment.skillRatings?.cybersecurity?.dataSecurity!,
-          // technicalSupport:
-          //   techAssessment.skillRatings?.cybersecurity?.technicalSupport!,
-          // computationalThinking:
-          //   techAssessment.skillRatings?.cybersecurity?.computationalThinking!,
-          // apiUsage: techAssessment.skillRatings?.cybersecurity?.apiUsage!,
           PrepAssessment: {
             connect: {
               jobseekerId,
@@ -1181,69 +1087,10 @@ const upsertPathwayRatings = async (
         where: { jobseekerId },
         update: {
           ...techAssessment.skillRatings.itAndCloudComputing,
-          // techSupport:
-          //   techAssessment.skillRatings.itAndCloudComputing?.techSupport,
-          // activeDirectory:
-          //   techAssessment.skillRatings.itAndCloudComputing?.activeDirectory,
-          // projectManagement:
-          //   techAssessment.skillRatings.itAndCloudComputing?.projectManagement,
-          // helpDeskSupport:
-          //   techAssessment.skillRatings.itAndCloudComputing?.helpDeskSupport,
-          // windowsServers:
-          //   techAssessment.skillRatings.itAndCloudComputing?.windowsServers,
-          // sqlProgramming:
-          //   techAssessment.skillRatings.itAndCloudComputing?.sqlProgramming,
-          // computerHardware:
-          //   techAssessment.skillRatings.itAndCloudComputing?.computerHardware,
-          // operatingSystems:
-          //   techAssessment.skillRatings.itAndCloudComputing?.operatingSystems,
-          // systemAdmin:
-          //   techAssessment.skillRatings.itAndCloudComputing?.systemAdmin,
-          // networkAdmin:
-          //   techAssessment.skillRatings.itAndCloudComputing?.networkAdmin,
-          // virtualization:
-          //   techAssessment.skillRatings.itAndCloudComputing?.virtualization,
-          // coreCloudServices:
-          //   techAssessment.skillRatings.itAndCloudComputing?.coreCloudServices,
-          // apiUsage: techAssessment.skillRatings.itAndCloudComputing?.apiUsage,
-          // httpResponseCodes:
-          //   techAssessment.skillRatings.itAndCloudComputing?.httpResponseCodes,
-          // computationalThinking:
-          //   techAssessment.skillRatings.itAndCloudComputing
-          //     ?.computationalThinking,
         },
         create: {
           ...techAssessment.skillRatings.itAndCloudComputing!,
-          // techSupport:
-          //   techAssessment.skillRatings.itAndCloudComputing?.techSupport!,
-          // activeDirectory:
-          //   techAssessment.skillRatings.itAndCloudComputing?.activeDirectory!,
-          // projectManagement:
-          //   techAssessment.skillRatings.itAndCloudComputing?.projectManagement!,
-          // helpDeskSupport:
-          //   techAssessment.skillRatings.itAndCloudComputing?.helpDeskSupport!,
-          // windowsServers:
-          //   techAssessment.skillRatings.itAndCloudComputing?.windowsServers!,
-          // sqlProgramming:
-          //   techAssessment.skillRatings.itAndCloudComputing?.sqlProgramming!,
-          // computerHardware:
-          //   techAssessment.skillRatings.itAndCloudComputing?.computerHardware!,
-          // operatingSystems:
-          //   techAssessment.skillRatings.itAndCloudComputing?.operatingSystems!,
-          // systemAdmin:
-          //   techAssessment.skillRatings.itAndCloudComputing?.systemAdmin!,
-          // networkAdmin:
-          //   techAssessment.skillRatings.itAndCloudComputing?.networkAdmin!,
-          // virtualization:
-          //   techAssessment.skillRatings.itAndCloudComputing?.virtualization!,
-          // coreCloudServices:
-          //   techAssessment.skillRatings.itAndCloudComputing?.coreCloudServices!,
-          // apiUsage: techAssessment.skillRatings.itAndCloudComputing?.apiUsage!,
-          // httpResponseCodes:
-          //   techAssessment.skillRatings.itAndCloudComputing?.httpResponseCodes!,
-          // computationalThinking:
-          //   techAssessment.skillRatings.itAndCloudComputing
-          //     ?.computationalThinking!,
+
           PrepAssessment: {
             connect: {
               jobseekerId,
@@ -1257,88 +1104,88 @@ const upsertPathwayRatings = async (
       await prisma.softwareDevRating.upsert({
         where: { jobseekerId },
         update: {
-          // ...techAssessment.skillRatings?.softwareDevelopment,
-          softwareEngineering:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.softwareEngineering,
-          softwareDevelopmentLifecycle:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.softwareDevelopmentLifecycle,
-          programmingLanguages:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.programmingLanguages,
-          dataStructuresAndAlgorithms:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.dataStructuresAndAlgorithms,
-          softwareArchitecture:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.softwareArchitecture,
-          versionControl:
-            techAssessment.skillRatings?.softwareDevelopment?.versionControl,
-          databaseManagement:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.databaseManagement,
-          devOps: techAssessment.skillRatings?.softwareDevelopment?.devOps,
-          cloudComputing:
-            techAssessment.skillRatings?.softwareDevelopment?.cloudComputing,
-          conceptualSystemsThinking:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.conceptualSystemsThinking,
-          problemSolving:
-            techAssessment.skillRatings?.softwareDevelopment?.problemSolving,
-          fundamentalCodingConcepts:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.fundamentalCodingConcepts,
-          debugging:
-            techAssessment.skillRatings?.softwareDevelopment?.debugging,
-          computationalThinking:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.computationalThinking,
-          softwareOptimization:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.softwareOptimization,
+          ...techAssessment.skillRatings?.softwareDevelopment,
+          // softwareEngineering:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.softwareEngineering,
+          // softwareDevelopmentLifecycle:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.softwareDevelopmentLifecycle,
+          // programmingLanguages:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.programmingLanguages,
+          // dataStructuresAndAlgorithms:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.dataStructuresAndAlgorithms,
+          // softwareArchitecture:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.softwareArchitecture,
+          // versionControl:
+          //   techAssessment.skillRatings?.softwareDevelopment?.versionControl,
+          // databaseManagement:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.databaseManagement,
+          // devOps: techAssessment.skillRatings?.softwareDevelopment?.devOps,
+          // cloudComputing:
+          //   techAssessment.skillRatings?.softwareDevelopment?.cloudComputing,
+          // conceptualSystemsThinking:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.conceptualSystemsThinking,
+          // problemSolving:
+          //   techAssessment.skillRatings?.softwareDevelopment?.problemSolving,
+          // fundamentalCodingConcepts:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.fundamentalCodingConcepts,
+          // debugging:
+          //   techAssessment.skillRatings?.softwareDevelopment?.debugging,
+          // computationalThinking:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.computationalThinking,
+          // softwareOptimization:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.softwareOptimization,
         },
         create: {
-          // ...techAssessment.skillRatings?.softwareDevelopment!,
-          softwareEngineering:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.softwareEngineering!,
-          softwareDevelopmentLifecycle:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.softwareDevelopmentLifecycle!,
-          programmingLanguages:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.programmingLanguages!,
-          dataStructuresAndAlgorithms:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.dataStructuresAndAlgorithms!,
-          softwareArchitecture:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.softwareArchitecture!,
-          versionControl:
-            techAssessment.skillRatings?.softwareDevelopment?.versionControl!,
-          databaseManagement:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.databaseManagement!,
-          devOps: techAssessment.skillRatings?.softwareDevelopment?.devOps!,
-          cloudComputing:
-            techAssessment.skillRatings?.softwareDevelopment?.cloudComputing!,
-          conceptualSystemsThinking:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.conceptualSystemsThinking!,
-          problemSolving:
-            techAssessment.skillRatings?.softwareDevelopment?.problemSolving!,
-          fundamentalCodingConcepts:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.fundamentalCodingConcepts!,
-          debugging:
-            techAssessment.skillRatings?.softwareDevelopment?.debugging!,
-          computationalThinking:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.computationalThinking!,
-          softwareOptimization:
-            techAssessment.skillRatings?.softwareDevelopment
-              ?.softwareOptimization!,
+          ...techAssessment.skillRatings?.softwareDevelopment!,
+          // softwareEngineering:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.softwareEngineering!,
+          // softwareDevelopmentLifecycle:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.softwareDevelopmentLifecycle!,
+          // programmingLanguages:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.programmingLanguages!,
+          // dataStructuresAndAlgorithms:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.dataStructuresAndAlgorithms!,
+          // softwareArchitecture:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.softwareArchitecture!,
+          // versionControl:
+          //   techAssessment.skillRatings?.softwareDevelopment?.versionControl!,
+          // databaseManagement:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.databaseManagement!,
+          // devOps: techAssessment.skillRatings?.softwareDevelopment?.devOps!,
+          // cloudComputing:
+          //   techAssessment.skillRatings?.softwareDevelopment?.cloudComputing!,
+          // conceptualSystemsThinking:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.conceptualSystemsThinking!,
+          // problemSolving:
+          //   techAssessment.skillRatings?.softwareDevelopment?.problemSolving!,
+          // fundamentalCodingConcepts:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.fundamentalCodingConcepts!,
+          // debugging:
+          //   techAssessment.skillRatings?.softwareDevelopment?.debugging!,
+          // computationalThinking:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.computationalThinking!,
+          // softwareOptimization:
+          //   techAssessment.skillRatings?.softwareDevelopment
+          //     ?.softwareOptimization!,
           PrepAssessment: {
             connect: {
               jobseekerId,
