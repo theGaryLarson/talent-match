@@ -14,10 +14,10 @@ function SkipButton() {
   if (currentPath.includes('/edit-profile/jobseeker')) {
     pageSequence = [
       'introduction',
+      'preferences',
+      'showcase',
       'education',
       'work-experience',
-      'showcase',
-      'preferences',
       'disclosures',
     ];
     userPrefix = 'jobseeker';

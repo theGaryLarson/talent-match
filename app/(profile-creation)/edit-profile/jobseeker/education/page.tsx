@@ -416,8 +416,8 @@ export default function CreateJobseekerProfileEducationPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(2 / 6) * 100} size="sm" />
-        <p>Step 2/6</p>
+        <ProgressBarFlat progress={(4 / 6) * 100} size="sm" />
+        <p>Step 4/6</p>
         <h1>Education</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
@@ -488,12 +488,12 @@ export default function CreateJobseekerProfileEducationPage() {
           <div className="profile-form-progress-btn-group flex">
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/introduction');
+                router.push('/edit-profile/jobseeker/showcase');
               }}
             >
-              Previous{' '}
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue
