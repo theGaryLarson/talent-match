@@ -697,10 +697,10 @@ export default function CreateEmployerPersonalPage() {
             </div>
           </fieldset>
 
-          <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+          <div className="profile-form-progress-btn-single-end">
+            {/* <Button pill className="custom-outline-btn">
               Cancel
-            </Button>
+            </Button> */}
             <Button pill type="submit">
               Save and continue
             </Button>

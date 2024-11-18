@@ -293,8 +293,12 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           </Label>
 
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
-              Cancel
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => router.push('/edit-profile/employer/video')}
+            >
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue

@@ -155,13 +155,16 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     dispatch(setPageDirty('work-experience'));
   }
 
-  const handleUpdate = useCallback((key: string, value: any) => {
-    setData((prevData) => ({
-      ...prevData,
-      [key]: value,
-    }));
-    dispatch(setPageDirty('work-experience'));
-  }, [dispatch]);
+  const handleUpdate = useCallback(
+    (key: string, value: any) => {
+      setData((prevData) => ({
+        ...prevData,
+        [key]: value,
+      }));
+      dispatch(setPageDirty('work-experience'));
+    },
+    [dispatch],
+  );
 
   const handleInputUpdate = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -334,7 +337,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       }
 
       const result = await response.json();
-      router.push('/edit-profile/jobseeker/showcase');
+      router.push('/edit-profile/jobseeker/disclosures');
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
@@ -344,8 +347,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(3 / 6) * 100} size="sm" />
-        <p>Step 3/6</p>
+        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
+        <p>Step 5/6</p>
         <h1>Work experience</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
