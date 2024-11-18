@@ -244,10 +244,12 @@ export default function Page() {
 
   const handleNext = (): void => {
     setActiveStep((prevStep) => prevStep + 1);
+    window.scrollTo({top: 0, behavior: "instant"});
   };
 
   const handleBack = (): void => {
     setActiveStep((prevStep) => prevStep - 1);
+    window.scrollTo({top: 0, behavior: "instant"});
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<TimeUntilCompletion>) => {
