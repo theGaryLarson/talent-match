@@ -15,6 +15,10 @@ export default auth((req) => {
     '/api/users/',
   ];
 
+  const caseManagerRoutes = [
+      '/api/admin'
+  ]
+
   const jobseekerRoutes = [ // Routes for logged in users with JOBSEEKER role
     '/edit-profile/jobseeker/congratulations',
     '/edit-profile/jobseeker/disclosures',
@@ -23,7 +27,8 @@ export default auth((req) => {
     '/edit-profile/jobseeker/preferences',
     '/edit-profile/jobseeker/showcase',
     '/edit-profile/jobseeker/work-experience',
-
+    
+    '/services/jobseekers/career-prep-skill-assessment',
     '/services/jobseekers/dashboard',
     '/services/jobseekers/',
     '/services/joblistings',
@@ -84,6 +89,10 @@ export default auth((req) => {
     '/api/postal-geo-data/zip/search/',
   ];
 
+  function userIsPrepCaseManager() {
+    return userRoles.includes(Role.CASE_MANAGER)
+  }
+
   function userIsGuest() {
     return userRoles.includes(Role.GUEST) || userRoles.includes(Role.ADMIN);
   }
@@ -102,6 +111,10 @@ export default auth((req) => {
   }
   function pathIsEmployerRoute() {
     return employerRoutes.some((route) => pathname.startsWith(route));
+  }
+
+  function pathIsCaseManagerRoute() {
+    return caseManagerRoutes.some((route) => pathname.startsWith(route))
   }
 
   const homeUrl = new URL('/', req.nextUrl.origin);
@@ -151,7 +164,7 @@ export default auth((req) => {
 
   else if (userIsJobseeker()) { // Route checking for JOBSEEKER routes
     if (pathIsJobseekerRoute()) {
-      if ( pathname != '/services/jobseekers/dashboard' && // allow dashboard
+      if ( pathname != '/services/jobseekers/dashboard' && pathname != '/services/jobseekers/career-prep-skill-assessment' && // allow dashboard
            pathname.startsWith('/services/jobseekers/') ) {
         
         const requestedId = pathname.replace('/services/jobseekers/', '');
@@ -165,8 +178,13 @@ export default auth((req) => {
       console.log('Access denied: Jobseeker role does not have permission to access - ' + pathname);
       return NextResponse.redirect(homeUrl);
     }
+  } else if (userIsPrepCaseManager()) {
+    if (pathIsCaseManagerRoute()) return NextResponse.next();
+    else {
+      console.log('Access denied: User does not have permission to access - ' + pathname);
+      return NextResponse.redirect(homeUrl);
+    }
   }
-
   else if (userIsGuest()) { // Route checking for GUEST routes
     if (pathIsGuestRoute()) return NextResponse.next();
     else {

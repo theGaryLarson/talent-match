@@ -28,4 +28,5 @@ export enum Role {
   JOBSEEKER = 'JOBSEEKER',
   GUEST = 'GUEST', // logged in with oauth but no role selected yet
   VOLUNTEER = 'VOLUNTEER',
+  CASE_MANAGER= 'CASE_MANAGER', // Career Prep role needed. Difference between Admin and Career Prep
 }

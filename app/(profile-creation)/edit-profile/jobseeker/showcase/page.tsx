@@ -24,6 +24,7 @@ import {
 import { devLog } from '@/app/lib/utils';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
+import { BlobPrefix } from '@/app/lib/services/azureBlobService';
 
 export default function CreateJobseekerProfileShowcasePage() {
   const router = useRouter();
@@ -108,7 +109,7 @@ export default function CreateJobseekerProfileShowcasePage() {
     showcaseData.portfolioPassword = portfolioPassword;
     showcaseData.video_url = videoUrl;
     showcaseData.introduction = introduction;
-    showcaseData.resume_url = resumeUrl;
+    // showcaseData.resume_url = resumeUrl;
 
     try {
       const response = await fetch('/api/jobseekers/account/showcase/upsert', {
@@ -283,10 +284,11 @@ export default function CreateJobseekerProfileShowcasePage() {
             Resume *
             <InputFileDropzone
               id="profile-creation-intro-resume"
-              fileTypeText="PDF, DOC, DOCX, TXT or RTF"
-              accept=".pdf,.doc,.docx,.txt,.rtf"
+              fileTypeText="PDF"
+              blobPrefix={'resume' as BlobPrefix}
+              accept=".pdf"
               maxSizeMB={5}
-              userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
+              userId={session?.user?.id!}
               onDocUpload={handleResumeUpload}
             />
           </div>

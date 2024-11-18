@@ -2,19 +2,23 @@
 
 import { ChangeEvent , useState } from 'react';
 import { Label } from "flowbite-react";
+import {BlobPrefix} from "@/app/lib/services/azureBlobService";
 
 interface Props {
   id: string,
   fileTypeText: string,
+  blobPrefix: BlobPrefix,
   accept: string,
   maxSizeMB: number,
   userId: string,
   onDocUpload: (url: string)  => void;
+
 }
 
 export default function InputFileDropzone({
   id,
   fileTypeText,
+  blobPrefix,
   accept,
   maxSizeMB,
     userId,
@@ -46,7 +50,7 @@ export default function InputFileDropzone({
         };
 
         // Make a POST request to the API route
-        const response = await fetch('/api/jobseekers/resume/upload', {
+        const response = await fetch(`/api/jobseekers/${blobPrefix}/upload`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -23,6 +23,7 @@ const roles = [
     'EDUCATOR',
     'JOBSEEKER',
     'EMPLOYER',
+    'CASE_MANAGER',
 ]
 const edPrograms = [
     'None',
@@ -260,7 +261,8 @@ const colleges = [
     "University of Washington",
     "University of Washington, Bothell",
     "Vancouver Island University",
-    "Seattle University"
+    "Seattle University",
+    "Other"
 ];
 
 const highestDegreeType = [
@@ -1173,6 +1175,34 @@ const companySizeOptions = [
     '1001-5000'
 ];
 
+const CareerPrepTrack = [
+    'ACCELERATED',
+    'STANDARD',
+    'EXTENDED',
+];
+
+const CareerPrepStatus = [
+    'Applied', // submitting assessment will be Applied
+    'Creating Plan',
+    'Meeting Scheduled',
+    'Met Career Navigator',
+    'Sent Enrollment Form',
+    'Enrolled',
+    'Completed',
+    'Rejected',
+    'Withdrawn', // additional option from what was given.
+];
+
+
+export const TimeUntilCompletion = [
+    "N/A",
+    "0-3 months",
+    "3-6 months",
+    "6-9 months",
+    "9-12 months",
+    "12+ months"
+];
+
 /////////////////////////////////////////////////
 ////////////   helper functions  ////////////////
 /////////////////////////////////////////////////
@@ -1306,18 +1336,18 @@ async function seedMockUsers(numUsers = 4) {
 
 async function seedPathways() {
     const pathways = [
-        "Cloud Support Associate",
-        "Software Developer",
-        "Data Analyst",
-        "Cybersecurity Analyst",
-        // "Cybersecurity",
-        // "Data Analytics",
+        // "Cloud Support Associate",
+        // "Software Developer",
+        // "Data Analyst",
+        // "Cybersecurity Analyst",
+        "Cybersecurity",
+        "Data Analytics",
         // "Data Center Operations",
-        // "IT & Cloud Computing",
+        "IT & Cloud Computing",
         // "Digital Marketing",
         // "UI/UX",
         // "Project Management",
-        // "Software Development",
+        "Software Development",
         // "Other",
     ]
     console.log('Seeding Pathways...')
@@ -1572,6 +1602,7 @@ async function seedJobSeekers() {
         } else {
             currentJobTitle = faker.person.jobTitle();
         }
+        const assignedPool = faker.helpers.arrayElement(['Recommended', 'Job Ready', 'Not Job Ready']);
         const jobSeekerData = {
             jobseeker_id: uuidv4(),
             user_id: jobSeeker.id,
@@ -1586,11 +1617,20 @@ async function seedJobSeekers() {
             }) : 0,
             intro_headline: generateSalesPitch(jobSeeker.first_name, jobSeeker.last_name),
             current_job_title: currentJobTitle,
-            resume_url: null,
             years_work_exp: faker.number.int({min: 0, max: 3}), // years of experience
             portfolio_url: faker.internet.url(),
             video_url: faker.internet.url(),
-            assignedPool: faker.helpers.arrayElement(['pool1', 'pool2', 'pool3']),
+            assignedPool: assignedPool,
+            careerPrepTrackRecommendation:
+                assignedPool === 'Recommended'
+                    ? null // Assign null for 'Recommended' jobseekers
+                    : assignedPool === 'Job Ready'
+                        ? faker.datatype.boolean() // 50/50 split
+                            ? CareerPrepTrack[0]
+                            : CareerPrepTrack[1]
+                        : assignedPool === 'Not Job Ready' && faker.datatype.boolean() // 50/50 split
+                            ? CareerPrepTrack[2]
+                            : null,
             employment_type_sought: faker.helpers.arrayElement(['Full-time', 'Part-time', 'Internship', 'Contract', 'Any']),
         };
 
@@ -2237,6 +2277,125 @@ async function seedMockEmployerData() {
 
 /////////////////////////////////////////////////
 
+/////////////////////////////////////////////////
+//////////////   career prep  ///////////////////
+/////////////////////////////////////////////////
+
+async function seedCareerPrepStudents() {
+    console.log('Seeding Career Prep Students');
+
+    const potentialStudents = await prisma.jobseekers.findMany({
+        where: {
+            careerPrepTrackRecommendation: {
+                not: null,
+            },
+        },
+    });
+
+    for (const ps of potentialStudents) {
+        // Only create an assessment for approximately 75% of the students
+        if (faker.datatype.boolean({probability: 0.75})) {
+            await prisma.careerPrepAssessment.create({
+                data: {
+                    assessmentDate: new Date(),
+                    pronouns: faker.helpers.arrayElement(['he/him', 'they/them', 'she/her', 'she/her/they']),
+                    experienceWithApplying: faker.datatype.boolean({probability: 0.5}),
+                    experienceWithInterview: faker.datatype.boolean({probability: 0.5}),
+                    prevWorkExperience: faker.datatype.boolean({probability: 0.75}),
+                    expectedEduCompletion: faker.helpers.arrayElement(TimeUntilCompletion),
+                    Jobseeker: {
+                        connect: {
+                            jobseeker_id: ps.jobseeker_id,
+                        },
+                    },
+                },
+            });
+        }
+    }
+
+    console.log(`Finished seeding approximately 75% of ${potentialStudents.length} Career Prep students.\n`);
+}
+
+async function seedCaseMgmt() {
+    console.log('Seeding Case Management Records');
+
+    const careerPrepStudents = await prisma.careerPrepAssessment.findMany({
+        include: {
+            Jobseeker: true
+        }
+    });
+    const caseManagers = await prisma.user.findMany({
+        where: {
+            role: 'CASE_MANAGER',
+        },
+        take: 3,
+    })
+    for (const s of careerPrepStudents) {
+        if (faker.datatype.boolean({probability: 0.75})) {
+            await prisma.caseMgmt.create({
+                data: {
+                    prepEnrollmentStatus: faker.helpers.arrayElement(CareerPrepStatus),
+                    prepStartDate: faker.date.recent({days: 5, refDate: Date.now().toString()}),
+                    prepExpectedEndDate: faker.date.soon({
+                        days: 20,
+                        refDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
+                    }),
+                    prepActualEndDate: faker.date.soon({
+                        days: 5,
+                        refDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
+                    }),
+                    PrepAssessment: {
+                        connect: {
+                            jobseekerId: s.jobseekerId,
+                        },
+                    },
+                    CaseManager: {
+                        connect: {
+                            id: faker.helpers.arrayElement(caseManagers).id,
+                        },
+                    },
+                },
+            });
+        }
+    }
+    console.log(`Finished seeding approximately 75% of ${careerPrepStudents.length} Career Prep students for Case Management.\n`);
+
+}
+
+async function seedCaseMgmtNotes() {
+    console.log('Seeding Case Management Notes');
+
+    const managedPrepStudents = await prisma.caseMgmt.findMany();
+
+    for (const mps of managedPrepStudents) {
+        const notes = Array.from({ length: 3 }).map(() => ({
+            date: faker.datatype.boolean({ probability: 0.9 })
+                ? faker.date.soon({ days: 14, refDate: Date.now() })
+                : null,
+            noteType: faker.helpers.arrayElement(['General', 'Meeting', 'Follow-up']),
+            noteContent: faker.datatype.boolean()
+                ? faker.lorem.sentences(3, '\n')
+                : faker.lorem.paragraphs({ min: 1, max: 3 }, '\r\n'),
+            CareerPrepAssessment: {
+                connect: {
+                    jobseekerId: mps.jobseekerId,
+                },
+            },
+            Author: {
+                connect: {
+                    id: mps.managerId,
+                },
+            },
+        }));
+
+        await Promise.all(notes.map(note => prisma.caseMgmtNotes.create({ data: note })));
+    }
+
+    console.log('Finished seeding Case management notes.\n');
+}
+
+/////////////////////////////////////////////////
+
 /**
  * Asynchronously runs seeding process for database with fundamental data and mock user information.
  *
@@ -2252,9 +2411,12 @@ async function main() {
     }
 
     await SeedMockEdProvidersAddresses();
-    await seedMockUsers(250);
+    await seedMockUsers(125);
     await seedMockJobseekerData();
     await seedMockEmployerData();
+    await seedCareerPrepStudents();
+    await seedCaseMgmt();
+    await seedCaseMgmtNotes();
     console.log("Finished seeding.\n")
 
 }
