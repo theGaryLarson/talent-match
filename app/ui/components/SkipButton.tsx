@@ -25,9 +25,9 @@ function SkipButton() {
     pageSequence = [
       'personal',
       'company',
-      'about',
-      'mission',
-      'video',
+      // 'about',
+      // 'mission',
+      // 'video',
       'disclosures',
     ];
     userPrefix = 'employer';

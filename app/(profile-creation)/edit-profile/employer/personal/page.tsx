@@ -219,8 +219,8 @@ export default function CreateEmployerPersonalPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(1 / 6) * 100} size="sm" />
-        <p>Step 1/6</p>
+        <ProgressBarFlat progress={(1 / 3) * 100} size="sm" />
+        <p>Step 1/3</p>
         <h1>Your Personal Info</h1>
         <p className="subtitle">* Indicates a required field</p>
 
