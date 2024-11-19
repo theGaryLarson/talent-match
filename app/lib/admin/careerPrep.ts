@@ -259,7 +259,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
       lastName: data.Jobseeker?.users?.last_name!,
       pronouns: data.pronouns,
       emailAddress: data.Jobseeker?.users.email!,
-      pathway: data.Jobseeker?.pathways?.pathway_title ?? '',
+      pathway: data?.interestPathway ?? '',
       education: data.Jobseeker
         ?.highest_level_of_study_completed as HighestCompletedEducationLevel,
       eduProviders: data.Jobseeker?.jobseeker_education.map((edData) => ({
@@ -388,6 +388,7 @@ const selectCareerPrepStudentDetailView /*: Prisma.CareerPrepAssessmentSelect*/ 
   {
     jobseekerId: true,
     assessmentDate: true,
+    interestPathway: true,
     pronouns: true,
     expectedEduCompletion: true,
     experienceWithApplying: true,
@@ -413,11 +414,6 @@ const selectCareerPrepStudentDetailView /*: Prisma.CareerPrepAssessmentSelect*/ 
             first_name: true,
             last_name: true,
             email: true,
-          },
-        },
-        pathways: {
-          select: {
-            pathway_title: true,
           },
         },
         jobseeker_education: {
@@ -722,7 +718,7 @@ export const submitCareerPrepAssessment = async (
         data,
       );
 
-      const durableResponse = await upsertDurableSkillRatings(
+      const durableResponse =  await upsertDurableSkillRatings(
         prisma,
         jobseekerId,
         data.durableSkills,
@@ -734,17 +730,20 @@ export const submitCareerPrepAssessment = async (
         data.professionalBrandingAndJobMarketReadiness,
       );
 
-      const assessmentResponse = await upsertPathwayRatings(
+      const assessmentResponse =  await upsertPathwayRatings(
         prisma,
         jobseekerId,
         data.technicalSelfAssessment,
       );
 
       // //TODO: determine case manager with least amount of assigned jobseekers
-      await upsertUnassignedCaseMgmtRecord(jobseekerId);
+      await upsertUnassignedCaseMgmtRecord(prisma, jobseekerId);
 
       return { success: true, status: 200 };
 
+    },
+        {
+          timeout: 10000, // Timeout in milliseconds (e.g., 10000 ms = 10 seconds)
     });
     devLog('result', result);
     return { success: true, status: 200 };
@@ -761,7 +760,8 @@ export const submitCareerPrepAssessment = async (
  * @returns {Promise<{ success: boolean, status: number }>} A promise that resolves with an object indicating the success and status of the upsert operation.
  */
 const upsertUnassignedCaseMgmtRecord = async (
-  jobseekerId: string,
+    prisma: TransactionClient,
+    jobseekerId: string,
 ): Promise<{ success: boolean; status: number }> => {
   try {
     //get necessary info from jobseeker table
