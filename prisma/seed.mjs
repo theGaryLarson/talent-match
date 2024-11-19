@@ -1418,8 +1418,99 @@ async function seedGeneralEdProviders() {
 }
 
 async function seedPartnerEdProvidersAndPrograms() {
-    // TODO: seed training provider partners into edu_providers table. Ensure no duplicates from previous function call to seedGeneralEdProviders. Comment out fields that don't currently exist in the schema.prisma models
-    // TODO: seed provider_programs connecting to programs table based on provider_programs.title matching programs[idx].name in partnerProvidersAndPrograms
+    try {
+        console.log('Seeding Partner Education Providers and Programs...');
+
+        for (const provider of partnerProvidersAndPrograms) {
+            // Check if the provider already exists in the database
+            let eduProvider = await prisma.edu_providers.findUnique({
+                where: {name: provider.eduProvider},
+            });
+
+            // If not, create the provider
+            if (!eduProvider) {
+                eduProvider = await prisma.edu_providers.create({
+                    data: {
+                        name: provider?.eduProvider ? provider.eduProvider : null,
+                        edu_type: provider?.edu_type ? provider.edu_type : null,
+                        contact: provider?.contact ? provider.contact : null,
+                        contact_email: provider?.contactEmail ? provider.contactEmail : null,
+                        edu_url: provider?.url ? provider.url : null,
+                        mission: provider?.missionStatement ? provider.missionStatement : null,
+                        providerDescription: provider?.providerDescription ? provider.providerDescription : null,
+                        setsApartStatement: provider?.setsApartStatement ? provider.setsApartStatement : null,
+                        screeningCriteria: provider?.screeningCriteria ? provider.screeningCriteria : null,
+                        recruitingSources: provider?.recruitingSources ? provider.recruitingSources : null,
+                        programCount: provider?.programCount ? provider.programCount : null,
+                        cost: provider?.cost ? provider.cost : null,
+                        isCoalitionMember: true,
+                        isAdminReviewed: true,
+                    },
+                });
+                console.log(`Created edu_provider: ${eduProvider.name}`);
+            } else {
+                console.log(`edu_provider already exists: ${eduProvider.name}`);
+            }
+
+            for (const program of provider.programs) {
+                // Find the program in the programs table
+                let existingProgram = await prisma.programs.findUnique({
+                    where: {title: program.name},
+                });
+
+                // If the program doesn't exist, create it
+                if (!existingProgram) {
+                    existingProgram = await prisma.programs.create({
+                        data: {
+                            title: program.name,
+                        },
+                    });
+                    console.log(`Created program: ${existingProgram.title}`);
+                }
+
+                // Create provider_programs entry
+                // Check if provider_program already exists to avoid duplicates
+                let existingProviderProgram = await prisma.provider_programs.findFirst({
+                    where: {
+                        edu_provider_id: eduProvider.id,
+                        program_id: existingProgram.id,
+                    },
+                });
+
+                if (!existingProviderProgram) {
+                    await prisma.provider_programs.create({
+                        data: {
+                            training_program_id: uuidv4(), // Generate a new UUID
+                            edu_provider_id: eduProvider.id,
+                            program_id: existingProgram.id,
+                            // Map other fields if available in your schema
+                            cost: program.cost ? program.cost : null,
+                            targetedJobRoles:  program.targetedJobRoles.length > 0 ? program.targetedJobRoles.join(', ') : null, // Convert array to string
+                            programDescription: program.programDescription ? program.programDescription : null,
+                            months: program.months ? program.months : null,
+                            hoursPerWeek: program.hoursPerWeek ? program.hoursPerWeek : null,
+                            targetPopulation: program.targetPopulation ? program.targetPopulation : null,
+                            serviceArea: program.serviceArea ? program.serviceArea : null,
+                            pathways: program.pathways.length > 0 ? program.pathways.join(', ') : null, // Convert array to string
+                        },
+                    });
+                    console.log(
+                        `Created provider_program linking provider "${eduProvider.name}" and program "${existingProgram.title}"`
+                    );
+                } else {
+                    console.log(
+                        `Provider_program already exists for provider "${eduProvider.name}" and program "${existingProgram.title}"`
+                    );
+                }
+            }
+        }
+
+        console.log('Finished seeding Partner Education Providers and Programs.\n');
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
 }
 
 async function seedGeneralPrograms() {
@@ -1447,21 +1538,12 @@ async function seedPartnerPrograms() {
         const programsData = partnerProvidersAndPrograms.flatMap(provider =>
             provider.programs.map(program => ({
                 title: program.name,
-                // providerName: provider.eduProvider, // TODO: Add providerName to database schema if needed
-                // description: program.programDescription || '', // TODO: Add description to database schema if needed
-                // url: program.url || '', // TODO: Add URL to database schema if needed
-                // targetedJobRoles: program.targetedJobRoles.join(', '), // TODO: Add targetedJobRoles to database schema if needed
-                // length: program.length || '', // TODO: Add length to database schema if needed
-                // targetPopulation: program.targetPopulation || '', // TODO: Add targetPopulation to database schema if needed
-                // areaLocation: program.area_location || '', // TODO: Add areaLocation to database schema if needed
-                // pathways: program.pathways.join(', ') // TODO: Add pathways to database schema if needed
             }))
         );
         // Filter out duplicate program names
         const uniquePrograms = Array.from(
             new Map(programsData.map(program => [program.title, program])).values()
         );
-        console.log('uniquePrograms\n', uniquePrograms);
 
         // Check for existing programs in the database
         const existingPrograms = await prisma.programs.findMany({
