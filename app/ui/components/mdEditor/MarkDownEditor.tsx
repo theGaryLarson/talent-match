@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-
+import { useRouter } from "next/navigation";
 import { useQuill } from 'react-quilljs';
 //https://github.com/gtgalone/react-quilljs#readme
 // or const { useQuill } = require('react-quilljs');
@@ -11,7 +11,7 @@ import { CreateNoteDTO, NoteType } from '@/app/lib/admin/careerPrep';
 // or import 'quill/dist/quill.bubble.css'; // Add css for bubble theme
 export default (props:{title:string, noteType:NoteType, jobseekerId:string}) => {
     const { quill, quillRef } = useQuill();
-  
+    const router = useRouter();
     React.useEffect(() => {
       if (quill) {
         quill.on('text-change', (delta, oldDelta, source) => {
@@ -46,6 +46,7 @@ export default (props:{title:string, noteType:NoteType, jobseekerId:string}) => 
           if (response.ok) {
             console.log('Content submitted successfully');
             ClearNote();
+            router.refresh();
           } else {
             console.error('Error submitting content');
           }
