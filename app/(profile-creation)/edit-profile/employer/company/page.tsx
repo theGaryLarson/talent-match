@@ -498,6 +498,7 @@ export default function CreateEmployerCompanyInfoPage() {
               )}
           </div>
 
+          {/* NOTE: Per current process companies are manually added, therefore following code note needed. However may be useful to keep if in the future we scale and process is updated to allow users to edit company info
           <fieldset>
             <legend>
               <h2>
@@ -588,7 +589,6 @@ export default function CreateEmployerCompanyInfoPage() {
                 disabled={session?.user?.employeeIsApproved}
               />
 
-              {/* <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel> */}
               <SelectOptionsWithLabel
                 id="profile-creation-company-companySize"
                 onChange={handleFieldChange}
@@ -644,7 +644,6 @@ export default function CreateEmployerCompanyInfoPage() {
                   `${option?.city}, ${option?.stateCode} ${option?.zip}`
                 }
               />
-              {/* Display the selected addresses below */}
               <div className="selected-locations">
                 {companyData?.companyAddresses?.map((location, index) => (
                   <div key={index} className="location-tag">
@@ -652,8 +651,9 @@ export default function CreateEmployerCompanyInfoPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> 
           </fieldset>
+            */}
 
           <div className="profile-form-progress-btn-group">
             <Button
