@@ -10,6 +10,7 @@ import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import TextField from '@mui/material/TextField';
 import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
@@ -147,13 +148,19 @@ export default function CreateEmployerPersonalPage() {
       console.error('User session is not available.');
       return;
     }
-    if (!birthdate || !birthdate.isValid()) {
-      console.error('Birthdate error');
-      return;
-    }
+    // Birthdate optional, no longer needed
+    // if (!birthdate && !personalData.birthDate) {
+    //   console.error(
+    //     'Birthdate error',
+    //     birthdate,
+    //     dayjs(personalData.birthDate).toISOString(),
+    //   );
+    //   return;
+    // }
     setPersonalData((prevPersonalData) => ({
       ...prevPersonalData,
-      birthDate: birthdate?.toISOString() ?? '',
+      birthDate:
+        birthdate?.toISOString() ?? dayjs(personalData.birthDate).toISOString(),
       photoUrl: avatarUrl,
     }));
     devLog('personalData', personalData);
@@ -214,8 +221,8 @@ export default function CreateEmployerPersonalPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(1 / 6) * 100} size="sm" />
-        <p>Step 1/6</p>
+        <ProgressBarFlat progress={(1 / 3) * 100} size="sm" />
+        <p>Step 1/3</p>
         <h1>Your Personal Info</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -260,13 +267,37 @@ export default function CreateEmployerPersonalPage() {
 
             <div className="profile-form-grid">
               <DatePicker
-                label="Birthdate *"
+                label="Birthdate"
                 value={
                   birthdate !== null ? birthdate : dayjs(personalData.birthDate)
                 }
                 onChange={(newDate) => setBirthdate(newDate)}
                 className="date-picker"
-                // renderInput={(params) => <TextField {...params} required />}
+                slots={{
+                  textField: (params) => (
+                    <TextField
+                      {...params}
+                      required={false}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#D1D5DB', // Set the border color on hover
+                          },
+                        },
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#D1D5DB', // Removes the red border
+                        },
+                        '& .MuiFormLabel-root.Mui-error': {
+                          color: '#D1D5DB', // Removes the red label color
+                        },
+                        '& .MuiInputBase-root.Mui-error .MuiOutlinedInput-notchedOutline':
+                          {
+                            borderColor: '#D1D5DB', // Removes red error border on focus
+                          },
+                      }}
+                    />
+                  ),
+                }}
               />
 
               <InputTextWithLabel
@@ -280,7 +311,6 @@ export default function CreateEmployerPersonalPage() {
               >
                 Email *
               </InputTextWithLabel>
-
               <SelectOptionsWithLabel
                 id="profile-creation-personal-phoneCountryCode"
                 className="phone-code"
@@ -648,11 +678,9 @@ export default function CreateEmployerPersonalPage() {
                 placeholder="Phone number"
                 onChange={handleFieldChange}
                 value={personalData.phone ?? ''}
-                required
               >
-                Phone Number *
+                Phone Number
               </InputTextWithLabel>
-
               {/* <SelectWithLabel
                 id="profile-creation-personal-gender"
                 fullWidth
@@ -669,7 +697,6 @@ export default function CreateEmployerPersonalPage() {
                 placeholder="Please select"
                 required
               /> */}
-
               {/* <SelectWithLabel
                 id="profile-creation-personal-race"
                 fullWidth
@@ -692,10 +719,10 @@ export default function CreateEmployerPersonalPage() {
             </div>
           </fieldset>
 
-          <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+          <div className="profile-form-progress-btn-single-end">
+            {/* <Button pill className="custom-outline-btn">
               Cancel
-            </Button>
+            </Button> */}
             <Button pill type="submit">
               Save and continue
             </Button>
