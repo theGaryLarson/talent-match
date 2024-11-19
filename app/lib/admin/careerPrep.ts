@@ -293,8 +293,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
  * Select statement to retrieve data for Career Prep Student Card.
  * It contains various properties to collect data for CareerPrepJobseekerCardViewDTO[].
  */
-const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
-  {
+const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ = {
     // initial table CareerPrepAssessment
     jobseekerId: true,
     pronouns: true,
