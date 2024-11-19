@@ -1,4 +1,5 @@
 import { getCareerPrepStudentDetailView, getCareerPrepStudentNotes, NoteDTO, NoteType } from "@/app/lib/admin/careerPrep";
+import NoteCard from "@/app/ui/components/careerPrep/NoteCard";
 import MarkDownEditor from "@/app/ui/components/mdEditor/MarkDownEditor";
 import Tabs from "@/app/ui/components/Tabs";
 import { ReactNode } from "react";
@@ -34,13 +35,3 @@ export default async function page({ params }: { params: { id: string } }){
 
 
 
-
-function NoteCard(props:NoteDTO){
-    return(
-        <div className="border">
-            <h3 className="text-sm text-gray-600">Author: {props.authorName} Posted: {props.updatedAt}</h3>
-            <hr/>
-        <div dangerouslySetInnerHTML={{__html:props.noteContent}}></div>
-        </div>
-   );
-}

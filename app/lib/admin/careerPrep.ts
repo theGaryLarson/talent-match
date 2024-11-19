@@ -226,7 +226,7 @@ export const selfAssignAsCaseManager = async (
     return { success: true, status: 200 };
   } catch (e) {
     console.error('failed to assign case manager', e);
-    return { success: false, status: 500 }
+    return { success: false, status: 500 };
   }
 };
 
@@ -288,7 +288,13 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
     };
   }
 };
-
+export const updateCareerPrepStudentDetailview = async (
+  jobseekerId: string,
+  data: CareerPrepJobseekerDetailViewDTO,
+) => {
+  //TODO
+  console.log('This Needs to be written');
+};
 /**
  * Select statement to retrieve data for Career Prep Student Card.
  * It contains various properties to collect data for CareerPrepJobseekerCardViewDTO[].
@@ -600,42 +606,69 @@ export const getCareerPrepStudentNotes = async (
   return sortedNotes;
 };
 
-/**
- * model CaseMgmtNotes {
-  id                   String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()"))
-  jobseekerId          String               @db.UniqueIdentifier
-  date                 DateTime?            @db.DateTime
-  noteType             String               @db.VarChar(15)
-  noteContent          String               @db.NText
-  createdBy            String               @db.UniqueIdentifier
-  createdAt            DateTime             @default(now()) @db.DateTime
-  updatedAt            DateTime             @updatedAt @db.DateTime
-  CareerPrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
-  Author               User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
-}
- */
-
-export const addCareerPrepStudentNotes = async (jobseekerId:string, noteContent:string, noteType:string)=>{
+export const addCareerPrepStudentNotes = async (
+  jobseekerId: string,
+  noteContent: string,
+  noteType: string,
+) => {
   const Session = await auth();
-  try{
-if(Session?.user.id == undefined || Session.user.id == null){
-  throw new Error("id was null or undefinded")
-}
-  
-  const result = await prisma.caseMgmtNotes.create({
-    data:{
-      jobseekerId: jobseekerId,
-      date: new Date(),
-      noteType: noteType,
-      noteContent: noteContent,
-      createdBy: Session.user.id,
-      updatedAt: new Date(),
+  try {
+    if (Session?.user.id == undefined || Session.user.id == null) {
+      throw new Error('id was null or undefinded');
+    }
 
+    const result = await prisma.caseMgmtNotes.create({
+      data: {
+        jobseekerId: jobseekerId,
+        date: new Date(),
+        noteType: noteType,
+        noteContent: noteContent,
+        createdBy: Session.user.id,
+        updatedAt: new Date(),
+      },
+    });
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export async function updateCareerPrepStudentNotes(
+  noteId: string,
+  noteContent: string,
+  noteType: string,
+) {
+  const Session = await auth();
+  try {
+    if (Session?.user.id == undefined || Session.user.id == null) {
+      throw new Error('id was null or undefinded');
+    }
+    const result = await prisma.caseMgmtNotes.update(
+      {
+        where:{
+          id:noteId
+        },
+        data:{
+          noteContent:noteContent,
+          noteType:noteType,
+          updatedAt: new Date()
+        }
+      }
+    )
+    return result
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function deleteCareerPrepStudentNotes(noteId:string) {
+  let result = await prisma.caseMgmtNotes.delete({
+    where:{
+      id:noteId
     }
   })
-}catch(e){
-  console.error(e)
-}
+  return result;
 }
 /**
  * Represents the different types of notes that can be associated with a task or event.
@@ -757,7 +790,6 @@ export const submitCareerPrepAssessment = async (
 ): Promise<{ success: boolean; status: number } | null> => {
   try {
     const result = await prisma.$transaction(async (prisma) => {
-
       const careerPrepAssessment = await upsertCareerPrepAssessment(
         prisma,
         jobseekerId,
@@ -786,7 +818,6 @@ export const submitCareerPrepAssessment = async (
       await upsertUnassignedCaseMgmtRecord(jobseekerId);
 
       return { success: true, status: 200 };
-
     });
     devLog('result', result);
     return { success: true, status: 200 };
