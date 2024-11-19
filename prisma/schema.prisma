@@ -217,20 +217,37 @@ model company_testimonials {
 }
 
 model edu_providers {
-  id                    String                  @id(clustered: false, map: "edu_providers_PRIMARY") @unique(map: "edu_providers_id_UNIQUE") @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  name                  String?                 @unique @db.VarChar(255)
-  contact_email         String?                 @db.VarChar(255)
-  edu_url               String?                 @db.VarChar(255)
-  edu_type              String?                 @db.VarChar(50)
-  isAdminReviewed       Boolean                 @default(false) @db.Bit
-  isCoalitionMember     Boolean                 @default(false) @db.Bit
-  edu_addresses         edu_addresses[]
-  educators             educators[]
-  jobseeker_education   jobseekers_education[]
-  training_programs     provider_programs[]
-  User                  User?                   @relation(fields: [userId], references: [id])
-  userId                String?                 @db.UniqueIdentifier
-  TrainingPartnerDetail TrainingPartnerDetail[]
+  id                   String                 @id(clustered: false, map: "edu_providers_PRIMARY") @unique(map: "edu_providers_id_UNIQUE") @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  edu_type             String?                @db.VarChar(50)
+  name                 String?                @unique @db.VarChar(255)
+  contact              String?                @db.VarChar(45)
+  contact_email        String?                @db.VarChar(255)
+  edu_url              String?                @db.VarChar(255)
+  mission              String?                @db.Text
+  providerDescription  String?                @db.Text
+  setsApartStatement   String?                @db.Text
+  screeningCriteria    String?                @db.Text
+  recruitingSources    String?                @db.Text
+  programCount         String?                @db.VarChar(3)
+  cost                 String?                @db.Text
+  isAdminReviewed      Boolean                @default(false) @db.Bit
+  isCoalitionMember    Boolean                @default(false) @db.Bit
+  edu_addresses        edu_addresses[]
+  educators            educators[]
+  jobseeker_education  jobseekers_education[]
+  TrainingPrograms     provider_programs[]
+  User                 User?                  @relation(fields: [userId], references: [id])
+  userId               String?                @db.UniqueIdentifier
+  ProviderTestimonials ProviderTestimonials[]
+}
+
+model ProviderTestimonials {
+  id            String        @id(clustered: false, map: "provider_testimonials_PRIMARY") @unique(map: "provider_testimonials_id_UNIQUE") @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  eduProviderId String        @db.UniqueIdentifier
+  url           String?       @db.VarChar(45)
+  author        String?       @db.VarChar(45)
+  quote         String?       @db.Text
+  EduProvider   edu_providers @relation(fields: [eduProviderId], references: [id])
 }
 
 model edu_addresses {
@@ -257,13 +274,6 @@ model educators {
 }
 
 /////////////////////// Partner Training Provider Additions //////////////
-
-model TrainingPartnerDetail {
-  edu_providers_id String @id(clustered: false, map: "partnerDetail_PRIMARY") @db.UniqueIdentifier
-  // will add dynamic partner data here once admin functionality is complete.
-
-  edu_providers edu_providers @relation(fields: [edu_providers_id], references: [id], onUpdate: NoAction, onDelete: Cascade, map: "fk_partnerDetail_providers1")
-}
 
 model TraineeDetail {
   jobseekerId              String                     @id(clustered: false, map: "traineeDetail_PRIMARY") @db.UniqueIdentifier
@@ -704,7 +714,6 @@ model pathways {
   pathway_subcategories       pathway_subcategories[]
   proj_based_tech_assessments proj_based_tech_assessments[]
   self_assessments            self_assessments[]
-  training_programs           provider_programs[]
 }
 
 model proj_based_tech_assessments {
@@ -832,12 +841,17 @@ model provider_programs {
   program_id                  String                        @db.UniqueIdentifier
   edu_provider_id             String                        @db.UniqueIdentifier
   pathway_id                  String?                       @db.UniqueIdentifier
-  // url                         String?                       @db.VarChar(255)
-  target_job_roles            String?                       @db.Text
+  targetedJobRoles            String?                       @map("target_job_roles") @db.Text
   description                 String?                       @db.Text
+  cost                        String?                       @db.VarChar(255)
+  months                      String?                       @db.VarChar(45)
+  hoursPerWeek                String?                       @db.VarChar(45)
+  targetPopulation            String?                       @db.Text
+  serviceArea                 String?                       @db.Text
+  pathways                    String?                       @db.Text
+  programDescription          String?                       @db.Text
   target_population           String?                       @db.Text
   provider_program_has_skills provider_program_has_skills[]
-  pathways                    pathways?                     @relation(fields: [pathway_id], references: [pathway_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_training_program_Pathways1")
   edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
   Program                     programs                      @relation(fields: [program_id], references: [id], onUpdate: NoAction, map: "fk_provider_programs_programs1")
 
