@@ -189,9 +189,9 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(6 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(3 / 3) * 100} size="sm" />
 
-        <p>Step 6/6</p>
+        <p>Step 3/3</p>
         <h1>Professional Info and Disclosures</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -293,8 +293,12 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           </Label>
 
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
-              Cancel
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => router.push('/edit-profile/employer/company')}
+            >
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue

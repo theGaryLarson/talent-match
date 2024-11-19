@@ -399,7 +399,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/preferences');
+                router.push('/edit-profile/jobseeker/work-experience');
               }}
             >
               Previous

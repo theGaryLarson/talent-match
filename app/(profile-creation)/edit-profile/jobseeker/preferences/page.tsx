@@ -125,7 +125,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
         dispatch(setPageSaved('preferences'));
         dispatch(setPreferences(preferencesData));
 
-        router.push('/edit-profile/jobseeker/disclosures');
+        router.push('/edit-profile/jobseeker/showcase');
       } else {
         const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -142,8 +142,8 @@ export default function CreateJobseekerProfilePreferencesPage() {
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
-        <p>Step 5/6</p>
+        <ProgressBarFlat progress={(2 / 6) * 100} size="sm" />
+        <p>Step 2/6</p>
         <h1>Your preferences</h1>
 
         <p className="subtitle">* Indicates a required field</p>
@@ -251,7 +251,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/showcase');
+                router.push('/edit-profile/jobseeker/introduction');
               }}
             >
               Previous

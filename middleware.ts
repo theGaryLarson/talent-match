@@ -68,6 +68,8 @@ export default auth((req) => {
     '/signin',
     '/signout',
 
+    '/join',
+
     '/services',
     '/services/employers',
     '/services/employers/faq',

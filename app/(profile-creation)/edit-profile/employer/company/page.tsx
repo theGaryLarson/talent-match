@@ -320,8 +320,11 @@ export default function CreateEmployerCompanyInfoPage() {
       console.error('User session is not available.');
       return;
     }
+    setCompanyData({
+      ...companyData,
+      employerId: session?.user.employerId!,
+    });
 
-    companyData.employerId = session?.user.employerId!;
     if (companyData.companyName === '' || null) {
       // TODO: if chosenCompany does not have name, it does not exist, setup warning Toast for existing company or contact CFA to be added
       console.error('Company name is not available.');
@@ -330,20 +333,23 @@ export default function CreateEmployerCompanyInfoPage() {
 
     // company exists in selection
     if (typeof selectCompanyDropdownData !== 'string') {
-      companyData.employerId = session.user.employerId!;
-      companyData.companyId = selectCompanyDropdownData.companyId;
-      companyData.companyName = selectCompanyDropdownData.companyName;
-      companyData.industrySectorId = selectCompanyDropdownData.industrySectorId;
-      companyData.logoUrl = selectCompanyDropdownData.logoUrl;
-      companyData.websiteUrl = selectCompanyDropdownData.websiteUrl;
-      companyData.companyEmail = selectCompanyDropdownData.companyEmail;
-      companyData.companyPhone = selectCompanyDropdownData.companyPhone;
-      companyData.yearFounded = selectCompanyDropdownData.yearFounded
-        ? selectCompanyDropdownData.yearFounded.toString()
-        : '';
-      companyData.companySize = selectCompanyDropdownData.companySize ?? ''; //not sure why null needed here
-      companyData.estimatedAnnualHires =
-        selectCompanyDropdownData.estimatedAnnualHires ?? ''; // not sure why null needed here
+      setCompanyData({
+        ...companyData,
+        employerId: session.user.employerId!,
+        companyId: selectCompanyDropdownData.companyId,
+        companyName: selectCompanyDropdownData.companyName,
+        industrySectorId: selectCompanyDropdownData.industrySectorId,
+        logoUrl: selectCompanyDropdownData.logoUrl,
+        websiteUrl: selectCompanyDropdownData.websiteUrl,
+        companyEmail: selectCompanyDropdownData.companyEmail,
+        companyPhone: selectCompanyDropdownData.companyPhone,
+        yearFounded: selectCompanyDropdownData.yearFounded
+          ? selectCompanyDropdownData.yearFounded.toString()
+          : '',
+        companySize: selectCompanyDropdownData.companySize ?? '', //not sure why null needed here
+        estimatedAnnualHires:
+          selectCompanyDropdownData.estimatedAnnualHires ?? '', // not sure why null needed here
+      });
       devLog(companyData);
       // new company: values stored in companyData from page inputs
     }
@@ -379,11 +385,9 @@ export default function CreateEmployerCompanyInfoPage() {
           console.error('Company may not exist');
         }
 
-        if (typeof selectCompanyDropdownData === 'object') {
-          router.push('/edit-profile/employer/disclosures');
-        } else {
-          router.push('/edit-profile/employer/about');
-        }
+        // if (typeof selectCompanyDropdownData === 'object') {
+        router.push('/edit-profile/employer/disclosures');
+        // }
 
         dispatch(setPageSaved('company'));
       } else {
@@ -412,8 +416,8 @@ export default function CreateEmployerCompanyInfoPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(2 / 6) * 100} size="sm" />
-        <p>Step 2/6</p>
+        <ProgressBarFlat progress={(2 / 3) * 100} size="sm" />
+        <p>Step 2/3</p>
         <h1>Company Info</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -492,6 +496,7 @@ export default function CreateEmployerCompanyInfoPage() {
               )}
           </div>
 
+          {/* NOTE: Per current process companies are manually added, therefore following code note needed. However may be useful to keep if in the future we scale and process is updated to allow users to edit company info
           <fieldset>
             <legend>
               <h2>
@@ -582,7 +587,6 @@ export default function CreateEmployerCompanyInfoPage() {
                 disabled={session?.user?.employeeIsApproved}
               />
 
-              {/* <InputTextWithLabel id="profile-creation-company-size" placeholder="5,000+" onChange={handleFieldChange} value={fields.find(f => f.id === 'profile-creation-company-size')?.value || ''} required>Company Size *</InputTextWithLabel> */}
               <SelectOptionsWithLabel
                 id="profile-creation-company-companySize"
                 onChange={handleFieldChange}
@@ -638,7 +642,6 @@ export default function CreateEmployerCompanyInfoPage() {
                   `${option?.city}, ${option?.stateCode} ${option?.zip}`
                 }
               />
-              {/* Display the selected addresses below */}
               <div className="selected-locations">
                 {companyData?.companyAddresses?.map((location, index) => (
                   <div key={index} className="location-tag">
@@ -646,12 +649,17 @@ export default function CreateEmployerCompanyInfoPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> 
           </fieldset>
+            */}
 
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
-              Cancel
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => router.push('/edit-profile/employer/personal')}
+            >
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue
