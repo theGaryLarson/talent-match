@@ -1734,9 +1734,10 @@ async function seedJobSeekersPrivateData() {
                     jobseeker_private_data_id: uuidv4(),
                     jobseeker_id: js.jobseeker_id,
                     ssn: generateSSN(),
-                    is_authorized_to_work_in_usa: Boolean(faker.number.int({min: 0, max: 1})),
-                    job_sponsorship_required: Boolean(faker.number.int({min: 0, max: 1})),
+                    is_authorized_to_work_in_usa: faker.datatype.boolean() ? Boolean(faker.number.int({min: 0, max: 1})) : undefined,
+                    job_sponsorship_required: faker.datatype.boolean() ? Boolean(faker.number.int({min: 0, max: 1})): undefined,
                     is_veteran: faker.helpers.arrayElement(['yes', 'no', 'undisclosed']),
+                    disability_status: faker.helpers.arrayElement(['yes', 'none', 'undisclosed']),
                     disability: faker.helpers.arrayElement(['cognitive', 'emotional', 'hearing', 'mental', 'physical', 'visual', 'other', 'unknown', 'yes', 'no', 'undisclosed'])
                 }
             });

@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { ChangeEvent , useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Label } from "flowbite-react";
 import {BlobPrefix} from "@/app/lib/services/azureBlobService";
 
 interface Props {
-  id: string,
-  fileTypeText: string,
+  id: string;
+  fileTypeText: string;
   blobPrefix: BlobPrefix,
-  accept: string,
-  maxSizeMB: number,
-  userId: string,
-  onDocUpload: (url: string)  => void;
-
+  accept: string;
+  maxSizeMB: number;
+  userId: string;
+  onDocUpload: (url: string) => void;
+  autoloadedUrl?: string;
 }
 
 export default function InputFileDropzone({
@@ -21,19 +21,27 @@ export default function InputFileDropzone({
   blobPrefix,
   accept,
   maxSizeMB,
-    userId,
-    onDocUpload
+  userId,
+  onDocUpload,
+  autoloadedUrl,
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
-  const [fileSelected, setFileSelected] = useState("");
+  const [fileSelected, setFileSelected] = useState(autoloadedUrl ?? '');
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (autoloadedUrl) {
+      setFileSelected(autoloadedUrl);
+    }
+  }, [autoloadedUrl]);
 
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null) {
       const file = event.target.files[0];
       setFileSelected(file.name);
       const maxSize = 1048576 * maxSizeMB;
-      if (file.size > maxSize) { // file is too large
+      if (file.size > maxSize) {
+        // file is too large
         setFilesizeExceeded(true);
       } else setFilesizeExceeded(false); // file juuuust right
 
@@ -67,73 +75,110 @@ export default function InputFileDropzone({
           setUploadError(errorData.error || 'Failed to upload image');
         }
       } catch (error) {
-        console.error("Error uploading image:", error);
-        setUploadError("Failed to upload image. Please try again.");
+        console.error('Error uploading image:', error);
+        setUploadError('Failed to upload image. Please try again.');
       }
-
-    } else setFileSelected(""); // no file selected
-  }
+    } else setFileSelected(''); // no file selected
+  };
 
   let validFiletype = true;
-  if (fileSelected != "") {
-    const fileType = fileSelected.substring(fileSelected.lastIndexOf("."), fileSelected.length);
-    console.log(fileType)
-    validFiletype = accept.split(",").includes(fileType);
+  if (fileSelected != '') {
+    const fileType = fileSelected.substring(
+      fileSelected.lastIndexOf('.'),
+      fileSelected.length,
+    );
+    validFiletype = accept.split(',').includes(fileType);
   }
 
-  const fileTypeTextPlusSizeLimit = fileTypeText + " (max. " + maxSizeMB + " MB)";
+  const fileTypeTextPlusSizeLimit =
+    fileTypeText + ' (max. ' + maxSizeMB + ' MB)';
 
-  let backgroundCSS = "border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600";
-  let svgCSS = "text-sky-500 dark:text-sky-400";
+  let backgroundCSS =
+    'border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600';
+  let svgCSS = 'text-sky-500 dark:text-sky-400';
 
-  if (!validFiletype || filesizeExceeded) {
-    backgroundCSS = "border-red-300 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:bg-red-700 dark:hover:border-red-500 dark:hover:bg-red-600";
-    svgCSS = "text-red-500 dark:text-red-400";
-  } else if (fileSelected != "") {
-    svgCSS = "text-gray-500 dark:text-gray-400";
+  if (
+    (!validFiletype || filesizeExceeded) &&
+    !fileSelected.startsWith('http')
+  ) {
+    backgroundCSS =
+      'border-red-300 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:bg-red-700 dark:hover:border-red-500 dark:hover:bg-red-600';
+    svgCSS = 'text-red-500 dark:text-red-400';
+  } else if (fileSelected != '') {
+    svgCSS = 'text-gray-500 dark:text-gray-400';
   }
 
-  backgroundCSS = backgroundCSS.concat("flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed")
-  svgCSS = svgCSS.concat("h-8 w-8 mr-2");
+  backgroundCSS = backgroundCSS.concat(
+    'flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed',
+  );
+  svgCSS = svgCSS.concat('h-8 w-8 mr-2');
 
   return (
-    <div className="flex w-full items-center justify-center relative">
-      <Label
-        htmlFor={id}
-        className={backgroundCSS}
-      >
+    <div className="relative flex w-full items-center justify-center">
+      <Label htmlFor={id} className={backgroundCSS}>
         <div className="flex flex-col items-center justify-center pb-6 pt-5">
           <div className="flex flex-row items-center">
-          <svg
-            className={svgCSS}
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 16"
-           >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-            />
-          </svg>
-          {fileSelected == "" && 
-            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="text-sky-400 underline">Click to upload</span> or drag and drop</p>}
-          {fileSelected != "" && !filesizeExceeded && validFiletype && 
-            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">{fileSelected}</p>}
-          {fileSelected != "" && !filesizeExceeded && !validFiletype && 
-            <p className="mb-2 text-sm text-red-500 dark:text-red-400">Unsupported file type: {fileSelected}</p>}
-          {fileSelected != "" && filesizeExceeded && 
-            <p className="mb-2 text-sm text-red-500 dark:text-red-400">File is too large: {fileSelected}</p>}
+            <svg
+              className={svgCSS}
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 16"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+              />
+            </svg>
+            {fileSelected == '' && (
+              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                <span className="text-sky-400 underline">Click to upload</span>{' '}
+                or drag and drop
+              </p>
+            )}
+            {fileSelected != '' && !filesizeExceeded && validFiletype && (
+              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                {fileSelected}
+              </p>
+            )}
+            {fileSelected != '' &&
+              !filesizeExceeded &&
+              !validFiletype &&
+              !fileSelected.startsWith('http') && (
+                <p className="mb-2 text-sm text-red-500 dark:text-red-400">
+                  Unsupported file type: {fileSelected}
+                </p>
+              )}
+            {fileSelected != '' &&
+              !filesizeExceeded &&
+              !validFiletype &&
+              fileSelected.startsWith('http') && (
+                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                  {(() => {
+                    const filePath = fileSelected.split('?')[0];
+                    const lastSlash = filePath.lastIndexOf('/');
+                    return filePath.substring(lastSlash + 1);
+                  })()}
+                </p>
+              )}
+            {fileSelected != '' && filesizeExceeded && (
+              <p className="mb-2 text-sm text-red-500 dark:text-red-400">
+                File is too large: {fileSelected}
+              </p>
+            )}
           </div>
-          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">{fileTypeTextPlusSizeLimit}</p>
+          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+            {fileTypeTextPlusSizeLimit}
+          </p>
         </div>
-        <input type="file"
+        <input
+          type="file"
           id={id}
           name={id}
-          className="absolute top-0 left-0 w-full h-full opacity-0 block cursor-pointer"
+          className="absolute left-0 top-0 block h-full w-full cursor-pointer opacity-0"
           accept={accept}
           onChange={handleChange}
         />
