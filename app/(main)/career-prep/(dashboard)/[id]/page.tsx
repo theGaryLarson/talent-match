@@ -9,16 +9,19 @@ export default async function page({ params }: { params: { id: string } }){
     const notes = await getCareerPrepStudentNotes(params.id)
     /**
      * TODO:
-     * seperate note types into sections (styling)
-     * add a add note button: when clicked a MarkDowneditorshould appear and when makrdown editor is submited it should go away and the list of notes updated
-     * allow edit/delete of prevous notes
+     * allow edit of prevous notes
      */
     return(
         <main className="space-y-3 pr-[200px] w-full">
             <h1 className="text-2xl">{client.data?.firstName} {client.data?.lastName} ({client.data?.pronouns})</h1>
             <h2>Status: {client.data?.prepEnrollmentStatus}</h2>
+            <h2>Assessment Date:{client.data?.assessmentDate}</h2>
+            <h2>Highest Level of Education: {client.data?.education}</h2>
             <h2>Email address: {client.data?.emailAddress}</h2>
             <h2>Pool: {client.data?.poolAssignment}</h2>
+            <h2>Linkedin:{client.data?.linkedin}</h2>
+            <h2>Pathway: {client.data?.pathway}</h2>
+            <h2>Technical Certificates: {client.data?.technicalCertificates.map((c)=>`${c.name}, `)}</h2>
             <div>
                 <Tabs tabs={
                 [

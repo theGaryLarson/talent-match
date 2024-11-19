@@ -17,7 +17,7 @@ export default async function layout({ children }: { children: React.ReactNode }
           <PersonOutlineOutlinedIcon />
           Home
         </Link>
-        <Link
+        {/* <Link
           href="/career-prep"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
@@ -30,7 +30,7 @@ export default async function layout({ children }: { children: React.ReactNode }
         >
           <BookmarkIcon width={24}/>
           Unassigned Cases
-        </Link>
+        </Link> */}
       </div>
       {children}
     </div>

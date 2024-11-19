@@ -9,7 +9,7 @@ import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css'; // Add css for snow theme
 import { CreateNoteDTO, NoteType } from '@/app/lib/admin/careerPrep';
 // or import 'quill/dist/quill.bubble.css'; // Add css for bubble theme
-export default (props:{title:string, noteType:NoteType, jobseekerId:string}) => {
+export default (props:{title:string, noteType:NoteType, jobseekerId:string, noteid?:string}) => {
     const { quill, quillRef } = useQuill();
     const router = useRouter();
     React.useEffect(() => {
@@ -54,13 +54,26 @@ export default (props:{title:string, noteType:NoteType, jobseekerId:string}) => 
           console.error('Request failed', error);
         }
       };
-    
+    const handleDelete =async (e: React.FormEvent) =>{
+      //todo
+    }
+    const handleUpdate = async (e:React.FormEvent) =>{
+      //todo
+    }
     return (
         <div className='h-[500px]'>
       <div  className='w-[800px] h-[300px]'>
         <div ref={quillRef} />
+        {props.noteid?
+        <>
+        <button className='border w-[400px] h-[60px] bg-gray-200' onClick={handleDelete}>Delete Note</button>
+        <button className='border w-[400px] h-[60px] bg-blue-background text-white' onClick={handleUpdate}>Update Note</button>
+        </>
+        :
+        <>
         <button className='border w-[400px] h-[60px] bg-gray-200' onClick={ClearNote}>Clear Note</button>
         <button className='border w-[400px] h-[60px] bg-blue-background text-white' onClick={handleSubmit}>Add Note</button>
+        </>}
       </div>
       </div>
     );
