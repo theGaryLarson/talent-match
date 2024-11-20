@@ -2,12 +2,12 @@ import React, { memo, MouseEventHandler, useCallback } from 'react';
 import { Button, Label } from 'flowbite-react';
 import { Checkbox } from '@mui/material';
 import { MdClose } from 'react-icons/md';
-import InputTextWithLabel from '../components/InputTextWithLabel';
-import TextareaWithLabel from '../components/TextareaWithLabel';
+import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { v4 as uuidv4 } from 'uuid';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
-import SelectAutoload from '../components/mui/SelectAutoload';
+import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
 

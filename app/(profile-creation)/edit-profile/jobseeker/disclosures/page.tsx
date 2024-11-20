@@ -49,8 +49,9 @@ export default function CreateJobseekerProfileDisclosuresPage() {
   const [error, setError] = useState<{ error: string | null }>({ error: null });
 
   const [veteranStatus, setVeteranStatus] = useState(disclosuresData.isVeteran);
-  const [disabilityStatus, setDisabilityStatus] =
-    useState<String>('undisclosed');
+  const [disabilityStatus, setDisabilityStatus] = useState(
+    disclosuresData.disabilityStatus,
+  );
   const [disabilityType, setDisabilityType] = useState(
     disclosuresData.disability,
   );
@@ -84,21 +85,25 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 disclosuresData.gender = fetchedData.gender;
                 setGender(disclosuresData.gender);
               }
-              if (fetchedData.hasDisability) {
-                disclosuresData.disability = fetchedData.hasDisability;
+              if (fetchedData.disabilityStatus) {
+                disclosuresData.disabilityStatus = fetchedData.disabilityStatus;
+                setDisabilityStatus(disclosuresData.disabilityStatus);
+              }
+              if (fetchedData.disability) {
+                disclosuresData.disability = fetchedData.disability;
                 setDisabilityType(disclosuresData.disability);
               }
               if (fetchedData.isVeteran) {
                 disclosuresData.isVeteran = fetchedData.isVeteran;
                 setVeteranStatus(disclosuresData.isVeteran);
               }
+              if (fetchedData.ethnicity) {
+                disclosuresData.ethnicity = fetchedData.ethnicity;
+                setEthnicity(disclosuresData.ethnicity);
+              }
               if (fetchedData.race) {
                 disclosuresData.race = fetchedData.race;
                 setRace(disclosuresData.race);
-              }
-              if (fetchedData.ethnicity) {
-                disclosuresData.ethnicity = fetchedData.ethnicity;
-                setRace(disclosuresData.ethnicity);
               }
               disclosuresData.hasReadTerms = fetchedData.hasReadTerms;
               setTermsAccepted(disclosuresData.hasReadTerms);
@@ -130,6 +135,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
 
     disclosuresData.userId = session.user.id;
     disclosuresData.isVeteran = veteranStatus;
+    disclosuresData.disabilityStatus = disabilityStatus;
     disclosuresData.disability = disabilityType;
     disclosuresData.gender = gender;
     disclosuresData.race = race;
@@ -313,7 +319,13 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               include, but are not limited to:
             </p>
 
-            <ul className="list-inside list-disc">
+            <ul
+              className="list-inside list-disc"
+              style={{
+                paddingBottom: '1em',
+                paddingLeft: '1em',
+              }}
+            >
               <li>
                 Alcohol or other substance use disorder (not currently using
                 drugs illegally)
@@ -382,25 +394,40 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   setDisabilityStatus(event.target.value);
                   if (event.target.value !== 'yes') {
                     dispatch(setPageDirty('disclosures'));
-                    setDisabilityType(event.target.value);
+                    setDisabilityType('');
                   }
                 }}
                 name="profile-creation-disclosures-require-disability"
               >
                 <FormControlLabel
                   value="yes"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="Yes, I have a disability, or have had one in the past"
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
                 <FormControlLabel
                   value="none"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="No, I do not have a disability and have not had one in the past"
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
                 <FormControlLabel
                   value="undisclosed"
-                  control={<Radio />}
+                  control={<Radio required />}
                   label="I do not want to answer"
+                  sx={{
+                    '& .MuiFormControlLabel-asterisk': {
+                      display: 'none',
+                    },
+                  }}
                 />
               </RadioGroup>
             </FormControl>
@@ -441,7 +468,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 checked={termsAccepted}
                 onChange={(event) => setTermsAccepted(event.target.checked)}
               />{' '}
-              Yes, I have read and consent to the terms and conditions*
+              Yes, I have read and consent to the terms and conditions *
             </Label>
           </fieldset>
           <div className="profile-form-progress-btn-group">

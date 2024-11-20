@@ -1,4 +1,5 @@
 import skillsData_v2 from '../data/skills_v2.mjs';
+import partnerProvidersAndPrograms from '../data/partnerProvidersAndPrograms.mjs'
 import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
@@ -799,7 +800,6 @@ const waStateCountiesWithZipCodes = [
     }
 ];
 
-//TODO: add legit logo_urls
 const itCertifications = [
     {
         name: "AWS Certified Solutions Architect",
@@ -1166,18 +1166,6 @@ const frontendProjectSkills = [
     },
 ];
 
-const raceOptions = [
-    "White",
-    "Black or African American",
-    "American Indian or Alaska Native",
-    "Asian",
-    "Native Hawaiian or Other Pacific Islander",
-    "Hispanic or Latino",
-    "Middle Eastern or North African",
-    "Mixed Race",
-    "Other"
-];
-
 const companySizeOptions = [
     '1-10',
     '11-50',
@@ -1400,9 +1388,9 @@ async function seedTechnologyAreas() {
     console.log(`Seeded ${itOccupationTechnologyAreas.length} technology areas.\n`)
 }
 
-async function seedEduProviders() {
+async function seedGeneralEdProviders() {
     try {
-        console.log('Seeding Education Providers...')
+        console.log('Seeding General Education Providers...')
         // Insert high schools
         const highSchoolResult = await prisma.edu_providers.createMany({
             data: highSchools.map(school => ({
@@ -1420,7 +1408,8 @@ async function seedEduProviders() {
         });
 
         console.log(`Seeded ${highSchoolResult.count} High schools.`);
-        console.log(`Seeded ${collegeResult.count} Colleges.\n`);
+        console.log(`Seeded ${collegeResult.count} Colleges.`);
+        console.log(`Finished seeding ${highSchoolResult.count + collegeResult.count} general WA state training providers.\n`)
     } catch (error) {
         console.error('Error inserting data:', error);
     } finally {
@@ -1428,16 +1417,153 @@ async function seedEduProviders() {
     }
 }
 
-async function seedPrograms() {
+async function seedPartnerEdProvidersAndPrograms() {
     try {
-        console.log('Seeding Provider Programs...')
+        console.log('Seeding Partner Education Providers and Programs...');
+
+        for (const provider of partnerProvidersAndPrograms) {
+            // Check if the provider already exists in the database
+            let eduProvider = await prisma.edu_providers.findUnique({
+                where: {name: provider.eduProvider},
+            });
+
+            // If not, create the provider
+            if (!eduProvider) {
+                eduProvider = await prisma.edu_providers.create({
+                    data: {
+                        name: provider?.eduProvider ? provider.eduProvider : null,
+                        edu_type: provider?.edu_type ? provider.edu_type : null,
+                        contact: provider?.contact ? provider.contact : null,
+                        contact_email: provider?.contactEmail ? provider.contactEmail : null,
+                        edu_url: provider?.url ? provider.url : null,
+                        mission: provider?.missionStatement ? provider.missionStatement : null,
+                        providerDescription: provider?.providerDescription ? provider.providerDescription : null,
+                        setsApartStatement: provider?.setsApartStatement ? provider.setsApartStatement : null,
+                        screeningCriteria: provider?.screeningCriteria ? provider.screeningCriteria : null,
+                        recruitingSources: provider?.recruitingSources ? provider.recruitingSources : null,
+                        programCount: provider?.programCount ? provider.programCount : null,
+                        cost: provider?.cost ? provider.cost : null,
+                        isCoalitionMember: true,
+                        isAdminReviewed: true,
+                    },
+                });
+                console.log(`Created edu_provider: ${eduProvider.name}`);
+            } else {
+                console.log(`edu_provider already exists: ${eduProvider.name}`);
+            }
+
+            for (const program of provider.programs) {
+                // Find the program in the programs table
+                let existingProgram = await prisma.programs.findUnique({
+                    where: {title: program.name},
+                });
+
+                // If the program doesn't exist, create it
+                if (!existingProgram) {
+                    existingProgram = await prisma.programs.create({
+                        data: {
+                            title: program.name,
+                        },
+                    });
+                    console.log(`Created program: ${existingProgram.title}`);
+                }
+
+                // Create provider_programs entry
+                // Check if provider_program already exists to avoid duplicates
+                let existingProviderProgram = await prisma.provider_programs.findFirst({
+                    where: {
+                        edu_provider_id: eduProvider.id,
+                        program_id: existingProgram.id,
+                    },
+                });
+
+                if (!existingProviderProgram) {
+                    await prisma.provider_programs.create({
+                        data: {
+                            training_program_id: uuidv4(), // Generate a new UUID
+                            edu_provider_id: eduProvider.id,
+                            program_id: existingProgram.id,
+                            // Map other fields if available in your schema
+                            cost: program.cost ? program.cost : null,
+                            targetedJobRoles:  program.targetedJobRoles.length > 0 ? program.targetedJobRoles.join(', ') : null, // Convert array to string
+                            programDescription: program.programDescription ? program.programDescription : null,
+                            months: program.months ? program.months : null,
+                            hoursPerWeek: program.hoursPerWeek ? program.hoursPerWeek : null,
+                            targetPopulation: program.targetPopulation ? program.targetPopulation : null,
+                            serviceArea: program.serviceArea ? program.serviceArea : null,
+                            pathways: program.pathways.length > 0 ? program.pathways.join(', ') : null, // Convert array to string
+                        },
+                    });
+                    console.log(
+                        `Created provider_program linking provider "${eduProvider.name}" and program "${existingProgram.title}"`
+                    );
+                } else {
+                    console.log(
+                        `Provider_program already exists for provider "${eduProvider.name}" and program "${existingProgram.title}"`
+                    );
+                }
+            }
+        }
+
+        console.log('Finished seeding Partner Education Providers and Programs.\n');
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+async function seedGeneralPrograms() {
+    try {
+        console.log('Seeding General Programs...')
         // Insert high schools
         const programsResult = await prisma.programs.createMany({
             data: programs.map(program => ({
                 title: program,
             })),
         });
-        console.log(`Seeded ${programsResult.count} provider programs.\n`);
+        console.log(`Seeded ${programsResult.count} general programs.\n`);
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+async function seedPartnerPrograms() {
+    try {
+        console.log('Seeding Provider Programs...');
+
+        // Extract unique program names from partnerProvidersAndPrograms
+        const programsData = partnerProvidersAndPrograms.flatMap(provider =>
+            provider.programs.map(program => ({
+                title: program.name,
+            }))
+        );
+        // Filter out duplicate program names
+        const uniquePrograms = Array.from(
+            new Map(programsData.map(program => [program.title, program])).values()
+        );
+
+        // Check for existing programs in the database
+        const existingPrograms = await prisma.programs.findMany({
+            select: { title: true }
+        });
+        const existingProgramNames = new Set(existingPrograms.map(p => p.title));
+
+        // Add only new programs to the database
+        const newPrograms = uniquePrograms.filter(
+            program => !existingProgramNames.has(program.title)
+        );
+
+        if (newPrograms.length > 0) {
+            const programsResult = await prisma.programs.createMany({
+                data: newPrograms
+            });
+            console.log(`Seeded ${programsResult.count} new programs.`);
+        } else {
+            console.log('No new programs to seed.');
+        }
     } catch (error) {
         console.error('Error inserting data:', error);
     } finally {
@@ -1608,9 +1734,10 @@ async function seedJobSeekersPrivateData() {
                     jobseeker_private_data_id: uuidv4(),
                     jobseeker_id: js.jobseeker_id,
                     ssn: generateSSN(),
-                    is_authorized_to_work_in_usa: Boolean(faker.number.int({min: 0, max: 1})),
-                    job_sponsorship_required: Boolean(faker.number.int({min: 0, max: 1})),
+                    is_authorized_to_work_in_usa: faker.datatype.boolean() ? Boolean(faker.number.int({min: 0, max: 1})) : undefined,
+                    job_sponsorship_required: faker.datatype.boolean() ? Boolean(faker.number.int({min: 0, max: 1})): undefined,
                     is_veteran: faker.helpers.arrayElement(['yes', 'no', 'undisclosed']),
+                    disability_status: faker.helpers.arrayElement(['yes', 'none', 'undisclosed']),
                     disability: faker.helpers.arrayElement(['cognitive', 'emotional', 'hearing', 'mental', 'physical', 'visual', 'other', 'unknown', 'yes', 'no', 'undisclosed'])
                 }
             });
@@ -2192,8 +2319,10 @@ async function seedFoundationalTables() {
     await seedSkills(); // TODO: associate skills with a pathway
     await seedPostalGeoData("../data/postal_geo_data.json"); // use in production
     await seedSocialMediaPlatforms();
-    await seedPrograms();
-    await seedEduProviders(); // TODO: get updated list of training provider partners to use in production
+    await seedGeneralPrograms();
+    await seedPartnerPrograms();
+    await seedGeneralEdProviders(); // TODO: get updated list of training provider partners to use in production
+    await seedPartnerEdProvidersAndPrograms();
     await seedCompanies(); // TODO: get a list of pre-approved companies to use in production
 }
 
@@ -2358,6 +2487,12 @@ async function seedCaseMgmtNotes() {
 async function main() {
     console.log(`Start seeding ...\n`);
     await seedFoundationalTables();
+    if (process.env.NODE_ENV === 'production') {
+        console.log('Skipping seeding mock data...');
+        console.log('Finished seeding foundational tables.\n')
+        return;
+    }
+
     await SeedMockEdProvidersAddresses();
     await seedMockUsers(125);
     await seedMockJobseekerData();

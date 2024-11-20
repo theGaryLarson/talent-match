@@ -38,7 +38,6 @@ export type JobSeekerEmployerViewDTO = {
     years_work_exp: number;
     employment_type_sought: string;
     targeted_pathway: string;
-    resume_url: string | null;
     portfolio_url: string;
     users: UserDTO;
     work_experiences: WorkExperienceDTO[];
