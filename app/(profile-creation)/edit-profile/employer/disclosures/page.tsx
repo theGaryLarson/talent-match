@@ -50,7 +50,6 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   const router = useRouter();
 
   const { data: session, update, status } = useSession();
-  const updateSessionProperties = useUpdateSession();
 
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
