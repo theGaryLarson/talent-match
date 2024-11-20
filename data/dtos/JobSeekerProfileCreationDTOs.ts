@@ -15,7 +15,6 @@ export type JsIntroDTO = {
   email: string;
   introHeadline?: string | null;
   currentJobTitle?: string | null;
-  resumeUrl?: string | null;
 };
 
 export type JsIntroPostDTO = {
@@ -33,7 +32,6 @@ export type JsIntroPostDTO = {
   email: string;
   introHeadline?: string | null;
   currentJobTitle?: string | null;
-  resumeUrl?: string | null;
 };
 
 export type CertDTO = {
@@ -66,7 +64,7 @@ export enum HighestCompletedEducationLevel {
   // VocationalQualification = 'Vocational Qualification / Certification',
   NoFormalEducation = 'Less than high school diploma',
   GED = 'GED',
-  HighSchool = 'High School',
+  HighSchool = 'High School Graduate',
   PostHighSchool = 'Some post high school, no degree or certificate',
   Certificate = 'Certificate (less than two years)',
   Associates = 'Associates',
@@ -153,8 +151,8 @@ export type JsWorkExpDTO = {
   userId: string;
   yearsWorkExperience: string;
   monthsInternshipExperience?: string | null;
-  isAuthorizedToWorkUsa?: boolean; // TODO: encrypt
-  requiresSponsorship?: boolean; // TODO: encrypt
+  isAuthorizedToWorkUsa?: boolean | null;
+  requiresSponsorship?: boolean | null;
   workExperiences?: JsWorkDTO[];
 };
 
@@ -179,7 +177,7 @@ export type JsShowcaseDTO = {
   portfolioUrl?: string | null;
   portfolioPassword?: string | null; // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
   video_url?: string | null;
-  resume_url?: string | null;
+  linkedin_url?: string | null;
 };
 
 export type JsPreferencesDTO = {
@@ -193,7 +191,8 @@ export type JsPreferencesDTO = {
 export type JsDisclosuresDTO = {
   jobseekerId?: string | null; // jsDetails
   isVeteran?: string | null; // privateDetails
-  hasDisability?: string | null; // privateDetails
+  disability?: string | null; // privateDetails
+  disabilityStatus?: string | null; // privateDetails
   gender?: string | null;
   race?: string | null;
   ethnicity?: string | null; // users.ethnicity
@@ -204,6 +203,7 @@ export type JsDisclosuresPostDTO = {
   userId: string;
   isVeteran: string; // jobseekers[0].jobseekers_private_data[0].is_veteran
   disability: string; // jobseekers[0].jobseekers_private_data[0].has_disability
+  disabilityStatus: string;
   gender: string; // users.gender
   race: string; //users.race
   ethnicity: string;

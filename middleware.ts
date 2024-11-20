@@ -6,70 +6,59 @@ export default auth((req) => {
   const pathname = req.nextUrl.pathname;
   const userRoles = req.auth?.user?.roles || [];
   const jobseekerId = req.auth?.user?.jobseekerId;
+  const homeUrl = new URL('/', req.nextUrl.origin);
 
-  const guestRoutes = [ // Routes for logged in users with GUEST role
-    '/signup',
-    '/signup/jobseeker',
-    '/signup/employer',
-
-    '/api/users/',
-  ];
-
-  const jobseekerRoutes = [ // Routes for logged in users with JOBSEEKER role
-    '/edit-profile/jobseeker/congratulations',
-    '/edit-profile/jobseeker/disclosures',
-    '/edit-profile/jobseeker/education',
-    '/edit-profile/jobseeker/introduction',
-    '/edit-profile/jobseeker/preferences',
-    '/edit-profile/jobseeker/showcase',
-    '/edit-profile/jobseeker/work-experience',
-
-    '/services/jobseekers/dashboard',
-    '/services/jobseekers/',
+  // Map roles to their allowed routes
+  const roleRoutes: Record<Role, string[]> = {
+    [Role.GUEST]: [
+      '/signup',
+      '/signup/jobseeker',
+      '/signup/employer',
+      '/api/users/',
+    ],
+    [Role.JOBSEEKER]: [
+      '/edit-profile/jobseeker/',
+      '/services/jobseekers/career-prep-skill-assessment',
+      '/services/jobseekers/dashboard',
+      '/services/jobseekers/',
+      '/services/joblistings',
+      '/api/joblistings/',
+      '/api/jobseekers/',
+      '/api/edu-providers/',
+      '/api/skills/search/',
+      '/api/employers/technology-areas',
+      '/api/users/avatar/upload',
+      '/api/assessment/submit',
+    ],
+    [Role.EMPLOYER]: [
+      '/edit-profile/employer/',
+      '/services/employers/dashboard',
+      '/services/jobseekers/',
+      '/services/joblistings',
+      '/api/joblistings/',
+      '/api/employers/',
+      '/api/companies',
+      '/api/users/avatar/upload',
+      '/api/skills/search/',
+      '/api/postal-geo-data/zip/search',
+    ],
+    [Role.CASE_MANAGER]: [
+      '/api/admin',
+      '/career-prep',
+    '/services/jobseekers',
     '/services/joblistings',
-    '/api/joblistings/apply',
-    '/api/joblistings/bookmark/add/',
-    '/api/joblistings/bookmark/remove/',
+      // Add any other routes accessible by case managers
+    ],
+    [Role.ADMIN]: [], // Admin has full access, so this can be empty
+    [Role.EDUCATOR]: [], // Add routes for educators when needed
+    [Role.VOLUNTEER]: [], // Add routes for volunteers when needed
+  };
 
-    '/api/jobseekers/',
-    '/api/edu-providers/',
-    '/api/skills/search/',
-    '/api/employers/technology-areas',
-    '/api/users/avatar/upload',
-  ];
-
-  const employerRoutes = [ // Routes for logged in users with EMPLOYER role
-    '/edit-profile/employer/personal',
-    '/edit-profile/employer/company',
-    '/edit-profile/employer/professional-info',
-    '/edit-profile/employer/about',
-    '/edit-profile/employer/disclosures',
-    '/edit-profile/employer/mission',
-    '/edit-profile/employer/video',
-    '/edit-profile/employer/congratulations',
-
-    '/services/employers/dashboard',
-    '/services/jobseekers/',
-    '/services/joblistings',
-
-    '/api/joblistings/add',
-    '/api/joblistings/delete',
-    '/api/employers/',
-    '/api/companies',
-    '/api/users/avatar/upload',
-    '/api/skills/search/',
-    '/api/postal-geo-data/zip/search',
-  ];
-
-  const publicRoutes = [ // Routes for anyone, logged in or not
+  const publicRoutes = [
     '/',
     '/underconstruction',
-
     '/signin',
     '/signout',
-
-    '/join',
-
     '/services',
     '/services/employers',
     '/services/employers/faq',
@@ -80,108 +69,79 @@ export default auth((req) => {
     '/services/careers/data-analytics',
     '/services/careers/it-cloud-support',
     '/services/careers/software-developer',
-
     '/api/jobseekers/query',
     '/api/employers/industry-sectors',
     '/api/postal-geo-data/zip/search/',
   ];
 
-  function userIsGuest() {
-    return userRoles.includes(Role.GUEST) || userRoles.includes(Role.ADMIN);
-  }
-  function userIsJobseeker() {
-    return userRoles.includes(Role.JOBSEEKER) || userRoles.includes(Role.ADMIN);
-  }
-  function userIsEmployer() {
-    return userRoles.includes(Role.EMPLOYER) || userRoles.includes(Role.ADMIN);
+  // Helper function to check if a path is allowed for any of the user's roles
+  function userHasAccessToPath(path: string) {
+    if (userRoles.includes(Role.ADMIN)) {
+      // Admin has access to all routes
+      // TODO: will have to restrict routes which rely on session data to display dynamic data based on employer and jobseeker id.
+      console.log('Admin role recognized!');
+      return true;
+    }
+
+    for (const role  of userRoles) {
+      const allowedRoutes = roleRoutes[role as Role] || [];
+      if (allowedRoutes.some((route) => path.startsWith(route))) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  function pathIsGuestRoute() {
-    return guestRoutes.some((route) => pathname.startsWith(route));
-  }
-  function pathIsJobseekerRoute() {
-    return jobseekerRoutes.some((route) => pathname.startsWith(route));
-  }
-  function pathIsEmployerRoute() {
-    return employerRoutes.some((route) => pathname.startsWith(route));
-  }
-
-  const homeUrl = new URL('/', req.nextUrl.origin);
-
-  // HOME PAGE ------------ Always allowed
-
+  // Handle special cases
   if (pathname === '/') {
     return NextResponse.next();
   }
 
-  // SPECIFIC REDIRECTS ------------ Handling special cases
-
   if (!req.auth && pathname === '/signout') {
-    return NextResponse.redirect(homeUrl); // If you're at signout and logged out, reroute to the main page
+    return NextResponse.redirect(homeUrl);
   }
-  else if (req.auth && pathname === '/signin') {
-    if (userRoles.includes(Role.GUEST)) { // If you're signed in and haven't picked a role, you gotta
+
+  if (req.auth && pathname === '/signin') {
+    if (userRoles.includes(Role.GUEST)) {
       return NextResponse.redirect(new URL('/signup', req.nextUrl.origin));
     }
-    else return NextResponse.redirect(homeUrl); // Everyone else, reroute to the main page after signin
+    return NextResponse.redirect(homeUrl);
   }
-  else if (!req.auth && pathname.startsWith('/services/jobseekers/')) {
-    // Caught someone! Create account to view jobseeker
+
+  if (!req.auth && pathname.startsWith('/services/jobseekers/')) {
     return NextResponse.redirect(new URL('/signin', req.nextUrl.origin));
   }
 
-  // PUBLIC ROUTING ------------ Any route which is always publicly accessible
-  else if (publicRoutes.includes(pathname)) {
-    // Explicitly allow public routes, no wildcards or startsWith for safety
+  // Allow public routes
+  if (publicRoutes.includes(pathname)) {
     return NextResponse.next();
   }
 
-  // ROLE BASED ROUTING ------------ Check most permissive roles first, least permissive roles last
-  
-  else if (userRoles.includes(Role.ADMIN)) { // Route checking for ADMIN routes
-    console.log('Admin role recognized! *Do not* use ADMIN to test other roles!!')
-    return NextResponse.next();
-  }
-
-  else if (userIsEmployer()) { // Route checking for EMPLOYER routes
-    if (pathIsEmployerRoute()) return NextResponse.next();
-    else {
-      console.log('Access denied: Employer role does not have permission to access - ' + pathname);
-      return NextResponse.redirect(homeUrl);
-    }
-  }
-
-  else if (userIsJobseeker()) { // Route checking for JOBSEEKER routes
-    if (pathIsJobseekerRoute()) {
-      if ( pathname != '/services/jobseekers/dashboard' && // allow dashboard
-           pathname.startsWith('/services/jobseekers/') ) {
-        
-        const requestedId = pathname.replace('/services/jobseekers/', '');
-        if (requestedId != jobseekerId) { // Jobseekers can only access their own profile
-          console.log('Access denied: Jobseeker can only access their own profile');
-          return NextResponse.redirect(homeUrl);
-        }
+  // Check if the user has access to the path based on their roles
+  if (userHasAccessToPath(pathname)) {
+    // Additional checks based on roles
+    if (userRoles.includes(Role.JOBSEEKER) && pathname.startsWith('/services/jobseekers/')) {
+      // Jobseekers can only access their own profile
+      const requestedId = pathname.replace('/services/jobseekers/', '');
+      if (
+          pathname !== '/services/jobseekers/dashboard' &&
+          pathname !== '/services/jobseekers/career-prep-skill-assessment' &&
+          requestedId !== jobseekerId
+      ) {
+        console.log('Access denied: Jobseeker can only access their own profile');
+        return NextResponse.redirect(homeUrl);
       }
-      return NextResponse.next();
-    } else {
-      console.log('Access denied: Jobseeker role does not have permission to access - ' + pathname);
-      return NextResponse.redirect(homeUrl);
     }
+
+    // Case managers might have additional access controls
+    // Implement any specific checks for CASE_MANAGER role if needed
+
+    return NextResponse.next();
   }
 
-  else if (userIsGuest()) { // Route checking for GUEST routes
-    if (pathIsGuestRoute()) return NextResponse.next();
-    else {
-      console.log('Access denied: User does not have permission to access - ' + pathname);
-      return NextResponse.redirect(homeUrl);
-    }
-  }
-
-  // FAILED ALL CHECKS, REDIRECT HOME ------------ Do not pass GO, do not collect $200
-  else {
-    console.log("Access denied: User's role does not have permission to access - " + pathname);
-    return NextResponse.redirect(homeUrl);
-  }
+  // If none of the roles grant access, redirect to the home page
+  console.log('Access denied: User does not have permission to access - ' + pathname);
+  return NextResponse.redirect(homeUrl);
 });
 
 /* Match all request paths except for the ones starting with:

@@ -14,6 +14,15 @@ export default async function Page() {
   const session = await auth();
   const company = await getCompanyById(session?.user.companyId??'');
   const proInfo = await getEmployerById(session?.user.employerId??'');
+  if(!proInfo){
+    return (
+      <div>
+        <h1 className='text-2xl'>
+          There has been an error finding your info please try logging out and logging back in
+        </h1>
+      </div>
+    );
+  }
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <DeletionFlag deletionDate={undefined} />

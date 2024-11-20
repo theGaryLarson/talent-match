@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
 import { devLog, formatPhoneE164 } from '@/app/lib/utils';
@@ -45,17 +44,14 @@ export default function CreateJobseekerProfileIntroPage() {
   const [introData, setIntroData] = useState<JsIntroPostDTO>({
     ...introStoreData,
   });
-  console.log('initialdata', introData);
+
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
     introData.birthDate === '' ? null : dayjs(introData.birthDate),
   );
-  console.log('initialbirthdate', birthdate);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     introData.photoUrl ?? null,
   );
-  const [resumeUrl, setResumeUrl] = useState<string | null>(
-    introData.resumeUrl ?? null,
-  );
+  const [resumeUrl, setResumeUrl] = useState<string>('');
   const pathname = usePathname(); // Gets the current pathname
 
   useEffect(() => {
@@ -102,7 +98,6 @@ export default function CreateJobseekerProfileIntroPage() {
                 introHeadline: fetchedData.introHeadline,
                 phone: fetchedData.phone,
                 phoneCountryCode: fetchedData.phoneCountryCode,
-                resumeUrl: fetchedData.resumeUrl,
                 state: fetchedData.state,
               });
               setAvatarUrl(fetchedData.photoUrl ?? session.user?.image ?? null);
@@ -112,7 +107,6 @@ export default function CreateJobseekerProfileIntroPage() {
                   ? null
                   : dayjs(fetchedData.birthDate),
               );
-              setResumeUrl(fetchedData.resumeUrl ?? null);
             }
           } catch (error) {
             console.error(error);

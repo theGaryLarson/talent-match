@@ -9,11 +9,11 @@ import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
 import WorkExperiences, {
   defaultWorkExperienceData,
   WorkExperienceData,
-} from '@/app/ui/form-field-groups/WorkExperiences';
+} from './form-field-groups/WorkExperiences';
 import InternshipExperiences, {
   defaultInternshipExperienceData,
   InternshipExperienceData,
-} from '@/app/ui/form-field-groups/InternshipExperiences';
+} from './form-field-groups/InternshipExperiences';
 import {
   JsWorkDTO,
   JsWorkExpDTO,
@@ -39,8 +39,8 @@ interface Data {
   monthsInternshipExperience: string | number;
   workExperiences: WorkExperienceData[];
   internshipExperiences: WorkExperienceData[];
-  isAuthorizedToWorkUsa?: boolean;
-  requiresSponsorship?: boolean;
+  isAuthorizedToWorkUsa?: boolean | null;
+  requiresSponsorship?: boolean | null;
 }
 
 export default function CreateJobseekerProfileWorkExperiencePage() {
