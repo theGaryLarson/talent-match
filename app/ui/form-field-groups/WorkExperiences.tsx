@@ -10,6 +10,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import SelectAutoload from '../components/mui/SelectAutoload';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
+import RequiredTooltip from '../components/mui/RequiredTooltip';
 
 const classNamePrefix = 'profile-creation-work-experience-group-';
 const classCompany = 'company';
@@ -49,12 +50,14 @@ export function defaultWorkExperienceData(): WorkExperienceData {
 
 interface Props {
   data: WorkExperienceData[];
+  hasUnmetRequired: string;
   onRemove: (uid: string) => void;
   onUpdate: (key: string, value: any) => void;
 }
 
 export default memo(function WorkExperiences({
   data,
+  hasUnmetRequired,
   onRemove,
   onUpdate,
 }: Props) {
@@ -141,26 +144,43 @@ export default memo(function WorkExperiences({
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">
-        <DatePicker
-          label={'Starts *'}
-          views={['month', 'year']}
-          value={
-            workExperience[classStarts]?.isValid()
-              ? workExperience[classStarts]
-              : null
+        <RequiredTooltip
+          open={
+            hasUnmetRequired === `${workExperience.workId}-${classStarts}` &&
+            !Boolean(workExperience[classStarts])
           }
-          onChange={(val) => handleChange(index, classStarts, val)}
-        />
-        <DatePicker
-          label={'Ends'}
-          views={['month', 'year']}
-          value={
-            workExperience[classEnds]?.isValid()
-              ? workExperience[classEnds]
-              : null
+          errorMessage="A start date is required"
+        >
+          <DatePicker
+            label={'Starts *'}
+            views={['month', 'year']}
+            value={
+              workExperience[classStarts]?.isValid()
+                ? workExperience[classStarts]
+                : null
+            }
+            onChange={(val) => handleChange(index, classStarts, val)}
+          />
+        </RequiredTooltip>
+        <RequiredTooltip
+          open={
+            hasUnmetRequired === `${workExperience.workId}-${classEnds}` &&
+            !Boolean(workExperience[classEnds]) &&
+            !Boolean(workExperience[classCurrent])
           }
-          onChange={(val) => handleChange(index, classEnds, val)}
-        />
+          errorMessage="An end date is required if you're no longer working here"
+        >
+          <DatePicker
+            label={'Ends'}
+            views={['month', 'year']}
+            value={
+              workExperience[classEnds]?.isValid()
+                ? workExperience[classEnds]
+                : null
+            }
+            onChange={(val) => handleChange(index, classEnds, val)}
+          />
+        </RequiredTooltip>
       </div>
       <Label>
         <Checkbox

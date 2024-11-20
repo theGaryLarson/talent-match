@@ -348,30 +348,35 @@ export default function CreateJobseekerProfileEducationPage() {
       }),
     );
 
-    const isNotValid = !educations.every((education) => {
-      if (
-        !Boolean(education.edProviderId) &&
-        !Boolean(education.edProviderName)
-      ) {
-        setHasUnmetRequired(`${education.id}-edProviderObject`);
-        return false;
-      } else if (education.edLevel === EducationLevel.Other) {
-        if (!Boolean(education.programId) && !Boolean(education.programName)) {
-          setHasUnmetRequired(`${education.id}-programObject`);
+    // Validate the education entries
+    if (
+      !educations.every((education) => {
+        if (
+          !Boolean(education.edProviderId) &&
+          !Boolean(education.edProviderName)
+        ) {
+          setHasUnmetRequired(`${education.id}-edProviderObject`);
+          return false;
+        } else if (education.edLevel === EducationLevel.Other) {
+          if (
+            !Boolean(education.programId) &&
+            !Boolean(education.programName)
+          ) {
+            setHasUnmetRequired(`${education.id}-programObject`);
+            return false;
+          }
+        }
+        if (!Boolean(education.startDate)) {
+          setHasUnmetRequired(`${education.id}-startDate`);
           return false;
         }
-      }
-      if (!Boolean(education.startDate)) {
-        setHasUnmetRequired(`${education.id}-startDate`);
-        return false;
-      }
-      if (!Boolean(education.gradDate)) {
-        setHasUnmetRequired(`${education.id}-gradDate`);
-        return false;
-      }
-      return true;
-    });
-    if (isNotValid) {
+        if (!Boolean(education.gradDate)) {
+          setHasUnmetRequired(`${education.id}-gradDate`);
+          return false;
+        }
+        return true;
+      })
+    ) {
       return;
     }
 
@@ -404,6 +409,27 @@ export default function CreateJobseekerProfileEducationPage() {
       }),
     );
 
+    // Validate the project experience entries
+    if (
+      !projects.every((project) => {
+        if (project.skills.length === 0) {
+          setHasUnmetRequired(`${project.projectId}-skills`);
+          return false;
+        }
+        if (!Boolean(project.startDate)) {
+          setHasUnmetRequired(`${project.projectId}-startDate`);
+          return false;
+        }
+        if (!Boolean(project.completionDate)) {
+          setHasUnmetRequired(`${project.projectId}-completionDate`);
+          return false;
+        }
+        return true;
+      })
+    ) {
+      return;
+    }
+
     educationData = {
       ...educationData,
       userId: userId,
@@ -412,6 +438,8 @@ export default function CreateJobseekerProfileEducationPage() {
       certifications: certifications,
       projects: projects,
     };
+
+    console.log('ued', educations);
 
     await handleApiCall(educationData);
   };
@@ -508,6 +536,7 @@ export default function CreateJobseekerProfileEducationPage() {
             </legend>
             <ProjectExperiences
               data={data.projectExperiences}
+              hasUnmetRequired={hasUnmetRequired}
               onUpdate={handleUpdate}
               onRemove={removeProjectExperience}
             />

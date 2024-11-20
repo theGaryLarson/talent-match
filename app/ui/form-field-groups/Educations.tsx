@@ -2,7 +2,14 @@ import React, { memo, useCallback, useState } from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import { Button, Label } from 'flowbite-react';
-import { Radio, Checkbox } from '@mui/material';
+import {
+  Radio,
+  Checkbox,
+  FormControl,
+  FormLabel,
+  FormControlLabel,
+  RadioGroup,
+} from '@mui/material';
 import { MdClose } from 'react-icons/md';
 import {
   CollegeDegreeType,
@@ -149,59 +156,73 @@ export default memo(function Educations({
       </legend>
 
       <div>
-        What type of program is this education? *
-        <Label className="block">
-          <Radio
-            name="profile-creation-education-currently-enrolled"
-            checked={education[classEdLevel] === EducationLevel.HighSchool}
+        <FormControl component="fieldset">
+          <FormLabel
+            className="mb-2 mt-5"
+            id="profile-creation-education-currently-enrolled-label"
+            component="legend"
+            sx={{ color: '#000000ff' }}
+          >
+            What type of program is this education? *
+          </FormLabel>
+          <RadioGroup
+            aria-labelledby="profile-creation-education-currently-enrolled-label"
+            value={education[classEdLevel]}
             onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
-            required
-            value={EducationLevel.HighSchool}
-          />
-          High school
-        </Label>
-        <Label className="block">
-          <Radio
             name="profile-creation-education-currently-enrolled"
-            checked={education[classEdLevel] === EducationLevel.College}
-            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
-            required
-            value={EducationLevel.College}
-          />
-          College
-        </Label>
-        <Label className="block">
-          <Radio
-            name="profile-creation-education-currently-enrolled"
-            checked={education[classEdLevel] === EducationLevel.TrainingProgram}
-            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
-            required
-            value={EducationLevel.TrainingProgram}
-          />
-          Training program / Bootcamp
-        </Label>
-        <Label className="block">
-          <Radio
-            name="profile-creation-education-currently-enrolled"
-            checked={
-              education[classEdLevel] === EducationLevel.PreApprenticeship
-            }
-            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
-            required
-            value={EducationLevel.PreApprenticeship}
-          />
-          Pre-apprenticeship
-        </Label>
-        <Label className="block">
-          <Radio
-            name="profile-creation-education-currently-enrolled"
-            checked={education[classEdLevel] === EducationLevel.Other}
-            onChange={(e) => handleChange(index, classEdLevel, e.target.value)}
-            required
-            value={EducationLevel.Other}
-          />
-          Other
-        </Label>
+          >
+            <FormControlLabel
+              value={EducationLevel.HighSchool}
+              control={<Radio required />}
+              label="High school"
+              sx={{
+                '& .MuiFormControlLabel-asterisk': {
+                  display: 'none',
+                },
+              }}
+            />
+            <FormControlLabel
+              value={EducationLevel.College}
+              control={<Radio required />}
+              label="College"
+              sx={{
+                '& .MuiFormControlLabel-asterisk': {
+                  display: 'none',
+                },
+              }}
+            />
+            <FormControlLabel
+              value={EducationLevel.TrainingProgram}
+              control={<Radio required />}
+              label="Training program / Bootcamp"
+              sx={{
+                '& .MuiFormControlLabel-asterisk': {
+                  display: 'none',
+                },
+              }}
+            />
+            <FormControlLabel
+              value={EducationLevel.PreApprenticeship}
+              control={<Radio required />}
+              label="Pre-apprenticeship"
+              sx={{
+                '& .MuiFormControlLabel-asterisk': {
+                  display: 'none',
+                },
+              }}
+            />
+            <FormControlLabel
+              value={EducationLevel.Other}
+              control={<Radio required />}
+              label="Other"
+              sx={{
+                '& .MuiFormControlLabel-asterisk': {
+                  display: 'none',
+                },
+              }}
+            />
+          </RadioGroup>
+        </FormControl>
       </div>
       {education[classEdLevel] !== EducationLevel.HighSchool ? (
         ''
@@ -302,16 +323,14 @@ export default memo(function Educations({
               }
               errorMessage="A completion date is required"
             >
-              <div>
-                <DatePicker
-                  label={'Completion date *'}
-                  views={['month', 'year']}
-                  value={education[classEndDate] || null}
-                  onChange={(val: Dayjs | null) =>
-                    handleChange(index, classEndDate, val)
-                  }
-                />
-              </div>
+              <DatePicker
+                label={'Completion date *'}
+                views={['month', 'year']}
+                value={education[classEndDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classEndDate, val)
+                }
+              />
             </RequiredTooltip>
           </div>
           {/*<Label>*/}

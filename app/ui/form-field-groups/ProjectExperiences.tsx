@@ -7,6 +7,7 @@ import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { v4 as uuidv4 } from 'uuid';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import RequiredTooltip from '../components/mui/RequiredTooltip';
 
 const classNamePrefix = 'profile-creation-project-experience-group-';
 const classTitle = 'projectTitle';
@@ -46,12 +47,14 @@ export function defaultProjectExperienceData() {
 
 interface Props {
   data: ProjectExperienceData[];
+  hasUnmetRequired: string;
   onRemove: (uid: string) => void;
   onUpdate: (key: string, value: any) => void;
 }
 
 export default memo(function ProjectExperiences({
   data,
+  hasUnmetRequired,
   onRemove,
   onUpdate,
 }: Props) {
@@ -153,38 +156,65 @@ export default memo(function ProjectExperiences({
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid">
-        <TagsWithAutocomplete
-          apiSearchRoute="/api/skills/search/"
-          fieldLabel="Skills/Tech stack *"
-          id={
-            classNamePrefix +
-            projectExperience.projectId +
-            '-' +
-            classSkillsStack
+        <RequiredTooltip
+          open={
+            hasUnmetRequired ===
+              `${projectExperience.projectId}-${classSkillsStack}` &&
+            projectExperience[classSkillsStack].length === 0
           }
-          maxTags={10}
-          searchingText="Searching..."
-          noResultsText="No skills/tech stack found..."
-          onChange={function (ev, val) {
-            handleChange(index, classSkillsStack, val);
-          }}
-          searchPlaceholder="Skill (ex: Java)"
-          getTagLabel={(option: SkillDTO) => option.skill_name}
-        />
+          errorMessage="At least one skill is required"
+        >
+          <TagsWithAutocomplete
+            apiSearchRoute="/api/skills/search/"
+            fieldLabel="Skills/Tech stack *"
+            id={
+              classNamePrefix +
+              projectExperience.projectId +
+              '-' +
+              classSkillsStack
+            }
+            maxTags={10}
+            searchingText="Searching..."
+            noResultsText="No skills/tech stack found..."
+            onChange={function (ev, val) {
+              handleChange(index, classSkillsStack, val);
+            }}
+            searchPlaceholder="Skill (ex: Java)"
+            getTagLabel={(option: SkillDTO) => option.skill_name}
+          />
+        </RequiredTooltip>
       </div>
       <div className="profile-form-grid md:grid-cols-2">
-        <DatePicker
-          label={'Starting date *'}
-          views={['month', 'year']}
-          value={projectExperience[classStartingDate] || null}
-          onChange={(val) => handleChange(index, classStartingDate, val)}
-        />
-        <DatePicker
-          label={'Completion date *'}
-          views={['month', 'year']}
-          value={projectExperience[classCompletionDate] || null}
-          onChange={(val) => handleChange(index, classCompletionDate, val)}
-        />
+        <RequiredTooltip
+          open={
+            hasUnmetRequired ===
+              `${projectExperience.projectId}-${classStartingDate}` &&
+            !Boolean(projectExperience[classStartingDate])
+          }
+          errorMessage="A starting date is required"
+        >
+          <DatePicker
+            label={'Starting date *'}
+            views={['month', 'year']}
+            value={projectExperience[classStartingDate] || null}
+            onChange={(val) => handleChange(index, classStartingDate, val)}
+          />
+        </RequiredTooltip>
+        <RequiredTooltip
+          open={
+            hasUnmetRequired ===
+              `${projectExperience.projectId}-${classCompletionDate}` &&
+            !Boolean(projectExperience[classCompletionDate])
+          }
+          errorMessage="A completion date is required"
+        >
+          <DatePicker
+            label={'Completion date *'}
+            views={['month', 'year']}
+            value={projectExperience[classCompletionDate] || null}
+            onChange={(val) => handleChange(index, classCompletionDate, val)}
+          />
+        </RequiredTooltip>
         {/*These were duplicated but wasn't sure if there were subtle changes that the dev wanted to look at*/}
         {/*<InputTextWithLabel*/}
         {/*  id={classNamePrefix + projectExperience.uid + "-" + classReferenceUrl}*/}

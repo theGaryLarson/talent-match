@@ -68,6 +68,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
   let workExperienceData: JsWorkExpDTO = { ...workExperienceStoreData };
   const [error, setError] = useState<string | null>(null);
 
+  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
+
   const [data, setData] = useState<Data>({
     yearsWorkExperience: workExperienceData.yearsWorkExperience,
     monthsInternshipExperience:
@@ -155,13 +157,16 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     dispatch(setPageDirty('work-experience'));
   }
 
-  const handleUpdate = useCallback((key: string, value: any) => {
-    setData((prevData) => ({
-      ...prevData,
-      [key]: value,
-    }));
-    dispatch(setPageDirty('work-experience'));
-  }, [dispatch]);
+  const handleUpdate = useCallback(
+    (key: string, value: any) => {
+      setData((prevData) => ({
+        ...prevData,
+        [key]: value,
+      }));
+      dispatch(setPageDirty('work-experience'));
+    },
+    [dispatch],
+  );
 
   const handleInputUpdate = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -262,7 +267,6 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
 
     const userId = session.user.id!;
     const jobseekerId = session.user.jobseekerId!;
-    devLog(data.workExperiences);
     const workExperiences = data.workExperiences?.map((workExp) => ({
       workId: workExp.workId, //fixme: generate uuid on the backend or is this fine?
       jobseekerId: jobseekerId,
@@ -272,10 +276,30 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       isInternship: false,
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
-      startDate: workExp.startDate!.toDate(),
+      startDate: workExp.startDate ? workExp.startDate.toDate() : null,
       endDate: workExp.endDate ? workExp.endDate.toDate() : null,
       responsibilities: workExp.responsibilities,
     }));
+
+    // Validate the work experience entries
+    if (
+      !workExperiences.every((workExperience) => {
+        if (!Boolean(workExperience.startDate)) {
+          setHasUnmetRequired(`${workExperience.workId}-startDate`);
+          return false;
+        }
+        if (
+          !Boolean(workExperience.endDate) &&
+          !Boolean(workExperience.isCurrentJob)
+        ) {
+          setHasUnmetRequired(`${workExperience.workId}-endDate`);
+          return false;
+        }
+        return true;
+      })
+    ) {
+      return;
+    }
 
     const internshipExperiences = data.internshipExperiences?.map(
       (internshipExp) => ({
@@ -287,11 +311,30 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         isInternship: true,
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
-        startDate: internshipExp.startDate!.toDate(),
+        startDate: internshipExp.startDate
+          ? internshipExp.startDate.toDate()
+          : null,
         endDate: internshipExp.endDate ? internshipExp.endDate.toDate() : null,
         responsibilities: internshipExp.responsibilities,
       }),
     );
+
+    // Validate the internship experience entries
+    if (
+      !internshipExperiences.every((internshipExperience) => {
+        if (!Boolean(internshipExperience.startDate)) {
+          setHasUnmetRequired(`${internshipExperience.workId}-startDate`);
+          return false;
+        }
+        if (!Boolean(internshipExperience.endDate)) {
+          setHasUnmetRequired(`${internshipExperience.workId}-endDate`);
+          return false;
+        }
+        return true;
+      })
+    ) {
+      return;
+    }
 
     workExperienceData.userId = userId;
     workExperienceData.yearsWorkExperience =
@@ -371,6 +414,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             )}
             <WorkExperiences
               data={data.workExperiences}
+              hasUnmetRequired={hasUnmetRequired}
               onUpdate={handleUpdate}
               onRemove={removeWorkExperience}
             />
@@ -404,6 +448,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             )}
             <InternshipExperiences
               data={data.internshipExperiences as InternshipExperienceData[]}
+              hasUnmetRequired={hasUnmetRequired}
               onUpdate={handleUpdate}
               onRemove={removeInternshipExperience}
             />

@@ -24,6 +24,7 @@ import {
 import { devLog } from '@/app/lib/utils';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
+import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
 
 export default function CreateJobseekerProfileShowcasePage() {
   const router = useRouter();
@@ -34,6 +35,9 @@ export default function CreateJobseekerProfileShowcasePage() {
   );
   const showcaseData = { ...showcaseStoreData };
   const [error, setError] = useState<string | null>(null);
+
+  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
+
   const [introduction, setIntroduction] = useState('');
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [currentJobTitle, setCurrentJobTitle] = useState('');
@@ -99,6 +103,11 @@ export default function CreateJobseekerProfileShowcasePage() {
     event.preventDefault();
     if (!session?.user?.id) {
       console.error('User session is not available.');
+      return;
+    }
+
+    if (skills.length === 0) {
+      setHasUnmetRequired('showcase-skills');
       return;
     }
 
@@ -186,23 +195,30 @@ export default function CreateJobseekerProfileShowcasePage() {
               <h2>Skills</h2>
             </legend>
             <div className="profile-form-grid">
-              <TagsWithAutocomplete
-                apiSearchRoute="/api/skills/search/"
-                fieldLabel="Select your skills *"
-                id="profile-creation-showcase-skills"
-                maxTags={5}
-                searchingText="Searching..."
-                noResultsText="No skills found..."
-                onChange={function (ev, val) {
-                  if (val.every((skill) => typeof skill !== 'string')) {
-                    setSkills(val as SkillDTO[]);
-                  }
-                }}
-                searchPlaceholder="Skill (ex: Java)"
-                addNewTags={fetchLoadedTags}
-                getTagLabel={(option: SkillDTO) => option.skill_name}
-                getTagLink={(option: SkillDTO) => option.skill_info_url}
-              />
+              <RequiredTooltip
+                open={
+                  hasUnmetRequired === 'showcase-skills' && skills.length === 0
+                }
+                errorMessage="At least one skill is required"
+              >
+                <TagsWithAutocomplete
+                  apiSearchRoute="/api/skills/search/"
+                  fieldLabel="Select your skills *"
+                  id="profile-creation-showcase-skills"
+                  maxTags={5}
+                  searchingText="Searching..."
+                  noResultsText="No skills found..."
+                  onChange={function (ev, val) {
+                    if (val.every((skill) => typeof skill !== 'string')) {
+                      setSkills(val as SkillDTO[]);
+                    }
+                  }}
+                  searchPlaceholder="Skill (ex: Java)"
+                  addNewTags={fetchLoadedTags}
+                  getTagLabel={(option: SkillDTO) => option.skill_name}
+                  getTagLink={(option: SkillDTO) => option.skill_info_url}
+                />
+              </RequiredTooltip>
               <p>Select your top 5 skills from your skills list</p>
 
               <TextFieldWithSeparatedLabel
