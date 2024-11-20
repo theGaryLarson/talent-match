@@ -72,7 +72,6 @@ export const initialState: JobseekerState = {
     portfolioUrl: null,
     portfolioPassword: null,
     video_url: null,
-    resume_url: null,
   },
   preferences: {
     userId: '',
