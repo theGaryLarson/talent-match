@@ -2459,7 +2459,7 @@ async function seedCaseMgmtNotes() {
             noteContent: faker.datatype.boolean()
                 ? faker.lorem.sentences(3, '\n')
                 : faker.lorem.paragraphs({ min: 1, max: 3 }, '\r\n'),
-            CareerPrepAssessment: {
+            PrepAssessment: {
                 connect: {
                     jobseekerId: mps.jobseekerId,
                 },
