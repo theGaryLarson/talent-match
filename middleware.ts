@@ -28,6 +28,7 @@ export default auth((req) => {
       '/api/skills/search/',
       '/api/employers/technology-areas',
       '/api/users/avatar/upload',
+      '/api/assessment/submit',
     ],
     [Role.EMPLOYER]: [
       '/edit-profile/employer/',
