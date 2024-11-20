@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 export default function NoteCard(props:NoteDTO){
     const router = useRouter();
     return(
-        <div className="border">
+        <div >
             <h3 className="text-sm text-gray-600">Author: {props.authorName} Posted: {props.updatedAt} <button onClick={()=>{
                 fetch('/api/admin/career-prep/delete-student-notes/'+props.id, {
             method: 'DELETE', 
@@ -16,7 +16,7 @@ export default function NoteCard(props:NoteDTO){
             }
             }>delete</button></h3>
             <hr/>
-        <div dangerouslySetInnerHTML={{__html:props.noteContent}}></div>
+        <div className="ql-editor border" dangerouslySetInnerHTML={{__html:props.noteContent}}></div>
         </div>
    );
 }

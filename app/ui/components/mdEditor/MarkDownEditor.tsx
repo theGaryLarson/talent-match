@@ -18,7 +18,7 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
       ['bold', 'italic', 'underline', 'strike'],
       [{ align: [] }],
   
-      [{ list: 'ordered'}, { list: 'bullet' }],
+      [{ list: 'ordered'}],
       [{ indent: '-1'}, { indent: '+1' }],
   
       [{ size: ['small', false, 'large', 'huge'] }],
@@ -42,7 +42,7 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
     'color', 'background',
     'clean',
   ];
-    const { quill, quillRef } = useQuill({ theme, modules, formats, placeholder });;
+    const { quill, quillRef } = useQuill();;
     const router = useRouter();
     React.useEffect(() => {
       if (quill) {
