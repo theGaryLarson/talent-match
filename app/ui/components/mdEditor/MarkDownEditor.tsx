@@ -7,9 +7,9 @@ import { useQuill } from 'react-quilljs';
 // or const { useQuill } = require('react-quilljs');
 
 import 'quill/dist/quill.snow.css'; // Add css for snow theme
-import { CreateNoteDTO, NoteType } from '@/app/lib/admin/careerPrep';
+import { CreateNoteDTO, NoteType, UpdateNoteDTO } from '@/app/lib/admin/careerPrep';
 // or import 'quill/dist/quill.bubble.css'; // Add css for bubble theme
-export default function MarkDownEditor (props:{title:string, noteType:NoteType, jobseekerId:string, noteid?:string}){
+export default function MarkDownEditor (props:{title:string, noteType:NoteType, jobseekerId:string, noteid?:string, starterContent?:string, setEdit?:Function}){
   const theme = 'snow';
   // const theme = 'bubble';
 
@@ -46,6 +46,7 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
     const router = useRouter();
     React.useEffect(() => {
       if (quill) {
+        quill.clipboard.dangerouslyPasteHTML(props.starterContent??'');
         quill.on('text-change', (delta, oldDelta, source) => {
           console.log('Text change!');
           console.log(quill.getText()); // Get text only
@@ -86,11 +87,45 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
           console.error('Request failed', error);
         }
       };
-    const handleDelete =async (e: React.FormEvent) =>{
-      //todo
+      const deleteNote = ()=>{
+        fetch('/api/admin/career-prep/delete-student-notes/'+(props.noteid??''), {
+    method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+    router.refresh();
     }
     const handleUpdate = async (e:React.FormEvent) =>{
-      //todo
+      e.preventDefault();
+        const content = quill?.root.innerHTML; // Get editor content as HTML
+        const req:UpdateNoteDTO = {
+          noteId: props.noteid??'',
+          noteType: props.noteType,
+          noteContent: content ??''
+        }
+        try {
+          if(props.setEdit == undefined){
+            return
+          }
+          const response = await fetch('/api/admin/career-prep/update-student-notes', {//still needs backend api
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(req),
+          });
+    
+          if (response.ok) {
+            console.log('Content submitted successfully');
+            props.setEdit(false)
+            router.refresh();
+          } else {
+            console.error('Error submitting content');
+          }
+        } catch (error) {
+          console.error('Request failed', error);
+        }
     }
     return (
         <div className='h-[500px]'>
@@ -98,7 +133,7 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
         <div ref={quillRef} />
         {props.noteid?
         <>
-        <button className='border w-[400px] h-[60px] bg-gray-200' onClick={handleDelete}>Delete Note</button>
+        <button className='border w-[400px] h-[60px] bg-gray-200' onClick={deleteNote}>Delete Note</button>
         <button className='border w-[400px] h-[60px] bg-blue-background text-white' onClick={handleUpdate}>Update Note</button>
         </>
         :
