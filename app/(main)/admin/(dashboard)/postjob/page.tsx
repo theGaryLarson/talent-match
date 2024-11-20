@@ -116,7 +116,7 @@ export default function Page() {
         <select name='sector' id='sector' required>
           <option value={''}>--Please Select a Sector--</option>
           { 
-            industrySectors?.map((sector)=> <option value={sector.industry_sector_id}>{sector.sector_title}</option>)
+            industrySectors?.map((sector)=> <option key={sector.industry_sector_id} value={sector.industry_sector_id}>{sector.sector_title}</option>)
           } 
         </select>
       </div>
@@ -126,7 +126,7 @@ export default function Page() {
         <select name='area' id='area' required>
           <option value={''}>--Please Select an Area--</option>
           { 
-            techAres?.map((area)=> <option value={area.id}>{area.title}</option>)
+            techAres?.map((area)=> <option key={area.id} value={area.id}>{area.title}</option>)
           } 
         </select>
       </div>

@@ -9,7 +9,7 @@ import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css'; // Add css for snow theme
 import { CreateNoteDTO, NoteType } from '@/app/lib/admin/careerPrep';
 // or import 'quill/dist/quill.bubble.css'; // Add css for bubble theme
-export default (props:{title:string, noteType:NoteType, jobseekerId:string, noteid?:string}) => {
+export default function MarkDownEditor (props:{title:string, noteType:NoteType, jobseekerId:string, noteid?:string}){
     const { quill, quillRef } = useQuill();
     const router = useRouter();
     React.useEffect(() => {
