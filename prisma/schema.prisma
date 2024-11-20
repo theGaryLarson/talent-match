@@ -473,7 +473,6 @@ model CaseMgmt {
   updatedAt              DateTime             @updatedAt @db.DateTime
   PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
   CaseManager            User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
-  jobseekers             jobseekers?          @relation(fields: [jobseekersJobseeker_id], references: [jobseeker_id])
   jobseekersJobseeker_id String?              @db.UniqueIdentifier
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
@@ -481,16 +480,16 @@ model CaseMgmt {
 }
 
 model CaseMgmtNotes {
-  id                   String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()"))
-  jobseekerId          String               @db.UniqueIdentifier
-  date                 DateTime?            @db.DateTime
-  noteType             String               @db.VarChar(15)
-  noteContent          String               @db.NText
-  createdBy            String               @db.UniqueIdentifier
-  createdAt            DateTime             @default(now()) @db.DateTime
-  updatedAt            DateTime             @updatedAt @db.DateTime
-  CareerPrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
-  Author               User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
+  id             String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()"))
+  jobseekerId    String               @db.UniqueIdentifier
+  date           DateTime?            @db.DateTime
+  noteType       String               @db.VarChar(15)
+  noteContent    String               @db.NText
+  createdBy      String               @db.UniqueIdentifier
+  createdAt      DateTime             @default(now()) @db.DateTime
+  updatedAt      DateTime             @updatedAt @db.DateTime
+  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
+  Author         User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
 }
 
 // model Meeting {
@@ -608,7 +607,6 @@ model jobseekers {
   careerPrepTrackRecommendation    String?                   @db.VarChar(25)
   createdAt                        DateTime                  @default(now()) @map("created_at")
   updatedAt                        DateTime?                 @updatedAt @map("updated_at")
-  caseMgmt                         CaseMgmt[]
   certificates                     certificates[]
   jobseeker_has_skills             jobseeker_has_skills[]
   pathways                         pathways?                 @relation(fields: [targeted_pathway], references: [pathway_id], onUpdate: NoAction, map: "fk_jobseeker_Pathways1")
