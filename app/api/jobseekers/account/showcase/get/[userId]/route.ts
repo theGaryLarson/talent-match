@@ -33,7 +33,6 @@ export async function GET(
         intro_headline: true,
         portfolio_url: true,
         portfolio_password: true,
-        resume_url: true,
         video_url: true,
       },
     });
@@ -56,7 +55,6 @@ export async function GET(
         introduction: showcase.intro_headline,
         portfolioUrl: showcase.portfolio_url,
         portfolioPassword: showcase.portfolio_password,
-        resume_url: showcase.resume_url,
         video_url: showcase.video_url,
         skills: mappedSkills,
       };
