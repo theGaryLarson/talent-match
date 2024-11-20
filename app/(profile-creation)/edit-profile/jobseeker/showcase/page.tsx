@@ -24,7 +24,7 @@ import {
 import { devLog } from '@/app/lib/utils';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
-import { BlobPrefix } from '@/app/lib/services/azureBlobService';
+import {BlobPrefix, getResumeUrl} from '@/app/lib/services/azureBlobService';
 
 export default function CreateJobseekerProfileShowcasePage() {
   const router = useRouter();
@@ -38,9 +38,7 @@ export default function CreateJobseekerProfileShowcasePage() {
   const [introduction, setIntroduction] = useState(
     showcaseData.introduction ?? '',
   );
-  const [resumeUrl, setResumeUrl] = useState<string | null>(
-    showcaseData.resume_url ?? '',
-  );
+  const [resumeUrl, setResumeUrl] = useState<string | null>();
   const [currentJobTitle, setCurrentJobTitle] = useState('');
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
@@ -54,6 +52,15 @@ export default function CreateJobseekerProfileShowcasePage() {
     showcaseData.portfolioPassword ?? '',
   );
   const [videoUrl, setVideoUrl] = useState(showcaseData.video_url ?? '');
+
+
+  // useEffect( () => {
+  //   const func = async () => {
+  //     setResumeUrl(await getResumeUrl(session?.user?.id!))
+  //   }
+  //   func();
+  //
+  // }, [resumeUrl]);
 
   useEffect(() => {
     if (session?.user?.id && status === 'authenticated') {
@@ -83,10 +90,7 @@ export default function CreateJobseekerProfileShowcasePage() {
               }
 
               console.log(fetchedData);
-              if (fetchedData.resume_url) {
-                showcaseData.resume_url = fetchedData.resume_url;
-                setResumeUrl(showcaseData.resume_url);
-              }
+
               if (fetchedData.portfolioUrl) {
                 showcaseData.portfolioUrl = fetchedData.portfolioUrl;
                 setPortfolioUrl(showcaseData.portfolioUrl);
@@ -125,7 +129,6 @@ export default function CreateJobseekerProfileShowcasePage() {
     showcaseData.portfolioPassword = portfolioPassword;
     showcaseData.video_url = videoUrl;
     showcaseData.introduction = introduction;
-    // showcaseData.resume_url = resumeUrl;
 
     try {
       const response = await fetch('/api/jobseekers/account/showcase/upsert', {
