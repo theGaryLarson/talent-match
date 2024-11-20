@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import { Button, Label } from 'flowbite-react';
@@ -9,10 +9,12 @@ import {
   HighSchoolDegreeType,
   EducationLevel,
   PreAEduSystem,
-  JsEducationInfoDTO, ProgramEnrollmentStatus,
+  JsEducationInfoDTO,
+  ProgramEnrollmentStatus,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { edu_providers, educators, provider_programs } from '@prisma/client';
 import TextFieldWithAutocomplete from '../components/mui/TextFieldWithAutocomplete';
+import RequiredTooltip from '../components/mui/RequiredTooltip';
 import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -93,11 +95,17 @@ export function defaultEducationData() {
 
 interface Props {
   data: EducationData[];
+  hasUnmetRequired: string;
   onRemove: (uid: string) => void;
   onUpdate: (key: string, value: any) => void;
 }
 
-export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
+export default memo(function Educations({
+  data,
+  hasUnmetRequired,
+  onRemove,
+  onUpdate,
+}: Props) {
   const handleChange = useCallback(
     <K extends keyof EducationData>(index: number, key: K, value: any) => {
       const changedEducations: EducationData[] = [...data];
@@ -200,21 +208,30 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
       ) : (
         <div id="profile-creation-education-high-school-fields">
           <div className="profile-form-grid">
-            <TextFieldWithAutocomplete
-              apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="What is your high school? *"
-              id="profile-creation-education-high-school-name"
-              searchingText="Searching..."
-              noResultsText="No education providers found..."
-              value={education[classEdProviderObject] ?? ''}
-              onChange={(e, val) =>
-                handleChange(index, classEdProviderObject, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired ===
+                  `${education.id}-${classEdProviderObject}` &&
+                !Boolean(education[classEdProviderObject])
               }
-              searchPlaceholder="High school name"
-              getOptionLabel={(option: EducationProviderDTO) =>
-                option.name ?? ''
-              }
-            />
+              errorMessage="A high school name is required"
+            >
+              <TextFieldWithAutocomplete
+                apiSearchRoute="/api/edu-providers/search/"
+                fieldLabel="What is your high school? *"
+                id="profile-creation-education-high-school-name"
+                searchingText="Searching..."
+                noResultsText="No education providers found..."
+                value={education[classEdProviderObject] ?? ''}
+                onChange={(e, val) =>
+                  handleChange(index, classEdProviderObject, val)
+                }
+                searchPlaceholder="High school name"
+                getOptionLabel={(option: EducationProviderDTO) =>
+                  option.name ?? ''
+                }
+              />
+            </RequiredTooltip>
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/high-school/search/"
               fieldLabel="What is your program?"
@@ -245,40 +262,57 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
 
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
-
           </div>
           <div className="profile-form-grid md:grid-cols-2">
-            <DatePicker
-              label={'Starting date *'}
-              views={['month', 'year']}
-              value={education[classStartDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classStartDate, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classStartDate}` &&
+                !Boolean(education[classStartDate])
               }
-            />
-            <DatePicker
-              label={'Completion date *'}
-              views={['month', 'year']}
-              value={education[classEndDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classEndDate, val)
+              errorMessage="A starting date is required"
+            >
+              <DatePicker
+                label={'Starting date *'}
+                views={['month', 'year']}
+                value={education[classStartDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classStartDate, val)
+                }
+              />
+            </RequiredTooltip>
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classEndDate}` &&
+                !Boolean(education[classEndDate])
               }
-            />
+              errorMessage="A completion date is required"
+            >
+              <div>
+                <DatePicker
+                  label={'Completion date *'}
+                  views={['month', 'year']}
+                  value={education[classEndDate] || null}
+                  onChange={(val: Dayjs | null) =>
+                    handleChange(index, classEndDate, val)
+                  }
+                />
+              </div>
+            </RequiredTooltip>
           </div>
           {/*<Label>*/}
           {/*  <Checkbox*/}
@@ -310,21 +344,30 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
       ) : (
         <div id="profile-creation-education-college-fields">
           <div className="profile-form-grid">
-            <TextFieldWithAutocomplete
-              apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="What is your college? *"
-              id="profile-creation-education-college-name"
-              searchingText="Searching..."
-              noResultsText="No education providers found..."
-              value={education[classEdProviderObject] ?? ''}
-              onChange={(e, val) =>
-                handleChange(index, classEdProviderObject, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired ===
+                  `${education.id}-${classEdProviderObject}` &&
+                !Boolean(education[classEdProviderObject])
               }
-              searchPlaceholder="College name"
-              getOptionLabel={(option: EducationProviderDTO) =>
-                option.name ?? ''
-              }
-            />
+              errorMessage="A college name is required"
+            >
+              <TextFieldWithAutocomplete
+                apiSearchRoute="/api/edu-providers/search/"
+                fieldLabel="What is your college? *"
+                id="profile-creation-education-college-name"
+                searchingText="Searching..."
+                noResultsText="No education providers found..."
+                value={education[classEdProviderObject] ?? ''}
+                onChange={(e, val) =>
+                  handleChange(index, classEdProviderObject, val)
+                }
+                searchPlaceholder="College name"
+                getOptionLabel={(option: EducationProviderDTO) =>
+                  option.name ?? ''
+                }
+              />
+            </RequiredTooltip>
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/college/search/"
               fieldLabel="What is your program?"
@@ -354,39 +397,55 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             </SelectOptionsWithLabel>
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
           <div className="profile-form-grid md:grid-cols-2">
-            <DatePicker
-              label={'Starting date *'}
-              views={['month', 'year']}
-              value={education[classStartDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classStartDate, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classStartDate}` &&
+                !Boolean(education[classStartDate])
               }
-            />
-            <DatePicker
-              label={'Completion date *'}
-              views={['month', 'year']}
-              value={education[classEndDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classEndDate, val)
+              errorMessage="A starting date is required"
+            >
+              <DatePicker
+                label={'Starting date *'}
+                views={['month', 'year']}
+                value={education[classStartDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classStartDate, val)
+                }
+              />
+            </RequiredTooltip>
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classEndDate}` &&
+                !Boolean(education[classEndDate])
               }
-            />
+              errorMessage="A completion date is required"
+            >
+              <DatePicker
+                label={'Completion date *'}
+                views={['month', 'year']}
+                value={education[classEndDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classEndDate, val)
+                }
+              />
+            </RequiredTooltip>
           </div>
           {/*<Label>*/}
           {/*  <Checkbox*/}
@@ -418,21 +477,30 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
       ) : (
         <div id="profile-creation-education-training-program-fields">
           <div className="profile-form-grid">
-            <TextFieldWithAutocomplete
-              apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="Who is your training provider? *"
-              id="profile-creation-education-training-provider-name"
-              searchingText="Searching..."
-              noResultsText="No education providers found..."
-              value={education[classEdProviderObject] ?? ''}
-              onChange={(e, val) =>
-                handleChange(index, classEdProviderObject, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired ===
+                  `${education.id}-${classEdProviderObject}` &&
+                !Boolean(education[classEdProviderObject])
               }
-              searchPlaceholder="Training provider name"
-              getOptionLabel={(option: EducationProviderDTO) =>
-                option.name ?? ''
-              }
-            />
+              errorMessage="A training provider name is required"
+            >
+              <TextFieldWithAutocomplete
+                apiSearchRoute="/api/edu-providers/search/"
+                fieldLabel="Who is your training provider? *"
+                id="profile-creation-education-training-provider-name"
+                searchingText="Searching..."
+                noResultsText="No education providers found..."
+                value={education[classEdProviderObject] ?? ''}
+                onChange={(e, val) =>
+                  handleChange(index, classEdProviderObject, val)
+                }
+                searchPlaceholder="Training provider name"
+                getOptionLabel={(option: EducationProviderDTO) =>
+                  option.name ?? ''
+                }
+              />
+            </RequiredTooltip>
             <TextFieldWithAutocomplete
               apiSearchRoute="/api/edu-providers/programs/training-programs/search/"
               fieldLabel="What is your training program?"
@@ -448,39 +516,55 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
           <div className="profile-form-grid md:grid-cols-2">
-            <DatePicker
-              label={'Starting date *'}
-              views={['month', 'year']}
-              value={education[classStartDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classStartDate, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classStartDate}` &&
+                !Boolean(education[classStartDate])
               }
-            />
-            <DatePicker
-              label={'Completion date *'}
-              views={['month', 'year']}
-              value={education[classEndDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classEndDate, val)
+              errorMessage="A starting date is required"
+            >
+              <DatePicker
+                label={'Starting date *'}
+                views={['month', 'year']}
+                value={education[classStartDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classStartDate, val)
+                }
+              />
+            </RequiredTooltip>
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classEndDate}` &&
+                !Boolean(education[classEndDate])
               }
-            />
+              errorMessage="A completion date is required"
+            >
+              <DatePicker
+                label={'Completion date *'}
+                views={['month', 'year']}
+                value={education[classEndDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classEndDate, val)
+                }
+              />
+            </RequiredTooltip>
           </div>
           {/*<Label>*/}
           {/*  <Checkbox*/}
@@ -512,21 +596,30 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
       ) : (
         <div id="profile-creation-education-preapprenticeship-fields">
           <div className="profile-form-grid">
-            <TextFieldWithAutocomplete
-              apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="Who is your pre-apprenticeship provider? *"
-              id="profile-creation-education-preapprenticeship-name"
-              searchingText="Searching..."
-              noResultsText="No education providers found..."
-              value={education[classEdProviderObject] ?? ''}
-              onChange={(e, val) =>
-                handleChange(index, classEdProviderObject, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired ===
+                  `${education.id}-${classEdProviderObject}` &&
+                !Boolean(education[classEdProviderObject])
               }
-              searchPlaceholder="Pre-apprenticeship name (e.g.: Computing for All)"
-              getOptionLabel={(option: EducationProviderDTO) =>
-                option.name ?? ''
-              }
-            />
+              errorMessage="A pre-apprenticeship provider name is required"
+            >
+              <TextFieldWithAutocomplete
+                apiSearchRoute="/api/edu-providers/search/"
+                fieldLabel="Who is your pre-apprenticeship provider? *"
+                id="profile-creation-education-preapprenticeship-name"
+                searchingText="Searching..."
+                noResultsText="No education providers found..."
+                value={education[classEdProviderObject] ?? ''}
+                onChange={(e, val) =>
+                  handleChange(index, classEdProviderObject, val)
+                }
+                searchPlaceholder="Pre-apprenticeship name (e.g.: Computing for All)"
+                getOptionLabel={(option: EducationProviderDTO) =>
+                  option.name ?? ''
+                }
+              />
+            </RequiredTooltip>
             <SelectOptionsWithLabel
               id="profile-creation-education-preapprenticeship-system"
               className="w-full"
@@ -556,39 +649,55 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
           <div className="profile-form-grid md:grid-cols-2">
-            <DatePicker
-              label={'Starting date *'}
-              views={['month', 'year']}
-              value={education[classStartDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classStartDate, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classStartDate}` &&
+                !Boolean(education[classStartDate])
               }
-            />
-            <DatePicker
-              label={'Completion date *'}
-              views={['month', 'year']}
-              value={education[classEndDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classEndDate, val)
+              errorMessage="A starting date is required"
+            >
+              <DatePicker
+                label={'Starting date *'}
+                views={['month', 'year']}
+                value={education[classStartDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classStartDate, val)
+                }
+              />
+            </RequiredTooltip>
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classEndDate}` &&
+                !Boolean(education[classEndDate])
               }
-            />
+              errorMessage="A completion date is required"
+            >
+              <DatePicker
+                label={'Completion date *'}
+                views={['month', 'year']}
+                value={education[classEndDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classEndDate, val)
+                }
+              />
+            </RequiredTooltip>
           </div>
           {/*<Label>*/}
           {/*  <Checkbox*/}
@@ -620,69 +729,104 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
       ) : (
         <div id="profile-creation-education-other-fields">
           <div className="profile-form-grid">
-            <TextFieldWithAutocomplete
-              apiSearchRoute="/api/edu-providers/search/"
-              fieldLabel="Who is your education provider? *"
-              id="profile-creation-education-other-provider-name"
-              searchingText="Searching..."
-              noResultsText="No education providers found..."
-              value={education[classEdProviderObject] ?? ''}
-              onChange={(e, val) =>
-                handleChange(index, classEdProviderObject, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired ===
+                  `${education.id}-${classEdProviderObject}` &&
+                !Boolean(education[classEdProviderObject])
               }
-              searchPlaceholder="Education provider name"
-              getOptionLabel={(option: EducationProviderDTO) =>
-                option.name ?? ''
+              errorMessage="An education provider name is required"
+            >
+              <TextFieldWithAutocomplete
+                apiSearchRoute="/api/edu-providers/search/"
+                fieldLabel="Who is your education provider? *"
+                id="profile-creation-education-other-provider-name"
+                searchingText="Searching..."
+                noResultsText="No education providers found..."
+                value={education[classEdProviderObject] ?? ''}
+                onChange={(e, val) =>
+                  handleChange(index, classEdProviderObject, val)
+                }
+                searchPlaceholder="Education provider name"
+                getOptionLabel={(option: EducationProviderDTO) =>
+                  option.name ?? ''
+                }
+              />
+            </RequiredTooltip>
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classProgramObject}` &&
+                !Boolean(education[classProgramObject])
               }
-            />
-            <TextFieldWithAutocomplete
-              apiSearchRoute="/api/edu-providers/programs/other/search/"
-              fieldLabel="What is your education provider's program? *"
-              id="profile-creation-education-other-provider-program-name"
-              searchingText="Searching..."
-              noResultsText="No education provider programs found..."
-              value={education[classProgramObject] ?? ''}
-              onChange={(e, val) =>
-                handleChange(index, classProgramObject, val)
-              }
-              searchPlaceholder="Education provider program name"
-              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
-            />
+              errorMessage="An education provider program name is required"
+            >
+              <TextFieldWithAutocomplete
+                apiSearchRoute="/api/edu-providers/programs/other/search/"
+                fieldLabel="What is your education provider's program? *"
+                id="profile-creation-education-other-provider-program-name"
+                searchingText="Searching..."
+                noResultsText="No education provider programs found..."
+                value={education[classProgramObject] ?? ''}
+                onChange={(e, val) =>
+                  handleChange(index, classProgramObject, val)
+                }
+                searchPlaceholder="Education provider program name"
+                getOptionLabel={(option: GeneralProgramDTO) =>
+                  option.title ?? ''
+                }
+              />
+            </RequiredTooltip>
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
-                id="profile-creation-education-enrollment-status"
-                className="w-full"
-                options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
-                    (value) => ({ label: value, value }),
-                )}
-                placeholder="Select enrollment status"
-                onChange={(e) =>
-                    handleChange(index, classEnrollmentStatus, e.target.value)
-                }
-                required
-                value={education[classEnrollmentStatus] as string}
+              id="profile-creation-education-enrollment-status"
+              className="w-full"
+              options={(Object.values(ProgramEnrollmentStatus) as string[]).map(
+                (value) => ({ label: value, value }),
+              )}
+              placeholder="Select enrollment status"
+              onChange={(e) =>
+                handleChange(index, classEnrollmentStatus, e.target.value)
+              }
+              required
+              value={education[classEnrollmentStatus] as string}
             >
               What is your enrollment status? *
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
           <div className="profile-form-grid md:grid-cols-2">
-            <DatePicker
-              label={'Starting date *'}
-              views={['month', 'year']}
-              value={education[classStartDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classStartDate, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classStartDate}` &&
+                !Boolean(education[classStartDate])
               }
-            />
-            <DatePicker
-              label={'Completion date *'}
-              views={['month', 'year']}
-              value={education[classEndDate] || null}
-              onChange={(val: Dayjs | null) =>
-                handleChange(index, classEndDate, val)
+              errorMessage="A starting date is required"
+            >
+              <DatePicker
+                label={'Starting date *'}
+                views={['month', 'year']}
+                value={education[classStartDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classStartDate, val)
+                }
+              />
+            </RequiredTooltip>
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classEndDate}` &&
+                !Boolean(education[classEndDate])
               }
-            />
+              errorMessage="A completion date is required"
+            >
+              <DatePicker
+                label={'Completion date *'}
+                views={['month', 'year']}
+                value={education[classEndDate] || null}
+                onChange={(val: Dayjs | null) =>
+                  handleChange(index, classEndDate, val)
+                }
+              />
+            </RequiredTooltip>
           </div>
           {/*<Label>*/}
           {/*  <Checkbox*/}

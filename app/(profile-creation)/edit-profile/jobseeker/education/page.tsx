@@ -64,6 +64,7 @@ export default function CreateJobseekerProfileEducationPage() {
   );
   let educationData = { ...educationStoreData };
   const [error, setError] = useState<string | null>(null);
+  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
 
   const [highestLevelOfStudy, setHighestLevelOfStudy] = useState(
     educationData.highestLevelOfStudy,
@@ -316,10 +317,13 @@ export default function CreateJobseekerProfileEducationPage() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
     if (!session?.user?.id) {
       console.error('User session is not available.');
       return;
     }
+
+    setHasUnmetRequired('');
 
     const userId = session.user.id;
     const form = event.currentTarget as HTMLFormElement;
@@ -343,6 +347,33 @@ export default function CreateJobseekerProfileEducationPage() {
         isTechnicalDegree: ed.isTechDegree || false,
       }),
     );
+
+    const isNotValid = !educations.every((education) => {
+      if (
+        !Boolean(education.edProviderId) &&
+        !Boolean(education.edProviderName)
+      ) {
+        setHasUnmetRequired(`${education.id}-edProviderObject`);
+        return false;
+      } else if (education.edLevel === EducationLevel.Other) {
+        if (!Boolean(education.programId) && !Boolean(education.programName)) {
+          setHasUnmetRequired(`${education.id}-programObject`);
+          return false;
+        }
+      }
+      if (!Boolean(education.startDate)) {
+        setHasUnmetRequired(`${education.id}-startDate`);
+        return false;
+      }
+      if (!Boolean(education.gradDate)) {
+        setHasUnmetRequired(`${education.id}-gradDate`);
+        return false;
+      }
+      return true;
+    });
+    if (isNotValid) {
+      return;
+    }
 
     const certifications: CertDTO[] = data.licenses.map(
       (cert: LicenseData) => ({
@@ -448,6 +479,7 @@ export default function CreateJobseekerProfileEducationPage() {
             </legend>
             <Educations
               data={data.educations}
+              hasUnmetRequired={hasUnmetRequired}
               onUpdate={handleUpdate}
               onRemove={removeEducation}
             />
