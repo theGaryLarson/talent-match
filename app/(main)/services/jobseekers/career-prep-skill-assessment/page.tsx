@@ -641,7 +641,7 @@ export default function Page() {
   };
 
   return (
-    <> {!sucessfullySubmitted ? <>
+    <> {sucessfullySubmitted ? <>
       <Box className="flex justify-center">
         <Box style={{ height: '100vh' }} className="profile-form-section main-content">
           <Confetti />
