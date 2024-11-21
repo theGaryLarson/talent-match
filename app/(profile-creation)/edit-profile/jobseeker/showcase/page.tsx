@@ -113,7 +113,10 @@ export default function CreateJobseekerProfileShowcasePage() {
       console.error('User session is not available.');
       return;
     }
-
+    if (!validYouTubeLink(videoUrl)) {//TODO replace with stylized toast message
+      alert('Please provide a valid YouTube URL before submitting.');
+      return; 
+    }
     showcaseData.userId = session.user.id;
     showcaseData.skills = skills;
     showcaseData.portfolioUrl = portfolioUrl;
@@ -248,27 +251,22 @@ export default function CreateJobseekerProfileShowcasePage() {
                 <h2>Video</h2>
               </legend>
               <p>
-                Employers are tired of the same old paper trail. They want to
-                see the real YOU! So, apart from uploading your resume, creating
-                a dynamic video introduction that gets you noticed.
+              In today’s competitive job market, finding creative ways to elevate your profile is key. 
+              A personalized video introduction offers a unique opportunity to showcase your skills, 
+              personality, and career goals.
               </p>
-              <p>Here&apos;s what to dish in your video:</p>
+        
               <ul className="list-inside list-disc">
                 <li>
-                  <b>Your Story:</b> Take viewers on a journey through your
-                  experience and learning path. Where did you start? What
-                  challenges did you conquer?
+                  <b>Highlight Your Unique Value Proposition:</b> Share your professional journey, key accomplishments, and why you're a valuable asset to any team.
+
+
                 </li>
                 <li>
-                  <b>Your Superpowers:</b> Flex your strengths! Show off your
-                  skills and what makes you a unique asset. Think
-                  problem-solving, communication, or maybe you&apos;re a coding
-                  whiz!
+                  <b>Showcase Your Skills and Expertise:</b> Demonstrate your technical skills, soft competencies, and how they can benefit your future employers.
                 </li>
                 <li>
-                  <b>Your Dream Gig:</b> Paint a picture of what excites you!
-                  What kind of role are you looking for? Let employers know why
-                  YOU&apos;RE the missing piece to their puzzle.
+                  <b>Express Your Career Aspirations:</b> Articulate your long-term career goals and how you see yourself growing professionally.
                 </li>
               </ul>
 
@@ -281,6 +279,7 @@ export default function CreateJobseekerProfileShowcasePage() {
 
             <DividerWithText>or</DividerWithText>
             */}
+            Upload your YouTube video URL below and elevate your profile.
 
               <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-video"
@@ -288,8 +287,10 @@ export default function CreateJobseekerProfileShowcasePage() {
                 placeholder="Example: https://www.youtube.com/watch"
                 fullWidth
                 value={videoUrl}
+                error={!validYouTubeLink(videoUrl)}
                 onChange={(e) => {
                   setVideoUrl(e.target.value);
+                
                 }}
               />
             </div>
@@ -327,4 +328,11 @@ export default function CreateJobseekerProfileShowcasePage() {
       </section>
     </main>
   );
+}
+
+
+function validYouTubeLink(url:string){
+  if (url == '') return true
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+  return regex.test(url);
 }
