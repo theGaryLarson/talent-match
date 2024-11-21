@@ -29,8 +29,12 @@ function formatUrl(url: string) {
   // Default to https:// but don't force it, allow users to adjust
   return `https://${url}`;
 }
+export const metadata = {
+  title: "WA Tech Workforce Coalition"
+};
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
+  metadata.title = jobseeker?.users.first_name + ' ' +jobseeker?.users.last_name
   let resume_url = await getResumeUrl(jobseeker?.users.id??'');
   const session = await auth();
   let videoID = '';

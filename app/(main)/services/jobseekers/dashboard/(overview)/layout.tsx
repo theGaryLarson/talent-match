@@ -23,7 +23,7 @@ export default async function layout({
           Home
         </Link>
         <Link
-          href="/services/joblistings"
+          href="/services/jobseekers/dashboard/jobsearch"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
           <SearchOutlinedIcon/>
