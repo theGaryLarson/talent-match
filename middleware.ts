@@ -20,6 +20,7 @@ export default auth((req) => {
       '/edit-profile/jobseeker/',
       '/services/jobseekers/career-prep-skill-assessment',
       '/services/jobseekers/dashboard',
+      '/services/jobseekers/dashboard/my-applications',
       '/services/jobseekers/',
       '/services/joblistings',
       '/api/joblistings/',
@@ -124,7 +125,7 @@ export default auth((req) => {
       // Jobseekers can only access their own profile
       const requestedId = pathname.replace('/services/jobseekers/', '');
       if (
-          pathname !== '/services/jobseekers/dashboard' &&
+          !pathname.startsWith('/services/jobseekers/dashboard') &&
           pathname !== '/services/jobseekers/career-prep-skill-assessment' &&
           requestedId !== jobseekerId
       ) {

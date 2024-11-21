@@ -2,6 +2,9 @@ import { getJobSeekerAppliedJobs, getJobSeekerBookmarkedJobs } from "@/app/lib/j
 import Link from "next/link";
 
 //job seeker dashboard
+export const metadata = {
+  title: "My Dashboard"
+};
 export default async function Page() {
   const myBookMarkedJobs = await getJobSeekerBookmarkedJobs();
   const myAppliedJobs = await getJobSeekerAppliedJobs();
