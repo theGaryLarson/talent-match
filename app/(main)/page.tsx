@@ -138,14 +138,14 @@ export default function Page() {
             {/* footer - join the team of coalition members */}
             <div className="mt-40 w-full h-80 px-24 pb-4 bg-neutral-100 flex-col justify-center items-center gap-5 inline-flex">
                 <div className="mt-10 self-stretch text-center text-sky-900 text-xl font-semibold font-['Roboto'] uppercase leading-loose tracking-widest">Join the team of Coalition Training Providers</div>
-                <div className="REPLACE-BEFORE-RELEASE self-stretch h-48 py-2 justify-center items-center gap-24 inline-flex">
+                <div className="self-stretch h-48 py-2 justify-center items-center gap-24 inline-flex">
                     <img className="w-32" src="/images/training-providers/riipen.svg" />
                     <img className="w-48" src="/images/training-providers/per-scholas.svg" />
                     <img className="w-36" src="/images/training-providers/codeday.svg" />
                     <img className="w-32" src="/images/training-providers/year-up.svg" />
                     <img className="w-42" src="/images/training-providers/north-seattle-college.svg" />
                 </div>
-                <div className="REPLACE-BEFORE-RELEASE self-stretch h-48 py-2 justify-center items-center gap-24 inline-flex">
+                <div className="self-stretch h-48 py-2 justify-center items-center gap-24 inline-flex">
                     <img className="w-32" src="/images/training-providers/WTIA.png" />
                     <img className="w-48" src="/images/training-providers/saint-martins.png" />
                     <img className="w-48" src="/images/training-providers/career-connect-wa.png" />
