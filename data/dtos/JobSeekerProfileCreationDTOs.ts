@@ -62,14 +62,14 @@ export type ProjectExpDTO = {
 // Updated to match WJI grant reporting data (do not modify)
 export enum HighestCompletedEducationLevel {
   // VocationalQualification = 'Vocational Qualification / Certification',
-  NoFormalEducation = 'Less than high school diploma',
+  NoFormalEducation = 'Not yet completed High School',
   GED = 'GED',
-  HighSchool = 'High School Graduate',
-  PostHighSchool = 'Some post high school, no degree or certificate',
+  HighSchool = 'High School Diploma',
+  PostHighSchool = 'Some training or study post high school',
   Certificate = 'Certificate (less than two years)',
-  Associates = 'Associates',
-  Bachelors = 'Bachelors',
-  Masters = 'Masters',
+  Associates = "Associates's Degree",
+  Bachelors = "Bachelor's Degree",
+  Masters = "Master's Degree",
   Doctorate = 'Doctorate',
 }
 
@@ -187,7 +187,6 @@ export type JsPreferencesDTO = {
   preferredEmploymentType?: string | null;
 };
 
-// TODO: this needs to be secure
 export type JsDisclosuresDTO = {
   jobseekerId?: string | null; // jsDetails
   isVeteran?: string | null; // privateDetails
@@ -196,7 +195,6 @@ export type JsDisclosuresDTO = {
   gender?: string | null;
   race?: string | null;
   ethnicity?: string | null; // users.ethnicity
-  hasReadTerms: boolean; //users.has_read_terms
 };
 
 export type JsDisclosuresPostDTO = {
@@ -207,5 +205,4 @@ export type JsDisclosuresPostDTO = {
   gender: string; // users.gender
   race: string; //users.race
   ethnicity: string;
-  hasReadTerms: boolean; //users.has_read_terms
 };
