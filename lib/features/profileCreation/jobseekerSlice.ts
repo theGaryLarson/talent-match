@@ -87,7 +87,6 @@ export const initialState: JobseekerState = {
     gender: '',
     race: '',
     ethnicity: '',
-    hasReadTerms: false,
   },
 };
 

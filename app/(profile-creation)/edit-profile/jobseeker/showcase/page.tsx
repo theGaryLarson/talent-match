@@ -53,15 +53,6 @@ export default function CreateJobseekerProfileShowcasePage() {
   );
   const [videoUrl, setVideoUrl] = useState(showcaseData.video_url ?? '');
 
-
-  // useEffect( () => {
-  //   const func = async () => {
-  //     setResumeUrl(await getResumeUrl(session?.user?.id!))
-  //   }
-  //   func();
-  //
-  // }, [resumeUrl]);
-
   useEffect(() => {
     if (session?.user?.id && status === 'authenticated') {
       const initializeFormFields = async () => {
@@ -122,7 +113,10 @@ export default function CreateJobseekerProfileShowcasePage() {
       console.error('User session is not available.');
       return;
     }
-
+    if (!validYouTubeLink(videoUrl)) {//TODO replace with stylized toast message
+      alert('Please provide a valid YouTube URL before submitting.');
+      return; 
+    }
     showcaseData.userId = session.user.id;
     showcaseData.skills = skills;
     showcaseData.portfolioUrl = portfolioUrl;
@@ -173,7 +167,11 @@ export default function CreateJobseekerProfileShowcasePage() {
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Introduction to Employers</h2>
+              <h2>Introduce Yourself</h2>
+              <p>
+                This text will appear under your name in job candidate search
+                listings and on your profile page.
+              </p>
             </legend>
 
             <div className="profile-form-grid">
@@ -182,10 +180,10 @@ export default function CreateJobseekerProfileShowcasePage() {
                 onChange={(e) => {
                   setIntroduction(e.target.value);
                 }}
-                placeholder="Type here"
+                placeholder="Example: I am a software engineer ..."
                 value={introduction}
               >
-                Tell Your Story
+                Introduction
               </InputTextWithLabel>
               {/*<InputTextWithLabel*/}
               {/*  id="profile-creation-intro-current-position"*/}
@@ -208,7 +206,7 @@ export default function CreateJobseekerProfileShowcasePage() {
             <div className="profile-form-grid">
               <TagsWithAutocomplete
                 apiSearchRoute="/api/skills/search/"
-                fieldLabel="Select your skills *"
+                fieldLabel="Select your top five skills: *"
                 id="profile-creation-showcase-skills"
                 maxTags={5}
                 searchingText="Searching..."
@@ -218,17 +216,16 @@ export default function CreateJobseekerProfileShowcasePage() {
                     setSkills(val as SkillDTO[]);
                   }
                 }}
-                searchPlaceholder="Skill (ex: Java)"
+                searchPlaceholder="Example: Java"
                 addNewTags={fetchedTags}
                 getTagLabel={(option: SkillDTO) => option.skill_name}
                 getTagLink={(option: SkillDTO) => option.skill_info_url}
               />
-              <p>Select your top 5 skills from your skills list</p>
 
               <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-portfolio"
                 label="Portfolio"
-                placeholder="Url"
+                placeholder="Example: https://my.portfolio.website/"
                 fullWidth
                 value={portfolioUrl}
                 onChange={(e) => {
@@ -237,7 +234,7 @@ export default function CreateJobseekerProfileShowcasePage() {
               />
               <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-password"
-                label="Password if it is applicable"
+                label="Portfolio Password (if applicable):"
                 placeholder="Password"
                 type="password"
                 fullWidth
@@ -254,27 +251,22 @@ export default function CreateJobseekerProfileShowcasePage() {
                 <h2>Video</h2>
               </legend>
               <p>
-                Employers are tired of the same old paper trail. They want to
-                see the real YOU! So, apart from uploading your resume, creating
-                a dynamic video introduction that gets you noticed.
+              In today’s competitive job market, finding creative ways to elevate your profile is key. 
+              A personalized video introduction offers a unique opportunity to showcase your skills, 
+              personality, and career goals.
               </p>
-              <p>Here&apos;s what to dish in your video:</p>
+        
               <ul className="list-inside list-disc">
                 <li>
-                  <b>Your Story:</b> Take viewers on a journey through your
-                  experience and learning path. Where did you start? What
-                  challenges did you conquer?
+                  <b>Highlight Your Unique Value Proposition:</b> Share your professional journey, key accomplishments, and why you are a valuable asset to any team.
+
+
                 </li>
                 <li>
-                  <b>Your Superpowers:</b> Flex your strengths! Show off your
-                  skills and what makes you a unique asset. Think
-                  problem-solving, communication, or maybe you&apos;re a coding
-                  whiz!
+                  <b>Showcase Your Skills and Expertise:</b> Demonstrate your technical skills, soft competencies, and how they can benefit your future employers.
                 </li>
                 <li>
-                  <b>Your Dream Gig:</b> Paint a picture of what excites you!
-                  What kind of role are you looking for? Let employers know why
-                  YOU&apos;RE the missing piece to their puzzle.
+                  <b>Express Your Career Aspirations:</b> Articulate your long-term career goals and how you see yourself growing professionally.
                 </li>
               </ul>
 
@@ -287,20 +279,24 @@ export default function CreateJobseekerProfileShowcasePage() {
 
             <DividerWithText>or</DividerWithText>
             */}
+            Upload your YouTube video URL below and elevate your profile.
 
-              <TextFieldWithNoLabel
+              <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-video"
-                placeholder="Upload your video url"
+                label="Video URL:"
+                placeholder="Example: https://www.youtube.com/watch"
                 fullWidth
                 value={videoUrl}
+                error={!validYouTubeLink(videoUrl)}
                 onChange={(e) => {
                   setVideoUrl(e.target.value);
+                
                 }}
               />
             </div>
           </fieldset>
           <div>
-            Resume *
+            Resume: *
             <InputFileDropzone
               id="profile-creation-intro-resume"
               fileTypeText="PDF"
@@ -332,4 +328,11 @@ export default function CreateJobseekerProfileShowcasePage() {
       </section>
     </main>
   );
+}
+
+
+function validYouTubeLink(url:string){
+  if (url == '') return true
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+  return regex.test(url);
 }
