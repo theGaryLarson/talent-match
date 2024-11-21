@@ -76,7 +76,7 @@ export default memo(function InternshipExperiences({
   return data.map((internshipExperience, index) => (
     <fieldset key={classNamePrefix + internshipExperience.workId + '-key'}>
       <legend className="flex w-full justify-between">
-        <h3>Experience {index + 1}</h3>
+        <h3>Internship Experience {index + 1}</h3>
         <Button
           onClick={() => onRemove(internshipExperience.workId)}
           size="xs"
@@ -93,33 +93,33 @@ export default memo(function InternshipExperiences({
             classNamePrefix + internshipExperience.workId + '-' + classCompany
           }
           className="w-full"
-          placeholder="Your company name"
+          placeholder="Example: Bank of America"
           onChange={(e) => handleChange(index, classCompany, e.target.value)}
           required
           value={internshipExperience[classCompany]}
         >
-          Company *
+          Company Name: *
         </InputTextWithLabel>
         <InputTextWithLabel
           id={classNamePrefix + internshipExperience.workId + '-' + classTitle}
           className="w-full"
-          placeholder="Your title"
+          placeholder="Example: Quality Assurance Tester"
           onChange={(e) => handleChange(index, classTitle, e.target.value)}
           required
           value={internshipExperience[classTitle]}
         >
-          Title *
+          Your Job Title: *
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">
         <DatePicker
-          label={'Starts *'}
+          label={'Start Date *'}
           views={['month', 'year']}
           value={internshipExperience[classStarts] || null}
           onChange={(val) => handleChange(index, classStarts, val)}
         />
         <DatePicker
-          label={'Ends *'}
+          label={'End Date *'}
           views={['month', 'year']}
           value={internshipExperience[classEnds] || null}
           onChange={(val) => handleChange(index, classEnds, val)}
@@ -136,7 +136,7 @@ export default memo(function InternshipExperiences({
           checked={internshipExperience[classCurrent]}
           onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
         />
-        Current
+        Currently Employed in this Position
       </Label>
       <div className="profile-form-grid">
         <TextareaWithLabel
@@ -146,14 +146,14 @@ export default memo(function InternshipExperiences({
             '-' +
             classExperience
           }
-          placeholder="Your specific experience"
+          placeholder="Example: Create bug reports"
           onChange={(e: { target: { value: any } }) =>
             handleChange(index, classExperience, e.target.value)
           }
           required
           value={internshipExperience[classExperience]}
         >
-          Experience *
+          Job Responsibilities: *
         </TextareaWithLabel>
       </div>
     </fieldset>
