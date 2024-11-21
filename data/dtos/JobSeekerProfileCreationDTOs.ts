@@ -196,7 +196,6 @@ export type JsDisclosuresDTO = {
   gender?: string | null;
   race?: string | null;
   ethnicity?: string | null; // users.ethnicity
-  hasReadTerms: boolean; //users.has_read_terms
 };
 
 export type JsDisclosuresPostDTO = {
@@ -207,5 +206,4 @@ export type JsDisclosuresPostDTO = {
   gender: string; // users.gender
   race: string; //users.race
   ethnicity: string;
-  hasReadTerms: boolean; //users.has_read_terms
 };

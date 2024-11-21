@@ -23,7 +23,6 @@ export async function POST(request: Request) {
       gender,
       race,
       ethnicity,
-      hasReadTerms,
     } = body;
 
     if (!userId) {
@@ -58,7 +57,6 @@ export async function POST(request: Request) {
         id: userId,
       },
       data: {
-        has_agreed_terms: hasReadTerms,
         jobseekers: {
           update: {
             where: {
@@ -104,7 +102,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const { jobseekers, has_agreed_terms } = user;
+    const { jobseekers } = user;
     const jobseekerDetails = jobseekers?.[0] || {};
     const privateDetails = jobseekerDetails.jobseekers_private_data?.[0] || {};
 
@@ -113,7 +111,6 @@ export async function POST(request: Request) {
       gender: privateDetails.gender || null,
       race: privateDetails.race || null,
       ethnicity: privateDetails?.ethnicity || null,
-      hasReadTerms: has_agreed_terms || false,
       isVeteran: privateDetails?.is_veteran || null,
       disabilityStatus: privateDetails?.disability_status || null,
       disability: privateDetails?.disability || null,

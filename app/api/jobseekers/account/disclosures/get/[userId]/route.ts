@@ -40,7 +40,6 @@ export async function GET(
           },
         },
         role: true,
-        has_agreed_terms: true,
       },
     });
 
@@ -63,14 +62,12 @@ export async function GET(
       gender: null, // users.gender
       race: null, //users.race
       ethnicity: null,
-      hasReadTerms: false, //users
       isVeteran: null, // jobseekers[0].jobseekers_private_data[0].is_veteran
       disability: null, // jobseekers[0].jobseekers_private_data[0].has_disability
       disabilityStatus: null,
     };
 
     if (user?.jobseekers && user?.jobseekers.length > 0) {
-      result.hasReadTerms = user.has_agreed_terms;
       const jobseekerDetails = user?.jobseekers?.[0] || null;
       result.jobseekerId = jobseekerDetails?.jobseeker_id;
       if (
