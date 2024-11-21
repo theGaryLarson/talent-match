@@ -187,7 +187,6 @@ export type JsPreferencesDTO = {
   preferredEmploymentType?: string | null;
 };
 
-// TODO: this needs to be secure
 export type JsDisclosuresDTO = {
   jobseekerId?: string | null; // jsDetails
   isVeteran?: string | null; // privateDetails
