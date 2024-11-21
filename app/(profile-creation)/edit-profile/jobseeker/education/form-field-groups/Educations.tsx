@@ -111,6 +111,9 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
         } else if (value) {
           updatedEducation[classEdProviderName] = value.name;
           updatedEducation[classEdProviderId] = value.id;
+        } else {
+          updatedEducation[classEdProviderName] = '';
+          updatedEducation[classEdProviderId] = null;
         }
       } else if (key === classProgramObject) {
         if (typeof value === 'string') {
@@ -119,6 +122,9 @@ export default memo(function Educations({ data, onRemove, onUpdate }: Props) {
         } else if (value) {
           updatedEducation[classProgramName] = value.title;
           updatedEducation[classProgramId] = value.id;
+        } else {
+          updatedEducation[classProgramName] = '';
+          updatedEducation[classProgramId] = null;
         }
       }
       onUpdate('educations', changedEducations);
