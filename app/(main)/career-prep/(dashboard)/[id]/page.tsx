@@ -7,10 +7,6 @@ import { ReactNode } from "react";
 export default async function page({ params }: { params: { id: string } }){
     const client = await getCareerPrepStudentDetailView(params.id);
     const notes = await getCareerPrepStudentNotes(params.id)
-    /**
-     * TODO:
-     * allow edit of prevous notes
-     */
     return(
         <main className="space-y-3 pr-[200px] w-full">
             <h1 className="text-2xl">{client.data?.firstName} {client.data?.lastName} ({client.data?.pronouns})</h1>
