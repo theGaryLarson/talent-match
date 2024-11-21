@@ -59,12 +59,12 @@ export async function GET(
 
     let result: JsDisclosuresDTO = {
       jobseekerId: null, // users.jobseekers[0].jobseeker_id
-      gender: null, // users.gender
-      race: null, //users.race
-      ethnicity: null,
       isVeteran: null, // jobseekers[0].jobseekers_private_data[0].is_veteran
       disability: null, // jobseekers[0].jobseekers_private_data[0].has_disability
       disabilityStatus: null,
+      gender: null, // users.gender
+      race: null, //users.race
+      ethnicity: null,
     };
 
     if (user?.jobseekers && user?.jobseekers.length > 0) {
