@@ -9,7 +9,6 @@ import {
   FormControlLabel,
   FormLabel,
   Paper,
-  Button,
   Grid2,
   Stepper,
   Step,
@@ -20,7 +19,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  useMediaQuery,
   TextField,
   Select,
   MenuItem,
@@ -28,8 +26,10 @@ import {
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { AgreementLevel, AgreementLevelLabels, CareerPrepSkillsAssessmentDTO, SkillLevel, SkillLevelLabels, SkillProficiencyLabels, TechPathways, TimeUntilCompletion } from '@/app/lib/admin/careerPrep';
-import { getCoverLetterUrl, getResumeUrl } from '@/app/lib/services/azureBlobService';
 import { useRouter } from 'next/navigation';
+import '@/app/ui/profile-creation.css';
+import Confetti from '@/app/ui/components/Confetti';
+import { Button } from 'flowbite-react';
 
 interface EvaluationTableProps {
   questions: {
@@ -70,7 +70,7 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({
         value
       }
     } as React.ChangeEvent<HTMLInputElement>;
-    
+
     onChange(syntheticEvent);
   };
 
@@ -132,6 +132,7 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({
 export default function Page() {
   const { data: session, update, status } = useSession();
   const router = useRouter();
+  const [sucessfullySubmitted, setsucessfullySubmitted] = useState<boolean>();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [formData, setFormData] = useState<CareerPrepSkillsAssessmentDTO>(
     {
@@ -235,8 +236,8 @@ export default function Page() {
               }
             })
           }
-          setFormData({...formData, jobseekerId: jobseekerId});
-        } catch (error) {}
+          setFormData({ ...formData, jobseekerId: jobseekerId });
+        } catch (error) { }
       }
     };
     initializeFormFields();
@@ -244,12 +245,12 @@ export default function Page() {
 
   const handleNext = (): void => {
     setActiveStep((prevStep) => prevStep + 1);
-    window.scrollTo({top: 0, behavior: "instant"});
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const handleBack = (): void => {
     setActiveStep((prevStep) => prevStep - 1);
-    window.scrollTo({top: 0, behavior: "instant"});
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<TimeUntilCompletion>) => {
@@ -613,13 +614,13 @@ export default function Page() {
       },
       body: JSON.stringify(formData),
     });
-    console.log(formData);
     if (response.ok) {
-      router.push('/');
+      setsucessfullySubmitted(true);
+      window.scrollTo({ top: 0, behavior: "instant" });
     } else {
       const errorData = await response.json();
+      setsucessfullySubmitted(false);
     }
-    console.log('Form submitted:', response);
   };
 
   const getStepContent = (step: number): JSX.Element => {
@@ -640,58 +641,63 @@ export default function Page() {
   };
 
   return (
-    <Paper sx={{ p: 3, maxWidth: "75%", mx: 'auto', my: 4 }}>
-      <Typography variant="h4" align="center" sx={{ mb: 4 }}>
-        Career Prep Skills Assessment
-      </Typography>
-      {useMediaQuery('(min-width:800px)') ?
+    <> {!sucessfullySubmitted ? <>
+      <Box className="flex justify-center">
+        <Box style={{ height: '100vh' }} className="profile-form-section main-content">
+          <Confetti />
+          <h1>Career Prep Assessment<br />is complete</h1>
+          <Typography sx={{ paddingTop: 3 }}>Thank you for taking the time to complete our Skills Assessment! This information will be used to create a personalized professional development plan tailored to your specific needs and goals. Please note that we may reach out to you if we need any additional information or have questions before finalizing your plan. A Career Prep Navigator will be in contact with you soon to discuss next steps.</Typography>
+          <p className="subtitle-congrats">{`Thank you again for your participation!`}</p>
+          <Grid2 container>
+            <Button pill href='/services/jobseekers/dashboard'>
+              Go to Dashboard
+            </Button>
+          </Grid2>
+        </Box>
+      </Box>
+    </> :
+      <Paper sx={{ p: 3, maxWidth: "75%", mx: 'auto', my: 4 }}>
+        <Typography variant="h4" align="center" sx={{ mb: 4 }}>
+          Career Prep Skills Assessment
+        </Typography>
         <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
             </Step>
           ))}
-        </Stepper> :
-        <Stepper activeStep={activeStep} orientation='vertical' sx={{ mb: 4 }}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
         </Stepper>
-      }
+        <form onSubmit={handleSubmit}>
+          {getStepContent(activeStep)}
 
-      <form onSubmit={handleSubmit}>
-        {getStepContent(activeStep)}
-
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-          <Button
-            disabled={activeStep === 0}
-            onClick={handleBack}
-          >
-            Back
-          </Button>
-          <Box>
-            {activeStep === steps.length - 1 && (
-              <Button
-                variant="contained"
-                type="submit"
-                color="primary"
-              >
-                Submit
-              </Button>)}
-            {activeStep !== steps.length - 1 && (
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                color="primary"
-              >
-                Next
-              </Button>
-            )}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+            <Button
+              pill
+              disabled={activeStep === 0}
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+            <Box>
+              {activeStep === steps.length - 1 && (
+                <Button
+                  pill
+                  type="submit"
+                >
+                  Submit
+                </Button>)}
+              {activeStep !== steps.length - 1 && (
+                <Button
+                  pill
+                  onClick={handleNext}
+                >
+                  Next
+                </Button>
+              )}
+            </Box>
           </Box>
-        </Box>
-      </form>
-    </Paper>
+        </form>
+      </Paper>
+    }</>
   );
 };

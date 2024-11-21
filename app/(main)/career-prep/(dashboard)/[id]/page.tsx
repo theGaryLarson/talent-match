@@ -7,10 +7,6 @@ import { ReactNode } from "react";
 export default async function page({ params }: { params: { id: string } }){
     const client = await getCareerPrepStudentDetailView(params.id);
     const notes = await getCareerPrepStudentNotes(params.id)
-    /**
-     * TODO:
-     * allow edit of prevous notes
-     */
     return(
         <main className="space-y-3 pr-[200px] w-full">
             <h1 className="text-2xl">{client.data?.firstName} {client.data?.lastName} ({client.data?.pronouns})</h1>
@@ -25,9 +21,9 @@ export default async function page({ params }: { params: { id: string } }){
             <div>
                 <Tabs tabs={
                 [
-                {label:"General Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.GENERAL} jobseekerId={params.id}/>{notes.generalNotes.map((n)=><NoteCard {...n}/>)}</>},
-                {label:"Meeting Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.MEETING} jobseekerId={params.id}/>{notes.meetingNotes.map((n)=><NoteCard {...n}/>)} </>},
-                {label:"Follow Up Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.FOLLOWUP} jobseekerId={params.id}/>{notes.followUpNotes.map((n)=><NoteCard {...n}/>)}</>}
+                {label:"General Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.GENERAL} jobseekerId={params.id}/>{notes.generalNotes.map((n)=><NoteCard key={n.id} {...n}/>)}</>},
+                {label:"Meeting Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.MEETING} jobseekerId={params.id}/>{notes.meetingNotes.map((n)=><NoteCard key={n.id} {...n}/>)} </>},
+                {label:"Follow Up Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.FOLLOWUP} jobseekerId={params.id}/>{notes.followUpNotes.map((n)=><NoteCard key={n.id} {...n}/>)}</>}
                 ]}/>
             </div> 
             

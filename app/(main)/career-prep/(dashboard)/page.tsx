@@ -7,7 +7,6 @@ export const metadata = {
   title: "My Dashboard"
 };
 export default async function Page() {
-  const session = await auth();
   const clients = await getCareerPrepStudentsCardView();
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">

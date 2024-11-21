@@ -532,6 +532,11 @@ export type CreateNoteDTO = {
   noteType: NoteType;
   noteContent: string;
 };
+export type UpdateNoteDTO = {
+  noteId: string;
+  noteType: NoteType;
+  noteContent: string;
+};
 
 export type CategorizedNotes = {
   generalNotes: NoteDTO[];
