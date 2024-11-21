@@ -258,7 +258,7 @@ export default function CreateJobseekerProfileShowcasePage() {
         
               <ul className="list-inside list-disc">
                 <li>
-                  <b>Highlight Your Unique Value Proposition:</b> Share your professional journey, key accomplishments, and why you're a valuable asset to any team.
+                  <b>Highlight Your Unique Value Proposition:</b> Share your professional journey, key accomplishments, and why you are a valuable asset to any team.
 
 
                 </li>
