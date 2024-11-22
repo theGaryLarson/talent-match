@@ -27,16 +27,16 @@ export default function EmployerHowItWorks() {
           }
           link={'/services/talent-search'}
         />
-        <Step
-          buttonText={'Start Hiring'}
-          title={'Connect With Ease'}
-          img={'/images/employers/inbox.png'}
-          alt={'Inbox'}
-          article={
-            "Once you've found the perfect candidate, our Portal makes connecting effortless. Directly initiate contact through our messaging system, streamlining communication and ensuring a smooth hiring process."
-          }
-          link={'/underconstruction'}
-        />
+        {/*<Step*/}
+        {/*  buttonText={'Start Hiring'}*/}
+        {/*  title={'Connect With Ease'}*/}
+        {/*  img={'/images/employers/inbox.png'}*/}
+        {/*  alt={'Inbox'}*/}
+        {/*  article={*/}
+        {/*    "Once you've found the perfect candidate, our Portal makes connecting effortless. Directly initiate contact through our messaging system, streamlining communication and ensuring a smooth hiring process."*/}
+        {/*  }*/}
+        {/*  link={'/underconstruction'}*/}
+        {/*/>*/}
         <div className="space-y-6">
           <div className="text-center font-['Roboto'] text-[66px] font-normal capitalize leading-[66px] text-[#014260]">
             Discover diverse, qualified talent in your community

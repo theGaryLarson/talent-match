@@ -13,6 +13,8 @@ import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFil
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import Slider from '@mui/material/Slider';
+import { TrainingProviderDropwdownDTO } from '@/data/dtos/TrainingProviderDropdownDTO';
+import SingleSelectFilterAutoload from '@/app/ui/components/mui/SingleSelectFilterAutoload';
 
 const resultsPerPage = 50;
 
@@ -25,6 +27,7 @@ async function fetchFilteredJobSeekerCardView(
   skills: string[] = [],
   industrySector: string[] = [],
   educationLevel: string = "",
+  trainingProvider: string = "",
   yearsWorkExpMin: number = 0,
   yearsWorkExpMax: number | undefined = undefined,
   zipCode: string = "",
@@ -41,7 +44,7 @@ async function fetchFilteredJobSeekerCardView(
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ skills, industrySector, educationLevel, yearsWorkExpMin, yearsWorkExpMax, 
+    body: JSON.stringify({ skills, industrySector, educationLevel, trainingProvider, yearsWorkExpMin, yearsWorkExpMax, 
                            zipCode, sortBy, maxResults, page, pool1, pool2, pool3 })
   });
   if (!response.ok) {
@@ -60,6 +63,7 @@ export default function Page() {
   const [skillsList, setSkillsList] = useState<string[]>();
   const [industry, setIndustry] = useState<string[]>();
   const [eduLevel, setEduLevel] = useState<string>();
+  const [trainingProvider, setTrainingProvider] = useState<string>();
   const [yearsExpMin, setYearsExpMin] = useState<number>();
   const [yearsExpMax, setYearsExpMax] = useState<number>();
   const [zipCode, setZipCode] = useState<string>();
@@ -109,7 +113,7 @@ export default function Page() {
     setLoading(true);
     setError(false);
     try {
-      const data = await fetchFilteredJobSeekerCardView(skillsList, industry, eduLevel, yearsExpMin, yearsExpMax, zipCode, sortBy, resultsPerPage, page);
+      const data = await fetchFilteredJobSeekerCardView(skillsList, industry, eduLevel, trainingProvider, yearsExpMin, yearsExpMax, zipCode, sortBy, resultsPerPage, page);
       setJobSeekers(data.filteredJobSeekers);
       setTotalResults(data.totalCount);
     } catch (error) {
@@ -118,15 +122,16 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }, [skillsList, industry, eduLevel, yearsExpMin, yearsExpMax, zipCode, sortBy, page]);
+  }, [skillsList, industry, eduLevel, trainingProvider, yearsExpMin, yearsExpMax, zipCode, sortBy, page]);
 
   useEffect(() => {
     // on initial page load, get the params from URL if they exist
-    if (skillsList == undefined && industry == undefined && eduLevel == undefined && yearsExpMin == undefined &&
+    if (skillsList == undefined && industry == undefined && eduLevel == undefined && trainingProvider == undefined && yearsExpMin == undefined &&
       yearsExpMax == undefined && zipCode == undefined && sortBy == undefined && page == undefined) {
       setSkillsList(getArrayParam("skills"));
       setIndustry(getArrayParam("industry"));
       setEduLevel(getParam("eduLevel"));
+      setTrainingProvider(getParam("trainingProvider"));
       setYearsExpMin(+getParam("yearsExpMin"));
       setYearsExpMax(+getParam("yearsExpMax") == 0 ? 5 : +getParam("yearsExpMax"));
       setZipCode(getParam("zipcode"));
@@ -139,7 +144,7 @@ export default function Page() {
       }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
       return () => clearTimeout(timeoutId);
     }
-  }, [skillsList, industry, eduLevel, yearsExpMin, yearsExpMax, zipCode, sortBy, page]);
+  }, [skillsList, industry, eduLevel, trainingProvider, yearsExpMin, yearsExpMax, zipCode, sortBy, page]);
 
   return (
     <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8 w-full">
@@ -244,6 +249,21 @@ export default function Page() {
 
       {/* Second Filter / Sort row */}
       <div className="w-full flow-root pb-4 mt-2">
+        {/* Training Provider */}
+        <div className="float-left w-1/2 tablet:w-1/3">
+          <SingleSelectFilterAutoload
+            id="jobseeker-listview-trainingProvider"
+            label="Training Provider"
+            apiAutoloadRoute="/api/employers/training-providers"
+            value={getParam("trainingProvider")}
+            onChange={(event) => {
+              setQueryParam('trainingProvider', encodeURIComponent(event.target.value.toString()));
+              setTrainingProvider(event.target.value as string);
+            }}
+            getOptionLabel={(option: TrainingProviderDropwdownDTO) => option.name}
+          />
+        </div>
+
         {/* Years of Experience */}
         <div className="float-left items-center px-4 w-1/2 tablet:w-1/3">
           <p className="text-sm text-slate-600 text-center relative top-2">Years of Experience</p>
