@@ -113,8 +113,8 @@ export default function Page() {
                         </div>
                         <div className="mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">Empower Students with Insights</div>
                         <div className="mt-4 self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">Discover Essential Skills for Tomorrow’s Workforce. Through our Coalition, gain valuable insights directly from employers for in-demand skills which will help align your curriculum with the most current industry standards.</div>
-                        <div className="mt-4 justify-start items-start gap-5 inline-flex REPLACE-BEFORE-RELEASE">
-                            <RoundedButton content={'Showcase Your Skills'} link={'/underconstruction'} invertColor={true}></RoundedButton>
+                        <div className="mt-4 justify-start items-start gap-5 inline-flex">
+                            <RoundedButton content={'Join the Coalition'} link={'/join'} invertColor={true}></RoundedButton>
                         </div>
                     </div>
                     <img className="w-96 h-96 rounded-3xl object-cover" src="/images/landing/for-educators.jpg" />
