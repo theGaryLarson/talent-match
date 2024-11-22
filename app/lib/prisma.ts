@@ -597,6 +597,17 @@ export async function getIndustrySectors() {
   return industrySectors;
 }
 
+export async function getTrainingProviders() {
+  const trainingProviders = await prisma.edu_providers.findMany({
+    where: {},
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+  return trainingProviders;
+}
+
 export async function getTechnologyAreas() {
   const technologyAreas = await prisma.technology_areas.findMany({
     where: {},
