@@ -219,7 +219,7 @@ export default function CreateJobseekerProfileIntroPage() {
       <section className="profile-form-section">
         <ProgressBarFlat progress={(1 / 6) * 100} size="sm" />
         <p>Step 1/6</p>
-        <h1>Intro</h1>
+        <h1>Profile Settings</h1>
         <p className="subtitle">* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
@@ -239,7 +239,7 @@ export default function CreateJobseekerProfileIntroPage() {
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Basic info</h2>
+              <h2>Contact Information</h2>
             </legend>
 
             <div className="profile-form-grid md:grid-cols-2">

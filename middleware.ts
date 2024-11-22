@@ -72,6 +72,8 @@ export default auth((req) => {
     '/api/jobseekers/query',
     '/api/employers/industry-sectors',
     '/api/postal-geo-data/zip/search/',
+    '/api/employers/training-providers',
+    '/join',
   ];
 
   // Helper function to check if a path is allowed for any of the user's roles

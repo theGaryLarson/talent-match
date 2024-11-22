@@ -2,6 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { Button } from 'flowbite-react';
 import { MdClose } from 'react-icons/md';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { v4 as uuidv4 } from 'uuid';
@@ -89,12 +90,12 @@ export default memo(function ProjectExperiences({
         <InputTextWithLabel
           id={classNamePrefix + projectExperience.projectId + '-' + classTitle}
           className="w-full"
-          placeholder="Ex: Microsoft certified network associate security"
+          placeholder="Example: Non-profit website"
           onChange={(e) => handleChange(index, classTitle, e.target.value)}
           required
           value={projectExperience[classTitle]}
         >
-          Title *
+          Name of project: *
         </InputTextWithLabel>
         <InputTextWithLabel
           id={
@@ -104,14 +105,14 @@ export default memo(function ProjectExperiences({
             classProjectRole
           }
           className="w-full"
-          placeholder="Ex: Microsoft"
+          placeholder="Example: Frontend JavaScript"
           onChange={(e) =>
             handleChange(index, classProjectRole, e.target.value)
           }
           required
           value={projectExperience[classProjectRole]}
         >
-          Project role *
+          Your Role in the Project: *
         </InputTextWithLabel>
         <InputTextWithLabel
           id={
@@ -125,22 +126,24 @@ export default memo(function ProjectExperiences({
           }
           value={projectExperience[classReferenceUrl]}
         >
-          Reference url
+          Reference URL:
         </InputTextWithLabel>
-        <InputTextWithLabel
+        <TextareaWithLabel
           id={
             classNamePrefix +
             projectExperience.projectId +
             '-' +
             classDescription
           }
-          onChange={(e) =>
+          placeholder="Example: Create online presence"
+          rows="8"
+          onChange={(e: any) =>
             handleChange(index, classDescription, e.target.value)
           }
           value={projectExperience[classDescription]}
         >
-          Description/Problem solved
-        </InputTextWithLabel>
+          Project Description / Problem Solved:
+        </TextareaWithLabel>
         <InputTextWithLabel
           type="number"
           id={
@@ -149,13 +152,13 @@ export default memo(function ProjectExperiences({
           onChange={(e) => handleChange(index, classTeamSize, e.target.value)}
           value={projectExperience[classTeamSize] ?? ''}
         >
-          Team Size
+          Team Size:
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid">
         <TagsWithAutocomplete
           apiSearchRoute="/api/skills/search/"
-          fieldLabel="Skills/Tech stack"
+          fieldLabel="Skills/Tech stack:"
           id={
             classNamePrefix +
             projectExperience.projectId +
