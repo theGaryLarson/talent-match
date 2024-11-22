@@ -18,7 +18,8 @@ export default auth((req) => {
     ],
     [Role.JOBSEEKER]: [
       '/edit-profile/jobseeker/',
-      '/services/jobseekers/career-prep-skill-assessment',
+      '/services/jobseekers/career-prep/skill-assessment',
+      '/services/jobseekers/career-prep/enrollment',
       '/services/jobseekers/dashboard',
       '/services/jobseekers/',
       '/services/joblistings',
@@ -127,7 +128,8 @@ export default auth((req) => {
       const requestedId = pathname.replace('/services/jobseekers/', '');
       if (
           pathname !== '/services/jobseekers/dashboard' &&
-          pathname !== '/services/jobseekers/career-prep-skill-assessment' &&
+          pathname !== '/services/jobseekers/career-prep/skill-assessment' &&
+          pathname !== '/services/jobseekers/career-prep/enrollment' &&
           requestedId !== jobseekerId
       ) {
         console.log('Access denied: Jobseeker can only access their own profile');

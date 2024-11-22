@@ -607,7 +607,7 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    const response = await fetch('/api/assessment/submit/', {
+    const response = await fetch('/api/jobseekers/career-prep/skill-assessment/submit/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -656,7 +656,7 @@ export default function Page() {
         </Box>
       </Box>
     </> :
-      <Paper sx={{ p: 3, maxWidth: "75%", mx: 'auto', my: 4 }}>
+      <Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: 'auto', my: 4 }}>
         <Typography variant="h4" align="center" sx={{ mb: 4 }}>
           Career Prep Skills Assessment
         </Typography>

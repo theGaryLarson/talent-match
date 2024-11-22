@@ -715,6 +715,14 @@ export type CareerPrepSkillsAssessmentDTO = {
   professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
 };
 
+/**
+ * Represents a data transfer object for Career Prep Enrollment information.
+ */
+export type CareerPrepEnrollmentDTO = {
+  streetAddress: string;
+  priorityPopulations: string[];
+};
+
 ///////////////////////////////////////////////////
 // DO NOT NEED CAN BE INFERRED FROM ACCOUNT INFO //
 ///////////////////////////////////////////////////
@@ -827,6 +835,41 @@ export const submitCareerPrepAssessment = async (
     return { success: true, status: 200 };
   } catch (e: any) {
     console.error('Failed to submit Career Prep Assessment records', e.message);
+    return { success: false, status: 500 };
+  }
+};
+
+/**
+ * Submits a career preparation skills assessment with session data.
+ *
+ * @param {CareerPrepEnrollmentDTO} data - The data of career preparation skills assessment to be submitted.
+ */
+export const submitCareerPrepEnrollment = async (
+  data: CareerPrepEnrollmentDTO,
+): Promise<{ success: boolean; status: number } | null> => {
+  const session = await auth();
+  const jobseekerId = session?.user.jobseekerId;
+  if (!jobseekerId) {
+    console.error('No jobseeker id was provided from session data...');
+    return null;
+  }
+  devLog('DTO', data);
+  try {
+    const result = await prisma.$transaction(async (prisma) => {
+      const careerPrepEnrollment = await upsertCareerPrepEnrollment(
+        prisma,
+        jobseekerId,
+        data,
+      );
+      return { success: true, status: 200 };
+    },
+        {
+          timeout: 10000, // Timeout in milliseconds (e.g., 10000 ms = 10 seconds)
+    });
+    devLog('result', result);
+    return { success: true, status: 200 };
+  } catch (e: any) {
+    console.error('Failed to submit Career Prep Enrollment records', e.message);
     return { success: false, status: 500 };
   }
 };
@@ -1277,6 +1320,41 @@ const upsertPathwayRatings = async (
       throw new Error(`Unsupported pathway: ${techAssessment.interestPathway}`);
   }
   return { success: true, status: 200 };
+};
+
+/**
+ * Upsert career prep enrollment for a specific jobseeker.
+ *
+ * @param {string} jobseekerId - The ID of the jobseeker for whom the career prep enrollment are being upserted.
+ * @param {CareerPrepEnrollmentDTO} softSkills - The enrollment fields to be updated or created.
+ *
+ * @returns {Promise<CareerPrepEnrollmentDTO | null>} - The updated enrollment fields or null if an error occurs.
+ */
+const upsertCareerPrepEnrollment = async (
+  prisma: TransactionClient,
+  jobseekerId: string,
+  enrollment: CareerPrepEnrollmentDTO,
+): Promise<{ success: boolean; status: number }> => {
+  try {
+    const updatedEnrollment = await prisma.careerPrepAssessment.upsert({
+      where: {
+        jobseekerId,
+      },
+      update: {
+        streetAddress: enrollment.streetAddress,
+        priorityPopulations: enrollment.priorityPopulations,
+      },
+      create: {
+        streetAddress: enrollment.streetAddress,
+        priorityPopulations: enrollment.priorityPopulations,
+      },
+    });
+
+    return { success: true, status: 200 };
+  } catch (e) {
+    console.error('Error in upsertDurableSkills:', e);
+    return { success: false, status: 500 };
+  }
 };
 
 /**
