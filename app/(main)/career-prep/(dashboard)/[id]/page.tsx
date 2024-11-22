@@ -21,7 +21,7 @@ export default async function page({ params }: { params: { id: string } }){
             <div>
                 <Tabs tabs={
                 [
-                {label:"General Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.GENERAL} jobseekerId={params.id}/>{notes.generalNotes.map((n)=><NoteCard key={n.id} {...n}/>)}</>},
+                {label:"General Notes",content:<div className="flex"><MarkDownEditor title={"This is a title"} noteType={NoteType.GENERAL} jobseekerId={params.id}/><div className="h-[500px] overflow-auto">{notes.generalNotes.map((n)=><NoteCard key={n.id} {...n}/>)}</div></div>},
                 {label:"Meeting Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.MEETING} jobseekerId={params.id}/>{notes.meetingNotes.map((n)=><NoteCard key={n.id} {...n}/>)} </>},
                 {label:"Follow Up Notes",content:<><MarkDownEditor title={"This is a title"} noteType={NoteType.FOLLOWUP} jobseekerId={params.id}/>{notes.followUpNotes.map((n)=><NoteCard key={n.id} {...n}/>)}</>}
                 ]}/>
