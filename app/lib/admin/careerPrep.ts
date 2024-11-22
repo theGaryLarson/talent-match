@@ -720,7 +720,7 @@ export type CareerPrepSkillsAssessmentDTO = {
  */
 export type CareerPrepEnrollmentDTO = {
   streetAddress: string;
-  priorityPopulations: string[];
+  priorityPopulations: string;
 };
 
 ///////////////////////////////////////////////////
@@ -856,7 +856,7 @@ export const submitCareerPrepEnrollment = async (
   devLog('DTO', data);
   try {
     const result = await prisma.$transaction(async (prisma) => {
-      const careerPrepEnrollment = await upsertCareerPrepEnrollment(
+      const careerPrepEnrollment = await updateCareerPrepEnrollment(
         prisma,
         jobseekerId,
         data,
@@ -1330,21 +1330,17 @@ const upsertPathwayRatings = async (
  *
  * @returns {Promise<CareerPrepEnrollmentDTO | null>} - The updated enrollment fields or null if an error occurs.
  */
-const upsertCareerPrepEnrollment = async (
+const updateCareerPrepEnrollment = async (
   prisma: TransactionClient,
   jobseekerId: string,
   enrollment: CareerPrepEnrollmentDTO,
 ): Promise<{ success: boolean; status: number }> => {
   try {
-    const updatedEnrollment = await prisma.careerPrepAssessment.upsert({
+    const updatedEnrollment = await prisma.careerPrepAssessment.update({
       where: {
         jobseekerId,
       },
-      update: {
-        streetAddress: enrollment.streetAddress,
-        priorityPopulations: enrollment.priorityPopulations,
-      },
-      create: {
+      data: {
         streetAddress: enrollment.streetAddress,
         priorityPopulations: enrollment.priorityPopulations,
       },

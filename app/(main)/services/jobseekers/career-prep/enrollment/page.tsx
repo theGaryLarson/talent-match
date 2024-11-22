@@ -6,24 +6,29 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import NextLink from "next/link";
 import { CareerPrepEnrollmentDTO } from "@/app/lib/admin/careerPrep";
 
+interface FormData {
+  streetAddress: string;
+  priorityPopulations: string[];
+}
+
 export default function Page() {
   const { data: session, update, status } = useSession();
-  const [formData, setFormData] = useState<CareerPrepEnrollmentDTO>({ streetAddress: '', priorityPopulations: [] });
+  const [formData, setFormData] = useState<FormData>({ streetAddress: '', priorityPopulations: [] });
   const [snackbar, setSnackbar] = useState<{ open: boolean, message: string, severity: "success" | "error" }>({ open: false, message: '', severity: "success" });
 
   const priorityPopulations: string[] = [
-    "a.) COVID-impacted workers",
-    "b.) Underemployed individuals",
-    "c.) Long-term unemployed individuals",
-    "d.) Short-term unemployed individuals",
-    "e.) Incumbent workers",
-    "f.) People living in rural communities",
-    "g.) People living in coal communities",
-    "h.) Military spouses",
-    "i.) Disconnected youth",
-    "j.) Individuals in substance abuse recovery",
-    "k.) Individuals participating in TANF, SNAP, WIC",
-    "l.) Individuals with past criminal records (e.g., justice impacted, reentry participants)",
+    "COVID-impacted workers",
+    "Underemployed individuals",
+    "Long-term unemployed individuals",
+    "Short-term unemployed individuals",
+    "Incumbent workers",
+    "People living in rural communities",
+    "People living in coal communities",
+    "Military spouses",
+    "Disconnected youth",
+    "Individuals in substance abuse recovery",
+    "Individuals participating in TANF, SNAP, WIC",
+    "Individuals with past criminal records (e.g., justice impacted, reentry participants)",
     "Prefer not to answer"
   ];
 
@@ -75,9 +80,9 @@ export default function Page() {
     if (response.ok) {
       console.log(response);
       setSnackbar({ open: true, message: "Submission successful! Redirecting...", severity: "success" });
-      /*setTimeout(() => {
+      setTimeout(() => {
         window.location.href = '/services/jobseekers/dashboard';
-      }, 2000);*/
+      }, 2000);
     } else {
       setSnackbar({ open: true, message: "Submission failed. Please try again.", severity: "error" });
     }
