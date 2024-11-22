@@ -25,7 +25,6 @@ export async function PATCH(request: Request, {params}: { params: { } }) {
                 job_title: currentJobTitle,
                 linkedin_url: linkedInUrl,
                 work_address_id: workAddressId,
-                hasAgreedTerms,
             },
             select: {
                 job_title: true,

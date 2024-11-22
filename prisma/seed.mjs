@@ -7,6 +7,7 @@ import getPrismaClient from '../app/lib/prismaClient.mjs'
 import fs from 'fs';
 import {fileURLToPath} from 'url';
 import path from "node:path";
+import partnerCompanies from "../data/partnerCompanies.mjs";
 
 faker.seed(123); // set seed so generated data is deterministic
 const prisma = getPrismaClient();
@@ -975,11 +976,13 @@ const industrySectors = [
     "Consumer Goods",
     "Education",
     "Energy",
+    "Government",
     "Healthcare",
     "Information Technology",
     "Insurance",
     "Manufacturing",
     "Media and Entertainment",
+    "Nonprofit",
     "Pharmaceuticals",
     "Real Estate",
     "Retail",
@@ -1422,15 +1425,28 @@ async function seedPartnerEdProvidersAndPrograms() {
         console.log('Seeding Partner Education Providers and Programs...');
 
         for (const provider of partnerProvidersAndPrograms) {
-            // Check if the provider already exists in the database
-            let eduProvider = await prisma.edu_providers.findUnique({
-                where: {name: provider.eduProvider},
-            });
 
-            // If not, create the provider
-            if (!eduProvider) {
-                eduProvider = await prisma.edu_providers.create({
-                    data: {
+                const eduProvider = await prisma.edu_providers.upsert({
+                    where: {
+                        name: provider?.eduProvider,
+                    },
+                    update: {
+                        name: provider?.eduProvider ? provider.eduProvider : null,
+                        edu_type: provider?.edu_type ? provider.edu_type : null,
+                        contact: provider?.contact ? provider.contact : null,
+                        contact_email: provider?.contactEmail ? provider.contactEmail : null,
+                        edu_url: provider?.url ? provider.url : null,
+                        mission: provider?.missionStatement ? provider.missionStatement : null,
+                        providerDescription: provider?.providerDescription ? provider.providerDescription : null,
+                        setsApartStatement: provider?.setsApartStatement ? provider.setsApartStatement : null,
+                        screeningCriteria: provider?.screeningCriteria ? provider.screeningCriteria : null,
+                        recruitingSources: provider?.recruitingSources ? provider.recruitingSources : null,
+                        programCount: provider?.programCount ? provider.programCount : null,
+                        cost: provider?.cost ? provider.cost : null,
+                        isCoalitionMember: true,
+                        isAdminReviewed: true,
+                    },
+                    create: {
                         name: provider?.eduProvider ? provider.eduProvider : null,
                         edu_type: provider?.edu_type ? provider.edu_type : null,
                         contact: provider?.contact ? provider.contact : null,
@@ -1448,9 +1464,6 @@ async function seedPartnerEdProvidersAndPrograms() {
                     },
                 });
                 console.log(`Created edu_provider: ${eduProvider.name}`);
-            } else {
-                console.log(`edu_provider already exists: ${eduProvider.name}`);
-            }
 
             for (const program of provider.programs) {
                 // Find the program in the programs table
@@ -2022,7 +2035,8 @@ async function seedIndustrySectors() {
     console.log(`Seeded ${industrySectors.length} Industry Sectors.\n`)
 }
 
-async function seedCompanies() {
+async function seedMockCompanies() {
+    console.log('Seeding Mock companies...')
     const sectors = await prisma.industry_sectors.findMany();
     const cfaAdmin = await prisma.user.create({
         data: {
@@ -2045,7 +2059,7 @@ async function seedCompanies() {
     for (let i = 0; i < 5; i++) {
         await prisma.companies.create({
             data: {
-                createdBy: cfaAdmin.id, // hacking employerId to get it to work will be no related employer
+                createdBy: cfaAdmin.id, // hacking employerId to get it to work will not be related employer
                 company_id: uuidv4(),
                 industry_sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                 company_name: faker.company.name(),
@@ -2062,6 +2076,63 @@ async function seedCompanies() {
                 estimated_annual_hires: faker.number.int({min: 1, max: 10})
             }
         });
+    }
+    console.log(`Finished seeding ${5} Mock companies.\n`)
+}
+
+async function seedPartnerCompanies() {
+    console.log('Seeding Partner Companies...');
+    for (const company of partnerCompanies) {
+        let industrySector = await prisma.industry_sectors.findFirst({
+            where: {
+                sector_title: company.industrySector
+            }
+        })
+        // check if company exists in the database
+        let existingCompany = await prisma.companies.findUnique({
+            where: { company_name: company.name}
+        })
+
+        let newCompany;
+        // if not, create the company
+        if ( !existingCompany ) {
+            newCompany = await prisma.companies.create({
+                data: {
+                    company_id: uuidv4(),
+                    company_name: company.name,
+                    company_logo_url: company.companyLogoUrl,
+                    about_us: company.aboutUs,
+                    company_email: company.email,
+                    year_founded: 0,
+                    company_website_url: company.websiteUrl,
+                    company_mission: company.mission,
+                    company_vision: company.vision,
+                    size: company.size,
+                    estimated_annual_hires: company.estimatedAnnualHires,
+                    is_approved: true,
+                    industry_sectors: {
+                        connect: {
+                            industry_sector_id: industrySector.industry_sector_id
+                        }
+                    },
+
+                }
+            });
+        } else {
+            newCompany = existingCompany
+        }
+        // Add company addresses for each zip code in locationsByZip
+        if (company.locationsByZip && company.locationsByZip.length > 0) {
+            for (const zip of company.locationsByZip) {
+                await prisma.company_addresses.create({
+                    data: {
+                        company_address_id: uuidv4(),
+                        company_id: newCompany.company_id, // Use the created company's ID
+                        zip: zip
+                    }
+                });
+            }
+        }
     }
 }
 
@@ -2323,7 +2394,7 @@ async function seedFoundationalTables() {
     await seedPartnerPrograms();
     await seedGeneralEdProviders(); // TODO: get updated list of training provider partners to use in production
     await seedPartnerEdProvidersAndPrograms();
-    await seedCompanies(); // TODO: get a list of pre-approved companies to use in production
+    await seedPartnerCompanies(); // TODO: add additional partner companies
 }
 
 /**
@@ -2350,6 +2421,7 @@ async function seedMockJobseekerData() {
  * @return {Promise<void>} A Promise that resolves when all mock employer data has been successfully seeded.
  */
 async function seedMockEmployerData() {
+    await seedMockCompanies(); // TODO: get a list of pre-approved companies to use in production
     await seedEmployers();
     await seedCompanyAddresses();
     await seedCompanyTestimonials();
@@ -2488,7 +2560,7 @@ async function main() {
     console.log(`Start seeding ...\n`);
     await seedFoundationalTables();
     if (process.env.NODE_ENV === 'production') {
-        console.log('Skipping seeding mock data...');
+        console.log('Skipping seeding of mock data...');
         console.log('Finished seeding foundational tables.\n')
         return;
     }
