@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
 import { devLog, formatPhoneE164 } from '@/app/lib/utils';
@@ -47,13 +46,11 @@ export default function CreateJobseekerProfileIntroPage() {
   });
 
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
-    introData.birthDate === '' ? null : dayjs(introData.birthDate),
+    !Boolean(introData.birthDate) ? null : dayjs(introData.birthDate),
   );
+
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     introData.photoUrl ?? null,
-  );
-  const [resumeUrl, setResumeUrl] = useState<string | null>(
-    introData.resumeUrl ?? null,
   );
   const pathname = usePathname(); // Gets the current pathname
 
@@ -85,7 +82,6 @@ export default function CreateJobseekerProfileIntroPage() {
             } else {
               let fetchedData: JsIntroDTO = (await response.json()).result
                 .loadIntroPage;
-              console.log('fetcheddata', fetchedData);
               setIntroData({
                 ...introData,
                 userId: id!,
@@ -101,17 +97,14 @@ export default function CreateJobseekerProfileIntroPage() {
                 introHeadline: fetchedData.introHeadline,
                 phone: fetchedData.phone,
                 phoneCountryCode: fetchedData.phoneCountryCode,
-                resumeUrl: fetchedData.resumeUrl,
                 state: fetchedData.state,
               });
               setAvatarUrl(fetchedData.photoUrl ?? session.user?.image ?? null);
               setBirthdate(
-                typeof fetchedData.birthDate === 'string' &&
-                  fetchedData.birthDate === ''
+                !Boolean(fetchedData.birthDate)
                   ? null
                   : dayjs(fetchedData.birthDate),
               );
-              setResumeUrl(fetchedData.resumeUrl ?? null);
             }
           } catch (error) {
             console.error(error);
@@ -169,7 +162,6 @@ export default function CreateJobseekerProfileIntroPage() {
       ...introData,
       birthDate: birthdate?.toISOString() ?? '',
       photoUrl: avatarUrl,
-      resumeUrl: resumeUrl,
     };
     setIntroData(updatedIntroData);
 
@@ -208,7 +200,7 @@ export default function CreateJobseekerProfileIntroPage() {
           image: introData.photoUrl,
         });
 
-        router.push('/edit-profile/jobseeker/education');
+        router.push('/edit-profile/jobseeker/preferences');
       } else {
         const errorMessage = `Failed to submit basic info. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -224,7 +216,7 @@ export default function CreateJobseekerProfileIntroPage() {
       <section className="profile-form-section">
         <ProgressBarFlat progress={(1 / 6) * 100} size="sm" />
         <p>Step 1/6</p>
-        <h1>Intro</h1>
+        <h1>Profile Settings</h1>
         <p className="subtitle">* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
@@ -244,7 +236,7 @@ export default function CreateJobseekerProfileIntroPage() {
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Basic info</h2>
+              <h2>Contact Information</h2>
             </legend>
 
             <div className="profile-form-grid md:grid-cols-2">
@@ -271,6 +263,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 label="Birth Date"
                 value={birthdate}
                 onChange={setBirthdate}
+                slotProps={{ textField: { fullWidth: true } }}
               />
             </div>
 
@@ -673,10 +666,10 @@ export default function CreateJobseekerProfileIntroPage() {
             </div>
           </fieldset>
 
-          <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+          <div className="profile-form-progress-btn-single-end">
+            {/* <Button pill className="custom-outline-btn">
               Cancel
-            </Button>
+            </Button> */}
             <Button pill type="submit">
               Save and continue
             </Button>

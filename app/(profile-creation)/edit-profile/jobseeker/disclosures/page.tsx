@@ -24,7 +24,6 @@ import {
   IconButton,
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/jobseekerStore';
 import {
@@ -49,17 +48,15 @@ export default function CreateJobseekerProfileDisclosuresPage() {
   const [error, setError] = useState<{ error: string | null }>({ error: null });
 
   const [veteranStatus, setVeteranStatus] = useState(disclosuresData.isVeteran);
-  const [disabilityStatus, setDisabilityStatus] = useState('');
+  const [disabilityStatus, setDisabilityStatus] = useState(
+    disclosuresData.disabilityStatus,
+  );
   const [disabilityType, setDisabilityType] = useState(
     disclosuresData.disability,
   );
   const [gender, setGender] = useState(disclosuresData.gender);
   const [race, setRace] = useState(disclosuresData.race);
   const [ethnicity, setEthnicity] = useState(disclosuresData.ethnicity);
-  const [termsAccepted, setTermsAccepted] = useState(
-    disclosuresData.hasReadTerms,
-  );
-  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (session?.user?.id && status === 'authenticated') {
@@ -83,13 +80,21 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 disclosuresData.gender = fetchedData.gender;
                 setGender(disclosuresData.gender);
               }
-              if (fetchedData.hasDisability) {
-                disclosuresData.disability = fetchedData.hasDisability;
+              if (fetchedData.disabilityStatus) {
+                disclosuresData.disabilityStatus = fetchedData.disabilityStatus;
+                setDisabilityStatus(disclosuresData.disabilityStatus);
+              }
+              if (fetchedData.disability) {
+                disclosuresData.disability = fetchedData.disability;
                 setDisabilityType(disclosuresData.disability);
               }
               if (fetchedData.isVeteran) {
                 disclosuresData.isVeteran = fetchedData.isVeteran;
                 setVeteranStatus(disclosuresData.isVeteran);
+              }
+              if (fetchedData.ethnicity) {
+                disclosuresData.ethnicity = fetchedData.ethnicity;
+                setEthnicity(disclosuresData.ethnicity);
               }
               if (fetchedData.race) {
                 disclosuresData.race = fetchedData.race;
@@ -99,8 +104,6 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 disclosuresData.ethnicity = fetchedData.ethnicity;
                 setRace(disclosuresData.ethnicity);
               }
-              disclosuresData.hasReadTerms = fetchedData.hasReadTerms;
-              setTermsAccepted(disclosuresData.hasReadTerms);
             }
           } catch (error) {
             console.error(error);
@@ -122,18 +125,13 @@ export default function CreateJobseekerProfileDisclosuresPage() {
       return;
     }
 
-    if (!termsAccepted) {
-      setOpen(true);
-      return;
-    }
-
     disclosuresData.userId = session.user.id;
     disclosuresData.isVeteran = veteranStatus;
+    disclosuresData.disabilityStatus = disabilityStatus;
     disclosuresData.disability = disabilityType;
     disclosuresData.gender = gender;
     disclosuresData.race = race;
     disclosuresData.ethnicity = ethnicity;
-    disclosuresData.hasReadTerms = termsAccepted;
 
     try {
       const response = await fetch(
@@ -159,36 +157,12 @@ export default function CreateJobseekerProfileDisclosuresPage() {
     }
   }
 
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string,
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
-
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
         <ProgressBarFlat progress={(6 / 6) * 100} size="sm" />
         <p>Step 6/6</p>
-
-        <SnackbarWithIcon
-          open={open}
-          onClose={handleClose}
-          variant="alert"
-          message={
-            <div>
-              <Typography variant="body1">Must agree to terms!</Typography>
-              <Typography variant="body2">
-                To finish creating your profile, you must agree to the terms.
-              </Typography>
-            </div>
-          }
-        />
 
         <h1>Voluntary Disclosures</h1>
         <p className="subtitle">* Indicates a required field</p>
@@ -312,7 +286,13 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               include, but are not limited to:
             </p>
 
-            <ul className="list-inside list-disc">
+            <ul
+              className="list-inside list-disc"
+              style={{
+                paddingBottom: '1em',
+                paddingLeft: '1em',
+              }}
+            >
               <li>
                 Alcohol or other substance use disorder (not currently using
                 drugs illegally)
@@ -380,7 +360,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   setDisabilityStatus(event.target.value);
                   if (event.target.value !== 'yes') {
                     dispatch(setPageDirty('disclosures'));
-                    setDisabilityType(event.target.value);
+                    setDisabilityType('');
                   }
                 }}
                 name="profile-creation-disclosures-require-disability"
@@ -444,25 +424,12 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               </div>
             )}
           </fieldset>
-          <fieldset>
-            <legend>
-              <h2>Terms</h2>
-            </legend>
-            <Label className="block">
-              <Checkbox
-                name="profile-creation-disclosures-require-terms"
-                checked={termsAccepted}
-                onChange={(event) => setTermsAccepted(event.target.checked)}
-              />{' '}
-              Yes, I have read and consent to the terms and conditions *
-            </Label>
-          </fieldset>
           <div className="profile-form-progress-btn-group">
             <Button
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/preferences');
+                router.push('/edit-profile/jobseeker/work-experience');
               }}
             >
               Previous

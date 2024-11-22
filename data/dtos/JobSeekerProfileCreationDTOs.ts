@@ -13,7 +13,6 @@ export type JsIntroDTO = {
   phone?: string | null;
   phoneCountryCode?: string | null;
   photoUrl?: string | null;
-  resumeUrl?: string | null;
   state?: string | null;
   zipCode?: string | null;
 };
@@ -31,7 +30,6 @@ export type JsIntroPostDTO = {
   phone?: string | null;
   phoneCountryCode?: string | null;
   photoUrl?: string | null;
-  resumeUrl?: string | null;
   state?: string | null;
   zipCode?: string;
 };
@@ -64,14 +62,14 @@ export type ProjectExpDTO = {
 // Updated to match WJI grant reporting data (do not modify)
 export enum HighestCompletedEducationLevel {
   // VocationalQualification = 'Vocational Qualification / Certification',
-  NoFormalEducation = 'Less than high school diploma',
+  NoFormalEducation = 'Not yet completed High School',
   GED = 'GED',
-  HighSchool = 'High School',
-  PostHighSchool = 'Some post high school, no degree or certificate',
+  HighSchool = 'High School Diploma',
+  PostHighSchool = 'Some training or study post high school',
   Certificate = 'Certificate (less than two years)',
-  Associates = 'Associates',
-  Bachelors = 'Bachelors',
-  Masters = 'Masters',
+  Associates = "Associates's Degree",
+  Bachelors = "Bachelor's Degree",
+  Masters = "Master's Degree",
   Doctorate = 'Doctorate',
 }
 
@@ -152,10 +150,10 @@ export type JsEducationPageDTO = {
 export type JsWorkExpDTO = {
   userId: string;
   yearsWorkExperience: string;
-  workExperiences?: JsWorkDTO[];
-  isAuthorizedToWorkUsa?: boolean; // TODO: encrypt
   monthsInternshipExperience?: string | null;
-  requiresSponsorship?: boolean; // TODO: encrypt
+  isAuthorizedToWorkUsa?: boolean | null;
+  requiresSponsorship?: boolean | null;
+  workExperiences?: JsWorkDTO[];
 };
 
 export type JsWorkDTO = {
@@ -178,8 +176,8 @@ export type JsShowcaseDTO = {
   introduction?: string | null;
   portfolioPassword?: string | null; // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
   portfolioUrl?: string | null;
-  resume_url?: string | null;
   video_url?: string | null;
+  linkedin_url?: string | null;
 };
 
 export type JsPreferencesDTO = {
@@ -189,23 +187,22 @@ export type JsPreferencesDTO = {
   targetedPathwayId?: string | null;
 };
 
-// TODO: this needs to be secure
 export type JsDisclosuresDTO = {
-  hasReadTerms: boolean; //users.has_read_terms
-  ethnicity?: string | null; // users.ethnicity
-  gender?: string | null;
-  hasDisability?: string | null; // privateDetails
-  isVeteran?: string | null; // privateDetails
   jobseekerId?: string | null; // jsDetails
+  isVeteran?: string | null; // privateDetails
+  disability?: string | null; // privateDetails
+  disabilityStatus?: string | null; // privateDetails
+  gender?: string | null;
   race?: string | null;
+  ethnicity?: string | null; // users.ethnicity
 };
 
 export type JsDisclosuresPostDTO = {
   disability: string; // jobseekers[0].jobseekers_private_data[0].has_disability
-  ethnicity: string;
-  gender: string; // users.gender
-  hasReadTerms: boolean; //users.has_read_terms
   isVeteran: string; // jobseekers[0].jobseekers_private_data[0].is_veteran
-  race: string; //users.race
   userId: string;
+  disabilityStatus: string;
+  gender: string; // users.gender
+  race: string; //users.race
+  ethnicity: string;
 };

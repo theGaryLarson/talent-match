@@ -9,36 +9,34 @@ import { auth } from '@/auth';
 import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
 import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
+import { Role } from '@/data/dtos/UserInfoDTO';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
 export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   const Session = await auth();
-
-  if (!Session?.user.employerId) {
+  let company_id = Session?.user.companyId;
+  if(Session?.user.roles.includes(Role.ADMIN)){
+    company_id = jobData.company_id;
+  }
+  if (!company_id) {
     throw new Error(
-      'Failed to create job listing employer id not found in session',
+      'Failed to create job listing Company id not found',
     );
   }
-  if (!Session.user.companyId) {
-    throw new Error(
-      'Failed to create job listing Company id not found in session',
-    );
-  }
-
   try {
     let companyAddress = await prisma.company_addresses.findFirst({
       where: {
         AND: {
           zip: jobData.zip,
-          company_id: Session.user.companyId,
+          company_id: company_id,
         },
       },
     });
     if (!companyAddress) {
       companyAddress = await prisma.company_addresses.create({
         data: {
-          company_id: Session.user.companyId,
+          company_id: company_id,
           company_address_id: uuidv4(),
           zip: jobData.zip,
         },
@@ -56,9 +54,11 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
     const newJobListing = await prisma.job_postings.create({
       data: {
         job_posting_id: jobListingId,
-        company_id: Session.user.companyId,
+        company_id: company_id,
         location_id: companyAddress.company_address_id,
-        employer_id: Session?.user.employerId,
+        tech_area_id:jobData.tech_area_id,
+        sector_id:jobData.sector_id,
+        employer_id: Session?.user.employerId??null,
         job_title: jobData.job_title,
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
@@ -96,9 +96,17 @@ export async function getJobListingById(joblistingId: string) {
       },
       include:{
         skills:true,
-        industry_sectors:true,
+        industry_sectors:{
+          select:{
+            sector_title:true
+          }
+        },
         companies:true,
-        techArea:true,
+        techArea:{
+          select:{
+            title:true
+          }
+        },
         jobseekersThatBookMarked:{
           select:{
             jobseeker_id:true

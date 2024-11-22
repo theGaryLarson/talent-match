@@ -117,20 +117,20 @@ export async function searchEduProviders(
   );
 }
 
-export async function searchCompanies(searchTerm: string): Promise< ReadCompanyInfoDTO[]
-  // {
-  //   companyId: string;
-  //   companyEmail: string;
-  //   logoUrl: string | null;
-  //   companyPhone: string | null;
-  //   industrySectorId: string | null;
-  //   companyName: string;
-  //   predictedHires: number | null;
-  //   websiteUrl: string | null;
-  //   yearFounded: number;
-  //   companySize: string;
-  //   approvedCompany: boolean;
-  // }[]
+export async function searchCompanies(searchTerm: string): Promise< ReadCompanyInfoDTO[] |
+  {
+    companyId: string;
+    companyEmail: string;
+    logoUrl: string | null;
+    companyPhone: string | null;
+    industrySectorId: string | null;
+    companyName: string;
+    predictedHires: number | null;
+    websiteUrl: string | null;
+    yearFounded: number;
+    companySize: string;
+    approvedCompany: boolean;
+  }[]
 > {
   return genericSearch<companies>({
     searchTerm,
@@ -147,7 +147,7 @@ export async function searchCompanies(searchTerm: string): Promise< ReadCompanyI
       websiteUrl: company.company_website_url,
       companyEmail: company.company_email,
       companyPhone: company.company_phone,
-      yearFounded: company.year_founded.toString(),
+      yearFounded: company.year_founded,
       companySize: company.size,
       predictedHires: company.estimated_annual_hires,
       approvedCompany: company.is_approved,
@@ -491,7 +491,6 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
       years_work_exp: true,
       employment_type_sought: true,
       targeted_pathway: true,
-      resume_url: true,
       portfolio_url: true,
       users: {
         select: {
@@ -610,8 +609,18 @@ export async function getTechnologyAreas() {
 }
 
 export async function deleteUser(role: Role, userId: string) {
-  // TODO: create delete user & remove jobseeker/soft-delete from api-routes
-  // jobseeker cannot be deleted if they have participated in a partner training provider program (i.e. edu_provider.iscoalitionmember = true)
+  try {
+    if (role === Role.JOBSEEKER) {
+      await deleteJobseeker(userId);
+    }
+
+    if (role === Role.EMPLOYER) {
+      await deleteEmployer(userId);
+    }
+  } catch (e) {
+
+  }
+
 }
 
 async function deleteJobseeker(userId: string) {
@@ -815,7 +824,7 @@ export async function getEmployersByCompanyId(companyId: string) {
  */
 export async function getCompanyById(companyId: string) {
   try {
-    const company = prisma.companies.findUnique(
+    const company = await prisma.companies.findUnique(
       {
         where: {
           company_id: companyId
@@ -870,7 +879,6 @@ export async function getEmployerById(employerId: string) {
     return employer;
   } catch (error) {
     console.error('Error fetching employer:', error);
-    throw new Error('Could not retrieve employer with the given ID.');
   }
 }
 

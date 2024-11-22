@@ -73,7 +73,6 @@ export async function POST(request: Request) {
                     intern_hours_required: undefined,
                     intro_headline: undefined,
                     current_job_title: undefined,
-                    resume_url: undefined,
                     years_work_exp: undefined,
                     portfolio_url: undefined,
                     video_url: undefined,

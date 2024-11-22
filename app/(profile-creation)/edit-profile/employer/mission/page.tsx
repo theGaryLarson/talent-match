@@ -90,7 +90,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
     console.log(name, value);
     dispatch(setPageDirty('mission'));
     const fieldName = name.substring(formNamePrefix.length);
-    console.log('fieldName', fieldName)
+    console.log('fieldName', fieldName);
     if (missionData.hasOwnProperty(fieldName)) {
       missionData[fieldName as keyof PostEmployerMissionDTO] = value;
       setMissionData({ ...missionData });
@@ -151,8 +151,12 @@ export default function CreateEmployerCompanyInfoMissionPage() {
             </fieldset>
           </div>
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
-              Cancel
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => router.push('/edit-profile/employer/about')}
+            >
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue

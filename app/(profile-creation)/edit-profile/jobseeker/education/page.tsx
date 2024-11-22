@@ -23,15 +23,15 @@ import { useRouter } from 'next/navigation';
 import Educations, {
   defaultEducationData,
   EducationData,
-} from '@/app/ui/form-field-groups/Educations';
+} from './form-field-groups/Educations';
 import Licenses, {
   defaultLicenseData,
   LicenseData,
-} from '@/app/ui/form-field-groups/Licenses';
+} from './form-field-groups/Licenses';
 import ProjectExperiences, {
   defaultProjectExperienceData,
   ProjectExperienceData,
-} from '@/app/ui/form-field-groups/ProjectExperiences';
+} from './form-field-groups/ProjectExperiences';
 import { devLog, mapToEnum, mapToEnumOrThrow } from '@/app/lib/utils';
 import { getSession, useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
@@ -75,12 +75,17 @@ export default function CreateJobseekerProfileEducationPage() {
         projectId: project.projectId,
         projectTitle: project.projTitle,
         projectRole: project.projectRole,
-        startDate: dayjs(project.startDate),
-        completionDate: dayjs(project.completionDate),
+        startDate: !Boolean(project.startDate)
+          ? null
+          : dayjs(project.startDate),
+        completionDate: !Boolean(project.completionDate)
+          ? null
+          : dayjs(project.completionDate),
         reference: project.repoUrl ?? '',
         problemSolvedDescription: project.problemSolvedDescription,
         teamSize: project.teamSize,
         skills: project.skills,
+        fetchedSkills: project.skills,
       }),
     ),
     licenses: educationData.certifications.map(
@@ -90,8 +95,8 @@ export default function CreateJobseekerProfileEducationPage() {
         issuingOrg: cert.issuingOrg,
         credentialId: cert.credentialId ?? '',
         credentialUrl: cert.credentialUrl ?? '',
-        issueDate: dayjs(cert.issueDate),
-        expiryDate: dayjs(cert.expiryDate),
+        issueDate: !Boolean(cert.issueDate) ? null : dayjs(cert.issueDate),
+        expiryDate: !Boolean(cert.expiryDate) ? null : dayjs(cert.expiryDate),
       }),
     ),
     educations: educationData.educations.map(
@@ -106,8 +111,12 @@ export default function CreateJobseekerProfileEducationPage() {
         edProviderName: education.edProviderName ?? '',
         isEnrolled: education.isEnrolled,
         enrollmentStatus: education.enrollmentStatus,
-        startDate: dayjs(education.startDate),
-        gradDate: dayjs(education.gradDate),
+        startDate: !Boolean(education.startDate)
+          ? null
+          : dayjs(education.startDate),
+        gradDate: !Boolean(education.gradDate)
+          ? null
+          : dayjs(education.gradDate),
         degreeType:
           mapToEnum(education.degreeType ?? null, HighSchoolDegreeType) ??
           mapToEnumOrThrow(education.degreeType ?? null, CollegeDegreeType),
@@ -246,6 +255,7 @@ export default function CreateJobseekerProfileEducationPage() {
                       edProviderId: education.edProviderId,
                       edProviderName: education.edProviderName ?? '',
                       isEnrolled: education.isEnrolled,
+                      enrollmentStatus: education.enrollmentStatus,
                       startDate: dayjs(education.startDate),
                       gradDate: dayjs(education.gradDate),
                       degreeType:
@@ -284,6 +294,7 @@ export default function CreateJobseekerProfileEducationPage() {
                         project.problemSolvedDescription,
                       teamSize: project.teamSize,
                       skills: project.skills,
+                      fetchedSkills: project.skills,
                     }),
                   ),
                 ],
@@ -475,14 +486,14 @@ export default function CreateJobseekerProfileEducationPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(2 / 6) * 100} size="sm" />
-        <p>Step 2/6</p>
+        <ProgressBarFlat progress={(4 / 6) * 100} size="sm" />
+        <p>Step 4/6</p>
         <h1>Education</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Highest Education</h2>
+              <h2>Highest Level of Education</h2>
             </legend>
             <SelectOptionsWithLabel
               id="profile-creation-education-highest-completed"
@@ -498,12 +509,12 @@ export default function CreateJobseekerProfileEducationPage() {
               onChange={handleLevelOfStudy}
               value={highestLevelOfStudy}
             >
-              What is your highest completed level of study?
+              What is the highest degree you’ve earned or schooling completed?
             </SelectOptionsWithLabel>
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Educations</h2>
+              <h2>Education Details</h2>
             </legend>
             <Educations
               data={data.educations}
@@ -513,12 +524,12 @@ export default function CreateJobseekerProfileEducationPage() {
             />
             <Button pill color="gray" onClick={addNewEducation}>
               <MdAdd className="mr-2 h-5 w-5" />
-              Add education
+              Add education detail
             </Button>
           </fieldset>
           <fieldset className="license-groups">
             <legend>
-              <h2>Licenses &amp; certificates</h2>
+              <h2>Licenses &amp; Certifications</h2>
             </legend>
             <Licenses
               data={data.licenses}
@@ -527,12 +538,16 @@ export default function CreateJobseekerProfileEducationPage() {
             />
             <Button pill color="gray" onClick={addNewLicense}>
               <MdAdd className="mr-2 h-5 w-5" />
-              Add license
+              Add license or certification
             </Button>
           </fieldset>
           <fieldset className="project-experience-groups">
             <legend>
               <h2>Project experience</h2>
+              <p>
+                Share your experience creating or contributing to a project as a
+                student, apprentice, or intern.
+              </p>
             </legend>
             <ProjectExperiences
               data={data.projectExperiences}
@@ -548,12 +563,12 @@ export default function CreateJobseekerProfileEducationPage() {
           <div className="profile-form-progress-btn-group flex">
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/introduction');
+                router.push('/edit-profile/jobseeker/showcase');
               }}
             >
-              Previous{' '}
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue

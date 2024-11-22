@@ -30,7 +30,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-
+import { TechPathways } from '@/app/lib/admin/careerPrep'
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -125,7 +125,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
         dispatch(setPageSaved('preferences'));
         dispatch(setPreferences(preferencesData));
 
-        router.push('/edit-profile/jobseeker/disclosures');
+        router.push('/edit-profile/jobseeker/showcase');
       } else {
         const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -142,8 +142,8 @@ export default function CreateJobseekerProfilePreferencesPage() {
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
-        <p>Step 5/6</p>
+        <ProgressBarFlat progress={(2 / 6) * 100} size="sm" />
+        <p>Step 2/6</p>
         <h1>Your preferences</h1>
 
         <p className="subtitle">* Indicates a required field</p>
@@ -210,7 +210,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   component="legend"
                   sx={{ color: '#000000ff' }}
                 >
-                  What is your tech role/targeted pathway?
+                  What technology path most interests you?
                 </FormLabel>
                 <RadioGroup
                   aria-labelledby="profile-creation-preferences-require-role"
@@ -222,24 +222,24 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   }}
                 >
                   <FormControlLabel
-                    value="Software Developer"
+                    value={TechPathways.SOFTWARE_DEVELOPMENT}
                     control={<Radio />}
-                    label="Software Developer"
+                    label={TechPathways.SOFTWARE_DEVELOPMENT}
                   />
                   <FormControlLabel
-                    value="Cloud Support Associate"
+                    value={TechPathways.IT_CLOUD_COMPUTING}
                     control={<Radio />}
-                    label="Cloud Support Associate"
+                    label={TechPathways.IT_CLOUD_COMPUTING}
                   />
                   <FormControlLabel
-                    value="Cybersecurity Analyst"
+                    value={TechPathways.CYBERSECURITY}
                     control={<Radio />}
-                    label="Cybersecurity Analyst"
+                    label={TechPathways.CYBERSECURITY}
                   />
                   <FormControlLabel
-                    value="Data Analyst"
+                    value={TechPathways.DATA_ANALYTICS}
                     control={<Radio />}
-                    label="Data Analyst"
+                    label={TechPathways.DATA_ANALYTICS}
                   />
                 </RadioGroup>
               </FormControl>
@@ -251,7 +251,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/showcase');
+                router.push('/edit-profile/jobseeker/introduction');
               }}
             >
               Previous

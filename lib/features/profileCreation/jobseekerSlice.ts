@@ -21,12 +21,16 @@ interface JsWorkStringDateDTO extends Omit<JsWorkDTO, 'startDate' | 'endDate'> {
   endDate: string | null;
 }
 
+interface JsShowcaseWithResumeDTO extends JsShowcaseDTO {
+  resumeUrl: string;
+}
+
 // Define a type for the slice state
 export interface JobseekerState {
   introduction: JsIntroPostDTO;
   education: JsEducationPageDTO;
   workExperience: JsWorkExpStringDateDTO;
-  showcase: JsShowcaseDTO;
+  showcase: JsShowcaseWithResumeDTO;
   preferences: JsPreferencesDTO;
   disclosures: JsDisclosuresPostDTO;
 }
@@ -48,7 +52,6 @@ export const initialState: JobseekerState = {
     email: '',
     introHeadline: null,
     currentJobTitle: null,
-    resumeUrl: null,
   },
   education: {
     userId: '',
@@ -69,9 +72,11 @@ export const initialState: JobseekerState = {
   showcase: {
     userId: '',
     skills: [],
+    introduction: null,
     portfolioUrl: null,
     portfolioPassword: null,
     video_url: null,
+    resumeUrl: '',
   },
   preferences: {
     userId: '',
@@ -82,11 +87,11 @@ export const initialState: JobseekerState = {
   disclosures: {
     userId: '',
     isVeteran: '',
+    disabilityStatus: '',
     disability: '',
     gender: '',
     race: '',
     ethnicity: '',
-    hasReadTerms: false,
   },
 };
 
@@ -110,7 +115,7 @@ export const jobseekerSlice = createSlice({
     ) => {
       state.workExperience = action.payload;
     },
-    setShowcase: (state, action: PayloadAction<JsShowcaseDTO>) => {
+    setShowcase: (state, action: PayloadAction<JsShowcaseWithResumeDTO>) => {
       state.showcase = action.payload;
     },
     setPreferences: (state, action: PayloadAction<JsPreferencesDTO>) => {
