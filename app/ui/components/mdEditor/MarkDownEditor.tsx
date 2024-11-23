@@ -9,40 +9,8 @@ import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css'; // Add css for snow theme
 import { CreateNoteDTO, NoteType, UpdateNoteDTO } from '@/app/lib/admin/careerPrep';
 // or import 'quill/dist/quill.bubble.css'; // Add css for bubble theme
-export default function MarkDownEditor (props:{title:string, noteType:NoteType, jobseekerId:string, noteid?:string, starterContent?:string, setEdit?:Function}){
-  const theme = 'snow';
-  // const theme = 'bubble';
-
-  const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ align: [] }],
-  
-      [{ list: 'ordered'}],
-      [{ indent: '-1'}, { indent: '+1' }],
-  
-      [{ size: ['small', false, 'large', 'huge'] }],
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ['link', 'image', 'video'],
-      [{ color: [] }, { background: [] }],
-  
-      ['clean'],
-    ],
-    clipboard: {
-      matchVisual: false,
-    },
-  };
-  const placeholder = 'Compose an epic...';
-
-  const formats = [
-    'bold', 'italic', 'underline', 'strike',
-    'align', 'list', 'indent',
-    'size', 'header',
-    'link', 'image', 'video',
-    'color', 'background',
-    'clean',
-  ];
-    const { quill, quillRef } = useQuill();;
+export default function MarkDownEditor (props:{noteType:NoteType, jobseekerId:string, noteid?:string, starterContent?:string}){
+    const { quill, quillRef } = useQuill();
     const router = useRouter();
     React.useEffect(() => {
       if (quill) {
@@ -94,6 +62,7 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
         'Content-Type': 'application/json'
       },
     });
+    ClearNote();
     router.refresh();
     }
     const handleUpdate = async (e:React.FormEvent) =>{
@@ -105,9 +74,9 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
           noteContent: content ??''
         }
         try {
-          if(props.setEdit == undefined){
-            return
-          }
+          // if(props.setEdit == undefined){
+          //   return
+          // }
           const response = await fetch('/api/admin/career-prep/update-student-notes', {//still needs backend api
             method: 'POST',
             headers: {
@@ -118,7 +87,7 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
     
           if (response.ok) {
             console.log('Content submitted successfully');
-            props.setEdit(false)
+            //props.setEdit(false)
             router.refresh();
           } else {
             console.error('Error submitting content');
@@ -129,17 +98,17 @@ export default function MarkDownEditor (props:{title:string, noteType:NoteType, 
     }
     return (
         <div className='h-[500px]'>
-      <div  className='w-[800px] h-[300px]'>
+      <div  className='w-[750px] h-[400px]'>
         <div ref={quillRef} />
         {props.noteid?
         <>
-        <button className='border w-[400px] h-[60px] bg-gray-200' onClick={deleteNote}>Delete Note</button>
-        <button className='border w-[400px] h-[60px] bg-blue-background text-white' onClick={handleUpdate}>Update Note</button>
+        <button className='border w-[375px] h-[60px] bg-gray-200' onClick={deleteNote}>Delete Note</button>
+        <button className='border w-[375px] h-[60px] bg-blue-background text-white' onClick={handleUpdate}>Update</button>
         </>
         :
         <>
-        <button className='border w-[400px] h-[60px] bg-gray-200' onClick={ClearNote}>Clear Note</button>
-        <button className='border w-[400px] h-[60px] bg-blue-background text-white' onClick={handleSubmit}>Add Note</button>
+        <button className='border w-[375px] h-[60px] bg-gray-200' onClick={ClearNote}>Clear Note</button>
+        <button className='border w-[375px] h-[60px] bg-blue-background text-white' onClick={handleSubmit}>Save</button>
         </>}
       </div>
       </div>

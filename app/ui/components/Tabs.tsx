@@ -24,7 +24,7 @@ export default function Tabs(props: { tabs: TabProps[] }) {
           </button>
         ))}
       </div>
-      <div className="p-4">{props.tabs[activeIndex].content}</div>
+      <div className="p-4 ">{props.tabs[activeIndex].content}</div>
     </div>
   );
 }
