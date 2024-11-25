@@ -95,17 +95,18 @@ export default function Page() {
             <div className="w-full mt-40 px-24 flex-col justify-start items-center gap-3.5 inline-flex">
                 {/* For employers */}
                 <div className="self-stretch justify-center items-start gap-12 inline-flex">
-                    <div className="justify-center items-center gap-24 flex">
+                    <div className="hidden laptop:block justify-center items-center gap-24 flex">
                         <div className="w-96 h-96 relative">
                             <div className="w-96 h-96 left-[0.58px] top-[-0px] absolute">
-                                <img className="w-96 shadow-none" src="/images/landing/for-employers.jpg" />
+                                <img className="hidden laptop:block w-96 shadow-none" src="/images/landing/for-employers.jpg" />
                             </div>
                         </div>
                     </div>
-                    <div className="w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
+                    <div className="w-full laptop:w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
                         <div className="px-4 py-2 bg-[#D6F1F7] rounded-2xl justify-start items-center gap-2.5 inline-flex">
                             <div className="text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">FOR EMPLOYERS</div>
                         </div>
+                        <img className="laptop:hidden w-full shadow-none" src="/images/landing/for-employers.jpg" />
                         <div className="mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">Meet your hiring needs</div>
                         <div className="mt-4 self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">We connect small and medium-sized businesses with skilled local candidates in Software, IT/Cloud Support, Cybersecurity, and Data Analytics. All candidates are vetted and curated, saving you time and money on hiring.</div>
                         <div className="mt-4 justify-start items-start gap-5 inline-flex">
@@ -114,26 +115,28 @@ export default function Page() {
                     </div>
                 </div>
                 {/* For educators */}
-                <div className="mt-16 self-stretch justify-center items-start gap-12 inline-flex">
-                    <div className="w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
+                <div className="mt-24 laptop:mt-16 w-full self-stretch justify-center items-start gap-12 inline-flex">
+                    <div className="w-full laptop:w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
                         <div className="px-4 py-2 bg-[#D6F1F7] rounded-2xl justify-start items-center gap-2.5 inline-flex">
                             <div className="text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">FOR EDUCATORS</div>
                         </div>
+                        <img className="laptop:hidden w-full rounded-3xl object-cover" src="/images/landing/for-educators.jpg" />
                         <div className="leading-none mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">Empower Students with Insights</div>
                         <div className="mt-4 self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">Discover Essential Skills for Tomorrow’s Workforce. Through our Coalition, gain valuable insights directly from employers for in-demand skills which will help align your curriculum with the most current industry standards.</div>
                         <div className="mt-4 justify-start items-start gap-5 inline-flex">
                             <RoundedButton content={'Join the Coalition'} link={'/join'} invertColor={true}></RoundedButton>
                         </div>
                     </div>
-                    <img className="w-96 h-96 rounded-3xl object-cover" src="/images/landing/for-educators.jpg" />
+                    <img className="hidden laptop:block w-96 h-96 rounded-3xl object-cover" src="/images/landing/for-educators.jpg" />
                 </div>
                 {/* For job candidates */}
-                <div className="mt-16 self-stretch justify-center items-start gap-12 inline-flex">
-                    <img className="w-96" src="/images/landing/for-job-candidates.jpg" />
-                    <div className="w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
+                <div className="mt-24 laptop:mt-16 self-stretch justify-center items-start gap-12 inline-flex">
+                    <img className="hidden laptop:block w-96" src="/images/landing/for-job-candidates.jpg" />
+                    <div className="w-full laptop:w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
                         <div className="px-4 py-2 bg-[#D6F1F7] rounded-2xl justify-start items-center gap-2.5 inline-flex">
                             <div className="text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">FOR JOB CANDIDATES</div>
                         </div>
+                        <img className="w-full" src="/images/landing/for-job-candidates.jpg" />
                         <div className="mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">standout from the crowd </div>
                         <div className="mt-4 self-stretch"><span className="text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">Join our Talent Portal and let employers find</span><span className="text-cyan-700 text-xl font-semibold font-['Roboto'] leading-loose"> you</span><span className="text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">. Showcase your skills, connect directly with local companies, and access exclusive career development resources. Create your profile today and take the next step toward your dream tech role.</span></div>
                         <div className="mt-4 justify-start items-start gap-5 inline-flex">
