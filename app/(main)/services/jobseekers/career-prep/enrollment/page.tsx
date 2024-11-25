@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import NextLink from "next/link";
 import { CareerPrepEnrollmentDTO } from "@/app/lib/admin/careerPrep";
+import Confetti from "@/app/ui/components/Confetti";
+import '@/app/ui/profile-creation.css';
 
 interface FormData {
   streetAddress: string;
@@ -14,6 +16,7 @@ interface FormData {
 export default function Page() {
   const { data: session, update, status } = useSession();
   const [formData, setFormData] = useState<FormData>({ streetAddress: '', priorityPopulations: [] });
+  const [successfullySubmitted, setSuccessfullySubmitted] = useState<boolean>();
   const [snackbar, setSnackbar] = useState<{ open: boolean, message: string, severity: "success" | "error" }>({ open: false, message: '', severity: "success" });
 
   const priorityPopulations: string[] = [
@@ -78,12 +81,10 @@ export default function Page() {
       body: JSON.stringify(payload),
     });
     if (response.ok) {
-      console.log(response);
-      setSnackbar({ open: true, message: "Submission successful! Redirecting...", severity: "success" });
-      setTimeout(() => {
-        window.location.href = '/services/jobseekers/dashboard';
-      }, 2000);
+      setSuccessfullySubmitted(true);
+      window.scrollTo({ top: 0, behavior: "instant" });
     } else {
+      setSuccessfullySubmitted(false);
       setSnackbar({ open: true, message: "Submission failed. Please try again.", severity: "error" });
     }
   };
@@ -94,7 +95,21 @@ export default function Page() {
 
   return (
     <>
-      <Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: 'auto', my: 4 }}>
+      {successfullySubmitted ? <>
+      <Box className="flex justify-center">
+        <Box style={{ height: '100vh' }} className="profile-form-section main-content">
+          <Confetti />
+          <h1>Next Steps</h1>
+          <Typography sx={{ pt: 3, mb: 3 }}>You’re officially enrolled! We're excited to officially welcome you to Career Prep. Return to your dashboard to view your personalized development plan and access the Canvas training.</Typography>
+          {/*<p className="subtitle-congrats">{`Thank you again for your participation!`}</p>*/}
+          <Grid2 container>
+            <Button pill href='/services/jobseekers/dashboard'>
+              Go to Dashboard
+            </Button>
+          </Grid2>
+        </Box>
+      </Box>
+    </> :<Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: 'auto', my: 4 }}>
         <Typography variant="h4" align="center" sx={{ mb: 4 }}>
           Career Prep Enrollment Form
         </Typography>
@@ -165,7 +180,7 @@ export default function Page() {
             <Button pill type="submit">Submit</Button>
           </Box>
         </form>
-      </Paper>
+      </Paper>}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
