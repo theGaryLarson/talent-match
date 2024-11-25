@@ -21,7 +21,7 @@ export async function GET() {
       return NextResponse.json({ success: false, url: null, error: 'No saved resume.' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, url: url}, { status: 200 });
+    return NextResponse.json(url, { status: 200 });
   } catch (e: any) {
     console.error('Error retrieving resume from Blob storage:', e.message);
     return NextResponse.json(
