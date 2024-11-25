@@ -26,7 +26,7 @@ export default function Page() {
                 </div>
                 {/* Content */}
                 <div className="w-full relative justify-center items-center z-1 bg-[#D6F1F7]">
-                    <div className="mt-12 px-24 flex-col justify-start items-center gap-5 inline-flex">
+                    <div className="mt-12 px-4 laptop:px-24 flex-col justify-start items-center gap-5 inline-flex">
                         <div className="p-4 flex-col justify-start items-center flex">
                             {/* About */}
                             <div className="justify-center items-center gap-12 mt-10 mb-20 flex-col laptop:flex-row laptop:inline-flex">
@@ -43,13 +43,13 @@ export default function Page() {
                                 </div>
                                 {/* about text */}
                                 <div className="mt-12 laptop:mt-0 grow shrink basis-0">
-                                    <span className="text-gray-900 text-base laptop:text-xl font-normal font-['Roboto'] leading-loose">The </span><span className="text-cyan-700 text-base laptop:text-xl font-semibold font-['Roboto'] leading-loose">Washington Tech Workforce Coalition</span>
-                                    <span className="text-gray-900 text-base laptop:text-xl font-normal font-['Roboto'] leading-loose"> is committed to diversifying the IT and cybersecurity sector by bridging the skills gap for underrepresented communities. We&apos;re actively expanding access to tech job opportunities and providing targeted training and mentorship programs. By fostering partnerships between industry leaders, education providers, and community organizations, we&apos;re creating a more inclusive and equitable tech ecosystem where everyone can thrive.</span></div>
+                                    <span className="text-gray-900 text-xl font-normal font-['Roboto'] leading-loose">The </span><span className="text-cyan-700 text-xl font-semibold font-['Roboto'] leading-loose">Washington Tech Workforce Coalition</span>
+                                    <span className="text-gray-900 text-xl font-normal font-['Roboto'] leading-loose"> is committed to diversifying the IT and cybersecurity sector by bridging the skills gap for underrepresented communities. We&apos;re actively expanding access to tech job opportunities and providing targeted training and mentorship programs. By fostering partnerships between industry leaders, education providers, and community organizations, we&apos;re creating a more inclusive and equitable tech ecosystem where everyone can thrive.</span></div>
                             </div>
 
                             {/* Launching soon talent portal */}
-                            <div className="w-full laptop:w-2/3 py-8 pl-8 bg-sky-950 rounded-3xl justify-start items-center gap-20">
-                                <div className="w-full grid grid-cols-2 justify-center items-start gap-2.5">
+                            <div className="w-full desktop:w-3/4 pt-8 pb-0 laptop:pb-8 pl-8 pr-8 laptop:pr-0 bg-sky-950 rounded-3xl justify-start items-center gap-20">
+                                <div className="w-full laptop:grid laptop:grid-cols-2 justify-center items-start gap-2.5">
                                     <div className="">
                                         <div className="mb-8 self-stretch text-white/70 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">LAUNCHING SOON...</div>
                                         <div className="mb-12 self-stretch text-neutral-100 text-6xl font-normal font-['Roboto'] capitalize leading-10">Talent Portal</div>
@@ -62,8 +62,9 @@ export default function Page() {
                                             <RoundedButton content={'Join the Coalition'} link={'/join'} invertColor={true}></RoundedButton>
                                         </div>
                                     </div>
-                                    <img className="h-full object-cover object-left rounded-tl-3xl rounded-bl-3xl" src="/images/landing/my-dashboard.png" />
+                                    <img className="hidden laptop:block h-full object-cover object-left rounded-tl-3xl rounded-bl-3xl" src="/images/landing/my-dashboard.png" />
                                 </div>
+                                <img className="laptop:hidden mt-10 w-full h-[36rem] object-cover object-left-top rounded-tl-3xl rounded-tr-3xl" src="/images/landing/my-dashboard.png" />
                             </div>
                         </div>
                         {/* Our goal */}
