@@ -25,9 +25,9 @@ export default async function page({ params }: { params: { id: string } }){
             <div className="">
                 <Tabs tabs={
                 [
-                {label:"General Notes",content:<NoteContainer noteType={NoteType.GENERAL} jsId={params.id} notes={notes.generalNotes}/>},
-                {label:"Meeting Notes",content:<NoteContainer noteType={NoteType.MEETING} jsId={params.id} notes={notes.meetingNotes}/>},
-                {label:"Follow Up Notes",content:<NoteContainer noteType={NoteType.FOLLOWUP} jsId={params.id} notes={notes.followUpNotes}/> }
+                {label:"General Notes",content:<NoteContainer key="Gen" noteType={NoteType.GENERAL} jsId={params.id} notes={notes.generalNotes}/>},
+                {label:"Meeting Notes",content:<NoteContainer key="Meet" noteType={NoteType.MEETING} jsId={params.id} notes={notes.meetingNotes}/>},
+                {label:"Follow Up Notes",content:<NoteContainer key="Follow" noteType={NoteType.FOLLOWUP} jsId={params.id} notes={notes.followUpNotes}/> }
                 ]}/>
             </div> 
         </main>

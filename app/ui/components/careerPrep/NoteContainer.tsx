@@ -17,16 +17,16 @@ export default function NoteContainer(params:{noteType:NoteType, jsId:string, no
         setStarterContent('')
     }
     return(
-<div className="flex">
+<div className="flex justify-between flex-wrap py-4">
 <MarkDownEditor
-                key={selectedNoteId || params.noteType as string} // Ensure a unique key for each selection
+                key={(params.noteType as string) + selectedNoteId} // Ensure a unique key for each selection
                 noteType={params.noteType} // Use dynamic noteType from params
                 jobseekerId={params.jsId}
                 noteid={selectedNoteId}
                 starterContent={starterContent}
             />
-    <div className="h-[500px] overflow-auto">
-        <button className='border w-[750px] h-[60px] bg-blue-background text-white' onClick={NewNote}>New Note <AddOutlined/></button>
+    <div className="h-[525px] overflow-auto border">
+        <button className='border w-[700px] h-[60px] bg-blue-background text-white' onClick={NewNote}>New Note <AddOutlined/></button>
         {params.notes.map((n)=><NoteCard UpdateSelectedId={handleNoteSelection} key={n.id} {...n}/>)}
     </div>
         
