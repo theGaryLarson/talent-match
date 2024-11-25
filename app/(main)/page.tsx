@@ -8,11 +8,11 @@ export const metadata = {
 export default function Page() {
     return (
         <div>
-            <main className="py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px] font-['Roboto']">
+            <div className="py-8 mx-0 tablet:mx-8 laptop:mx-16 font-['Roboto']">
                 {/* Header */}
                 <div className="w-full py-10 px-24 rounded-3xl flex-col justify-center items-center gap-5 inline-flex">
                     <div className="self-stretch text-center text-sky-900 text-7xl font-normal font-['Roboto'] capitalize ">Washington Tech Workforce Coalition</div>
-                    <div className="mt-4 self-stretch text-center text-sky-900 text-5xl font-normal font-['Roboto'] leading-10">Employers, Educators, & Community Shaping the Future of Tech</div>
+                    <div className="leading-none mt-4 self-stretch text-center text-sky-900 text-5xl font-normal font-['Roboto'] leading-10">Employers, Educators, & Community Shaping the Future of Tech</div>
                     <div className="mt-10 justify-start items-start gap-5 inline-flex">
                         <RoundedButton content={'Join the Coalition'} link={'/join'} invertColor={true}></RoundedButton>
                     </div>
@@ -20,25 +20,31 @@ export default function Page() {
 
                 {/* Header image */}
                 <div className="w-full relative inline-flex justify-center items-center">
-                    <img className="w-3/4 z-50 rounded-3xl shadow" src="/images/landing/banner.jpg" />
+                    <img className="w-11/12 tablet:w-3/4 z-50 rounded-3xl shadow" src="/images/landing/banner.jpg" />
                     {/* Top rounded background rectangle */}
                     <div className="w-full h-[40rem] z-0 absolute top-1/2 inline-flex h-72 bg-[#D6F1F7] rounded-tl-3xl rounded-tr-3xl" />
                 </div>
                 {/* Content */}
                 <div className="w-full relative justify-center items-center z-1 bg-[#D6F1F7]">
-                    <div className="px-24 flex-col justify-start items-center gap-5 inline-flex">
+                    <div className="mt-12 px-24 flex-col justify-start items-center gap-5 inline-flex">
                         <div className="p-4 flex-col justify-start items-center flex">
                             {/* About */}
-                            <div className="h-56 justify-center items-center gap-12 mt-10 mb-20 inline-flex">
-                                <div className="flex-col justify-start items-center gap-6 inline-flex">
-                                    <div className="w-full mb-6 h-36 relative">
-                                        <img className="w-full" src="/images/landing/TWC-logo.svg" />
+                            <div className="justify-center items-center gap-12 mt-10 mb-20 flex-col laptop:flex-row laptop:inline-flex">
+                                <div className="flex-col justify-center items-center gap-6 flex">
+                                    <div className="w-full mb-6 h-36 flex justify-center items-center">
+                                        <img className="w-1/4 laptop:w-full" src="/images/landing/TWC-logo.svg" />
                                     </div>
                                     <div className="text-center text-sky-900 text-5xl font-normal font-['Roboto'] leading-10">About TWC</div>
                                 </div>
-                                <div className="grow shrink basis-0">
-                                    <span className="text-gray-900 text-xl font-normal font-['Roboto'] leading-loose">The </span><span className="text-cyan-700 text-xl font-semibold font-['Roboto'] leading-loose">Washington Tech Workforce Coalition</span>
-                                    <span className="text-gray-900 text-xl font-normal font-['Roboto'] leading-loose"> is committed to diversifying the IT and cybersecurity sector by bridging the skills gap for underrepresented communities. We&apos;re actively expanding access to tech job opportunities and providing targeted training and mentorship programs. By fostering partnerships between industry leaders, education providers, and community organizations, we&apos;re creating a more inclusive and equitable tech ecosystem where everyone can thrive.</span></div>
+                                {/* divider */}
+                                <div className="h-56 w-px hidden laptop:flex flex-col justify-start items-start inline-flex">
+                                    <div className="w-px h-px relative" />
+                                    <div className="w-56 shrink origin-top-left rotate-90 border border-cyan-700"></div>
+                                </div>
+                                {/* about text */}
+                                <div className="mt-12 laptop:mt-0 grow shrink basis-0">
+                                    <span className="text-gray-900 text-base laptop:text-xl font-normal font-['Roboto'] leading-loose">The </span><span className="text-cyan-700 text-base laptop:text-xl font-semibold font-['Roboto'] leading-loose">Washington Tech Workforce Coalition</span>
+                                    <span className="text-gray-900 text-base laptop:text-xl font-normal font-['Roboto'] leading-loose"> is committed to diversifying the IT and cybersecurity sector by bridging the skills gap for underrepresented communities. We&apos;re actively expanding access to tech job opportunities and providing targeted training and mentorship programs. By fostering partnerships between industry leaders, education providers, and community organizations, we&apos;re creating a more inclusive and equitable tech ecosystem where everyone can thrive.</span></div>
                             </div>
 
                             {/* Launching soon talent portal */}
@@ -61,13 +67,13 @@ export default function Page() {
                             </div>
                         </div>
                         {/* Our goal */}
-                        <div className="h-72 flex-col justify-center items-center gap-2.5 flex">
+                        <div className="mt-10 h-72 flex-col justify-center items-center gap-2.5 flex">
                             <div className="mb-8 self-stretch text-center text-neutral-700 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">OUR GOAL</div>
-                            <div className="mb-12 self-stretch text-center text-cyan-700 text-8xl font-normal font-['Roboto'] leading-10">1,000 Job Candidates</div>
+                            <div className="leading-none mb-8 self-stretch text-center text-cyan-700 text-8xl font-normal font-['Roboto']">1,000 Job Candidates</div>
                             <div className="mb-4 self-stretch text-center text-neutral-700 text-5xl font-normal font-['Roboto'] capitalize leading-10"> In Tech roles by 2025</div>
                         </div>
                         {/* What we do */}
-                        <div className="self-stretch justify-center items-center gap-12 inline-flex">
+                        <div className="mt-10 self-stretch justify-center items-center gap-12 inline-flex">
                             <div className="w-2/3 flex-col justify-center items-start gap-2.5 inline-flex">
                                 <div className="self-stretch text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">WHAT WE DO</div>
                                 <div className="leading-none self-stretch text-cyan-700 text-6xl font-normal font-['Roboto'] capitalize leading-10">Build A more inclusive tech future</div>
@@ -82,7 +88,7 @@ export default function Page() {
                 </div>
                 {/* round off the bottom of the background rectangle */}
                 <div className="w-full mt-0 h-12 bg-[#D6F1F7] rounded-bl-3xl rounded-br-3xl" />
-            </main>
+            </div>
 
             <div className="w-full mt-40 px-24 flex-col justify-start items-center gap-3.5 inline-flex">
                 {/* For employers */}
@@ -111,7 +117,7 @@ export default function Page() {
                         <div className="px-4 py-2 bg-[#D6F1F7] rounded-2xl justify-start items-center gap-2.5 inline-flex">
                             <div className="text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">FOR EDUCATORS</div>
                         </div>
-                        <div className="mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">Empower Students with Insights</div>
+                        <div className="leading-none mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">Empower Students with Insights</div>
                         <div className="mt-4 self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">Discover Essential Skills for Tomorrow’s Workforce. Through our Coalition, gain valuable insights directly from employers for in-demand skills which will help align your curriculum with the most current industry standards.</div>
                         <div className="mt-4 justify-start items-start gap-5 inline-flex">
                             <RoundedButton content={'Join the Coalition'} link={'/join'} invertColor={true}></RoundedButton>
