@@ -308,6 +308,8 @@ model CareerPrepAssessment {
   experienceWithApplying  Boolean               @db.Bit
   experienceWithInterview Boolean               @db.Bit
   prevWorkExperience      Boolean               @default(false) @db.Bit
+  streetAddress           String?               @db.VarChar(255)
+  priorityPopulations     String?               @db.Text
   updatedAt               DateTime              @updatedAt @db.DateTime
   Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
   CaseMgmt                CaseMgmt?
