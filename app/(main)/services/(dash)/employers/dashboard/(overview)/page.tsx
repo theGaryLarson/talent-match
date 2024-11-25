@@ -14,7 +14,7 @@ export default async function Page() {
   const session = await auth();
   const company = await getCompanyById(session?.user.companyId??'');
   const proInfo = await getEmployerById(session?.user.employerId??'');
-  if(!proInfo){
+  if(!proInfo || (session?.user.companyId == undefined) ||(session?.user.companyId == null) ){
     return (
       <div>
         <h1 className='text-2xl'>
