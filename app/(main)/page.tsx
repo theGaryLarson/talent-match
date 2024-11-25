@@ -10,7 +10,7 @@ export default function Page() {
         <div>
             <div className="py-8 mx-0 tablet:mx-8 laptop:mx-16 font-['Roboto']">
                 {/* Header */}
-                <div className="w-full py-10 px-24 rounded-3xl flex-col justify-center items-center gap-5 inline-flex">
+                <div className="w-full py-10 px-8 laptop:px-24 rounded-3xl flex-col justify-center items-center gap-5 inline-flex">
                     <div className="self-stretch text-center text-sky-900 text-7xl font-normal font-['Roboto'] capitalize ">Washington Tech Workforce Coalition</div>
                     <div className="leading-none mt-4 self-stretch text-center text-sky-900 text-5xl font-normal font-['Roboto'] leading-10">Employers, Educators, & Community Shaping the Future of Tech</div>
                     <div className="mt-10 justify-start items-start gap-5 inline-flex">
@@ -147,16 +147,16 @@ export default function Page() {
             </div>
 
             {/* footer - join the team of coalition members */}
-            <div className="mt-40 w-full h-80 px-24 pb-4 bg-neutral-100 flex-col justify-center items-center gap-5 inline-flex">
-                <div className="mt-10 self-stretch text-center text-sky-900 text-xl font-semibold font-['Roboto'] uppercase leading-loose tracking-widest">Join the team of Coalition Training Providers</div>
-                <div className="self-stretch h-48 py-2 justify-center items-center gap-24 inline-flex">
+            <div className="mt-40 w-full px-8 laptop:px-24 py-4 bg-neutral-100 flex-col justify-center items-center gap-5 inline-flex">
+                <div className="mt-8 self-stretch text-center text-sky-900 text-xl font-semibold font-['Roboto'] uppercase leading-loose tracking-widest">
+                    Join the team of Coalition Training Providers
+                </div>
+                <div className="w-full pb-8 justify-center items-center gap-10 inline-flex flex-wrap">
                     <img className="w-32" src="/images/training-providers/riipen.svg" />
                     <img className="w-48" src="/images/training-providers/per-scholas.svg" />
                     <img className="w-36" src="/images/training-providers/codeday.svg" />
                     <img className="w-32" src="/images/training-providers/year-up.svg" />
                     <img className="w-42" src="/images/training-providers/north-seattle-college.svg" />
-                </div>
-                <div className="self-stretch h-48 py-2 justify-center items-center gap-24 inline-flex">
                     <img className="w-32" src="/images/training-providers/WTIA.png" />
                     <img className="w-48" src="/images/training-providers/saint-martins.png" />
                     <img className="w-48" src="/images/training-providers/career-connect-wa.png" />
