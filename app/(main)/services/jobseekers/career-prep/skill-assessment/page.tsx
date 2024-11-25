@@ -132,7 +132,7 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({
 export default function Page() {
   const { data: session, update, status } = useSession();
   const router = useRouter();
-  const [sucessfullySubmitted, setsucessfullySubmitted] = useState<boolean>();
+  const [successfullySubmitted, setSuccessfullySubmitted] = useState<boolean>();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [formData, setFormData] = useState<CareerPrepSkillsAssessmentDTO>(
     {
@@ -607,7 +607,7 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    const response = await fetch('/api/assessment/submit/', {
+    const response = await fetch('/api/jobseekers/career-prep/skill-assessment/submit/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -615,11 +615,11 @@ export default function Page() {
       body: JSON.stringify(formData),
     });
     if (response.ok) {
-      setsucessfullySubmitted(true);
+      setSuccessfullySubmitted(true);
       window.scrollTo({ top: 0, behavior: "instant" });
     } else {
       const errorData = await response.json();
-      setsucessfullySubmitted(false);
+      setSuccessfullySubmitted(false);
     }
   };
 
@@ -641,13 +641,13 @@ export default function Page() {
   };
 
   return (
-    <> {sucessfullySubmitted ? <>
+    <> {successfullySubmitted ? <>
       <Box className="flex justify-center">
         <Box style={{ height: '100vh' }} className="profile-form-section main-content">
           <Confetti />
-          <h1>Career Prep Assessment<br />is complete</h1>
-          <Typography sx={{ paddingTop: 3 }}>Thank you for taking the time to complete our Skills Assessment! This information will be used to create a personalized professional development plan tailored to your specific needs and goals. Please note that we may reach out to you if we need any additional information or have questions before finalizing your plan. A Career Prep Navigator will be in contact with you soon to discuss next steps.</Typography>
-          <p className="subtitle-congrats">{`Thank you again for your participation!`}</p>
+          <h1>Next Steps</h1>
+          <Typography sx={{ pt: 3, mb: 3 }}>Thank you for completing the skills assessment! A dedicated Career Navigator will review your results and create a personalized Professional Development Plan tailored to your needs. You’ll receive an email notification when your plan is ready.</Typography>
+          {/*<p className="subtitle-congrats">{`Thank you again for your participation!`}</p>*/}
           <Grid2 container>
             <Button pill href='/services/jobseekers/dashboard'>
               Go to Dashboard
@@ -656,10 +656,13 @@ export default function Page() {
         </Box>
       </Box>
     </> :
-      <Paper sx={{ p: 3, maxWidth: "75%", mx: 'auto', my: 4 }}>
+      <Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: 'auto', my: 4 }}>
         <Typography variant="h4" align="center" sx={{ mb: 4 }}>
           Career Prep Skills Assessment
         </Typography>
+        {activeStep == 0 && <Typography sx={{mb: 4}}>
+        This assessment will evaluate your technical, durable, and career readiness skills to help us create a personalized professional development plan tailored to your specific needs and goals. Your responses will help us understand your current skills, strengths, and areas for improvement where you might need support in reaching your career goals. To help us provide the best possible guidance, please ensure your responses accurately represent you in this present moment. Let's work together to unlock your potential! 
+        </Typography> }
         <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
           {steps.map((label) => (
             <Step key={label}>
