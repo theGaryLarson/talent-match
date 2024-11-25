@@ -173,3 +173,97 @@ export type ReadCompanySocialLinkDTO = {
   platform?: string;
   platformIconUrl?: string;
 };
+
+export type PostProfileDTO = {
+  // Personal Info
+  userId: string;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  email: string;
+  phone?: string | null;
+  photoUrl?: string | null;
+
+  // Work Info
+  currentJobTitle: string;
+  linkedInUrl: string;
+  workAddressId?: string;
+  hasAgreedTerms: boolean;
+
+  // Company Info
+  employerId?: string;
+  companyId?: string;
+  industrySectorId?: string | null;
+  industrySectorTitle?: string | null;
+  companyName: string;
+  companyAddresses?: PostAddressDTO[] | null;
+  logoUrl?: string | null;
+  aboutUs?: string | null;
+  companyEmail: string;
+  yearFounded: string;
+  websiteUrl?: string | null;
+  videoUrl?: string | null;
+  phoneCountryCode?: string | null;
+  companyPhone?: string | null;
+  mission?: string | null;
+  vision?: string | null;
+  companySize: string;
+  estimatedAnnualHires: string;
+
+  // About Us
+  aboutUsDetails: string;
+
+  // Mission Statement
+  missionStatement: string;
+
+  // Video Info
+  companyVideoUrl: string;
+};
+
+export type ReadProfileDTO = {
+  // Personal Info
+  employerId?: string | null;
+  userId?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  birthDate?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  photoUrl?: string | null;
+
+  // Work Info
+  currentJobTitle?: string | null;
+  linkedInUrl?: string | null;
+  workAddressId?: string | null;
+  isVerifiedEmployee?: boolean | null;
+
+  // Company Info
+  companyId?: string | null;
+  industrySectorId?: string | null;
+  industrySectorTitle?: string | null;
+  companyName?: string | null;
+  companyAddresses?: ReadAddressDTO[] | null;
+  logoUrl?: string | null;
+  aboutUs?: string | null;
+  companyEmail?: string | null;
+  yearFounded?: string | null;
+  websiteUrl?: string | null;
+  videoUrl?: string | null;
+  phoneCountryCode?: string | null;
+  companyPhone?: string | null;
+  mission?: string | null;
+  vision?: string | null;
+  companySize?: string | null;
+  estimatedAnnualHires?: string | null;
+  isApproved?: boolean | null;
+  createdBy?: string | null;
+
+  // About Us
+  aboutUsDetails?: string | null;
+
+  // Mission Statement
+  missionStatement?: string | null;
+
+  // Video Info
+  companyVideoUrl?: string | null;
+};
