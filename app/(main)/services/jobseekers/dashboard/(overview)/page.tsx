@@ -1,4 +1,6 @@
 import { getJobSeekerAppliedJobs, getJobSeekerBookmarkedJobs } from "@/app/lib/joblistings";
+import { getPoolWithSession } from "@/app/lib/jobseeker";
+import { PoolCategories } from "@/app/lib/poolAssignment";
 import Avatar from "@/app/ui/components/Avatar";
 import { auth } from "@/auth";
 import { WarningAmberOutlined } from "@mui/icons-material";
@@ -13,9 +15,11 @@ export default async function Page() {
   const session = await auth();
   const myBookMarkedJobs = await getJobSeekerBookmarkedJobs();
   const myAppliedJobs = await getJobSeekerAppliedJobs();
+  const pool = await getPoolWithSession();
+  console.log(pool)
   return (
     <div >
-      <CallTOActionBanner/>
+      <CallTOActionBanner pool={pool?.assignedPool as PoolCategories}/>
       <h1 className="text-black/90 text-[32px]">My Dashboard</h1> 
       <NameTitleTag name={session?.user.name} pfp={session?.user.image??undefined}/>
 
@@ -93,7 +97,7 @@ function CareerPrep(){
       <div className="w-[1079px] h-10 rounded justify-end items-center gap-1 inline-flex">
     <div className="text-black/90 text-xl font-medium">Career Prep</div>
     <div className="grow shrink basis-0 flex-col justify-start items-end gap-1 inline-flex">
-        <Link href='/' className="px-6 py-2.5 rounded-full font-medium border border-[#047f9c] text-[#047f9c] hover:text-white hover:bg-[#047f9c]">
+        <Link href='/services/jobseekers/career-prep/enrollment' className="px-6 py-2.5 rounded-full font-medium border border-[#047f9c] text-[#047f9c] hover:text-white hover:bg-[#047f9c]">
             See More
         </Link>
     </div>
@@ -119,7 +123,7 @@ function CareerPrep(){
                 <div className="w-px h-4 relative" />
             </div>
 
-            <Link href='/services/jobseekers/career-prep-skill-assessment' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
+            <Link href='/services/jobseekers/career-prep/skill-assessment' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
                 Take The Skills Assessment
             </Link>
         </div>
@@ -131,14 +135,25 @@ function CareerPrep(){
 
 
 
-function CallTOActionBanner(){
+function CallTOActionBanner({pool}:{pool:PoolCategories}){
+  let background = ''
+  let copy = 'Elevate your profile and stand out to Employers by completing your Career Prep track.'
+  if(pool === PoolCategories.NotJobReady || pool === PoolCategories.None){
+    copy = 'Your profile is currently not visible to employers based on your education and work experience. Complete Career Prep to become visible to employers.'
+    background = 'bg-[#da2627]'
+  }else if(pool === PoolCategories.JobReady){
+    background = 'bg-[#DF9C19]'
+  }else if(PoolCategories.Recommended){
+    background = 'bg-[#DF9C19]'
+  }
+
   return(
-    <div className="w-full bg-[#da2627] rounded-[10px] text-white text-lg flex items-center p-[20px] gap-3" >
+    <div className={`w-full rounded-[10px] ${background} text-white text-lg flex items-center p-[20px] gap-3`} >
         <WarningAmberOutlined />
         <div>
           <span className="font-bold">Attention </span>
-          <span className="">Your profile is currently not visible to employers based on your education and work experience. Complete Career Prep to become visible to employers. </span>
-          <Link href={'/'} className="font-normal underline">Take the Career Prep Assessment.</Link>
+          <span>{copy} </span>
+          <Link href={'/services/jobseekers/career-prep/skill-assessment'} className="font-normal underline">Take the Career Prep Assessment.</Link>
         </div>
       </div>
   );

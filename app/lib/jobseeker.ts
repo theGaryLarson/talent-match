@@ -168,6 +168,28 @@ export const setPool = async (jobseekerId: string): Promise<void> => {
   }
 };
 
+export async function getPoolWithSession(){
+  const session = await auth();
+  
+  try {
+    if(session?.user.jobseekerId == null){
+      return
+    }
+    let res = await prisma.jobseekers.findUnique(
+      {
+        where:{
+          jobseeker_id: session?.user.jobseekerId
+        },
+        select:{
+          assignedPool:true
+        }
+      }
+    )
+    return res;
+  } catch (error) {
+    console.error(error)
+  }
+}
 /**
  * Delete a jobseeker and associated data from the database.
  * If the jobseeker is a coalition member, perform a soft delete by marking deletion date.
