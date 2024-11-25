@@ -11,8 +11,8 @@ export default function Page() {
             <div className="py-8 mx-0 tablet:mx-8 laptop:mx-16 font-['Roboto']">
                 {/* Header */}
                 <div className="w-full py-10 px-8 laptop:px-24 rounded-3xl flex-col justify-center items-center gap-5 inline-flex">
-                    <div className="self-stretch text-center text-sky-900 text-7xl font-normal font-['Roboto'] capitalize ">Washington Tech Workforce Coalition</div>
-                    <div className="leading-none mt-4 self-stretch text-center text-sky-900 text-5xl font-normal font-['Roboto'] leading-10">Employers, Educators, & Community Shaping the Future of Tech</div>
+                    <div className="text-4xl sm-tablet:text-7xl self-stretch text-center text-sky-900 font-normal font-['Roboto'] capitalize ">Washington Tech Workforce Coalition</div>
+                    <div className="text-2xl sm-tablet:text-5xl leading-none mt-4 self-stretch text-center text-sky-900 font-normal font-['Roboto'] leading-10">Employers, Educators, & Community Shaping the Future of Tech</div>
                     <div className="mt-10 justify-start items-start gap-5 inline-flex">
                         <RoundedButton content={'Join the Coalition'} link={'/join'} invertColor={true}></RoundedButton>
                     </div>
@@ -32,7 +32,7 @@ export default function Page() {
                             <div className="justify-center items-center gap-12 mt-10 mb-20 flex-col laptop:flex-row laptop:inline-flex">
                                 <div className="flex-col justify-center items-center gap-6 flex">
                                     <div className="w-full mb-6 h-36 flex justify-center items-center">
-                                        <img className="w-1/4 laptop:w-full" src="/images/landing/TWC-logo.svg" />
+                                        <img className="w-1/2 sm-tablet:w-1/4 laptop:w-full" src="/images/landing/TWC-logo.svg" />
                                     </div>
                                     <div className="text-center text-sky-900 text-5xl font-normal font-['Roboto'] leading-10">About TWC</div>
                                 </div>
@@ -52,7 +52,7 @@ export default function Page() {
                                 <div className="w-full laptop:grid laptop:grid-cols-2 justify-center items-start gap-2.5">
                                     <div className="">
                                         <div className="mb-8 self-stretch text-white/70 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">LAUNCHING SOON...</div>
-                                        <div className="mb-12 self-stretch text-neutral-100 text-6xl font-normal font-['Roboto'] capitalize leading-10">Talent Portal</div>
+                                        <div className="leading-none mb-12 self-stretch text-neutral-100 text-6xl font-normal font-['Roboto'] capitalize leading-10">Talent Portal</div>
                                         <div className="mb-8 self-stretch text-sky-200 text-5xl font-normal font-['Roboto'] capitalize leading-10">Hire Qualified Candidates</div>
                                         <div className="self-stretch text-neutral-100 text-xl font-normal font-['Roboto'] leading-loose">Members of the Coalition have access to our soon to be launched Talent Finder Portal. Our searchable database will quickly connect you with local talent that meets your specific needs.</div>
                                         <div className="flex-col justify-start items-start flex">
@@ -64,18 +64,18 @@ export default function Page() {
                                     </div>
                                     <img className="hidden laptop:block h-full object-cover object-left rounded-tl-3xl rounded-bl-3xl" src="/images/landing/my-dashboard.png" />
                                 </div>
-                                <img className="laptop:hidden mt-10 w-full h-[36rem] object-cover object-left-top rounded-tl-3xl rounded-tr-3xl" src="/images/landing/my-dashboard.png" />
+                                <img className="laptop:hidden mt-10 w-full aspect-square sm-tablet:aspect-auto sm-tablet:h-[36rem] object-cover object-left-top rounded-tl-3xl rounded-tr-3xl" src="/images/landing/my-dashboard.png" />
                             </div>
                         </div>
                         {/* Our goal */}
                         <div className="mt-10 h-72 flex-col justify-center items-center gap-2.5 flex">
-                            <div className="mb-8 self-stretch text-center text-neutral-700 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">OUR GOAL</div>
-                            <div className="leading-none mb-8 self-stretch text-center text-cyan-700 text-8xl font-normal font-['Roboto']">1,000 Job Candidates</div>
-                            <div className="mb-4 self-stretch text-center text-neutral-700 text-5xl font-normal font-['Roboto'] capitalize leading-10"> In Tech roles by 2025</div>
+                            <div className="sm-tablet:mb-8 self-stretch text-center text-neutral-700 text-base sm-tablet:text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">OUR GOAL</div>
+                            <div className="sm-tablet:mb-8 leading-none self-stretch text-center text-cyan-700 text-4xl sm-tablet:text-6xl tablet:text-8xl font-normal font-['Roboto']">1,000 Job Candidates</div>
+                            <div className="sm-tablet:mb-4 self-stretch text-center text-neutral-700 text-2xl sm-tablet:text-5xl font-normal font-['Roboto'] capitalize leading-10"> In Tech roles by 2025</div>
                         </div>
                         {/* What we do */}
                         <div className="mt-10 mx-4 self-stretch justify-center items-center gap-12 inline-flex">
-                            <div className="w-2/3 flex-col justify-center items-start gap-2.5 inline-flex">
+                            <div className="w-full laptop:w-2/3 flex-col justify-center items-start gap-2.5 inline-flex">
                                 <img className="laptop:hidden mb-4 w-full aspect-square rounded-3xl shadow object-cover" src="/images/landing/what-we-do.jpg" />
                                 <div className="self-stretch text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">WHAT WE DO</div>
                                 <div className="leading-none self-stretch text-cyan-700 text-6xl font-normal font-['Roboto'] capitalize leading-10">Build A more inclusive tech future</div>
@@ -92,7 +92,7 @@ export default function Page() {
                 <div className="w-full mt-0 h-12 bg-[#D6F1F7] rounded-bl-3xl rounded-br-3xl" />
             </div>
 
-            <div className="w-full mt-40 px-24 flex-col justify-start items-center gap-3.5 inline-flex">
+            <div className="w-full mt-40 px-8 laptop:px-24 flex-col justify-start items-center gap-3.5 inline-flex">
                 {/* For employers */}
                 <div className="self-stretch justify-center items-start gap-12 inline-flex">
                     <div className="hidden laptop:block justify-center items-center gap-24 flex">
