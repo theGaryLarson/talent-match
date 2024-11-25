@@ -27,7 +27,7 @@ export default function NoteCard(props:NoteDTO&{UpdateSelectedId:(a:string, b:st
             </span>
             </span>
             <hr/>
-        <div className="ql-editor border w-[750]" dangerouslySetInnerHTML={{__html:props.noteContent}}></div>
+        <div className="ql-editor border w-[700]" dangerouslySetInnerHTML={{__html:props.noteContent}}></div>
         </div>
    );
 }
