@@ -46,7 +46,7 @@ function NameTitleTag(props: {
             href="/edit-profile/jobseeker/introduction"
           >
             Edit My Profile
-          </Link>{' '}
+          </Link>
         </p>
       </div>
     </div>
@@ -67,16 +67,13 @@ function WorkShops(){
 
 function CareerPrep(props:{hastakentest:boolean}){
   return(
-    <div className="space-y-3 w-[1080px]">
-      <div className="w-full h-10 rounded justify-end items-center gap-1 inline-flex">
-    <div className="text-black/90 text-xl font-medium">Career Prep</div>
-    <div className="grow shrink basis-0 flex-col justify-start items-end gap-1 inline-flex">
-        <Link href='/services/jobseekers/career-prep/enrollment' className="px-6 py-2 rounded-full font-medium border border-[#047f9c] text-[#047f9c] hover:text-white hover:bg-[#047f9c]">
+  <div className="space-y-3 w-[1080px]">
+      <div className="w-full justify-between items-center flex">
+        <h2 className="text-black/90 text-xl font-medium">Career Prep</h2>
+          <Link href='/services/jobseekers/career-prep/enrollment' className="px-6 py-2 rounded-full font-medium border border-[#047f9c] text-[#047f9c] hover:text-white hover:bg-[#047f9c]">
             See More
-        </Link>
-    </div>
-</div>
-
+          </Link>
+      </div>
 
 
 
@@ -87,18 +84,16 @@ function CareerPrep(props:{hastakentest:boolean}){
             <div className="self-stretch h-[188px] flex-col justify-start items-start gap-2.5 flex">
                 <div className="self-stretch text-[#014260] text-[32px] font-normal  leading-[38.40px]">Complete the Skills Assessment to begin the Career Prep Program</div>
                 <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                    <div className="text-[#047f9c] text-base font-semibold  uppercase leading-none tracking-wider">Career Prep Program</div>
+                    <div className="text-[#047f9c]  font-semibold leading-none tracking-wider">Career Prep Program</div>
                 </div>
                 <div className="self-stretch justify-start items-start gap-2.5 inline-flex">
-                    <div className="text-[#191919]/60 text-base font-normal  leading-tight">Once you complete the skills assessment, you’ll be on your way to:  <br/><br/>A personalized Professional Development Plan <br/>A virtual meeting with our Career Navigator </div>
+                    <div className="text-[#191919]/60  font-normal  leading-tight">Once you complete the skills assessment, you’ll be on your way to:  <br/><br/>A personalized Professional Development Plan <br/>A virtual meeting with our Career Navigator </div>
                 </div>
             </div>
-            <div className="flex-col justify-start items-start flex">
-                <div className="w-px h-4 relative" />
-            </div>
+           <br className="h-4"/>
             {props.hastakentest?
-            <Link href='/services/jobseekers/career-prep/skill-assessment' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
-            Take The Skills Assessment
+            <Link href='https://outlook.office365.com/owa/calendar/CFACareerServices@computingforall.org/bookings/' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
+            Schedule A Meeting
         </Link>
             :
             <Link href='/services/jobseekers/career-prep/skill-assessment' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
