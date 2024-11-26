@@ -23,7 +23,7 @@ export default async function layout({
           <PersonOutlineOutlinedIcon />
           Home
         </Link>
-        <Link
+        {/* <Link
           href="/services/jobseekers/dashboard/jobsearch"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
@@ -43,7 +43,7 @@ export default async function layout({
         >
           <BookmarksOutlined/>
           Saved Jobs
-        </Link>
+        </Link> */}
       </div>
       {children}
     </div>

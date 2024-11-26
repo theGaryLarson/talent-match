@@ -24,7 +24,7 @@ export default async function Page() {
       <h1 className="text-black/90 text-[32px]">My Dashboard</h1> 
       <NameTitleTag name={session?.user.name} pfp={session?.user.image??undefined}/>
       <WorkShops/>
-      <CareerPrep/>
+      <CareerPrep hastakentest={hasTakenTest}/>
     </div>
   );
 }
@@ -65,7 +65,7 @@ function WorkShops(){
   );
 }
 
-function CareerPrep(){
+function CareerPrep(props:{hastakentest:boolean}){
   return(
     <div className="space-y-3 w-[1080px]">
       <div className="w-full h-10 rounded justify-end items-center gap-1 inline-flex">
@@ -96,10 +96,14 @@ function CareerPrep(){
             <div className="flex-col justify-start items-start flex">
                 <div className="w-px h-4 relative" />
             </div>
-
+            {props.hastakentest?
+            <Link href='/services/jobseekers/career-prep/skill-assessment' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
+            Take The Skills Assessment
+        </Link>
+            :
             <Link href='/services/jobseekers/career-prep/skill-assessment' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
                 Take The Skills Assessment
-            </Link>
+            </Link>}
         </div>
     </div>
 </div>
