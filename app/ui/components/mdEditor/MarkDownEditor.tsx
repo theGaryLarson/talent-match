@@ -97,18 +97,18 @@ export default function MarkDownEditor (props:{noteType:NoteType, jobseekerId:st
         }
     }
     return (
-        <div className='h-[500px]'>
-      <div  className='w-[750px] h-[400px]'>
+        <div className='h-[525px]'>
+      <div  className='w-[700px] h-[400px]'>
         <div ref={quillRef} />
         {props.noteid?
         <>
-        <button className='border w-[375px] h-[60px] bg-gray-200' onClick={deleteNote}>Delete Note</button>
-        <button className='border w-[375px] h-[60px] bg-blue-background text-white' onClick={handleUpdate}>Update</button>
+        <button className='border w-[350px] h-[60px] bg-gray-200' onClick={deleteNote}>Delete Note</button>
+        <button className='border w-[350px] h-[60px] bg-blue-background text-white' onClick={handleUpdate}>Update</button>
         </>
         :
         <>
-        <button className='border w-[375px] h-[60px] bg-gray-200' onClick={ClearNote}>Clear Note</button>
-        <button className='border w-[375px] h-[60px] bg-blue-background text-white' onClick={handleSubmit}>Save</button>
+        <button className='border w-[350px] h-[60px] bg-gray-200' onClick={ClearNote}>Clear Note</button>
+        <button className='border w-[350px] h-[60px] bg-blue-background text-white' onClick={handleSubmit}>Save</button>
         </>}
       </div>
       </div>

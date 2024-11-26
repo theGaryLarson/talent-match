@@ -1,8 +1,5 @@
 import { getCareerPrepStudentsCardView } from '@/app/lib/admin/careerPrep';
 import CareerPrepStudentsCard from '@/app/ui/components/careerPrep/CareerPrepStudentsCard';
-import DeletionFlag from '@/app/ui/components/DeletionFlag';
-import { auth } from '@/auth';
-//employer dashboard
 export const metadata = {
   title: "My Dashboard"
 };

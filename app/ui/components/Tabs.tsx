@@ -24,7 +24,16 @@ export default function Tabs(props: { tabs: TabProps[] }) {
           </button>
         ))}
       </div>
-      <div className="p-4 ">{props.tabs[activeIndex].content}</div>
+      {
+        props.tabs.map((tab, index)=>(
+          <div
+          key={index}
+          className={index === activeIndex?"": "hidden"}
+          >{tab.content}</div>
+
+        ))
+
+      }
     </div>
   );
 }
