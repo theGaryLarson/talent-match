@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react';
 import { ProgramEnrollmentStatus } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import Bookmark from './Bookmark';
+import { ShareIcon } from '@heroicons/react/24/outline';
 
 export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerCardViewDTO }) {
   const { data: session } = useSession();
@@ -108,7 +109,7 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
                     removeUrl={'/api/companies/bookmark/removeJobseeker/' + jobseeker.jobseeker_id}
                 />
                : "" }
-            <ShareButton href={'/services/jobseekers/' + id} />
+            <ShareButton href={'/services/jobseekers/' + id} ><ShareIcon className="h-10 w-10 stroke-2" /></ShareButton>
           </div>
         </div>
       </div>
