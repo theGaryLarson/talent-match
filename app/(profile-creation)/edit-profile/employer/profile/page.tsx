@@ -3,6 +3,7 @@
 import React, {
   ChangeEvent,
   FormEvent,
+  SyntheticEvent,
   useEffect,
   useState,
   useRef,
@@ -45,12 +46,16 @@ import CircularProgress from '@mui/material/CircularProgress';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
 
-const formNamePrefix = 'profile-creation-disclosures-';
+const formNamePrefix = 'profile-creation-profile-';
 
-export default function CreateEmployerCompanyInfoDisclosurePage() {
+export default function CreateEmployerProfilePage() {
   const profileStoreData = useSelector(
     (state: RootState) => state.employer.profile,
   );
+  devLog(profileStoreData);
+  const [profileData, setProfileData] = useState<PostProfileDTO>({
+    ...profileStoreData,
+  });
 
   // NOTE: rename ref then remove this
   const [companyData, setCompanyData] = useState<PostProfileDTO>({
@@ -78,11 +83,6 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   const prevSelectCompanyDropdownData =
     useRef<typeof selectCompanyDropdownData>();
 
-  devLog(profileStoreData);
-  const [profileData, setProfileData] = useState<PostProfileDTO>({
-    ...profileStoreData,
-  });
-
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const dispatch = useDispatch();
@@ -109,11 +109,19 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
 
   useEffect(() => {
     const initializeFormFields = async () => {
-      console.log('session', session);
-      if (!session?.user?.companyId) return;
+      if (!session?.user) return;
       if (status === 'authenticated') {
         if (_.isEqual(profileStoreData, initialState.profile)) {
-          const { id, companyId, employerId } = session.user;
+          const {
+            id,
+            firstName,
+            lastName,
+            email,
+            image,
+            companyId,
+            employerId,
+          } = session.user;
+          devLog('session user', session.user);
 
           try {
             const response = await fetch(
@@ -127,15 +135,35 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
             );
 
             if (!response.ok) {
+              setProfileData((prevState) => ({
+                ...prevState,
+                userId: id ?? '',
+                firstName: firstName ?? '',
+                lastName: lastName ?? '',
+                photoUrl: image,
+              }));
               throw new Error(
                 `Error: ${response.status} ${response.statusText}`,
               );
             } else {
+              console.log('else response ok');
               let { result } = await response.json();
               setCompanyName(result.company_name);
               setProfileData({
                 ...profileData,
                 userId: id!,
+
+                //PERSONAL Section
+                // birthDate: result.birthDate ?? '',
+                // email: email!,
+                firstName: firstName ?? '',
+                lastName: lastName ?? '',
+                // phone: result.phone,
+                // phoneCountryCode: result.phoneCountryCode,
+                photoUrl: image,
+
+                // COMPANY Section
+
                 // companyId: result.companyId,
                 currentJobTitle: result.currentJobTitle ?? '',
                 linkedInUrl: result.linkedInUrl ?? '',
@@ -152,6 +180,41 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     dispatch(setPageSaved('disclosures'));
     devLog(profileData);
   }, [session?.user?.id, pathname]);
+
+  // used to manage changes on selectCompanyDropDownData depending on its type (object or string).
+  useEffect(() => {
+    if (
+      typeof selectCompanyDropdownData === 'object' &&
+      selectCompanyDropdownData !== null
+    ) {
+      // Company selected from dropdown
+      const companyObj = selectCompanyDropdownData;
+      // setYearFounded(
+      //   companyObj.yearFounded
+      //     ? dayjs().year(parseInt(companyObj.yearFounded, 10))
+      //     : null,
+      // );
+      setCompanyData({
+        ...companyData,
+        companyId: companyObj.companyId,
+        companyName: companyObj.companyName,
+        yearFounded: companyObj.yearFounded?.toString() || '',
+        websiteUrl: companyObj.websiteUrl,
+      });
+      // setIndustry({
+      //   // do this inside of companyData object rather than separate state. First ensure companyDataObject has been transformed to a PostCompanyInfoDTO
+      //   industry_sector_id: companyObj.industrySectorId ?? '',
+      //   sector_title: '', // Not needed; only ID is required
+      // });
+    }
+
+    if (prevSelectCompanyDropdownData.current !== selectCompanyDropdownData) {
+      dispatch(setPageDirty('company'));
+    }
+
+    // Update the previous value
+    prevSelectCompanyDropdownData.current = selectCompanyDropdownData;
+  }, [selectCompanyDropdownData, pathname]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -173,6 +236,41 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
         ...prevState,
         [fieldName]: updatedValue, // Assign the correctly parsed or casted value
       }));
+    }
+  };
+
+  // Handle address selection from autocomplete
+  const handleAddressSelection = (
+    e: SyntheticEvent<Element, Event>,
+    val: string | ReadAddressDTO | null,
+  ) => {
+    dispatch(setPageDirty('company'));
+    console.log('handleAddressSelection');
+    if (val && typeof val === 'object' && 'zip' in val) {
+      setSelectedWorkLocation((prevState) => ({
+        ...prevState,
+        zip: val.zip!,
+      }));
+      const selectedZipCode = val.zip; // Only extract the zipCode
+      // Append the selected zipCode to companyAddresses if it's not already there
+      setCompanyData((prevData) => {
+        const alreadyExists = prevData.companyAddresses?.some(
+          (location) => location.zip === selectedZipCode,
+        );
+
+        if (!alreadyExists) {
+          const updatedAddresses = prevData.companyAddresses
+            ? [...prevData.companyAddresses, val]
+            : [val];
+
+          return {
+            ...prevData,
+            companyAddresses: updatedAddresses,
+          };
+        }
+
+        return prevData; // Return unchanged if already exists
+      });
     }
   };
 
@@ -252,7 +350,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
         <ProgressBarFlat progress={(3 / 3) * 100} size="sm" />
 
         <p>Step 3/3</p>
-        <h1>Employer Profile</h1>
+        <h1>Employer Profile {profileStoreData.companyId}</h1>
         <p className="subtitle">* Indicates a required field</p>
 
         <SnackbarWithIcon
@@ -293,7 +391,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               </h2>
             </legend>
             <AvatarUpload
-              id="profile-creation-personal-photoUrl"
+              id="profile-creation-profile-photoUrl"
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
               maxSizeMB={5}
@@ -306,7 +404,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           <fieldset>
             <div className="profile-form-grid tablet:grid-cols-2">
               <InputTextWithLabel
-                id="profile-creation-personal-firstName"
+                id="profile-creation-profile-firstName"
                 placeholder="First name"
                 onChange={handleFieldChange}
                 value={profileData.firstName}
@@ -315,7 +413,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 First Name *
               </InputTextWithLabel>
               <InputTextWithLabel
-                id="profile-creation-personal-lastName"
+                id="profile-creation-profile-lastName"
                 placeholder="Last name"
                 onChange={handleFieldChange}
                 value={profileData.lastName}
@@ -331,7 +429,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               <TextFieldWithAutocomplete
                 apiSearchRoute="/api/companies/search/"
                 fieldLabel="Company Name *"
-                id="profile-creation-company-companyName"
+                id="profile-creation-profile-companyName"
                 className="text-field-autocomplete"
                 searchingText="Searching..."
                 noResultsText="No company found, existing company required. Please contact administrator."
@@ -346,9 +444,21 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                   setSelectCompanyDropdownData(val ?? '');
                   if (selectCompanyDropdownData !== '') {
                     console.log('true');
+                    console.log(
+                      'profileStoreData',
+                      profileStoreData,
+                      profileStoreData.companyId,
+                    );
                     openSnackbar();
                     // showFields();
                     setIsCompanySelected(true);
+                    setProfileData((prevState) => ({
+                      ...prevState,
+                      companyId:
+                        val && typeof val === 'object' && 'companyId' in val
+                          ? (val?.companyId ?? '')
+                          : '',
+                    }));
                   } else {
                     console.log('false');
                     setIsCompanySelected(false);
@@ -363,7 +473,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               {/* {typeof selectCompanyDropdownData === 'string' &&
                 selectCompanyDropdownData.trim() !== '' && (
                   <SelectAutoload
-                    id="profile-creation-company-industrySectorTitle"
+                    id="profile-creation-profile-industrySectorTitle"
                     apiAutoloadRoute="/api/employers/industry-sectors"
                     label="Industry Sector *"
                     className="select-autoload"
@@ -401,7 +511,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
             <div className="profile-form-grid">
               {/* This field will be automated */}
               {/* <InputTextWithLabel
-                id="profile-creation-company-name"
+                id="profile-creation-profile-name"
                 placeholder="Automated"
                 value={profileStoreData.companyName}
                 disabled={!!profileStoreData.companyName}
@@ -418,43 +528,42 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               >
                 Job Title *
               </InputTextWithLabel>
-              {/* {isCompanySelected && ( */}
-              <div>
-                {status === 'loading' ? (
-                  <CircularProgress /> // Show a loader until the session is loaded
-                ) : (
-                  <SelectAutoload
-                    id={`${formNamePrefix}workAddressId`}
-                    className="select-autoload"
-                    apiAutoloadRoute={`/api/companies/locations/get/${profileStoreData.companyId}`}
-                    label="Work Location *"
-                    value={workAddress}
-                    onChange={(val) => {
-                      setWorkAddress(val);
-                      setProfileData((prevState) => ({
-                        ...prevState,
-                        workAddressId: val?.addressId!,
-                      }));
-                    }}
-                    placeholder="Your work location"
-                    loadingText="Retrieving work locations..."
-                    getOptionLabel={(option: ReadAddressDTO) =>
-                      `${option?.city}, ${option?.stateCode} ${option?.zip}`
-                    }
-                    getOptionId={(option: ReadAddressDTO) => option?.addressId!}
-                    getOptionFromId={(
-                      options: ReadAddressDTO[],
-                      id: string,
-                    ) => {
-                      return (
-                        options.find((item) => item?.addressId === id) || null
-                      );
-                    }}
-                    required
-                  />
-                )}
-              </div>
-              {/* )} */}
+              {isCompanySelected && (
+                <div>
+                  {!isCompanySelected ? (
+                    // status === 'loading' ? (
+                    <CircularProgress /> // Show a loader until the session is loaded
+                  ) : (
+                    <SelectAutoload
+                      id={`${formNamePrefix}workAddressId`}
+                      className="select-autoload"
+                      apiAutoloadRoute={`/api/companies/locations/get/${profileData.companyId}`}
+                      label="Work Location *"
+                      value={workAddress}
+                      onChange={(val) => {
+                        setWorkAddress(val);
+                      }}
+                      placeholder="Your work location"
+                      loadingText="Retrieving work locations..."
+                      getOptionLabel={(option: ReadAddressDTO) =>
+                        `${option?.city}, ${option?.stateCode} ${option?.zip}`
+                      }
+                      getOptionId={(option: ReadAddressDTO) =>
+                        option?.addressId!
+                      }
+                      getOptionFromId={(
+                        options: ReadAddressDTO[],
+                        id: string,
+                      ) => {
+                        return (
+                          options.find((item) => item?.addressId === id) || null
+                        );
+                      }}
+                      required
+                    />
+                  )}
+                </div>
+              )}
 
               <InputTextWithLabel
                 id={`${formNamePrefix}linkedInUrl`}
