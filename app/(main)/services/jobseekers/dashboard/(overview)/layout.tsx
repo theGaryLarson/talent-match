@@ -3,6 +3,7 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { auth } from '@/auth';
+import {BookmarkOutlined, BookmarksOutlined } from '@mui/icons-material';
 
 export default async function layout({
   children,
@@ -35,6 +36,13 @@ export default async function layout({
         >
           <FolderOutlinedIcon/>
           My Applications
+        </Link>
+        <Link
+          href="/services/jobseekers/dashboard/bookmarks"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <BookmarksOutlined/>
+          Saved Jobs
         </Link>
       </div>
       {children}

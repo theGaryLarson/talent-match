@@ -1,5 +1,4 @@
-import { getJobSeekerAppliedJobs, getJobSeekerBookmarkedJobs } from "@/app/lib/joblistings";
-import { getPoolWithSession } from "@/app/lib/jobseeker";
+import { getCareerPrepAssementStatus, getPoolWithSession } from "@/app/lib/jobseeker";
 import { PoolCategories } from "@/app/lib/poolAssignment";
 import Avatar from "@/app/ui/components/Avatar";
 import { auth } from "@/auth";
@@ -13,44 +12,19 @@ export const metadata = {
 };
 export default async function Page() {
   const session = await auth();
-  const myBookMarkedJobs = await getJobSeekerBookmarkedJobs();
-  const myAppliedJobs = await getJobSeekerAppliedJobs();
   const pool = await getPoolWithSession();
-  console.log(pool)
+  const AssementInfo = await getCareerPrepAssementStatus();
+  let hasTakenTest = false;
+  if(AssementInfo != undefined){
+    hasTakenTest = AssementInfo.CareerPrepAssessment.length >0;
+  }
   return (
-    <div >
-      <CallTOActionBanner pool={pool?.assignedPool as PoolCategories}/>
+    <div className="space-y-3 py-[20px]">
+      {hasTakenTest?'':<CallTOActionBanner pool={pool?.assignedPool as PoolCategories}/>}
       <h1 className="text-black/90 text-[32px]">My Dashboard</h1> 
       <NameTitleTag name={session?.user.name} pfp={session?.user.image??undefined}/>
-
       <WorkShops/>
-      
       <CareerPrep/>
-
-
-      <h1 className="font-bold text-xl">BookMarked Jobs</h1>
-    
-    
-    <div>
-      {
-        myBookMarkedJobs?.BookmarkedJobs.map((job)=><div key={job.job_posting_id}><Link href={`/services/joblistings/${job.job_posting_id}`}>{job.job_title}</Link></div>)
-      }
-    </div>
-    
-    <h1 className="font-bold text-xl">
-      Applied Jobs
-    </h1>
-    <div>
-      {
-        myAppliedJobs?.appliedJobs.map((job)=><div key={job.job_posting_id}><Link href={`/services/joblistings/${job.job_posting_id}`}>{job.job_title}</Link></div>)
-      }
-    </div>
-    <div>
-
-    </div>
-    
-    
-    
     </div>
   );
 }
@@ -93,11 +67,11 @@ function WorkShops(){
 
 function CareerPrep(){
   return(
-    <div className="space-y-3">
-      <div className="w-[1079px] h-10 rounded justify-end items-center gap-1 inline-flex">
+    <div className="space-y-3 w-[1080px]">
+      <div className="w-full h-10 rounded justify-end items-center gap-1 inline-flex">
     <div className="text-black/90 text-xl font-medium">Career Prep</div>
     <div className="grow shrink basis-0 flex-col justify-start items-end gap-1 inline-flex">
-        <Link href='/services/jobseekers/career-prep/enrollment' className="px-6 py-2.5 rounded-full font-medium border border-[#047f9c] text-[#047f9c] hover:text-white hover:bg-[#047f9c]">
+        <Link href='/services/jobseekers/career-prep/enrollment' className="px-6 py-2 rounded-full font-medium border border-[#047f9c] text-[#047f9c] hover:text-white hover:bg-[#047f9c]">
             See More
         </Link>
     </div>
