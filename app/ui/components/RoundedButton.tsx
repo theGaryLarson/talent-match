@@ -1,20 +1,106 @@
 import Link from 'next/link';
 
-export default function RoundedButton(props: { content: string, link:string, invertColor:boolean}) {
-  return (
-    props.invertColor?<Link
-      href={props.link}
-      className="box-border inline-block w-fit rounded-full bg-blue-background px-10 py-3 text-white hover:bg-blue-400"
-    >
-      <strong>{props.content}</strong>
-    </Link>
-    :
-    <Link
-      href={props.link}
-      className="box-border border inline-block w-fit rounded-full bg-white px-10 py-3 text-blue-text hover:bg-gray-200"
-    >
-      <strong>{props.content}</strong>
-    </Link>
+interface Props {
+  content: string;
+  link: string;
+  invertColor: boolean;
+  bold?: boolean;
+  snug?: boolean;
+  className?: string;
+  newColors?: boolean;
+}
 
+export default function RoundedButton({
+  content,
+  link,
+  invertColor,
+  bold = true,
+  snug = false,
+  className = '',
+  newColors = false,
+}: Props) {
+  const isPrimary = invertColor;
+  let bgColorIdle = '';
+  let bgColorHover = '';
+  let bgColorFocus = '';
+  let bgColorActive = '';
+  let bgColorVisited = '';
+  let bgColorDisabled = '';
+  let textColorIdle = '';
+  let textColorHover = '';
+  let textColorFocus = '';
+  let textColorActive = '';
+  let textColorVisited = '';
+  let textColorDisabled = '';
+  let border = '';
+
+  if (newColors) {
+    if (isPrimary) {
+      bgColorIdle = 'bg-button-primary-idle-bg';
+      bgColorHover = 'hover:bg-button-primary-hover-bg';
+      bgColorFocus = 'focus:bg-button-primary-focus-bg';
+      bgColorActive = 'active:bg-button-primary-active-bg';
+      bgColorVisited = 'visited:bg-button-primary-active-bg';
+      bgColorDisabled = 'disabled:bg-button-primary-disabled-bg';
+      textColorIdle = 'text-button-primary-idle-text';
+      textColorHover = 'hover:text-button-primary-hover-text';
+      textColorFocus = 'focus:text-button-primary-focus-text';
+      textColorActive = 'active:text-button-primary-active-text';
+      textColorVisited = 'visited:text-button-primary-active-text';
+      textColorDisabled = 'disabled:text-button-primary-disabled-text';
+    } else {
+      bgColorIdle = 'bg-button-secondary-idle-bg';
+      bgColorHover = 'hover:bg-button-secondary-hover-bg';
+      bgColorFocus = 'focus:bg-button-secondary-focus-bg';
+      bgColorActive = 'active:bg-button-secondary-active-bg';
+      bgColorVisited = 'visited:bg-button-secondary-active-bg';
+      bgColorDisabled = 'disabled:bg-button-secondary-disabled-bg';
+      textColorIdle = 'text-button-secondary-idle-text';
+      textColorHover = 'hover:text-button-secondary-hover-text';
+      textColorFocus = 'focus:text-button-secondary-focus-text';
+      textColorActive = 'active:text-button-secondary-active-text';
+      textColorVisited = 'visited:text-button-secondary-active-text';
+      textColorDisabled = 'disabled:text-button-secondary-disabled-text';
+    }
+  } else {
+    if (isPrimary) {
+      bgColorIdle = 'bg-blue-background';
+      bgColorHover = 'bg-blue-400';
+      textColorIdle = 'text-white';
+    } else {
+      border = 'border';
+      bgColorIdle = 'bg-white';
+      bgColorHover = 'hover:bg-gray-200';
+      textColorIdle = 'text-blue-text';
+    }
+  }
+
+  return (
+    <Link
+      href={link}
+      className={`
+        box-border
+        inline-block
+        w-fit
+        rounded-full
+        ${border}
+        ${bgColorIdle}
+        ${bgColorHover}
+        ${bgColorFocus}
+        ${bgColorActive}
+        ${bgColorVisited}
+        ${bgColorDisabled}
+        ${textColorIdle}
+        ${textColorHover}
+        ${textColorFocus}
+        ${textColorActive}
+        ${textColorVisited}
+        ${textColorDisabled}
+        ${!snug ? 'px-10' : 'px-6 leading-tight'}
+        py-3
+        ${className}`}
+    >
+      {bold ? <strong>{content}</strong> : <>{content}</>}
+    </Link>
   );
 }
