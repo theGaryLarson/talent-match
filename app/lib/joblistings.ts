@@ -107,9 +107,9 @@ export async function getJobListingById(joblistingId: string) {
             title:true
           }
         },
-        jobseekersThatBookMarked:{
+        jobApplications:{
           select:{
-            jobseeker_id:true
+            jobseekerId: true,
           }
         }
       },
@@ -177,8 +177,11 @@ export async function ApplyToJob(jobPostingId:string) {
         job_posting_id: jobPostingId,
       },
       data: {
-        applicants: {
-          connect: { jobseeker_id: Session.user.jobseekerId},  // Add the jobseeker to the applicants array
+        jobApplications: {
+          create: { // Fix: possibly have to update DTO
+            id: uuidv4(),
+            jobseekerId: Session.user.jobseekerId,
+            jobStatus: 'Applied'},  // Add the jobseeker to the applicants array
         },
       },
     });
@@ -202,7 +205,11 @@ export async function bookmarkJobPosting(jobPostId: string) {
       },
       data: {
         BookmarkedJobs:{
-          connect:{job_posting_id:jobPostId}
+          create: {
+            id: uuidv4(),
+            jobPostId: jobPostId,
+            jobStatus: "Bookmarked",
+          }
         }
       },
     })
@@ -227,18 +234,12 @@ export async function unbookmarkJobPosting(jobPostId: string) {
     if (!Session?.user.jobseekerId) {
       throw new Error('Failed to delete job listing: jobseeker ID not found in session');
     }
-    const result = await prisma.jobseekers.update({
+    const result = await prisma.jobseekerJobPosting.deleteMany({ // question: Think I should I use a composite key instead?
       where: {
-        jobseeker_id: Session.user.jobseekerId
+        jobseekerId: Session.user.jobseekerId,
+        jobPostId: jobPostId,
       },
-      data: {
-        BookmarkedJobs:{
-          disconnect:{
-            job_posting_id:jobPostId
-          }
-        }
-      }
-    })
+    });
     return result;
   } catch (error) {
     console.error(error)
@@ -262,11 +263,13 @@ export async function getJobSeekerBookmarkedJobs(){
     return
   }
   try {
-    const result = await prisma.jobseekers.findUnique({select:{
-        BookmarkedJobs:true
-    }, where:{
-      jobseeker_id: session.user.jobseekerId
-    }})
+    const result = await prisma.jobseekerJobPosting.findMany({
+      include:{
+        job_posting:true,
+     }, where:{
+          jobseekerId: session.user.jobseekerId,
+          jobStatus: 'Bookmarked'
+    }});
     console.log("here",result)
     return result;
   } catch (error) {
@@ -275,18 +278,24 @@ export async function getJobSeekerBookmarkedJobs(){
 }
 
 
-export async function getJobSeekerAppliedJobs() {
+export async function getJobSeekerAppliedJobs() { // fixme: will probably want to get all jobs...
   const session = await auth();
   if(!session?.user.jobseekerId){
     return
   }
   try {
-    const result = await prisma.jobseekers.findUnique({select:{
-        appliedJobs:true
-    }, where:{
-      jobseeker_id: session.user.jobseekerId
-    }})
-    return result;
+    const result = await prisma.jobseekerJobPosting.findMany({
+      where: {
+        jobseekerId: session.user.jobseekerId,
+        jobStatus: "Applied", // Ensure you fetch only "Applied" jobs
+      },
+      include: {
+        job_posting: true, // Include related job posting details
+      },
+    });
+
+    // Transform the result to match the previous data structure
+    return result.map((job) => job.job_posting);
   } catch (error) {
       console.error(error)
   }
