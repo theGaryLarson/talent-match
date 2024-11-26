@@ -1,7 +1,12 @@
 'use client'
+
+import { useState } from "react";
+import React, { MouseEvent } from 'react';
 export default function ApplyToJobButton(params: {id:string}){
-    const save = async () => {
+  const [hasApplied, setHasApplied] = useState<boolean>(false)
+    const save = async (e: MouseEvent<HTMLButtonElement>) => {
         try {
+            setHasApplied(true)
             const response = await fetch(`/api/joblistings/apply/${params.id}`, {
               method: 'POST', // or 'PUT', depending on the behavior of your API
               headers: {
@@ -19,5 +24,5 @@ export default function ApplyToJobButton(params: {id:string}){
             console.error('Error saving job post:', error);
           }
     }
-return <button className="box-border w-fit rounded-full bg-blue-background px-10 py-3 text-white hover:bg-blue-400" onClick={save}>Apply</button>
+return <button className="box-border w-fit rounded-full bg-blue-background px-10 py-3 text-white hover:bg-blue-400" disabled={hasApplied} onClick={save}>{hasApplied?'Applied':'Apply'}</button>
 }

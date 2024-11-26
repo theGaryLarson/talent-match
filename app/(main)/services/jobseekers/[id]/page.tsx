@@ -22,6 +22,7 @@ const monthNames = [
 
 function formatUrl(url: string) {
   if (!url) return '';
+  if (url == '') return '';
   // If the URL starts with http:// or https://, return as is
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
@@ -29,8 +30,12 @@ function formatUrl(url: string) {
   // Default to https:// but don't force it, allow users to adjust
   return `https://${url}`;
 }
+export const metadata = {
+  title: "WA Tech Workforce Coalition"
+};
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
+  metadata.title = jobseeker?.users.first_name + ' ' +jobseeker?.users.last_name
   let resume_url = await getResumeUrl(jobseeker?.users.id??'');
   const session = await auth();
   let videoID = '';
@@ -79,6 +84,7 @@ export default async function page({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
+        {videoID != ''?
         <iframe
           className="aspect-video min-w-[200px] grow"
           src={`https://www.youtube.com/embed/${videoID}?autoplay=1`}
@@ -86,7 +92,7 @@ export default async function page({ params }: { params: { id: string } }) {
           allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share"
           referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
-        ></iframe>
+        ></iframe>:''}
       </div>
       <div className="flex flex-wrap gap-4">
         <div className=" grow space-y-3">
@@ -267,4 +273,9 @@ export default async function page({ params }: { params: { id: string } }) {
       </div>
     </main>
   );
+}
+function validYouTubeLink(url:string){
+  if (url == '') return true
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+  return regex.test(url);
 }

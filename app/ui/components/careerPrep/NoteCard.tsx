@@ -1,11 +1,10 @@
 'use client'
 import { NoteDTO } from "@/app/lib/admin/careerPrep";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import MarkDownEditor from "../mdEditor/MarkDownEditor";
-export default function NoteCard(props:NoteDTO){
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+export default function NoteCard(props:NoteDTO&{UpdateSelectedId:(a:string, b:string)=> void}){
     const router = useRouter();
-    const [editMode, setEditMode] = useState<boolean>(false);
     const deleteNote = ()=>{
                 fetch('/api/admin/career-prep/delete-student-notes/'+props.id, {
             method: 'DELETE', 
@@ -16,22 +15,19 @@ export default function NoteCard(props:NoteDTO){
             router.refresh();
             }
     const toggleEditMode = ()=>{
-      setEditMode(!editMode);
-    }
-    if(editMode){
-      return(
-        <div>
-          <h3 className="text-sm text-gray-600">Author: {props.authorName} Posted: {props.updatedAt} <button onClick={deleteNote}>delete</button> <button onClick={toggleEditMode}>edit</button></h3>
-          <hr/>
-          <MarkDownEditor title={""} noteType={props.noteType} jobseekerId={props.jobseekerId} noteid={props.id} starterContent={props.noteContent} setEdit={setEditMode}/>
-        </div>
-      );
+      props.UpdateSelectedId(props.id, props.noteContent)
     }
     return(
         <div >
-            <h3 className="text-sm text-gray-600">Author: {props.authorName} Posted: {props.updatedAt} <button onClick={deleteNote}>delete</button><button onClick={toggleEditMode}>edit</button></h3>
+          <span className="flex items-center justify-between">
+            <h3 className="text-sm text-gray-600">Posted: {props.updatedAt}</h3>
+            <span className="flex gap-3 px-3">
+            <button onClick={deleteNote}><DeleteForeverOutlinedIcon/>Delete</button>
+            <button onClick={toggleEditMode}><EditOutlinedIcon/>Edit</button>
+            </span>
+            </span>
             <hr/>
-        <div className="ql-editor border" dangerouslySetInnerHTML={{__html:props.noteContent}}></div>
+        <div className="ql-editor border w-[700]" dangerouslySetInnerHTML={{__html:props.noteContent}}></div>
         </div>
    );
 }

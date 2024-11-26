@@ -16,6 +16,7 @@ export async function POST(request: Request) {
     skills = [],
     industrySector = [],
     educationLevel = undefined,
+    trainingProvider = undefined,
     yearsWorkExpMin = 0,
     yearsWorkExpMax = undefined,
     zipCode = undefined,
@@ -109,6 +110,19 @@ export async function POST(request: Request) {
         some: {
           industrySector: {
             sector_title: { in: industrySector },
+          },
+        },
+      },
+    });
+  }
+
+  // Training Provider Filtering
+  if (trainingProvider) {
+    andConditions.push({
+      jobseeker_education: {
+        some: {
+          eduProviders: {
+            name: trainingProvider,
           },
         },
       },

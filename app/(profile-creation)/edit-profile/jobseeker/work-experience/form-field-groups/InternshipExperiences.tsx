@@ -9,6 +9,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
+import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
 
 const classNamePrefix = 'profile-creation-internship-experience-group-';
 const classCompany = 'company';
@@ -48,12 +49,14 @@ export function defaultInternshipExperienceData(): InternshipExperienceData {
 
 interface Props {
   data: InternshipExperienceData[];
+  hasUnmetRequired: string;
   onRemove: (uid: string) => void;
   onUpdate: (key: string, value: any) => void;
 }
 
 export default memo(function InternshipExperiences({
   data,
+  hasUnmetRequired,
   onRemove,
   onUpdate,
 }: Props) {
@@ -76,7 +79,7 @@ export default memo(function InternshipExperiences({
   return data.map((internshipExperience, index) => (
     <fieldset key={classNamePrefix + internshipExperience.workId + '-key'}>
       <legend className="flex w-full justify-between">
-        <h3>Experience {index + 1}</h3>
+        <h3>Internship Experience {index + 1}</h3>
         <Button
           onClick={() => onRemove(internshipExperience.workId)}
           size="xs"
@@ -93,37 +96,57 @@ export default memo(function InternshipExperiences({
             classNamePrefix + internshipExperience.workId + '-' + classCompany
           }
           className="w-full"
-          placeholder="Your company name"
+          placeholder="Example: Bank of America"
           onChange={(e) => handleChange(index, classCompany, e.target.value)}
           required
           value={internshipExperience[classCompany]}
         >
-          Company *
+          Company Name: *
         </InputTextWithLabel>
         <InputTextWithLabel
           id={classNamePrefix + internshipExperience.workId + '-' + classTitle}
           className="w-full"
-          placeholder="Your title"
+          placeholder="Example: Quality Assurance Tester"
           onChange={(e) => handleChange(index, classTitle, e.target.value)}
           required
           value={internshipExperience[classTitle]}
         >
-          Title *
+          Your Job Title: *
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">
-        <DatePicker
-          label={'Starts *'}
-          views={['month', 'year']}
-          value={internshipExperience[classStarts] || null}
-          onChange={(val) => handleChange(index, classStarts, val)}
-        />
-        <DatePicker
-          label={'Ends *'}
-          views={['month', 'year']}
-          value={internshipExperience[classEnds] || null}
-          onChange={(val) => handleChange(index, classEnds, val)}
-        />
+        <RequiredTooltip
+          open={
+            hasUnmetRequired ===
+              `${internshipExperience.workId}-${classStarts}` &&
+            !Boolean(internshipExperience[classStarts])
+          }
+          errorMessage="A start date is required"
+        >
+          <DatePicker
+            label={'Start Date *'}
+            views={['month', 'year']}
+            value={internshipExperience[classStarts] || null}
+            onChange={(val) => handleChange(index, classStarts, val)}
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+        </RequiredTooltip>
+        <RequiredTooltip
+          open={
+            hasUnmetRequired ===
+              `${internshipExperience.workId}-${classEnds}` &&
+            !Boolean(internshipExperience[classEnds])
+          }
+          errorMessage="An end date is required"
+        >
+          <DatePicker
+            label={'End Date *'}
+            views={['month', 'year']}
+            value={internshipExperience[classEnds] || null}
+            onChange={(val) => handleChange(index, classEnds, val)}
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+        </RequiredTooltip>
       </div>
       <Label>
         <Checkbox
@@ -136,7 +159,7 @@ export default memo(function InternshipExperiences({
           checked={internshipExperience[classCurrent]}
           onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
         />
-        Current
+        Currently Employed in this Position
       </Label>
       <div className="profile-form-grid">
         <TextareaWithLabel
@@ -146,14 +169,14 @@ export default memo(function InternshipExperiences({
             '-' +
             classExperience
           }
-          placeholder="Your specific experience"
+          placeholder="Example: Create bug reports"
           onChange={(e: { target: { value: any } }) =>
             handleChange(index, classExperience, e.target.value)
           }
           required
           value={internshipExperience[classExperience]}
         >
-          Experience *
+          Job Responsibilities: *
         </TextareaWithLabel>
       </div>
     </fieldset>

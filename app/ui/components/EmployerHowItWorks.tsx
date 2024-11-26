@@ -7,7 +7,7 @@ export default function EmployerHowItWorks() {
     <div>
       <div className="text-center text-[88px] text-[#014260]">How It Works</div>
       <div className="space-y-[32px]">
-        <Step
+        {/* <Step
           buttonText={'Post a Job'}
           title={'Post a Job'}
           img={'/images/employers/my-job-posts.png'}
@@ -16,7 +16,7 @@ export default function EmployerHowItWorks() {
             "Create a job post, outline the specific skills you need, and publish it with a few clicks. You'll easily manage and track all your postings from a centralized dashboard, keeping you organized and informed throughout the hiring process."
           }
           link={'/underconstruction'}
-        />
+        /> */}
         <Step
           buttonText={'Search Local Candidates'}
           title={'Discover Local Talent'}
@@ -27,18 +27,18 @@ export default function EmployerHowItWorks() {
           }
           link={'/services/talent-search'}
         />
-        <Step
-          buttonText={'Start Hiring'}
-          title={'Connect With Ease'}
-          img={'/images/employers/inbox.png'}
-          alt={'Inbox'}
-          article={
-            "Once you've found the perfect candidate, our Portal makes connecting effortless. Directly initiate contact through our messaging system, streamlining communication and ensuring a smooth hiring process."
-          }
-          link={'/underconstruction'}
-        />
+        {/*<Step*/}
+        {/*  buttonText={'Start Hiring'}*/}
+        {/*  title={'Connect With Ease'}*/}
+        {/*  img={'/images/employers/inbox.png'}*/}
+        {/*  alt={'Inbox'}*/}
+        {/*  article={*/}
+        {/*    "Once you've found the perfect candidate, our Portal makes connecting effortless. Directly initiate contact through our messaging system, streamlining communication and ensuring a smooth hiring process."*/}
+        {/*  }*/}
+        {/*  link={'/underconstruction'}*/}
+        {/*/>*/}
         <div className="space-y-6">
-          <div className="text-center font-['Roboto'] text-[66px] font-normal capitalize leading-[66px] text-[#014260]">
+          <div className="text-center  text-[66px] font-normal capitalize leading-[66px] text-[#014260]">
             Discover diverse, qualified talent in your community
           </div>
           <Image
@@ -64,10 +64,10 @@ function Step(props: {
   return (
     <div className="grid items-center gap-[32px] laptop:grid-cols-2 laptop:gap-[80px]">
       <div className="space-y-[16px]">
-        <div className="font-['Roboto'] text-[44px] font-normal leading-[44px] text-[#047f9c]">
+        <div className=" text-[44px] font-normal leading-[44px] text-[#047f9c]">
           {props.title}
         </div>
-        <div className="font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-[#0f1728]">
+        <div className=" text-[22px] font-normal leading-[30.80px] text-[#0f1728]">
           {props.article}
         </div>
       </div>
@@ -79,7 +79,7 @@ function Step(props: {
           />
       <Link
         href={props.link}
-        className="inline-flex h-10 w-max items-center justify-center gap-2 rounded-[100px] border border-[#014260] px-6 py-2.5"
+        className="inline-flex h-10 w-max items-center justify-center gap-2 rounded-[100px] border border-[#014260] px-6 py-2.5 hover:bg-gray-100"
       >
         {props.buttonText}
         <ArrowRightIcon className="h-5 w-5" />

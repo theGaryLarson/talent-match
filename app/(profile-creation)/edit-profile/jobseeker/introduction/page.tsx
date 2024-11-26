@@ -46,12 +46,12 @@ export default function CreateJobseekerProfileIntroPage() {
   });
 
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
-    introData.birthDate === '' ? null : dayjs(introData.birthDate),
+    !Boolean(introData.birthDate) ? null : dayjs(introData.birthDate),
   );
+
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     introData.photoUrl ?? null,
   );
-  const [resumeUrl, setResumeUrl] = useState<string>('');
   const pathname = usePathname(); // Gets the current pathname
 
   useEffect(() => {
@@ -82,7 +82,6 @@ export default function CreateJobseekerProfileIntroPage() {
             } else {
               let fetchedData: JsIntroDTO = (await response.json()).result
                 .loadIntroPage;
-              console.log('fetcheddata', fetchedData);
               setIntroData({
                 ...introData,
                 userId: id!,
@@ -102,8 +101,7 @@ export default function CreateJobseekerProfileIntroPage() {
               });
               setAvatarUrl(fetchedData.photoUrl ?? session.user?.image ?? null);
               setBirthdate(
-                typeof fetchedData.birthDate === 'string' &&
-                  fetchedData.birthDate === ''
+                !Boolean(fetchedData.birthDate)
                   ? null
                   : dayjs(fetchedData.birthDate),
               );
@@ -164,7 +162,6 @@ export default function CreateJobseekerProfileIntroPage() {
       ...introData,
       birthDate: birthdate?.toISOString() ?? '',
       photoUrl: avatarUrl,
-      resumeUrl: resumeUrl,
     };
     setIntroData(updatedIntroData);
 
@@ -219,7 +216,7 @@ export default function CreateJobseekerProfileIntroPage() {
       <section className="profile-form-section">
         <ProgressBarFlat progress={(1 / 6) * 100} size="sm" />
         <p>Step 1/6</p>
-        <h1>Intro</h1>
+        <h1>Profile Settings</h1>
         <p className="subtitle">* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
@@ -239,7 +236,7 @@ export default function CreateJobseekerProfileIntroPage() {
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Basic info</h2>
+              <h2>Contact Information</h2>
             </legend>
 
             <div className="profile-form-grid md:grid-cols-2">
@@ -247,27 +244,26 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-firstName"
                 placeholder="Your first name"
                 onChange={handleFieldChange}
-                value={introData.firstName}
-                required
+                value={introData.firstName ?? ''}
               >
-                First Name *
+                First Name
               </InputTextWithLabel>
               <InputTextWithLabel
                 id="profile-creation-intro-lastName"
                 placeholder="Your last name"
                 onChange={handleFieldChange}
-                value={introData.lastName}
-                required
+                value={introData.lastName ?? ''}
               >
-                Last Name *
+                Last Name
               </InputTextWithLabel>
             </div>
 
             <div className="profile-form-grid">
               <DatePicker
-                label="Birth Date *"
+                label="Birth Date"
                 value={birthdate}
                 onChange={setBirthdate}
+                slotProps={{ textField: { fullWidth: true } }}
               />
             </div>
 
@@ -276,11 +272,10 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-zipCode"
                 placeholder="Zipcode"
                 onChange={handleFieldChange}
-                value={introData.zipCode}
-                required
+                value={introData.zipCode ?? ''}
                 pattern="\d{5}(-\d{4})?"
               >
-                Zip Code *
+                Zip Code
               </InputTextWithLabel>
             </div>
 
@@ -657,7 +652,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 ]}
                 value={introData.phoneCountryCode ?? 'United States +1'}
               >
-                Country Phone Code *
+                Country Phone Code
               </SelectOptionsWithLabel>
               <InputTextWithLabel
                 id="profile-creation-intro-phone"
@@ -665,9 +660,8 @@ export default function CreateJobseekerProfileIntroPage() {
                 placeholder="Phone number"
                 onChange={handleFieldChange}
                 value={introData.phone ?? ''}
-                required
               >
-                Phone Number *
+                Phone Number
               </InputTextWithLabel>
             </div>
           </fieldset>
