@@ -11,7 +11,7 @@ export default async function Page() {
       <h1 className="font-bold text-xl">BookMarked Jobs</h1>
     <div>
       {
-        myBookMarkedJobs?.BookmarkedJobs.map((job)=><div key={job.job_posting_id}><Link href={`/services/joblistings/${job.job_posting_id}`}>{job.job_title}</Link></div>)
+        myBookMarkedJobs?.map((job)=><div key={job.jobPostId}><Link href={`/services/joblistings/${job.jobPostId}`}>{job.job_posting?.job_title}</Link></div>)
       }
     </div>
     
@@ -20,7 +20,7 @@ export default async function Page() {
     </h1>
     <div>
       {
-        myAppliedJobs?.appliedJobs.map((job)=><div key={job.job_posting_id}><Link href={`/services/joblistings/${job.job_posting_id}`}>{job.job_title}</Link></div>)
+        myAppliedJobs?.map((job)=><div key={job.job_posting_id}><Link href={`/services/joblistings/${job.job_posting_id}`}>{job.job_title}</Link></div>)
       }
     </div>
     <div>
