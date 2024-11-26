@@ -9,6 +9,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
+import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
 
 const classNamePrefix = 'profile-creation-internship-experience-group-';
 const classCompany = 'company';
@@ -48,12 +49,14 @@ export function defaultInternshipExperienceData(): InternshipExperienceData {
 
 interface Props {
   data: InternshipExperienceData[];
+  hasUnmetRequired: string;
   onRemove: (uid: string) => void;
   onUpdate: (key: string, value: any) => void;
 }
 
 export default memo(function InternshipExperiences({
   data,
+  hasUnmetRequired,
   onRemove,
   onUpdate,
 }: Props) {
@@ -112,18 +115,38 @@ export default memo(function InternshipExperiences({
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">
-        <DatePicker
-          label={'Start Date *'}
-          views={['month', 'year']}
-          value={internshipExperience[classStarts] || null}
-          onChange={(val) => handleChange(index, classStarts, val)}
-        />
-        <DatePicker
-          label={'End Date *'}
-          views={['month', 'year']}
-          value={internshipExperience[classEnds] || null}
-          onChange={(val) => handleChange(index, classEnds, val)}
-        />
+        <RequiredTooltip
+          open={
+            hasUnmetRequired ===
+              `${internshipExperience.workId}-${classStarts}` &&
+            !Boolean(internshipExperience[classStarts])
+          }
+          errorMessage="A start date is required"
+        >
+          <DatePicker
+            label={'Start Date *'}
+            views={['month', 'year']}
+            value={internshipExperience[classStarts] || null}
+            onChange={(val) => handleChange(index, classStarts, val)}
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+        </RequiredTooltip>
+        <RequiredTooltip
+          open={
+            hasUnmetRequired ===
+              `${internshipExperience.workId}-${classEnds}` &&
+            !Boolean(internshipExperience[classEnds])
+          }
+          errorMessage="An end date is required"
+        >
+          <DatePicker
+            label={'End Date *'}
+            views={['month', 'year']}
+            value={internshipExperience[classEnds] || null}
+            onChange={(val) => handleChange(index, classEnds, val)}
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+        </RequiredTooltip>
       </div>
       <Label>
         <Checkbox

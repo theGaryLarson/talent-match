@@ -176,7 +176,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <SelectWithLabel
                 id="profile-creation-disclosures-gender"
                 fullWidth
-                label="Gender"
+                label="Gender *"
                 value={gender}
                 onChange={(event) => {
                   dispatch(setPageDirty('disclosures'));
@@ -197,7 +197,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <SelectWithLabel
                 id="profile-creation-disclosures-veterans"
                 fullWidth
-                label="Veterans"
+                label="Veterans *"
                 value={veteranStatus}
                 onChange={(event) => {
                   dispatch(setPageDirty('disclosures'));
@@ -214,7 +214,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <SelectWithLabel
                 id="profile-creation-disclosures-ethnicity"
                 fullWidth
-                label="Ethnicity"
+                label="Ethnicity *"
                 value={ethnicity}
                 onChange={(event) => {
                   dispatch(setPageDirty('disclosures'));
@@ -234,7 +234,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               <SelectWithLabel
                 id="profile-creation-disclosures-race"
                 fullWidth
-                label="Race"
+                label="Race *"
                 value={race}
                 onChange={(event) => {
                   dispatch(setPageDirty('disclosures'));
@@ -351,7 +351,6 @@ export default function CreateJobseekerProfileDisclosuresPage() {
               </FormLabel>
               <RadioGroup
                 aria-labelledby="profile-creation-disclosures-require-disability-label"
-                defaultValue="undisclosed"
                 value={disabilityStatus}
                 onChange={(event) => {
                   setDisabilityStatus(event.target.value);

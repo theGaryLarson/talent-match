@@ -72,9 +72,9 @@ export async function GET(
 
       const result: JsWorkExpDTO = {
         userId: user.id,
-        yearsWorkExperience: jobseeker.years_work_exp?.toString() ?? '0',
+        yearsWorkExperience: jobseeker.years_work_exp?.toString() ?? '',
         monthsInternshipExperience:
-          jobseeker.months_internship_exp?.toString() ?? '0',
+          jobseeker.months_internship_exp?.toString() ?? '',
         ...(privateData?.is_authorized_to_work_in_usa !== undefined && {
           isAuthorizedToWorkUsa: privateData.is_authorized_to_work_in_usa,
         }),
