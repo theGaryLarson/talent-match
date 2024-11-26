@@ -100,10 +100,6 @@ export default function CreateEmployerProfilePage() {
     setOpen(true);
   };
 
-  const showFields = () => {
-    setIsCompanySelected(true);
-  };
-
   const [companyName, setCompanyName] = useState<string>('');
   const [workAddress, setWorkAddress] = useState<ReadAddressDTO>(null);
 
@@ -180,6 +176,35 @@ export default function CreateEmployerProfilePage() {
     dispatch(setPageSaved('disclosures'));
     devLog(profileData);
   }, [session?.user?.id, pathname]);
+
+  useEffect(() => {
+    console.log(
+      'Updated selectCompanyDropdownData:',
+      selectCompanyDropdownData,
+    );
+    console.log('logging state variable', selectCompanyDropdownData);
+    if (
+      selectCompanyDropdownData &&
+      typeof selectCompanyDropdownData === 'object' &&
+      selectCompanyDropdownData.companyId
+    ) {
+      console.log('true');
+      console.log(
+        'profileStoreData',
+        profileStoreData,
+        profileStoreData.companyId,
+      );
+      openSnackbar();
+      setIsCompanySelected(true);
+      setProfileData((prevState) => ({
+        ...prevState,
+        companyId: selectCompanyDropdownData.companyId,
+      }));
+    } else {
+      console.log('false');
+      setIsCompanySelected(false);
+    }
+  }, [selectCompanyDropdownData]);
 
   // used to manage changes on selectCompanyDropDownData depending on its type (object or string).
   useEffect(() => {
@@ -440,29 +465,38 @@ export default function CreateEmployerProfilePage() {
                 onChange={(e, val) => {
                   // logic predominately handled in useEffect
                   // Always update the dropdown value whether an existing company (object) or new company (string)
-                  console.log('changed', selectCompanyDropdownData);
-                  setSelectCompanyDropdownData(val ?? '');
-                  if (selectCompanyDropdownData !== '') {
-                    console.log('true');
-                    console.log(
-                      'profileStoreData',
-                      profileStoreData,
-                      profileStoreData.companyId,
-                    );
-                    openSnackbar();
-                    // showFields();
-                    setIsCompanySelected(true);
-                    setProfileData((prevState) => ({
-                      ...prevState,
-                      companyId:
-                        val && typeof val === 'object' && 'companyId' in val
-                          ? (val?.companyId ?? '')
-                          : '',
-                    }));
-                  } else {
-                    console.log('false');
-                    setIsCompanySelected(false);
-                  }
+                  console.log('logging val', val);
+                  setSelectCompanyDropdownData(
+                    typeof val === 'object' && val !== null ? { ...val } : '',
+                  );
+                  // console.log(
+                  //   'logging state variable',
+                  //   selectCompanyDropdownData,
+                  // );
+                  // if (
+                  //   selectCompanyDropdownData &&
+                  //   typeof selectCompanyDropdownData === 'object' &&
+                  //   selectCompanyDropdownData.companyId
+                  // ) {
+                  //   console.log('true');
+                  //   console.log(
+                  //     'profileStoreData',
+                  //     profileStoreData,
+                  //     profileStoreData.companyId,
+                  //   );
+                  //   openSnackbar();
+                  //   setIsCompanySelected(true);
+                  //   setProfileData((prevState) => ({
+                  //     ...prevState,
+                  //     companyId:
+                  //       val && typeof val === 'object' && 'companyId' in val
+                  //         ? (val?.companyId ?? '')
+                  //         : '',
+                  //   }));
+                  // } else {
+                  //   console.log('false');
+                  //   setIsCompanySelected(false);
+                  // }
                 }}
                 searchPlaceholder="Company name"
                 getOptionLabel={(option: ReadCompanyInfoDTO) =>
@@ -597,7 +631,7 @@ export default function CreateEmployerProfilePage() {
               Previous
             </Button>
             <Button pill type="submit">
-              Save and continue
+              Submit
             </Button>
           </div>
         </form>
