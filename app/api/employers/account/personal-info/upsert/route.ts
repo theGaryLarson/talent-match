@@ -20,10 +20,6 @@ export async function POST(request: Request) {
     const {
       firstName,
       lastName,
-      birthDate,
-      email,
-      phoneCountryCode,
-      phone,
       photoUrl,
     } = body;
 
@@ -35,10 +31,6 @@ export async function POST(request: Request) {
       update: {
         first_name: firstName,
         last_name: lastName,
-        birthdate: birthDate ? new Date(birthDate).toISOString() : undefined,
-        email: email,
-        phoneCountryCode: phoneCountryCode,
-        phone: phone,
         photo_url: photoUrl,
         updatedAt: new Date(),
       },
@@ -47,10 +39,10 @@ export async function POST(request: Request) {
         role: Role.EMPLOYER,
         first_name: firstName,
         last_name: lastName,
-        birthdate: new Date(birthDate).toISOString(),
-        email: email,
-        phoneCountryCode: phoneCountryCode,
-        phone: phone,
+        birthdate: undefined,
+        email: session?.user.email!,
+        phoneCountryCode: undefined,
+        phone: undefined,
         photo_url: photoUrl,
         createdAt: new Date(),
       },
@@ -60,10 +52,10 @@ export async function POST(request: Request) {
       userId: upsertedUser.id,
       firstName: upsertedUser.first_name,
       lastName: upsertedUser.last_name,
-      birthDate: upsertedUser?.birthdate?.toISOString(),
+      // birthDate: upsertedUser?.birthdate?.toISOString(),
       email: upsertedUser.email,
-      phoneCountryCode: phoneCountryCode ?? null,
-      phone: phone ?? null,
+      // phoneCountryCode: phoneCountryCode ?? null,
+      // phone: phone ?? null,
       photoUrl: upsertedUser.photo_url,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });

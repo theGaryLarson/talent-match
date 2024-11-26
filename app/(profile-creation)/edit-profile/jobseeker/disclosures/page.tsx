@@ -100,10 +100,6 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 disclosuresData.race = fetchedData.race;
                 setRace(disclosuresData.race);
               }
-              if (fetchedData.ethnicity) {
-                disclosuresData.ethnicity = fetchedData.ethnicity;
-                setRace(disclosuresData.ethnicity);
-              }
             }
           } catch (error) {
             console.error(error);

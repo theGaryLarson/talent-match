@@ -125,7 +125,7 @@ const poolAssignmentMap: { [key: string]: { poolAssignment: PoolCategories; care
     'false_false_true_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
     'false_false_true_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.ACCELERATED },
     'false_false_true_false_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
-    'false_false_true_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.EXTENDED },
+    'false_false_true_false_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'false_false_false_true_true': { poolAssignment: PoolCategories.Recommended, careerPrepTrackRecommendation: null },
     'false_false_false_true_false': { poolAssignment: PoolCategories.JobReady, careerPrepTrackRecommendation: CareerPrepTrack.STANDARD },
     'false_false_false_false_true': { poolAssignment: PoolCategories.NotJobReady, careerPrepTrackRecommendation: null }, // contradiction. Never logically true

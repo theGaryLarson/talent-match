@@ -17,7 +17,7 @@ export default async function page({params}:{params: {id:string}}){
     return(
         <main className="space-y-3 py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px]">
             <div className="">
-            <h1 className="text-4xl flex items-center justify-center ">{jobListing?.job_title} @ {jobListing?.companies.company_name} {session?.user.jobseekerId?<Bookmark bookmarked={(jobListing?.jobseekersThatBookMarked.some((e)=>e.jobseeker_id == session?.user.jobseekerId))??false} addUrl={`/api/joblistings/bookmark/add/${jobListing?.job_posting_id}`} removeUrl={`/api/joblistings/bookmark/remove/${jobListing?.job_posting_id}`}/>:''}
+            <h1 className="text-4xl flex items-center justify-center ">{jobListing?.job_title} @ {jobListing?.companies.company_name} {session?.user.jobseekerId?<Bookmark bookmarked={(jobListing?.jobApplications.some((e)=>e.jobseekerId == session?.user.jobseekerId))??false} addUrl={`/api/joblistings/bookmark/add/${jobListing?.job_posting_id}`} removeUrl={`/api/joblistings/bookmark/remove/${jobListing?.job_posting_id}`}/>:''}
             {(session?.user.companyId === jobListing?.company_id)? <DeleteJobPostingButton id={params.id}/>:''}
 
 

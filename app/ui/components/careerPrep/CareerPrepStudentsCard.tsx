@@ -7,20 +7,17 @@ export default function CareerPrepStudentsCard(props:CareerPrepJobseekerCardView
     console.log(props.careerPrepEnrollmentStatus)
     return (
         <div className="w-full rounded-lg border border-2 border-cyan-600 p-2 phone:p-4">
-            <h3 className="text-xl">
+            <h3 className="text-2xl">
                 {props.firstName} {props.lastName} ({props.pronouns})
             </h3>
             <p>
-                Track: {props.careerPrepTrack}
+                <b>Recomended Track:</b> {props.careerPrepTrack}
             </p>
             <p>
-                Assigned Pool: {props.assignedPool}
+                <b>Enrollment Status:</b> <EnrollmentStatusDropDown careerPrepEnrollmentStatus={props.careerPrepEnrollmentStatus} jobseekerId={props.jobseekerId}/>
             </p>
             <p>
-                Enrollment Status: <EnrollmentStatusDropDown careerPrepEnrollmentStatus={props.careerPrepEnrollmentStatus} jobseekerId={props.jobseekerId}/>
-            </p>
-            <p>
-                Expected End Date: {props.careerPrepExpectedEndDate?.toDateString()}
+                <b>Expected End Date:</b> {props.careerPrepExpectedEndDate?.toDateString()}
             </p>
             <Link href={'/career-prep/'+props.jobseekerId} className="LINK">
             View Details 
