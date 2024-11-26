@@ -2,6 +2,7 @@ import React, { SyntheticEvent, useMemo, useState } from 'react';
 import Autocomplete, {
   AutocompleteChangeDetails,
   AutocompleteChangeReason,
+  createFilterOptions,
 } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { debounce } from '@mui/material/utils';
@@ -27,7 +28,7 @@ interface Props<ValueType> {
   ) => void;
   searchingText?: string | undefined;
   searchPlaceholder: string;
-  getOptionLabel: ((option: ValueType) => string) | undefined;
+  getOptionLabel: (option: ValueType) => string;
 }
 
 export default function TextFieldWithAutocomplete<ValueType>({
@@ -43,8 +44,10 @@ export default function TextFieldWithAutocomplete<ValueType>({
   searchPlaceholder,
   getOptionLabel,
 }: Props<ValueType>) {
-  const [options, setOptions] = useState<ValueType[]>([]);
+  const [options, setOptions] = useState<(ValueType | string)[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const filter = createFilterOptions<ValueType | string>();
 
   const handleInputChange = useMemo(() => {
     const cachedFetches: CachedFetches<ValueType> = {
@@ -57,7 +60,6 @@ export default function TextFieldWithAutocomplete<ValueType>({
           if (cachedFetches.hasOwnProperty(newInputValue)) {
             setOptions(cachedFetches[newInputValue]); // Update the options with cached fetch data instead of hitting API again
           } else if (newInputValue.length !== 0) {
-            setLoading(true);
             const response = await fetch(
               `${apiSearchRoute}${encodeURIComponent(newInputValue)}`,
             );
@@ -65,11 +67,11 @@ export default function TextFieldWithAutocomplete<ValueType>({
             cachedFetches[newInputValue] = data; // Cache the fetch data
 
             setOptions(data); // Update the options with fetched data
-            setLoading(false);
           }
         } catch (error) {
           console.error('Error fetching data:', error);
         }
+        setLoading(false);
       },
       500,
     );
@@ -78,43 +80,64 @@ export default function TextFieldWithAutocomplete<ValueType>({
   return (
     <Autocomplete
       className={'flex flex-1 ' + className}
-      freeSolo={allowNewOption}
       autoComplete
-      autoSelect
+      clearOnBlur
       filterSelectedOptions
       id={id}
       loading={loading}
       loadingText={searchingText}
       noOptionsText={noResultsText}
       value={value}
-      onChange={(ev, val, reason, details) => {
-        if (reason === 'selectOption') {
-          onChange(ev, val, reason, details);
-        } else if (reason === 'blur') {
-          if (typeof val === 'string' && getOptionLabel) {
-            const optionIndex = options.findIndex(
-              (option) =>
-                getOptionLabel(option).toLowerCase().trim() ===
-                val.toLowerCase().trim(),
-            );
-            if (optionIndex !== -1) {
-              //if result is found
-              onChange(ev, options[optionIndex], reason, details);
-            } else {
-              if (!allowNewOption) {
-                //if allowNewOption is set to false
-                onChange(ev, null, reason, details);
-              } else {
-                onChange(ev, val, reason, details);
-              }
+      filterOptions={(options, params) => {
+        if (loading) {
+          return [];
+        }
+
+        const filtered = filter(options, params);
+
+        if (allowNewOption) {
+          // Suggest the creation of a new option
+          if (
+            typeof params.inputValue === 'string' &&
+            params.inputValue !== ''
+          ) {
+            const optionExists =
+              options.findIndex(
+                (option) =>
+                  typeof option !== 'string' &&
+                  getOptionLabel(option).trim().toLowerCase() ===
+                    params.inputValue.trim().toLowerCase(),
+              ) !== -1;
+            if (!optionExists) {
+              filtered.push(`Add "${params.inputValue}"`);
             }
           }
+        }
+
+        return filtered;
+      }}
+      onChange={(ev, val, reason, details) => {
+        if (reason === 'selectOption') {
+          if (!allowNewOption || typeof val !== 'string') {
+            onChange(ev, val, reason, details);
+          } else {
+            onChange(
+              ev,
+              val.substring('Add "'.length, val.length - 1),
+              'createOption',
+              details,
+            );
+          }
         } else if (reason === 'clear') {
-          onChange(ev, val, reason, details);
+          onChange(ev, null, reason, details);
         }
       }}
-      onInputChange={handleInputChange}
-      options={loading ? [] : options}
+      onInputChange={(event, newValue) => {
+        if (newValue !== '') {
+          setLoading(true);
+        }
+        handleInputChange(event, newValue);
+      }}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -123,10 +146,11 @@ export default function TextFieldWithAutocomplete<ValueType>({
           value={
             typeof value === 'string'
               ? value
-              : ((getOptionLabel && value && getOptionLabel(value)) ?? '')
+              : ((value && getOptionLabel(value)) ?? '')
           }
         />
       )}
+      options={loading ? [] : options}
       getOptionLabel={(option: string | ValueType) => {
         if (typeof option === 'string') {
           return option;
