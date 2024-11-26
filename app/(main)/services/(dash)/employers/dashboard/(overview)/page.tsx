@@ -15,7 +15,7 @@ export default async function Page() {
   
   const proInfo = await getEmployerById(session?.user.employerId??'');
   const company = await getCompanyById(proInfo?.company_id??'');
-  if(!proInfo || company == undefined || !session?.user.companyId){
+  if(!proInfo || company == undefined){
     return (
       <div>
         <h1 className='text-2xl'>
@@ -27,6 +27,12 @@ export default async function Page() {
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <DeletionFlag deletionDate={undefined} />
+      {!session?.user.companyId?
+      <div className='bg-red-700 h-[50px] items-center flex text-center justify-center'>
+        <h1 className='text-2xl capitalize text-white'>
+          Some Functions May be limted Please Log out and Log back in to gain full functionality 
+        </h1>
+      </div>:''}
       <h1 className="text-2xl font-medium">
         My Dashboard
       </h1>
