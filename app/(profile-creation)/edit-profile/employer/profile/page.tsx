@@ -177,69 +177,43 @@ export default function CreateEmployerProfilePage() {
     devLog(profileData);
   }, [session?.user?.id, pathname]);
 
+  // used to manage changes on selectCompanyDropDownData depending on its type (object or string).
   useEffect(() => {
     console.log(
       'Updated selectCompanyDropdownData:',
       selectCompanyDropdownData,
     );
-    console.log('logging state variable', selectCompanyDropdownData);
     if (
       selectCompanyDropdownData &&
       typeof selectCompanyDropdownData === 'object' &&
       selectCompanyDropdownData.companyId
     ) {
-      console.log('true');
-      console.log(
-        'profileStoreData',
-        profileStoreData,
-        profileStoreData.companyId,
-      );
       openSnackbar();
       setIsCompanySelected(true);
       setProfileData((prevState) => ({
         ...prevState,
         companyId: selectCompanyDropdownData.companyId,
+        companyName: selectCompanyDropdownData.companyName,
+        yearFounded: selectCompanyDropdownData.yearFounded?.toString() || '',
+        websiteUrl: selectCompanyDropdownData.websiteUrl,
       }));
-    } else {
-      console.log('false');
-      setIsCompanySelected(false);
-    }
-  }, [selectCompanyDropdownData]);
 
-  // used to manage changes on selectCompanyDropDownData depending on its type (object or string).
-  useEffect(() => {
-    if (
-      typeof selectCompanyDropdownData === 'object' &&
-      selectCompanyDropdownData !== null
-    ) {
-      // Company selected from dropdown
-      const companyObj = selectCompanyDropdownData;
       // setYearFounded(
       //   companyObj.yearFounded
       //     ? dayjs().year(parseInt(companyObj.yearFounded, 10))
       //     : null,
       // );
-      setCompanyData({
-        ...companyData,
-        companyId: companyObj.companyId,
-        companyName: companyObj.companyName,
-        yearFounded: companyObj.yearFounded?.toString() || '',
-        websiteUrl: companyObj.websiteUrl,
-      });
+
       // setIndustry({
       //   // do this inside of companyData object rather than separate state. First ensure companyDataObject has been transformed to a PostCompanyInfoDTO
       //   industry_sector_id: companyObj.industrySectorId ?? '',
       //   sector_title: '', // Not needed; only ID is required
       // });
+    } else {
+      console.log('false');
+      setIsCompanySelected(false);
     }
-
-    if (prevSelectCompanyDropdownData.current !== selectCompanyDropdownData) {
-      dispatch(setPageDirty('company'));
-    }
-
-    // Update the previous value
-    prevSelectCompanyDropdownData.current = selectCompanyDropdownData;
-  }, [selectCompanyDropdownData, pathname]);
+  }, [selectCompanyDropdownData]);
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -372,9 +346,9 @@ export default function CreateEmployerProfilePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(3 / 3) * 100} size="sm" />
+        {/* <ProgressBarFlat progress={(3 / 3) * 100} size="sm" /> */}
 
-        <p>Step 3/3</p>
+        {/* <p>Step 3/3</p> */}
         <h1>Employer Profile {profileStoreData.companyId}</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -469,34 +443,6 @@ export default function CreateEmployerProfilePage() {
                   setSelectCompanyDropdownData(
                     typeof val === 'object' && val !== null ? { ...val } : '',
                   );
-                  // console.log(
-                  //   'logging state variable',
-                  //   selectCompanyDropdownData,
-                  // );
-                  // if (
-                  //   selectCompanyDropdownData &&
-                  //   typeof selectCompanyDropdownData === 'object' &&
-                  //   selectCompanyDropdownData.companyId
-                  // ) {
-                  //   console.log('true');
-                  //   console.log(
-                  //     'profileStoreData',
-                  //     profileStoreData,
-                  //     profileStoreData.companyId,
-                  //   );
-                  //   openSnackbar();
-                  //   setIsCompanySelected(true);
-                  //   setProfileData((prevState) => ({
-                  //     ...prevState,
-                  //     companyId:
-                  //       val && typeof val === 'object' && 'companyId' in val
-                  //         ? (val?.companyId ?? '')
-                  //         : '',
-                  //   }));
-                  // } else {
-                  //   console.log('false');
-                  //   setIsCompanySelected(false);
-                  // }
                 }}
                 searchPlaceholder="Company name"
                 getOptionLabel={(option: ReadCompanyInfoDTO) =>
