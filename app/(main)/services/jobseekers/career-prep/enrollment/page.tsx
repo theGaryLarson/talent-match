@@ -100,7 +100,7 @@ export default function Page() {
         <Box style={{ height: '100vh' }} className="profile-form-section main-content">
           <Confetti />
           <h1>Next Steps</h1>
-          <Typography sx={{ pt: 3, mb: 3 }}>You’re officially enrolled! We're excited to officially welcome you to Career Prep. Return to your dashboard to view your personalized development plan and access the Canvas training.</Typography>
+          <Typography sx={{ pt: 3, mb: 3 }}>{"You’re officially enrolled! We're excited to officially welcome you to Career Prep. Return to your dashboard to view your personalized development plan and access the Canvas training."}</Typography>
           {/*<p className="subtitle-congrats">{`Thank you again for your participation!`}</p>*/}
           <Grid2 container>
             <Button pill href='/services/jobseekers/dashboard'>

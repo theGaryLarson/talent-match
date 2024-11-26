@@ -646,7 +646,7 @@ export default function Page() {
         <Box style={{ height: '100vh' }} className="profile-form-section main-content">
           <Confetti />
           <h1>Next Steps</h1>
-          <Typography sx={{ pt: 3, mb: 3 }}>Thank you for completing the skills assessment! A dedicated Career Navigator will review your results and create a personalized Professional Development Plan tailored to your needs. You’ll receive an email notification when your plan is ready.</Typography>
+          <Typography sx={{ pt: 3, mb: 3 }}>{"Thank you for completing the skills assessment! A dedicated Career Navigator will review your results and create a personalized Professional Development Plan tailored to your needs. You’ll receive an email notification when your plan is ready."}</Typography>
           {/*<p className="subtitle-congrats">{`Thank you again for your participation!`}</p>*/}
           <Grid2 container>
             <Button pill href='/services/jobseekers/dashboard'>
@@ -661,7 +661,7 @@ export default function Page() {
           Career Prep Skills Assessment
         </Typography>
         {activeStep == 0 && <Typography sx={{mb: 4}}>
-        This assessment will evaluate your technical, durable, and career readiness skills to help us create a personalized professional development plan tailored to your specific needs and goals. Your responses will help us understand your current skills, strengths, and areas for improvement where you might need support in reaching your career goals. To help us provide the best possible guidance, please ensure your responses accurately represent you in this present moment. Let's work together to unlock your potential! 
+        Th{"is assessment will evaluate your technical, durable, and career readiness skills to help us create a personalized professional development plan tailored to your specific needs and goals. Your responses will help us understand your current skills, strengths, and areas for improvement where you might need support in reaching your career goals. To help us provide the best possible guidance, please ensure your responses accurately represent you in this present moment. Let's work together to unlock your potential!"}
         </Typography> }
         <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
           {steps.map((label) => (
