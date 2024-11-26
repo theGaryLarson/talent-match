@@ -1,62 +1,62 @@
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 
 export type JsIntroDTO = {
+  email: string;
   userId: string;
-  photoUrl?: string | null;
-  firstName?: string | null;
-  lastName?: string | null;
   birthDate?: string | Date | null;
-  phoneCountryCode?: string | null;
-  phone?: string | null;
-  zipCode?: string | null;
-  state?: string | null;
   city?: string | null;
   county?: string | null;
-  email: string;
-  introHeadline?: string | null;
   currentJobTitle?: string | null;
+  firstName?: string | null;
+  introHeadline?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  phoneCountryCode?: string | null;
+  photoUrl?: string | null;
+  state?: string | null;
+  zipCode?: string | null;
 };
 
 export type JsIntroPostDTO = {
+  email: string;
   userId: string;
-  photoUrl?: string | null;
-  firstName: string;
-  lastName: string;
-  birthDate: string | Date;
-  phoneCountryCode?: string | null;
-  phone?: string | null;
-  zipCode: string;
-  state?: string | null;
+  birthDate?: string | Date;
   city?: string | null;
   county?: string | null;
-  email: string;
-  introHeadline?: string | null;
   currentJobTitle?: string | null;
+  firstName?: string;
+  introHeadline?: string | null;
+  lastName?: string;
+  phone?: string | null;
+  phoneCountryCode?: string | null;
+  photoUrl?: string | null;
+  state?: string | null;
+  zipCode?: string;
 };
 
 export type CertDTO = {
   certId: string;
-  name: string;
-  logoUrl?: string | null; // ADD logoUrl
   issuingOrg: string;
+  name: string;
   credentialId?: string | null;
   credentialUrl?: string | null;
-  issueDate?: string;
-  expiryDate?: string;
   description?: string | null; // ADD description
+  expiryDate?: string;
+  issueDate?: string;
+  logoUrl?: string | null; // ADD logoUrl
 };
 
 export type ProjectExpDTO = {
-  projectId: string;
-  projTitle: string;
-  projectRole: string;
-  startDate: string | null;
   completionDate: string | null;
   problemSolvedDescription: string;
+  projectId: string;
+  projectRole: string;
+  projTitle: string;
+  skills: SkillDTO[];
+  startDate: string | null;
   teamSize: string;
   repoUrl?: string | null; // ADD repoUrl
   videoDemoUrl?: string | null; // ADD videoDemoUrl
-  skills: SkillDTO[];
 };
 
 // Updated to match WJI grant reporting data (do not modify)
@@ -122,29 +122,29 @@ export enum PreAEduSystem {
 }
 
 export type JsEducationInfoDTO = {
+  gradDate: string;
   id: string;
+  isEnrolled: boolean;
+  preAppEdSystem: PreAEduSystem | null;
+  programId: string;
+  programName: string;
+  startDate: string;
+  degreeType?: CollegeDegreeType | HighSchoolDegreeType | null;
+  description?: string | null;
   edLevel?: EducationLevel;
   edProviderId?: string; // use name lookup to find ID.
   edProviderName?: string;
-  preAppEdSystem: PreAEduSystem | null;
-  isEnrolled: boolean;
   enrollmentStatus?: ProgramEnrollmentStatus;
-  startDate: string;
-  gradDate: string;
-  degreeType?: CollegeDegreeType | HighSchoolDegreeType | null;
-  programId: string;
-  programName: string;
   gpa?: string | null;
-  description?: string | null;
 };
 
 export type JsEducationPageDTO = {
-  userId: string;
-  jobseekerId?: string;
   highestLevelOfStudy: HighestCompletedEducationLevel;
-  educations: JsEducationInfoDTO[];
+  userId: string;
   certifications: CertDTO[];
+  educations: JsEducationInfoDTO[];
   projects: ProjectExpDTO[];
+  jobseekerId?: string;
 };
 
 export type JsWorkExpDTO = {
@@ -157,34 +157,34 @@ export type JsWorkExpDTO = {
 };
 
 export type JsWorkDTO = {
-  workId: string;
-  jobseekerId: string;
-  techAreaId: string | null;
-  sectorId: string | null;
   company: string;
-  isInternship: boolean; // ADD isInternship
-  jobTitle: string;
-  isCurrentJob: boolean;
-  startDate: Date;
   endDate: Date | null;
+  isCurrentJob: boolean;
+  isInternship: boolean; // ADD isInternship
+  jobseekerId: string;
+  jobTitle: string;
   responsibilities: string;
+  sectorId: string | null;
+  startDate: Date;
+  techAreaId: string | null;
+  workId: string;
 };
 
 export type JsShowcaseDTO = {
   userId: string;
-  introduction?: string | null;
   skills: SkillDTO[];
-  portfolioUrl?: string | null;
+  introduction?: string | null;
   portfolioPassword?: string | null; // TODO: encrypt. password for employer to view portfolio if jobseeker has portfolio pw setup.
+  portfolioUrl?: string | null;
   video_url?: string | null;
   linkedin_url?: string | null;
 };
 
 export type JsPreferencesDTO = {
   userId: string;
-  targetedPathwayId?: string | null;
-  targetedPathway?: string | null;
   preferredEmploymentType?: string | null;
+  targetedPathway?: string | null;
+  targetedPathwayId?: string | null;
 };
 
 export type JsDisclosuresDTO = {
@@ -198,9 +198,9 @@ export type JsDisclosuresDTO = {
 };
 
 export type JsDisclosuresPostDTO = {
-  userId: string;
-  isVeteran: string; // jobseekers[0].jobseekers_private_data[0].is_veteran
   disability: string; // jobseekers[0].jobseekers_private_data[0].has_disability
+  isVeteran: string; // jobseekers[0].jobseekers_private_data[0].is_veteran
+  userId: string;
   disabilityStatus: string;
   gender: string; // users.gender
   race: string; //users.race
