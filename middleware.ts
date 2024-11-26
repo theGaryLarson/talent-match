@@ -21,6 +21,7 @@ export default auth((req) => {
       '/services/jobseekers/career-prep/skill-assessment',
       '/services/jobseekers/career-prep/enrollment',
       '/services/jobseekers/dashboard',
+      '/services/jobseekers/dashboard/my-applications',
       '/services/jobseekers/',
       '/services/joblistings',
       '/api/joblistings/',
@@ -45,8 +46,8 @@ export default auth((req) => {
     [Role.CASE_MANAGER]: [
       '/api/admin',
       '/career-prep',
-    '/services/jobseekers',
-    '/services/joblistings',
+      '/services/jobseekers',
+      '/services/joblistings',
       // Add any other routes accessible by case managers
     ],
     [Role.ADMIN]: [], // Admin has full access, so this can be empty
@@ -56,6 +57,7 @@ export default auth((req) => {
 
   const publicRoutes = [
     '/',
+    '/about-us',
     '/underconstruction',
     '/signin',
     '/signout',
@@ -85,7 +87,7 @@ export default auth((req) => {
       return true;
     }
 
-    for (const role  of userRoles) {
+    for (const role of userRoles) {
       const allowedRoutes = roleRoutes[role as Role] || [];
       if (allowedRoutes.some((route) => path.startsWith(route))) {
         return true;
@@ -122,16 +124,21 @@ export default auth((req) => {
   // Check if the user has access to the path based on their roles
   if (userHasAccessToPath(pathname)) {
     // Additional checks based on roles
-    if (userRoles.includes(Role.JOBSEEKER) && pathname.startsWith('/services/jobseekers/')) {
+    if (
+      userRoles.includes(Role.JOBSEEKER) &&
+      pathname.startsWith('/services/jobseekers/')
+    ) {
       // Jobseekers can only access their own profile
       const requestedId = pathname.replace('/services/jobseekers/', '');
       if (
-          pathname !== '/services/jobseekers/dashboard' &&
-          pathname !== '/services/jobseekers/career-prep/skill-assessment' &&
-          pathname !== '/services/jobseekers/career-prep/enrollment' &&
-          requestedId !== jobseekerId
+        !pathname.startsWith('/services/jobseekers/dashboard') &&
+        pathname !== '/services/jobseekers/career-prep/skill-assessment' &&
+        pathname !== '/services/jobseekers/career-prep/enrollment' &&
+        requestedId !== jobseekerId
       ) {
-        console.log('Access denied: Jobseeker can only access their own profile');
+        console.log(
+          'Access denied: Jobseeker can only access their own profile',
+        );
         return NextResponse.redirect(homeUrl);
       }
     }
@@ -143,7 +150,9 @@ export default auth((req) => {
   }
 
   // If none of the roles grant access, redirect to the home page
-  console.log('Access denied: User does not have permission to access - ' + pathname);
+  console.log(
+    'Access denied: User does not have permission to access - ' + pathname,
+  );
   return NextResponse.redirect(homeUrl);
 });
 

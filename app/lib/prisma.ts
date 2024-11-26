@@ -800,6 +800,9 @@ try {
  * @returns a list of all employer users that work for a company
  */
 export async function getEmployersByCompanyId(companyId: string) {
+  if(companyId == ''){
+    return [];
+  }
   try {
     const employers = await prisma.employers.findMany({
       where: {
