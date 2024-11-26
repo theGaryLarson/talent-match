@@ -12,9 +12,10 @@ export const metadata = {
 };
 export default async function Page() {
   const session = await auth();
-  const company = await getCompanyById(session?.user.companyId??'');
+  
   const proInfo = await getEmployerById(session?.user.employerId??'');
-  if(!proInfo || (session?.user.companyId == undefined) ||(session?.user.companyId == null) ){
+  const company = await getCompanyById(proInfo?.company_id??'');
+  if(!proInfo || company == undefined || !session?.user.companyId){
     return (
       <div>
         <h1 className='text-2xl'>
@@ -42,7 +43,7 @@ export default async function Page() {
         {<ScoreCard title="Job Listings" val={proInfo.job_postings.length} />}</Link>
       </div>
       <EmployerRecentJobPosts/>
-      <EmployerTeamMembers/>
+      <EmployerTeamMembers companyid={company.company_id}/>
     </main>
   );
 }
