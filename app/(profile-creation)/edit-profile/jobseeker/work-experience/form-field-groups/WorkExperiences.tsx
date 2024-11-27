@@ -152,7 +152,7 @@ export default memo(function WorkExperiences({
           errorMessage="A start date is required"
         >
           <DatePicker
-            label={'Start Date *'}
+            label={'Start Date'} // fixme: if adjusted add the asterisk back. setting required renders it automatically.
             views={['month', 'year']}
             value={
               workExperience[classStarts]?.isValid()
@@ -160,7 +160,7 @@ export default memo(function WorkExperiences({
                 : null
             }
             onChange={(val) => handleChange(index, classStarts, val)}
-            slotProps={{ textField: { fullWidth: true } }}
+            slotProps={{ textField: { fullWidth: true, required: true } }} // fixme: Required tooltip is not working here. Can submit without entering a startDate. This was the temporary fix to build prod.
           />
         </RequiredTooltip>
         <RequiredTooltip
