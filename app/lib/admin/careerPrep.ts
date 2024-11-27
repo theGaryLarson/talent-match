@@ -1754,3 +1754,17 @@ export async function addMeeting(params:CreateMeetingDTO){
     console.error(error)
   }
 }
+
+export async function getMeetingByJobSeeker(jobseekerId:string){
+  if(jobseekerId == ''){
+    return [];
+  }
+  try {
+    let result = await prisma.meeting.findMany({where:{
+      jobseekerId:jobseekerId
+    }})
+    return result
+  } catch (error) {
+    
+  }
+}

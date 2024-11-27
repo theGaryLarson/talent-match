@@ -3,7 +3,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { CreateMeetingDTO } from '@/app/lib/admin/careerPrep';
 
 const style = {
@@ -19,7 +19,8 @@ const style = {
 };
 
 export default function AddMeetingModal(params:{jsId:string}) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // Tracks if the form was successfully submitted
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const onSubmit = async (event: FormEvent<HTMLFormElement>) =>{
@@ -46,9 +47,11 @@ export default function AddMeetingModal(params:{jsId:string}) {
         if (!response.ok) {
           // If response is not OK, handle error
           console.error('Failed to create job listing');
+          submitButton.disabled = false;
           return;
         } else {
           // Await the response JSON
+          setIsSubmitted(true);
           const data = await response.json();
           console.log('Meeting created:', data);
         }
@@ -59,7 +62,7 @@ export default function AddMeetingModal(params:{jsId:string}) {
 
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+      <Button onClick={handleOpen}>Add Meeting</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -67,6 +70,15 @@ export default function AddMeetingModal(params:{jsId:string}) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+        {isSubmitted ? (
+            <div>
+              <h2>Success!</h2>
+              <p>The meeting was successfully created.</p>
+              <Button onClick={handleClose} className="btn">
+                Close
+              </Button>
+            </div>
+          ) :(
         <div>
         <form onSubmit={onSubmit} className="space-y-3">
               {/* Meeting Title */}
@@ -89,7 +101,7 @@ export default function AddMeetingModal(params:{jsId:string}) {
                 </button>
               </div>
             </form>
-        </div>
+        </div>)}
         </Box>
       </Modal>
     </div>
