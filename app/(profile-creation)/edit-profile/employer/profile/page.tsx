@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 
 import { Button, Progress } from 'flowbite-react';
-import {  Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
 import { useSession } from 'next-auth/react';
@@ -114,6 +114,7 @@ export default function CreateEmployerProfilePage() {
           devLog('session user', session.user);
 
           try {
+            console.log('psd', profileStoreData);
             const response = await fetch(
               `/api/companies/name/get/${profileStoreData.companyId}`,
               {
@@ -125,6 +126,7 @@ export default function CreateEmployerProfilePage() {
             );
 
             if (!response.ok) {
+              console.log('not response ok');
               setProfileData((prevState) => ({
                 ...prevState,
                 userId: id ?? '',
@@ -302,18 +304,15 @@ export default function CreateEmployerProfilePage() {
     // setOpen(true);
 
     try {
-      const response = await fetch(
-        `/api/employers/account/profile/upsert`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...profileData,
-          }),
+      const response = await fetch(`/api/employers/account/profile/upsert`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          ...profileData,
+        }),
+      });
 
       if (response.ok) {
         const result = await response.json();
@@ -343,7 +342,7 @@ export default function CreateEmployerProfilePage() {
         {/* <ProgressBarFlat progress={(3 / 3) * 100} size="sm" /> */}
 
         {/* <p>Step 3/3</p> */}
-        <h1>Employer Profile {profileStoreData.companyId}</h1>
+        <h1>Employer Profile</h1>
         <p className="subtitle">* Indicates a required field</p>
 
         <SnackbarWithIcon
@@ -518,9 +517,10 @@ export default function CreateEmployerProfilePage() {
                         setWorkAddress(val);
                         setProfileData((prevState) => ({
                           ...prevState,
-                          workAddressId: val?.addressId ? val.addressId : undefined,
+                          workAddressId: val?.addressId
+                            ? val.addressId
+                            : undefined,
                         }));
-
                       }}
                       placeholder="Your work location"
                       loadingText="Retrieving work locations..."
@@ -567,14 +567,14 @@ export default function CreateEmployerProfilePage() {
           {/*  By signing up you agree to our terms of use. **/}
           {/*</Label>*/}
 
-          <div className="profile-form-progress-btn-group">
-            <Button
+          <div className="profile-form-progress-btn-single-end">
+            {/* <Button
               pill
               className="custom-outline-btn"
               onClick={() => router.push('/edit-profile/employer/company')}
             >
-              Previous
-            </Button>
+              Cancel
+            </Button> */}
             <Button pill type="submit">
               Submit
             </Button>
