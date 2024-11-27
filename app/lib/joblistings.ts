@@ -19,12 +19,13 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   if(Session?.user.roles.includes(Role.ADMIN)){
     company_id = jobData.company_id;
   }
-  if (!company_id) {
+  
+  try {
+if (!company_id) {
     throw new Error(
       'Failed to create job listing Company id not found',
     );
   }
-  try {
     let companyAddress = await prisma.company_addresses.findFirst({
       where: {
         AND: {
