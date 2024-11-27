@@ -475,6 +475,7 @@ model CaseMgmt {
   updatedAt            DateTime             @updatedAt @db.DateTime
   PrepAssessment       CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
   CaseManager          User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
+  Meeting              Meeting[]
 
   @@index([managerId], map: "fk_case_mgmt_admin1_idx")
   @@index([jobseekerId], map: "fk_case_mgmt_jobseeker1_idx")
@@ -491,21 +492,21 @@ model CaseMgmtNotes {
   updatedAt      DateTime             @updatedAt @db.DateTime
   PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
   Author         User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
+  Meeting        Meeting?             @relation(fields: [meetingId], references: [id])
+  meetingId      String?              @db.UniqueIdentifier
 }
 
-// model Meeting {
-//   id            String   @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
-//   jobseekerId   String   @db.UniqueIdentifier
-//   title         String   @db.VarChar(45)
-//   meetingAgenda String?  @db.NText
-//   meetingDate   DateTime @db.DateTime
-//   duration      DateTime @db.Time
-//   updatedAt     DateTime @updatedAt @db.DateTime
-//
-//   jobseeker     CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_career_prep_assessment1")
-//   caseMgmt      CaseMgmt             @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
-//   CaseMgmtNotes CaseMgmtNotes[]
-// }
+model Meeting {
+  id            String          @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobseekerId   String          @db.UniqueIdentifier
+  title         String          @db.VarChar(45)
+  meetingAgenda String?         @db.NText
+  meetingDate   DateTime        @db.DateTime
+  duration      DateTime        @db.Time
+  updatedAt     DateTime        @updatedAt @db.DateTime
+  caseMgmt      CaseMgmt        @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
+  CaseMgmtNotes CaseMgmtNotes[]
+}
 
 //////////////////////////////////////////////////////////////////////////
 
