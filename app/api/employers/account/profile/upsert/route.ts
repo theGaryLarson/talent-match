@@ -20,6 +20,7 @@ export async function PATCH(request: Request) {
       linkedInUrl,
       workAddressId,
       companyId,
+      photoUrl,
     } = body;
 
     if (!userId) {
@@ -43,6 +44,7 @@ export async function PATCH(request: Request) {
         update: {
           first_name: firstName,
           last_name: lastName,
+          photo_url: photoUrl,
         },
         create: {
           id: uuidv4(),

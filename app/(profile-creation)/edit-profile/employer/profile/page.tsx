@@ -158,6 +158,7 @@ export default function CreateEmployerProfilePage() {
         } else {
           devLog('fetching from redux store');
         }
+        setAvatarUrl(profileData.photoUrl ?? session.user?.image!);
       }
     };
     initializeFormFields();
