@@ -10,6 +10,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
+import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
 
 const classNamePrefix = 'profile-creation-work-experience-group-';
 const classCompany = 'company';
@@ -49,12 +50,14 @@ export function defaultWorkExperienceData(): WorkExperienceData {
 
 interface Props {
   data: WorkExperienceData[];
+  hasUnmetRequired: string;
   onRemove: (uid: string) => void;
   onUpdate: (key: string, value: any) => void;
 }
 
 export default memo(function WorkExperiences({
   data,
+  hasUnmetRequired,
   onRemove,
   onUpdate,
 }: Props) {
@@ -98,7 +101,7 @@ export default memo(function WorkExperiences({
             classNamePrefix + workExperience.workId + '-' + classCompanyIndustry
           }
           apiAutoloadRoute="/api/employers/industry-sectors"
-          label="Industry Sector: *"
+          label="Industry Sector:"
           getOptionLabel={(option: IndustrySectorDropdownDTO) =>
             option.sector_title
           }
@@ -110,7 +113,6 @@ export default memo(function WorkExperiences({
           }
           placeholder="Please select"
           onChange={(val) => handleChange(index, classCompanyIndustry, val)}
-          required
           value={workExperience[classCompanyIndustry]}
           loadingText="Retrieving industry sectors..."
         />
@@ -119,7 +121,7 @@ export default memo(function WorkExperiences({
             classNamePrefix + workExperience.workId + '-' + classCompanyTechArea
           }
           apiAutoloadRoute="/api/employers/technology-areas"
-          label="Job Role or Department: *"
+          label="Job Role or Department:"
           getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
           getOptionId={(option: TechnologyAreaDropdownDTO) => option.id}
           getOptionFromId={(options: TechnologyAreaDropdownDTO[], id: string) =>
@@ -127,7 +129,6 @@ export default memo(function WorkExperiences({
           }
           placeholder="Please select"
           onChange={(val) => handleChange(index, classCompanyTechArea, val)}
-          required
           value={workExperience[classCompanyTechArea]}
           loadingText="Retrieving technology areas..."
         />
@@ -143,26 +144,45 @@ export default memo(function WorkExperiences({
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">
-        <DatePicker
-          label={'Start Date *'}
-          views={['month', 'year']}
-          value={
-            workExperience[classStarts]?.isValid()
-              ? workExperience[classStarts]
-              : null
+        <RequiredTooltip
+          open={
+            hasUnmetRequired === `${workExperience.workId}-${classStarts}` &&
+            !Boolean(workExperience[classStarts])
           }
-          onChange={(val) => handleChange(index, classStarts, val)}
-        />
-        <DatePicker
-          label={'End Date'}
-          views={['month', 'year']}
-          value={
-            workExperience[classEnds]?.isValid()
-              ? workExperience[classEnds]
-              : null
+          errorMessage="A start date is required"
+        >
+          <DatePicker
+            label={'Start Date'} // fixme: if adjusted add the asterisk back. setting required renders it automatically.
+            views={['month', 'year']}
+            value={
+              workExperience[classStarts]?.isValid()
+                ? workExperience[classStarts]
+                : null
+            }
+            onChange={(val) => handleChange(index, classStarts, val)}
+            slotProps={{ textField: { fullWidth: true, required: true } }} // fixme: Required tooltip is not working here. Can submit without entering a startDate. This was the temporary fix to build prod.
+          />
+        </RequiredTooltip>
+        <RequiredTooltip
+          open={
+            hasUnmetRequired === `${workExperience.workId}-${classEnds}` &&
+            !Boolean(workExperience[classEnds]) &&
+            !Boolean(workExperience[classCurrent])
           }
-          onChange={(val) => handleChange(index, classEnds, val)}
-        />
+          errorMessage="An end date is required if you're no longer working here"
+        >
+          <DatePicker
+            label={'End Date'}
+            views={['month', 'year']}
+            value={
+              workExperience[classEnds]?.isValid()
+                ? workExperience[classEnds]
+                : null
+            }
+            onChange={(val) => handleChange(index, classEnds, val)}
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+        </RequiredTooltip>
       </div>
       <Label>
         <Checkbox

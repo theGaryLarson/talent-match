@@ -1,13 +1,13 @@
 'use client';
 
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Label } from "flowbite-react";
-import {BlobPrefix} from "@/app/lib/services/azureBlobService";
+import { Label } from 'flowbite-react';
+import { BlobPrefix } from '@/app/lib/services/azureBlobService';
 
 interface Props {
   id: string;
   fileTypeText: string;
-  blobPrefix: BlobPrefix,
+  blobPrefix: BlobPrefix;
   accept: string;
   maxSizeMB: number;
   userId: string;

@@ -6,7 +6,7 @@ import Popover from '@mui/material/Popover';
 import TextField from '@mui/material/TextField';
 import { ShareIcon } from '@heroicons/react/24/outline';
 
-export default function ShareMenu({ href }: { href: string }) {
+export default function ShareMenu({ href, children }: { href: string, children: React.ReactNode }) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [isCopied, setIsCopied] = React.useState(false);
     const open = Boolean(anchorEl);
@@ -34,7 +34,7 @@ export default function ShareMenu({ href }: { href: string }) {
     return (
         <div className="p-2 rounded-full hover:bg-slate-200">
             <div onClick={handleClick}>
-                <ShareIcon className="h-10 w-10 stroke-2" />
+                {children}
             </div>
             <Popover
                 open={open}

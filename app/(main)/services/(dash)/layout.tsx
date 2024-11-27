@@ -41,13 +41,13 @@ export default async function layout({ children }: { children: React.ReactNode }
           <BookmarkIcon width={24}/>
           Saved Candidates
         </Link>
-        <Link
+        {/* <Link
           href="/services/employers/dashboard"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200 REPLACE-BEFORE-RELEASE"
         >
           <EmailOutlinedIcon />
           Inbox
-        </Link>
+        </Link> */}
         <Link
           href="/services/employers/dashboard/postjob"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"

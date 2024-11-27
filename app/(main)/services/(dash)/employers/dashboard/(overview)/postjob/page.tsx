@@ -14,7 +14,7 @@ export default function Page() {
   const [companies, setCompanies] = useState<companies[]>();
   const [techAres, setTechAreas] = useState<technology_areas[]>();
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
- 
+  const [submitError, setSubmitError] = useState<boolean>(false);
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -52,6 +52,7 @@ export default function Page() {
       if (!response.ok) {
         // If response is not OK, handle error
         console.error('Failed to create job listing');
+        setSubmitError(true)
         return;
       } else {
         // Await the response JSON
@@ -85,16 +86,9 @@ export default function Page() {
   },[])
   return (
     <form onSubmit={onSubmit} className='space-y-3'>
-      {/* Company (For use on admin page, would need to be added to api and the fetch request) */}
-      {/* <div className="grid grid-cols-1">
-        <label htmlFor="company">What Company Does this listing belong to?</label>
-        <select name='company' id='company' required>
-          <option value={''}>--Please Select a Company--</option>
-          { 
-            companies?.map((comp)=> <option value={comp.company_id}>{comp.company_name}</option>)
-          } 
-        </select>
-      </div> */}
+      {submitError?
+        <h1 className='text-2xl text-red-600'>There Has Been an Error, please try logging out and logging back in</h1>:''
+      }
       
       {/* Job Title */}
       <div className="grid grid-cols-1">
@@ -250,6 +244,9 @@ export default function Page() {
       <div>
         <button type="submit">Create Job Listing</button>
       </div>
+      {submitError?
+        <h1 className='text-2xl text-red-600'>There Has Been an Error, please try logging out and logging back in</h1>:''
+      }
     </form>
   );
 }

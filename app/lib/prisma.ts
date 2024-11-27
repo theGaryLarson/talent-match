@@ -800,6 +800,9 @@ try {
  * @returns a list of all employer users that work for a company
  */
 export async function getEmployersByCompanyId(companyId: string) {
+  if(companyId == ''){
+    return [];
+  }
   try {
     const employers = await prisma.employers.findMany({
       where: {
@@ -835,6 +838,9 @@ export async function getEmployersByCompanyId(companyId: string) {
  */
 export async function getCompanyById(companyId: string) {
   try {
+    if(companyId == ''){
+      return
+    }
     const company = await prisma.companies.findUnique(
       {
         where: {
@@ -842,7 +848,7 @@ export async function getCompanyById(companyId: string) {
         }
       }
     )
-    return company
+    return company ?? undefined; 
   } catch (e) {
     console.log(e)
   }
@@ -860,6 +866,7 @@ export async function getEmployerById(employerId: string) {
       },
       select: {
         employer_id: true,
+        company_id:true,
         job_title: true,
         is_verified_employee: true,
         users: {

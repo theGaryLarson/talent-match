@@ -109,7 +109,7 @@ export type ReadCompanyInfoDTO = {
   companySize?: string | null;
   estimatedAnnualHires?: string | null;
   isApproved?: boolean | null;
-  createdBy?: string;
+  createdBy?: string | null;
 };
 
 export type PostEmployerAboutDTO = {

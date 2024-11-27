@@ -1,8 +1,10 @@
 'use client'
 
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
 
 export default function DeleteJobPostingButton(params: {id:string}){
+  const router = useRouter()
     const save = async () => {
         try {
             const response = await fetch(`/api/joblistings/delete/${params.id}`, {
@@ -15,6 +17,7 @@ export default function DeleteJobPostingButton(params: {id:string}){
             if (!response.ok) {
               throw new Error(`Error: ${response.status}`);
             }
+            router.refresh();
             const data = await response.json();
             console.log('Job post DELETED successfully:', data);
             return data;
