@@ -11,25 +11,19 @@ import React, {
 import { useRouter, usePathname } from 'next/navigation';
 import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
-import { EmployerState } from '@/lib/features/profileCreation/employerSlice';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button, Progress } from 'flowbite-react';
-import { Label } from 'flowbite-react';
-import { Checkbox, Typography } from '@mui/material';
+import {  Typography } from '@mui/material';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
-import { CompanyAddressDropdownDTO } from '@/data/dtos/CompanyAddressDropdownDTO';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import {
-  // PostEmployerWorkDTO,
   PostAddressDTO,
   ReadAddressDTO,
   ReadCompanyInfoDTO, //for company dropdown
   PostEmployerProfileDTO,
-  ReadEmployerProfileDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
   setProfile,
@@ -309,7 +303,7 @@ export default function CreateEmployerProfilePage() {
 
     try {
       const response = await fetch(
-        `/api/employers/account/disclosures/update/${session?.user?.employerId}`,
+        `/api/employers/account/profile/upsert`,
         {
           method: 'PATCH',
           headers: {
@@ -522,6 +516,11 @@ export default function CreateEmployerProfilePage() {
                       value={workAddress}
                       onChange={(val) => {
                         setWorkAddress(val);
+                        setProfileData((prevState) => ({
+                          ...prevState,
+                          workAddressId: val?.addressId ? val.addressId : undefined,
+                        }));
+
                       }}
                       placeholder="Your work location"
                       loadingText="Retrieving work locations..."
