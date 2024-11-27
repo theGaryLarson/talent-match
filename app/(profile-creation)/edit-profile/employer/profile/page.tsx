@@ -22,7 +22,7 @@ import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import {
   PostAddressDTO,
   ReadAddressDTO,
-  ReadCompanyInfoDTO, //for company dropdown
+  ReadCompanyInfoDTO,
   PostEmployerProfileDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
@@ -46,23 +46,18 @@ export default function CreateEmployerProfilePage() {
   const profileStoreData = useSelector(
     (state: RootState) => state.employer.profile,
   );
-  devLog(profileStoreData);
+  devLog('initial psd', profileStoreData);
   const [profileData, setProfileData] = useState<PostEmployerProfileDTO>({
     ...profileStoreData,
   });
 
-  // NOTE: rename ref then remove this
   const [companyData, setCompanyData] = useState<PostEmployerProfileDTO>({
     ...profileStoreData,
   });
 
-  // REVIEW: removing this?
   const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
     ReadCompanyInfoDTO | string
   >('');
-  // const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
-  //   null,
-  // );
   const [selectedWorkLocation, setSelectedWorkLocation] =
     useState<PostAddressDTO>({
       city: '',
@@ -114,7 +109,6 @@ export default function CreateEmployerProfilePage() {
           devLog('session user', session.user);
 
           try {
-            console.log('psd', profileStoreData);
             const response = await fetch(
               `/api/companies/name/get/${profileStoreData.companyId}`,
               {
@@ -126,7 +120,6 @@ export default function CreateEmployerProfilePage() {
             );
 
             if (!response.ok) {
-              console.log('not response ok');
               setProfileData((prevState) => ({
                 ...prevState,
                 userId: id ?? '',
@@ -138,7 +131,6 @@ export default function CreateEmployerProfilePage() {
                 `Error: ${response.status} ${response.statusText}`,
               );
             } else {
-              console.log('else response ok');
               let { result } = await response.json();
               setCompanyName(result.company_name);
               setProfileData({
@@ -164,7 +156,7 @@ export default function CreateEmployerProfilePage() {
             }
           } catch (error) {}
         } else {
-          console.log('fetching from redux store');
+          devLog('fetching from redux store');
         }
       }
     };
@@ -175,10 +167,7 @@ export default function CreateEmployerProfilePage() {
 
   // used to manage changes on selectCompanyDropDownData depending on its type (object or string).
   useEffect(() => {
-    console.log(
-      'Updated selectCompanyDropdownData:',
-      selectCompanyDropdownData,
-    );
+    devLog('Updated selectCompanyDropdownData:', selectCompanyDropdownData);
     if (
       selectCompanyDropdownData &&
       typeof selectCompanyDropdownData === 'object' &&
@@ -193,20 +182,7 @@ export default function CreateEmployerProfilePage() {
         yearFounded: selectCompanyDropdownData.yearFounded?.toString() || '',
         websiteUrl: selectCompanyDropdownData.websiteUrl,
       }));
-
-      // setYearFounded(
-      //   companyObj.yearFounded
-      //     ? dayjs().year(parseInt(companyObj.yearFounded, 10))
-      //     : null,
-      // );
-
-      // setIndustry({
-      //   // do this inside of companyData object rather than separate state. First ensure companyDataObject has been transformed to a PostCompanyInfoDTO
-      //   industry_sector_id: companyObj.industrySectorId ?? '',
-      //   sector_title: '', // Not needed; only ID is required
-      // });
     } else {
-      console.log('false');
       setIsCompanySelected(false);
     }
   }, [selectCompanyDropdownData]);
@@ -240,7 +216,6 @@ export default function CreateEmployerProfilePage() {
     val: string | ReadAddressDTO | null,
   ) => {
     dispatch(setPageDirty('company'));
-    console.log('handleAddressSelection');
     if (val && typeof val === 'object' && 'zip' in val) {
       setSelectedWorkLocation((prevState) => ({
         ...prevState,
@@ -299,8 +274,6 @@ export default function CreateEmployerProfilePage() {
     //   hasAgreedTerms: termsAccepted,
     // }));
 
-    devLog('profileData', profileData);
-
     // setOpen(true);
 
     try {
@@ -318,9 +291,11 @@ export default function CreateEmployerProfilePage() {
         const result = await response.json();
         dispatch(setPageSaved('disclosures'));
         dispatch(setProfile(profileData));
+        devLog('profileData submit ok', profileData);
         router.push('/edit-profile/employer/congratulations');
       } else {
         const errorData = await response.json();
+        devLog('profileData submit error', profileData);
       }
     } catch (error) {}
   };
@@ -432,7 +407,6 @@ export default function CreateEmployerProfilePage() {
                 onChange={(e, val) => {
                   // logic predominately handled in useEffect
                   // Always update the dropdown value whether an existing company (object) or new company (string)
-                  console.log('logging val', val);
                   setSelectCompanyDropdownData(
                     typeof val === 'object' && val !== null ? { ...val } : '',
                   );
@@ -442,41 +416,6 @@ export default function CreateEmployerProfilePage() {
                   option.companyName ?? ''
                 }
               />
-              {/* REVIEW: Removed industry sector below */}
-              {/* {typeof selectCompanyDropdownData === 'string' &&
-                selectCompanyDropdownData.trim() !== '' && (
-                  <SelectAutoload
-                    id="profile-creation-profile-industrySectorTitle"
-                    apiAutoloadRoute="/api/employers/industry-sectors"
-                    label="Industry Sector *"
-                    className="select-autoload"
-                    value={industry}
-                    onChange={(val) => {
-                      setIndustry(val);
-                      setCompanyData({
-                        ...companyData,
-                        industrySectorId: val?.industry_sector_id!,
-                        industrySectorTitle: val?.sector_title,
-                      });
-                    }}
-                    placeholder="Your company's industry sector"
-                    loadingText="Retrieving industry sectors..."
-                    getOptionLabel={(option: IndustrySectorDropdownDTO) =>
-                      option.sector_title
-                    }
-                    getOptionId={(option: IndustrySectorDropdownDTO) =>
-                      option.industry_sector_id ?? ''
-                    }
-                    getOptionFromId={(
-                      options: IndustrySectorDropdownDTO[],
-                      id: string,
-                    ) =>
-                      options.find((item) => item.industry_sector_id === id) ||
-                      null
-                    }
-                    required
-                  />
-                )} */}
             </div>
           </fieldset>
 
