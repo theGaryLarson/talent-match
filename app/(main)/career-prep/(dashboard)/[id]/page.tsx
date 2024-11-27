@@ -1,4 +1,6 @@
 import {getCareerPrepStudentDetailView, getCareerPrepStudentNotes, NoteType } from "@/app/lib/admin/careerPrep";
+import AddMeetingModal from "@/app/ui/components/careerPrep/AddMeetingModal";
+import BasicModal from "@/app/ui/components/careerPrep/BasicModal";
 import NoteContainer from "@/app/ui/components/careerPrep/NoteContainer";
 import Tabs from "@/app/ui/components/Tabs";
 
@@ -9,6 +11,8 @@ export default async function page({ params }: { params: { id: string } }){
         <main className="space-y-3 pr-[100px] w-full">
             <h1 className="text-2xl">{client.data?.firstName} {client.data?.lastName} ({client.data?.pronouns})</h1>
             <h2><b>Status:</b> {client.data?.prepEnrollmentStatus}</h2>
+            <AddMeetingModal jsId={params.id}/>
+            {/* <BasicModal buttonText="Add Meeting info"><p>texter</p></BasicModal> */}
             <h2><b>Assessment Date:</b>{client.data?.assessmentDate}</h2>
             <h2><b>Highest Level of Education:</b> {client.data?.education}</h2>
             <h2><b>Email address:</b> {client.data?.emailAddress}</h2>

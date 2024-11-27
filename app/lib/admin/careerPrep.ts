@@ -502,19 +502,7 @@ export interface PartnerTrainingProvider {
 //  * @property {string} updatedBy - The full name of the person who last updated the meeting details.
 //  * @property {Date} updatedAt - The date and time when the meeting was last updated.
 //  */
-// export interface MeetingDTO {
-//     id: string; // VARCHAR(38), primary key
-//     caseMgmtId: string; // CHAR(38)
-//     attendee: string; // jobseeker full name
-//     meetingTitle: string; // VARCHAR(45)
-//     meetingAgenda?: string; // TEXT (Rich text functionality. Possibly utilize Quill)
-//     meetingDatetime: Date; // DATETIME
-//     duration: string; // TIME represented as "HH:mm:ss"
-//     createdBy: string; // case manager full name
-//     createdAt: Date; // DATETIME
-//     updatedBy: string; // full name of updater
-//     updatedAt: Date; // DATETIME
-// }
+
 
 export type NoteDTO = {
   id: string;
@@ -1740,3 +1728,29 @@ export const SkillLevelLabels: Record<SkillLevel, string> = {
   [SkillLevel.Good]: 'Good',
   [SkillLevel.Exceptional]: 'Exceptional',
 };
+
+
+
+
+export interface CreateMeetingDTO {
+    jobseekerId: string;
+    meetingTitle: string; // VARCHAR(45)
+    meetingAgenda?: string; // TEXT (Rich text functionality. Possibly utilize Quill)
+    meetingDatetime: Date; // DATETIME
+}
+
+
+export async function addMeeting(params:CreateMeetingDTO){
+  try {
+    let result = await prisma.meeting.create({data:{
+      jobseekerId:params.jobseekerId,
+      title: params.meetingTitle,
+      meetingAgenda: params.meetingAgenda,
+      meetingDate: params.meetingDatetime,
+      updatedAt: new Date()
+    }})
+    return result;
+  } catch (error) {
+    console.error(error)
+  }
+}

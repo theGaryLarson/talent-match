@@ -492,8 +492,6 @@ model CaseMgmtNotes {
   updatedAt      DateTime             @updatedAt @db.DateTime
   PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
   Author         User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
-  Meeting        Meeting?             @relation(fields: [meetingId], references: [id])
-  meetingId      String?              @db.UniqueIdentifier
 }
 
 model Meeting {
@@ -502,10 +500,8 @@ model Meeting {
   title         String          @db.VarChar(45)
   meetingAgenda String?         @db.NText
   meetingDate   DateTime        @db.DateTime
-  duration      DateTime        @db.Time
   updatedAt     DateTime        @updatedAt @db.DateTime
   caseMgmt      CaseMgmt        @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
-  CaseMgmtNotes CaseMgmtNotes[]
 }
 
 //////////////////////////////////////////////////////////////////////////
