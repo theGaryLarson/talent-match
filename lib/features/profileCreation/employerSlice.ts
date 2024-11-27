@@ -2,7 +2,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../jobseekerStore';
 import {
-  PostProfileDTO,
+  PostEmployerProfileDTO,
   PostEmployerPersonalDTO,
   PostCompanyInfoDTO,
   PostEmployerAboutDTO,
@@ -13,7 +13,7 @@ import {
 
 // Define a type for the slice state
 export interface EmployerState {
-  profile: PostProfileDTO;
+  profile: PostEmployerProfileDTO;
   personal: PostEmployerPersonalDTO;
   company: PostCompanyInfoDTO;
   about: PostEmployerAboutDTO;
@@ -125,16 +125,16 @@ export const employerSlice = createSlice({
 
   // REVIEW: each field will need its own reducer? unsure if best, seems there should be a way to deconstruct ...state then update this.id/param specific?
   reducers: {
-    initializeProfile: (state, action: PayloadAction<PostProfileDTO>) => {
+    initializeProfile: (state, action: PayloadAction<PostEmployerProfileDTO>) => {
       state.profile = action.payload;
     },
-    setProfile: (state, action: PayloadAction<PostProfileDTO>) => {
+    setProfile: (state, action: PayloadAction<PostEmployerProfileDTO>) => {
       state.profile = action.payload;
     },
     // Update specific fields of the profile
-    updateProfileField: <K extends keyof PostProfileDTO>(
+    updateProfileField: <K extends keyof PostEmployerProfileDTO>(
       state: EmployerState,
-      action: PayloadAction<{ field: K; value: PostProfileDTO[K] }>,
+      action: PayloadAction<{ field: K; value: PostEmployerProfileDTO[K] }>,
     ) => {
       const { field, value } = action.payload;
       state.profile[field] = value;
