@@ -481,7 +481,7 @@ model CaseMgmt {
 }
 
 model CaseMgmtNotes {
-  id             String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated("newid()"))
+  id             String               @id(clustered: false, map: "case_mgmt_notes_PRIMARY") @default(dbgenerated())
   jobseekerId    String               @db.UniqueIdentifier
   date           DateTime?            @db.DateTime
   noteType       String               @db.VarChar(15)
@@ -807,7 +807,7 @@ model self_assessments {
 }
 
 model skill_subcategories {
-  skill_subcategory_id    String   @id(clustered: false, map: "skill_subcategories_PRIMARY") @unique(map: "skill_subcategories_skill_category_id_UNIQUE") @default(dbgenerated("(newid())")) @db.UniqueIdentifier
+  skill_subcategory_id    String   @id(clustered: false, map: "skill_subcategories_PRIMARY") @unique(map: "skill_subcategories_skill_category_id_UNIQUE") @default(dbgenerated()) @db.UniqueIdentifier
   subcategory_name        String   @db.VarChar(255)
   subcategory_description String   @db.VarChar(255)
   skills                  skills[]
