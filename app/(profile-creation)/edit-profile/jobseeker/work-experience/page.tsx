@@ -276,7 +276,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       isInternship: false,
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
-      startDate: workExp.startDate ? workExp.startDate.toDate() : null,
+      startDate: workExp.startDate!.toDate(), // required on front-end can assert it exists
       endDate: workExp.endDate ? workExp.endDate.toDate() : null,
       responsibilities: workExp.responsibilities,
     }));
@@ -311,9 +311,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         isInternship: true,
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
-        startDate: internshipExp.startDate
-          ? internshipExp.startDate.toDate()
-          : null,
+        startDate: internshipExp.startDate!.toDate(),
         endDate: internshipExp.endDate ? internshipExp.endDate.toDate() : null,
         responsibilities: internshipExp.responsibilities,
       }),
