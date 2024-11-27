@@ -28,8 +28,8 @@ import {
   PostAddressDTO,
   ReadAddressDTO,
   ReadCompanyInfoDTO, //for company dropdown
-  PostProfileDTO,
-  ReadProfileDTO,
+  PostEmployerProfileDTO,
+  ReadEmployerProfileDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import {
   setProfile,
@@ -53,12 +53,12 @@ export default function CreateEmployerProfilePage() {
     (state: RootState) => state.employer.profile,
   );
   devLog(profileStoreData);
-  const [profileData, setProfileData] = useState<PostProfileDTO>({
+  const [profileData, setProfileData] = useState<PostEmployerProfileDTO>({
     ...profileStoreData,
   });
 
   // NOTE: rename ref then remove this
-  const [companyData, setCompanyData] = useState<PostProfileDTO>({
+  const [companyData, setCompanyData] = useState<PostEmployerProfileDTO>({
     ...profileStoreData,
   });
 
