@@ -109,7 +109,7 @@ export type ReadCompanyInfoDTO = {
   companySize?: string | null;
   estimatedAnnualHires?: string | null;
   isApproved?: boolean | null;
-  createdBy: string;
+  createdBy?: string;
 };
 
 export type PostEmployerAboutDTO = {
@@ -174,12 +174,13 @@ export type ReadCompanySocialLinkDTO = {
   platformIconUrl?: string;
 };
 
-export type PostProfileDTO = {
+
+export type PostEmployerProfileDTO = {
   // Personal Info
   userId: string;
   firstName: string;
   lastName: string;
-  birthDate: string;
+  birthDate?: string;
   email: string;
   phone?: string | null;
   photoUrl?: string | null;
@@ -220,7 +221,7 @@ export type PostProfileDTO = {
   companyVideoUrl: string;
 };
 
-export type ReadProfileDTO = {
+export type ReadEmployerProfileDTO = {
   // Personal Info
   employerId?: string | null;
   userId?: string | null;
