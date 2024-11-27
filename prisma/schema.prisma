@@ -25,8 +25,8 @@ model User {
   zip                String?         @db.VarChar(5)
   photo_url          String?         @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
   has_agreed_terms   Boolean         @default(false) @db.Bit
-  createdAt          DateTime        @map("created_at") @db.DateTime
-  updatedAt          DateTime?       @map("updated_at") @db.DateTime
+  createdAt          DateTime        @default(now()) @map("created_at") @db.DateTime
+  updatedAt          DateTime?       @updatedAt @map("updated_at") @db.DateTime
   is_marked_deletion DateTime?       @db.DateTime
   locationData       PostalGeoData?  @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
   cfa_admin          CfaAdmin[]
