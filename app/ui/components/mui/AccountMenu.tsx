@@ -33,7 +33,7 @@ export default function AccountMenu() {
   };
 
   var textColor = 'text-black';
-  if (pathname == '/services/jobseekers'|| pathname == '/services/employers') {
+  if (pathname == '/services/jobseekers' || pathname == '/services/employers') {
     textColor = 'text-white';
   }
 
@@ -181,8 +181,8 @@ export default function AccountMenu() {
           ''
         )}
 
-        {role?.includes(Role.EMPLOYER)  ? (
-          <Link href="/edit-profile/employer/personal">
+        {role?.includes(Role.EMPLOYER) ? (
+          <Link href="/edit-profile/employer/profile">
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <EditIcon fontSize="small" />
