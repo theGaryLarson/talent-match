@@ -1337,7 +1337,7 @@ async function seedMockUsers(numUsers = 4) {
     console.log(`Seeded ${numUsers} users.\n`)
 }
 
-export const EduProviderPathways = {
+export const EduProviderPathways = { // maps to TypeScript enum EduProviderPathways
     SoftwareDeveloper: "Software Developer",
     ITCloudSupport: "IT & Cloud Support",
     Cybersecurity: "Cybersecurity",
