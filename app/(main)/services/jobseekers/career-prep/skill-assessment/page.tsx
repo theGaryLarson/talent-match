@@ -25,7 +25,7 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import { AgreementLevel, AgreementLevelLabels, CareerPrepSkillsAssessmentDTO, SkillLevel, SkillLevelLabels, SkillProficiencyLabels, TechPathways, TimeUntilCompletion } from '@/app/lib/admin/careerPrep';
+import { AgreementLevel, AgreementLevelLabels, CareerPrepSkillsAssessmentDTO, SkillLevel, SkillLevelLabels, SkillProficiencyLabels, CareerPrepPathways, TimeUntilCompletion } from '@/app/lib/admin/careerPrep';
 import { useRouter } from 'next/navigation';
 import '@/app/ui/profile-creation.css';
 import Confetti from '@/app/ui/components/Confetti';
@@ -151,7 +151,7 @@ export default function Page() {
         experienceWithInterviewing: false,
       },
       technicalSelfAssessment: {
-        interestPathway: TechPathways.CYBERSECURITY,
+        interestPathway: CareerPrepPathways.CYBERSECURITY,
         skillRatings: {}
       },
       durableSkills: {
@@ -304,7 +304,7 @@ export default function Page() {
       ...prevData,
       technicalSelfAssessment: {
         ...prevData.technicalSelfAssessment,
-        interestPathway: value as TechPathways,
+        interestPathway: value as CareerPrepPathways,
       },
     }));
   };
@@ -416,7 +416,7 @@ export default function Page() {
             onChange={handlePathwayChange}
             value={formData.technicalSelfAssessment.interestPathway}
           >
-            {Object.entries(TechPathways).map(([value, label]) => (
+            {Object.entries(CareerPrepPathways).map(([value, label]) => (
               <FormControlLabel
                 key={value + label}
                 value={label}
@@ -426,7 +426,7 @@ export default function Page() {
             ))}
           </RadioGroup>
         </FormControl>
-        {formData.technicalSelfAssessment.interestPathway == TechPathways.CYBERSECURITY && (
+        {formData.technicalSelfAssessment.interestPathway == CareerPrepPathways.CYBERSECURITY && (
           <EvaluationTable
             questions={[
               { id: 'networking', text: 'Networking: Understanding of network protocols (TCP/IP, HTTP, DNS), network topologies, and network security concepts (firewalls, intrusion detection systems, VPNs).' },
@@ -447,7 +447,7 @@ export default function Page() {
             labels={SkillProficiencyLabels}
             formData={formData}
           />)}
-        {formData.technicalSelfAssessment.interestPathway == TechPathways.DATA_ANALYTICS && (
+        {formData.technicalSelfAssessment.interestPathway == CareerPrepPathways.DATA_ANALYTICS && (
           <EvaluationTable
             questions={[
               { id: 'dataAnalysis', text: 'Data Analysis: Extracting insights and information from data' },
@@ -471,7 +471,7 @@ export default function Page() {
             labels={SkillProficiencyLabels}
             formData={formData}
           />)}
-        {formData.technicalSelfAssessment.interestPathway == TechPathways.IT_CLOUD_COMPUTING && (
+        {formData.technicalSelfAssessment.interestPathway == CareerPrepPathways.IT_CLOUD_COMPUTING && (
           <EvaluationTable
             questions={[
               { id: 'techSupport', text: 'Technical Support: Providing assistance to users with hardware, software, and network issues' },
@@ -495,7 +495,7 @@ export default function Page() {
             labels={SkillProficiencyLabels}
             formData={formData}
           />)}
-        {formData.technicalSelfAssessment.interestPathway == TechPathways.SOFTWARE_DEVELOPMENT && (
+        {formData.technicalSelfAssessment.interestPathway == CareerPrepPathways.SOFTWARE_DEVELOPMENT && (
           <EvaluationTable
             questions={[
               { id: 'softwareEngineering', text: 'Software Engineering: Applying engineering principles to software development' },
