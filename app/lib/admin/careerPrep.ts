@@ -1557,6 +1557,7 @@ export const getBrandingRatings = async (
     : null;
 };
 
+// Career Prep Pathways are a subset of enum EduProviderPathways
 export enum CareerPrepPathways {
   SOFTWARE_DEVELOPER = 'Software Developer',
   IT_CLOUD_SUPPORT = 'IT & Cloud Support',
