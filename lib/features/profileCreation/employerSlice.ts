@@ -2,6 +2,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../jobseekerStore';
 import {
+  PostEmployerProfileDTO,
   PostEmployerPersonalDTO,
   PostCompanyInfoDTO,
   PostEmployerAboutDTO,
@@ -12,6 +13,7 @@ import {
 
 // Define a type for the slice state
 export interface EmployerState {
+  profile: PostEmployerProfileDTO;
   personal: PostEmployerPersonalDTO;
   company: PostCompanyInfoDTO;
   about: PostEmployerAboutDTO;
@@ -22,6 +24,47 @@ export interface EmployerState {
 
 // Define the initial state using that type
 export const initialState: EmployerState = {
+  profile: {
+    // Personal Info
+    userId: '',
+    firstName: '',
+    lastName: '',
+    birthDate: '',
+    email: '',
+    phone: null,
+    photoUrl: null,
+
+    // Work Info
+    currentJobTitle: '',
+    linkedInUrl: '',
+    workAddressId: '',
+    hasAgreedTerms: false,
+
+    // Company Info
+    companyId: '',
+    industrySectorId: null,
+    industrySectorTitle: null,
+    companyName: '',
+    companyAddresses: null,
+    logoUrl: null,
+    aboutUs: '',
+    companyEmail: '',
+    yearFounded: '',
+    websiteUrl: null,
+    videoUrl: null,
+    phoneCountryCode: null,
+    companyPhone: null,
+    mission: null,
+    vision: null,
+    companySize: '',
+    estimatedAnnualHires: '',
+
+    // Additional Details
+    aboutUsDetails: '',
+    missionStatement: '',
+    companyVideoUrl: '',
+  },
+
   personal: {
     userId: '',
     firstName: '',
@@ -82,6 +125,20 @@ export const employerSlice = createSlice({
 
   // REVIEW: each field will need its own reducer? unsure if best, seems there should be a way to deconstruct ...state then update this.id/param specific?
   reducers: {
+    initializeProfile: (state, action: PayloadAction<PostEmployerProfileDTO>) => {
+      state.profile = action.payload;
+    },
+    setProfile: (state, action: PayloadAction<PostEmployerProfileDTO>) => {
+      state.profile = action.payload;
+    },
+    // Update specific fields of the profile
+    updateProfileField: <K extends keyof PostEmployerProfileDTO>(
+      state: EmployerState,
+      action: PayloadAction<{ field: K; value: PostEmployerProfileDTO[K] }>,
+    ) => {
+      const { field, value } = action.payload;
+      state.profile[field] = value;
+    },
     initializeAbout: (state, action: PayloadAction<PostEmployerAboutDTO>) => {
       state.about = action.payload;
     },
@@ -131,6 +188,9 @@ export const employerSlice = createSlice({
 });
 
 export const {
+  initializeProfile,
+  setProfile,
+  updateProfileField,
   initializeAbout,
   setAbout,
   initializeMission,
