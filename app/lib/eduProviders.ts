@@ -61,7 +61,7 @@ export enum EduProviderPathways {
 }
 
 
-export enum EducationType { // TODO: complete types e.g. what to label Per Scholas, etc.
+export enum EducationType { // TODO: Instead of creating a new enum. Let's use the existing EducationLevel enum in data/dtos/JobSeekerProfileCreationDTOs.ts
    K12  = "K12",
    College = 'College',
 }
