@@ -703,12 +703,12 @@ export type CareerPrepSkillsAssessmentDTO = {
     experienceWithInterviewing: boolean;
   };
   technicalSelfAssessment: {
-    interestPathway: TechPathways;
+    interestPathway: CareerPrepPathways;
     skillRatings: {
       cybersecurity?: CybersecuritySkills;
       dataAnalytics?: DataAnalyticsSkills;
-      itAndCloudComputing?: ITAndCloudComputingSkills;
-      softwareDevelopment?: SoftwareDevelopmentSkills;
+      itAndCloudComputing?: ItAndCloudSupportSkills;
+      softwareDevelopment?: SoftwareDeveloperSkills;
     };
   };
   durableSkills: DurableSkillsRatings;
@@ -1169,7 +1169,7 @@ const upsertPathwayRatings = async (
   techAssessment: CareerPrepSkillsAssessmentDTO['technicalSelfAssessment'],
 ): Promise<{ success: boolean; status: number }> => {
   switch (techAssessment.interestPathway) {
-    case TechPathways.DATA_ANALYTICS:
+    case CareerPrepPathways.DATA_ANALYTICS:
       await prisma.dataAnalyticsRating.upsert({
         where: { jobseekerId },
         update: {
@@ -1186,7 +1186,7 @@ const upsertPathwayRatings = async (
       });
       break;
 
-    case TechPathways.CYBERSECURITY:
+    case CareerPrepPathways.CYBERSECURITY:
       await prisma.cybersecurityRating.upsert({
         where: { jobseekerId },
         update: {
@@ -1203,7 +1203,7 @@ const upsertPathwayRatings = async (
       });
       break;
 
-    case TechPathways.IT_CLOUD_COMPUTING:
+    case CareerPrepPathways.IT_CLOUD_SUPPORT:
       await prisma.iTCloudRating.upsert({
         where: { jobseekerId },
         update: {
@@ -1221,7 +1221,7 @@ const upsertPathwayRatings = async (
       });
       break;
 
-    case TechPathways.SOFTWARE_DEVELOPMENT:
+    case CareerPrepPathways.SOFTWARE_DEVELOPER:
       await prisma.softwareDevRating.upsert({
         where: { jobseekerId },
         update: {
@@ -1356,21 +1356,21 @@ const updateCareerPrepEnrollment = async (
 /**
  * Retrieves the technology ratings for a specific jobseeker based on the targeted pathway.
  * @param {string} jobseekerId - The ID of the jobseeker.
- * @param {TechPathways} targetedPathway - The targeted technology pathway.
- * @returns {Promise<CybersecuritySkills | DataAnalyticsSkills | ITAndCloudComputingSkills | SoftwareDevelopmentSkills | null>} - The technology ratings based on the pathway.
+ * @param {CareerPrepPathways} targetedPathway - The targeted technology pathway.
+ * @returns {Promise<CybersecuritySkills | DataAnalyticsSkills | ItAndCloudSupportSkills | SoftwareDeveloperSkills | null>} - The technology ratings based on the pathway.
  */
 export const getTechRatings = async (
   jobseekerId: string,
-  targetedPathway: TechPathways,
+  targetedPathway: CareerPrepPathways,
 ): Promise<
   | CybersecuritySkills
   | DataAnalyticsSkills
-  | ITAndCloudComputingSkills
-  | SoftwareDevelopmentSkills
+  | ItAndCloudSupportSkills
+  | SoftwareDeveloperSkills
   | null
 > => {
   switch (targetedPathway) {
-    case TechPathways.CYBERSECURITY:
+    case CareerPrepPathways.CYBERSECURITY:
       const cybersecurityData = await prisma.cybersecurityRating.findUnique({
         where: { jobseekerId },
       });
@@ -1392,7 +1392,7 @@ export const getTechRatings = async (
           }
         : null;
 
-    case TechPathways.DATA_ANALYTICS:
+    case CareerPrepPathways.DATA_ANALYTICS:
       const dataAnalyticsData = await prisma.dataAnalyticsRating.findUnique({
         where: { jobseekerId },
       });
@@ -1417,7 +1417,7 @@ export const getTechRatings = async (
           }
         : null;
 
-    case TechPathways.IT_CLOUD_COMPUTING:
+    case CareerPrepPathways.IT_CLOUD_SUPPORT:
       const itCloudData = await prisma.iTCloudRating.findUnique({
         where: { jobseekerId },
       });
@@ -1442,7 +1442,7 @@ export const getTechRatings = async (
           }
         : null;
 
-    case TechPathways.SOFTWARE_DEVELOPMENT:
+    case CareerPrepPathways.SOFTWARE_DEVELOPER:
       const softwareDevData = await prisma.softwareDevRating.findUnique({
         where: { jobseekerId },
       });
@@ -1557,11 +1557,11 @@ export const getBrandingRatings = async (
     : null;
 };
 
-export enum TechPathways {
+export enum CareerPrepPathways {
+  SOFTWARE_DEVELOPER = 'Software Developer',
+  IT_CLOUD_SUPPORT = 'IT & Cloud Support',
   CYBERSECURITY = 'Cybersecurity',
   DATA_ANALYTICS = 'Data Analytics',
-  IT_CLOUD_COMPUTING = 'IT & Cloud Computing',
-  SOFTWARE_DEVELOPMENT = 'Software Development',
 }
 
 // Define specific DTOs for skill categories
@@ -1600,7 +1600,7 @@ export type DataAnalyticsSkills = {
   computationalThinking: SkillProficiency;
 };
 
-export type ITAndCloudComputingSkills = {
+export type ItAndCloudSupportSkills = {
   overallAverage?: number | null;
   techSupport: SkillProficiency;
   activeDirectory: SkillProficiency;
@@ -1619,7 +1619,7 @@ export type ITAndCloudComputingSkills = {
   computationalThinking: SkillProficiency;
 };
 
-export type SoftwareDevelopmentSkills = {
+export type SoftwareDeveloperSkills = {
   overallAverage?: number | null;
   softwareEngineering: SkillProficiency;
   softwareDevelopmentLifecycle: SkillProficiency;
