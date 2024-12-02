@@ -59,6 +59,7 @@ export default auth((req) => {
     '/',
     '/about-us',
     '/underconstruction',
+    '/policies/terms-of-service',
     '/signin',
     '/signout',
     '/services',
