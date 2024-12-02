@@ -471,7 +471,7 @@ export default function Page() {
             labels={SkillProficiencyLabels}
             formData={formData}
           />)}
-        {formData.technicalSelfAssessment.interestPathway == CareerPrepPathways.IT_CLOUD_COMPUTING && (
+        {formData.technicalSelfAssessment.interestPathway == CareerPrepPathways.IT_CLOUD_SUPPORT && (
           <EvaluationTable
             questions={[
               { id: 'techSupport', text: 'Technical Support: Providing assistance to users with hardware, software, and network issues' },
@@ -495,7 +495,7 @@ export default function Page() {
             labels={SkillProficiencyLabels}
             formData={formData}
           />)}
-        {formData.technicalSelfAssessment.interestPathway == CareerPrepPathways.SOFTWARE_DEVELOPMENT && (
+        {formData.technicalSelfAssessment.interestPathway == CareerPrepPathways.SOFTWARE_DEVELOPER && (
           <EvaluationTable
             questions={[
               { id: 'softwareEngineering', text: 'Software Engineering: Applying engineering principles to software development' },
