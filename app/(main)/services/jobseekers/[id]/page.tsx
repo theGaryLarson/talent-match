@@ -31,12 +31,13 @@ function formatUrl(url: string) {
   return `https://${url}`;
 }
 export const metadata = {
-  title: "WA Tech Workforce Coalition"
+  title: 'WA Tech Workforce Coalition',
 };
 export default async function page({ params }: { params: { id: string } }) {
   let jobseeker = await getJobSeekerEmployerView(params.id);
-  metadata.title = jobseeker?.users.first_name + ' ' +jobseeker?.users.last_name
-  let resume_url = await getResumeUrl(jobseeker?.users.id??'');
+  metadata.title =
+    jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name;
+  let resume_url = await getResumeUrl(jobseeker?.users.id ?? '');
   const session = await auth();
   let videoID = '';
   if (jobseeker?.video_url) {
@@ -84,15 +85,18 @@ export default async function page({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
-        {videoID != ''?
-        <iframe
-          className="aspect-video min-w-[200px] grow"
-          src={`https://www.youtube.com/embed/${videoID}?autoplay=1`}
-          title="YouTube video player"
-          allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-        ></iframe>:''}
+        {videoID != '' ? (
+          <iframe
+            className="aspect-video min-w-[200px] grow"
+            src={`https://www.youtube.com/embed/${videoID}?autoplay=0`}
+            title="YouTube video player"
+            allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
+        ) : (
+          ''
+        )}
       </div>
       <div className="flex flex-wrap gap-4">
         <div className=" grow space-y-3">
@@ -253,7 +257,9 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 className="text-2xl font-bold">Resume</h1>
             {resume_url ? (
-              <a href={resume_url} target='_blank'>View Resume</a>
+              <a href={resume_url} target="_blank">
+                View Resume
+              </a>
             ) : (
               ''
             )}
@@ -262,7 +268,7 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="space-y-4 rounded-md border bg-white p-4">
             <h1 className="text-2xl font-bold">Portfolio</h1>
             {jobseeker?.portfolio_url ? (
-              <a href={formatUrl(jobseeker?.portfolio_url)} target='_blank'>
+              <a href={formatUrl(jobseeker?.portfolio_url)} target="_blank">
                 {jobseeker?.portfolio_url}
               </a>
             ) : (
@@ -274,8 +280,8 @@ export default async function page({ params }: { params: { id: string } }) {
     </main>
   );
 }
-function validYouTubeLink(url:string){
-  if (url == '') return true
+function validYouTubeLink(url: string) {
+  if (url == '') return true;
   const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
   return regex.test(url);
 }
