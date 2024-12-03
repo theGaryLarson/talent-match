@@ -1507,7 +1507,7 @@ async function seedPartnerEdProvidersAndPrograms() {
                             edu_provider_id: eduProvider.id,
                             program_id: existingProgram.id,
                             // Map other fields if available in your schema
-                            cost: program.cost ? program.cost : null,
+                            costSummary: program.cost ? program.cost : null,
                             targetedJobRoles:  program.targetedJobRoles.length > 0 ? program.targetedJobRoles.join(', ') : null, // Convert array to string
                             programDescription: program.programDescription ? program.programDescription : null,
                             months: program.months ? program.months : null,
