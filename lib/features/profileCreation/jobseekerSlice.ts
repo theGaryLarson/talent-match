@@ -22,7 +22,7 @@ interface JsWorkStringDateDTO extends Omit<JsWorkDTO, 'startDate' | 'endDate'> {
 }
 
 interface JsShowcaseWithResumeDTO extends JsShowcaseDTO {
-  resumeUrl: string;
+  resumeUrl: string | null;
 }
 
 // Define a type for the slice state
@@ -76,7 +76,7 @@ export const initialState: JobseekerState = {
     portfolioUrl: null,
     portfolioPassword: null,
     video_url: null,
-    resumeUrl: '',
+    resumeUrl: null,
   },
   preferences: {
     userId: '',

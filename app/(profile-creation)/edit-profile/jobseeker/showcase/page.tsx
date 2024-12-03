@@ -100,8 +100,16 @@ export default function CreateJobseekerProfileShowcasePage() {
               }
             }
 
-            // const fetchedResumeURL = await getResumeUrl(session.user.id!);
-            // setResumeUrl(fetchedResumeURL);
+            const fetchedResumeData = await fetch(
+              '/api/jobseekers/resume/get/' + id,
+            );
+            const fetchedResumeURL = await fetchedResumeData.json();
+
+            if (response.ok) {
+              if (typeof fetchedResumeURL === 'string') {
+                setResumeUrl(fetchedResumeURL);
+              }
+            }
           } catch (error) {
             console.error(error);
           }
@@ -144,6 +152,7 @@ export default function CreateJobseekerProfileShowcasePage() {
     showcaseData.portfolioPassword = portfolioPassword;
     showcaseData.video_url = videoUrl;
     showcaseData.introduction = introduction;
+    showcaseData.resumeUrl = resumeUrl;
 
     try {
       const response = await fetch('/api/jobseekers/account/showcase/upsert', {
@@ -325,26 +334,19 @@ export default function CreateJobseekerProfileShowcasePage() {
             </div>
           </fieldset>
           <div>
-            Resume: *
-            <RequiredTooltip
-              open={
-                hasUnmetRequired === 'showcase-resume' && !Boolean(resumeUrl)
+            Resume:
+            <InputFileDropzone
+              id="profile-creation-intro-resume"
+              fileTypeText="PDF"
+              blobPrefix={'resume' as BlobPrefix}
+              accept=".pdf"
+              maxSizeMB={5}
+              userId={session?.user?.id!}
+              onDocUpload={handleResumeUpload}
+              autoloadedUrl={
+                resumeUrl !== '' ? (resumeUrl ?? undefined) : undefined
               }
-              errorMessage="A resume PDF file is required"
-            >
-              <InputFileDropzone
-                id="profile-creation-intro-resume"
-                fileTypeText="PDF"
-                blobPrefix={'resume' as BlobPrefix}
-                accept=".pdf"
-                maxSizeMB={5}
-                userId={session?.user?.id!}
-                onDocUpload={handleResumeUpload}
-                autoloadedUrl={
-                  resumeUrl !== '' ? (resumeUrl ?? undefined) : undefined
-                }
-              />
-            </RequiredTooltip>
+            />
           </div>
           <div className="profile-form-progress-btn-group">
             <Button
