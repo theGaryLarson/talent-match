@@ -28,6 +28,7 @@ import {
   setPageSaved,
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
+import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
 
 const formNamePrefix = 'profile-creation-intro-';
 
@@ -40,6 +41,8 @@ export default function CreateJobseekerProfileIntroPage() {
     (state: RootState) => state.jobseeker.introduction,
   );
   const [error, setError] = useState<string | null>(null);
+
+  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
 
   const [introData, setIntroData] = useState<JsIntroPostDTO>({
     ...introStoreData,
@@ -89,7 +92,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 firstName: firstName ?? '',
                 lastName: lastName ?? '',
                 photoUrl: fetchedData.photoUrl ?? session.user?.image,
-                birthDate: fetchedData.birthDate ?? '',
+                birthDate: fetchedData.birthDate ?? null,
                 zipCode: fetchedData.zipCode ?? '',
                 city: fetchedData.city,
                 county: fetchedData.county,
@@ -158,12 +161,19 @@ export default function CreateJobseekerProfileIntroPage() {
       return;
     }
 
-    const updatedIntroData = {
+    setHasUnmetRequired('');
+
+    const updatedIntroData: JsIntroPostDTO = {
       ...introData,
-      birthDate: birthdate?.toISOString() ?? '',
+      birthDate: birthdate?.toISOString() ?? null,
       photoUrl: avatarUrl,
     };
     setIntroData(updatedIntroData);
+
+    if (!birthdate || !birthdate.isValid()) {
+      setHasUnmetRequired(`${session.user.id}-birthDate`);
+      return;
+    }
 
     // Extract firstName, lastName, and name from Redux state fields
     const firstName = introData.firstName;
@@ -190,14 +200,14 @@ export default function CreateJobseekerProfileIntroPage() {
 
         // Update the redux state
         dispatch(setPageSaved('introduction'));
-        dispatch(setIntroduction(introData));
+        dispatch(setIntroduction(updatedIntroData));
 
         // Update session properties using the custom hook
         await updateSessionProperties({
           firstName,
           lastName,
           name,
-          image: introData.photoUrl,
+          image: updatedIntroData.photoUrl,
         });
 
         router.push('/edit-profile/jobseeker/preferences');
@@ -259,12 +269,22 @@ export default function CreateJobseekerProfileIntroPage() {
             </div>
 
             <div className="profile-form-grid">
-              <DatePicker
-                label="Birth Date"
-                value={birthdate}
-                onChange={setBirthdate}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
+              <RequiredTooltip
+                open={
+                  hasUnmetRequired === `${introData.userId}-birthDate` &&
+                  !Boolean(birthdate)
+                }
+                errorMessage="Your birth date is required"
+              >
+                <DatePicker
+                  label="Birth Date *"
+                  value={birthdate}
+                  onChange={(val) => {
+                    setBirthdate(val?.isValid() ? val : null);
+                  }}
+                  slotProps={{ textField: { fullWidth: true } }}
+                />
+              </RequiredTooltip>
             </div>
 
             <div className="profile-form-grid md:grid-cols-2">
@@ -274,8 +294,9 @@ export default function CreateJobseekerProfileIntroPage() {
                 onChange={handleFieldChange}
                 value={introData.zipCode ?? ''}
                 pattern="\d{5}(-\d{4})?"
+                required
               >
-                Zip Code
+                Zip Code *
               </InputTextWithLabel>
             </div>
 

@@ -129,6 +129,8 @@ export default function CreateJobseekerProfileShowcasePage() {
       return;
     }
 
+    setHasUnmetRequired('');
+
     if (skills.length === 0) {
       setHasUnmetRequired('showcase-skills');
       return;
