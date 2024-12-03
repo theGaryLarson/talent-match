@@ -30,9 +30,9 @@ export type ReadEduProviderProgramCardDTO = {
     // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogoUrl(eduProviderId)
     programName: string, // provider_programs join programs on program_id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
-    eduLevel: EducationLevel, // provider_programs.eduLevel
+    eduLevel: EducationLevel | null, // provider_programs.eduLevel
     programLength: string, // provider_programs.programLength
-    costSummary: string, // provider_programs.costSummary db.TEXT
+    costSummary: string , // provider_programs.costSummary db.TEXT
     pathway: EduProviderPathways[]
 }
 
@@ -73,11 +73,49 @@ export enum LocationType {
 }
 
 
-export const getProviderProgramCardView = async (pathway: EduProviderPathways) => {
-    const data = await prisma.provider_programs.findMany()
+export const getProviderProgramCardView = async (pathway: EduProviderPathways): Promise<ReadEduProviderProgramCardDTO[]> => {
+    // Fetch all programs
+    const data = await prisma.provider_programs.findMany({
+        include: {
+            Program: true, // Include related program details
+            edu_provider: true, // Include related edu_provider details
+        },
+    });
 
-}
+    // Transform and filter the data
+    const programCards: ReadEduProviderProgramCardDTO[] = data
+        .filter(program => {
+            if (!program.pathways) return false; // Skip if pathways field is null/undefined
+            const pathwaysArray = program.pathways.split('~').map(path => path.trim());
+            return pathwaysArray.includes(pathway); // Filter programs matching the pathway
+        })
+        .map(program => ({
+            programId: program.training_program_id,
+            programName: program.Program.title,
+            eduProviderName: program.edu_provider.name,
+            eduLevel: isEnumValue(EducationLevel, program.eduLevel) ? program.eduLevel as EducationLevel : null,
+            programLength: program.programLength || '',
+            costSummary: program.costSummary || '',
+            pathway: program.pathways
+                ? program.pathways
+                    .split('~')
+                    .map(path => path.trim())
+                    .filter((path): path is EduProviderPathways => isEnumValue(EduProviderPathways, path))
+                : [],
+        }));
+
+    return programCards;
+};
 
 export const getProviderProgramDetailView = async (trainingProviderId: string) => {
 
 }
+
+function isEnumValue<T extends { [key: string]: string | number }>(
+    enumObj: T,
+    value: string | number | null
+): value is T[keyof T] {
+    if (value === null || value === undefined || value === '') return false;
+    return Object.values(enumObj).includes(value);
+}
+
