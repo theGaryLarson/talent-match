@@ -1514,7 +1514,7 @@ async function seedPartnerEdProvidersAndPrograms() {
                             hoursPerWeek: program.hoursPerWeek ? program.hoursPerWeek : null,
                             targetPopulation: program.targetPopulation ? program.targetPopulation : null,
                             serviceArea: program.serviceArea ? program.serviceArea : null,
-                            pathways: program.pathways.length > 0 ? program.pathways.join(', ') : null, // Convert array to string
+                            pathways: program.pathways.length > 0 ? program.pathways.join('~') : null, // Convert array to string
                         },
                     });
                     console.log(
