@@ -30,7 +30,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-import { TechPathways } from '@/app/lib/admin/careerPrep'
+import { TechPathways } from '@/app/lib/admin/careerPrep';
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -102,7 +102,8 @@ export default function CreateJobseekerProfilePreferencesPage() {
     }
 
     preferencesData.userId = session.user.id;
-    preferencesData.targetedPathwayId = pathwayId;
+    preferencesData.targetedPathwayId =
+      preferencesData.targetedPathway !== pathway ? undefined : pathwayId;
     preferencesData.targetedPathway = pathway;
     preferencesData.preferredEmploymentType = employmentType;
 
@@ -214,7 +215,6 @@ export default function CreateJobseekerProfilePreferencesPage() {
                 </FormLabel>
                 <RadioGroup
                   aria-labelledby="profile-creation-preferences-require-role"
-                  defaultValue="female"
                   name="profile-creation-preferences-require-role"
                   value={pathway}
                   onChange={(e) => {

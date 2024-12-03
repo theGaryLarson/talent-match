@@ -86,8 +86,6 @@ export default function CreateJobseekerProfileShowcasePage() {
                 setIntroduction(showcaseData.introduction);
               }
 
-              console.log(fetchedData);
-
               if (fetchedData.portfolioUrl) {
                 showcaseData.portfolioUrl = fetchedData.portfolioUrl;
                 setPortfolioUrl(showcaseData.portfolioUrl);
@@ -122,6 +120,8 @@ export default function CreateJobseekerProfileShowcasePage() {
       console.error('User session is not available.');
       return;
     }
+
+    setHasUnmetRequired('');
 
     if (skills.length === 0) {
       setHasUnmetRequired('showcase-skills');
