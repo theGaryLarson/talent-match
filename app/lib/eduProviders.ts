@@ -182,7 +182,7 @@ export const getProviderProgramDetailView = async (
     return dto;
 };
 
-function isEnumValue<T extends { [key: string]: string | number }>(
+export function isEnumValue<T extends { [key: string]: string | number }>(
     enumObj: T,
     value: string | number | null
 ): value is T[keyof T] {
