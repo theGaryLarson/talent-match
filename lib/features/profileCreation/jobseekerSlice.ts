@@ -12,6 +12,11 @@ import {
   JsWorkDTO,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 
+interface JsEducationPageBlankHighestLevelDTO
+  extends Omit<JsEducationPageDTO, 'highestLevelOfStudy'> {
+  highestLevelOfStudy: HighestCompletedEducationLevel | '';
+}
+
 interface JsWorkExpStringDateDTO extends Omit<JsWorkExpDTO, 'workExperiences'> {
   workExperiences?: JsWorkStringDateDTO[];
 }
@@ -28,7 +33,7 @@ interface JsShowcaseWithResumeDTO extends JsShowcaseDTO {
 // Define a type for the slice state
 export interface JobseekerState {
   introduction: JsIntroPostDTO;
-  education: JsEducationPageDTO;
+  education: JsEducationPageBlankHighestLevelDTO;
   workExperience: JsWorkExpStringDateDTO;
   showcase: JsShowcaseWithResumeDTO;
   preferences: JsPreferencesDTO;
@@ -42,7 +47,7 @@ export const initialState: JobseekerState = {
     photoUrl: null,
     firstName: '',
     lastName: '',
-    birthDate: '',
+    birthDate: null,
     phoneCountryCode: null,
     phone: null,
     zipCode: '',
@@ -56,7 +61,7 @@ export const initialState: JobseekerState = {
   education: {
     userId: '',
     jobseekerId: '',
-    highestLevelOfStudy: HighestCompletedEducationLevel.NoFormalEducation,
+    highestLevelOfStudy: '',
     educations: [],
     certifications: [],
     projects: [],
@@ -106,7 +111,10 @@ export const jobseekerSlice = createSlice({
     setIntroduction: (state, action: PayloadAction<JsIntroPostDTO>) => {
       state.introduction = action.payload;
     },
-    setEducation: (state, action: PayloadAction<JsEducationPageDTO>) => {
+    setEducation: (
+      state,
+      action: PayloadAction<JsEducationPageBlankHighestLevelDTO>,
+    ) => {
       state.education = action.payload;
     },
     setWorkExperience: (

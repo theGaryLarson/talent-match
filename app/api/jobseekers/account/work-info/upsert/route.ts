@@ -30,8 +30,8 @@ export async function POST(request: Request) {
             const updatedJobseeker = await prisma.jobseekers.update({
                 where: {user_id: userId},
                 data: {
-                    years_work_exp: yearsWorkExperience ? parseInt(yearsWorkExperience, 10) : undefined,
-                    months_internship_exp: monthsInternshipExperience ? parseInt(monthsInternshipExperience, 10): undefined,
+                    years_work_exp: yearsWorkExperience ? parseInt(yearsWorkExperience, 10) : null,
+                    months_internship_exp: monthsInternshipExperience ? parseInt(monthsInternshipExperience, 10): null,
                     updatedAt: new Date(),
                 },
             });
@@ -52,7 +52,33 @@ export async function POST(request: Request) {
                     is_authorized_to_work_in_usa: isAuthorizedToWorkUsa,
                     job_sponsorship_required: requiresSponsorship,
                 }
-            })
+            });
+
+            // Remove work experiences that are not in the latest data
+            if (workExperiences) {
+                const existingWorkExperiences = await prisma.workExperience.findMany({
+                    where: {
+                        jobseekerId: updatedJobseeker.jobseeker_id,
+                    },
+                });
+                if (existingWorkExperiences && existingWorkExperiences.length !== 0) {
+                    const removableExperiences = existingWorkExperiences.filter(
+                        (existingExperience) =>
+                            workExperiences.findIndex(
+                                (incomingExperience) =>
+                                    incomingExperience.workId === existingExperience.workId,
+                            ) === -1,
+                    );
+
+                    const deletedExperiences = await prisma.workExperience.deleteMany({
+                        where: {
+                            OR: removableExperiences.map((removableExperience) => ({
+                                workId: { equals: removableExperience.workId },
+                            })),
+                        },
+                    });
+                }
+            }
 
             const createdWorkExperiences: WorkExperience[] = [];
             const workExpPromises = workExperiences?.map(async (workExperience: WorkExperience) => {
@@ -70,8 +96,8 @@ export async function POST(request: Request) {
                     endDate: workExperience.endDate ? new Date(workExperience.endDate) : null,
                     responsibilities: workExperience.responsibilities,
                     isInternship: workExperience.isInternship,
-                    techAreaId: workExperience.techAreaId || undefined,
-                    sectorId: workExperience.sectorId || undefined
+                    techAreaId: workExperience.techAreaId || null,
+                    sectorId: workExperience.sectorId || null
                 };
 
                 if (existingWorkExperience) {
@@ -113,8 +139,8 @@ export async function POST(request: Request) {
 
             return {
                 userId: updatedJobseeker.user_id,
-                yearsWorkExperience: updatedJobseeker?.years_work_exp?.toString() ?? "0",
-                monthsInternshipExperience: updatedJobseeker?.months_internship_exp?.toString() ?? "0",
+                yearsWorkExperience: updatedJobseeker?.years_work_exp?.toString() ?? "",
+                monthsInternshipExperience: updatedJobseeker?.months_internship_exp?.toString() ?? "",
                 isAuthorizedToWorkUsa: updatedPrivateData.is_authorized_to_work_in_usa,
                 requiresSponsorship: updatedPrivateData.job_sponsorship_required ,
                 workExperiences: createdWorkExperiences,
@@ -130,7 +156,7 @@ export async function POST(request: Request) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             // Handle unique constraint violation
             if (e.code === 'P2002') {
-                console.error(e)
+                console.error(e);
                 return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
             }
             // Handle foreign key constraint violation

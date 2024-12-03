@@ -120,10 +120,13 @@ export default function CreateJobseekerProfileEducationPage() {
         degreeType:
           mapToEnum(education.degreeType ?? null, HighSchoolDegreeType) ??
           mapToEnumOrThrow(education.degreeType ?? null, CollegeDegreeType),
-        programObject: {
-          id: education.programId,
-          title: education.programName,
-        },
+        programObject:
+          education.programId && education.programName
+            ? {
+                id: education.programId,
+                title: education.programName,
+              }
+            : undefined,
         programName: education.programName,
         programId: education.programId,
         preAppEdSystem: education.preAppEdSystem,
@@ -225,6 +228,7 @@ export default function CreateJobseekerProfileEducationPage() {
                 .result;
               educationData.userId = id!;
               educationData.jobseekerId = jobseekerId!;
+
               if (fetchedData.highestLevelOfStudy) {
                 educationData.highestLevelOfStudy =
                   fetchedData.highestLevelOfStudy;
@@ -267,10 +271,13 @@ export default function CreateJobseekerProfileEducationPage() {
                           education.degreeType ?? null,
                           CollegeDegreeType,
                         ),
-                      programObject: {
-                        id: education.programId,
-                        title: education.programName,
-                      },
+                      programObject:
+                        education.programId && education.programName
+                          ? {
+                              id: education.programId,
+                              title: education.programName,
+                            }
+                          : undefined,
                       programName: education.programName,
                       programId: education.programId,
                       preAppEdSystem: education.preAppEdSystem,
@@ -287,8 +294,12 @@ export default function CreateJobseekerProfileEducationPage() {
                       projectId: project.projectId,
                       projectTitle: project.projTitle,
                       projectRole: project.projectRole,
-                      startDate: dayjs(project.startDate),
-                      completionDate: dayjs(project.completionDate),
+                      startDate: project.startDate
+                        ? dayjs(project.startDate)
+                        : null,
+                      completionDate: project.completionDate
+                        ? dayjs(project.completionDate)
+                        : null,
                       reference: project.repoUrl ?? '',
                       problemSolvedDescription:
                         project.problemSolvedDescription,
@@ -307,8 +318,10 @@ export default function CreateJobseekerProfileEducationPage() {
                       issuingOrg: cert.issuingOrg,
                       credentialId: cert.credentialId ?? '',
                       credentialUrl: cert.credentialUrl ?? '',
-                      issueDate: dayjs(cert.issueDate),
-                      expiryDate: dayjs(cert.expiryDate),
+                      issueDate: cert.issueDate ? dayjs(cert.issueDate) : null,
+                      expiryDate: cert.expiryDate
+                        ? dayjs(cert.expiryDate)
+                        : null,
                     }),
                   ),
                 ],
@@ -350,8 +363,8 @@ export default function CreateJobseekerProfileEducationPage() {
         startDate: ed.startDate?.toISOString() ?? '',
         gradDate: ed.gradDate?.toISOString() ?? '',
         degreeType: ed.degreeType || undefined,
-        programId: ed?.programObject?.id || ed?.programId!, // Note: no rel with provider_programs pulled from a separate programs table.
-        programName: ed?.programObject?.title || ed.programName,
+        programId: ed?.programObject?.id || ed?.programId || undefined, // Note: no rel with provider_programs pulled from a separate programs table.
+        programName: ed?.programObject?.title || ed?.programName || undefined,
         gpa: ed?.gpa,
         preAppEdSystem: ed.preAppEdSystem || null,
         description: ed.description || null,
@@ -368,7 +381,8 @@ export default function CreateJobseekerProfileEducationPage() {
         ) {
           setHasUnmetRequired(`${education.id}-edProviderObject`);
           return false;
-        } else if (education.edLevel === EducationLevel.Other) {
+        }
+        if (education.edLevel === EducationLevel.College) {
           if (
             !Boolean(education.programId) &&
             !Boolean(education.programName)
@@ -399,8 +413,8 @@ export default function CreateJobseekerProfileEducationPage() {
         issuingOrg: cert.issuingOrg,
         credentialId: cert.credentialId,
         credentialUrl: cert.credentialUrl,
-        issueDate: cert.issueDate?.toISOString() ?? '',
-        expiryDate: cert.expiryDate?.toISOString() ?? '',
+        issueDate: cert.issueDate?.toISOString() ?? undefined,
+        expiryDate: cert.expiryDate?.toISOString() ?? undefined,
         description: undefined,
       }),
     );
@@ -450,12 +464,6 @@ export default function CreateJobseekerProfileEducationPage() {
       projects: projects,
     };
 
-    console.log('ued', educations);
-
-    await handleApiCall(educationData);
-  };
-
-  const handleApiCall = async (educationData: JsEducationPageDTO) => {
     try {
       const response = await fetch('/api/jobseekers/account/edu-info/upsert', {
         method: 'POST',
