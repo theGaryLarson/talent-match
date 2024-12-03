@@ -14,20 +14,16 @@ export default async function EmployerPageBanner() {
       }
     >
       <div className="inline-flex h-[584.97px] w-[487px] flex-col items-start justify-start gap-2">
-        <div className="self-stretch font-['Roboto'] text-[88px] font-normal capitalize leading-[105.60px] text-white">
+        <div className="self-stretch  text-[88px] font-normal capitalize leading-[105.60px] text-white">
           Where you discover Local tech talent{' '}
         </div>
-        <div className="self-stretch font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-white">
+        <div className="self-stretch  text-[22px] font-normal leading-[30.80px] text-white">
           Connect with quality local candidates in our Talent & Career Portal
         </div>
         <div className="flex flex-col items-start justify-start">
           <div className="relative h-[33.21px] w-px" />
         </div>
-        <div className="inline-flex items-center justify-center gap-[8.30px] rounded-[103.79px] bg-[#047f9c] px-[24.91px] py-[10.38px]">
-          <div className="text-center font-['Roboto'] text-[22px] font-medium leading-tight tracking-tight text-white">
-            Search Talent
-          </div>
-        </div>
+        <RoundedButton content={'Search Talent'} link={'/services/talent-search'} invertColor={false}/>
       </div>
     </div>
   );

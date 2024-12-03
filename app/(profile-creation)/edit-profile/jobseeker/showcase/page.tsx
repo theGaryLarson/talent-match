@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { Button } from 'flowbite-react';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
@@ -24,6 +24,8 @@ import {
 import { devLog } from '@/app/lib/utils';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
+import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
+import { BlobPrefix, getResumeUrl } from '@/app/lib/services/azureBlobService';
 
 export default function CreateJobseekerProfileShowcasePage() {
   const router = useRouter();
@@ -34,12 +36,21 @@ export default function CreateJobseekerProfileShowcasePage() {
   );
   const showcaseData = { ...showcaseStoreData };
   const [error, setError] = useState<string | null>(null);
-  const [introduction, setIntroduction] = useState('');
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+
+  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
+
+  const [introduction, setIntroduction] = useState(
+    showcaseData.introduction ?? '',
+  );
+  const [resumeUrl, setResumeUrl] = useState<string | null>(
+    showcaseData.resumeUrl,
+  );
   const [currentJobTitle, setCurrentJobTitle] = useState('');
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
-  const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
+  const [fetchedTags, setFetchedTags] = useState<SkillDTO[]>(
+    showcaseData.skills,
+  );
   const [portfolioUrl, setPortfolioUrl] = useState(
     showcaseData.portfolioUrl ?? '',
   );
@@ -51,7 +62,7 @@ export default function CreateJobseekerProfileShowcasePage() {
   useEffect(() => {
     if (session?.user?.id && status === 'authenticated') {
       const initializeFormFields = async () => {
-        if (_.isEqual(showcaseStoreData, initialState.preferences)) {
+        if (_.isEqual(showcaseStoreData, initialState.showcase)) {
           const { id } = session.user;
 
           try {
@@ -68,8 +79,13 @@ export default function CreateJobseekerProfileShowcasePage() {
               if (fetchedData.skills.length !== 0) {
                 showcaseData.skills = fetchedData.skills;
                 setSkills(showcaseData.skills);
-                setFetchLoadedTags(showcaseData.skills);
+                setFetchedTags(showcaseData.skills);
               }
+              if (fetchedData.introduction) {
+                showcaseData.introduction = fetchedData.introduction;
+                setIntroduction(showcaseData.introduction);
+              }
+
               if (fetchedData.portfolioUrl) {
                 showcaseData.portfolioUrl = fetchedData.portfolioUrl;
                 setPortfolioUrl(showcaseData.portfolioUrl);
@@ -81,6 +97,17 @@ export default function CreateJobseekerProfileShowcasePage() {
               if (fetchedData.video_url) {
                 showcaseData.video_url = fetchedData.video_url;
                 setVideoUrl(showcaseData.video_url);
+              }
+            }
+
+            const fetchedResumeData = await fetch(
+              '/api/jobseekers/resume/get/' + id,
+            );
+            const fetchedResumeURL = await fetchedResumeData.json();
+
+            if (response.ok) {
+              if (typeof fetchedResumeURL === 'string') {
+                setResumeUrl(fetchedResumeURL);
               }
             }
           } catch (error) {
@@ -102,13 +129,30 @@ export default function CreateJobseekerProfileShowcasePage() {
       return;
     }
 
+    setHasUnmetRequired('');
+
+    if (skills.length === 0) {
+      setHasUnmetRequired('showcase-skills');
+      return;
+    }
+
+    if (!Boolean(resumeUrl)) {
+      setHasUnmetRequired('showcase-resume');
+      return;
+    }
+
+    if (!validYouTubeLink(videoUrl)) {
+      //TODO replace with stylized toast message
+      alert('Please provide a valid YouTube URL before submitting.');
+      return;
+    }
     showcaseData.userId = session.user.id;
     showcaseData.skills = skills;
     showcaseData.portfolioUrl = portfolioUrl;
     showcaseData.portfolioPassword = portfolioPassword;
     showcaseData.video_url = videoUrl;
     showcaseData.introduction = introduction;
-    showcaseData.resume_url = resumeUrl;
+    showcaseData.resumeUrl = resumeUrl;
 
     try {
       const response = await fetch('/api/jobseekers/account/showcase/upsert', {
@@ -126,7 +170,7 @@ export default function CreateJobseekerProfileShowcasePage() {
         dispatch(setPageSaved('showcase'));
         dispatch(setShowcase(showcaseData));
 
-        router.push('/edit-profile/jobseeker/preferences');
+        router.push('/edit-profile/jobseeker/education');
       } else {
         const errorMessage = `Failed to submit showcase info. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -146,14 +190,18 @@ export default function CreateJobseekerProfileShowcasePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(4 / 6) * 100} size="sm" />
-        <p>Step 4/6</p>
+        <ProgressBarFlat progress={(3 / 6) * 100} size="sm" />
+        <p>Step 3/6</p>
         <h1>Showcase</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Introduction to Employers</h2>
+              <h2>Introduce Yourself</h2>
+              <p>
+                This text will appear under your name in job candidate search
+                listings and on your profile page.
+              </p>
             </legend>
 
             <div className="profile-form-grid">
@@ -162,10 +210,10 @@ export default function CreateJobseekerProfileShowcasePage() {
                 onChange={(e) => {
                   setIntroduction(e.target.value);
                 }}
-                placeholder="Type here"
+                placeholder="Example: I am a software engineer ..."
                 value={introduction}
               >
-                Tell Your Story
+                Introduction
               </InputTextWithLabel>
               {/*<InputTextWithLabel*/}
               {/*  id="profile-creation-intro-current-position"*/}
@@ -186,29 +234,35 @@ export default function CreateJobseekerProfileShowcasePage() {
               <h2>Skills</h2>
             </legend>
             <div className="profile-form-grid">
-              <TagsWithAutocomplete
-                apiSearchRoute="/api/skills/search/"
-                fieldLabel="Select your skills *"
-                id="profile-creation-showcase-skills"
-                maxTags={5}
-                searchingText="Searching..."
-                noResultsText="No skills found..."
-                onChange={function (ev, val) {
-                  if (val.every((skill) => typeof skill !== 'string')) {
-                    setSkills(val as SkillDTO[]);
-                  }
-                }}
-                searchPlaceholder="Skill (ex: Java)"
-                addNewTags={fetchLoadedTags}
-                getTagLabel={(option: SkillDTO) => option.skill_name}
-                getTagLink={(option: SkillDTO) => option.skill_info_url}
-              />
-              <p>Select your top 5 skills from your skills list</p>
+              <RequiredTooltip
+                open={
+                  hasUnmetRequired === 'showcase-skills' && skills.length === 0
+                }
+                errorMessage="At least one skill is required"
+              >
+                <TagsWithAutocomplete
+                  apiSearchRoute="/api/skills/search/"
+                  fieldLabel="Select your top five skills: *"
+                  id="profile-creation-showcase-skills"
+                  maxTags={5}
+                  searchingText="Searching..."
+                  noResultsText="No skills found..."
+                  onChange={function (ev, val) {
+                    if (val.every((skill) => typeof skill !== 'string')) {
+                      setSkills(val as SkillDTO[]);
+                    }
+                  }}
+                  searchPlaceholder="Example: Java"
+                  addNewTags={fetchedTags}
+                  getTagLabel={(option: SkillDTO) => option.skill_name}
+                  getTagLink={(option: SkillDTO) => option.skill_info_url}
+                />
+              </RequiredTooltip>
 
               <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-portfolio"
                 label="Portfolio"
-                placeholder="Url"
+                placeholder="Example: https://my.portfolio.website/"
                 fullWidth
                 value={portfolioUrl}
                 onChange={(e) => {
@@ -217,7 +271,7 @@ export default function CreateJobseekerProfileShowcasePage() {
               />
               <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-password"
-                label="Password if it is applicable"
+                label="Portfolio Password (if applicable):"
                 placeholder="Password"
                 type="password"
                 fullWidth
@@ -234,30 +288,28 @@ export default function CreateJobseekerProfileShowcasePage() {
                 <h2>Video</h2>
               </legend>
               <p>
-                Employers are tired of the same old paper trail. They want to
-                see the real YOU! So, apart from uploading your resume, creating
-                a dynamic video introduction that gets you noticed.
+                In today’s competitive job market, finding creative ways to
+                elevate your profile is key. A personalized video introduction
+                offers a unique opportunity to showcase your skills,
+                personality, and career goals.
               </p>
-              <p>Here&apos;s what to dish in your video:</p>
               <ul className="list-inside list-disc">
                 <li>
-                  <b>Your Story:</b> Take viewers on a journey through your
-                  experience and learning path. Where did you start? What
-                  challenges did you conquer?
+                  <b>Highlight Your Unique Value Proposition:</b> Share your
+                  professional journey, key accomplishments, and why you are a
+                  valuable asset to any team.
                 </li>
                 <li>
-                  <b>Your Superpowers:</b> Flex your strengths! Show off your
-                  skills and what makes you a unique asset. Think
-                  problem-solving, communication, or maybe you&apos;re a coding
-                  whiz!
+                  <b>Showcase Your Skills and Expertise:</b> Demonstrate your
+                  technical skills, soft competencies, and how they can benefit
+                  your future employers.
                 </li>
                 <li>
-                  <b>Your Dream Gig:</b> Paint a picture of what excites you!
-                  What kind of role are you looking for? Let employers know why
-                  YOU&apos;RE the missing piece to their puzzle.
+                  <b>Express Your Career Aspirations:</b> Articulate your
+                  long-term career goals and how you see yourself growing
+                  professionally.
                 </li>
               </ul>
-
               {/*
             TODO: If we change our minds and want to implement video uploads, the button needs upload function added
             <Button pill className="custom-outline-btn">
@@ -267,12 +319,14 @@ export default function CreateJobseekerProfileShowcasePage() {
 
             <DividerWithText>or</DividerWithText>
             */}
-
-              <TextFieldWithNoLabel
+              Upload your YouTube video URL below and elevate your profile.
+              <TextFieldWithSeparatedLabel
                 id="profile-creation-showcase-video"
-                placeholder="Upload your video url"
+                label="Video URL:"
+                placeholder="Example: https://www.youtube.com/watch"
                 fullWidth
                 value={videoUrl}
+                error={!validYouTubeLink(videoUrl)}
                 onChange={(e) => {
                   setVideoUrl(e.target.value);
                 }}
@@ -280,14 +334,18 @@ export default function CreateJobseekerProfileShowcasePage() {
             </div>
           </fieldset>
           <div>
-            Resume *
+            Resume:
             <InputFileDropzone
               id="profile-creation-intro-resume"
-              fileTypeText="PDF, DOC, DOCX, TXT or RTF"
-              accept=".pdf,.doc,.docx,.txt,.rtf"
+              fileTypeText="PDF"
+              blobPrefix={'resume' as BlobPrefix}
+              accept=".pdf"
               maxSizeMB={5}
-              userId="87E52D83-CC98-46AF-B62A-58124ABEBBDC"
+              userId={session?.user?.id!}
               onDocUpload={handleResumeUpload}
+              autoloadedUrl={
+                resumeUrl !== '' ? (resumeUrl ?? undefined) : undefined
+              }
             />
           </div>
           <div className="profile-form-progress-btn-group">
@@ -295,7 +353,7 @@ export default function CreateJobseekerProfileShowcasePage() {
               pill
               className="custom-outline-btn"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/work-experience');
+                router.push('/edit-profile/jobseeker/preferences');
               }}
             >
               Previous
@@ -308,4 +366,10 @@ export default function CreateJobseekerProfileShowcasePage() {
       </section>
     </main>
   );
+}
+
+function validYouTubeLink(url: string) {
+  if (url == '') return true;
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+  return regex.test(url);
 }

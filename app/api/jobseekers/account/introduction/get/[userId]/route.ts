@@ -49,7 +49,6 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
                         intern_hours_required: true,
                         intro_headline: true,
                         current_job_title: true,
-                        resume_url: true,
                         years_work_exp: true,
                         portfolio_url: true,
                         video_url: true,
@@ -88,7 +87,6 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
             email: user.email,
             introHeadline: jobseeker?.intro_headline,
             currentJobTitle: jobseeker?.current_job_title,
-            resumeUrl: jobseeker?.resume_url??null,
         };
 
         // metadata that may be needed

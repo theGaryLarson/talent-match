@@ -9,36 +9,35 @@ import { auth } from '@/auth';
 import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
 import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
+import { Role } from '@/data/dtos/UserInfoDTO';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
 export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   const Session = await auth();
-
-  if (!Session?.user.employerId) {
-    throw new Error(
-      'Failed to create job listing employer id not found in session',
-    );
+  let company_id = Session?.user.companyId;
+  if(Session?.user.roles.includes(Role.ADMIN)){
+    company_id = jobData.company_id;
   }
-  if (!Session.user.companyId) {
-    throw new Error(
-      'Failed to create job listing Company id not found in session',
-    );
-  }
-
+  
   try {
+if (!company_id) {
+    throw new Error(
+      'Failed to create job listing Company id not found',
+    );
+  }
     let companyAddress = await prisma.company_addresses.findFirst({
       where: {
         AND: {
           zip: jobData.zip,
-          company_id: Session.user.companyId,
+          company_id: company_id,
         },
       },
     });
     if (!companyAddress) {
       companyAddress = await prisma.company_addresses.create({
         data: {
-          company_id: Session.user.companyId,
+          company_id: company_id,
           company_address_id: uuidv4(),
           zip: jobData.zip,
         },
@@ -56,9 +55,11 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
     const newJobListing = await prisma.job_postings.create({
       data: {
         job_posting_id: jobListingId,
-        company_id: Session.user.companyId,
+        company_id: company_id,
         location_id: companyAddress.company_address_id,
-        employer_id: Session?.user.employerId,
+        tech_area_id:jobData.tech_area_id,
+        sector_id:jobData.sector_id,
+        employer_id: Session?.user.employerId??null,
         job_title: jobData.job_title,
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
@@ -96,12 +97,20 @@ export async function getJobListingById(joblistingId: string) {
       },
       include:{
         skills:true,
-        industry_sectors:true,
-        companies:true,
-        techArea:true,
-        jobseekersThatBookMarked:{
+        industry_sectors:{
           select:{
-            jobseeker_id:true
+            sector_title:true
+          }
+        },
+        companies:true,
+        techArea:{
+          select:{
+            title:true
+          }
+        },
+        jobApplications:{
+          select:{
+            jobseekerId: true,
           }
         }
       },
@@ -169,8 +178,11 @@ export async function ApplyToJob(jobPostingId:string) {
         job_posting_id: jobPostingId,
       },
       data: {
-        applicants: {
-          connect: { jobseeker_id: Session.user.jobseekerId},  // Add the jobseeker to the applicants array
+        jobApplications: {
+          create: { // Fix: possibly have to update DTO
+            id: uuidv4(),
+            jobseekerId: Session.user.jobseekerId,
+            jobStatus: 'Applied'},  // Add the jobseeker to the applicants array
         },
       },
     });
@@ -194,7 +206,11 @@ export async function bookmarkJobPosting(jobPostId: string) {
       },
       data: {
         BookmarkedJobs:{
-          connect:{job_posting_id:jobPostId}
+          create: {
+            id: uuidv4(),
+            jobPostId: jobPostId,
+            jobStatus: "Bookmarked",
+          }
         }
       },
     })
@@ -219,18 +235,12 @@ export async function unbookmarkJobPosting(jobPostId: string) {
     if (!Session?.user.jobseekerId) {
       throw new Error('Failed to delete job listing: jobseeker ID not found in session');
     }
-    const result = await prisma.jobseekers.update({
+    const result = await prisma.jobseekerJobPosting.deleteMany({ // question: Think I should I use a composite key instead?
       where: {
-        jobseeker_id: Session.user.jobseekerId
+        jobseekerId: Session.user.jobseekerId,
+        jobPostId: jobPostId,
       },
-      data: {
-        BookmarkedJobs:{
-          disconnect:{
-            job_posting_id:jobPostId
-          }
-        }
-      }
-    })
+    });
     return result;
   } catch (error) {
     console.error(error)
@@ -254,11 +264,13 @@ export async function getJobSeekerBookmarkedJobs(){
     return
   }
   try {
-    const result = await prisma.jobseekers.findUnique({select:{
-        BookmarkedJobs:true
-    }, where:{
-      jobseeker_id: session.user.jobseekerId
-    }})
+    const result = await prisma.jobseekerJobPosting.findMany({
+      include:{
+        job_posting:true,
+     }, where:{
+          jobseekerId: session.user.jobseekerId,
+          jobStatus: 'Bookmarked'
+    }});
     console.log("here",result)
     return result;
   } catch (error) {
@@ -267,18 +279,24 @@ export async function getJobSeekerBookmarkedJobs(){
 }
 
 
-export async function getJobSeekerAppliedJobs() {
+export async function getJobSeekerAppliedJobs() { // fixme: will probably want to get all jobs...
   const session = await auth();
   if(!session?.user.jobseekerId){
     return
   }
   try {
-    const result = await prisma.jobseekers.findUnique({select:{
-        appliedJobs:true
-    }, where:{
-      jobseeker_id: session.user.jobseekerId
-    }})
-    return result;
+    const result = await prisma.jobseekerJobPosting.findMany({
+      where: {
+        jobseekerId: session.user.jobseekerId,
+        jobStatus: "Applied", // Ensure you fetch only "Applied" jobs
+      },
+      include: {
+        job_posting: true, // Include related job posting details
+      },
+    });
+
+    // Transform the result to match the previous data structure
+    return result.map((job) => job.job_posting);
   } catch (error) {
       console.error(error)
   }

@@ -95,7 +95,7 @@ export async function GET(request: Request, { params }: { params: { companyId: s
             companyPhone: companyInfo.company_phone,
             mission: companyInfo.company_mission,
             vision: companyInfo.company_vision,
-            employeeCount: companyInfo.size,
+            companySize: companyInfo.size,
             estimatedAnnualHires: companyInfo?.estimated_annual_hires?.toString(),
             isApproved: companyInfo.is_approved,
             createdBy: companyInfo.createdBy,

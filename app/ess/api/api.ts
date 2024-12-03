@@ -88,7 +88,7 @@ export const fetchLightCastJobs = async (occupation_ONET_code: string | undefine
 
     try {
         const token = await getToken();
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/cfa_lightcastjobs?$select=cfa_lightcastjobid,cfa_company,cfa_datestring,cfa_dateposted,cfa_description,cfa_location,cfa_name,cfa_onetcode,cfa_skills,cfa_url&$filter=startswith(cfa_onetcode,${occupation_ONET_code})`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/cfa_lightcastjobs?$select=cfa_lightcastjobid,cfa_company,cfa_datestring,cfa_dateposted,cfa_description,cfa_location,cfa_name,cfa_onetcode,cfa_skills,cfa_url&$filter=startswith(cfa_onetcode,${occupation_ONET_code}) and statecode eq 0`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,

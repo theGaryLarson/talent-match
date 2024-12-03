@@ -1,4 +1,4 @@
-import {NextResponse} from 'next/server';
+import { NextResponse } from 'next/server';
 import {
     PrismaClient,
     ProjectExperiences,
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
             upsertedJobseeker = await prisma.jobseekers.upsert({
                 where: {user_id: userId},
                 update: {
-                    highest_level_of_study_completed: highestLevelOfStudy,
+                    highest_level_of_study_completed: highestLevelOfStudy || null,
                     is_enrolled_ed_program: isEnrolledEdProgram,
                     updatedAt: new Date(),
                 },
@@ -69,17 +69,45 @@ export async function POST(request: Request) {
                     user_id: userId,
                     targeted_pathway: undefined,
                     is_enrolled_ed_program: isEnrolledEdProgram,
-                    highest_level_of_study_completed: highestLevelOfStudy,
+                    highest_level_of_study_completed: highestLevelOfStudy || undefined,
                     intern_hours_required: undefined,
                     intro_headline: undefined,
                     current_job_title: undefined,
-                    resume_url: undefined,
                     years_work_exp: undefined,
                     portfolio_url: undefined,
                     video_url: undefined,
                     employment_type_sought: undefined,
                 },
             });
+
+            // Remove licenses/certificates that are not in the latest data
+            if (Array.isArray(certifications)) {
+                const existingCertificates = await prisma.certificates.findMany({
+                    where: {
+                        jobSeekerId: jobseekerId,
+                    },
+                });
+                console.log('incomingcerts', certifications);
+                if (existingCertificates && existingCertificates.length !== 0) {
+                    const removableCertificates = existingCertificates.filter(
+                        (existingCertificate) =>
+                            certifications.findIndex(
+                                (incomingCertificate) =>
+                                    incomingCertificate.certId === existingCertificate.certId,
+                            ) === -1,
+                    );
+
+                    const deletedCertificates = await prisma.certificates.deleteMany({
+                        where: {
+                            OR: removableCertificates.map((removableCertificate) => ({
+                                certId: { equals: removableCertificate.certId },
+                            })),
+                        },
+                    });
+
+                    console.log('deletedCerts', deletedCertificates);
+                }
+            }
 
             const certPromises = certifications.map(async (cert: CertDTO) => {
                 const existingCert = await prisma.certificates.findFirst({
@@ -126,15 +154,39 @@ export async function POST(request: Request) {
             await ensureEduProvidersExist(educations);
             await ensureProgramsExist(educations);
 
+            // Remove education entries that are not in the latest data
+            if (Array.isArray(educations)) {
+                const existingEducations = await prisma.jobseekers_education.findMany({
+                    where: {
+                        jobseekerId: jobseekerId,
+                    },
+                });
+                if (existingEducations && existingEducations.length !== 0) {
+                    const removableEducations = existingEducations.filter(
+                        (existingEducation) =>
+                            educations.findIndex(
+                                (incomingEducation) =>
+                                    incomingEducation.id === existingEducation.id,
+                            ) === -1,
+                    );
+
+                    const deletedEducations =
+                        await prisma.jobseekers_education.deleteMany({
+                            where: {
+                                OR: removableEducations.map((removableEducation) => ({
+                                    id: { equals: removableEducation.id },
+                                })),
+                            },
+                        });
+                }
+            }
+
             const schoolPromises = educations.map(async (edEntry: JsEducationInfoDTO) => {
 
                 const existingJobseekerEducation = await prisma.jobseekers_education.findUnique({
                     where: {
                         id: edEntry.id,
                     },
-                    include: {
-                        program: true,
-                    }
                 });
 
                 if (existingJobseekerEducation) {
@@ -148,17 +200,32 @@ export async function POST(request: Request) {
                         startDate: new Date(edEntry.startDate).toISOString(),
                         gradDate: new Date(edEntry.gradDate).toISOString(),
                         degreeType: edEntry.degreeType,
-                        programId: edEntry.programId,
                         gpa: edEntry.gpa,
                         description: edEntry.description,
                     };
 
                     const updatedEducation = await prisma.jobseekers_education.update({
                         where: { id: existingJobseekerEducation.id },
-                        data: eduUpdateData,
+                        data: {
+                            ...eduUpdateData,
+                            eduProviders: {
+                                connect: {
+                                    id: edEntry.edProviderId,
+                                },
+                            },
+                            program: edEntry.programId
+                                ? {
+                                    connect: {
+                                        id: edEntry.programId,
+                                    }
+                                }
+                                : {
+                                    disconnect: true
+                                }
+                        },
                         include: {
                             program: true, // Include the related program information
-                            eduProviders: true,
+                            eduProviders: true, // Include the related provider information
                         }
                     });
 
@@ -168,9 +235,10 @@ export async function POST(request: Request) {
                     const createdEducation = await prisma.jobseekers_education.create({
                         data: {
                             id: edEntry.id,
-                            edLevel: edEntry.edLevel ?? "None",
+                            edLevel: edEntry.edLevel ?? "",
                             preAppEdSystem: edEntry.preAppEdSystem,
                             isEnrolled: edEntry.isEnrolled,
+                            enrollmentStatus: edEntry.enrollmentStatus,
                             startDate: normalizeDate(edEntry?.startDate),
                             gradDate: normalizeDate(edEntry?.gradDate),
                             degreeType: edEntry.degreeType,
@@ -186,15 +254,18 @@ export async function POST(request: Request) {
                                     id: edEntry.edProviderId
                                 }
                             },
-                            program: {
-                                connect: {
-                                    id: edEntry.programId,
+                            // Conditionally include the program connection since it can be undefined
+                            ...(edEntry.programId && {
+                                program: {
+                                    connect: {
+                                        id: edEntry.programId,
+                                    },
                                 }
-                            }
+                            })
                         },
                         include: {
                             program: true, // Include the related program information
-                            eduProviders: true,
+                            eduProviders: true, // Include the related provider information
                         }
                     });
                     upsertedSchools.push(createdEducation);
@@ -202,6 +273,34 @@ export async function POST(request: Request) {
             });
 
             await Promise.all(schoolPromises);
+
+            // Remove project entries that are not in the latest data
+            if (Array.isArray(projects)) {
+                const existingProjects = await prisma.projectExperiences.findMany({
+                    where: {
+                        jobseekerId: jobseekerId,
+                    },
+                });
+                console.log('incomingprojects', projects);
+                if (existingProjects && existingProjects.length !== 0) {
+                    const removableProjects = existingProjects.filter(
+                        (existingProject) =>
+                            projects.findIndex(
+                                (incomingProject) =>
+                                    incomingProject.projectId === existingProject.projectId,
+                            ) === -1,
+                    );
+
+                    const deletedProjects = await prisma.projectExperiences.deleteMany({
+                        where: {
+                            OR: removableProjects.map((removableProject) => ({
+                                projectId: { equals: removableProject.projectId },
+                            })),
+                        },
+                    });
+                    console.log('deletedprojs', deletedProjects);
+                }
+            }
 
             const projPromises = projects.map(async (proj: ProjectExpDTO) => {
                 const existingProject = await prisma.projectExperiences.findUnique({
@@ -243,7 +342,6 @@ export async function POST(request: Request) {
                     teamSize: parseInt(proj.teamSize, 10),
                     repoUrl: proj?.repoUrl,
                     demoUrl: proj?.videoDemoUrl,
-
                 };
                 if (existingProject) {
                     // Delete existing skills and add the updated skills
@@ -327,7 +425,7 @@ export async function POST(request: Request) {
                 id: jsEdu.id,
                 edLevel: mapToEnumOrThrow(jsEdu.edLevel, EducationLevel),
                 edProviderId: jsEdu.eduProviderId,
-                eduProviderName: undefined,
+                edProviderName: jsEdu.eduProviders?.name || null,
                 isEnrolled: jsEdu.isEnrolled,
                 enrollmentStatus: jsEdu.enrollmentStatus,
                 isTechDegree: jsEdu.isTechDegree,
@@ -457,7 +555,7 @@ async function ensureProgramsExist(educations: JsEducationInfoDTO[]) {
             await prisma.programs.create({
                 data: {
                     id: programId,
-                    title: programName,  // Provide a fallback title if not available
+                    title: programName || 'undefined', // Provide a fallback title if not available
                 },
             });
         }

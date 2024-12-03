@@ -1,10 +1,26 @@
-'use client'
+'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation'
-import { Fragment, useEffect, useState } from 'react'
-import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition } from '@headlessui/react'
-import { Bars3Icon, CursorArrowRaysIcon, FingerPrintIcon, XMarkIcon, } from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { usePathname } from 'next/navigation';
+import { Fragment, useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogPanel,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverGroup,
+  PopoverPanel,
+  Transition,
+} from '@headlessui/react';
+import {
+  Bars3Icon,
+  CursorArrowRaysIcon,
+  FingerPrintIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import AccountMenu from './components/mui/AccountMenu';
 
@@ -17,7 +33,20 @@ const TopLevelLinks = [
   { name: 'Talent Showcase', href: '/services/talent-search' },
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
-  { name: 'Find a Job', href: '/services/joblistings' },
+  { name: 'Careers', href: '/services/careers' },
+  {
+    name: 'Find a Job',
+    href: 'https://cfajobs.powerappsportals.com/',
+    target: '_blank',
+    rel: 'oopener noreferrer',
+  },
+  {
+    name: 'Join Our Community',
+    href: 'https://forum.watechwfcoalition.org/',
+    target: '_blank',
+    rel: 'oopener noreferrer',
+  },
+  { name: 'About Us', href: '/about-us' },
   // { name: 'Explore', href: '/underconstruction' },
   // {
   //   name: "Contact Us",
@@ -26,39 +55,58 @@ const TopLevelLinks = [
 ];
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [headerTW, setHeaderTW] = useState('')
-  const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [headerTW, setHeaderTW] = useState('');
+  const pathname = usePathname();
   useEffect(() => {
     // Do something here...
-    setMobileMenuOpen(false)
-    if (pathname == '/services/jobseekers' || pathname == '/services/employers') {
-      setHeaderTW('w-full z-10 absolute text-white')
+    setMobileMenuOpen(false);
+    if (
+      pathname == '/services/jobseekers' ||
+      pathname == '/services/employers'
+    ) {
+      setHeaderTW('w-full z-10 absolute text-white');
     } else {
-      setHeaderTW('bg-white')
+      setHeaderTW('bg-white');
     }
-  }, [pathname])
+  }, [pathname]);
 
   return (
-
-    <header className={headerTW} >
-      <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"></link>
-      <nav className="mx-auto flex items-center justify-between p-4 laptop:px-8" aria-label="Global">
+    <header className={headerTW}>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet"
+      ></link>
+      <nav
+        className="mx-auto flex items-center justify-between p-4 laptop:px-8"
+        aria-label="Global"
+      >
         <div className="flex shrink">
-          {
-            pathname == '/services/jobseekers'|| pathname == '/services/employers' ?
-              <Link href="/">
-                <span className="sr-only">Tech Workforce Coalition</span>
-                <Image src="/images/TWC logo_White.svg" alt="Tech Workforce Coalition" width={75} height={31.8} />
-              </Link> :
-              <Link href="/">
-                <span className="sr-only">Tech Workforce Coalition</span>
-                <Image src="/images/TWC_75x50_2024.svg" alt="Tech Workforce Coalition" width={75} height={31.8} />
-              </Link>
-          }
+          {pathname == '/services/jobseekers' ||
+          pathname == '/services/employers' ? (
+            <Link href="/">
+              <span className="sr-only">Tech Workforce Coalition</span>
+              <Image
+                src="/images/TWC logo_White.svg"
+                alt="Tech Workforce Coalition"
+                width={75}
+                height={31.8}
+              />
+            </Link>
+          ) : (
+            <Link href="/">
+              <span className="sr-only">Tech Workforce Coalition</span>
+              <Image
+                src="/images/TWC_75x50_2024.svg"
+                alt="Tech Workforce Coalition"
+                width={75}
+                height={31.8}
+              />
+            </Link>
+          )}
         </div>
 
-        <PopoverGroup className="hidden items-center tablet:flex tablet:gap-x-12" >
+        <PopoverGroup className="hidden items-center tablet:flex tablet:gap-x-12">
           {/* <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
               For Students
@@ -109,23 +157,23 @@ export default function Header() {
                 key={link.name}
                 href={link.href}
                 className="text-sm font-semibold leading-6  "
+                target={link.target || '_self'}
+                rel={link.rel || ''}
               >
                 {link.name}
               </Link>
             );
           })}
-
-
         </PopoverGroup>
-
 
         {/* account menu */}
         <div className="flex shrink justify-end space-x-2">
           <AccountMenu />
 
-        {/* mobile view Hamburger menu toggle */}
+          {/* mobile view Hamburger menu toggle */}
           <button
-            type="button" onClick={() => setMobileMenuOpen(true)}
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 tablet:hidden"
           >
             <span className="sr-only">Open main menu</span>
@@ -134,7 +182,11 @@ export default function Header() {
         </div>
       </nav>
 
-      <Dialog className="laptop:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+      <Dialog
+        className="laptop:hidden"
+        open={mobileMenuOpen}
+        onClose={setMobileMenuOpen}
+      >
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 phone:max-w-sm phone:ring-1 phone:ring-gray-900/10">
           <div className="flex items-center justify-between">
@@ -149,7 +201,6 @@ export default function Header() {
               />
             </Link>
 
-
             <button
               type="button"
               className="-m-2.5 rounded-md p-2.5 text-gray-700"
@@ -158,30 +209,28 @@ export default function Header() {
               <span className="sr-only">Close menu</span>
               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
             </button>
-
-
           </div>
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                {
-                  TopLevelLinks.map((link) => {
-                    return (
-                      <Link
-                        key={link.name}
-                        href={link.href}
-                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7   hover:bg-gray-50"
-                      >
-                        {link.name}
-                      </Link>
-                    )
-                  })
-                }
+                {TopLevelLinks.map((link) => {
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7   hover:bg-gray-50"
+                      target={link.target || '_self'}
+                      rel={link.rel || ''}
+                    >
+                      {link.name}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>
         </DialogPanel>
       </Dialog>
     </header>
-  )
+  );
 }

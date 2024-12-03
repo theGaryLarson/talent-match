@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react';
 import { ProgramEnrollmentStatus } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import Bookmark from './Bookmark';
+import { ShareIcon } from '@heroicons/react/24/outline';
 
 export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerCardViewDTO }) {
   const { data: session } = useSession();
@@ -63,6 +64,7 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
     session?.user.roles.includes(Role.EMPLOYER) || // check role for permissions
     session?.user.roles.includes(Role.ADMIN) ||
     session?.user.roles.includes(Role.EDUCATOR) ||
+    session?.user.roles.includes(Role.CASE_MANAGER)||
     (sessionJobseekerId != undefined && sessionJobseekerId == id); // or it's our own profile
 
   const showBookmarks =
@@ -107,7 +109,7 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
                     removeUrl={'/api/companies/bookmark/removeJobseeker/' + jobseeker.jobseeker_id}
                 />
                : "" }
-            <ShareButton href={'/services/jobseekers/' + id} />
+            <ShareButton href={'/services/jobseekers/' + id} ><ShareIcon className="h-10 w-10 stroke-2" /></ShareButton>
           </div>
         </div>
       </div>

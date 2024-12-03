@@ -5,7 +5,7 @@ import {
   SelectJobseekerPoolCatResult,
 } from '@/app/lib/poolAssignment';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import {Prisma, PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import {
   educationRank,
   HighestCompletedEducationLevel,
@@ -14,6 +14,7 @@ import {
 import { devLog } from '@/app/lib/utils';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
+
 const prisma: PrismaClient = getPrismaClient();
 
 /**
@@ -92,7 +93,9 @@ export const aggregateJobseekerPoolVars = async (
         educationRank[HighestCompletedEducationLevel.Certificate],
     ),
     // TODO: store Career Prep program completion in database.
-    careerPrepComplete: education.some((edu) => edu.jobseekers?.careerPrepComplete ?? false),
+    careerPrepComplete: education.some(
+      (edu) => edu.jobseekers?.careerPrepComplete ?? false,
+    ),
   };
 
   devLog('Calculated Pool Vars\n', jobseekerPoolVars);
@@ -131,16 +134,15 @@ export const setPoolWithSession = async (): Promise<void> => {
   const session = await auth();
   try {
     if (!session?.user?.jobseekerId) {
-      throw new Error("No jobseeker id found in session")
+      throw new Error('No jobseeker id found in session');
     }
     const jobseekerId = session.user.jobseekerId;
     await setPool(jobseekerId);
-  } catch(error: any) {
+  } catch (error: any) {
     console.error('Error setting jobseeker pool:', error);
     throw error;
   }
-}
-
+};
 
 /**
  * Asynchronously sets the jobseeker pool for a given jobseeker ID.
@@ -151,7 +153,6 @@ export const setPoolWithSession = async (): Promise<void> => {
  * @returns {Promise<NextResponse>} A Promise that resolves to a NextResponse object indicating the success or failure of setting the jobseeker pool.
  */
 export const setPool = async (jobseekerId: string): Promise<void> => {
-
   try {
     await prisma.$transaction(async () => {
       const poolVars = await aggregateJobseekerPoolVars(jobseekerId);
@@ -161,12 +162,63 @@ export const setPool = async (jobseekerId: string): Promise<void> => {
   } catch (e: any) {
     // Log the error for debugging
     console.error('Error setting jobseeker pool:', e);
-    throw new Error('Failed to set jobseeker pool. Please try again later.', e)
+    throw new Error('Failed to set jobseeker pool. Please try again later.', e);
   } finally {
     prisma.$disconnect();
   }
 };
 
+export async function getPoolWithSession(){
+  const session = await auth();
+  
+  try {
+    if(session?.user.jobseekerId == null){
+      return
+    }
+    let res = await prisma.jobseekers.findUnique(
+      {
+        where:{
+          jobseeker_id: session?.user.jobseekerId
+        },
+        select:{
+          assignedPool:true
+        }
+      }
+    )
+    return res;
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function getCareerPrepAssementStatus(){
+  try {
+    const session = await auth();
+    if(session?.user.jobseekerId == null){
+      return
+    }
+    let res = await prisma.jobseekers.findUnique(
+      {where:{
+        jobseeker_id: session?.user.jobseekerId
+      },
+    select:{
+      CareerPrepAssessment:{
+        select:{
+          assessmentDate:true
+        }
+      }
+    }}
+    )
+    if(res == undefined){
+      return {
+        CareerPrepAssessment: []
+      }
+    }
+    return res
+  } catch (error) {
+    
+  }
+}
 /**
  * Delete a jobseeker and associated data from the database.
  * If the jobseeker is a coalition member, perform a soft delete by marking deletion date.
@@ -226,12 +278,12 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
 
         // Split the comma-separated list of roles and check for specific roles
         const userRolesArray: Role[] = user.role
-            .split(',')
-            .map((role: string) => role.trim() as Role);
+          .split(',')
+          .map((role: string) => role.trim() as Role);
 
         // Remove the JOBSEEKER role
         const filteredRolesArray = userRolesArray.filter(
-            (role) => role !== Role.JOBSEEKER,
+          (role) => role !== Role.JOBSEEKER,
         );
 
         if (filteredRolesArray.length === 0) {
@@ -254,19 +306,18 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
   }
 };
 
-export const deleteJobseekerWithSession = async () : Promise<void> => {
-    const session = await auth();
-    try {
-      const userId = session?.user.id
-      if (!userId) {
-        throw new Error("User id not found in session. ")
-      }
-      await deleteJobseeker(userId);
-    } catch (error: any) {
-      console.error('Error deleting jobseeker with session:', error);
-      throw error;
-
-    } finally {
-      prisma.$disconnect()
+export const deleteJobseekerWithSession = async (): Promise<void> => {
+  const session = await auth();
+  try {
+    const userId = session?.user.id;
+    if (!userId) {
+      throw new Error('User id not found in session. ');
     }
-}
+    await deleteJobseeker(userId);
+  } catch (error: any) {
+    console.error('Error deleting jobseeker with session:', error);
+    throw error;
+  } finally {
+    prisma.$disconnect();
+  }
+};

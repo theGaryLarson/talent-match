@@ -2,22 +2,24 @@
 import { getEmployersByCompanyId } from '@/app/lib/prisma';
 import { auth } from '@/auth';
 import Avatar from '../Avatar';
+import ShareMenu from '../ShareButton';
 
-export default async function EmployerTeamMembers() {
+export default async function EmployerTeamMembers(props:{companyid:string}) {
   let session = await auth();
-  let teamates = await getEmployersByCompanyId(session?.user.companyId ?? '');
+  let teamates = await getEmployersByCompanyId(props.companyid);
   return (
     <div>
       <div className="text-xl font-medium leading-relaxed text-black/90">
         My team
       </div>
       <div className="flex flex-wrap gap-[16px] rounded-[10px] bg-white p-4 shadow">
-        <div className="flex items-center gap-[8px] hover:bg-gray-200">
+        <ShareMenu href={'/signin'} >
+        <div className="flex items-center gap-[8px]">
           <Avatar imgsrc={'/images/plusIcon.png'} scale={0.75} />
           <div className="text-sm font-semibold tracking-tight">
             Invite Team
           </div>
-        </div>
+        </div></ShareMenu>
         {teamates
           .filter((t) => t.employer_id != session?.user.employerId)
           .map((t) => {

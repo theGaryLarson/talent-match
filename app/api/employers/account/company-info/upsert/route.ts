@@ -251,7 +251,7 @@ export async function POST(request: Request) {
             companyPhone: upsertedCompany.company_phone,
             mission: upsertedCompany.company_mission,
             vision: upsertedCompany.company_vision,
-            employeeCount: upsertedCompany.size,
+            companySize: upsertedCompany.size,
             estimatedAnnualHires: upsertedCompany?.estimated_annual_hires?.toString(),
             isApproved: upsertedCompany.is_approved,
             createdBy: upsertedCompany.createdBy,

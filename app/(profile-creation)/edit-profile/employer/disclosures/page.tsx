@@ -50,9 +50,8 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   const router = useRouter();
 
   const { data: session, update, status } = useSession();
-  const updateSessionProperties = useUpdateSession();
 
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  // const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
 
   const [companyName, setCompanyName] = useState<string>('');
@@ -68,9 +67,8 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           const { id, companyId, employerId } = session.user;
 
           try {
-            // NOTE: @Gary it seems you were using a different route than disclosures get? I'm leaving this the same here as I'm not too sure about creating a disclosures get route
             const response = await fetch(
-              `/api/companies/name/get/${session.user.companyId}`,
+              `/api/companies/name/get/${companyStoreData.companyId}`,
               {
                 method: 'GET',
                 headers: {
@@ -145,34 +143,33 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
 
     devLog('disclosuresData', disclosuresData);
 
-    if (!termsAccepted) {
-      setOpen(true);
-    } else {
-      try {
-        const response = await fetch(
-          `/api/employers/account/disclosures/update/${session?.user?.employerId}`,
-          {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              ...disclosuresData,
-              hasAgreedTerms: termsAccepted,
-            }),
-          },
-        );
 
-        if (response.ok) {
-          const result = await response.json();
-          dispatch(setPageSaved('disclosures'));
-          dispatch(setDisclosures(disclosuresData));
-          router.push('/edit-profile/employer/congratulations');
-        } else {
-          const errorData = await response.json();
-        }
-      } catch (error) {}
-    }
+    // setOpen(true);
+
+    try {
+      const response = await fetch(
+        `/api/employers/account/disclosures/update/${session?.user?.employerId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...disclosuresData,
+          }),
+        },
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        dispatch(setPageSaved('disclosures'));
+        dispatch(setDisclosures(disclosuresData));
+        router.push('/edit-profile/employer/congratulations');
+      } else {
+        const errorData = await response.json();
+      }
+    } catch (error) {}
+
   };
 
   const handleClose = (
@@ -189,9 +186,9 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(6 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(3 / 3) * 100} size="sm" />
 
-        <p>Step 6/6</p>
+        <p>Step 3/3</p>
         <h1>Professional Info and Disclosures</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -223,7 +220,6 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
               >
                 Company Name
               </InputTextWithLabel>
-              <h2>Last thing...</h2>
               <InputTextWithLabel
                 id={`${formNamePrefix}currentJobTitle`}
                 placeholder="Job Title"
@@ -240,7 +236,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                   <SelectAutoload
                     id={`${formNamePrefix}workAddressId`}
                     className="select-autoload"
-                    apiAutoloadRoute={`/api/companies/locations/get/${session?.user?.companyId}`}
+                    apiAutoloadRoute={`/api/companies/locations/get/${companyStoreData.companyId}`}
                     label="Work Location *"
                     value={workAddress}
                     onChange={(val) => {
@@ -280,21 +276,25 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
             </div>
           </fieldset>
 
-          <legend>
-            <h2>Terms</h2>
-          </legend>
-          <Label className="block">
-            <Checkbox
-              name={`${formNamePrefix}hasAgreedTerms`}
-              checked={termsAccepted}
-              onChange={(event) => setTermsAccepted(event.target.checked)}
-            />{' '}
-            By signing up you agree to our terms of use. *
-          </Label>
+          {/*<legend>*/}
+          {/*  <h2>Terms</h2>*/}
+          {/*</legend>*/}
+          {/*<Label className="block">*/}
+          {/*  <Checkbox*/}
+          {/*    name={`${formNamePrefix}hasAgreedTerms`}*/}
+          {/*    checked={termsAccepted}*/}
+          {/*    onChange={(event) => setTermsAccepted(event.target.checked)}*/}
+          {/*  />{' '}*/}
+          {/*  By signing up you agree to our terms of use. **/}
+          {/*</Label>*/}
 
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
-              Cancel
+            <Button
+              pill
+              className="custom-outline-btn"
+              onClick={() => router.push('/edit-profile/employer/company')}
+            >
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue

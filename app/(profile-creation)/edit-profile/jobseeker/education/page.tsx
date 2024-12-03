@@ -23,15 +23,15 @@ import { useRouter } from 'next/navigation';
 import Educations, {
   defaultEducationData,
   EducationData,
-} from '@/app/ui/form-field-groups/Educations';
+} from './form-field-groups/Educations';
 import Licenses, {
   defaultLicenseData,
   LicenseData,
-} from '@/app/ui/form-field-groups/Licenses';
+} from './form-field-groups/Licenses';
 import ProjectExperiences, {
   defaultProjectExperienceData,
   ProjectExperienceData,
-} from '@/app/ui/form-field-groups/ProjectExperiences';
+} from './form-field-groups/ProjectExperiences';
 import { devLog, mapToEnum, mapToEnumOrThrow } from '@/app/lib/utils';
 import { getSession, useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
@@ -64,6 +64,7 @@ export default function CreateJobseekerProfileEducationPage() {
   );
   let educationData = { ...educationStoreData };
   const [error, setError] = useState<string | null>(null);
+  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
 
   const [highestLevelOfStudy, setHighestLevelOfStudy] = useState(
     educationData.highestLevelOfStudy,
@@ -74,12 +75,17 @@ export default function CreateJobseekerProfileEducationPage() {
         projectId: project.projectId,
         projectTitle: project.projTitle,
         projectRole: project.projectRole,
-        startDate: dayjs(project.startDate),
-        completionDate: dayjs(project.completionDate),
+        startDate: !Boolean(project.startDate)
+          ? null
+          : dayjs(project.startDate),
+        completionDate: !Boolean(project.completionDate)
+          ? null
+          : dayjs(project.completionDate),
         reference: project.repoUrl ?? '',
         problemSolvedDescription: project.problemSolvedDescription,
         teamSize: project.teamSize,
         skills: project.skills,
+        fetchedSkills: project.skills,
       }),
     ),
     licenses: educationData.certifications.map(
@@ -89,8 +95,8 @@ export default function CreateJobseekerProfileEducationPage() {
         issuingOrg: cert.issuingOrg,
         credentialId: cert.credentialId ?? '',
         credentialUrl: cert.credentialUrl ?? '',
-        issueDate: dayjs(cert.issueDate),
-        expiryDate: dayjs(cert.expiryDate),
+        issueDate: !Boolean(cert.issueDate) ? null : dayjs(cert.issueDate),
+        expiryDate: !Boolean(cert.expiryDate) ? null : dayjs(cert.expiryDate),
       }),
     ),
     educations: educationData.educations.map(
@@ -105,15 +111,22 @@ export default function CreateJobseekerProfileEducationPage() {
         edProviderName: education.edProviderName ?? '',
         isEnrolled: education.isEnrolled,
         enrollmentStatus: education.enrollmentStatus,
-        startDate: dayjs(education.startDate),
-        gradDate: dayjs(education.gradDate),
+        startDate: !Boolean(education.startDate)
+          ? null
+          : dayjs(education.startDate),
+        gradDate: !Boolean(education.gradDate)
+          ? null
+          : dayjs(education.gradDate),
         degreeType:
           mapToEnum(education.degreeType ?? null, HighSchoolDegreeType) ??
           mapToEnumOrThrow(education.degreeType ?? null, CollegeDegreeType),
-        programObject: {
-          id: education.programId,
-          title: education.programName,
-        },
+        programObject:
+          education.programId && education.programName
+            ? {
+                id: education.programId,
+                title: education.programName,
+              }
+            : undefined,
         programName: education.programName,
         programId: education.programId,
         preAppEdSystem: education.preAppEdSystem,
@@ -215,6 +228,7 @@ export default function CreateJobseekerProfileEducationPage() {
                 .result;
               educationData.userId = id!;
               educationData.jobseekerId = jobseekerId!;
+
               if (fetchedData.highestLevelOfStudy) {
                 educationData.highestLevelOfStudy =
                   fetchedData.highestLevelOfStudy;
@@ -245,6 +259,7 @@ export default function CreateJobseekerProfileEducationPage() {
                       edProviderId: education.edProviderId,
                       edProviderName: education.edProviderName ?? '',
                       isEnrolled: education.isEnrolled,
+                      enrollmentStatus: education.enrollmentStatus,
                       startDate: dayjs(education.startDate),
                       gradDate: dayjs(education.gradDate),
                       degreeType:
@@ -256,10 +271,13 @@ export default function CreateJobseekerProfileEducationPage() {
                           education.degreeType ?? null,
                           CollegeDegreeType,
                         ),
-                      programObject: {
-                        id: education.programId,
-                        title: education.programName,
-                      },
+                      programObject:
+                        education.programId && education.programName
+                          ? {
+                              id: education.programId,
+                              title: education.programName,
+                            }
+                          : undefined,
                       programName: education.programName,
                       programId: education.programId,
                       preAppEdSystem: education.preAppEdSystem,
@@ -276,13 +294,18 @@ export default function CreateJobseekerProfileEducationPage() {
                       projectId: project.projectId,
                       projectTitle: project.projTitle,
                       projectRole: project.projectRole,
-                      startDate: dayjs(project.startDate),
-                      completionDate: dayjs(project.completionDate),
+                      startDate: project.startDate
+                        ? dayjs(project.startDate)
+                        : null,
+                      completionDate: project.completionDate
+                        ? dayjs(project.completionDate)
+                        : null,
                       reference: project.repoUrl ?? '',
                       problemSolvedDescription:
                         project.problemSolvedDescription,
                       teamSize: project.teamSize,
                       skills: project.skills,
+                      fetchedSkills: project.skills,
                     }),
                   ),
                 ],
@@ -295,8 +318,10 @@ export default function CreateJobseekerProfileEducationPage() {
                       issuingOrg: cert.issuingOrg,
                       credentialId: cert.credentialId ?? '',
                       credentialUrl: cert.credentialUrl ?? '',
-                      issueDate: dayjs(cert.issueDate),
-                      expiryDate: dayjs(cert.expiryDate),
+                      issueDate: cert.issueDate ? dayjs(cert.issueDate) : null,
+                      expiryDate: cert.expiryDate
+                        ? dayjs(cert.expiryDate)
+                        : null,
                     }),
                   ),
                 ],
@@ -316,10 +341,13 @@ export default function CreateJobseekerProfileEducationPage() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
     if (!session?.user?.id) {
       console.error('User session is not available.');
       return;
     }
+
+    setHasUnmetRequired('');
 
     const userId = session.user.id;
     const form = event.currentTarget as HTMLFormElement;
@@ -335,14 +363,47 @@ export default function CreateJobseekerProfileEducationPage() {
         startDate: ed.startDate?.toISOString() ?? '',
         gradDate: ed.gradDate?.toISOString() ?? '',
         degreeType: ed.degreeType || undefined,
-        programId: ed?.programObject?.id || ed?.programId!, // Note: no rel with provider_programs pulled from a separate programs table.
-        programName: ed?.programObject?.title || ed.programName,
+        programId: ed?.programObject?.id || ed?.programId || undefined, // Note: no rel with provider_programs pulled from a separate programs table.
+        programName: ed?.programObject?.title || ed?.programName || undefined,
         gpa: ed?.gpa,
         preAppEdSystem: ed.preAppEdSystem || null,
         description: ed.description || null,
         isTechnicalDegree: ed.isTechDegree || false,
       }),
     );
+
+    // Validate the education entries
+    if (
+      !educations.every((education) => {
+        if (
+          !Boolean(education.edProviderId) &&
+          !Boolean(education.edProviderName)
+        ) {
+          setHasUnmetRequired(`${education.id}-edProviderObject`);
+          return false;
+        }
+        if (education.edLevel === EducationLevel.College) {
+          if (
+            !Boolean(education.programId) &&
+            !Boolean(education.programName)
+          ) {
+            setHasUnmetRequired(`${education.id}-programObject`);
+            return false;
+          }
+        }
+        if (!Boolean(education.startDate)) {
+          setHasUnmetRequired(`${education.id}-startDate`);
+          return false;
+        }
+        if (!Boolean(education.gradDate)) {
+          setHasUnmetRequired(`${education.id}-gradDate`);
+          return false;
+        }
+        return true;
+      })
+    ) {
+      return;
+    }
 
     const certifications: CertDTO[] = data.licenses.map(
       (cert: LicenseData) => ({
@@ -352,8 +413,8 @@ export default function CreateJobseekerProfileEducationPage() {
         issuingOrg: cert.issuingOrg,
         credentialId: cert.credentialId,
         credentialUrl: cert.credentialUrl,
-        issueDate: cert.issueDate?.toISOString() ?? '',
-        expiryDate: cert.expiryDate?.toISOString() ?? '',
+        issueDate: cert.issueDate?.toISOString() ?? undefined,
+        expiryDate: cert.expiryDate?.toISOString() ?? undefined,
         description: undefined,
       }),
     );
@@ -373,6 +434,27 @@ export default function CreateJobseekerProfileEducationPage() {
       }),
     );
 
+    // Validate the project experience entries
+    if (
+      !projects.every((project) => {
+        if (project.skills.length === 0) {
+          setHasUnmetRequired(`${project.projectId}-skills`);
+          return false;
+        }
+        if (!Boolean(project.startDate)) {
+          setHasUnmetRequired(`${project.projectId}-startDate`);
+          return false;
+        }
+        if (!Boolean(project.completionDate)) {
+          setHasUnmetRequired(`${project.projectId}-completionDate`);
+          return false;
+        }
+        return true;
+      })
+    ) {
+      return;
+    }
+
     educationData = {
       ...educationData,
       userId: userId,
@@ -382,10 +464,6 @@ export default function CreateJobseekerProfileEducationPage() {
       projects: projects,
     };
 
-    await handleApiCall(educationData);
-  };
-
-  const handleApiCall = async (educationData: JsEducationPageDTO) => {
     try {
       const response = await fetch('/api/jobseekers/account/edu-info/upsert', {
         method: 'POST',
@@ -416,14 +494,14 @@ export default function CreateJobseekerProfileEducationPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(2 / 6) * 100} size="sm" />
-        <p>Step 2/6</p>
+        <ProgressBarFlat progress={(4 / 6) * 100} size="sm" />
+        <p>Step 4/6</p>
         <h1>Education</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
           <fieldset>
             <legend>
-              <h2>Highest Education</h2>
+              <h2>Highest Level of Education</h2>
             </legend>
             <SelectOptionsWithLabel
               id="profile-creation-education-highest-completed"
@@ -438,28 +516,28 @@ export default function CreateJobseekerProfileEducationPage() {
               placeholder="Please select"
               onChange={handleLevelOfStudy}
               value={highestLevelOfStudy}
-              required
             >
-              What is your highest completed level of study? *
+              What is the highest degree you’ve earned or schooling completed?
             </SelectOptionsWithLabel>
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Educations</h2>
+              <h2>Education Details</h2>
             </legend>
             <Educations
               data={data.educations}
+              hasUnmetRequired={hasUnmetRequired}
               onUpdate={handleUpdate}
               onRemove={removeEducation}
             />
             <Button pill color="gray" onClick={addNewEducation}>
               <MdAdd className="mr-2 h-5 w-5" />
-              Add education
+              Add education detail
             </Button>
           </fieldset>
           <fieldset className="license-groups">
             <legend>
-              <h2>Licenses &amp; certificates</h2>
+              <h2>Licenses &amp; Certifications</h2>
             </legend>
             <Licenses
               data={data.licenses}
@@ -468,15 +546,20 @@ export default function CreateJobseekerProfileEducationPage() {
             />
             <Button pill color="gray" onClick={addNewLicense}>
               <MdAdd className="mr-2 h-5 w-5" />
-              Add license
+              Add license or certification
             </Button>
           </fieldset>
           <fieldset className="project-experience-groups">
             <legend>
               <h2>Project experience</h2>
+              <p>
+                Share your experience creating or contributing to a project as a
+                student, apprentice, or intern.
+              </p>
             </legend>
             <ProjectExperiences
               data={data.projectExperiences}
+              hasUnmetRequired={hasUnmetRequired}
               onUpdate={handleUpdate}
               onRemove={removeProjectExperience}
             />
@@ -488,12 +571,12 @@ export default function CreateJobseekerProfileEducationPage() {
           <div className="profile-form-progress-btn-group flex">
             <Button
               pill
-              color="gray"
+              className="custom-outline-btn"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/introduction');
+                router.push('/edit-profile/jobseeker/showcase');
               }}
             >
-              Previous{' '}
+              Previous
             </Button>
             <Button pill type="submit">
               Save and continue

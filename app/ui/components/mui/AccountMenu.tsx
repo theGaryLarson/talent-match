@@ -33,7 +33,7 @@ export default function AccountMenu() {
   };
 
   var textColor = 'text-black';
-  if (pathname == '/services/jobseekers'|| pathname == '/services/employers') {
+  if (pathname == '/services/jobseekers' || pathname == '/services/employers') {
     textColor = 'text-white';
   }
 
@@ -106,7 +106,7 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {role?.includes(Role.EMPLOYER) || role?.includes(Role.ADMIN) ? (
+        {role?.includes(Role.EMPLOYER) ? (
           <Link href="/services/employers/dashboard">
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
@@ -118,7 +118,7 @@ export default function AccountMenu() {
         ) : (
           ''
         )}
-        {role?.includes(Role.JOBSEEKER) || role?.includes(Role.ADMIN) ? (
+        {role?.includes(Role.JOBSEEKER) ? (
           <Link href="/services/jobseekers/dashboard">
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
@@ -130,8 +130,32 @@ export default function AccountMenu() {
         ) : (
           ''
         )}
+        {role?.includes(Role.ADMIN) ? (
+          <Link href="/admin">
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <DashboardIcon fontSize="small" />
+              </ListItemIcon>
+              Admin Dashboard
+            </MenuItem>
+          </Link>
+        ) : (
+          ''
+        )}
+        {role?.includes(Role.CASE_MANAGER) ? (
+          <Link href="/career-prep">
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <DashboardIcon fontSize="small" />
+              </ListItemIcon>
+              Career Prep Dashboard
+            </MenuItem>
+          </Link>
+        ) : (
+          ''
+        )}
 
-        {role?.includes(Role.JOBSEEKER) || role?.includes(Role.ADMIN) ? (
+        {role?.includes(Role.JOBSEEKER) ? (
           <Link href={'/services/jobseekers/' + session?.user.jobseekerId}>
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
@@ -144,7 +168,7 @@ export default function AccountMenu() {
           ''
         )}
 
-        {role?.includes(Role.JOBSEEKER) || role?.includes(Role.ADMIN) ? (
+        {role?.includes(Role.JOBSEEKER) ? (
           <Link href={'/edit-profile/jobseeker/introduction'}>
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
@@ -157,8 +181,8 @@ export default function AccountMenu() {
           ''
         )}
 
-        {role?.includes(Role.EMPLOYER) || role?.includes(Role.ADMIN) ? (
-          <Link href="/edit-profile/employer/personal">
+        {role?.includes(Role.EMPLOYER) ? (
+          <Link href="/edit-profile/employer/profile">
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <EditIcon fontSize="small" />

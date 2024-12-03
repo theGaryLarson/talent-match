@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button, Progress } from 'flowbite-react';
 import { devLog, formatPhoneE164 } from '@/app/lib/utils';
@@ -29,6 +28,7 @@ import {
   setPageSaved,
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
+import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
 
 const formNamePrefix = 'profile-creation-intro-';
 
@@ -42,19 +42,18 @@ export default function CreateJobseekerProfileIntroPage() {
   );
   const [error, setError] = useState<string | null>(null);
 
+  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
+
   const [introData, setIntroData] = useState<JsIntroPostDTO>({
     ...introStoreData,
   });
-  console.log('initialdata', introData);
+
   const [birthdate, setBirthdate] = useState<Dayjs | null>(
-    introData.birthDate === '' ? null : dayjs(introData.birthDate),
+    !Boolean(introData.birthDate) ? null : dayjs(introData.birthDate),
   );
-  console.log('initialbirthdate', birthdate);
+
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     introData.photoUrl ?? null,
-  );
-  const [resumeUrl, setResumeUrl] = useState<string | null>(
-    introData.resumeUrl ?? null,
   );
   const pathname = usePathname(); // Gets the current pathname
 
@@ -86,7 +85,6 @@ export default function CreateJobseekerProfileIntroPage() {
             } else {
               let fetchedData: JsIntroDTO = (await response.json()).result
                 .loadIntroPage;
-              console.log('fetcheddata', fetchedData);
               setIntroData({
                 ...introData,
                 userId: id!,
@@ -94,7 +92,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 firstName: firstName ?? '',
                 lastName: lastName ?? '',
                 photoUrl: fetchedData.photoUrl ?? session.user?.image,
-                birthDate: fetchedData.birthDate ?? '',
+                birthDate: fetchedData.birthDate ?? null,
                 zipCode: fetchedData.zipCode ?? '',
                 city: fetchedData.city,
                 county: fetchedData.county,
@@ -102,17 +100,14 @@ export default function CreateJobseekerProfileIntroPage() {
                 introHeadline: fetchedData.introHeadline,
                 phone: fetchedData.phone,
                 phoneCountryCode: fetchedData.phoneCountryCode,
-                resumeUrl: fetchedData.resumeUrl,
                 state: fetchedData.state,
               });
               setAvatarUrl(fetchedData.photoUrl ?? session.user?.image ?? null);
               setBirthdate(
-                typeof fetchedData.birthDate === 'string' &&
-                  fetchedData.birthDate === ''
+                !Boolean(fetchedData.birthDate)
                   ? null
                   : dayjs(fetchedData.birthDate),
               );
-              setResumeUrl(fetchedData.resumeUrl ?? null);
             }
           } catch (error) {
             console.error(error);
@@ -166,13 +161,19 @@ export default function CreateJobseekerProfileIntroPage() {
       return;
     }
 
-    const updatedIntroData = {
+    setHasUnmetRequired('');
+
+    const updatedIntroData: JsIntroPostDTO = {
       ...introData,
-      birthDate: birthdate?.toISOString() ?? '',
+      birthDate: birthdate?.toISOString() ?? null,
       photoUrl: avatarUrl,
-      resumeUrl: resumeUrl,
     };
     setIntroData(updatedIntroData);
+
+    if (!birthdate || !birthdate.isValid()) {
+      setHasUnmetRequired(`${session.user.id}-birthDate`);
+      return;
+    }
 
     // Extract firstName, lastName, and name from Redux state fields
     const firstName = introData.firstName;
@@ -199,17 +200,17 @@ export default function CreateJobseekerProfileIntroPage() {
 
         // Update the redux state
         dispatch(setPageSaved('introduction'));
-        dispatch(setIntroduction(introData));
+        dispatch(setIntroduction(updatedIntroData));
 
         // Update session properties using the custom hook
         await updateSessionProperties({
           firstName,
           lastName,
           name,
-          image: introData.photoUrl,
+          image: updatedIntroData.photoUrl,
         });
 
-        router.push('/edit-profile/jobseeker/education');
+        router.push('/edit-profile/jobseeker/preferences');
       } else {
         const errorMessage = `Failed to submit basic info. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -225,7 +226,7 @@ export default function CreateJobseekerProfileIntroPage() {
       <section className="profile-form-section">
         <ProgressBarFlat progress={(1 / 6) * 100} size="sm" />
         <p>Step 1/6</p>
-        <h1>Intro</h1>
+        <h1>Profile Settings</h1>
         <p className="subtitle">* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
@@ -245,7 +246,7 @@ export default function CreateJobseekerProfileIntroPage() {
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Basic info</h2>
+              <h2>Contact Information</h2>
             </legend>
 
             <div className="profile-form-grid md:grid-cols-2">
@@ -253,28 +254,37 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-firstName"
                 placeholder="Your first name"
                 onChange={handleFieldChange}
-                value={introData.firstName}
-                required
+                value={introData.firstName ?? ''}
               >
-                First Name *
+                First Name
               </InputTextWithLabel>
               <InputTextWithLabel
                 id="profile-creation-intro-lastName"
                 placeholder="Your last name"
                 onChange={handleFieldChange}
-                value={introData.lastName}
-                required
+                value={introData.lastName ?? ''}
               >
-                Last Name *
+                Last Name
               </InputTextWithLabel>
             </div>
 
             <div className="profile-form-grid">
-              <DatePicker
-                label="Birth Date *"
-                value={birthdate}
-                onChange={setBirthdate}
-              />
+              <RequiredTooltip
+                open={
+                  hasUnmetRequired === `${introData.userId}-birthDate` &&
+                  !Boolean(birthdate)
+                }
+                errorMessage="Your birth date is required"
+              >
+                <DatePicker
+                  label="Birth Date *"
+                  value={birthdate}
+                  onChange={(val) => {
+                    setBirthdate(val?.isValid() ? val : null);
+                  }}
+                  slotProps={{ textField: { fullWidth: true } }}
+                />
+              </RequiredTooltip>
             </div>
 
             <div className="profile-form-grid md:grid-cols-2">
@@ -282,9 +292,9 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-zipCode"
                 placeholder="Zipcode"
                 onChange={handleFieldChange}
-                value={introData.zipCode}
-                required
+                value={introData.zipCode ?? ''}
                 pattern="\d{5}(-\d{4})?"
+                required
               >
                 Zip Code *
               </InputTextWithLabel>
@@ -663,7 +673,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 ]}
                 value={introData.phoneCountryCode ?? 'United States +1'}
               >
-                Country Phone Code *
+                Country Phone Code
               </SelectOptionsWithLabel>
               <InputTextWithLabel
                 id="profile-creation-intro-phone"
@@ -671,17 +681,16 @@ export default function CreateJobseekerProfileIntroPage() {
                 placeholder="Phone number"
                 onChange={handleFieldChange}
                 value={introData.phone ?? ''}
-                required
               >
-                Phone Number *
+                Phone Number
               </InputTextWithLabel>
             </div>
           </fieldset>
 
-          <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">
+          <div className="profile-form-progress-btn-single-end">
+            {/* <Button pill className="custom-outline-btn">
               Cancel
-            </Button>
+            </Button> */}
             <Button pill type="submit">
               Save and continue
             </Button>

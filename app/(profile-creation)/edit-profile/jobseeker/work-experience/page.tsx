@@ -9,11 +9,11 @@ import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
 import WorkExperiences, {
   defaultWorkExperienceData,
   WorkExperienceData,
-} from '@/app/ui/form-field-groups/WorkExperiences';
+} from './form-field-groups/WorkExperiences';
 import InternshipExperiences, {
   defaultInternshipExperienceData,
   InternshipExperienceData,
-} from '@/app/ui/form-field-groups/InternshipExperiences';
+} from './form-field-groups/InternshipExperiences';
 import {
   JsWorkDTO,
   JsWorkExpDTO,
@@ -39,8 +39,8 @@ interface Data {
   monthsInternshipExperience: string | number;
   workExperiences: WorkExperienceData[];
   internshipExperiences: WorkExperienceData[];
-  isAuthorizedToWorkUsa?: boolean;
-  requiresSponsorship?: boolean;
+  isAuthorizedToWorkUsa?: boolean | null;
+  requiresSponsorship?: boolean | null;
 }
 
 export default function CreateJobseekerProfileWorkExperiencePage() {
@@ -68,6 +68,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
   let workExperienceData: JsWorkExpDTO = { ...workExperienceStoreData };
   const [error, setError] = useState<string | null>(null);
 
+  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
+
   const [data, setData] = useState<Data>({
     yearsWorkExperience: workExperienceData.yearsWorkExperience,
     monthsInternshipExperience:
@@ -85,8 +87,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             },
             techAreaObject: { id: exp.techAreaId ?? '', title: '' },
             jobTitle: exp.jobTitle,
-            startDate: dayjs(exp.startDate),
-            endDate: dayjs(exp.endDate),
+            startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
+            endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
             isCurrentJob: exp.isCurrentJob,
             responsibilities: exp.responsibilities,
           }),
@@ -104,8 +106,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             },
             techAreaObject: { id: exp.techAreaId ?? '', title: '' },
             jobTitle: exp.jobTitle,
-            startDate: dayjs(exp.startDate),
-            endDate: dayjs(exp.endDate),
+            startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
+            endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
             isCurrentJob: exp.isCurrentJob,
             responsibilities: exp.responsibilities,
           }),
@@ -155,13 +157,16 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     dispatch(setPageDirty('work-experience'));
   }
 
-  const handleUpdate = useCallback((key: string, value: any) => {
-    setData((prevData) => ({
-      ...prevData,
-      [key]: value,
-    }));
-    dispatch(setPageDirty('work-experience'));
-  }, [dispatch]);
+  const handleUpdate = useCallback(
+    (key: string, value: any) => {
+      setData((prevData) => ({
+        ...prevData,
+        [key]: value,
+      }));
+      dispatch(setPageDirty('work-experience'));
+    },
+    [dispatch],
+  );
 
   const handleInputUpdate = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -262,7 +267,6 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
 
     const userId = session.user.id!;
     const jobseekerId = session.user.jobseekerId!;
-    devLog(data.workExperiences);
     const workExperiences = data.workExperiences?.map((workExp) => ({
       workId: workExp.workId, //fixme: generate uuid on the backend or is this fine?
       jobseekerId: jobseekerId,
@@ -272,10 +276,30 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       isInternship: false,
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
-      startDate: workExp.startDate!.toDate(),
+      startDate: workExp.startDate ? workExp.startDate.toDate() : null,
       endDate: workExp.endDate ? workExp.endDate.toDate() : null,
       responsibilities: workExp.responsibilities,
     }));
+
+    // Validate the work experience entries
+    if (
+      !workExperiences.every((workExperience) => {
+        if (!Boolean(workExperience.startDate)) {
+          setHasUnmetRequired(`${workExperience.workId}-startDate`);
+          return false;
+        }
+        if (
+          !Boolean(workExperience.endDate) &&
+          !Boolean(workExperience.isCurrentJob)
+        ) {
+          setHasUnmetRequired(`${workExperience.workId}-endDate`);
+          return false;
+        }
+        return true;
+      })
+    ) {
+      return;
+    }
 
     const internshipExperiences = data.internshipExperiences?.map(
       (internshipExp) => ({
@@ -287,11 +311,30 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         isInternship: true,
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
-        startDate: internshipExp.startDate!.toDate(),
+        startDate: internshipExp.startDate
+          ? internshipExp.startDate.toDate()
+          : null,
         endDate: internshipExp.endDate ? internshipExp.endDate.toDate() : null,
         responsibilities: internshipExp.responsibilities,
       }),
     );
+
+    // Validate the internship experience entries
+    if (
+      !internshipExperiences.every((internshipExperience) => {
+        if (!Boolean(internshipExperience.startDate)) {
+          setHasUnmetRequired(`${internshipExperience.workId}-startDate`);
+          return false;
+        }
+        if (!Boolean(internshipExperience.endDate)) {
+          setHasUnmetRequired(`${internshipExperience.workId}-endDate`);
+          return false;
+        }
+        return true;
+      })
+    ) {
+      return;
+    }
 
     workExperienceData.userId = userId;
     workExperienceData.yearsWorkExperience =
@@ -303,7 +346,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     workExperienceData.workExperiences = [
       ...workExperiences,
       ...internshipExperiences,
-    ];
+    ].map((experience) => ({
+      ...experience,
+      startDate: experience.startDate ?? new Date(),
+    }));
 
     try {
       const response = await fetch('/api/jobseekers/account/work-info/upsert', {
@@ -334,7 +380,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       }
 
       const result = await response.json();
-      router.push('/edit-profile/jobseeker/showcase');
+      router.push('/edit-profile/jobseeker/disclosures');
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
@@ -344,8 +390,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(3 / 6) * 100} size="sm" />
-        <p>Step 3/6</p>
+        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
+        <p>Step 5/6</p>
         <h1>Work experience</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
@@ -353,24 +399,21 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             <legend>
               <h2>Work experience</h2>
             </legend>
-            {data.workExperiences.length === 0 ? (
-              ''
-            ) : (
-              <div className="profile-form-grid">
-                <InputTextWithLabel
-                  type="number"
-                  id="profile-creation-experience-work-fulltime-years"
-                  name="yearsWorkExperience"
-                  value={data.yearsWorkExperience + ''}
-                  onChange={handleInputUpdate}
-                >
-                  How many years of full-time work experience do you have (not
-                  including internship)?
-                </InputTextWithLabel>
-              </div>
-            )}
+            <div className="profile-form-grid">
+              <InputTextWithLabel
+                type="number"
+                id="profile-creation-experience-work-fulltime-years"
+                name="yearsWorkExperience"
+                value={data.yearsWorkExperience + ''}
+                onChange={handleInputUpdate}
+              >
+                How many years of full-time work experience do you have (not
+                including internship)?
+              </InputTextWithLabel>
+            </div>
             <WorkExperiences
               data={data.workExperiences}
+              hasUnmetRequired={hasUnmetRequired}
               onUpdate={handleUpdate}
               onRemove={removeWorkExperience}
             />
@@ -387,23 +430,20 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             <legend>
               <h2>Internship experience</h2>
             </legend>
-            {data.internshipExperiences.length === 0 ? (
-              ''
-            ) : (
-              <div className="profile-form-grid">
-                <InputTextWithLabel
-                  type="number"
-                  id="profile-creation-experience-internship-months"
-                  name="monthsInternshipExperience"
-                  onChange={handleInputUpdate}
-                  value={data.monthsInternshipExperience + ''}
-                >
-                  How many months of internship work experience do you have?
-                </InputTextWithLabel>
-              </div>
-            )}
+            <div className="profile-form-grid">
+              <InputTextWithLabel
+                type="number"
+                id="profile-creation-experience-internship-months"
+                name="monthsInternshipExperience"
+                onChange={handleInputUpdate}
+                value={data.monthsInternshipExperience + ''}
+              >
+                How many months of internship work experience do you have?
+              </InputTextWithLabel>
+            </div>
             <InternshipExperiences
               data={data.internshipExperiences as InternshipExperienceData[]}
+              hasUnmetRequired={hasUnmetRequired}
               onUpdate={handleUpdate}
               onRemove={removeInternshipExperience}
             />
@@ -418,17 +458,17 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Authentication</h2>
+              <h2>Authorization</h2>
             </legend>
             <p>
-              Note: All work authentication information you provide will only be
+              Note: All work authorization information you provide will only be
               used for the purpose of verifying your qualifications for this job
               application and will not be disclosed to public view or any third
               parties without your express consent.
             </p>
             <div>
               <div className="mt-3">
-                Are you authorized to work in the U.S.? *
+                Are you authorized to work in the United States? *
               </div>
               <RadioGroup>
                 <Label className="block">

@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
+import {ReadCompanyInfoDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -116,7 +117,7 @@ export async function searchEduProviders(
   );
 }
 
-export async function searchCompanies(searchTerm: string): Promise<
+export async function searchCompanies(searchTerm: string): Promise< ReadCompanyInfoDTO[] |
   {
     companyId: string;
     companyEmail: string;
@@ -140,9 +141,9 @@ export async function searchCompanies(searchTerm: string): Promise<
   }).then((results) =>
     results.map((company) => ({
       companyId: company.company_id,
+      industrySectorId: company.industry_sector_id,
       companyName: company.company_name,
       logoUrl: company.company_logo_url,
-      industrySectorId: company.industry_sector_id,
       websiteUrl: company.company_website_url,
       companyEmail: company.company_email,
       companyPhone: company.company_phone,
@@ -150,6 +151,8 @@ export async function searchCompanies(searchTerm: string): Promise<
       companySize: company.size,
       predictedHires: company.estimated_annual_hires,
       approvedCompany: company.is_approved,
+      aboutUs: company.about_us,
+      createdBy: company.createdBy,
     })),
   );
 }
@@ -488,7 +491,6 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
       years_work_exp: true,
       employment_type_sought: true,
       targeted_pathway: true,
-      resume_url: true,
       portfolio_url: true,
       users: {
         select: {
@@ -595,6 +597,17 @@ export async function getIndustrySectors() {
   return industrySectors;
 }
 
+export async function getTrainingProviders() {
+  const trainingProviders = await prisma.edu_providers.findMany({
+    where: {},
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+  return trainingProviders;
+}
+
 export async function getTechnologyAreas() {
   const technologyAreas = await prisma.technology_areas.findMany({
     where: {},
@@ -607,8 +620,18 @@ export async function getTechnologyAreas() {
 }
 
 export async function deleteUser(role: Role, userId: string) {
-  // TODO: create delete user & remove jobseeker/soft-delete from api-routes
-  // jobseeker cannot be deleted if they have participated in a partner training provider program (i.e. edu_provider.iscoalitionmember = true)
+  try {
+    if (role === Role.JOBSEEKER) {
+      await deleteJobseeker(userId);
+    }
+
+    if (role === Role.EMPLOYER) {
+      await deleteEmployer(userId);
+    }
+  } catch (e) {
+
+  }
+
 }
 
 async function deleteJobseeker(userId: string) {
@@ -777,6 +800,9 @@ try {
  * @returns a list of all employer users that work for a company
  */
 export async function getEmployersByCompanyId(companyId: string) {
+  if(companyId == ''){
+    return [];
+  }
   try {
     const employers = await prisma.employers.findMany({
       where: {
@@ -812,14 +838,17 @@ export async function getEmployersByCompanyId(companyId: string) {
  */
 export async function getCompanyById(companyId: string) {
   try {
-    const company = prisma.companies.findUnique(
+    if(companyId == ''){
+      return
+    }
+    const company = await prisma.companies.findUnique(
       {
         where: {
           company_id: companyId
         }
       }
     )
-    return company
+    return company ?? undefined; 
   } catch (e) {
     console.log(e)
   }
@@ -837,6 +866,7 @@ export async function getEmployerById(employerId: string) {
       },
       select: {
         employer_id: true,
+        company_id:true,
         job_title: true,
         is_verified_employee: true,
         users: {
@@ -867,7 +897,6 @@ export async function getEmployerById(employerId: string) {
     return employer;
   } catch (error) {
     console.error('Error fetching employer:', error);
-    throw new Error('Could not retrieve employer with the given ID.');
   }
 }
 

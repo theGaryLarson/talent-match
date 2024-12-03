@@ -1,4 +1,5 @@
 import skillsData_v2 from '../data/skills_v2.mjs';
+import partnerProvidersAndPrograms from '../data/partnerProvidersAndPrograms.mjs'
 import {v4 as uuidv4} from 'uuid';
 import {faker} from "@faker-js/faker";
 import {users,} from '../app/lib/placeholder-data.mjs';
@@ -6,6 +7,7 @@ import getPrismaClient from '../app/lib/prismaClient.mjs'
 import fs from 'fs';
 import {fileURLToPath} from 'url';
 import path from "node:path";
+import partnerCompanies from "../data/partnerCompanies.mjs";
 
 faker.seed(123); // set seed so generated data is deterministic
 const prisma = getPrismaClient();
@@ -22,6 +24,7 @@ const roles = [
     'EDUCATOR',
     'JOBSEEKER',
     'EMPLOYER',
+    'CASE_MANAGER',
 ]
 const edPrograms = [
     'None',
@@ -259,7 +262,8 @@ const colleges = [
     "University of Washington",
     "University of Washington, Bothell",
     "Vancouver Island University",
-    "Seattle University"
+    "Seattle University",
+    "Other"
 ];
 
 const highestDegreeType = [
@@ -797,7 +801,6 @@ const waStateCountiesWithZipCodes = [
     }
 ];
 
-//TODO: add legit logo_urls
 const itCertifications = [
     {
         name: "AWS Certified Solutions Architect",
@@ -973,11 +976,13 @@ const industrySectors = [
     "Consumer Goods",
     "Education",
     "Energy",
+    "Government",
     "Healthcare",
     "Information Technology",
     "Insurance",
     "Manufacturing",
     "Media and Entertainment",
+    "Nonprofit",
     "Pharmaceuticals",
     "Real Estate",
     "Retail",
@@ -1164,18 +1169,6 @@ const frontendProjectSkills = [
     },
 ];
 
-const raceOptions = [
-    "White",
-    "Black or African American",
-    "American Indian or Alaska Native",
-    "Asian",
-    "Native Hawaiian or Other Pacific Islander",
-    "Hispanic or Latino",
-    "Middle Eastern or North African",
-    "Mixed Race",
-    "Other"
-];
-
 const companySizeOptions = [
     '1-10',
     '11-50',
@@ -1183,6 +1176,34 @@ const companySizeOptions = [
     '201-500',
     '501-1000',
     '1001-5000'
+];
+
+const CareerPrepTrack = [
+    'ACCELERATED',
+    'STANDARD',
+    'EXTENDED',
+];
+
+const CareerPrepStatus = [
+    'Applied', // submitting assessment will be Applied
+    'Creating Plan',
+    'Meeting Scheduled',
+    'Met Career Navigator',
+    'Sent Enrollment Form',
+    'Enrolled',
+    'Completed',
+    'Rejected',
+    'Withdrawn', // additional option from what was given.
+];
+
+
+export const TimeUntilCompletion = [
+    "N/A",
+    "0-3 months",
+    "3-6 months",
+    "6-9 months",
+    "9-12 months",
+    "12+ months"
 ];
 
 /////////////////////////////////////////////////
@@ -1318,18 +1339,18 @@ async function seedMockUsers(numUsers = 4) {
 
 async function seedPathways() {
     const pathways = [
-        "Cloud Support Associate",
-        "Software Developer",
-        "Data Analyst",
-        "Cybersecurity Analyst",
-        // "Cybersecurity",
-        // "Data Analytics",
+        // "Cloud Support Associate",
+        // "Software Developer",
+        // "Data Analyst",
+        // "Cybersecurity Analyst",
+        "Cybersecurity",
+        "Data Analytics",
         // "Data Center Operations",
-        // "IT & Cloud Computing",
+        "IT & Cloud Computing",
         // "Digital Marketing",
         // "UI/UX",
         // "Project Management",
-        // "Software Development",
+        "Software Development",
         // "Other",
     ]
     console.log('Seeding Pathways...')
@@ -1370,9 +1391,9 @@ async function seedTechnologyAreas() {
     console.log(`Seeded ${itOccupationTechnologyAreas.length} technology areas.\n`)
 }
 
-async function seedEduProviders() {
+async function seedGeneralEdProviders() {
     try {
-        console.log('Seeding Education Providers...')
+        console.log('Seeding General Education Providers...')
         // Insert high schools
         const highSchoolResult = await prisma.edu_providers.createMany({
             data: highSchools.map(school => ({
@@ -1390,7 +1411,8 @@ async function seedEduProviders() {
         });
 
         console.log(`Seeded ${highSchoolResult.count} High schools.`);
-        console.log(`Seeded ${collegeResult.count} Colleges.\n`);
+        console.log(`Seeded ${collegeResult.count} Colleges.`);
+        console.log(`Finished seeding ${highSchoolResult.count + collegeResult.count} general WA state training providers.\n`)
     } catch (error) {
         console.error('Error inserting data:', error);
     } finally {
@@ -1398,16 +1420,163 @@ async function seedEduProviders() {
     }
 }
 
-async function seedPrograms() {
+async function seedPartnerEdProvidersAndPrograms() {
     try {
-        console.log('Seeding Provider Programs...')
+        console.log('Seeding Partner Education Providers and Programs...');
+
+        for (const provider of partnerProvidersAndPrograms) {
+
+                const eduProvider = await prisma.edu_providers.upsert({
+                    where: {
+                        name: provider?.eduProvider,
+                    },
+                    update: {
+                        name: provider?.eduProvider ? provider.eduProvider : null,
+                        edu_type: provider?.edu_type ? provider.edu_type : null,
+                        contact: provider?.contact ? provider.contact : null,
+                        contact_email: provider?.contactEmail ? provider.contactEmail : null,
+                        edu_url: provider?.url ? provider.url : null,
+                        mission: provider?.missionStatement ? provider.missionStatement : null,
+                        providerDescription: provider?.providerDescription ? provider.providerDescription : null,
+                        setsApartStatement: provider?.setsApartStatement ? provider.setsApartStatement : null,
+                        screeningCriteria: provider?.screeningCriteria ? provider.screeningCriteria : null,
+                        recruitingSources: provider?.recruitingSources ? provider.recruitingSources : null,
+                        programCount: provider?.programCount ? provider.programCount : null,
+                        cost: provider?.cost ? provider.cost : null,
+                        isCoalitionMember: true,
+                        isAdminReviewed: true,
+                    },
+                    create: {
+                        name: provider?.eduProvider ? provider.eduProvider : null,
+                        edu_type: provider?.edu_type ? provider.edu_type : null,
+                        contact: provider?.contact ? provider.contact : null,
+                        contact_email: provider?.contactEmail ? provider.contactEmail : null,
+                        edu_url: provider?.url ? provider.url : null,
+                        mission: provider?.missionStatement ? provider.missionStatement : null,
+                        providerDescription: provider?.providerDescription ? provider.providerDescription : null,
+                        setsApartStatement: provider?.setsApartStatement ? provider.setsApartStatement : null,
+                        screeningCriteria: provider?.screeningCriteria ? provider.screeningCriteria : null,
+                        recruitingSources: provider?.recruitingSources ? provider.recruitingSources : null,
+                        programCount: provider?.programCount ? provider.programCount : null,
+                        cost: provider?.cost ? provider.cost : null,
+                        isCoalitionMember: true,
+                        isAdminReviewed: true,
+                    },
+                });
+                console.log(`Created edu_provider: ${eduProvider.name}`);
+
+            for (const program of provider.programs) {
+                // Find the program in the programs table
+                let existingProgram = await prisma.programs.findUnique({
+                    where: {title: program.name},
+                });
+
+                // If the program doesn't exist, create it
+                if (!existingProgram) {
+                    existingProgram = await prisma.programs.create({
+                        data: {
+                            title: program.name,
+                        },
+                    });
+                    console.log(`Created program: ${existingProgram.title}`);
+                }
+
+                // Create provider_programs entry
+                // Check if provider_program already exists to avoid duplicates
+                let existingProviderProgram = await prisma.provider_programs.findFirst({
+                    where: {
+                        edu_provider_id: eduProvider.id,
+                        program_id: existingProgram.id,
+                    },
+                });
+
+                if (!existingProviderProgram) {
+                    await prisma.provider_programs.create({
+                        data: {
+                            training_program_id: uuidv4(), // Generate a new UUID
+                            edu_provider_id: eduProvider.id,
+                            program_id: existingProgram.id,
+                            // Map other fields if available in your schema
+                            cost: program.cost ? program.cost : null,
+                            targetedJobRoles:  program.targetedJobRoles.length > 0 ? program.targetedJobRoles.join(', ') : null, // Convert array to string
+                            programDescription: program.programDescription ? program.programDescription : null,
+                            months: program.months ? program.months : null,
+                            hoursPerWeek: program.hoursPerWeek ? program.hoursPerWeek : null,
+                            targetPopulation: program.targetPopulation ? program.targetPopulation : null,
+                            serviceArea: program.serviceArea ? program.serviceArea : null,
+                            pathways: program.pathways.length > 0 ? program.pathways.join(', ') : null, // Convert array to string
+                        },
+                    });
+                    console.log(
+                        `Created provider_program linking provider "${eduProvider.name}" and program "${existingProgram.title}"`
+                    );
+                } else {
+                    console.log(
+                        `Provider_program already exists for provider "${eduProvider.name}" and program "${existingProgram.title}"`
+                    );
+                }
+            }
+        }
+
+        console.log('Finished seeding Partner Education Providers and Programs.\n');
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+async function seedGeneralPrograms() {
+    try {
+        console.log('Seeding General Programs...')
         // Insert high schools
         const programsResult = await prisma.programs.createMany({
             data: programs.map(program => ({
                 title: program,
             })),
         });
-        console.log(`Seeded ${programsResult.count} provider programs.\n`);
+        console.log(`Seeded ${programsResult.count} general programs.\n`);
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+async function seedPartnerPrograms() {
+    try {
+        console.log('Seeding Provider Programs...');
+
+        // Extract unique program names from partnerProvidersAndPrograms
+        const programsData = partnerProvidersAndPrograms.flatMap(provider =>
+            provider.programs.map(program => ({
+                title: program.name,
+            }))
+        );
+        // Filter out duplicate program names
+        const uniquePrograms = Array.from(
+            new Map(programsData.map(program => [program.title, program])).values()
+        );
+
+        // Check for existing programs in the database
+        const existingPrograms = await prisma.programs.findMany({
+            select: { title: true }
+        });
+        const existingProgramNames = new Set(existingPrograms.map(p => p.title));
+
+        // Add only new programs to the database
+        const newPrograms = uniquePrograms.filter(
+            program => !existingProgramNames.has(program.title)
+        );
+
+        if (newPrograms.length > 0) {
+            const programsResult = await prisma.programs.createMany({
+                data: newPrograms
+            });
+            console.log(`Seeded ${programsResult.count} new programs.`);
+        } else {
+            console.log('No new programs to seed.');
+        }
     } catch (error) {
         console.error('Error inserting data:', error);
     } finally {
@@ -1528,6 +1697,7 @@ async function seedJobSeekers() {
         } else {
             currentJobTitle = faker.person.jobTitle();
         }
+        const assignedPool = faker.helpers.arrayElement(['Recommended', 'Job Ready', 'Not Job Ready']);
         const jobSeekerData = {
             jobseeker_id: uuidv4(),
             user_id: jobSeeker.id,
@@ -1542,11 +1712,20 @@ async function seedJobSeekers() {
             }) : 0,
             intro_headline: generateSalesPitch(jobSeeker.first_name, jobSeeker.last_name),
             current_job_title: currentJobTitle,
-            resume_url: null,
             years_work_exp: faker.number.int({min: 0, max: 3}), // years of experience
             portfolio_url: faker.internet.url(),
             video_url: faker.internet.url(),
-            assignedPool: faker.helpers.arrayElement(['pool1', 'pool2', 'pool3']),
+            assignedPool: assignedPool,
+            careerPrepTrackRecommendation:
+                assignedPool === 'Recommended'
+                    ? null // Assign null for 'Recommended' jobseekers
+                    : assignedPool === 'Job Ready'
+                        ? faker.datatype.boolean() // 50/50 split
+                            ? CareerPrepTrack[0]
+                            : CareerPrepTrack[1]
+                        : assignedPool === 'Not Job Ready' && faker.datatype.boolean() // 50/50 split
+                            ? CareerPrepTrack[2]
+                            : null,
             employment_type_sought: faker.helpers.arrayElement(['Full-time', 'Part-time', 'Internship', 'Contract', 'Any']),
         };
 
@@ -1568,9 +1747,10 @@ async function seedJobSeekersPrivateData() {
                     jobseeker_private_data_id: uuidv4(),
                     jobseeker_id: js.jobseeker_id,
                     ssn: generateSSN(),
-                    is_authorized_to_work_in_usa: Boolean(faker.number.int({min: 0, max: 1})),
-                    job_sponsorship_required: Boolean(faker.number.int({min: 0, max: 1})),
+                    is_authorized_to_work_in_usa: faker.datatype.boolean() ? Boolean(faker.number.int({min: 0, max: 1})) : undefined,
+                    job_sponsorship_required: faker.datatype.boolean() ? Boolean(faker.number.int({min: 0, max: 1})): undefined,
                     is_veteran: faker.helpers.arrayElement(['yes', 'no', 'undisclosed']),
+                    disability_status: faker.helpers.arrayElement(['yes', 'none', 'undisclosed']),
                     disability: faker.helpers.arrayElement(['cognitive', 'emotional', 'hearing', 'mental', 'physical', 'visual', 'other', 'unknown', 'yes', 'no', 'undisclosed'])
                 }
             });
@@ -1855,7 +2035,8 @@ async function seedIndustrySectors() {
     console.log(`Seeded ${industrySectors.length} Industry Sectors.\n`)
 }
 
-async function seedCompanies() {
+async function seedMockCompanies() {
+    console.log('Seeding Mock companies...')
     const sectors = await prisma.industry_sectors.findMany();
     const cfaAdmin = await prisma.user.create({
         data: {
@@ -1878,7 +2059,7 @@ async function seedCompanies() {
     for (let i = 0; i < 5; i++) {
         await prisma.companies.create({
             data: {
-                createdBy: cfaAdmin.id, // hacking employerId to get it to work will be no related employer
+                createdBy: cfaAdmin.id, // hacking employerId to get it to work will not be related employer
                 company_id: uuidv4(),
                 industry_sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                 company_name: faker.company.name(),
@@ -1895,6 +2076,63 @@ async function seedCompanies() {
                 estimated_annual_hires: faker.number.int({min: 1, max: 10})
             }
         });
+    }
+    console.log(`Finished seeding ${5} Mock companies.\n`)
+}
+
+async function seedPartnerCompanies() {
+    console.log('Seeding Partner Companies...');
+    for (const company of partnerCompanies) {
+        let industrySector = await prisma.industry_sectors.findFirst({
+            where: {
+                sector_title: company.industrySector
+            }
+        })
+        // check if company exists in the database
+        let existingCompany = await prisma.companies.findUnique({
+            where: { company_name: company.name}
+        })
+
+        let newCompany;
+        // if not, create the company
+        if ( !existingCompany ) {
+            newCompany = await prisma.companies.create({
+                data: {
+                    company_id: uuidv4(),
+                    company_name: company.name,
+                    company_logo_url: company.companyLogoUrl,
+                    about_us: company.aboutUs,
+                    company_email: company.email,
+                    year_founded: 0,
+                    company_website_url: company.websiteUrl,
+                    company_mission: company.mission,
+                    company_vision: company.vision,
+                    size: company.size,
+                    estimated_annual_hires: company.estimatedAnnualHires,
+                    is_approved: true,
+                    industry_sectors: {
+                        connect: {
+                            industry_sector_id: industrySector.industry_sector_id
+                        }
+                    },
+
+                }
+            });
+        } else {
+            newCompany = existingCompany
+        }
+        // Add company addresses for each zip code in locationsByZip
+        if (company.locationsByZip && company.locationsByZip.length > 0) {
+            for (const zip of company.locationsByZip) {
+                await prisma.company_addresses.create({
+                    data: {
+                        company_address_id: uuidv4(),
+                        company_id: newCompany.company_id, // Use the created company's ID
+                        zip: zip
+                    }
+                });
+            }
+        }
     }
 }
 
@@ -2152,9 +2390,11 @@ async function seedFoundationalTables() {
     await seedSkills(); // TODO: associate skills with a pathway
     await seedPostalGeoData("../data/postal_geo_data.json"); // use in production
     await seedSocialMediaPlatforms();
-    await seedPrograms();
-    await seedEduProviders(); // TODO: get updated list of training provider partners to use in production
-    await seedCompanies(); // TODO: get a list of pre-approved companies to use in production
+    await seedGeneralPrograms();
+    await seedPartnerPrograms();
+    await seedGeneralEdProviders(); // TODO: get updated list of training provider partners to use in production
+    await seedPartnerEdProvidersAndPrograms();
+    await seedPartnerCompanies(); // TODO: add additional partner companies
 }
 
 /**
@@ -2181,6 +2421,7 @@ async function seedMockJobseekerData() {
  * @return {Promise<void>} A Promise that resolves when all mock employer data has been successfully seeded.
  */
 async function seedMockEmployerData() {
+    await seedMockCompanies(); // TODO: get a list of pre-approved companies to use in production
     await seedEmployers();
     await seedCompanyAddresses();
     await seedCompanyTestimonials();
@@ -2188,6 +2429,125 @@ async function seedMockEmployerData() {
     await seedJobPostings();
 }
 
+
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+//////////////   career prep  ///////////////////
+/////////////////////////////////////////////////
+
+async function seedCareerPrepStudents() {
+    console.log('Seeding Career Prep Students');
+
+    const potentialStudents = await prisma.jobseekers.findMany({
+        where: {
+            careerPrepTrackRecommendation: {
+                not: null,
+            },
+        },
+    });
+
+    for (const ps of potentialStudents) {
+        // Only create an assessment for approximately 75% of the students
+        if (faker.datatype.boolean({probability: 0.75})) {
+            await prisma.careerPrepAssessment.create({
+                data: {
+                    assessmentDate: new Date(),
+                    pronouns: faker.helpers.arrayElement(['he/him', 'they/them', 'she/her', 'she/her/they']),
+                    experienceWithApplying: faker.datatype.boolean({probability: 0.5}),
+                    experienceWithInterview: faker.datatype.boolean({probability: 0.5}),
+                    prevWorkExperience: faker.datatype.boolean({probability: 0.75}),
+                    expectedEduCompletion: faker.helpers.arrayElement(TimeUntilCompletion),
+                    Jobseeker: {
+                        connect: {
+                            jobseeker_id: ps.jobseeker_id,
+                        },
+                    },
+                },
+            });
+        }
+    }
+
+    console.log(`Finished seeding approximately 75% of ${potentialStudents.length} Career Prep students.\n`);
+}
+
+async function seedCaseMgmt() {
+    console.log('Seeding Case Management Records');
+
+    const careerPrepStudents = await prisma.careerPrepAssessment.findMany({
+        include: {
+            Jobseeker: true
+        }
+    });
+    const caseManagers = await prisma.user.findMany({
+        where: {
+            role: 'CASE_MANAGER',
+        },
+        take: 3,
+    })
+    for (const s of careerPrepStudents) {
+        if (faker.datatype.boolean({probability: 0.75})) {
+            await prisma.caseMgmt.create({
+                data: {
+                    prepEnrollmentStatus: faker.helpers.arrayElement(CareerPrepStatus),
+                    prepStartDate: faker.date.recent({days: 5, refDate: Date.now().toString()}),
+                    prepExpectedEndDate: faker.date.soon({
+                        days: 20,
+                        refDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
+                    }),
+                    prepActualEndDate: faker.date.soon({
+                        days: 5,
+                        refDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
+                    }),
+                    PrepAssessment: {
+                        connect: {
+                            jobseekerId: s.jobseekerId,
+                        },
+                    },
+                    CaseManager: {
+                        connect: {
+                            id: faker.helpers.arrayElement(caseManagers).id,
+                        },
+                    },
+                },
+            });
+        }
+    }
+    console.log(`Finished seeding approximately 75% of ${careerPrepStudents.length} Career Prep students for Case Management.\n`);
+
+}
+
+async function seedCaseMgmtNotes() {
+    console.log('Seeding Case Management Notes');
+
+    const managedPrepStudents = await prisma.caseMgmt.findMany();
+
+    for (const mps of managedPrepStudents) {
+        const notes = Array.from({ length: 3 }).map(() => ({
+            date: faker.datatype.boolean({ probability: 0.9 })
+                ? faker.date.soon({ days: 14, refDate: Date.now() })
+                : null,
+            noteType: faker.helpers.arrayElement(['General', 'Meeting', 'Follow-up']),
+            noteContent: faker.datatype.boolean()
+                ? faker.lorem.sentences(3, '\n')
+                : faker.lorem.paragraphs({ min: 1, max: 3 }, '\r\n'),
+            PrepAssessment: {
+                connect: {
+                    jobseekerId: mps.jobseekerId,
+                },
+            },
+            Author: {
+                connect: {
+                    id: mps.managerId,
+                },
+            },
+        }));
+
+        await Promise.all(notes.map(note => prisma.caseMgmtNotes.create({ data: note })));
+    }
+
+    console.log('Finished seeding Case management notes.\n');
+}
 
 /////////////////////////////////////////////////
 
@@ -2199,10 +2559,19 @@ async function seedMockEmployerData() {
 async function main() {
     console.log(`Start seeding ...\n`);
     await seedFoundationalTables();
+    if (process.env.NODE_ENV === 'production') {
+        console.log('Skipping seeding of mock data...');
+        console.log('Finished seeding foundational tables.\n')
+        return;
+    }
+
     await SeedMockEdProvidersAddresses();
-    await seedMockUsers(250);
+    await seedMockUsers(125);
     await seedMockJobseekerData();
     await seedMockEmployerData();
+    await seedCareerPrepStudents();
+    await seedCaseMgmt();
+    await seedCaseMgmtNotes();
     console.log("Finished seeding.\n")
 
 }

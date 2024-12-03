@@ -90,3 +90,20 @@ export const deleteEmployerWithSession = async (): Promise<void> => {
   }
 };
 
+
+
+export async function getAllCompanies() {
+    const res = await prisma.companies.findMany();
+    return res;
+}
+
+
+export async function getAllTechAreas(){
+    const res = await prisma.technology_areas.findMany();
+    return res;
+}
+
+export async function getAllIndustrySectors() {
+    const res = await prisma.industry_sectors.findMany();
+    return res;
+}

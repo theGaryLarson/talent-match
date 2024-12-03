@@ -12,11 +12,27 @@ export const metadata = {
 };
 export default async function Page() {
   const session = await auth();
-  const company = await getCompanyById(session?.user.companyId??'');
+  
   const proInfo = await getEmployerById(session?.user.employerId??'');
+  const company = await getCompanyById(proInfo?.company_id??'');
+  if(!proInfo || company == undefined){
+    return (
+      <div>
+        <h1 className='text-2xl'>
+          There has been an error finding your info please try logging out and logging back in
+        </h1>
+      </div>
+    );
+  }
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <DeletionFlag deletionDate={undefined} />
+      {!session?.user.companyId?
+      <div className='bg-red-700 h-[50px] items-center flex text-center justify-center'>
+        <h1 className='text-2xl capitalize text-white'>
+          Some Functions May be limited Please Log out and Log back in to gain full functionality
+        </h1>
+      </div>:''}
       <h1 className="text-2xl font-medium">
         My Dashboard
       </h1>
@@ -33,7 +49,7 @@ export default async function Page() {
         {<ScoreCard title="Job Listings" val={proInfo.job_postings.length} />}</Link>
       </div>
       <EmployerRecentJobPosts/>
-      <EmployerTeamMembers/>
+      <EmployerTeamMembers companyid={company.company_id}/>
     </main>
   );
 }
