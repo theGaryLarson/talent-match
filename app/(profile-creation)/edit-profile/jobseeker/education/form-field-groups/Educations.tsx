@@ -64,7 +64,7 @@ export interface EducationData {
   [classDegreeType]?: CollegeDegreeType | HighSchoolDegreeType | null;
   [classEnrollmentStatus]?: ProgramEnrollmentStatus | null;
   [classProgramObject]?: GeneralProgramDTO | null;
-  [classProgramName]: string;
+  [classProgramName]?: string;
   [classProgramId]?: string | null;
   // [classMajor]?: string | null, //TODO:  replaced with program
   // [classMinor]?: string | null,
@@ -118,6 +118,7 @@ export default memo(function Educations({
       const changedEducations: EducationData[] = [...data];
       const updatedEducation = changedEducations[index];
       updatedEducation[key] = value;
+      console.log('updatede', updatedEducation);
       if (key === classEdProviderObject) {
         if (typeof value === 'string') {
           updatedEducation[classEdProviderName] = value;
@@ -318,7 +319,11 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classStartDate, val)
+                  handleChange(
+                    index,
+                    classStartDate,
+                    val?.isValid() ? val : null,
+                  )
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -335,7 +340,7 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classEndDate, val)
+                  handleChange(index, classEndDate, val?.isValid() ? val : null)
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -395,19 +400,29 @@ export default memo(function Educations({
                 }
               />
             </RequiredTooltip>
-            <TextFieldWithAutocomplete
-              apiSearchRoute="/api/edu-providers/programs/college/search/"
-              fieldLabel="Program major or concentration:"
-              id="profile-creation-education-college-program"
-              searchingText="Searching..."
-              noResultsText="No education provider programs found..."
-              value={education[classProgramObject] ?? ''}
-              onChange={(e, val) =>
-                handleChange(index, classProgramObject, val)
+            <RequiredTooltip
+              open={
+                hasUnmetRequired === `${education.id}-${classProgramObject}` &&
+                !Boolean(education[classProgramObject])
               }
-              searchPlaceholder="Example: Computer Science"
-              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
-            />
+              errorMessage="A college major or concentration is required"
+            >
+              <TextFieldWithAutocomplete
+                apiSearchRoute="/api/edu-providers/programs/college/search/"
+                fieldLabel="Program major or concentration: *"
+                id="profile-creation-education-college-program"
+                searchingText="Searching..."
+                noResultsText="No education provider programs found..."
+                value={education[classProgramObject] ?? ''}
+                onChange={(e, val) =>
+                  handleChange(index, classProgramObject, val)
+                }
+                searchPlaceholder="Example: Computer Science"
+                getOptionLabel={(option: GeneralProgramDTO) =>
+                  option.title ?? ''
+                }
+              />
+            </RequiredTooltip>
             <SelectOptionsWithLabel
               id="profile-creation-education-college-degree"
               className="w-full"
@@ -453,7 +468,11 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classStartDate, val)
+                  handleChange(
+                    index,
+                    classStartDate,
+                    val?.isValid() ? val : null,
+                  )
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -470,7 +489,7 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classEndDate, val)
+                  handleChange(index, classEndDate, val?.isValid() ? val : null)
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -574,7 +593,11 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classStartDate, val)
+                  handleChange(
+                    index,
+                    classStartDate,
+                    val?.isValid() ? val : null,
+                  )
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -591,7 +614,7 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classEndDate, val)
+                  handleChange(index, classEndDate, val?.isValid() ? val : null)
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -709,7 +732,11 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classStartDate, val)
+                  handleChange(
+                    index,
+                    classStartDate,
+                    val?.isValid() ? val : null,
+                  )
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -726,7 +753,7 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classEndDate, val)
+                  handleChange(index, classEndDate, val?.isValid() ? val : null)
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -786,29 +813,19 @@ export default memo(function Educations({
                 }
               />
             </RequiredTooltip>
-            <RequiredTooltip
-              open={
-                hasUnmetRequired === `${education.id}-${classProgramObject}` &&
-                !Boolean(education[classProgramObject])
+            <TextFieldWithAutocomplete
+              apiSearchRoute="/api/edu-providers/programs/other/search/"
+              fieldLabel="Program or training track subject:"
+              id="profile-creation-education-other-provider-program-name"
+              searchingText="Searching..."
+              noResultsText="No education provider programs found..."
+              value={education[classProgramObject] ?? ''}
+              onChange={(e, val) =>
+                handleChange(index, classProgramObject, val)
               }
-              errorMessage="An education provider program name is required"
-            >
-              <TextFieldWithAutocomplete
-                apiSearchRoute="/api/edu-providers/programs/other/search/"
-                fieldLabel="Program or training track subject: *"
-                id="profile-creation-education-other-provider-program-name"
-                searchingText="Searching..."
-                noResultsText="No education provider programs found..."
-                value={education[classProgramObject] ?? ''}
-                onChange={(e, val) =>
-                  handleChange(index, classProgramObject, val)
-                }
-                searchPlaceholder="Example: Computer Science"
-                getOptionLabel={(option: GeneralProgramDTO) =>
-                  option.title ?? ''
-                }
-              />
-            </RequiredTooltip>
+              searchPlaceholder="Example: Computer Science"
+              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+            />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
               id="profile-creation-education-enrollment-status"
@@ -840,7 +857,11 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classStartDate, val)
+                  handleChange(
+                    index,
+                    classStartDate,
+                    val?.isValid() ? val : null,
+                  )
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />
@@ -857,7 +878,7 @@ export default memo(function Educations({
                 views={['month', 'year']}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
-                  handleChange(index, classEndDate, val)
+                  handleChange(index, classEndDate, val?.isValid() ? val : null)
                 }
                 slotProps={{ textField: { fullWidth: true } }}
               />

@@ -127,7 +127,9 @@ export default memo(function InternshipExperiences({
             label={'Start Date *'}
             views={['month', 'year']}
             value={internshipExperience[classStarts] || null}
-            onChange={(val) => handleChange(index, classStarts, val)}
+            onChange={(val) =>
+              handleChange(index, classStarts, val?.isValid() ? val : null)
+            }
             slotProps={{ textField: { fullWidth: true } }}
           />
         </RequiredTooltip>
@@ -143,7 +145,9 @@ export default memo(function InternshipExperiences({
             label={'End Date *'}
             views={['month', 'year']}
             value={internshipExperience[classEnds] || null}
-            onChange={(val) => handleChange(index, classEnds, val)}
+            onChange={(val) =>
+              handleChange(index, classEnds, val?.isValid() ? val : null)
+            }
             slotProps={{ textField: { fullWidth: true } }}
           />
         </RequiredTooltip>

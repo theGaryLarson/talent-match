@@ -657,7 +657,7 @@ export default function CreateEmployerCompanyInfoPage() {
             <Button
               pill
               className="custom-outline-btn"
-              onClick={() => router.push('/edit-profile/employer/personal')}
+              onClick={() => router.push('/edit-profile/employer/profile')}
             >
               Previous
             </Button>

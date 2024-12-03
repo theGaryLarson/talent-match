@@ -48,6 +48,7 @@ export default auth((req) => {
       '/career-prep',
       '/services/jobseekers',
       //'/services/joblistings',
+      '/api/jobseekers/career-prep/meeting'
       // Add any other routes accessible by case managers
     ],
     [Role.ADMIN]: [], // Admin has full access, so this can be empty

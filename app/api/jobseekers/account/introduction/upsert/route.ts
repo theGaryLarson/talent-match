@@ -6,7 +6,7 @@ import {
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { auth } from '@/auth';
-import {Role} from "@/data/dtos/UserInfoDTO";
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -40,18 +40,22 @@ export async function POST(request: Request) {
       const user = await prisma.user.upsert({
         where: { id: userId },
         update: {
-          first_name: firstName,
-          last_name: lastName,
-          birthdate: birthDate ?? undefined,
-          phoneCountryCode: phoneCountryCode,
-          phone: phone,
+          first_name: firstName || null,
+          last_name: lastName || null,
+          birthdate: birthDate || null,
+          phoneCountryCode: phoneCountryCode || null,
+          phone: phone || null,
           email: email,
-          photo_url: photoUrl,
-          locationData: {
-            connect: {
-              zip: zipCode,
-            },
-          },
+          photo_url: photoUrl || null,
+          locationData: Boolean(zipCode)
+            ? {
+                connect: {
+                  zip: zipCode,
+                },
+              }
+            : {
+                disconnect: true,
+              },
           updatedAt: new Date(),
         },
         create: {

@@ -146,7 +146,7 @@ export default memo(function ProjectExperiences({
           value={projectExperience[classDescription]}
           required
         >
-          Project Description / Problem Solved:
+          Project Description / Problem Solved: *
         </TextareaWithLabel>
         <InputTextWithLabel
           type="number"
@@ -204,7 +204,13 @@ export default memo(function ProjectExperiences({
             label={'Starting date *'}
             views={['month', 'year']}
             value={projectExperience[classStartingDate] || null}
-            onChange={(val) => handleChange(index, classStartingDate, val)}
+            onChange={(val) =>
+              handleChange(
+                index,
+                classStartingDate,
+                val && val.isValid() ? val : null,
+              )
+            }
             slotProps={{ textField: { fullWidth: true } }}
           />
         </RequiredTooltip>
@@ -220,7 +226,13 @@ export default memo(function ProjectExperiences({
             label={'Completion date *'}
             views={['month', 'year']}
             value={projectExperience[classCompletionDate] || null}
-            onChange={(val) => handleChange(index, classCompletionDate, val)}
+            onChange={(val) =>
+              handleChange(
+                index,
+                classCompletionDate,
+                val && val.isValid() ? val : null,
+              )
+            }
             slotProps={{ textField: { fullWidth: true } }}
           />
         </RequiredTooltip>
