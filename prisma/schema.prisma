@@ -219,7 +219,7 @@ model company_testimonials {
 model edu_providers {
   id                   String                 @id(clustered: false, map: "edu_providers_PRIMARY") @unique(map: "edu_providers_id_UNIQUE") @default(dbgenerated("newid()")) @db.UniqueIdentifier
   edu_type             String?                @db.VarChar(50)
-  name                 String?                @unique @db.VarChar(255)
+  name                 String                 @unique @db.VarChar(255)
   contact              String?                @db.VarChar(45)
   contact_email        String?                @db.VarChar(255)
   edu_url              String?                @db.VarChar(255)
@@ -495,13 +495,13 @@ model CaseMgmtNotes {
 }
 
 model Meeting {
-  id            String          @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobseekerId   String          @db.UniqueIdentifier
-  title         String          @db.VarChar(45)
-  meetingAgenda String?         @db.NText
-  meetingDate   DateTime        @db.DateTime
-  updatedAt     DateTime        @updatedAt @db.DateTime
-  caseMgmt      CaseMgmt        @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
+  id            String   @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobseekerId   String   @db.UniqueIdentifier
+  title         String   @db.VarChar(45)
+  meetingAgenda String?  @db.NText
+  meetingDate   DateTime @db.DateTime
+  updatedAt     DateTime @updatedAt @db.DateTime
+  caseMgmt      CaseMgmt @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -858,7 +858,6 @@ model provider_programs {
   pathway_id          String? @db.UniqueIdentifier
   targetedJobRoles    String? @map("target_job_roles") @db.Text
   description         String? @db.Text
-  // cost                        String?                       @db.VarChar(255)
   months              String? @db.VarChar(45)
   hoursPerWeek        String? @db.VarChar(45)
   targetPopulation    String? @db.Text
