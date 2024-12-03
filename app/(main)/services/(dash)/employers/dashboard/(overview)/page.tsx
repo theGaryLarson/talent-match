@@ -30,7 +30,7 @@ export default async function Page() {
       {!session?.user.companyId?
       <div className='bg-red-700 h-[50px] items-center flex text-center justify-center'>
         <h1 className='text-2xl capitalize text-white'>
-          Some Functions May be limted Please Log out and Log back in to gain full functionality 
+          Some Functions May be limited Please Log out and Log back in to gain full functionality
         </h1>
       </div>:''}
       <h1 className="text-2xl font-medium">

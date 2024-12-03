@@ -276,7 +276,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       isInternship: false,
       jobTitle: workExp.jobTitle,
       isCurrentJob: workExp.isCurrentJob,
-      startDate: workExp.startDate!.toDate(), // required on front-end can assert it exists
+      startDate: workExp.startDate ? workExp.startDate.toDate() : null,
       endDate: workExp.endDate ? workExp.endDate.toDate() : null,
       responsibilities: workExp.responsibilities,
     }));
@@ -311,7 +311,9 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         isInternship: true,
         jobTitle: internshipExp.jobTitle,
         isCurrentJob: internshipExp.isCurrentJob,
-        startDate: internshipExp.startDate!.toDate(),
+        startDate: internshipExp.startDate
+          ? internshipExp.startDate.toDate()
+          : null,
         endDate: internshipExp.endDate ? internshipExp.endDate.toDate() : null,
         responsibilities: internshipExp.responsibilities,
       }),
@@ -344,7 +346,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     workExperienceData.workExperiences = [
       ...workExperiences,
       ...internshipExperiences,
-    ];
+    ].map((experience) => ({
+      ...experience,
+      startDate: experience.startDate ?? new Date(),
+    }));
 
     try {
       const response = await fetch('/api/jobseekers/account/work-info/upsert', {

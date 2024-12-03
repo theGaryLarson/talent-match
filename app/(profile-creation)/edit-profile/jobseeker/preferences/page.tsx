@@ -102,7 +102,8 @@ export default function CreateJobseekerProfilePreferencesPage() {
     }
 
     preferencesData.userId = session.user.id;
-    preferencesData.targetedPathwayId = pathwayId;
+    preferencesData.targetedPathwayId =
+      preferencesData.targetedPathway !== pathway ? undefined : pathwayId;
     preferencesData.targetedPathway = pathway;
     preferencesData.preferredEmploymentType = employmentType;
 
@@ -214,7 +215,6 @@ export default function CreateJobseekerProfilePreferencesPage() {
                 </FormLabel>
                 <RadioGroup
                   aria-labelledby="profile-creation-preferences-require-role"
-                  defaultValue="female"
                   name="profile-creation-preferences-require-role"
                   value={pathway}
                   onChange={(e) => {

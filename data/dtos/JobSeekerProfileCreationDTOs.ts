@@ -20,7 +20,7 @@ export type JsIntroDTO = {
 export type JsIntroPostDTO = {
   email: string;
   userId: string;
-  birthDate?: string | Date;
+  birthDate?: string | Date | null;
   city?: string | null;
   county?: string | null;
   currentJobTitle?: string | null;
@@ -126,14 +126,14 @@ export type JsEducationInfoDTO = {
   id: string;
   isEnrolled: boolean;
   preAppEdSystem: PreAEduSystem | null;
-  programId: string;
-  programName: string;
+  programId?: string;
+  programName?: string;
   startDate: string;
   degreeType?: CollegeDegreeType | HighSchoolDegreeType | null;
   description?: string | null;
   edLevel?: EducationLevel;
-  edProviderId?: string; // use name lookup to find ID.
-  edProviderName?: string;
+  edProviderId: string; // use name lookup to find ID.
+  edProviderName: string;
   enrollmentStatus?: ProgramEnrollmentStatus;
   gpa?: string | null;
 };
