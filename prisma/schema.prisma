@@ -856,20 +856,30 @@ model provider_program_has_skills {
 }
 
 model provider_programs {
-  training_program_id         String                        @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
-  program_id                  String                        @db.UniqueIdentifier
-  edu_provider_id             String                        @db.UniqueIdentifier
-  pathway_id                  String?                       @db.UniqueIdentifier
-  targetedJobRoles            String?                       @map("target_job_roles") @db.Text
-  description                 String?                       @db.Text
-  cost                        String?                       @db.VarChar(255)
-  months                      String?                       @db.VarChar(45)
-  hoursPerWeek                String?                       @db.VarChar(45)
-  targetPopulation            String?                       @db.Text
-  serviceArea                 String?                       @db.Text
-  pathways                    String?                       @db.Text
-  programDescription          String?                       @db.Text
-  target_population           String?                       @db.Text
+  training_program_id String  @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
+  program_id          String  @db.UniqueIdentifier
+  edu_provider_id     String  @db.UniqueIdentifier
+  pathway_id          String? @db.UniqueIdentifier
+  targetedJobRoles    String? @map("target_job_roles") @db.Text
+  description         String? @db.Text
+  // cost                        String?                       @db.VarChar(255)
+  months              String? @db.VarChar(45)
+  hoursPerWeek        String? @db.VarChar(45)
+  targetPopulation    String? @db.Text
+  serviceArea         String? @db.Text
+  pathways            String? @db.Text
+  programDescription  String? @db.Text
+  locations           String? @db.Text // this with be a delimited list. Delimiter: ~
+  about               String? @db.Text
+  tuition             String? @db.VarChar(25)
+  fees                String? @db.VarChar(25)
+  costSummary         String? @db.Text
+  locationType        String? @db.VarChar(25) // enum LocationType
+  getStartedUrl       String? @db.VarChar(255)
+  faq                 String? @db.Text
+  eduLevel            String? @db.VarChar(45) // enum EducationLevel
+  programLength       String? @db.Text
+
   provider_program_has_skills provider_program_has_skills[]
   edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
   Program                     programs                      @relation(fields: [program_id], references: [id], onUpdate: NoAction, map: "fk_provider_programs_programs1")
