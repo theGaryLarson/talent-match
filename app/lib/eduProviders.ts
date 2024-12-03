@@ -46,7 +46,7 @@ export type ReadEduProviderProgramDetailDTO = {
     tuition?: string, // provider_programs.tuition
     fees?: string, // provider_programs.fees
     costSummary?: string, // provider_programs.costSummary
-    locationType: LocationType, // provider_programs.locationType (enum LocationType)
+    locationType: LocationType | null, // provider_programs.locationType (enum LocationType)
     getStartedUrl: string, // provider_programs.getStartedUrl
     faq: { question: string, answer: string }[], // provider_programs.faq as TEXT field parse response with JSON.parse, JSON.stringify
     pathways: EduProviderPathways[] // provider_programs.pathways will need converted from string to list and each item cast into EduProviderPathways enum
@@ -107,9 +107,80 @@ export const getProviderProgramCardView = async (pathway: EduProviderPathways): 
     return programCards;
 };
 
-export const getProviderProgramDetailView = async (trainingProviderId: string) => {
+export const getProviderProgramDetailView = async (
+    trainingProgramId: string
+): Promise<ReadEduProviderProgramDetailDTO> => {
+    // Fetch the provider program with related data
+    const program = await prisma.provider_programs.findUnique({
+        where: {
+            training_program_id: trainingProgramId,
+        },
+        select: {
+            training_program_id: true,
+            about: true,
+            tuition: true,
+            fees: true,
+            costSummary: true,
+            locationType: true,
+            getStartedUrl: true,
+            faq: true,
+            pathways: true,
+            locations: true,
+            edu_provider: {
+                select: {
+                    name: true,
+                },
+            },
+            Program: {
+                select: {
+                    title: true,
+                },
+            },
+        },
+    });
 
-}
+    if (!program) {
+        throw new Error('Program not found');
+    }
+
+    // Safe JSON parsing for FAQ
+    let faq: { question: string; answer: string }[] = [];
+    if (program.faq) {
+        try {
+            faq = JSON.parse(program.faq);
+        } catch (error) {
+            console.error('Failed to parse FAQ JSON:', error);
+            faq = [];
+        }
+    }
+
+    // Map the database fields to the DTO
+    const dto: ReadEduProviderProgramDetailDTO = {
+        programId: program.training_program_id,
+        programName: program.Program.title,
+        eduProviderName: program.edu_provider.name,
+        locations: program.locations
+            ? program.locations.split('~').map(location => location.trim())
+            : [],
+        about: program.about || '',
+        tuition: program.tuition || undefined,
+        fees: program.fees || undefined,
+        costSummary: program.costSummary || undefined,
+        locationType: isEnumValue(LocationType, program.locationType) ? program.locationType as LocationType : null,
+        getStartedUrl: program.getStartedUrl || '',
+        faq: faq,
+        pathways: program.pathways
+            ? program.pathways
+                .split('~')
+                .map(path => path.trim())
+                .filter((path): path is EduProviderPathways =>
+                    isEnumValue(EduProviderPathways, path)
+                )
+            : [],
+    };
+
+    return dto;
+};
 
 function isEnumValue<T extends { [key: string]: string | number }>(
     enumObj: T,
