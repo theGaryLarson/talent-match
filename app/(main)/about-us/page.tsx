@@ -88,7 +88,7 @@ export default function page() {
             <div className="pt-[40px]">
               <RoundedButton
                 content="Join the Coalition"
-                link="/signin"
+                link="/join"
                 invertColor
                 snug
                 newColors
@@ -400,7 +400,7 @@ export default function page() {
           <div className="pb-[34px] text-center">
             <RoundedButton
               content="Join the Coalition"
-              link="/signin"
+              link="/join"
               invertColor
               snug
               newColors
@@ -454,7 +454,7 @@ export default function page() {
             <div className="pt-[40px]">
               <RoundedButton
                 content="Join"
-                link="/signin"
+                link="/join"
                 invertColor
                 snug
                 newColors
@@ -506,7 +506,7 @@ export default function page() {
             <div className="pt-[40px]">
               <RoundedButton
                 content="Join"
-                link="/signin"
+                link="/join"
                 invertColor
                 snug
                 newColors
