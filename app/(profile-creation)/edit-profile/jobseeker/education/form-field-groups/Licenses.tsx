@@ -112,14 +112,26 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
           label={'Issue date'}
           views={['month', 'year']}
           value={license[classIssueDate] || null}
-          onChange={(val) => handleChange(index, classIssueDate, val)}
+          onChange={(val) =>
+            handleChange(
+              index,
+              classIssueDate,
+              val && val.isValid() ? val : null,
+            )
+          }
           slotProps={{ textField: { fullWidth: true } }}
         />
         <DatePicker
           label={'Expiration date'}
           views={['month', 'year']}
           value={license[classExpirationDate] || null}
-          onChange={(val) => handleChange(index, classExpirationDate, val)}
+          onChange={(val) =>
+            handleChange(
+              index,
+              classExpirationDate,
+              val && val.isValid() ? val : null,
+            )
+          }
           slotProps={{ textField: { fullWidth: true } }}
         />
       </div>
