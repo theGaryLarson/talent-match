@@ -18,7 +18,7 @@ export default function EmployerNameTitleTag(props: {
         <p>
           <Link
             className="text-[#1e88e5]"
-            href="/edit-profile/employer/personal"
+            href="/edit-profile/employer/profile"
           >
             Edit My Profile
           </Link>{' '}
