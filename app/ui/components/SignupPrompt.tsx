@@ -28,7 +28,7 @@ export default function SignupPrompt({
         <div className="hidden py-4 laptop:block">
           <p>Not ready to log in?</p>
           <p>
-            <Link href="/underconstruction" className="REPLACE-BEFORE-RELEASE">
+            <Link target='_blank' href="/about-us"  className="underline">
               Learn how TWC works
             </Link>
           </p>
