@@ -1,10 +1,12 @@
+import { CareerPrepStatus, getCareerPrepStatus, getMeetingByJobSeeker } from "@/app/lib/admin/careerPrep";
 import { getCareerPrepAssementStatus, getPoolWithSession } from "@/app/lib/jobseeker";
-import { PoolCategories } from "@/app/lib/poolAssignment";
+import { CareerPrepTrack, PoolCategories } from "@/app/lib/poolAssignment";
 import Avatar from "@/app/ui/components/Avatar";
 import { auth } from "@/auth";
 import { WarningAmberOutlined } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
+import React, { ReactNode } from "react";
 
 //job seeker dashboard
 export const metadata = {
@@ -14,6 +16,7 @@ export default async function Page() {
   const session = await auth();
   const pool = await getPoolWithSession();
   const AssementInfo = await getCareerPrepAssementStatus();
+  const carrerPrepEnrollment = await getCareerPrepStatus(session?.user.jobseekerId??'')
   let hasTakenTest = false;
   if(AssementInfo != undefined){
     hasTakenTest = AssementInfo.CareerPrepAssessment.length >0;
@@ -24,7 +27,7 @@ export default async function Page() {
       <h1 className="text-black/90 text-[32px]">My Dashboard</h1> 
       <NameTitleTag name={session?.user.name} pfp={session?.user.image??undefined}/>
       <WorkShops/>
-      <CareerPrep hastakentest={hasTakenTest}/>
+      <CareerPrep enrollmentStatus={carrerPrepEnrollment?.enrollment} track={carrerPrepEnrollment?.Track} jobseekerId={session?.user.jobseekerId??''} caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name??'Our'} ${carrerPrepEnrollment?.CaseManger?.last_name??'Carrer Navigator'}`}/>
     </div>
   );
 }
@@ -65,14 +68,108 @@ function WorkShops(){
   );
 }
 
-function CareerPrep(props:{hastakentest:boolean}){
+async function CareerPrep(props:{
+  enrollmentStatus: CareerPrepStatus|undefined, 
+  track:CareerPrepTrack|undefined, 
+  jobseekerId:string, 
+  caseManager:string
+}){
+  console.log("Enrollment Status: ",props.enrollmentStatus)
+  const Meetings = await getMeetingByJobSeeker(props.jobseekerId)
+
+  let copy: { headline: string; body:ReactNode; button: string; buttonLink: string };
+  switch (props.enrollmentStatus) {
+    case undefined:
+      copy = {
+        headline: "Your Journey Starts Here",
+        body: <div>
+          Once you complete the skills assessment, you’ll be on your way to:
+        <ul className="space-y-3 py-3">
+          <li>A personalized Professional Development Plan</li>
+          <li>A virtual meeting with our Career Navigator</li>
+        </ul>
+        </div>,
+        button: "Take the Career Prep Skills Assessment",
+        buttonLink:'/services/jobseekers/career-prep/skill-assessment'
+      };
+      break;
+      case CareerPrepStatus.Applied:
+      case CareerPrepStatus.CreatingPlan:
+          copy = {
+            headline: "Thank You for Taking the Skills Assessment",
+            body: `We’re currently crafting a personalized Professional Development Plan just for you. Within 3-5 business days, you'll receive an email to schedule your first meeting with a dedicated Career Navigator.`,
+            button: "Learn More",
+            buttonLink: "/about-us", // TODO: onces there's an info page for carreer prep replace this
+          };
+          break;
+
+      case CareerPrepStatus.PlanCreated:
+      copy = {
+        headline: "Your Personalized Plan is Ready!",
+        body: "Your Professional Development Plan is ready for your review. Click below to schedule a meeting with our Career Navigator:",
+        button: "Schedule a Meeting",
+        buttonLink: "https://outlook.office365.com/owa/calendar/CFACareerServices@computingforall.org/bookings/", // Replace with the actual Bookings page link
+      };
+      break;
+
+      case CareerPrepStatus.MeetingScheduled:
+        copy = {
+          headline: "Your Next Steps",
+          body: <div>You have an upcoming meeting(s) with {props.caseManager} scheduled for:
+                <ul>
+                  {Meetings.map((m)=><li>{`${m.meetingDate}`}</li>)}
+                </ul>
+                </div>, // Replace placeholders with actual data
+          button: "Reschedule Meeting",
+          buttonLink: "https://outlook.office365.com/owa/calendar/CFACareerServices@computingforall.org/bookings/", // Replace with the actual Reschedule page link
+        };
+        break;
+
+        case CareerPrepStatus.MetCareerNavigator:
+          copy = {
+            headline: "Complete Your Enrollment",
+            body: `To officially join the program and access your Canvas training, please complete the enrollment form.`,
+            button: "Enroll Now",
+            buttonLink: "/services/jobseekers/career-prep/enrollment", 
+          };
+          break;
+    case CareerPrepStatus.Completed:
+    case CareerPrepStatus.Enrolled:
+            copy = {
+              headline: "Welcome to Career Prep!",
+              body: "You've officially joined the program! You can now access the Canvas training and begin your journey.",
+              button: "Access Canvas Training",
+              buttonLink: props.track == CareerPrepTrack.ACCELERATED? 'https://computingforall.instructure.com/enroll/JKT9EF':'https://computingforall.instructure.com/enroll/B33XD4'
+            };
+            break;
+    
+
+    //TODO ask for copy for these Statuses
+    case CareerPrepStatus.Rejected:
+      copy = { headline: "Application Rejected", body: "Unfortunately, your application was not approved.", button: "Contact Us", buttonLink:'/services/jobseekers/career-prep/skill-assessment' };
+      break;
+
+    case CareerPrepStatus.Withdrawn:
+      copy = { headline: "Application Withdrawn", body: "You have withdrawn from the program.", button: "Reapply", buttonLink:'/services/jobseekers/career-prep/skill-assessment' };
+      break;
+
+    default:
+      copy = { headline: "Status Unknown", body: "We are unable to determine your status.", button: "Contact Support", buttonLink:'https://github.com/Computing-For-All/nextjs-issue-tracker/issues/new?assignees=&labels=uat&projects=Computing-For-All%2Fnextjs-issue-tracker&template=application.yml' };
+      break;
+  }
+
+
+
+
+
+
   return(
   <div className="space-y-3 w-[1080px]">
       <div className="w-full justify-between items-center flex">
         <h2 className="text-black/90 text-xl font-medium">Career Prep</h2>
-          <Link href='/services/jobseekers/career-prep/enrollment' className="px-6 py-2 rounded-full font-medium border border-[#047f9c] text-[#047f9c] hover:text-white hover:bg-[#047f9c]">
+          {/* <Link href='/services/jobseekers/career-prep/enrollment' className="px-6 py-2 rounded-full font-medium border border-[#047f9c] text-[#047f9c] hover:text-white hover:bg-[#047f9c]">
             See More
-          </Link>
+          </Link> */}
       </div>
 
 
@@ -82,23 +179,16 @@ function CareerPrep(props:{hastakentest:boolean}){
         <Image className="rounded-2xl" width={400} height={267} src='/images/stock/careerAssesment.jfif' alt=""/>
         <div className="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
             <div className="self-stretch h-[188px] flex-col justify-start items-start gap-2.5 flex">
-                <div className="self-stretch text-[#014260] text-[32px] font-normal  leading-[38.40px]">Complete the Skills Assessment to begin the Career Prep Program</div>
+                <div className="self-stretch text-[#014260] text-[32px] font-normal  leading-[38.40px]">{copy.headline}</div>
                 <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
                     <div className="text-[#047f9c]  font-semibold leading-none tracking-wider">Career Prep Program</div>
                 </div>
-                <div className="self-stretch justify-start items-start gap-2.5 inline-flex">
-                    <div className="text-[#191919]/60  font-normal  leading-tight">Once you complete the skills assessment, you’ll be on your way to:  <br/><br/>A personalized Professional Development Plan <br/>A virtual meeting with our Career Navigator </div>
-                </div>
+                    <div className="text-[#191919]/60  font-normal  leading-tight">{copy.body}</div>
             </div>
            <br className="h-4"/>
-            {props.hastakentest?
-            <Link href='https://outlook.office365.com/owa/calendar/CFACareerServices@computingforall.org/bookings/' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
-            Schedule A Meeting
-        </Link>
-            :
-            <Link href='/services/jobseekers/career-prep/skill-assessment' className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
-                Take The Skills Assessment
-            </Link>}
+            <Link href={copy.buttonLink} className="px-5 py-3 bg-[#047f9c] rounded-full text-white font-medium border border-[#047f9c] hover:text-[#047f9c] hover:bg-white">
+                {copy.button}
+            </Link>
         </div>
     </div>
 </div>
@@ -126,7 +216,7 @@ function CallTOActionBanner({pool}:{pool:PoolCategories}){
         <div>
           <span className="font-bold">Attention </span>
           <span>{copy} </span>
-          <Link href={'/services/jobseekers/career-prep/skill-assessment'} className="font-normal underline">Take the Career Prep Assessment.</Link>
+          <Link href={'/services/jobseekers/career-prep/skill-assessment'} className="font-normal underline">Take the Career Prep Skills Assessment.</Link>
         </div>
       </div>
   );

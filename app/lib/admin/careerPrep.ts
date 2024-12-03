@@ -50,9 +50,9 @@ export enum TechCertificateStatus {
 export enum CareerPrepStatus {
   Applied = 'Applied', // submitting assessment will be Applied
   CreatingPlan = 'Creating Plan',
+  PlanCreated = 'Plan Created',
   MeetingScheduled = 'Meeting Scheduled',
   MetCareerNavigator = 'Met Career Navigator',
-  SentEnrollmentForm = 'Sent Enrollment Form',
   Enrolled = 'Enrolled',
   Completed = 'Completed',
   Rejected = 'Rejected',
@@ -230,6 +230,9 @@ export const selfAssignAsCaseManager = async (
   }
 };
 
+
+
+
 export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
   try {
     const data = await prisma.careerPrepAssessment.findUnique({
@@ -385,6 +388,20 @@ export const updateCareerPrepStatusCardView = async (
   }
 };
 
+
+
+export async function getCareerPrepStatus(jobseeker_id:string){
+  try {
+    if(jobseeker_id == '') return undefined;
+    let result = (await prisma.caseMgmt.findUnique({
+      where:{jobseekerId:jobseeker_id},
+      include:{CaseManager:true}}));
+      
+      return {enrollment:(result?.prepEnrollmentStatus as CareerPrepStatus), Track: result?.careerPrepTrack as CareerPrepTrack, CaseManger:result?.CaseManager}
+  } catch (error) {
+    console.error(error)
+  }
+}
 /**
  * Select statement to retrieve Career Prep student details.
  * Accessed through prisma.careerPrepAssessment model.
@@ -486,22 +503,6 @@ export interface PartnerTrainingProvider {
   educationLevel: EducationLevel; // differentiate between degree and nondegree education/training
   status: ProgramEnrollmentStatus;
 }
-
-// /**
-//  * Represents a data transfer object (DTO) for a meeting entity.
-//  *
-//  * @property {string} id - The unique identifier for the meeting.
-//  * @property {string} caseMgmtId - The case management ID associated with the meeting.
-//  * @property {string} attendee - The full name of the jobseeker attending the meeting.
-//  * @property {string} meetingTitle - The title of the meeting.
-//  * @property {string} [meetingAgenda] - An optional agenda for the meeting. This could be in a rich text format.
-//  * @property {Date} meetingDatetime - The date and time at which the meeting will occur.
-//  * @property {string} duration - The duration of the meeting, represented in the format HH:mm:ss.
-//  * @property {string} createdBy - The full name of the case manager who created the meeting.
-//  * @property {Date} createdAt - The date and time when the meeting was created.
-//  * @property {string} updatedBy - The full name of the person who last updated the meeting details.
-//  * @property {Date} updatedAt - The date and time when the meeting was last updated.
-//  */
 
 
 export type NoteDTO = {
@@ -849,6 +850,7 @@ export const submitCareerPrepEnrollment = async (
         jobseekerId,
         data,
       );
+      await updateCareerPrepStatusCardView(jobseekerId,CareerPrepStatus.Enrolled)
       return { success: true, status: 200 };
     },
         {
@@ -1765,6 +1767,7 @@ export async function getMeetingByJobSeeker(jobseekerId:string){
     }})
     return result
   } catch (error) {
-    
+    console.error(error)
+    return [];
   }
 }
