@@ -91,12 +91,13 @@ export default function JobseekerSignupFinishPage() {
                   {' '}
                   By signing up you agree to our{' '}
                   <Link
-                    className="REPLACE-BEFORE-RELEASE"
-                    href="/underconstruction"
+                    target='_blank'
+                    className='underline'
+                    href="/policies/terms-of-service"
                   >
                     terms of use
                   </Link>
-                  , and acknowledge you have read the{' '}
+                  {/*, and acknowledge you have read the{' '}
                   <Link
                     className="REPLACE-BEFORE-RELEASE"
                     href="/underconstruction"
@@ -109,7 +110,7 @@ export default function JobseekerSignupFinishPage() {
                     href="/underconstruction"
                   >
                     data sharing agreement
-                  </Link>
+                  </Link>*/}
                   .
                 </label>
               </div>
