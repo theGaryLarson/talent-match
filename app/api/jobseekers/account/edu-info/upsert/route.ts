@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import {NextResponse} from 'next/server';
 import {
     PrismaClient,
     ProjectExperiences,
@@ -19,8 +19,8 @@ import {mapToEnum, mapToEnumOrThrow} from "@/app/lib/utils";
 import {normalizeDate} from "@/app/lib/utils";
 import {SkillDTO} from "@/data/dtos/SkillDTO";
 import {JobseekerSkillDTO} from "@/data/dtos/JobseekerSkillDTO";
-import { auth } from '@/auth';
-import { setPoolWithSession } from "@/app/lib/jobseeker";
+import {auth} from '@/auth';
+import {setPoolWithSession} from "@/app/lib/jobseeker";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -100,7 +100,7 @@ export async function POST(request: Request) {
                     const deletedCertificates = await prisma.certificates.deleteMany({
                         where: {
                             OR: removableCertificates.map((removableCertificate) => ({
-                                certId: { equals: removableCertificate.certId },
+                                certId: {equals: removableCertificate.certId},
                             })),
                         },
                     });
@@ -174,7 +174,7 @@ export async function POST(request: Request) {
                         await prisma.jobseekers_education.deleteMany({
                             where: {
                                 OR: removableEducations.map((removableEducation) => ({
-                                    id: { equals: removableEducation.id },
+                                    id: {equals: removableEducation.id},
                                 })),
                             },
                         });
@@ -204,30 +204,41 @@ export async function POST(request: Request) {
                         description: edEntry.description,
                     };
 
-                    const updatedEducation = await prisma.jobseekers_education.update({
-                        where: { id: existingJobseekerEducation.id },
-                        data: {
-                            ...eduUpdateData,
-                            eduProviders: {
-                                connect: {
-                                    id: edEntry.edProviderId,
-                                },
-                            },
-                            program: edEntry.programId
-                                ? {
+                    const updatedEducation =
+                        await prisma.jobseekers_education.update({
+                            where: {id: existingJobseekerEducation.id},
+                            data: {
+                                id: edEntry.id,
+                                edLevel: edEntry.edLevel,
+                                preAppEdSystem: edEntry.preAppEdSystem || undefined,
+                                isEnrolled: edEntry.isEnrolled,
+                                enrollmentStatus: edEntry.enrollmentStatus,
+                                startDate: new Date(edEntry.startDate).toISOString(),
+                                gradDate: new Date(edEntry.gradDate).toISOString(),
+                                degreeType: edEntry.degreeType,
+                                gpa: edEntry.gpa,
+                                description: edEntry.description,
+                                eduProviders: {
                                     connect: {
-                                        id: edEntry.programId,
+                                        id: edEntry.edProviderId,
+                                    },
+                                },
+                                program: edEntry.programId
+                                    ? {
+                                        connect: {
+                                            id: edEntry.programId,
+                                        }
                                     }
-                                }
-                                : {
-                                    disconnect: true
-                                }
-                        },
-                        include: {
-                            program: true, // Include the related program information
-                            eduProviders: true, // Include the related provider information
-                        }
-                    });
+                                    : {
+                                        disconnect: true
+                                    }
+
+                            }, // end data
+                            include: {
+                                program: true, // Include the related program information
+                                eduProviders: true, // Include the related provider information
+                            },
+                        });
 
                     upsertedSchools.push(updatedEducation);
 
@@ -294,7 +305,7 @@ export async function POST(request: Request) {
                     const deletedProjects = await prisma.projectExperiences.deleteMany({
                         where: {
                             OR: removableProjects.map((removableProject) => ({
-                                projectId: { equals: removableProject.projectId },
+                                projectId: {equals: removableProject.projectId},
                             })),
                         },
                     });
@@ -421,7 +432,7 @@ export async function POST(request: Request) {
             await Promise.all(projPromises);
 
             // Map the school data to DTO
-            const mappedEdHistory: JsEducationInfoDTO[] = upsertedSchools.map((jsEdu: any ) => ({
+            const mappedEdHistory: JsEducationInfoDTO[] = upsertedSchools.map((jsEdu: any) => ({
                 id: jsEdu.id,
                 edLevel: mapToEnumOrThrow(jsEdu.edLevel, EducationLevel),
                 edProviderId: jsEdu.eduProviderId,
@@ -433,7 +444,7 @@ export async function POST(request: Request) {
                 gradDate: jsEdu.gradDate.toISOString(),
                 degreeType: mapToEnum(jsEdu.degreeType ?? null, HighSchoolDegreeType) ??
                     mapToEnumOrThrow(jsEdu.degreeType ?? null, CollegeDegreeType)
-                            ,
+                ,
                 programId: jsEdu.program?.id || null,
                 programName: jsEdu.program?.title || null,
                 gpa: jsEdu.gpa,
@@ -506,14 +517,14 @@ async function ensureEduProvidersExist(educations: JsEducationInfoDTO[]) {
     const processedProviders = new Set(); // To avoid redundant checks and creations
 
     for (const edEntry of educations) {
-        const { edProviderId, edProviderName } = edEntry;
+        const {edProviderId, edProviderName} = edEntry;
 
         // Skip if we've already processed this provider ID
         if (processedProviders.has(edProviderId)) continue;
 
         // Check if the edu_provider exists
         let eduProvider = await prisma.edu_providers.findUnique({
-            where: { id: edProviderId },
+            where: {id: edProviderId},
         });
 
         // If edu_provider does not exist, create a new one
@@ -540,14 +551,14 @@ async function ensureProgramsExist(educations: JsEducationInfoDTO[]) {
     const processedPrograms = new Set(); // To avoid redundant checks and creations
 
     for (const edEntry of educations) {
-        const { programId, programName } = edEntry;
+        const {programId, programName} = edEntry;
 
         // Skip if we've already processed this program ID
         if (processedPrograms.has(programId) || !programId) continue;
 
         // Check if the program exists
         let program = await prisma.programs.findUnique({
-            where: { id: programId },
+            where: {id: programId},
         });
 
         // If program does not exist, create a new one

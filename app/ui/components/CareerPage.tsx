@@ -79,48 +79,48 @@ export default function CareerPage({
                 <div className="flex-col justify-start items-start flex">
                     <div className="w-px h-10 relative" />
                 </div>
-                <div className="self-stretch h-96 px-24 py-4 rounded-3xl flex-col justify-center items-start gap-2.5 flex">
-                    <div className="self-stretch text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">Local Wage Data</div>
-                    <div className="self-stretch justify-start items-center inline-flex">
-                        <div className="w-72 py-4 rounded-tl-3xl rounded-bl-3xl flex-col justify-start items-start gap-2 inline-flex">
-                            <div className="self-stretch p-5 bg-sky-200 rounded-tl-lg rounded-bl-lg justify-center items-center gap-4 inline-flex">
-                                <div className="text-sky-900 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">key data points</div>
-                            </div>
-                            <div className="self-stretch p-5 bg-neutral-100 rounded-tl-lg rounded-bl-lg justify-start items-center gap-4 inline-flex">
-                                <div className="text-cyan-700 text-base font-normal font-['Roboto'] leading-snug">Average Salary</div>
-                            </div>
-                            <div className="self-stretch p-5 bg-neutral-100 rounded-tl-lg rounded-bl-lg justify-start items-center gap-4 inline-flex">
-                                <div className="text-cyan-700 text-base font-normal font-['Roboto'] leading-snug">Education Level</div>
-                            </div>
-                            <div className="self-stretch p-5 bg-neutral-100 rounded-tl-lg rounded-bl-lg justify-start items-center gap-4 inline-flex">
-                                <div className="text-cyan-700 text-base font-normal font-['Roboto'] leading-snug">Experience Requirements</div>
-                            </div>
-                            <div className="self-stretch p-5 bg-neutral-100 rounded-tl-lg rounded-bl-lg justify-start items-center gap-4 inline-flex">
-                                <div className="text-cyan-700 text-base font-normal font-['Roboto'] leading-snug">Job Growth Rate</div>
-                            </div>
-                        </div>
-                        <div className="grow shrink basis-0 py-4 rounded-tr-3xl rounded-br-3xl flex-col justify-start items-start gap-2 inline-flex">
-                            <div className="self-stretch p-5 bg-sky-200 rounded-tr-lg rounded-br-lg justify-center items-center gap-4 inline-flex">
-                                <div className="text-sky-900 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">DETAILS</div>
-                            </div>
-                            <div className="self-stretch p-5 bg-neutral-100 rounded-tr-lg rounded-br-lg justify-start items-center gap-4 inline-flex">
-                                <div className="text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{tableAvgSalary}</div>
-                            </div>
-                            <div className="self-stretch p-5 bg-neutral-100 rounded-tr-lg rounded-br-lg justify-start items-center gap-4 inline-flex">
-                                <div className="text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{tableEduLevel}</div>
-                            </div>
-                            <div className="self-stretch p-5 bg-neutral-100 rounded-tr-lg rounded-br-lg justify-start items-center gap-4 inline-flex">
-                                <div className="text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{tableExpReq}</div>
-                            </div>
-                            <div className="self-stretch p-5 bg-neutral-100 rounded-tr-lg rounded-br-lg justify-start items-center gap-4 inline-flex">
-                                <div className="text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{tableJobGrowth}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex-col justify-start items-start flex">
-                        <div className="w-px h-10 relative" />
-                    </div>
-                </div>
+                {/*<div className="self-stretch h-96 px-24 py-4 rounded-3xl flex-col justify-center items-start gap-2.5 flex">*/}
+                {/*    <div className="self-stretch text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">Local Wage Data</div>*/}
+                {/*    <div className="self-stretch justify-start items-center inline-flex">*/}
+                {/*        <div className="w-72 py-4 rounded-tl-3xl rounded-bl-3xl flex-col justify-start items-start gap-2 inline-flex">*/}
+                {/*            <div className="self-stretch p-5 bg-sky-200 rounded-tl-lg rounded-bl-lg justify-center items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-sky-900 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">key data points</div>*/}
+                {/*            </div>*/}
+                {/*            <div className="self-stretch p-5 bg-neutral-100 rounded-tl-lg rounded-bl-lg justify-start items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-cyan-700 text-base font-normal font-['Roboto'] leading-snug">Average Salary</div>*/}
+                {/*            </div>*/}
+                {/*            <div className="self-stretch p-5 bg-neutral-100 rounded-tl-lg rounded-bl-lg justify-start items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-cyan-700 text-base font-normal font-['Roboto'] leading-snug">Education Level</div>*/}
+                {/*            </div>*/}
+                {/*            <div className="self-stretch p-5 bg-neutral-100 rounded-tl-lg rounded-bl-lg justify-start items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-cyan-700 text-base font-normal font-['Roboto'] leading-snug">Experience Requirements</div>*/}
+                {/*            </div>*/}
+                {/*            <div className="self-stretch p-5 bg-neutral-100 rounded-tl-lg rounded-bl-lg justify-start items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-cyan-700 text-base font-normal font-['Roboto'] leading-snug">Job Growth Rate</div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*        <div className="grow shrink basis-0 py-4 rounded-tr-3xl rounded-br-3xl flex-col justify-start items-start gap-2 inline-flex">*/}
+                {/*            <div className="self-stretch p-5 bg-sky-200 rounded-tr-lg rounded-br-lg justify-center items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-sky-900 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">DETAILS</div>*/}
+                {/*            </div>*/}
+                {/*            <div className="self-stretch p-5 bg-neutral-100 rounded-tr-lg rounded-br-lg justify-start items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{tableAvgSalary}</div>*/}
+                {/*            </div>*/}
+                {/*            <div className="self-stretch p-5 bg-neutral-100 rounded-tr-lg rounded-br-lg justify-start items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{tableEduLevel}</div>*/}
+                {/*            </div>*/}
+                {/*            <div className="self-stretch p-5 bg-neutral-100 rounded-tr-lg rounded-br-lg justify-start items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{tableExpReq}</div>*/}
+                {/*            </div>*/}
+                {/*            <div className="self-stretch p-5 bg-neutral-100 rounded-tr-lg rounded-br-lg justify-start items-center gap-4 inline-flex">*/}
+                {/*                <div className="text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{tableJobGrowth}</div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*    <div className="flex-col justify-start items-start flex">*/}
+                {/*        <div className="w-px h-10 relative" />*/}
+                {/*    </div>*/}
+                {/*</div>*/}
                 <div className="self-stretch px-24 flex-col justify-center items-start gap-2.5 flex">
                     <div className="text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">Coalition Provider Training Programs</div>
                     <div className="self-stretch text-zinc-900 text-base font-normal font-['Roboto'] leading-tight">Jumpstart your journey with hands-on, industry-aligned training. These partner programs offer the skills, mentorship, and credentials you need to succeed in your chosen tech career.</div>

@@ -29,7 +29,8 @@ export enum BlobPrefix {
   Avatar = 'avatar',
   Resume = 'resume',
   CoverLetter = 'coverLetter',
-  DevPlan ='careerPrepDevPlan'
+  DevPlan ='careerPrepDevPlan',
+  EduProviderLogo ='eduProviderLogo'
 }
 
 // Needed to map the correct content-type property based on file extension
@@ -142,6 +143,29 @@ export async function uploadAvatar(
 // Method to get a link to the avatar image without SAS token
 export async function getAvatarUrl(userId: string): Promise<string | null> {
   const blobPrefix = `${userId}/${BlobPrefix.Avatar}`; // Common prefix for avatars
+  return await getBlobUrl(imageContainerName, blobPrefix);
+}
+
+// Upload training provider logo method using the generalized uploadFile function without SAS token
+export async function uploadEduProviderLogo(
+    file: Buffer,
+    fileName: string,
+    eduProviderId: string,
+): Promise<string> {
+  return await uploadFile(
+      file,
+      fileName,
+      eduProviderId,
+      BlobPrefix.EduProviderLogo,
+      imagFileExtensionsAllowed,
+      imageContainerName,
+      false,
+  );
+}
+
+// Method to get a link to the edu provider logo without SAS token
+export async function getEduProviderLogo(trainingProviderId: string): Promise<string | null> {
+  const blobPrefix = `${trainingProviderId}/${BlobPrefix.EduProviderLogo}`; // Common prefix for avatars
   return await getBlobUrl(imageContainerName, blobPrefix);
 }
 
