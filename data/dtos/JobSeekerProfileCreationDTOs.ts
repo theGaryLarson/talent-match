@@ -108,7 +108,7 @@ export enum HighSchoolDegreeType {
 
 export enum EducationLevel {
   Unselected = '',
-  HighSchool = 'High School',
+  HighSchool = 'High School', // TODO: should we change this to K12 ? This reflects options in the training provider data.
   College = 'College',
   TrainingProgram = 'Training Program / Bootcamp',
   PreApprenticeship = 'Pre-Apprenticeship',

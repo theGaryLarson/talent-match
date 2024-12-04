@@ -30,7 +30,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-import { TechPathways } from '@/app/lib/admin/careerPrep';
+import { CareerPrepPathways } from '@/app/lib/admin/careerPrep'
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -222,24 +222,24 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   }}
                 >
                   <FormControlLabel
-                    value={TechPathways.SOFTWARE_DEVELOPMENT}
+                    value={CareerPrepPathways.SOFTWARE_DEVELOPER}
                     control={<Radio />}
-                    label={TechPathways.SOFTWARE_DEVELOPMENT}
+                    label={CareerPrepPathways.SOFTWARE_DEVELOPER}
                   />
                   <FormControlLabel
-                    value={TechPathways.IT_CLOUD_COMPUTING}
+                    value={CareerPrepPathways.IT_CLOUD_SUPPORT}
                     control={<Radio />}
-                    label={TechPathways.IT_CLOUD_COMPUTING}
+                    label={CareerPrepPathways.IT_CLOUD_SUPPORT}
                   />
                   <FormControlLabel
-                    value={TechPathways.CYBERSECURITY}
+                    value={CareerPrepPathways.CYBERSECURITY}
                     control={<Radio />}
-                    label={TechPathways.CYBERSECURITY}
+                    label={CareerPrepPathways.CYBERSECURITY}
                   />
                   <FormControlLabel
-                    value={TechPathways.DATA_ANALYTICS}
+                    value={CareerPrepPathways.DATA_ANALYTICS}
                     control={<Radio />}
-                    label={TechPathways.DATA_ANALYTICS}
+                    label={CareerPrepPathways.DATA_ANALYTICS}
                   />
                 </RadioGroup>
               </FormControl>

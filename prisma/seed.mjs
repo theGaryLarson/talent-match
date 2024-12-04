@@ -1337,46 +1337,56 @@ async function seedMockUsers(numUsers = 4) {
     console.log(`Seeded ${numUsers} users.\n`)
 }
 
-async function seedPathways() {
+export const EduProviderPathways = { // maps to TypeScript enum EduProviderPathways
+    SoftwareDeveloper: "Software Developer",
+    ITCloudSupport: "IT & Cloud Support",
+    Cybersecurity: "Cybersecurity",
+    DataAnalytics: "Data Analytics",
+    ProfessionSkillsTraining: "Profession Skills Training",
+    ProgramManagement: "Program Management",
+};
+async function seedPartnerPathways() {
     const pathways = [
+        EduProviderPathways.SoftwareDeveloper,
+        EduProviderPathways.ITCloudSupport,
+        EduProviderPathways.Cybersecurity,
+        EduProviderPathways.DataAnalytics,
+        EduProviderPathways.ProfessionSkillsTraining,
+        EduProviderPathways.ProgramManagement,
         // "Cloud Support Associate",
-        // "Software Developer",
-        // "Data Analyst",
-        // "Cybersecurity Analyst",
-        "Cybersecurity",
-        "Data Analytics",
         // "Data Center Operations",
-        "IT & Cloud Computing",
         // "Digital Marketing",
         // "UI/UX",
-        // "Project Management",
-        "Software Development",
         // "Other",
-    ]
-    console.log('Seeding Pathways...')
+    ];
+
+    console.log("Seeding Pathways...");
     const uuids = [
-        '0645cc89-e942-48b4-a34a-f7ad7e87dec3',
-        '79608104-d50e-4d0f-b541-2a9de7bc0f89',
-        'a54f3940-301c-4e2e-85e8-bcaf244c89bb',
-        'b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009',
-        '79608104-c3ea-47b5-9bbf-6f7f8f9c6009',
-        'c45fce80-c3ea-47b5-b541-6f7f8f9c6009',
-        'a46fbd79-c3ea-47b5-9bbf-6f7f8f9c6009',
-        '56308104-c3ea-47b5-9bbf-6f7f8f9c6009',
-        '478fce80-c3ea-47b5-b541-6f7f8f9c6009',
-    ]
-    let idx = 0
+        "0645cc89-e942-48b4-a34a-f7ad7e87dec3",
+        "79608104-d50e-4d0f-b541-2a9de7bc0f89",
+        "a54f3940-301c-4e2e-85e8-bcaf244c89bb",
+        "b28fbd79-c3ea-47b5-9bbf-6f7f8f9c6009",
+        "79608104-c3ea-47b5-9bbf-6f7f8f9c6009",
+        "c45fce80-c3ea-47b5-b541-6f7f8f9c6009",
+        "a46fbd79-c3ea-47b5-9bbf-6f7f8f9c6009",
+        "56308104-c3ea-47b5-9bbf-6f7f8f9c6009",
+        "478fce80-c3ea-47b5-b541-6f7f8f9c6009",
+    ];
+
+    let idx = 0;
     for (const path of pathways) {
+        if (!path) continue; // Skip any undefined or commented-out entries
         await prisma.pathways.create({
             data: {
                 pathway_id: uuids[idx],
                 pathway_title: path,
-            }
+            },
         });
         idx++;
     }
-    console.log(`Seeded ${pathways.length} Pathways.\n`)
+    console.log(`Seeded ${pathways.filter(Boolean).length} Pathways.\n`);
 }
+
 
 async function seedTechnologyAreas() {
     console.log('Seeding Technology Areas...')
@@ -1497,14 +1507,14 @@ async function seedPartnerEdProvidersAndPrograms() {
                             edu_provider_id: eduProvider.id,
                             program_id: existingProgram.id,
                             // Map other fields if available in your schema
-                            cost: program.cost ? program.cost : null,
+                            costSummary: program.cost ? program.cost : null,
                             targetedJobRoles:  program.targetedJobRoles.length > 0 ? program.targetedJobRoles.join(', ') : null, // Convert array to string
                             programDescription: program.programDescription ? program.programDescription : null,
                             months: program.months ? program.months : null,
                             hoursPerWeek: program.hoursPerWeek ? program.hoursPerWeek : null,
                             targetPopulation: program.targetPopulation ? program.targetPopulation : null,
                             serviceArea: program.serviceArea ? program.serviceArea : null,
-                            pathways: program.pathways.length > 0 ? program.pathways.join(', ') : null, // Convert array to string
+                            pathways: program.pathways.length > 0 ? program.pathways.join('~') : null, // Convert array to string
                         },
                     });
                     console.log(
@@ -2383,7 +2393,7 @@ async function seedPostalGeoData(jsonFilePath, logFrequency = 10, batchSize = 10
  * @return {Promise<void>} A promise that resolves when all tables are successfully seeded.
  */
 async function seedFoundationalTables() {
-    await seedPathways(); // TODO: add pathway subcategories (i.e. Software Dev consists of Web Dev, Mobile Dev etc.)
+    await seedPartnerPathways(); // TODO: add pathway subcategories (i.e. Software Dev consists of Web Dev, Mobile Dev etc.)
     await seedTechnologyAreas();
     await seedIndustrySectors();
     await seedSubcategories();
