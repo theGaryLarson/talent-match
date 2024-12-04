@@ -117,7 +117,7 @@ async function CareerPrep(props:{
           headline: "Your Next Steps",
           body: <div>You have an upcoming meeting(s) with {props.caseManager} scheduled for:
                 <ul>
-                  {Meetings.map((m)=><li>{`${m.meetingDate}`}</li>)}
+                  {Meetings.map((m)=><li key={m.id}>{`${m.meetingDate}`}</li>)}
                 </ul>
                 </div>, // Replace placeholders with actual data
           button: "Reschedule Meeting",
