@@ -80,7 +80,7 @@ function TabButton(props: {
 }) {
   return (
     <div
-      className="inline-flex h-[120px] w-[120px] flex-col items-center justify-center gap-2 rounded-2xl bg-[#f3f3f3] p-4 shadow cursor-pointer"
+      className="inline-flex h-[115px] w-[115px] flex-col items-center justify-center gap-2 rounded-2xl bg-[#f3f3f3] p-4 shadow cursor-pointer"
       onClick={props.onClick}
     >
       <TabImage src={props.src} isSelected={props.isSelected} />
