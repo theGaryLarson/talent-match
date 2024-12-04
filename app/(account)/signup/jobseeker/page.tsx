@@ -21,9 +21,22 @@ const vectorImgSrc = '/images/signup/jobseeker-vector.png';
 export default function JobseekerSignupFinishPage() {
   let [resident, setResident] = useState(false);
   let [termsAgree, setTermsAgree] = useState(false);
+  const [checkboxState, setCheckboxState] = useState({
+    jobNotifications: false,
+    opportunities: false,
+  });
   const { data: session, status, update } = useSession();
   const updateSessionProperties = useUpdateSession();
   const router = useRouter();
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, checked } = e.target;
+    setCheckboxState((prevState) => ({
+      ...prevState,
+      [id]: checked,
+    }));
+  };
+
   return (
     <>
       <SignupHeader />
@@ -63,18 +76,28 @@ export default function JobseekerSignupFinishPage() {
             </fieldset>
             <fieldset
               className="flex flex-col gap-3 disabled:text-gray-400"
-              disabled={!(resident)}
+              disabled={!resident}
             >
               <p>Notifications</p>
               <div>
-                <input type="checkbox" id="jobNotifications" defaultChecked />
+                <input
+                  type="checkbox"
+                  id="jobNotifications"
+                  checked={checkboxState.jobNotifications}
+                  onChange={handleCheckboxChange}
+                />
                 <label htmlFor="jobNotifications">
                   {' '}
                   Receive new job posting notifications
                 </label>
               </div>
               <div>
-                <input type="checkbox" id="opportunities" />
+                <input
+                  type="checkbox"
+                  id="opportunities"
+                  checked={checkboxState.opportunities}
+                  onChange={handleCheckboxChange}
+                />
                 <label htmlFor="opportunities">
                   {' '}
                   Hear more about career opportunities
@@ -91,8 +114,8 @@ export default function JobseekerSignupFinishPage() {
                   {' '}
                   By signing up you agree to our{' '}
                   <Link
-                    target='_blank'
-                    className='underline'
+                    target="_blank"
+                    className="underline"
                     href="/policies/terms-of-service"
                   >
                     terms of use
@@ -127,11 +150,15 @@ export default function JobseekerSignupFinishPage() {
                   body: JSON.stringify({
                     userId: session?.user.id,
                     role: Role.JOBSEEKER,
+                    sendNewJobPosts: checkboxState.jobNotifications,
+                    sendCareerOpportunities: checkboxState.opportunities,
                   }),
                 });
                 if (response.ok) {
-                  let rolesArray = session?.user.roles || []
-                  rolesArray = rolesArray.filter((role: Role) => role !== Role.GUEST)
+                  let rolesArray = session?.user.roles || [];
+                  rolesArray = rolesArray.filter(
+                    (role: Role) => role !== Role.GUEST,
+                  );
                   // Add the new role if it's not already in the roles array
                   if (!rolesArray.includes(Role.JOBSEEKER)) {
                     rolesArray.push(Role.JOBSEEKER);
@@ -141,8 +168,8 @@ export default function JobseekerSignupFinishPage() {
                     roles: rolesArray,
                   });
                   router.push('/edit-profile/jobseeker/introduction');
-              }
-            }}
+                }
+              }}
               className="mx-auto my-8 rounded-full focus:ring-0"
               disabled={!(resident && termsAgree)}
             >

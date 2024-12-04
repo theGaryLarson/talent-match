@@ -62,10 +62,10 @@ function AddJobLink(){
   return(
     <div className="flex items-center bg-white p-2">
       <div className="flex h-[17px]">
-        <Link href={'/services/employers/dashboard/postjob'}className="text-sm font-semibold text-[#047f9c] flex items-center gap-1">
-        Post a Job
-          <PlusCircleIcon width={20}/>
-        </Link>
+        {/*<Link href={'/services/employers/dashboard/postjob'}className="text-sm font-semibold text-[#047f9c] flex items-center gap-1">*/}
+        {/*Post a Job*/}
+        {/*  <PlusCircleIcon width={20}/>*/}
+        {/*</Link>*/}
       </div>
     </div>
   );
