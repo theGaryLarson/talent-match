@@ -33,7 +33,9 @@ export default function AccountMenu() {
   };
 
   var textColor = 'text-black';
-  if (pathname == '/services/jobseekers' || pathname == '/services/employers') {
+  if (pathname == '/services/jobseekers' ||
+      pathname == '/services/employers' || 
+      pathname.startsWith('/services/training-programs/')) {
     textColor = 'text-white';
   }
 
