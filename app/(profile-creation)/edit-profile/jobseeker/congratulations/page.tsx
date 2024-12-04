@@ -1,8 +1,7 @@
 'use client';
 
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Confetti from '@/app/ui/components/Confetti';
-
 
 import { Button } from 'flowbite-react';
 import { useRouter } from 'next/navigation';
@@ -33,7 +32,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
     }
   }, [status, session]);
   function handleClick() {
-    router.push(`/services/jobseekers/${session?.user.jobseekerId!}`);
+    router.push(`/services/jobseekers/dashboard`);
   }
   const firstName = session?.user?.firstName;
   return (
