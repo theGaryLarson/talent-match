@@ -1,15 +1,16 @@
-import { getAllCareerPrepStudentsCardView } from '@/app/lib/admin/careerPrep';
+import { getCareerPrepStudentsCardViewByCaseManagerSession, getUnManagedCareerPrepStudents } from '@/app/lib/admin/careerPrep';
 import CareerPrepStudentsCard from '@/app/ui/components/careerPrep/CareerPrepStudentsCard';
 export const metadata = {
   title: "My Dashboard"
 };
 export default async function Page() {
-  const clients = await getAllCareerPrepStudentsCardView();
+  const clients = await getCareerPrepStudentsCardViewByCaseManagerSession()
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <h1 className="text-2xl font-medium">
-        All Carrer Prep Students
+        My Students
       </h1>
+
       {
         clients?.map((client)=>{
           return(

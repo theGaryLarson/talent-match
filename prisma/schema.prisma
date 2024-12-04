@@ -13,35 +13,37 @@ datasource db {
 /////////////////////////////////////////////////////
 
 model User {
-  id                 String          @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  role               String          @db.VarChar(255)
-  first_name         String?         @db.VarChar(255) // TODO: does this need to be name for auth.js
-  last_name          String?         @db.VarChar(255) // TODO: do we need to add username
-  birthdate          DateTime?       @db.DateTime
-  email              String          @unique @db.VarChar(255)
-  emailVerified      DateTime?       @map("email_verified") @db.DateTime
-  phoneCountryCode   String?         @db.VarChar(100)
-  phone              String?         @db.VarChar(16)
-  zip                String?         @db.VarChar(5)
-  photo_url          String?         @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
-  has_agreed_terms   Boolean         @default(false) @db.Bit
-  createdAt          DateTime        @default(now()) @map("created_at") @db.DateTime
-  updatedAt          DateTime?       @updatedAt @map("updated_at") @db.DateTime
-  is_marked_deletion DateTime?       @db.DateTime
-  locationData       PostalGeoData?  @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
-  cfa_admin          CfaAdmin[]
-  educators          educators[]
-  employers          employers[]
-  jobseekers         jobseekers[]
-  eduProviders       edu_providers[]
-  volunteers         volunteers[]
-  Account            Account[]
-  Session            Session[]
+  id                      String          @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  role                    String          @db.VarChar(255)
+  first_name              String?         @db.VarChar(255) // TODO: does this need to be name for auth.js
+  last_name               String?         @db.VarChar(255) // TODO: do we need to add username
+  birthdate               DateTime?       @db.DateTime
+  email                   String          @unique @db.VarChar(255)
+  emailVerified           DateTime?       @map("email_verified") @db.DateTime
+  phoneCountryCode        String?         @db.VarChar(100)
+  phone                   String?         @db.VarChar(16)
+  zip                     String?         @db.VarChar(5)
+  photo_url               String?         @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
+  has_agreed_terms        Boolean         @default(false) @db.Bit
+  sendNewJobPosts         Boolean?        @default(false) @db.Bit
+  sendCareerOpportunities Boolean?        @default(false) @db.Bit
+  createdAt               DateTime        @default(now()) @map("created_at") @db.DateTime
+  updatedAt               DateTime?       @updatedAt @map("updated_at") @db.DateTime
+  is_marked_deletion      DateTime?       @db.DateTime
+  locationData            PostalGeoData?  @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
+  cfa_admin               CfaAdmin[]
+  educators               educators[]
+  employers               employers[]
+  jobseekers              jobseekers[]
+  eduProviders            edu_providers[]
+  volunteers              volunteers[]
+  Account                 Account[]
+  Session                 Session[]
   // Optional for WebAuthn support
-  Authenticator      Authenticator[]
-  companies          companies[]
-  CaseMgmt           CaseMgmt[]
-  CaseMgmtNotes      CaseMgmtNotes[]
+  Authenticator           Authenticator[]
+  companies               companies[]
+  CaseMgmt                CaseMgmt[]
+  CaseMgmtNotes           CaseMgmtNotes[]
 
   @@map("users")
 }
@@ -219,7 +221,7 @@ model company_testimonials {
 model edu_providers {
   id                   String                 @id(clustered: false, map: "edu_providers_PRIMARY") @unique(map: "edu_providers_id_UNIQUE") @default(dbgenerated("newid()")) @db.UniqueIdentifier
   edu_type             String?                @db.VarChar(50)
-  name                 String?                @unique @db.VarChar(255)
+  name                 String                 @unique @db.VarChar(255)
   contact              String?                @db.VarChar(45)
   contact_email        String?                @db.VarChar(255)
   edu_url              String?                @db.VarChar(255)
@@ -495,13 +497,13 @@ model CaseMgmtNotes {
 }
 
 model Meeting {
-  id            String          @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobseekerId   String          @db.UniqueIdentifier
-  title         String          @db.VarChar(45)
-  meetingAgenda String?         @db.NText
-  meetingDate   DateTime        @db.DateTime
-  updatedAt     DateTime        @updatedAt @db.DateTime
-  caseMgmt      CaseMgmt        @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
+  id            String   @id(clustered: false, map: "meeting_PRIMARY") @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobseekerId   String   @db.UniqueIdentifier
+  title         String   @db.VarChar(45)
+  meetingAgenda String?  @db.NText
+  meetingDate   DateTime @db.DateTime
+  updatedAt     DateTime @updatedAt @db.DateTime
+  caseMgmt      CaseMgmt @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -852,20 +854,29 @@ model provider_program_has_skills {
 }
 
 model provider_programs {
-  training_program_id         String                        @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
-  program_id                  String                        @db.UniqueIdentifier
-  edu_provider_id             String                        @db.UniqueIdentifier
-  pathway_id                  String?                       @db.UniqueIdentifier
-  targetedJobRoles            String?                       @map("target_job_roles") @db.Text
-  description                 String?                       @db.Text
-  cost                        String?                       @db.VarChar(255)
-  months                      String?                       @db.VarChar(45)
-  hoursPerWeek                String?                       @db.VarChar(45)
-  targetPopulation            String?                       @db.Text
-  serviceArea                 String?                       @db.Text
-  pathways                    String?                       @db.Text
-  programDescription          String?                       @db.Text
-  target_population           String?                       @db.Text
+  training_program_id String  @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
+  program_id          String  @db.UniqueIdentifier
+  edu_provider_id     String  @db.UniqueIdentifier
+  pathway_id          String? @db.UniqueIdentifier
+  targetedJobRoles    String? @map("target_job_roles") @db.Text
+  description         String? @db.Text
+  months              String? @db.VarChar(45)
+  hoursPerWeek        String? @db.VarChar(45)
+  targetPopulation    String? @db.Text
+  serviceArea         String? @db.Text
+  pathways            String? @db.Text
+  programDescription  String? @db.Text
+  locations           String? @db.Text // this with be a delimited list. Delimiter: ~
+  about               String? @db.Text
+  tuition             String? @db.VarChar(25)
+  fees                String? @db.VarChar(25)
+  costSummary         String? @db.Text
+  locationType        String? @db.VarChar(25) // enum LocationType
+  getStartedUrl       String? @db.VarChar(255)
+  faq                 String? @db.Text
+  eduLevel            String? @db.VarChar(45) // enum EducationLevel
+  programLength       String? @db.Text
+
   provider_program_has_skills provider_program_has_skills[]
   edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
   Program                     programs                      @relation(fields: [program_id], references: [id], onUpdate: NoAction, map: "fk_provider_programs_programs1")

@@ -23,7 +23,7 @@ export default auth((req) => {
       '/services/jobseekers/dashboard',
       '/services/jobseekers/dashboard/my-applications',
       '/services/jobseekers/',
-      '/services/joblistings',
+      //'/services/joblistings',
       '/api/joblistings/',
       '/api/jobseekers/',
       '/api/edu-providers/',
@@ -35,7 +35,7 @@ export default auth((req) => {
       '/edit-profile/employer/',
       '/services/employers/dashboard',
       '/services/jobseekers/',
-      '/services/joblistings',
+      //'/services/joblistings',
       '/api/joblistings/',
       '/api/employers/',
       '/api/companies',
@@ -47,7 +47,8 @@ export default auth((req) => {
       '/api/admin',
       '/career-prep',
       '/services/jobseekers',
-      '/services/joblistings',
+      '/api/admin/career-prep/self-assign-case',
+      //'/services/joblistings',
       '/api/jobseekers/career-prep/meeting'
       // Add any other routes accessible by case managers
     ],
@@ -60,6 +61,7 @@ export default auth((req) => {
     '/',
     '/about-us',
     '/underconstruction',
+    '/policies/terms-of-service',
     '/signin',
     '/signout',
     '/services',
@@ -166,6 +168,6 @@ export default auth((req) => {
  */
 export const config = {
   matcher: [
-    '/((?!api/auth|_next/static|_next/image|images|favicon.ico|ess).*)',
+    '/((?!api/auth|_next/static|_next/image|images|favicon.ico).*)',
   ],
 };

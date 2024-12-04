@@ -29,12 +29,19 @@ import AccountMenu from './components/mui/AccountMenu';
 //   { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '/underconstruction', icon: FingerPrintIcon }
 // ]
 
-const TopLevelLinks = [
+type LinkItem = {
+  name: string;
+  href: string;
+  target?: string;
+  rel?: string;
+};
+
+const TopLevelLinks: LinkItem[] = [
   { name: 'Talent Showcase', href: '/services/talent-search' },
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
   { name: 'Careers', href: '/services/careers' },
-  {
+  /*{
     name: 'Find a Job',
     href: 'https://cfajobs.powerappsportals.com/',
     target: '_blank',
@@ -45,7 +52,7 @@ const TopLevelLinks = [
     href: 'https://forum.watechwfcoalition.org/',
     target: '_blank',
     rel: 'oopener noreferrer',
-  },
+  },*/
   { name: 'About Us', href: '/about-us' },
   // { name: 'Explore', href: '/underconstruction' },
   // {

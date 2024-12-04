@@ -40,7 +40,7 @@ export default function Footer() {
         />
       </a>
       <div className="text-center sm-tablet:text-right">
-        <Link href='/underconstruction' className=" text-white underline REPLACE-BEFORE-RELEASE">Privacy Policy</Link>
+        <Link href='/policies/terms-of-service' className=" text-white underline">Terms of Service</Link>
         <p className="text-white">© Copyright 2024. All rights reserved.</p>
         <div className="git-info">
           <p><a href={issueURL + "&version=" + generatedGitInfo.gitCommitHash} target="_blank"><code>{generatedGitInfo.gitCommitHash}</code></a></p>
