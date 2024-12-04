@@ -13,10 +13,10 @@ export async function PATCH(request: Request) {
     let session = await auth();
     const userId: string = session?.user.id!;
 
-    const body: { role: Role } = await request.json();
+    const body: { role: Role, sendNewJobPosts: boolean, sendCareerOpportunities: boolean } = await request.json();
 
     // Destructure the DTO
-    const { role } = body;
+    const { role, sendNewJobPosts, sendCareerOpportunities } = body;
 
     const result = await prisma.$transaction(async (prisma) => {
       // Fetch the current user roles
@@ -51,6 +51,8 @@ export async function PATCH(request: Request) {
         where: {id: userId},
         data: {
           role: updatedRoles,
+          sendNewJobPosts: sendNewJobPosts,
+          sendCareerOpportunities: sendCareerOpportunities
         },
       });
 

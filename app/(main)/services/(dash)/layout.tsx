@@ -48,13 +48,13 @@ export default async function layout({ children }: { children: React.ReactNode }
           <EmailOutlinedIcon />
           Inbox
         </Link> */}
-        <Link
-          href="/services/employers/dashboard/postjob"
-          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
-        >
-          <PencilSquareIcon width={24}/>
-          Post a job
-        </Link>
+        {/*<Link*/}
+        {/*  href="/services/employers/dashboard/postjob"*/}
+        {/*  className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"*/}
+        {/*>*/}
+        {/*  <PencilSquareIcon width={24}/>*/}
+        {/*  Post a job*/}
+        {/*</Link>*/}
       </div>
       {children}
     </div>
