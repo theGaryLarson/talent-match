@@ -124,11 +124,11 @@ export default function CareerPage({
                 <div className="self-stretch px-24 flex-col justify-center items-start gap-2.5 flex">
                     <div className="text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">Coalition Provider Training Programs</div>
                     <div className="self-stretch text-zinc-900 text-base font-normal font-['Roboto'] leading-tight">Jumpstart your journey with hands-on, industry-aligned training. These partner programs offer the skills, mentorship, and credentials you need to succeed in your chosen tech career.</div>
-                    <div className="self-stretch justify-end items-start gap-2.5 inline-flex">
+                    {/* <div className="self-stretch justify-end items-start gap-2.5 inline-flex">
                         <div className="px-5 py-3 bg-neutral-100 rounded-full justify-center items-center gap-1.5 flex">
                             <div className="text-center text-sky-900 text-base font-medium font-['Roboto'] capitalize leading-tight tracking-tight">See More</div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="flex-col justify-start items-start flex">
                         <div className="w-px h-2.5 relative" />
                     </div>
