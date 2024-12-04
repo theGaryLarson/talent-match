@@ -1,4 +1,4 @@
-import CareerPill from "@/app/ui/components/CareerPill";
+import CareerPill from "@/app/ui/components/career/CareerPill";
 
 export default function Page() {
     return (

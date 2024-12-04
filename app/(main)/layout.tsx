@@ -14,11 +14,20 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <SessionProvider>
-          <Header />
-          {children}
-          <Footer />
+
+          {/* adding this flex stuff so the footer is always at the bottom of the screen */}
+          <div className="flex flex-col h-screen">          
+            <Header />
+            
+            <div className="flex-grow">
+              {children}
+            </div>
+
+            <Footer />
+          </div>
+
         </SessionProvider>
       </body>
-    </html>
+    </html >
   );
 }
