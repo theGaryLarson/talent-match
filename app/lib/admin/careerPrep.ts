@@ -124,7 +124,7 @@ export interface CareerPrepJobseekerCardViewDTO {
   // brandingAssessmentAvg: number;
 }
 
-export const getCareerPrepStudentsCardView = async (): Promise<
+export const getAllCareerPrepStudentsCardView = async (): Promise<
   CareerPrepJobseekerCardViewDTO[] | null
 > => {
   try {
@@ -160,7 +160,50 @@ export const getCareerPrepStudentsCardView = async (): Promise<
     prisma.$disconnect();
   }
 };
-
+export const getCareerPrepStudentsCardViewByCaseManagerSession = async (): Promise<
+  CareerPrepJobseekerCardViewDTO[] | null
+> => {
+  try {
+    const session = await auth();
+    const data = await prisma.careerPrepAssessment.findMany({
+      select: selectCareerPrepStudentCardView,
+      where:{
+        CaseMgmt:{
+          CaseManager:{
+            id:session?.user.id
+          }
+        }
+      }
+    });
+    devLog('career prep card view', data);
+    // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
+    const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
+      (item) => ({
+        jobseekerId: item.jobseekerId,
+        firstName: item.Jobseeker?.users?.first_name || '',
+        lastName: item.Jobseeker?.users?.last_name || '',
+        pronouns: item.pronouns,
+        careerPrepTrack: item.Jobseeker
+          .careerPrepTrackRecommendation as CareerPrepTrack,
+        careerPrepAssessmentDate: item.assessmentDate,
+        careerPrepEnrollmentStatus: item.CaseMgmt
+          ?.prepEnrollmentStatus as CareerPrepStatus,
+        careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
+        expectedEduCompletion:
+          item.expectedEduCompletion as TimeUntilCompletion,
+        assignedPool:
+          (item.Jobseeker?.assignedPool as PoolCategories) ||
+          PoolCategories.None,
+      }),
+    );
+    return transformedData;
+  } catch (e) {
+    console.error('Error fetching career prep students card view:', e);
+    return null;
+  } finally {
+    prisma.$disconnect();
+  }
+};
 /**
  * Asynchronously retrieves a list of unmanaged Career Prep students.
  * Returns a Promise that resolves to an array of CareerPrepJobseekerCardViewDTO objects.
@@ -177,7 +220,9 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
     {
       select: selectCareerPrepStudentCardView,
       where: {
-        CaseMgmt: null,
+        CaseMgmt: {
+          CaseManager:null
+        },
       },
     },
   );
@@ -369,11 +414,11 @@ export const updateCareerPrepStatusCardView = async (
             jobseekerId: jobseekerId,
           },
         },
-        CaseManager: {
-          connect: {
-            id: session?.user.id!,
-          },
-        },
+        // CaseManager: {
+        //   connect: {
+        //     id: session?.user.id!,
+        //   },
+        // },
       },
     });
     return {
@@ -1772,3 +1817,5 @@ export async function getMeetingByJobSeeker(jobseekerId:string){
     return [];
   }
 }
+
+

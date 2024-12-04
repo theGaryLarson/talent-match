@@ -2,13 +2,14 @@ import { CareerPrepJobseekerCardViewDTO, CareerPrepStatus } from "@/app/lib/admi
 import { ProgramEnrollmentStatus } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import Link from "next/link";
 import EnrollmentStatusDropDown from "./EnrollmentStatusDropDown";
+import SelfAssignCaseButton from "./SelfAsignCaseButton";
 
-export default function CareerPrepStudentsCard(props:CareerPrepJobseekerCardViewDTO){
+export default function CareerPrepStudentsCard(props:CareerPrepJobseekerCardViewDTO&{showSelfAssign:boolean}){
     console.log(props.careerPrepEnrollmentStatus)
     return (
         <div className="w-full rounded-lg border border-2 border-cyan-600 p-2 phone:p-4">
             <h3 className="text-2xl">
-                {props.firstName} {props.lastName} ({props.pronouns})
+                {props.firstName} {props.lastName} ({props.pronouns}) {props.showSelfAssign?<SelfAssignCaseButton jobseekerId={props.jobseekerId}/>:''}
             </h3>
             <p>
                 <b>Recomended Track:</b> {props.careerPrepTrack}
