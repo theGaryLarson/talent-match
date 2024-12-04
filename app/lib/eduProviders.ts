@@ -35,6 +35,7 @@ export type ReadEduProviderProgramCardDTO = {
     programLength: string, // provider_programs.programLength
     tuition?: string, // provider_programs.tuition
     fees?: string, // provider_programs.fees
+    locationType: LocationType | null, // provider_programs.locationType (enum LocationType)
     pathway: EduProviderPathways[]
 }
 
@@ -102,6 +103,7 @@ export const getProviderProgramCardView = async (pathway: EduProviderPathways): 
             programLength: program.programLength || '',
             tuition: program.tuition || '',
             fees: program.fees || '',
+            locationType: isEnumValue(LocationType, program.locationType) ? program.locationType as LocationType : null,
             pathway: program.pathways
                 ? program.pathways
                     .split('~')

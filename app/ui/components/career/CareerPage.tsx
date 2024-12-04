@@ -1,12 +1,20 @@
-export default function CareerPage({
+import { EduProviderPathways, getProviderProgramCardView, ReadEduProviderProgramCardDTO } from "@/app/lib/eduProviders";
+import TrainingProgramCard from "./TrainingProgramCard";
+
+
+export default async function CareerPage({
     title, subtitle, img, altCareerNames, avgSalary, trainingLength, prepLevel,
     description, whatYoullDo, skillsYoullNeed, whyItMatters,
     tableAvgSalary, tableEduLevel, tableExpReq, tableJobGrowth,
     trainingPrograms }: {
-    title: string, subtitle: string, img: string, altCareerNames: string, avgSalary: string, trainingLength: string, prepLevel: string,
-    description: string, whatYoullDo: string, skillsYoullNeed: string, whyItMatters: string,
-    tableAvgSalary: string, tableEduLevel: string, tableExpReq: string, tableJobGrowth: string,
-    trainingPrograms: string }) {
+        title: string, subtitle: string, img: string, altCareerNames: string, avgSalary: string, trainingLength: string, prepLevel: string,
+        description: string, whatYoullDo: string, skillsYoullNeed: string, whyItMatters: string,
+        tableAvgSalary: string, tableEduLevel: string, tableExpReq: string, tableJobGrowth: string,
+        trainingPrograms: EduProviderPathways
+    }) {
+
+    let programs: ReadEduProviderProgramCardDTO[] = await getProviderProgramCardView(trainingPrograms);
+
     return (
         <div className="bg-neutral-100 flex-col justify-start items-center inline-flex">
             <div className="self-stretch px-24 py-8 bg-white flex-col justify-start items-start gap-2.5 flex">
@@ -133,92 +141,9 @@ export default function CareerPage({
                         <div className="w-px h-2.5 relative" />
                     </div>
                     <div className="w-96 justify-start items-start gap-4 inline-flex">
-                        <div className="flex-col justify-start items-start inline-flex">
-                            <div className="flex-col justify-start items-start flex">
-                                <div className="w-80 h-80 rounded-3xl flex-col justify-start items-start flex">
-                                    <div className="self-stretch grow shrink basis-0 px-7 py-4 bg-neutral-100 rounded-3xl flex-col justify-start items-start gap-2.5 flex">
-                                        <div className="self-stretch h-72 flex-col justify-start items-start gap-2.5 flex">
-                                            <div className="self-stretch justify-between items-start inline-flex">
-                                                <img className="w-36 h-36" src="https://via.placeholder.com/150x150" />
-                                                <div className="px-4 py-2.5 bg-cyan-700 rounded-full justify-center items-center gap-1 flex">
-                                                    <div className="text-center text-white text-sm font-medium font-['Roboto'] capitalize leading-tight tracking-tight">K12</div>
-                                                </div>
-                                            </div>
-                                            <div className="self-stretch text-sky-900 text-3xl font-normal font-['Roboto'] leading-10">Software Engineering</div>
-                                            <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                                                <div className="text-cyan-700 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">PER SCHOLAS | esd 112</div>
-                                            </div>
-                                            <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                                                <div className="text-zinc-900/60 text-base font-normal font-['Roboto'] uppercase leading-none tracking-wider">9 Months | no cost</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex-col justify-start items-start inline-flex">
-                            <div className="flex-col justify-start items-start flex">
-                                <div className="w-80 h-80 rounded-3xl flex-col justify-start items-start flex">
-                                    <div className="self-stretch grow shrink basis-0 px-7 py-4 bg-neutral-100 rounded-3xl flex-col justify-start items-start gap-2.5 flex">
-                                        <div className="self-stretch h-64 flex-col justify-start items-start gap-2.5 flex">
-                                            <div className="self-stretch justify-start items-start gap-2.5 inline-flex">
-                                                <img className="w-36 h-36" src="https://via.placeholder.com/150x150" />
-                                            </div>
-                                            <div className="self-stretch text-sky-900 text-3xl font-normal font-['Roboto'] leading-10">General : IT Training</div>
-                                            <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                                                <div className="text-cyan-700 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">Per scholas | remote</div>
-                                            </div>
-                                            <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                                                <div className="text-zinc-900/60 text-base font-normal font-['Roboto'] uppercase leading-none tracking-wider">3-4 Months | No cost</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex-col justify-start items-start inline-flex">
-                            <div className="flex-col justify-start items-start flex">
-                                <div className="w-80 h-80 rounded-3xl flex-col justify-start items-start flex">
-                                    <div className="self-stretch grow shrink basis-0 px-7 py-4 bg-neutral-100 rounded-3xl flex-col justify-start items-start gap-2.5 flex">
-                                        <div className="self-stretch h-72 flex-col justify-start items-start gap-2.5 flex">
-                                            <div className="self-stretch justify-start items-start gap-2.5 inline-flex">
-                                                <img className="w-36 h-36" src="https://via.placeholder.com/150x150" />
-                                            </div>
-                                            <div className="self-stretch text-sky-900 text-3xl font-normal font-['Roboto'] leading-10">Tech Talent Boost Washington</div>
-                                            <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                                                <div className="text-cyan-700 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">RiiPEN | North seattle c.c.</div>
-                                            </div>
-                                            <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                                                <div className="text-zinc-900/60 text-base font-normal font-['Roboto'] uppercase leading-none tracking-wider">4 weeks | no cost</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex-col justify-start items-start inline-flex">
-                            <div className="flex-col justify-start items-start flex">
-                                <div className="w-80 h-80 rounded-3xl flex-col justify-start items-start flex">
-                                    <div className="self-stretch grow shrink basis-0 px-7 py-4 bg-neutral-100 rounded-3xl flex-col justify-start items-start gap-2.5 flex">
-                                        <div className="self-stretch h-72 flex-col justify-start items-start gap-2.5 flex">
-                                            <div className="self-stretch justify-between items-start inline-flex">
-                                                <img className="w-36 h-36" src="https://via.placeholder.com/150x150" />
-                                                <div className="px-4 py-2.5 bg-cyan-700 rounded-full justify-center items-center gap-1 flex">
-                                                    <div className="text-center text-white text-sm font-medium font-['Roboto'] capitalize leading-tight tracking-tight">COLLEGE</div>
-                                                </div>
-                                            </div>
-                                            <div className="self-stretch text-sky-900 text-3xl font-normal font-['Roboto'] leading-10">Cloud Application Development</div>
-                                            <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                                                <div className="text-cyan-700 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">Vets to Tech (WAV2T) </div>
-                                            </div>
-                                            <div className="self-stretch h-4 justify-start items-start gap-2.5 inline-flex">
-                                                <div className="text-zinc-900/60 text-base font-normal font-['Roboto'] uppercase leading-none tracking-wider">4 MONTHS | $22,450+$880 FEE</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {programs.map(function (program) {
+                            return TrainingProgramCard(program);
+                        })}
                     </div>
                 </div>
                 <div className="flex-col justify-start items-start flex">
