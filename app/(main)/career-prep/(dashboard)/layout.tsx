@@ -17,6 +17,20 @@ export default async function layout({ children }: { children: React.ReactNode }
           <PersonOutlineOutlinedIcon />
           Home
         </Link>
+        <Link
+          href="/career-prep/my-case-load"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <BookmarkIcon width={24}/>
+          My Case Load
+        </Link>
+        <Link
+          href="/career-prep/new-cases"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <BookmarkIcon width={24}/>
+          Unassigned Cases
+        </Link> 
         {/* <Link
           href="/career-prep"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"

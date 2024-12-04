@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import {CareerPrepJobseekerCardViewDTO, getCareerPrepStudentsCardView} from "@/app/lib/admin/careerPrep";
+import {CareerPrepJobseekerCardViewDTO, getAllCareerPrepStudentsCardView} from "@/app/lib/admin/careerPrep";
 
 export async function GET() {
-    const data: CareerPrepJobseekerCardViewDTO[] | null = await getCareerPrepStudentsCardView();
+    const data: CareerPrepJobseekerCardViewDTO[] | null = await getAllCareerPrepStudentsCardView();
 
     if (data === null) {
         // Return a 500 error response if data is null due to an error

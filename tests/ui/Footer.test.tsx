@@ -40,11 +40,10 @@ describe('Footer', () => {
     });
 
     it('renders the Privacy Policy link', () => {
-        const privacyLink = screen.getByText('Privacy Policy');
-        expect(privacyLink.getAttribute('href')).toBe('/underconstruction');
+        const privacyLink = screen.getByText('Terms of Service');
+        expect(privacyLink.getAttribute('href')).toBe('/policies/terms-of-service');
         expect(privacyLink.className).toContain('text-white');
         expect(privacyLink.className).toContain('underline');
-        expect(privacyLink.className).toContain('REPLACE-BEFORE-RELEASE');
     });
 
     it('renders the copyright text', () => {
