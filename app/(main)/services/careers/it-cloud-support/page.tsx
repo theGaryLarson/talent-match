@@ -1,3 +1,4 @@
+import { EduProviderPathways } from "@/app/lib/eduProviders";
 import CareerPage from "@/app/ui/components/CareerPage";
 import Link from "next/link";
 
@@ -23,7 +24,7 @@ export default function Page() {
                 tableExpReq={"0–2 years entry-level, 3–5 years mid-level"}
                 tableJobGrowth={"Projected X% growth (next 5 years)"}
 
-                trainingPrograms={"test"}
+                trainingPrograms={EduProviderPathways.ITCloudSupport}
             />
             {/* Commented out Lightcast data link. It's not ready for public view */}
             {/*<div className="bg-neutral-100 flex-col justify-start items-center inline-flex">*/}
