@@ -73,6 +73,8 @@ export default function Header() {
       pathname == '/services/employers'
     ) {
       setHeaderTW('w-full z-10 absolute text-white');
+    } else if (pathname.startsWith('/services/training-programs/')) {
+      setHeaderTW('bg-[#003350] text-white')
     } else {
       setHeaderTW('bg-white');
     }
@@ -90,7 +92,8 @@ export default function Header() {
       >
         <div className="flex shrink">
           {pathname == '/services/jobseekers' ||
-          pathname == '/services/employers' ? (
+          pathname == '/services/employers' ||
+          pathname.startsWith('/services/training-programs/') ? (
             <Link href="/">
               <span className="sr-only">Tech Workforce Coalition</span>
               <Image
