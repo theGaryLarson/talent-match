@@ -85,7 +85,7 @@ export default async function page({ params }: { params: { id: string } }) {
 
           {/* About Section */}
           <div className="self-stretch flex-col justify-start items-start gap-2.5 flex">
-            <div className="text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">About</div>
+            <div className="text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">{trainingProgramDetails.about && "About"}</div>
             <div className="self-stretch">
               <span className="text-zinc-900 text-base font-normal font-['Roboto'] leading-tight">
                 {trainingProgramDetails.about}
@@ -98,7 +98,7 @@ export default async function page({ params }: { params: { id: string } }) {
 
           {/* FAQ's */}
           <div className="self-stretch flex-col justify-center items-start flex">
-            <div className="text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">FAQ’s</div>
+            <div className="text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">{trainingProgramDetails.faq.length > 0 ? "FAQ’s" : ""}</div>
 
             {trainingProgramDetails.faq.map(function (faq) {
               return <div className="self-stretch pt-4 rounded-3xl flex-col justify-start items-start gap-2 flex">
