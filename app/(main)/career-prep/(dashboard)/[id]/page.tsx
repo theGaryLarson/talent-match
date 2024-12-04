@@ -26,7 +26,7 @@ export default async function page({ params }: { params: { id: string } }){
             <h2><b>Pathway:</b> {client.data?.pathway}</h2>
             <h2><b>Technical Certificates:</b> {client.data?.technicalCertificates.map((c)=>`${c.name}, `)}</h2>
             <h2><b>Meetings:</b></h2>
-            {meetings?.map((meeting)=>(<p>{meeting.title} {meeting.meetingDate.toLocaleString()}</p>))}
+            {meetings?.map((meeting)=>(<p key={meeting.id}>{meeting.title} {meeting.meetingDate.toLocaleString()}</p>))}
             <div className="">
                 <Tabs tabs={
                 [
