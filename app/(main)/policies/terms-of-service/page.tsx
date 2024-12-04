@@ -15,18 +15,18 @@ export default function page() {
         </Typography>
 
         <Typography>
-          These Terms and Conditions ("Terms") govern your use of the website located at <Link href="https://www.watechcoalition.org">www.watechcoalition.org</Link> ("Site"),
-          which is owned and operated by the Washington Tech Workforce Coalition ("we", "our", or "us").
-          By using this Site, you acknowledge that you have read, understand, and agree to abide by these Terms.
+          {`These Terms and Conditions ("Terms") govern your use of the website located at `}
+          <Link href="https://www.watechcoalition.org">www.watechcoalition.org</Link>
+          {` ("Site"), which is owned and operated by the Washington Tech Workforce Coalition ("we", "our", or "us"). By using this Site, you acknowledge that you have read, understand, and agree to abide by these Terms.`}
         </Typography>
 
         <Typography variant="h5" component="h5" gutterBottom sx={{ mt: 2, fontWeight: "bold" }}>
           Intellectual Property
         </Typography>
         <Typography>
-          All content available on our Site, including but not limited to images, text, logos, documents, and downloadable files,
-          is the exclusive property of Washington Tech Workforce Coalition and the Site's creators.
-          Unauthorized use of any content is prohibited.
+          {`All content available on our Site, including but not limited to images, text, logos, documents, and downloadable files,
+            is the exclusive property of Washington Tech Workforce Coalition and the Site's creators.
+            Unauthorized use of any content is prohibited.`}
         </Typography>
 
         <Typography variant="h5" component="h5" gutterBottom sx={{ mt: 2, fontWeight: "bold" }}>
