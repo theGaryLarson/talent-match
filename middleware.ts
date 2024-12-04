@@ -47,6 +47,7 @@ export default auth((req) => {
       '/api/admin',
       '/career-prep',
       '/services/jobseekers',
+      '/api/admin/career-prep/self-assign-case',
       //'/services/joblistings',
       '/api/jobseekers/career-prep/meeting'
       // Add any other routes accessible by case managers
