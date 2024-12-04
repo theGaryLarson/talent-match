@@ -29,8 +29,8 @@ export default async function page({ params }: { params: { id: string } }) {
             <div className="flex-col justify-start items-start flex">
               <div className="w-px h-10 relative" />
             </div>
-            {trainingProgramDetails.locations.map(function (loc) {
-              return <div className="px-4 py-2.5 bg-cyan-700 rounded-full justify-center items-center gap-1 inline-flex">
+            {trainingProgramDetails.locations.map(function (loc, i) {
+              return <div className="px-4 py-2.5 bg-cyan-700 rounded-full justify-center items-center gap-1 inline-flex" key={i}>
                 <div className="w-4 h-4 relative">
                   <img className="w-4 h-4 left-0 top-0 absolute" src="/images/careers/marker-pin-01.svg" />
                 </div>
@@ -100,8 +100,8 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="self-stretch flex-col justify-center items-start flex">
             <div className="text-sky-900 text-3xl font-medium font-['Roboto'] leading-10">{trainingProgramDetails.faq.length > 0 ? "FAQ’s" : ""}</div>
 
-            {trainingProgramDetails.faq.map(function (faq) {
-              return <div className="self-stretch pt-4 rounded-3xl flex-col justify-start items-start gap-2 flex">
+            {trainingProgramDetails.faq.map(function (faq, i) {
+              return <div className="self-stretch pt-4 rounded-3xl flex-col justify-start items-start gap-2 flex" key={i}>
                 <div className="self-stretch p-5 bg-sky-200 rounded-lg justify-between items-center inline-flex">
                   <div className="text-sky-900 text-base font-medium font-['Roboto'] leading-none">
                     {faq.question}
