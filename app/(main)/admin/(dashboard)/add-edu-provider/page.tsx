@@ -1,5 +1,5 @@
 'use client';
-import {FormEvent, useState} from 'react';
+import React, {FormEvent, useState} from 'react';
 import {AddTrainingPartnerDTO} from "@/app/lib/admin/eduProviderPartner";
 import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
@@ -72,6 +72,7 @@ export default function Page() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
+      <h1 className="text-xl font-bold">Add Training Provider</h1>
       {/* Avatar Upload */}
       <div className="grid grid-cols-1">
         <label htmlFor="avatarUpload">Upload Training Provider Logo</label>
@@ -93,7 +94,7 @@ export default function Page() {
           initialImageUrl=""
         />
         {/* Hidden input to store avatar URL */}
-        <input type="hidden" name="avatarUrl" id="avatarUrl" />
+        <input type="hidden" name="avatarUrl" id="avatarUrl"/>
       </div>
 
       {/* Provider Name */}
@@ -108,7 +109,7 @@ export default function Page() {
           id="eduLevel"
           options={Object.values(EducationLevel)
             .filter((value) => value !== '')
-            .map((value) => ({ label: value, value }))}
+            .map((value) => ({label: value, value}))}
           placeholder="Select Education Level"
         >
           Education Level
@@ -118,61 +119,61 @@ export default function Page() {
       {/* Contact Name */}
       <div className="grid grid-cols-1">
         <label htmlFor="contactName">Contact Name</label>
-        <input type="text" name="contactName" />
+        <input type="text" name="contactName"/>
       </div>
 
       {/* Contact Email */}
       <div className="grid grid-cols-1">
         <label htmlFor="contactEmail">Contact Email</label>
-        <input type="email" name="contactEmail" />
+        <input type="email" name="contactEmail"/>
       </div>
 
       {/* URL */}
       <div className="grid grid-cols-1">
         <label htmlFor="url">Provider Website</label>
-        <input type="url" name="url" />
+        <input type="url" name="url"/>
       </div>
 
       {/* Mission */}
       <div className="grid grid-cols-1">
         <label htmlFor="mission">Mission Statement</label>
-        <textarea name="mission" />
+        <textarea name="mission"/>
       </div>
 
       {/* Provider Description */}
       <div className="grid grid-cols-1">
         <label htmlFor="providerDescription">Provider Description</label>
-        <textarea name="providerDescription" />
+        <textarea name="providerDescription"/>
       </div>
 
       {/* What Sets You Apart */}
       <div className="grid grid-cols-1">
         <label htmlFor="setsApartStatement">What Sets You Apart</label>
-        <textarea name="setsApartStatement" />
+        <textarea name="setsApartStatement"/>
       </div>
 
       {/* Screening Criteria */}
       <div className="grid grid-cols-1">
         <label htmlFor="screeningCriteria">Screening Criteria</label>
-        <textarea name="screeningCriteria" />
+        <textarea name="screeningCriteria"/>
       </div>
 
       {/* Recruiting Sources */}
       <div className="grid grid-cols-1">
         <label htmlFor="recruitingSources">Recruiting Sources</label>
-        <textarea name="recruitingSources" />
+        <textarea name="recruitingSources"/>
       </div>
 
       {/* Program Count */}
       <div className="grid grid-cols-1">
         <label htmlFor="programCount">Number of Programs</label>
-        <input type="number" name="programCount" />
+        <input type="number" name="programCount"/>
       </div>
 
       {/* Cost */}
       <div className="grid grid-cols-1">
         <label htmlFor="cost">Cost Details</label>
-        <textarea name="cost" />
+        <textarea name="cost"/>
       </div>
 
       {/* Is Coalition Member */}
