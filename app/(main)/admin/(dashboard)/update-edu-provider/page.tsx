@@ -16,7 +16,7 @@ export default function UpdateTrainingProviderPage() {
 
   // State variables for form fields
   const [formData, setFormData] = useState<Partial<AddTrainingPartnerDTO>>({});
-  const [avatarUrl, setAvatarUrl] = useState<string>('');
+  const [logoUrl, setLogoUrl] = useState<string>('');
   const [initialImageUrl, setInitialImageUrl] = useState<string>('');
   const [eduProviderId, setEduProviderId] = useState<string>('');
 
@@ -48,7 +48,7 @@ export default function UpdateTrainingProviderPage() {
             providerName: data.providerName,
             contactName: data.contactName,
             contactEmail: data.contactEmail,
-            url: data.url,
+            website: data.url,
             mission: data.mission,
             providerDescription: data.providerDescription,
             setsApartStatement: data.setsApartStatement,
@@ -59,7 +59,7 @@ export default function UpdateTrainingProviderPage() {
             isCoalitionMember: data.isCoalitionMember,
             eduLevel: data.eduLevel,
           });
-          setAvatarUrl(data.logoUrl || '');
+          setLogoUrl(data.logoUrl || '');
           setInitialImageUrl(data.logoUrl || '');
           setEduProviderId(data.eduProviderId);
         } catch (error) {
@@ -71,7 +71,7 @@ export default function UpdateTrainingProviderPage() {
     } else {
       // Clear form data if no provider is selected
       setFormData({});
-      setAvatarUrl('');
+      setLogoUrl('');
       setInitialImageUrl('');
       setEduProviderId('');
     }
@@ -105,7 +105,7 @@ export default function UpdateTrainingProviderPage() {
       providerName: formData.providerName || '',
       contactName: formData.contactName || '',
       contactEmail: formData.contactEmail || '',
-      url: formData.url || '',
+      website: formData.website || '',
       mission: formData.mission || '',
       providerDescription: formData.providerDescription || '',
       setsApartStatement: formData.setsApartStatement || '',
@@ -115,7 +115,7 @@ export default function UpdateTrainingProviderPage() {
       cost: formData.cost || '',
       isCoalitionMember: formData.isCoalitionMember || false,
       eduLevel: formData.eduLevel || EducationLevel.Unselected,
-      logoUrl: avatarUrl,
+      logoUrl: logoUrl,
       isAdminReviewed: true,
     };
 
@@ -157,7 +157,7 @@ export default function UpdateTrainingProviderPage() {
           apiAutoloadRoute="/api/employers/training-providers"
           value={selectedProviderId}
           onChange={(event: any) => {
-            setSelectedProviderId(event.target.value);
+            setSelectedProviderId(event.target.value.id);
           }}
           placeholder="Select a Training Provider"
           getOptionLabel={(option: TrainingProviderDropdownDTO) => option.name}
@@ -174,15 +174,15 @@ export default function UpdateTrainingProviderPage() {
             <label htmlFor="avatarUpload">Upload Provider Logo</label>
             <AvatarUpload
               id="avatarUpload"
-              fileTypeText="PNG or JPG"
-              accept=".png,.jpg,.jpeg"
+              fileTypeText="SVG, PNG or JPG"
+              accept=".png,.jpg,.jpeg,.svg"
               maxSizeMB={5}
               userId={eduProviderId}
               onImageUpload={(url) => {
-                setAvatarUrl(url);
+                setLogoUrl(url);
                 setInitialImageUrl(url);
               }}
-              initialImageUrl={initialImageUrl}
+              initialImageUrl={logoUrl}
             />
           </div>
 
@@ -228,7 +228,7 @@ export default function UpdateTrainingProviderPage() {
             <input
               type="url"
               name="url"
-              value={formData.url || ''}
+              value={formData.website || ''}
               onChange={handleInputChange}
               required
             />
