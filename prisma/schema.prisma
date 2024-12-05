@@ -234,6 +234,7 @@ model edu_providers {
   cost                 String?                @db.Text
   isAdminReviewed      Boolean                @default(false) @db.Bit
   isCoalitionMember    Boolean                @default(false) @db.Bit
+  logoUrl              String?                @default("") @db.VarChar(255)
   edu_addresses        edu_addresses[]
   educators            educators[]
   jobseeker_education  jobseekers_education[]
