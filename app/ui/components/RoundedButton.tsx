@@ -64,8 +64,8 @@ export default function RoundedButton({
     }
   } else {
     if (isPrimary) {
-      bgColorIdle = 'bg-blue-background';
-      bgColorHover = 'bg-blue-400';
+      bgColorIdle = 'bg-[#047F9C]';
+      bgColorHover = 'hover:bg-[#4FA5BA]';
       textColorIdle = 'text-white';
     } else {
       border = 'border';
