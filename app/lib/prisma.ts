@@ -604,6 +604,9 @@ export async function getTrainingProviders() {
       id: true,
       name: true,
     },
+    orderBy: {
+      name: 'asc'
+    }
   });
   return trainingProviders;
 }
