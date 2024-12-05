@@ -170,7 +170,7 @@ export default function UpdateTrainingProviderPage() {
         <form onSubmit={onSubmit} className="space-y-3">
           {/* Avatar Upload */}
           <div className="grid grid-cols-1">
-            <label htmlFor="avatarUpload">Upload Avatar</label>
+            <label htmlFor="avatarUpload">Upload Provider Logo</label>
             <AvatarUpload
               id="avatarUpload"
               fileTypeText="PNG or JPG"
