@@ -168,7 +168,8 @@ export default function UpdateTrainingProviderPage() {
       {/* Form */}
       {selectedProviderId && (
         <form onSubmit={onSubmit} className="space-y-3">
-          {/* Avatar Upload */}
+
+          {/* TP Logo Upload */}
           <div className="grid grid-cols-1">
             <label htmlFor="avatarUpload">Upload Provider Logo</label>
             <AvatarUpload

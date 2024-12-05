@@ -73,7 +73,8 @@ export default function Page() {
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       <h1 className="text-xl font-bold">Add Training Provider</h1>
-      {/* Avatar Upload */}
+
+      {/* TP Logo Upload */}
       <div className="grid grid-cols-1">
         <label htmlFor="avatarUpload">Upload Training Provider Logo</label>
         <AvatarUpload
