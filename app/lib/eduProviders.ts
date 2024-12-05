@@ -7,21 +7,22 @@ const prisma: PrismaClient = getPrismaClient();
 
 export type ReadEduProviderDTO = {
     eduProviderId: string, //edu_providers.id
-    eduLevel: EducationLevel, // edu_providers.edu_type
+    eduLevel?: EducationLevel, // edu_providers.edu_type
     providerName: string, // edu_providers.name
-    contactName: string, // edu_providers.contact
-    contactEmail: string, // edu_providers.contact_email
-    url: string, // edu_providers.edu_url
-    mission: string, // edu_providers.mission
-    providerDescription: string, // edu_providers.providerDescription
-    setsApartStatement: string, // edu_providers.setsApartStatement
-    screeningCriteria: string, // edu_providers.screeningCriteria
-    recruitingSources: string, // edu_providers.recruitingSources
-    programCount: string, // edu_providers.programCount
-    cost: string, // edu_providers.cost
-    // isAdminReviewed: boolean, // edu_providers.isAdminReviewed
-    // isCoalitionMember: boolean, // edu_providers.isCoalitionMember
-    // createdBy: string, // edu_providers.userId
+    logoUrl: string,
+    contactName?: string, // edu_providers.contact
+    contactEmail?: string, // edu_providers.contact_email
+    url?: string, // edu_providers.edu_url
+    mission?: string, // edu_providers.mission
+    providerDescription?: string, // edu_providers.providerDescription
+    setsApartStatement?: string, // edu_providers.setsApartStatement
+    screeningCriteria?: string, // edu_providers.screeningCriteria
+    recruitingSources?: string, // edu_providers.recruitingSources
+    programCount?: string, // edu_providers.programCount
+    cost?: string, // edu_providers.cost
+    isAdminReviewed?: boolean, // edu_providers.isAdminReviewed
+    isCoalitionMember?: boolean, // edu_providers.isCoalitionMember
+    createdBy?: string, // edu_providers.userId
 }
 
 
