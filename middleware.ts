@@ -120,7 +120,9 @@ export default auth((req) => {
   }
 
   // Allow public routes
-  if (publicRoutes.includes(pathname)) {
+  if (publicRoutes.includes(pathname) ||
+      pathname.startsWith('/services/training-programs/')) {
+      // training providers needs wildcard for id, but all other public routes are explicit
     return NextResponse.next();
   }
 

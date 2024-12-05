@@ -27,21 +27,26 @@ export type ReadEduProviderDTO = {
 
 export type ReadEduProviderProgramCardDTO = {
     programId: string, // provider_programs.training_program_id
-    // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogoUrl(eduProviderId)
+    // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
     programName: string, // provider_programs join programs on program_id
+    eduProviderId: string, //edu_providers.id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
     eduLevel: EducationLevel | null, // provider_programs.eduLevel
     programLength: string, // provider_programs.programLength
-    costSummary: string , // provider_programs.costSummary db.TEXT
+    tuition?: string, // provider_programs.tuition
+    fees?: string, // provider_programs.fees
+    locationType: LocationType | null, // provider_programs.locationType (enum LocationType)
     pathway: EduProviderPathways[]
 }
 
 export type ReadEduProviderProgramDetailDTO = {
     programId: string, // provider_programs.training_program_id
-    // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogoUrl(eduProviderId)
+    // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
     programName: string, // provider_programs join programs on program_id
+    eduProviderId: string, //edu_providers.id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
     locations: string[], // provider_programs.locations. Saved as TEXT field in db but separate into list on DTO delimiter (~)
+    programLength: string, // provider_programs.programLength
     about: string, // provider_programs.about Possibly use Quill to implement this
     tuition?: string, // provider_programs.tuition
     fees?: string, // provider_programs.fees
@@ -92,10 +97,13 @@ export const getProviderProgramCardView = async (pathway: EduProviderPathways): 
         .map(program => ({
             programId: program.training_program_id,
             programName: program.Program.title,
+            eduProviderId: program.edu_provider_id,
             eduProviderName: program.edu_provider.name,
             eduLevel: isEnumValue(EducationLevel, program.eduLevel) ? program.eduLevel as EducationLevel : null,
             programLength: program.programLength || '',
-            costSummary: program.costSummary || '',
+            tuition: program.tuition || '',
+            fees: program.fees || '',
+            locationType: isEnumValue(LocationType, program.locationType) ? program.locationType as LocationType : null,
             pathway: program.pathways
                 ? program.pathways
                     .split('~')
@@ -122,12 +130,14 @@ export const getProviderProgramDetailView = async (
             fees: true,
             costSummary: true,
             locationType: true,
+            programLength: true,
             getStartedUrl: true,
             faq: true,
             pathways: true,
             locations: true,
             edu_provider: {
                 select: {
+                    id: true,
                     name: true,
                 },
             },
@@ -158,6 +168,7 @@ export const getProviderProgramDetailView = async (
     const dto: ReadEduProviderProgramDetailDTO = {
         programId: program.training_program_id,
         programName: program.Program.title,
+        eduProviderId: program.edu_provider.id,
         eduProviderName: program.edu_provider.name,
         locations: program.locations
             ? program.locations.split('~').map(location => location.trim())
@@ -167,6 +178,7 @@ export const getProviderProgramDetailView = async (
         fees: program.fees || undefined,
         costSummary: program.costSummary || undefined,
         locationType: isEnumValue(LocationType, program.locationType) ? program.locationType as LocationType : null,
+        programLength: program.programLength || '',
         getStartedUrl: program.getStartedUrl || '',
         faq: faq,
         pathways: program.pathways

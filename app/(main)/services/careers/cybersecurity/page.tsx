@@ -1,4 +1,5 @@
-import CareerPage from "@/app/ui/components/CareerPage";
+import { EduProviderPathways } from "@/app/lib/eduProviders";
+import CareerPage from "@/app/ui/components/career/CareerPage";
 
 export default function Page() {
     return (
@@ -21,7 +22,7 @@ export default function Page() {
             tableExpReq={"0–2 years entry-level, 3–5 years mid-level"}
             tableJobGrowth={"Projected X% growth (next 5 years)"}
 
-            trainingPrograms={"test"}
+            trainingPrograms={EduProviderPathways.Cybersecurity}
         />
     );
 }
