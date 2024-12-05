@@ -1,9 +1,18 @@
 'use client';
-import { FormEvent } from 'react';
-import { CompanyAdminCreationDTO } from '@/data/dtos/CompanyAdminCreationDTO';
+import {FormEvent, useState} from 'react';
+import {AddTrainingPartnerDTO} from "@/app/lib/admin/eduProviderPartner";
+import AvatarUpload from "@/app/ui/components/AvatarUpload";
+import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
+import { v4 as uuidv4 } from 'uuid';
+import { auth } from "@/auth";
+import {EducationLevel} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+
 
 
 export default function Page() {
+  const [eduProviderId, setEduProviderId] = useState(uuidv4());
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [initialImageUrl, setInitialImageUrl] = useState('');
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -11,76 +20,173 @@ export default function Page() {
       'button[type="submit"]',
     ) as HTMLButtonElement;
     if (submitButton) submitButton.disabled = true;
-    const companyData:CompanyAdminCreationDTO = {
-        companyName: formData.get('company_name') as string,
-        aboutUs: formData.get('about_company') as string,
-        companyEmail: formData.get('company_email') as string,
-        yearFounded:  parseInt(formData.get('year_founded') as string, 10),
-        size: formData.get('size') as string,
-        isApproved: true
+    const providerData: AddTrainingPartnerDTO = {
+      eduProviderId: uuidv4(),
+      eduLevel: formData.get('eduLevel') as EducationLevel,
+      providerName: formData.get('providerName') as string,
+      contactName: formData.get('contactName') as string,
+      contactEmail: formData.get('contactEmail') as string,
+      url: formData.get('url') as string,
+      mission: formData.get('mission') as string,
+      providerDescription: formData.get('providerDescription') as string,
+      setsApartStatement: formData.get('setsApartStatement') as string,
+      screeningCriteria: formData.get('screeningCriteria') as string,
+
+      recruitingSources: formData.get('recruitingSources') as string,
+      programCount: formData.get('programCount') as string,
+      cost: formData.get('cost') as string,
+      isCoalitionMember: formData.get('isCoalitionMember') === 'on',
+      isAdminReviewed: true,
     };
     try {
-      const response = await fetch('/api/companies/create', {
+      const response = await fetch('/api/edu-providers/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(companyData), // Send as JSON
+        body: JSON.stringify(providerData), // Send as JSON
       });
 
       if (!response.ok) {
         // If response is not OK, handle error
-        console.error('Failed to create company');
+        console.error('Failed to create training provider');
+        if (submitButton) submitButton.disabled = false;
         return;
       } else {
         // Await the response JSON
         const data = await response.json();
-        console.log("company created: ", data)
-       
+        console.log('training provider created: ', data);
+
+        // Reset form fields
+        event.currentTarget.reset();
+        setAvatarUrl('');
+        setInitialImageUrl('');
+        setEduProviderId(uuidv4()); // Generate new UUID for next submission
+        if (submitButton) submitButton.disabled = false;
       }
     } catch (error) {
-      console.error('Error creating job listing:', error);
+      console.error('Error creating training provider:', error);
+      if (submitButton) submitButton.disabled = false;
     }
   }
+
   return (
-    <form onSubmit={onSubmit} className='space-y-3'>
-      
-      {/* Job Title */}
+    <form onSubmit={onSubmit} className="space-y-3">
+      {/* Avatar Upload */}
       <div className="grid grid-cols-1">
-        <label htmlFor="company_name">Company name</label>
-        <input type="text" name="company_name" required />
+        <label htmlFor="avatarUpload">Upload Training Provider Logo</label>
+        <AvatarUpload
+          id="avatarUpload"
+          fileTypeText="SVG, PNG or JPG"
+          accept=".png,.jpg,.jpeg,.svg"
+          maxSizeMB={5}
+          userId="user-id-placeholder" // Replace with actual user ID
+          onImageUpload={(url) => {
+            // Handle the uploaded image URL
+            const hiddenInput = document.getElementById(
+              'avatarUrl',
+            ) as HTMLInputElement;
+            if (hiddenInput) {
+              hiddenInput.value = url;
+            }
+          }}
+          initialImageUrl=""
+        />
+        {/* Hidden input to store avatar URL */}
+        <input type="hidden" name="avatarUrl" id="avatarUrl" />
       </div>
 
-
-      {/* Job Description */}
+      {/* Provider Name */}
       <div className="grid grid-cols-1">
-        <label htmlFor="about_company">About Company</label>
-        <textarea name="about_company" required />
+        <label htmlFor="providerName">Provider Name</label>
+        <input type="text" name="providerName" required/>
       </div>
 
-
-
-      {/*company email */}
+      {/* Education Level */}
       <div className="grid grid-cols-1">
-        <label htmlFor="company_email">Company Email</label>
-        <textarea name="company_email" required />
+        <SelectOptionsWithLabel
+          id="eduLevel"
+          options={Object.values(EducationLevel)
+            .filter((value) => value !== '')
+            .map((value) => ({ label: value, value }))}
+          placeholder="Select Education Level"
+        >
+          Education Level
+        </SelectOptionsWithLabel>
       </div>
 
-      {/* year founded */}
+      {/* Contact Name */}
       <div className="grid grid-cols-1">
-        <label htmlFor="year_founded">Year Founded</label>
-        <input type="number" name="year_founded"/>
+        <label htmlFor="contactName">Contact Name</label>
+        <input type="text" name="contactName" />
       </div>
 
+      {/* Contact Email */}
       <div className="grid grid-cols-1">
-        <label htmlFor="size">Number Of Employes</label>
-        <input type="number" name="size"/>
+        <label htmlFor="contactEmail">Contact Email</label>
+        <input type="email" name="contactEmail" />
+      </div>
+
+      {/* URL */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="url">Provider Website</label>
+        <input type="url" name="url" />
+      </div>
+
+      {/* Mission */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="mission">Mission Statement</label>
+        <textarea name="mission" />
+      </div>
+
+      {/* Provider Description */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="providerDescription">Provider Description</label>
+        <textarea name="providerDescription" />
+      </div>
+
+      {/* What Sets You Apart */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="setsApartStatement">What Sets You Apart</label>
+        <textarea name="setsApartStatement" />
+      </div>
+
+      {/* Screening Criteria */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="screeningCriteria">Screening Criteria</label>
+        <textarea name="screeningCriteria" />
+      </div>
+
+      {/* Recruiting Sources */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="recruitingSources">Recruiting Sources</label>
+        <textarea name="recruitingSources" />
+      </div>
+
+      {/* Program Count */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="programCount">Number of Programs</label>
+        <input type="number" name="programCount" />
+      </div>
+
+      {/* Cost */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="cost">Cost Details</label>
+        <textarea name="cost" />
+      </div>
+
+      {/* Is Coalition Member */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="isCoalitionMember">
+          <input type="checkbox" name="isCoalitionMember"/> Is Coalition Member
+        </label>
       </div>
 
       {/* Submit Button */}
       <div>
-        <button type="submit">Create Company</button>
+        <button type="submit">Create Provider</button>
       </div>
     </form>
+
   );
 }
