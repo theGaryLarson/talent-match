@@ -11,7 +11,7 @@ import {EducationLevel} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 export default function Page() {
   const [eduProviderId, setEduProviderId] = useState(uuidv4());
-  const [avatarUrl, setAvatarUrl] = useState('');
+  const [logoUrl, setLogoUrl] = useState('');
   const [initialImageUrl, setInitialImageUrl] = useState('');
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -26,7 +26,7 @@ export default function Page() {
       providerName: formData.get('providerName') as string,
       contactName: formData.get('contactName') as string,
       contactEmail: formData.get('contactEmail') as string,
-      url: formData.get('url') as string,
+      website: formData.get('url') as string,
       mission: formData.get('mission') as string,
       providerDescription: formData.get('providerDescription') as string,
       setsApartStatement: formData.get('setsApartStatement') as string,
@@ -37,6 +37,7 @@ export default function Page() {
       cost: formData.get('cost') as string,
       isCoalitionMember: formData.get('isCoalitionMember') === 'on',
       isAdminReviewed: true,
+      logoUrl: formData.get('logoUrl') as string
     };
     try {
       const response = await fetch('/api/edu-providers/add', {
@@ -58,8 +59,8 @@ export default function Page() {
         console.log('training provider created: ', data);
 
         // Reset form fields
-        event.currentTarget.reset();
-        setAvatarUrl('');
+        event.currentTarget?.reset();
+        setLogoUrl('');
         setInitialImageUrl('');
         setEduProviderId(uuidv4()); // Generate new UUID for next submission
         if (submitButton) submitButton.disabled = false;
@@ -84,9 +85,11 @@ export default function Page() {
           maxSizeMB={5}
           userId="user-id-placeholder" // Replace with actual user ID
           onImageUpload={(url) => {
+            console.log("Received URL in Page.tsx:", url); // Log the received URL
             // Handle the uploaded image URL
+            setLogoUrl(url);
             const hiddenInput = document.getElementById(
-              'avatarUrl',
+              'logoUrl',
             ) as HTMLInputElement;
             if (hiddenInput) {
               hiddenInput.value = url;
@@ -95,7 +98,7 @@ export default function Page() {
           initialImageUrl=""
         />
         {/* Hidden input to store avatar URL */}
-        <input type="hidden" name="avatarUrl" id="avatarUrl"/>
+        <input type="hidden" name="logoUrl" id="logoUrl"/>
       </div>
 
       {/* Provider Name */}
