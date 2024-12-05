@@ -17,20 +17,24 @@ export default async function CareerPage({
 
     return (
         <div className="w-full bg-neutral-100 flex-col justify-start items-center inline-flex">
-            <div className="px-24 py-8 bg-white flex-col justify-start items-start gap-2.5 flex">
-                <div className="bg-sky-900 rounded-2xl justify-start items-center inline-flex">
-                    <img className="grow shrink basis-0 h-96 rounded-tl-2xl rounded-bl-2xl" src={img} />
-                    <div className="grow shrink basis-0 p-6 flex-col justify-center items-start gap-2.5 inline-flex">
-                        <div className="text-neutral-100 text-5xl font-medium font-['Roboto'] leading-10">{title}</div>
-                        <div className="text-sky-200 text-3xl font-normal font-['Roboto'] capitalize leading-10">{subtitle}</div>
-                        <div className="flex-col justify-start items-start flex">
-                            <div className="w-px h-10 relative" />
+            {/* Top card */}
+            <div className="w-full bg-white">
+                <div className="px-8 laptop:px-24 py-8 bg-white flex-col justify-start items-start gap-2.5 flex">
+                    <div className="bg-sky-900 rounded-2xl justify-start items-center inline-flex">
+                        <img className="hidden laptop:block h-96 rounded-tl-2xl rounded-bl-2xl" src={img} />
+                        <div className="grow shrink basis-0 p-6 flex-col justify-center items-start gap-2.5 inline-flex">
+                            <div className="text-neutral-100 text-5xl font-medium font-['Roboto'] leading-10">{title}</div>
+                            <div className="text-sky-200 text-3xl font-normal font-['Roboto'] capitalize leading-10">{subtitle}</div>
+                            <div className="flex-col justify-start items-start flex">
+                                <div className="w-px h-10 relative" />
+                            </div>
+                            <div className="text-white text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">Alternative career names</div>
+                            <div className="text-white/70 text-base font-normal font-['Roboto'] leading-snug">{altCareerNames}</div>
                         </div>
-                        <div className="text-white text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">Alternative career names</div>
-                        <div className="text-white/70 text-base font-normal font-['Roboto'] leading-snug">{altCareerNames}</div>
                     </div>
                 </div>
             </div>
+            {/* Quick facts cards */}
             <div className="py-8 justify-center items-start gap-2.5 inline-flex">
                 <div className="px-5 py-4 bg-sky-200 rounded-2xl flex-col justify-start items-center gap-2.5 inline-flex">
                     <div className="justify-center items-center gap-2 inline-flex">
@@ -60,25 +64,27 @@ export default async function CareerPage({
                     <div className="text-cyan-700 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">Preparation level</div>
                 </div>
             </div>
-            <div className="w-full px-32 bg-white flex-col justify-start items-center gap-2.5 flex">
+            <div className="w-full px-8 bg-white flex-col justify-start items-center gap-2.5 flex">
                 <div className="flex-col justify-start items-start flex">
                     <div className="w-px h-10 relative" />
                 </div>
-                <div className="h-64 flex-col justify-center items-center gap-2.5 flex">
+                {/* Description */}
+                <div className="flex-col justify-center items-center gap-2.5 flex">
                     <div className="text-sky-900 text-3xl font-normal font-['Roboto'] leading-10">{description}</div>
                     <div className="flex-col justify-start items-start flex">
                         <div className="w-px h-10 relative" />
                     </div>
-                    <div className="justify-center items-start gap-2.5 inline-flex">
-                        <div className="w-96 flex-col justify-start items-center gap-2.5 inline-flex">
+                    {/* Quick descriptions */}
+                    <div className="flex flex-row flex-wrap justify-center items-center gap-2.5">
+                        <div className="w-96 flex-col justify-center items-center gap-2.5 inline-flex">
                             <div className="text-center text-cyan-600 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">WHAT you’ll do</div>
                             <div className="text-center text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{whatYoullDo}</div>
                         </div>
-                        <div className="w-96 flex-col justify-start items-center gap-2.5 inline-flex">
+                        <div className="w-96 flex-col justify-center items-center gap-2.5 inline-flex">
                             <div className="text-center text-cyan-600 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">Skills you’ll need</div>
                             <div className="text-center text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{skillsYoullNeed}</div>
                         </div>
-                        <div className="w-96 flex-col justify-start items-center gap-2.5 inline-flex">
+                        <div className="w-96 flex-col justify-center items-center gap-2.5 inline-flex">
                             <div className="text-center text-cyan-600 text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">Why it matters</div>
                             <div className="text-center text-zinc-900 text-base font-normal font-['Roboto'] leading-snug">{whyItMatters}</div>
                         </div>
@@ -140,14 +146,12 @@ export default async function CareerPage({
                     <div className="flex-col justify-start items-start flex">
                         <div className="w-px h-2.5 relative" />
                     </div>
-                    <div className="w-full h-[22rem] justify-start items-start gap-4 inline-flex overflow-auto">
+                    {/* <div className="w-full h-[22rem] justify-start items-start gap-4 inline-flex"> */}
+                    <div className="w-full pb-8 justify-center items-center gap-2 laptop:gap-10 inline-flex flex-wrap">
                         {programs.map(function (program) {
                             return TrainingProgramCard(program);
                         })}
                     </div>
-                </div>
-                <div className="flex-col justify-start items-start flex">
-                    <div className="w-px h-20 relative" />
                 </div>
             </div>
         </div>
