@@ -16,6 +16,7 @@ export default function Page() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
     const submitButton = event.currentTarget.querySelector(
       'button[type="submit"]',
     ) as HTMLButtonElement;
@@ -59,7 +60,7 @@ export default function Page() {
         console.log('training provider created: ', data);
 
         // Reset form fields
-        event.currentTarget?.reset();
+        form.reset();
         setLogoUrl('');
         setInitialImageUrl('');
         setEduProviderId(uuidv4()); // Generate new UUID for next submission
