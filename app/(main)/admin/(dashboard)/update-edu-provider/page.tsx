@@ -10,9 +10,9 @@ import { TrainingProviderDropdownDTO } from '@/data/dtos/TrainingProviderDropdow
 import { AddTrainingPartnerDTO } from '@/app/lib/admin/eduProviderPartner';
 
 export default function UpdateTrainingProviderPage() {
+  const [selectedProviderName, setSelectedProviderName] = useState<string>('');
   const [selectedProviderId, setSelectedProviderId] = useState<string>('');
   const [providerOptions, setProviderOptions] = useState<TrainingProviderDropdownDTO[]>([]);
-  const [isLoadingProviders, setIsLoadingProviders] = useState<boolean>(true);
 
   // State variables for form fields
   const [formData, setFormData] = useState<Partial<AddTrainingPartnerDTO>>({});
@@ -27,10 +27,8 @@ export default function UpdateTrainingProviderPage() {
         const response = await fetch('/api/employers/training-providers');
         const data: TrainingProviderDropdownDTO[] = await response.json();
         setProviderOptions(data);
-        setIsLoadingProviders(false);
       } catch (error) {
         console.error('Error fetching provider options:', error);
-        setIsLoadingProviders(false);
       }
     };
 
@@ -39,10 +37,20 @@ export default function UpdateTrainingProviderPage() {
 
   // Fetch provider data when a provider is selected
   useEffect(() => {
+
+    if (!selectedProviderId) {
+      // Clear form if no selection
+      setFormData({});
+      setLogoUrl('');
+      setInitialImageUrl('');
+      setEduProviderId('');
+      return;
+    }
+
     if (selectedProviderId) {
       const fetchProviderData = async () => {
         try {
-          const response = await fetch(`/api/edu-providers/${selectedProviderId}`);
+          const response = await fetch(`/api/edu-providers/get/${selectedProviderId}`);
           const data: ReadEduProviderDTO = await response.json();
           setFormData({
             providerName: data.providerName,
@@ -120,8 +128,8 @@ export default function UpdateTrainingProviderPage() {
     };
 
     try {
-      const response = await fetch(`/api/edu-providers/add`, {
-        method: 'PUT',
+      const response = await fetch(`/api/edu-providers/update`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -157,9 +165,13 @@ export default function UpdateTrainingProviderPage() {
           apiAutoloadRoute="/api/employers/training-providers"
           value={selectedProviderId}
           onChange={(event: any) => {
-            setSelectedProviderId(event.target.value.id);
+            const selectedName = event.target.value;
+            setSelectedProviderName(selectedName);
+
+            // Convert the selectedName back to an id by looking up in providerOptions
+            const matchedProvider = providerOptions.find((p) => p.name === selectedName);
+            setSelectedProviderId(matchedProvider?.id || '');
           }}
-          placeholder="Select a Training Provider"
           getOptionLabel={(option: TrainingProviderDropdownDTO) => option.name}
           options={providerOptions}
         />
@@ -206,7 +218,6 @@ export default function UpdateTrainingProviderPage() {
               name="contactName"
               value={formData.contactName || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -218,19 +229,17 @@ export default function UpdateTrainingProviderPage() {
               name="contactEmail"
               value={formData.contactEmail || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
           {/* Website URL */}
           <div className="grid grid-cols-1">
-            <label htmlFor="url">Website URL</label>
+            <label htmlFor="website">Website URL</label>
             <input
               type="url"
-              name="url"
+              name="website"
               value={formData.website || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -244,7 +253,6 @@ export default function UpdateTrainingProviderPage() {
               value={formData.eduLevel || ''}
               onChange={handleInputChange}
               placeholder="Select Education Level"
-              required
             >
               Education Level
             </SelectOptionsWithLabel>
@@ -257,7 +265,6 @@ export default function UpdateTrainingProviderPage() {
               name="mission"
               value={formData.mission || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -268,7 +275,6 @@ export default function UpdateTrainingProviderPage() {
               name="providerDescription"
               value={formData.providerDescription || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -279,7 +285,6 @@ export default function UpdateTrainingProviderPage() {
               name="setsApartStatement"
               value={formData.setsApartStatement || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -290,7 +295,6 @@ export default function UpdateTrainingProviderPage() {
               name="screeningCriteria"
               value={formData.screeningCriteria || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -301,7 +305,6 @@ export default function UpdateTrainingProviderPage() {
               name="recruitingSources"
               value={formData.recruitingSources || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -313,7 +316,6 @@ export default function UpdateTrainingProviderPage() {
               name="programCount"
               value={formData.programCount || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -325,7 +327,6 @@ export default function UpdateTrainingProviderPage() {
               name="cost"
               value={formData.cost || ''}
               onChange={handleInputChange}
-              required
             />
           </div>
 
