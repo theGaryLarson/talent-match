@@ -1,4 +1,3 @@
-// TODO: CREATE FORM FOR TRAINING PROVIDER DATA
 import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {EducationLevel} from "@/data/dtos/JobSeekerProfileCreationDTOs";
@@ -78,6 +77,38 @@ export enum LocationType {
     Online = 'Online',
 }
 
+export const getEduProviderDetail = async (eduProviderId: string): Promise<ReadEduProviderDTO | null> => {
+    const data = await prisma.edu_providers.findUnique({
+      where: {
+        id: eduProviderId,
+      },
+    });
+
+    if (!data) return null; // Return null if the provider is not found
+
+    // Transform and map the data to ReadEduProviderDTO
+    const transformedData: ReadEduProviderDTO = {
+        eduProviderId: data.id,
+        eduLevel: data.edu_type ? (data.edu_type as EducationLevel) : undefined,
+        providerName: data.name,
+        logoUrl: '', // Assuming you need to add logic for generating logoUrl
+        contactName: data.contact || undefined,
+        contactEmail: data.contact_email || undefined,
+        url: data.edu_url || undefined,
+        mission: data.mission || undefined,
+        providerDescription: data.providerDescription || undefined,
+        setsApartStatement: data.setsApartStatement || undefined,
+        screeningCriteria: data.screeningCriteria || undefined,
+        recruitingSources: data.recruitingSources || undefined,
+        programCount: data.programCount || undefined,
+        cost: data.cost || undefined,
+        isAdminReviewed: data.isAdminReviewed || false,
+        isCoalitionMember: data.isCoalitionMember || false,
+        createdBy: data.userId || undefined,
+    };
+
+    return transformedData;
+};
 
 export const getProviderProgramCardView = async (pathway: EduProviderPathways): Promise<ReadEduProviderProgramCardDTO[]> => {
     // Fetch all programs
