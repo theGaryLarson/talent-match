@@ -3,13 +3,8 @@ import { getEduProviderLogo } from "@/app/lib/services/azureBlobService";
 
 export default async function TrainingProgramCard(program: ReadEduProviderProgramCardDTO) {
 
-    // only render if logo is not null
-    let logoURL = await getEduProviderLogo(program.eduProviderId);
-    let logoJSX = logoURL ? <img className="h-36" src={logoURL} /> : "";
-
-    // change height of card if the edu logo exists
-    let heightJSX = "self-stretch flex-col justify-start items-start gap-2.5 flex";
-    logoJSX === "" ? heightJSX += " h-40" : heightJSX += " h-80";
+    // default to TWC if missing edu provider logo
+    let logoURL = program.logoUrl || "/images/TWC_75x50_2024.svg";
 
     return (
         <div className="flex-col justify-start items-start inline-flex">
@@ -17,10 +12,10 @@ export default async function TrainingProgramCard(program: ReadEduProviderProgra
                 <div className="w-80 rounded-3xl flex-col justify-start items-start flex">
                     <a href={'/services/training-programs/' + program.programId} className="w-80">
                     <div className="self-stretch grow shrink basis-0 px-7 py-4 bg-neutral-100 hover:bg-sky-900 text-sky-900 hover:text-neutral-100 rounded-3xl flex-col justify-start items-start gap-2.5 flex">
-                        <div className={heightJSX}>
+                        <div className="self-stretch flex-col justify-start items-start gap-2.5 flex h-72">
                             <div className="self-stretch justify-between items-start inline-flex">
-                                {logoJSX}
-                                {program.eduLevel && <div className="px-4 py-2.5 bg-cyan-700 rounded-full justify-center items-center gap-1 flex">
+                                {<img className="h-36 w-36" src={logoURL} />}
+                                {program.eduLevel && <div className="ml-4 px-4 py-2.5 bg-cyan-700 rounded-full justify-center items-center gap-1 flex">
                                     <div className="text-center text-white text-sm font-medium font-['Roboto'] capitalize leading-tight tracking-tight">
                                         {program.eduLevel}
                                     </div>
