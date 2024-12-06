@@ -3,6 +3,7 @@ import {EducationLevel, ProgramEnrollmentStatus} from '@/data/dtos/JobSeekerProf
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { devLog } from '@/app/lib/utils';
 import {PrismaClient} from "@prisma/client";
+import { auth } from "@/auth"
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -59,19 +60,19 @@ export enum NoncompletionReason {
 
 export type AddTrainingPartnerDTO = {
   eduProviderId: string,
-  eduLevel?: EducationLevel, // edu_providers.edu_type
+  eduLevel?: EducationLevel | null, // edu_providers.edu_type
   providerName: string, // edu_providers.name
-  contactName?: string, // edu_providers.contact
-  contactEmail?: string, // edu_providers.contact_email
-  logoUrl?: string,
-  website?: string, // edu_providers.edu_url
-  mission?: string, // edu_providers.mission
-  providerDescription?: string, // edu_providers.providerDescription
-  setsApartStatement?: string, // edu_providers.setsApartStatement
-  screeningCriteria?: string, // edu_providers.screeningCriteria
-  recruitingSources?: string, // edu_providers.recruitingSources
-  programCount?: string, // edu_providers.programCount
-  cost: string, // edu_providers.cost
+  contactName?: string | null, // edu_providers.contact
+  contactEmail?: string | null, // edu_providers.contact_email
+  logoUrl?: string | null,
+  website?: string | null, // edu_providers.edu_url
+  mission?: string | null, // edu_providers.mission
+  providerDescription?: string | null, // edu_providers.providerDescription
+  setsApartStatement?: string | null, // edu_providers.setsApartStatement
+  screeningCriteria?: string | null, // edu_providers.screeningCriteria
+  recruitingSources?: string  | null, // edu_providers.recruitingSources
+  programCount?: string  | null, // edu_providers.programCount
+  cost: string  | null, // edu_providers.cost
   isAdminReviewed: boolean, // edu_providers.isAdminReviewed
   isCoalitionMember: boolean, // edu_providers.isCoalitionMember
   // createdBy: string, // edu_providers.userId
@@ -81,23 +82,25 @@ export type AddTrainingPartnerDTO = {
 }
 export const addTrainingPartner = async (newPartner: AddTrainingPartnerDTO) => {
   try {
+    const session = await auth();
+    const userId = session?.user.id
     const partner = await prisma.edu_providers.upsert({
       where: { name: newPartner.providerName },
       update: {
-        edu_type: newPartner.eduLevel,
-        contact: newPartner.contactName,
-        contact_email: newPartner.contactEmail,
-        edu_url: newPartner.website,
-        mission: newPartner.mission,
-        providerDescription: newPartner.providerDescription,
-        setsApartStatement: newPartner.setsApartStatement,
-        screeningCriteria: newPartner.screeningCriteria,
-        recruitingSources: newPartner.recruitingSources,
-        programCount: newPartner.programCount,
-        cost: newPartner.cost,
-        isAdminReviewed: newPartner.isAdminReviewed ?? true,
-        isCoalitionMember: newPartner.isCoalitionMember ?? false,
-        logoUrl: newPartner.logoUrl,
+        edu_type: newPartner.eduLevel || null,
+        contact: newPartner.contactName || null,
+        contact_email: newPartner.contactEmail || null,
+        edu_url: newPartner.website || null,
+        mission: newPartner.mission || null,
+        providerDescription: newPartner.providerDescription || null,
+        setsApartStatement: newPartner.setsApartStatement || null,
+        screeningCriteria: newPartner.screeningCriteria || null,
+        recruitingSources: newPartner.recruitingSources || null,
+        programCount: newPartner.programCount || null,
+        cost: newPartner.cost || null,
+        isAdminReviewed: newPartner.isAdminReviewed || true,
+        isCoalitionMember: newPartner.isCoalitionMember || false,
+        logoUrl: newPartner.logoUrl || null,
       },
       create: {
         edu_type: newPartner.eduLevel,
@@ -115,6 +118,8 @@ export const addTrainingPartner = async (newPartner: AddTrainingPartnerDTO) => {
         isAdminReviewed: newPartner.isAdminReviewed ?? false,
         isCoalitionMember: newPartner.isCoalitionMember ?? false,
         logoUrl: newPartner.logoUrl,
+        userId: userId,
+
       },
     });
 
