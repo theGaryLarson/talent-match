@@ -138,6 +138,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   pages: {
     signIn: '/signin',
+    newUser:'/signup'
   },
   cookies: {
     pkceCodeVerifier: {
