@@ -156,9 +156,9 @@ async function CareerPrep(props: {
           <div>
             You have an upcoming meeting(s) with {props.caseManager} scheduled
             for:
-            <ul>
+            <ul className='py-3'>
               {Meetings.map((m) => (
-                <li key={m.id}>{`${m.meetingDate}`}</li>
+                <li className='text-lg font-bold text-black' key={m.id}>{`${m.meetingDate}`}</li>
               ))}
             </ul>
           </div>
