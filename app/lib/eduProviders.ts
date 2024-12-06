@@ -28,7 +28,7 @@ export type ReadEduProviderDTO = {
 
 export type ReadEduProviderProgramCardDTO = {
     programId: string, // provider_programs.training_program_id
-    // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
+    logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
     programName: string, // provider_programs join programs on program_id
     eduProviderId: string, //edu_providers.id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
@@ -42,7 +42,7 @@ export type ReadEduProviderProgramCardDTO = {
 
 export type ReadEduProviderProgramDetailDTO = {
     programId: string, // provider_programs.training_program_id
-    // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
+    logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
     programName: string, // provider_programs join programs on program_id
     eduProviderId: string, //edu_providers.id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
@@ -98,6 +98,7 @@ export const getProviderProgramCardView = async (pathway: EduProviderPathways): 
         .map(program => ({
             programId: program.training_program_id,
             programName: program.Program.title,
+            logoUrl: program.edu_provider.logoUrl || '',
             eduProviderId: program.edu_provider_id,
             eduProviderName: program.edu_provider.name,
             eduLevel: isEnumValue(EducationLevel, program.eduLevel) ? program.eduLevel as EducationLevel : null,
@@ -140,6 +141,7 @@ export const getProviderProgramDetailView = async (
                 select: {
                     id: true,
                     name: true,
+                    logoUrl: true,
                 },
             },
             Program: {
@@ -169,6 +171,7 @@ export const getProviderProgramDetailView = async (
     const dto: ReadEduProviderProgramDetailDTO = {
         programId: program.training_program_id,
         programName: program.Program.title,
+        logoUrl: program.edu_provider.logoUrl || '',
         eduProviderId: program.edu_provider.id,
         eduProviderName: program.edu_provider.name,
         locations: program.locations

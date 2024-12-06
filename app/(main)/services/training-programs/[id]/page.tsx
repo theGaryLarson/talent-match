@@ -6,8 +6,8 @@ export default async function page({ params }: { params: { id: string } }) {
   const session = await auth();
   let trainingProgramDetails: ReadEduProviderProgramDetailDTO = await getProviderProgramDetailView(params.id);
 
-  let logoURL = await getEduProviderLogo(trainingProgramDetails.eduProviderId);
-  let logoJSX = logoURL ? <img className="h-64" src={logoURL} /> : ""; // only render if logo is not null
+  // default to TWC if missing edu provider logo
+  let logoURL = trainingProgramDetails.logoUrl || "/images/TWC logo_White.svg";
 
   return (
     <div className="w-full bg-white flex-col justify-start items-start inline-flex">
@@ -15,7 +15,7 @@ export default async function page({ params }: { params: { id: string } }) {
         <div className="w-full laptop:w-2/3 rounded-2xl flex-col justify-end items-start inline-flex">
           <div className="flex-col justify-center items-start gap-2.5 flex">
             {/* Edu Provider Logo */}
-            {logoJSX}
+              <img className="h-64" src={logoURL} />
 
             <div className="flex-col justify-start items-start flex">
               <div className="w-px h-10 relative" />
