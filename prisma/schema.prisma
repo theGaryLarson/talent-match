@@ -470,6 +470,7 @@ model CaseMgmt {
   managerId            String?              @db.UniqueIdentifier
   prepEnrollmentStatus String               @db.VarChar(30)
   careerPrepTrack      String?              @db.VarChar(15)
+  AssignedCareerPrepTrack String?           @db.VarChar(15)
   prepStartDate        DateTime?            @db.DateTime
   prepExpectedEndDate  DateTime?            @db.DateTime
   prepActualEndDate    DateTime?            @db.DateTime

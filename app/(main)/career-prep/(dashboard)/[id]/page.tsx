@@ -1,12 +1,14 @@
-import {getCareerPrepStudentDetailView, getCareerPrepStudentNotes, getMeetingByJobSeeker, NoteType } from "@/app/lib/admin/careerPrep";
+import {getCareerPrepStatus, getCareerPrepStudentDetailView, getCareerPrepStudentNotes, getMeetingByJobSeeker, NoteType } from "@/app/lib/admin/careerPrep";
 import AddMeetingModal from "@/app/ui/components/careerPrep/AddMeetingModal";
 import BasicModal from "@/app/ui/components/careerPrep/BasicModal";
 import EnrollmentStatusDropDown from "@/app/ui/components/careerPrep/EnrollmentStatusDropDown";
 import NoteContainer from "@/app/ui/components/careerPrep/NoteContainer";
 import Tabs from "@/app/ui/components/Tabs";
+import RecomendedTrackDropDown from "../../../../ui/components/careerPrep/RecomendedTrackDropDown";
 
 export default async function page({ params }: { params: { id: string } }){
     const client = await getCareerPrepStudentDetailView(params.id);
+    const carrerPrepEnrollment = await getCareerPrepStatus(params.id);
     const notes = await getCareerPrepStudentNotes(params.id);
     const meetings = await getMeetingByJobSeeker(params.id);
     if(!client.data){
@@ -16,6 +18,9 @@ export default async function page({ params }: { params: { id: string } }){
         <main className="space-y-3 pr-[100px] w-full">
             <div className="inline-flex"><h1 className="text-2xl">{client.data?.firstName} {client.data?.lastName} ({client.data?.pronouns})</h1><AddMeetingModal jsId={params.id}/></div>
             <h2><b>Status:</b><EnrollmentStatusDropDown careerPrepEnrollmentStatus={client.data?.prepEnrollmentStatus} jobseekerId={params.id}/></h2>
+            <h2><b>Auto Recomended Track:</b>{carrerPrepEnrollment?.AutoRecomendedTrack}</h2>
+            <h2><b>Assigned Track:</b><RecomendedTrackDropDown jobseekerId={params.id} careerPrepTrack={carrerPrepEnrollment?.AssignedTrack}/></h2>
+            
             
             {/* <BasicModal buttonText="Add Meeting info"><p>texter</p></BasicModal> */}
             <h2><b>Assessment Date:</b>{client.data?.assessmentDate}</h2>

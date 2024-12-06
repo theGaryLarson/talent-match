@@ -343,6 +343,23 @@ export const updateCareerPrepStudentDetailview = async (
   //TODO
   console.log('This Needs to be written');
 };
+
+
+export const updateAssignedTrack = async ( jobseekerId:string, track:CareerPrepTrack)=>{
+  try{
+    let results = await prisma.caseMgmt.update({where:{
+      jobseekerId:jobseekerId
+    }, data:{
+      AssignedCareerPrepTrack:track
+    }})
+    return results;
+  }catch(e){
+    console.error(e)
+  }
+}
+
+
+
 /**
  * Select statement to retrieve data for Career Prep Student Card.
  * It contains various properties to collect data for CareerPrepJobseekerCardViewDTO[].
@@ -442,7 +459,10 @@ export async function getCareerPrepStatus(jobseeker_id:string){
       where:{jobseekerId:jobseeker_id},
       include:{CaseManager:true}}));
       
-      return {enrollment:(result?.prepEnrollmentStatus as CareerPrepStatus), Track: result?.careerPrepTrack as CareerPrepTrack, CaseManger:result?.CaseManager}
+      return {enrollment:(result?.prepEnrollmentStatus as CareerPrepStatus),
+         AutoRecomendedTrack: result?.careerPrepTrack as CareerPrepTrack,
+         AssignedTrack:result?.AssignedCareerPrepTrack as CareerPrepTrack, 
+         CaseManger:result?.CaseManager}
   } catch (error) {
     console.error(error)
   }
