@@ -43,7 +43,7 @@ const partnerProvidersAndPrograms = [
         recruitingSources: 'All eligible students in this training program are recruited from school districts in communities considered rural and remote by the US FDA Guidelines.',
         programCount: '1',
         testimonials: [], // link or text...
-        cost: 'No cost to the student',
+        cost: 'Cost-free',
         programs: [
             {
                 name: 'ESD112 Rural CTE Cooperative',
