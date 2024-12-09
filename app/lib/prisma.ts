@@ -604,9 +604,10 @@ export async function getTrainingProviders() {
       id: true,
       name: true,
     },
-    orderBy: {
-      name: 'asc'
-    }
+    orderBy: [
+      { isCoalitionMember: 'desc' },
+      { name: 'asc' },
+    ]
   });
   return trainingProviders;
 }
