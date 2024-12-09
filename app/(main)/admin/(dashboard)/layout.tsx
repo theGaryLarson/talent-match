@@ -22,6 +22,20 @@ export default async function layout({ children }: { children: React.ReactNode }
           Home
         </Link>
         <Link
+            href="/admin/add-edu-provider"
+            className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <AddBusinessOutlined/>
+          Add Training Provider
+        </Link>
+        <Link
+          href="/admin/update-edu-provider"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <AddBusinessOutlined/>
+          Update Training Provider
+        </Link>
+        <Link
           href="/admin/add-company"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >

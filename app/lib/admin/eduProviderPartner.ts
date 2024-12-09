@@ -1,9 +1,9 @@
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { ProgramEnrollmentStatus } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import {EducationLevel, ProgramEnrollmentStatus} from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { devLog } from '@/app/lib/utils';
 import {PrismaClient} from "@prisma/client";
-import {PostAddressDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
+import { auth } from "@/auth"
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -58,84 +58,76 @@ export enum NoncompletionReason {
 }
 
 
-export interface AddTrainingPartnerDTO {
-  name: string; // Unique identifier used in the 'where' clause
-  edu_type?: string;
-  contact?: string;
-  contact_email?: string;
-  edu_url?: string;
-  mission?: string;
-  providerDescription?: string;
-  setsApartStatement?: string;
-  screeningCriteria?: string;
-  recruitingSources?: string;
-  programCount?: string;
-  cost?: string;
-  isAdminReviewed?: boolean;
-  isCoalitionMember?: boolean;
-  userId?: string;
-  locationsByZipCode: PostAddressDTO[]
+export type AddTrainingPartnerDTO = {
+  eduProviderId: string,
+  eduLevel?: EducationLevel | null, // edu_providers.edu_type
+  providerName: string, // edu_providers.name
+  contactName?: string | null, // edu_providers.contact
+  contactEmail?: string | null, // edu_providers.contact_email
+  logoUrl?: string | null,
+  website?: string | null, // edu_providers.edu_url
+  mission?: string | null, // edu_providers.mission
+  providerDescription?: string | null, // edu_providers.providerDescription
+  setsApartStatement?: string | null, // edu_providers.setsApartStatement
+  screeningCriteria?: string | null, // edu_providers.screeningCriteria
+  recruitingSources?: string  | null, // edu_providers.recruitingSources
+  programCount?: string  | null, // edu_providers.programCount
+  cost: string  | null, // edu_providers.cost
+  isAdminReviewed: boolean, // edu_providers.isAdminReviewed
+  isCoalitionMember: boolean, // edu_providers.isCoalitionMember
+  // createdBy: string, // edu_providers.userId
+
+  // relations
+  providerAddresses?: string[] // zip codes
 }
 export const addTrainingPartner = async (newPartner: AddTrainingPartnerDTO) => {
-  const partner = await prisma.edu_providers.upsert({
-    where: {
-      name: newPartner.name, // Using 'name' as the unique identifier
-    },
-    update: {
-      edu_type: newPartner.edu_type, // Optional
-      contact: newPartner.contact, // Optional
-      contact_email: newPartner.contact_email, // Optional
-      edu_url: newPartner.edu_url, // Optional
-      mission: newPartner.mission, // Optional
-      providerDescription: newPartner.providerDescription, // Optional
-      setsApartStatement: newPartner.setsApartStatement, // Optional
-      screeningCriteria: newPartner.screeningCriteria, // Optional
-      recruitingSources: newPartner.recruitingSources, // Optional
-      programCount: newPartner.programCount, // Optional
-      cost: newPartner.cost, // Optional
-      userId: newPartner.userId, // Optional
+  try {
+    const session = await auth();
+    const userId = session?.user.id
+    const partner = await prisma.edu_providers.upsert({
+      where: { name: newPartner.providerName },
+      update: {
+        edu_type: newPartner.eduLevel || null,
+        contact: newPartner.contactName || null,
+        contact_email: newPartner.contactEmail || null,
+        edu_url: newPartner.website || null,
+        mission: newPartner.mission || null,
+        providerDescription: newPartner.providerDescription || null,
+        setsApartStatement: newPartner.setsApartStatement || null,
+        screeningCriteria: newPartner.screeningCriteria || null,
+        recruitingSources: newPartner.recruitingSources || null,
+        programCount: newPartner.programCount || null,
+        cost: newPartner.cost || null,
+        isAdminReviewed: newPartner.isAdminReviewed || true,
+        isCoalitionMember: newPartner.isCoalitionMember || false,
+        logoUrl: newPartner.logoUrl || null,
+      },
+      create: {
+        edu_type: newPartner.eduLevel,
+        contact: newPartner.contactName,
+        contact_email: newPartner.contactEmail,
+        edu_url: newPartner.website,
+        mission: newPartner.mission,
+        providerDescription: newPartner.providerDescription,
+        setsApartStatement: newPartner.setsApartStatement,
+        screeningCriteria: newPartner.screeningCriteria,
+        recruitingSources: newPartner.recruitingSources,
+        programCount: newPartner.programCount,
+        cost: newPartner.cost,
+        name: newPartner.providerName,
+        isAdminReviewed: newPartner.isAdminReviewed ?? false,
+        isCoalitionMember: newPartner.isCoalitionMember ?? false,
+        logoUrl: newPartner.logoUrl,
+        userId: userId,
 
-      // Required fields (with default values if not provided)
-      isAdminReviewed: newPartner.isAdminReviewed ?? true, // Required
-      isCoalitionMember: newPartner.isCoalitionMember ?? false, // Required
+      },
+    });
 
-      // Relations can be included if necessary
-      // edu_addresses: {...}, // Optional
-      // educators: {...}, // Optional
-      // TrainingPrograms: {...}, // Optional
-      // TrainingPartnerDetail: {...}, // Optional
-      // ProviderTestimonials: {...}, // Optional
-    },
-    create: {
-      // Include all fields from the schema
-
-      // Optional fields
-      edu_type: newPartner.edu_type, // Optional
-      contact: newPartner.contact, // Optional
-      contact_email: newPartner.contact_email, // Optional
-      edu_url: newPartner.edu_url, // Optional
-      mission: newPartner.mission, // Optional
-      providerDescription: newPartner.providerDescription, // Optional
-      setsApartStatement: newPartner.setsApartStatement, // Optional
-      screeningCriteria: newPartner.screeningCriteria, // Optional
-      recruitingSources: newPartner.recruitingSources, // Optional
-      programCount: newPartner.programCount, // Optional
-      cost: newPartner.cost, // Optional
-      userId: newPartner.userId, // Optional
-
-      // Required fields
-      name: newPartner.name, // Required for creation
-      isAdminReviewed: newPartner.isAdminReviewed ?? false, // Required
-      isCoalitionMember: newPartner.isCoalitionMember ?? false, // Required
-
-      // Relations can be included if necessary
-      // edu_addresses: {...}, // Optional
-      // educators: {...}, // Optional
-      // TrainingPrograms: {...}, // Optional
-      // TrainingPartnerDetail: {...}, // Optional
-      // ProviderTestimonials: {...}, // Optional
-    },
-  });
+    return partner; // Ensure this always returns an object
+  } catch (error) {
+    console.error("Error in addTrainingPartner:", error);
+    return null; // Return null if an error occurs
+  }
 };
 
 export const removeTrainingPartner = async (eduProviderId: string) => {
