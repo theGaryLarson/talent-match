@@ -1,5 +1,7 @@
 import { EduProviderPathways, getProviderProgramCardView, ReadEduProviderProgramCardDTO } from "@/app/lib/eduProviders";
 import TrainingProgramCard from "./TrainingProgramCard";
+import Image from 'next/image';
+import Link from 'next/link';
 
 
 export default async function CareerPage({
@@ -21,7 +23,7 @@ export default async function CareerPage({
             <div className="w-full bg-white">
                 <div className="px-8 laptop:px-24 py-8 bg-white flex-col justify-start items-start gap-2.5 flex">
                     <div className="bg-sky-900 rounded-2xl justify-start items-center inline-flex">
-                        <img className="hidden laptop:block h-96 rounded-tl-2xl rounded-bl-2xl" src={img} />
+                        <Image src={img} width={575} height={384} alt="Stock photo" className="hidden laptop:block h-96 rounded-tl-2xl rounded-bl-2xl"/>
                         <div className="grow shrink basis-0 p-6 flex-col justify-center items-start gap-2.5 inline-flex">
                             <div className="text-neutral-100 text-5xl font-medium font-['Roboto'] leading-10">{title}</div>
                             <div className="text-sky-200 text-3xl font-normal font-['Roboto'] capitalize leading-10">{subtitle}</div>
@@ -39,7 +41,7 @@ export default async function CareerPage({
                 <div className="px-5 py-4 bg-sky-200 rounded-2xl flex-col justify-start items-center gap-2.5 inline-flex">
                     <div className="justify-center items-center gap-2 inline-flex">
                         <div className="w-7 h-7 relative">
-                            <img src="\images\careers\currency-dollar-circle.svg" alt="Dollar sign" className="w-7 h-7 left-0 top-0 absolute"></img>
+                            <Image src="\images\careers\currency-dollar-circle.svg" height={28} width={28} alt="Dollar sign" className="w-7 h-7 left-0 top-0 absolute"/>
                         </div>
                         <div className="text-sky-900 text-xl font-normal font-['Roboto'] capitalize leading-loose">{avgSalary}</div>
                     </div>
@@ -48,7 +50,7 @@ export default async function CareerPage({
                 <div className="px-5 py-4 bg-sky-200 rounded-2xl flex-col justify-start items-center gap-2.5 inline-flex">
                     <div className="justify-center items-center gap-2 inline-flex">
                         <div className="w-7 h-7 relative">
-                            <img src="\images\careers\clock-check.svg" alt="Clock symbol" className="w-7 h-7 left-0 top-0 absolute"></img>
+                            <Image src="\images\careers\clock-check.svg" height={28} width={28} alt="Clock symbol" className="w-7 h-7 left-0 top-0 absolute"/>
                         </div>
                         <div className="text-sky-900 text-xl font-normal font-['Roboto'] capitalize leading-loose">{trainingLength}</div>
                     </div>
@@ -57,7 +59,7 @@ export default async function CareerPage({
                 <div className="px-5 py-4 bg-sky-200 rounded-2xl flex-col justify-start items-center gap-2.5 inline-flex">
                     <div className="justify-center items-center gap-2 inline-flex">
                         <div className="w-7 h-7 relative">
-                            <img src="\images\careers\file-06.svg" alt="File symbol" className="w-7 h-7 left-0 top-0 absolute"></img>
+                            <Image src="\images\careers\file-06.svg" height={28} width={28} alt="File symbol" className="w-7 h-7 left-0 top-0 absolute"/>
                         </div>
                         <div className="text-sky-900 text-xl font-normal font-['Roboto'] capitalize leading-loose">{prepLevel}</div>
                     </div>
