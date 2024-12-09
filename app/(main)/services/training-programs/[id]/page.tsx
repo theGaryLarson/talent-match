@@ -1,5 +1,6 @@
 import { getProviderProgramDetailView, ReadEduProviderProgramDetailDTO } from '@/app/lib/eduProviders';
-import { getEduProviderLogo } from '@/app/lib/services/azureBlobService';
+import Image from 'next/image';
+import Link from 'next/link';
 import { auth } from '@/auth';
 
 export default async function page({ params }: { params: { id: string } }) {
@@ -15,7 +16,7 @@ export default async function page({ params }: { params: { id: string } }) {
         <div className="w-full laptop:w-2/3 rounded-2xl flex-col justify-end items-start inline-flex">
           <div className="flex-col justify-center items-start gap-2.5 flex">
             {/* Edu Provider Logo */}
-              <img className="h-64" src={logoURL} />
+            <Image src={logoURL} width={256} height={256} alt="Edu provider logo" className="h-64"/>
 
             <div className="flex-col justify-start items-start flex">
               <div className="w-px h-10 relative" />
@@ -32,7 +33,7 @@ export default async function page({ params }: { params: { id: string } }) {
             {trainingProgramDetails.locations.map(function (loc, i) {
               return <div className="px-4 py-2.5 bg-cyan-700 rounded-full justify-center items-center gap-1 inline-flex" key={i}>
                 <div className="w-4 h-4 relative">
-                  <img className="w-4 h-4 left-0 top-0 absolute" src="/images/careers/marker-pin-01.svg" />
+                  <Image src="/images/careers/marker-pin-01.svg" width={16} height={16} alt="Pin icon" className="w-4 h-4 left-0 top-0 absolute"/>
                 </div>
                 <div className="text-center text-white text-sm font-medium font-['Roboto'] capitalize leading-tight tracking-tight">{loc}</div>
               </div>;
@@ -78,7 +79,7 @@ export default async function page({ params }: { params: { id: string } }) {
             </div>
             <div className="px-5 py-3 bg-neutral-100 rounded-full justify-center items-center gap-1.5 inline-flex">
               <div className="text-center text-sky-900 text-base font-medium font-['Roboto'] capitalize leading-tight tracking-tight">
-                <a href={trainingProgramDetails.getStartedUrl} target="_blank">Get Started</a>
+                <Link href={trainingProgramDetails.getStartedUrl} target="_blank">Get Started</Link>
               </div>
             </div>
           </div>
