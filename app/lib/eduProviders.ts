@@ -1,4 +1,3 @@
-// TODO: CREATE FORM FOR TRAINING PROVIDER DATA
 import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {EducationLevel} from "@/data/dtos/JobSeekerProfileCreationDTOs";
@@ -7,27 +6,28 @@ const prisma: PrismaClient = getPrismaClient();
 
 export type ReadEduProviderDTO = {
     eduProviderId: string, //edu_providers.id
-    eduLevel: EducationLevel, // edu_providers.edu_type
+    eduLevel?: EducationLevel, // edu_providers.edu_type
     providerName: string, // edu_providers.name
-    contactName: string, // edu_providers.contact
-    contactEmail: string, // edu_providers.contact_email
-    url: string, // edu_providers.edu_url
-    mission: string, // edu_providers.mission
-    providerDescription: string, // edu_providers.providerDescription
-    setsApartStatement: string, // edu_providers.setsApartStatement
-    screeningCriteria: string, // edu_providers.screeningCriteria
-    recruitingSources: string, // edu_providers.recruitingSources
-    programCount: string, // edu_providers.programCount
-    cost: string, // edu_providers.cost
-    // isAdminReviewed: boolean, // edu_providers.isAdminReviewed
-    // isCoalitionMember: boolean, // edu_providers.isCoalitionMember
-    // createdBy: string, // edu_providers.userId
+    logoUrl: string,
+    contactName?: string, // edu_providers.contact
+    contactEmail?: string, // edu_providers.contact_email
+    url?: string, // edu_providers.edu_url
+    mission?: string, // edu_providers.mission
+    providerDescription?: string, // edu_providers.providerDescription
+    setsApartStatement?: string, // edu_providers.setsApartStatement
+    screeningCriteria?: string, // edu_providers.screeningCriteria
+    recruitingSources?: string, // edu_providers.recruitingSources
+    programCount?: string, // edu_providers.programCount
+    cost?: string, // edu_providers.cost
+    isAdminReviewed?: boolean, // edu_providers.isAdminReviewed
+    isCoalitionMember?: boolean, // edu_providers.isCoalitionMember
+    createdBy?: string, // edu_providers.userId
 }
 
 
 export type ReadEduProviderProgramCardDTO = {
     programId: string, // provider_programs.training_program_id
-    // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
+    logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
     programName: string, // provider_programs join programs on program_id
     eduProviderId: string, //edu_providers.id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
@@ -41,7 +41,7 @@ export type ReadEduProviderProgramCardDTO = {
 
 export type ReadEduProviderProgramDetailDTO = {
     programId: string, // provider_programs.training_program_id
-    // logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
+    logoUrl: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
     programName: string, // provider_programs join programs on program_id
     eduProviderId: string, //edu_providers.id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
@@ -77,6 +77,38 @@ export enum LocationType {
     Online = 'Online',
 }
 
+export const getEduProviderDetail = async (eduProviderId: string): Promise<ReadEduProviderDTO | null> => {
+    const data = await prisma.edu_providers.findUnique({
+      where: {
+        id: eduProviderId,
+      },
+    });
+
+    if (!data) return null; // Return null if the provider is not found
+
+    // Transform and map the data to ReadEduProviderDTO
+    const transformedData: ReadEduProviderDTO = {
+        eduProviderId: data.id,
+        eduLevel: data.edu_type ? (data.edu_type as EducationLevel) : undefined,
+        providerName: data.name,
+        logoUrl: '', // Assuming you need to add logic for generating logoUrl
+        contactName: data.contact || undefined,
+        contactEmail: data.contact_email || undefined,
+        url: data.edu_url || undefined,
+        mission: data.mission || undefined,
+        providerDescription: data.providerDescription || undefined,
+        setsApartStatement: data.setsApartStatement || undefined,
+        screeningCriteria: data.screeningCriteria || undefined,
+        recruitingSources: data.recruitingSources || undefined,
+        programCount: data.programCount || undefined,
+        cost: data.cost || undefined,
+        isAdminReviewed: data.isAdminReviewed || false,
+        isCoalitionMember: data.isCoalitionMember || false,
+        createdBy: data.userId || undefined,
+    };
+
+    return transformedData;
+};
 
 export const getProviderProgramCardView = async (pathway: EduProviderPathways): Promise<ReadEduProviderProgramCardDTO[]> => {
     // Fetch all programs
@@ -97,6 +129,7 @@ export const getProviderProgramCardView = async (pathway: EduProviderPathways): 
         .map(program => ({
             programId: program.training_program_id,
             programName: program.Program.title,
+            logoUrl: program.edu_provider.logoUrl || '',
             eduProviderId: program.edu_provider_id,
             eduProviderName: program.edu_provider.name,
             eduLevel: isEnumValue(EducationLevel, program.eduLevel) ? program.eduLevel as EducationLevel : null,
@@ -139,6 +172,7 @@ export const getProviderProgramDetailView = async (
                 select: {
                     id: true,
                     name: true,
+                    logoUrl: true,
                 },
             },
             Program: {
@@ -168,6 +202,7 @@ export const getProviderProgramDetailView = async (
     const dto: ReadEduProviderProgramDetailDTO = {
         programId: program.training_program_id,
         programName: program.Program.title,
+        logoUrl: program.edu_provider.logoUrl || '',
         eduProviderId: program.edu_provider.id,
         eduProviderName: program.edu_provider.name,
         locations: program.locations

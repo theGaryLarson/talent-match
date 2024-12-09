@@ -13,7 +13,7 @@ import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFil
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import Slider from '@mui/material/Slider';
-import { TrainingProviderDropwdownDTO } from '@/data/dtos/TrainingProviderDropdownDTO';
+import { TrainingProviderDropdownDTO } from '@/data/dtos/TrainingProviderDropdownDTO';
 import SingleSelectFilterAutoload from '@/app/ui/components/mui/SingleSelectFilterAutoload';
 
 const resultsPerPage = 50;
@@ -260,7 +260,7 @@ export default function Page() {
               setQueryParam('trainingProvider', encodeURIComponent(event.target.value.toString()));
               setTrainingProvider(event.target.value as string);
             }}
-            getOptionLabel={(option: TrainingProviderDropwdownDTO) => option.name}
+            getOptionLabel={(option: TrainingProviderDropdownDTO) => option.name}
           />
         </div>
 
