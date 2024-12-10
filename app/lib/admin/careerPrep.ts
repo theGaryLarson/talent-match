@@ -113,7 +113,8 @@ export interface CareerPrepJobseekerCardViewDTO {
   firstName: string;
   lastName: string;
   pronouns: string;
-  careerPrepTrack: CareerPrepTrack | null;
+  assignedCareerPrepTrack: CareerPrepTrack | null;
+  recommendedCareerPrepTrack: CareerPrepTrack | null;
   careerPrepAssessmentDate: Date;
   careerPrepEnrollmentStatus: CareerPrepStatus;
   careerPrepExpectedEndDate: Date | null;
@@ -139,7 +140,9 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
         firstName: item.Jobseeker?.users?.first_name || '',
         lastName: item.Jobseeker?.users?.last_name || '',
         pronouns: item.pronouns,
-        careerPrepTrack: item.Jobseeker
+        assignedCareerPrepTrack: item.CaseMgmt
+          ?.AssignedCareerPrepTrack as CareerPrepTrack,
+        recommendedCareerPrepTrack: item.Jobseeker
           .careerPrepTrackRecommendation as CareerPrepTrack,
         careerPrepAssessmentDate: item.assessmentDate,
         careerPrepEnrollmentStatus: item.CaseMgmt
@@ -160,50 +163,49 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
     prisma.$disconnect();
   }
 };
-export const getCareerPrepStudentsCardViewByCaseManagerSession = async (): Promise<
-  CareerPrepJobseekerCardViewDTO[] | null
-> => {
-  try {
-    const session = await auth();
-    const data = await prisma.careerPrepAssessment.findMany({
-      select: selectCareerPrepStudentCardView,
-      where:{
-        CaseMgmt:{
-          CaseManager:{
-            id:session?.user.id
-          }
-        }
-      }
-    });
-    devLog('career prep card view', data);
-    // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
-    const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
-      (item) => ({
-        jobseekerId: item.jobseekerId,
-        firstName: item.Jobseeker?.users?.first_name || '',
-        lastName: item.Jobseeker?.users?.last_name || '',
-        pronouns: item.pronouns,
-        careerPrepTrack: item.Jobseeker
-          .careerPrepTrackRecommendation as CareerPrepTrack,
-        careerPrepAssessmentDate: item.assessmentDate,
-        careerPrepEnrollmentStatus: item.CaseMgmt
-          ?.prepEnrollmentStatus as CareerPrepStatus,
-        careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
-        expectedEduCompletion:
-          item.expectedEduCompletion as TimeUntilCompletion,
-        assignedPool:
-          (item.Jobseeker?.assignedPool as PoolCategories) ||
-          PoolCategories.None,
-      }),
-    );
-    return transformedData;
-  } catch (e) {
-    console.error('Error fetching career prep students card view:', e);
-    return null;
-  } finally {
-    prisma.$disconnect();
-  }
-};
+export const getCareerPrepStudentsCardViewByCaseManagerSession =
+  async (): Promise<CareerPrepJobseekerCardViewDTO[] | null> => {
+    try {
+      const session = await auth();
+      const data = await prisma.careerPrepAssessment.findMany({
+        select: selectCareerPrepStudentCardView,
+        where: {
+          CaseMgmt: {
+            CaseManager: {
+              id: session?.user.id,
+            },
+          },
+        },
+      });
+      devLog('career prep card view', data);
+      // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
+      const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
+        (item) => ({
+          jobseekerId: item.jobseekerId,
+          firstName: item.Jobseeker?.users?.first_name || '',
+          lastName: item.Jobseeker?.users?.last_name || '',
+          pronouns: item.pronouns,
+          assignedCareerPrepTrack: item.Jobseeker
+            .careerPrepTrackRecommendation as CareerPrepTrack,
+          careerPrepAssessmentDate: item.assessmentDate,
+          careerPrepEnrollmentStatus: item.CaseMgmt
+            ?.prepEnrollmentStatus as CareerPrepStatus,
+          careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
+          expectedEduCompletion:
+            item.expectedEduCompletion as TimeUntilCompletion,
+          assignedPool:
+            (item.Jobseeker?.assignedPool as PoolCategories) ||
+            PoolCategories.None,
+        }),
+      );
+      return transformedData;
+    } catch (e) {
+      console.error('Error fetching career prep students card view:', e);
+      return null;
+    } finally {
+      prisma.$disconnect();
+    }
+  };
 /**
  * Asynchronously retrieves a list of unmanaged Career Prep students.
  * Returns a Promise that resolves to an array of CareerPrepJobseekerCardViewDTO objects.
@@ -221,7 +223,7 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
       select: selectCareerPrepStudentCardView,
       where: {
         CaseMgmt: {
-          CaseManager:null
+          CaseManager: null,
         },
       },
     },
@@ -232,7 +234,7 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
       firstName: item.Jobseeker?.users?.first_name || '',
       lastName: item.Jobseeker?.users?.last_name || '',
       pronouns: item.pronouns,
-      careerPrepTrack: item.Jobseeker
+      assignedCareerPrepTrack: item.Jobseeker
         .careerPrepTrackRecommendation as CareerPrepTrack,
       careerPrepAssessmentDate: item.assessmentDate,
       careerPrepEnrollmentStatus: item.CaseMgmt
@@ -275,9 +277,6 @@ export const selfAssignAsCaseManager = async (
   }
 };
 
-
-
-
 export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
   try {
     const data = await prisma.careerPrepAssessment.findUnique({
@@ -297,7 +296,8 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
     const transformedData: CareerPrepJobseekerDetailViewDTO = {
       jobseekerId: data.jobseekerId,
       assessmentDate: data.assessmentDate.toISOString(),
-      careerPrepTrack: data.CaseMgmt?.careerPrepTrack as CareerPrepTrack,
+      assignedCareerPrepTrack: data.CaseMgmt
+        ?.AssignedCareerPrepTrack as CareerPrepTrack,
       prepEnrollmentStatus: data.CaseMgmt
         ?.prepEnrollmentStatus as CareerPrepStatus,
       prepStartDate: data.CaseMgmt?.prepStartDate?.toISOString(),
@@ -344,27 +344,31 @@ export const updateCareerPrepStudentDetailview = async (
   console.log('This Needs to be written');
 };
 
-
-export const updateAssignedTrack = async ( jobseekerId:string, track:CareerPrepTrack)=>{
-  try{
-    let results = await prisma.caseMgmt.update({where:{
-      jobseekerId:jobseekerId
-    }, data:{
-      AssignedCareerPrepTrack:track
-    }})
+export const updateAssignedTrack = async (
+  jobseekerId: string,
+  track: CareerPrepTrack,
+) => {
+  try {
+    let results = await prisma.caseMgmt.update({
+      where: {
+        jobseekerId: jobseekerId,
+      },
+      data: {
+        AssignedCareerPrepTrack: track,
+      },
+    });
     return results;
-  }catch(e){
-    console.error(e)
+  } catch (e) {
+    console.error(e);
   }
-}
-
-
+};
 
 /**
  * Select statement to retrieve data for Career Prep Student Card.
  * It contains various properties to collect data for CareerPrepJobseekerCardViewDTO[].
  */
-const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ = {
+const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
+  {
     // initial table CareerPrepAssessment
     jobseekerId: true,
     pronouns: true,
@@ -374,6 +378,7 @@ const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ = 
       select: {
         prepEnrollmentStatus: true,
         prepExpectedEndDate: true,
+        AssignedCareerPrepTrack: true,
       },
     },
     Jobseeker: {
@@ -450,23 +455,33 @@ export const updateCareerPrepStatusCardView = async (
   }
 };
 
-
-
-export async function getCareerPrepStatus(jobseeker_id:string){
+export async function getCareerPrepStatus(jobseeker_id: string) {
   try {
-    if(jobseeker_id == '') return undefined;
-    let result = (await prisma.caseMgmt.findUnique({
-      where:{jobseekerId:jobseeker_id},
-      include:{CaseManager:true}}));
-      
-      return {enrollment:(result?.prepEnrollmentStatus as CareerPrepStatus),
-         AutoRecomendedTrack: result?.careerPrepTrack as CareerPrepTrack,
-         AssignedTrack:result?.AssignedCareerPrepTrack as CareerPrepTrack, 
-         CaseManger:result?.CaseManager}
+    if (jobseeker_id == '') return undefined;
+    let result = await prisma.caseMgmt.findUnique({
+      where: { jobseekerId: jobseeker_id },
+      include: { CaseManager: true },
+    });
+
+    let jobseekerResult = await prisma.jobseekers.findUnique({
+      where: { jobseeker_id: jobseeker_id },
+      select: {
+        careerPrepTrackRecommendation: true,
+      },
+    });
+
+    return {
+      enrollment: result?.prepEnrollmentStatus as CareerPrepStatus,
+      AutoRecommendedTrack:
+        jobseekerResult?.careerPrepTrackRecommendation as CareerPrepTrack,
+      AssignedTrack: result?.AssignedCareerPrepTrack as CareerPrepTrack,
+      CaseManger: result?.CaseManager,
+    };
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 }
+
 /**
  * Select statement to retrieve Career Prep student details.
  * Accessed through prisma.careerPrepAssessment model.
@@ -538,7 +553,8 @@ export interface CareerPrepJobseekerDetailViewDTO {
   assessmentDate: string; //DateIsoString
   prepEnrollmentStatus: CareerPrepStatus;
   prepStartDate?: string; //DateIsoString
-  careerPrepTrack: CareerPrepTrack;
+  recommendedCareerPrepTrack: CareerPrepTrack | null;
+  assignedCareerPrepTrack: CareerPrepTrack | null;
   prepExpectedEndDate?: string; // DateIsoString System startDate + Track Length.
   prepActualEndDate?: string; // DateIsoString Entered manually
   firstName: string;
@@ -568,7 +584,6 @@ export interface PartnerTrainingProvider {
   educationLevel: EducationLevel; // differentiate between degree and nondegree education/training
   status: ProgramEnrollmentStatus;
 }
-
 
 export type NoteDTO = {
   id: string;
@@ -697,33 +712,31 @@ export async function updateCareerPrepStudentNotes(
     if (Session?.user.id == undefined || Session.user.id == null) {
       throw new Error('id was null or undefinded');
     }
-    const result = await prisma.caseMgmtNotes.update(
-      {
-        where:{
-          id:noteId
-        },
-        data:{
-          noteContent:noteContent,
-          noteType:noteType,
-          updatedAt: new Date()
-        }
-      }
-    )
-    return result
-
+    const result = await prisma.caseMgmtNotes.update({
+      where: {
+        id: noteId,
+      },
+      data: {
+        noteContent: noteContent,
+        noteType: noteType,
+        updatedAt: new Date(),
+      },
+    });
+    return result;
   } catch (e) {
     console.error(e);
   }
 }
 
-export async function deleteCareerPrepStudentNotes(noteId:string) {
+export async function deleteCareerPrepStudentNotes(noteId: string) {
   let result = await prisma.caseMgmtNotes.delete({
-    where:{
-      id:noteId
-    }
-  })
+    where: {
+      id: noteId,
+    },
+  });
   return result;
 }
+
 /**
  * Represents the different types of notes that can be associated with a task or event.
  * @enum {string}
@@ -851,40 +864,41 @@ export const submitCareerPrepAssessment = async (
   data: CareerPrepSkillsAssessmentDTO,
 ): Promise<{ success: boolean; status: number } | null> => {
   try {
-    const result = await prisma.$transaction(async (prisma) => {
-      const careerPrepAssessment = await upsertCareerPrepAssessment(
-        prisma,
-        jobseekerId,
-        data,
-      );
+    const result = await prisma.$transaction(
+      async (prisma) => {
+        const careerPrepAssessment = await upsertCareerPrepAssessment(
+          prisma,
+          jobseekerId,
+          data,
+        );
 
-      const durableResponse =  await upsertDurableSkillRatings(
-        prisma,
-        jobseekerId,
-        data.durableSkills,
-      );
+        const durableResponse = await upsertDurableSkillRatings(
+          prisma,
+          jobseekerId,
+          data.durableSkills,
+        );
 
-      const brandResponse = await upsertBrandRatings(
-        prisma,
-        jobseekerId,
-        data.professionalBrandingAndJobMarketReadiness,
-      );
+        const brandResponse = await upsertBrandRatings(
+          prisma,
+          jobseekerId,
+          data.professionalBrandingAndJobMarketReadiness,
+        );
 
-      const assessmentResponse =  await upsertPathwayRatings(
-        prisma,
-        jobseekerId,
-        data.technicalSelfAssessment,
-      );
+        const assessmentResponse = await upsertPathwayRatings(
+          prisma,
+          jobseekerId,
+          data.technicalSelfAssessment,
+        );
 
-      // //TODO: determine case manager with least amount of assigned jobseekers
-      await upsertUnassignedCaseMgmtRecord(prisma, jobseekerId);
+        // //TODO: determine case manager with least amount of assigned jobseekers
+        await upsertUnassignedCaseMgmtRecord(prisma, jobseekerId);
 
-      return { success: true, status: 200 };
-
-    },
-        {
-          timeout: 10000, // Timeout in milliseconds (e.g., 10000 ms = 10 seconds)
-    });
+        return { success: true, status: 200 };
+      },
+      {
+        timeout: 10000, // Timeout in milliseconds (e.g., 10000 ms = 10 seconds)
+      },
+    );
     devLog('result', result);
     return { success: true, status: 200 };
   } catch (e: any) {
@@ -909,18 +923,23 @@ export const submitCareerPrepEnrollment = async (
   }
   devLog('DTO', data);
   try {
-    const result = await prisma.$transaction(async (prisma) => {
-      const careerPrepEnrollment = await updateCareerPrepEnrollment(
-        prisma,
-        jobseekerId,
-        data,
-      );
-      await updateCareerPrepStatusCardView(jobseekerId,CareerPrepStatus.Enrolled)
-      return { success: true, status: 200 };
-    },
-        {
-          timeout: 10000, // Timeout in milliseconds (e.g., 10000 ms = 10 seconds)
-    });
+    const result = await prisma.$transaction(
+      async (prisma) => {
+        const careerPrepEnrollment = await updateCareerPrepEnrollment(
+          prisma,
+          jobseekerId,
+          data,
+        );
+        await updateCareerPrepStatusCardView(
+          jobseekerId,
+          CareerPrepStatus.Enrolled,
+        );
+        return { success: true, status: 200 };
+      },
+      {
+        timeout: 10000, // Timeout in milliseconds (e.g., 10000 ms = 10 seconds)
+      },
+    );
     devLog('result', result);
     return { success: true, status: 200 };
   } catch (e: any) {
@@ -936,8 +955,8 @@ export const submitCareerPrepEnrollment = async (
  * @returns {Promise<{ success: boolean, status: number }>} A promise that resolves with an object indicating the success and status of the upsert operation.
  */
 const upsertUnassignedCaseMgmtRecord = async (
-    prisma: TransactionClient,
-    jobseekerId: string,
+  prisma: TransactionClient,
+  jobseekerId: string,
 ): Promise<{ success: boolean; status: number }> => {
   try {
     //get necessary info from jobseeker table
@@ -1797,45 +1816,43 @@ export const SkillLevelLabels: Record<SkillLevel, string> = {
   [SkillLevel.Exceptional]: 'Exceptional',
 };
 
-
-
-
 export interface CreateMeetingDTO {
-    jobseekerId: string;
-    meetingTitle: string; // VARCHAR(45)
-    meetingAgenda?: string; // TEXT (Rich text functionality. Possibly utilize Quill)
-    meetingDatetime: Date; // DATETIME
+  jobseekerId: string;
+  meetingTitle: string; // VARCHAR(45)
+  meetingAgenda?: string; // TEXT (Rich text functionality. Possibly utilize Quill)
+  meetingDatetime: Date; // DATETIME
 }
 
-
-export async function addMeeting(params:CreateMeetingDTO){
+export async function addMeeting(params: CreateMeetingDTO) {
   try {
-    let result = await prisma.meeting.create({data:{
-      jobseekerId:params.jobseekerId,
-      title: params.meetingTitle,
-      meetingAgenda: params.meetingAgenda,
-      meetingDate: params.meetingDatetime,
-      updatedAt: new Date()
-    }})
+    let result = await prisma.meeting.create({
+      data: {
+        jobseekerId: params.jobseekerId,
+        title: params.meetingTitle,
+        meetingAgenda: params.meetingAgenda,
+        meetingDate: params.meetingDatetime,
+        updatedAt: new Date(),
+      },
+    });
     return result;
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 }
 
-export async function getMeetingByJobSeeker(jobseekerId:string){
-  if(jobseekerId == ''){
+export async function getMeetingByJobSeeker(jobseekerId: string) {
+  if (jobseekerId == '') {
     return [];
   }
   try {
-    let result = await prisma.meeting.findMany({where:{
-      jobseekerId:jobseekerId
-    }})
-    return result
+    let result = await prisma.meeting.findMany({
+      where: {
+        jobseekerId: jobseekerId,
+      },
+    });
+    return result;
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return [];
   }
 }
-
-
