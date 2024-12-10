@@ -528,7 +528,7 @@ export default function Page() {
       <Typography variant="h6" sx={{ mb: 2 }}>Durable Skills Assessment</Typography>
       <Typography sx={{ mb: 2 }}>
         Soft skills are undergoing a rebranding, and in lieu of the word soft, many people are now referring to them
-        as durable. But that’s not all—there has been a considerable shift in the demand of durable skills as more employers
+        as durable. But that&apos;s not all—there has been a considerable shift in the demand of durable skills as more employers
         see their increase in value, and more hiring managers switch to a skills-based hiring model.</Typography>
       <Typography>
         Remember: There are no right or wrong answers & your results will not impact your eligibility.

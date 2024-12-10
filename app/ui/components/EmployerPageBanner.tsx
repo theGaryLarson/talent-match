@@ -18,7 +18,7 @@ export default async function EmployerPageBanner() {
           Where you discover Local tech talent{' '}
         </div>
         <div className="self-stretch  text-[22px] font-normal leading-[30.80px] text-white">
-          Connect with quality local candidates in our Talent & Career Portal
+          Connect with quality local candidates in our Talent Portal
         </div>
         <div className="flex flex-col items-start justify-start">
           <div className="relative h-[33.21px] w-px" />
