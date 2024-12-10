@@ -77,7 +77,7 @@ Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
 
 ## Tutorials and Documentation
 
-- [Brancing Strategy]()
+- [Branching Strategy](branch-strategy.md)
 - [Set up local MSSQL Server](setup-MSSQL.md)
 - [Changing the DB schema](prisma-workflow.md)
 - [API Routes](API-routes.md)
