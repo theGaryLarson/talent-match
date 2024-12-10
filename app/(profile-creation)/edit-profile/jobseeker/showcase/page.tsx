@@ -288,7 +288,7 @@ export default function CreateJobseekerProfileShowcasePage() {
                 <h2>Video</h2>
               </legend>
               <p>
-                In today’s competitive job market, finding creative ways to
+                In today&apos;s competitive job market, finding creative ways to
                 elevate your profile is key. A personalized video introduction
                 offers a unique opportunity to showcase your skills,
                 personality, and career goals.

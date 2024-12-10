@@ -124,7 +124,7 @@ export default function Page() {
                         </div>
                         <Image src="/images/landing/for-educators.jpg" width={4096} height={2731} alt="Stock photo of student" className="laptop:hidden w-full rounded-3xl object-cover"/>
                         <div className="leading-none mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">Empower Students with Insights</div>
-                        <div className="mt-4 self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">Discover Essential Skills for Tomorrow’s Workforce. Through our Coalition, gain valuable insights directly from employers for in-demand skills which will help align your curriculum with the most current industry standards.</div>
+                        <div className="mt-4 self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">Discover Essential Skills for Tomorrow&apos;s Workforce. Through our Coalition, gain valuable insights directly from employers for in-demand skills which will help align your curriculum with the most current industry standards.</div>
                         <div className="mt-4 justify-start items-start gap-5 inline-flex">
                             <RoundedButton content={'Join the Coalition'} link={'/join'} invertColor={true}></RoundedButton>
                         </div>
