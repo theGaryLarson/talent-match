@@ -23,8 +23,10 @@ export async function adminCreateCompany(companyData:CompanyAdminCreationDTO) {
                     about_us: companyData.aboutUs,
                     size:companyData.size,
                     year_founded:companyData.yearFounded,
-                    createdBy:Session.user.id
-
+                    createdBy:Session.user.id,
+                    company_mission: companyData.companyMission,
+                    estimated_annual_hires:companyData.estimatedAnnualHires,
+                    industry_sector_id:companyData.industrySectorId
                 }
             }
         )

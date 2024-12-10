@@ -16,7 +16,7 @@ export default function SignInPage() {
               action={async () => {
                 'use server';
                 try {
-                  await signIn(provider.id, { redirectTo: "/signup" });
+                  await signIn(provider.id, { redirectTo: "/signin" });
                 } catch (error) {
                   console.log(error);
                   // Signin can fail for a number of reasons, such as the user
