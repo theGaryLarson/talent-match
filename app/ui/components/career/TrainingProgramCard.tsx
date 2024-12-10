@@ -1,5 +1,6 @@
-import { getProviderProgramCardView, ReadEduProviderProgramCardDTO } from "@/app/lib/eduProviders";
-import { getEduProviderLogo } from "@/app/lib/services/azureBlobService";
+import { ReadEduProviderProgramCardDTO } from "@/app/lib/eduProviders";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function TrainingProgramCard(program: ReadEduProviderProgramCardDTO) {
 
@@ -10,11 +11,11 @@ export default async function TrainingProgramCard(program: ReadEduProviderProgra
         <div className="flex-col justify-start items-start inline-flex">
             <div className="flex-col justify-start items-start flex">
                 <div className="w-80 rounded-3xl flex-col justify-start items-start flex">
-                    <a href={'/services/training-programs/' + program.programId} className="w-80">
+                    <Link href={'/services/training-programs/' + program.programId} className="w-80">
                     <div className="self-stretch grow shrink basis-0 px-7 py-4 bg-neutral-100 hover:bg-sky-900 text-sky-900 hover:text-neutral-100 rounded-3xl flex-col justify-start items-start gap-2.5 flex">
                         <div className="self-stretch flex-col justify-start items-start gap-2.5 flex h-72">
                             <div className="self-stretch justify-between items-start inline-flex">
-                                {<img className="h-36 w-36" src={logoURL} />}
+                                <Image src={logoURL} width={144} height={144} alt="Edu provider logo" className="h-36 w-36"/>
                                 {program.eduLevel && <div className="ml-4 px-4 py-2.5 bg-cyan-700 rounded-full justify-center items-center gap-1 flex">
                                     <div className="text-center text-white text-sm font-medium font-['Roboto'] capitalize leading-tight tracking-tight">
                                         {program.eduLevel}
@@ -36,7 +37,7 @@ export default async function TrainingProgramCard(program: ReadEduProviderProgra
                             </div>
                         </div>
                     </div>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

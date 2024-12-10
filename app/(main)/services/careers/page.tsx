@@ -1,10 +1,12 @@
 import CareerPill from "@/app/ui/components/career/CareerPill";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Page() {
     return (
         <div className="bg-white flex-col justify-start items-center">
             <div className="bg-sky-900">
-                <img className="w-full" src="/images/careers/careers.jpg" />
+                <Image src="/images/careers/careers.jpg" width={4096} height={2731} alt="Stock photo" className="w-full"/>
                 <div className="p-12 left-[48px] top-[500px] absolute bg-sky-950/90 rounded-3xl flex-col justify-end items-center gap-2.5 inline-flex">
                     <div className="self-stretch text-neutral-100 text-6xl font-normal font-['Roboto'] leading-10">Start Your Journey In Tech</div>
                     <div className="self-stretch text-sky-200 text-xl font-normal font-['Roboto'] capitalize leading-loose">explore in-demand tech careers that align with your passions and expertise</div>
