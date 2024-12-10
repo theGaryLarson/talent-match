@@ -185,8 +185,8 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
           firstName: item.Jobseeker?.users?.first_name || '',
           lastName: item.Jobseeker?.users?.last_name || '',
           pronouns: item.pronouns,
-          assignedCareerPrepTrack: item.Jobseeker
-            .careerPrepTrackRecommendation as CareerPrepTrack,
+          recommendedCareerPrepTrack: item.Jobseeker?.careerPrepTrackRecommendation as CareerPrepTrack,
+          assignedCareerPrepTrack: item.CaseMgmt?.AssignedCareerPrepTrack as CareerPrepTrack,
           careerPrepAssessmentDate: item.assessmentDate,
           careerPrepEnrollmentStatus: item.CaseMgmt
             ?.prepEnrollmentStatus as CareerPrepStatus,
@@ -234,8 +234,9 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
       firstName: item.Jobseeker?.users?.first_name || '',
       lastName: item.Jobseeker?.users?.last_name || '',
       pronouns: item.pronouns,
-      assignedCareerPrepTrack: item.Jobseeker
+      recommendedCareerPrepTrack: item.Jobseeker
         .careerPrepTrackRecommendation as CareerPrepTrack,
+      assignedCareerPrepTrack: item.CaseMgmt?.AssignedCareerPrepTrack as CareerPrepTrack,
       careerPrepAssessmentDate: item.assessmentDate,
       careerPrepEnrollmentStatus: item.CaseMgmt
         ?.prepEnrollmentStatus as CareerPrepStatus,
@@ -285,6 +286,16 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
       },
       select: selectCareerPrepStudentDetailView,
     });
+
+    const jobseekerData = await prisma.jobseekers.findUnique({
+      select: {
+        careerPrepTrackRecommendation: true,
+      },
+      where: {
+        jobseeker_id: jobseekerId,
+      }
+    });
+
     if (!data) {
       return {
         success: false,
@@ -296,6 +307,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
     const transformedData: CareerPrepJobseekerDetailViewDTO = {
       jobseekerId: data.jobseekerId,
       assessmentDate: data.assessmentDate.toISOString(),
+      recommendedCareerPrepTrack: jobseekerData?.careerPrepTrackRecommendation as CareerPrepTrack,
       assignedCareerPrepTrack: data.CaseMgmt
         ?.AssignedCareerPrepTrack as CareerPrepTrack,
       prepEnrollmentStatus: data.CaseMgmt
@@ -502,6 +514,7 @@ const selectCareerPrepStudentDetailView /*: Prisma.CareerPrepAssessmentSelect*/ 
         prepExpectedEndDate: true,
         prepActualEndDate: true,
         careerPrepTrack: true,
+        AssignedCareerPrepTrack: true,
       },
     },
     Jobseeker: {
