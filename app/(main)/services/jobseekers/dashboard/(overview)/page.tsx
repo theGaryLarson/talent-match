@@ -45,7 +45,7 @@ export default async function Page() {
       <WorkShops />
       <CareerPrep
         enrollmentStatus={carrerPrepEnrollment?.enrollment}
-        track={carrerPrepEnrollment?.Track}
+        track={carrerPrepEnrollment?.AutoRecommendedTrack}
         jobseekerId={session?.user.jobseekerId ?? ''}
         caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? 'Our'} ${carrerPrepEnrollment?.CaseManger?.last_name ?? 'Carrer Navigator'}`}
       />
@@ -156,9 +156,9 @@ async function CareerPrep(props: {
           <div>
             You have an upcoming meeting(s) with {props.caseManager} scheduled
             for:
-            <ul>
+            <ul className='py-3'>
               {Meetings.map((m) => (
-                <li key={m.id}>{`${m.meetingDate}`}</li>
+                <li className='text-lg font-bold text-black' key={m.id}>{`${m.meetingDate}`}</li>
               ))}
             </ul>
           </div>

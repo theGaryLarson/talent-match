@@ -83,7 +83,7 @@ export const enum PoolCategories {
  *
  * @enum {string}
  */
-export const enum CareerPrepTrack {
+export enum CareerPrepTrack {
     ACCELERATED = 'ACCELERATED',
     STANDARD = 'STANDARD',
     EXTENDED = 'EXTENDED',
