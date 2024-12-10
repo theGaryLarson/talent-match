@@ -24,20 +24,6 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import AccountMenu from './components/mui/AccountMenu';
 
-const forStudentsDropDownInfo = [
-  {
-    name: 'Pre-Apprenticeship Program',
-    description: 'Learn Web Development',
-    href: '/underconstruction',
-    icon: CursorArrowRaysIcon,
-  },
-  {
-    name: 'Project Factory',
-    description: 'Build Projects with guidance from mentors Coming Soon',
-    href: '/underconstruction',
-    icon: FingerPrintIcon,
-  },
-];
 
 type LinkItem = {
   name: string;
@@ -60,24 +46,24 @@ type DropDownItem = {
 };
 
 const TopLevelLinks: LinkItem[] = [
-  {
-    name: 'For Students',
-    href: '/',
-    dropDowns: [
-      {
-        name: 'Link 1',
-        description: 'Learn Web Development',
-        href: '/underconstruction',
-        icon: CursorArrowRaysIcon,
-      },
-      {
-        name: 'Link 2',
-        description: 'Build Projects with guidance from mentors Coming Soon',
-        href: '/underconstruction',
-        icon: FingerPrintIcon,
-      },
-    ],
-  },
+  // {
+  //   name: 'DropDown Example',
+  //   href: '/',
+  //   dropDowns: [
+  //     {
+  //       name: 'Link 1',
+  //       description: 'Learn Web Development',
+  //       href: '/underconstruction',
+  //       icon: CursorArrowRaysIcon,
+  //     },
+  //     {
+  //       name: 'Link 2',
+  //       description: 'Build Projects with guidance from mentors Coming Soon',
+  //       href: '/underconstruction',
+  //       icon: FingerPrintIcon,
+  //     },
+  //   ],
+  // },
   { name: 'Talent Showcase', href: '/services/talent-search' },
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
@@ -161,7 +147,7 @@ export default function Header() {
           {TopLevelLinks.map((link) => {
             if (link.dropDowns != undefined && link.dropDowns != null) {
               return (
-                <Popover className="relative">
+                <Popover className="relative" key={link.name}>
                   <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
                     {link.name}
                     <ChevronDownIcon
@@ -281,7 +267,7 @@ export default function Header() {
                 {TopLevelLinks.map((link) => {
                   if(link.dropDowns != undefined){
                     return(
-                      <Disclosure as="div" className="-mx-3">
+                      <Disclosure as="div" className="-mx-3" key={"m"+link.name}>
                   {({ open }) => (
                     <>
                       <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7   hover:bg-gray-50">
@@ -294,7 +280,7 @@ export default function Header() {
                       <DisclosurePanel className="mt-2 space-y-2">
                         {link.dropDowns?.map((item) => (
                           <DisclosureButton
-                            key={item.name}
+                            key={'mm'+item.name}
                             as={Link}
                             href={item.href}
                             className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7   hover:bg-gray-50"
