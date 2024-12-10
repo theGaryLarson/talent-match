@@ -1,11 +1,14 @@
 'use client'
 import { CareerPrepStatus } from '@/app/lib/admin/careerPrep';
 import { CareerPrepTrack } from '@/app/lib/poolAssignment';
+import { useRouter } from "next/navigation";
+
 
 export default function RecommendedTrackDropDown(props: {
   careerPrepTrack: CareerPrepTrack|undefined;
   jobseekerId:string
 }) {
+  const router = useRouter();
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>)=>{
         //todo add fetch call here to update status
         console.log("TRACK IS: ", props.careerPrepTrack )
@@ -26,6 +29,7 @@ export default function RecommendedTrackDropDown(props: {
             throw new Error('Failed to update status');
             
           }
+          router.refresh();
           return response.json();
         })
         .then((data) => {
