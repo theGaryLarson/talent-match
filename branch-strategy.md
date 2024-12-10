@@ -10,6 +10,13 @@ This project follows the **GitFlow branching strategy**, designed to streamline 
 - **Release Branches**: Used for preparing new production releases. These branches handle final touches and minor bug fixes before merging into `main` and `develop`.
 - **Hotfix Branches**: Created to address urgent changes in the `main` branch. These fixes are merged back into both `main` and `develop`.
 
+#### Policies have been enforced for the following patterns:
+- `feature/*`
+- `release/*`
+- `hotfix/*`
+
+> Please prefix your branches with the appropriate prefix above. Most likely it will be a feature branch.
+
 ---
 
 ## Workflow Instructions
@@ -123,13 +130,11 @@ This project follows the **GitFlow branching strategy**, designed to streamline 
 
 ---
 
-## Azure Permissions (Setup Pending)
+## Azure Permissions
 
 To align with this workflow, Azure permissions will be set up to enforce branching policies:
-- [ ] Restrict direct pushes to `main` and `develop`.
-- [ ] Require pull requests for merging branches.
-- [ ] Enforce peer reviews for pull requests.
-- [ ] Require passing CI/CD checks before merging.
-
-Further details on Azure permissions will be added once configured.
+- [x] Restrict direct pushes to `main` and `develop`.
+- [x] Require pull requests for merging branches.
+- [x] Enforce peer reviews for pull requests (Can review own PRs for now).
+- [x] Require passing CI/CD checks before merging.
 
