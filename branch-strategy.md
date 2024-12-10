@@ -1,16 +1,23 @@
 # GitFlow Branching Strategy
 
-This project follows the **GitFlow branching strategy**, designed to streamline release management and ensure a structured development workflow.
+This project follows the **GitFlow branching strategy**, designed to streamline release management and ensure a
+structured development workflow.
 
 ## Branches Overview
 
-- **Main Branch**: Contains production-ready code. This is the branch used for releases. Only thoroughly vetted and tested changes are merged here.
-- **Develop Branch**: Contains pre-production code. All new features are based on this branch and merged back when completed.
-- **Feature Branches**: Used to develop new features. These are temporary branches based on `develop` and merged back when the feature is complete and reviewed.
-- **Release Branches**: Used for preparing new production releases. These branches handle final touches and minor bug fixes before merging into `main` and `develop`.
-- **Hotfix Branches**: Created to address urgent changes in the `main` branch. These fixes are merged back into both `main` and `develop`.
+- **Main Branch**: Contains production-ready code. This is the branch used for releases. Only thoroughly vetted and
+  tested changes are merged here.
+- **Develop Branch**: Contains pre-production code. All new features are based on this branch and merged back when
+  completed.
+- **Feature Branches**: Used to develop new features. These are temporary branches based on `develop` and merged back
+  when the feature is complete and reviewed.
+- **Release Branches**: Used for preparing new production releases. These branches handle final touches and minor bug
+  fixes before merging into `main` and `develop`.
+- **Hotfix Branches**: Created to address urgent changes in the `main` branch. These fixes are merged back into
+  both `main` and `develop`.
 
 #### Policies have been enforced for the following patterns:
+
 - `feature/*`
 - `release/*`
 - `hotfix/*`
@@ -22,6 +29,7 @@ This project follows the **GitFlow branching strategy**, designed to streamline 
 ## Workflow Instructions
 
 ### 1. Setting Up the Development Environment
+
 1. Clone the repository:
    ```bash
    git clone https://CFA1@dev.azure.com/CFA1/Career%20Services/_git/CoalitionWebsite
@@ -32,6 +40,7 @@ This project follows the **GitFlow branching strategy**, designed to streamline 
    ```
 
 ### 2. Creating a Feature Branch
+
 1. Ensure you’re on the `develop` branch:
    ```bash
    git checkout develop
@@ -61,6 +70,7 @@ This project follows the **GitFlow branching strategy**, designed to streamline 
    ```
 
 ### 3. Creating a Release Branch
+
 1. Create a release branch from `develop`:
    ```bash
    git checkout develop
@@ -90,6 +100,7 @@ This project follows the **GitFlow branching strategy**, designed to streamline 
    ```
 
 ### 4. Creating a Hotfix Branch
+
 1. Create a hotfix branch from `main`:
    ```bash
    git checkout main
@@ -130,9 +141,21 @@ This project follows the **GitFlow branching strategy**, designed to streamline 
 
 ---
 
-## Azure Permissions
+## Azure Permissions Summary
+
+| Action                       | Branch        | Group          | Permission             |
+|------------------------------|---------------|----------------|------------------------|
+| Push direct                  | main, develop | Contributors   | Deny                   |
+| Create pull request          | main, develop | Contributors   | Allow                  |
+| Merge via PR                 | main, develop | Contributors   | Allow (after approval) |
+| Push feature branches        | feature/*     | Contributors   | Allow                  |
+| Push tags                    | All branches  | Contributors   | Allow                  |
+| Check for comment resolution | main          | Contributors   | Required               |
+| Check for comment resolution | develop       | Contributors   | Optional               |
+| Override policies            | All branches  | Project Admins | Deny                   |
 
 To align with this workflow, Azure permissions will be set up to enforce branching policies:
+
 - [x] Restrict direct pushes to `main` and `develop`.
 - [x] Require pull requests for merging branches.
 - [x] Enforce peer reviews for pull requests (Can review own PRs for now).
