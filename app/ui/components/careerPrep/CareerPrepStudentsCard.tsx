@@ -12,7 +12,7 @@ export default function CareerPrepStudentsCard(props:CareerPrepJobseekerCardView
                 {props.firstName} {props.lastName} ({props.pronouns}) {props.showSelfAssign?<SelfAssignCaseButton jobseekerId={props.jobseekerId}/>:''}
             </h3>
             <p>
-                <b>Recomended Track:</b> {props.careerPrepTrack}
+                <b>Assigned Track:</b> {props.assignedCareerPrepTrack}
             </p>
             <p>
                 <b>Enrollment Status:</b> <EnrollmentStatusDropDown careerPrepEnrollmentStatus={props.careerPrepEnrollmentStatus} jobseekerId={props.jobseekerId}/>
