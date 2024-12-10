@@ -42,13 +42,6 @@ export default async function layout({ children }: { children: React.ReactNode }
           <AddBusinessOutlined/>
           Add a Company
         </Link>
-        <Link
-          href="/admin"
-          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-        >
-          <BookmarkIcon width={24}/>
-          Saved Candidates
-        </Link>
         {/* <Link
           href="/admin"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200 REPLACE-BEFORE-RELEASE"
