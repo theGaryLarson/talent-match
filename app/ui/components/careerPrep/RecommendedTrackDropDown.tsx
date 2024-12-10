@@ -2,7 +2,7 @@
 import { CareerPrepStatus } from '@/app/lib/admin/careerPrep';
 import { CareerPrepTrack } from '@/app/lib/poolAssignment';
 
-export default function RecomendedTrackDropDown(props: {
+export default function RecommendedTrackDropDown(props: {
   careerPrepTrack: CareerPrepTrack|undefined;
   jobseekerId:string
 }) {
@@ -11,7 +11,7 @@ export default function RecomendedTrackDropDown(props: {
         console.log("TRACK IS: ", props.careerPrepTrack )
         const newStatus = event.target.value as CareerPrepTrack;
         console.log("change detected: ", props.jobseekerId)
-        fetch('/api/admin/career-prep/update-recomended-track/', {
+        fetch('/api/admin/career-prep/update-recommended-track/', {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
