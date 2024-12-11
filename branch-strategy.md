@@ -111,12 +111,6 @@ structured development workflow.
       git tag -a [release-version] -m "Release [release-version]"
       git push --tags
       ```
-     ```bash
-     git checkout main
-     git merge release/[release-version]
-     git tag -a [release-version] -m "Release [release-version]"
-     git push --tags
-     ```
 4. Open a PR to merge the release branch back into `develop`:
 
 5. Once the release branch has been successfully merged into `develop`. Delete the release branch:
