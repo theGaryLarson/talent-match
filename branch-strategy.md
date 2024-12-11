@@ -62,7 +62,7 @@ structured development workflow.
 	- Code review by at least one person is required.
 	- Code review can be completed by the submitter for simple changes.
 	- It is encouraged to request review by another developer.
-6. Once the feature branch is merged into `main`. Delete the feature branch:
+6. Once the feature branch is merged into `develop`. Delete the feature branch:
    ```bash
    git branch -d feature/[feature-name]
    git push origin --delete feature/[feature-name]
