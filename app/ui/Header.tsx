@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, SVGProps, useEffect, useState } from 'react';
 import {
   Dialog,
   DialogPanel,
@@ -24,19 +24,46 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import AccountMenu from './components/mui/AccountMenu';
 
-// const forStudentsDropDownInfo = [
-//   { name: 'Pre-Apprenticeship Program', description: 'Learn Web Development', href: '/pre-apprenticeship', icon: CursorArrowRaysIcon },
-//   { name: 'Project Factory', description: 'Build Projects with guidance from mentors Coming Soon', href: '/underconstruction', icon: FingerPrintIcon }
-// ]
 
 type LinkItem = {
   name: string;
   href: string;
   target?: string;
   rel?: string;
+  dropDowns?: DropDownItem[];
+};
+
+type DropDownItem = {
+  name: string;
+  description: string;
+  href: string;
+  icon: React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
+      title?: string;
+      titleId?: string;
+    } & React.RefAttributes<SVGSVGElement>
+  >;
 };
 
 const TopLevelLinks: LinkItem[] = [
+  // {
+  //   name: 'DropDown Example',
+  //   href: '/',
+  //   dropDowns: [
+  //     {
+  //       name: 'Link 1',
+  //       description: 'Learn Web Development',
+  //       href: '/underconstruction',
+  //       icon: CursorArrowRaysIcon,
+  //     },
+  //     {
+  //       name: 'Link 2',
+  //       description: 'Build Projects with guidance from mentors Coming Soon',
+  //       href: '/underconstruction',
+  //       icon: FingerPrintIcon,
+  //     },
+  //   ],
+  // },
   { name: 'Talent Showcase', href: '/services/talent-search' },
   { name: 'For Employers', href: '/services/employers' },
   { name: 'For Job Seekers', href: '/services/jobseekers' },
@@ -74,7 +101,7 @@ export default function Header() {
     ) {
       setHeaderTW('w-full z-10 absolute text-white');
     } else if (pathname.startsWith('/services/training-programs/')) {
-      setHeaderTW('bg-[#003350] text-white')
+      setHeaderTW('bg-[#003350] text-white');
     } else {
       setHeaderTW('bg-white');
     }
@@ -117,51 +144,64 @@ export default function Header() {
         </div>
 
         <PopoverGroup className="hidden items-center tablet:flex tablet:gap-x-12">
-          {/* <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
-              For Students
-              <ChevronDownIcon className="h-5 w-5 flex-none" aria-hidden="true" />
-            </PopoverButton>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="opacity-0 translate-y-1"
-              enterTo="opacity-100 translate-y-0"
-              leave="transition ease-in duration-150"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 translate-y-1"
-            >
-              <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-                {({ close }) => (
-                  <><div className="p-4" onMouseLeave={() => { close() }}>
-                    {forStudentsDropDownInfo.map((item) => (
-                      <Link key={item.name} href={item.href} className="block font-semibold  text-black" onClick={() => { close() }}>
-                        <div
-
-                          className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
-                        >
-                          <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                            <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
-                          </div>
-                          <div className="flex-auto">
-
-                            {item.name}
-
-                            <p className="mt-1 text-gray-600">{item.description}</p>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                  </>
-                )}
-
-              </PopoverPanel>
-            </Transition>
-          </Popover> */}
-
           {TopLevelLinks.map((link) => {
+            if (link.dropDowns != undefined && link.dropDowns != null) {
+              return (
+                <Popover className="relative" key={link.name}>
+                  <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
+                    {link.name}
+                    <ChevronDownIcon
+                      className="h-5 w-5 flex-none"
+                      aria-hidden="true"
+                    />
+                  </PopoverButton>
+
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-200"
+                    enterFrom="opacity-0 translate-y-1"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-1"
+                  >
+                    <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
+                      {({ close }) => (
+                        <>
+                          <div
+                            className="p-4"
+                            onMouseLeave={() => {
+                              close();
+                            }}
+                          >
+                            {link.dropDowns?.map((item) => (
+                              <Link
+                                key={item.name}
+                                href={item.href}
+                                className="block font-semibold  text-black"
+                                onClick={() => {
+                                  close();
+                                }}
+                              >
+                                <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
+                                  <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                                    <item.icon
+                                      className="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
+                                      aria-hidden="true"
+                                    />
+                                  </div>
+                                  <div className="flex-auto">{item.name}</div>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </PopoverPanel>
+                  </Transition>
+                </Popover>
+              );
+            }
             return (
               <Link
                 key={link.name}
@@ -223,7 +263,38 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
+                
                 {TopLevelLinks.map((link) => {
+                  if(link.dropDowns != undefined){
+                    return(
+                      <Disclosure as="div" className="-mx-3" key={"m"+link.name}>
+                  {({ open }) => (
+                    <>
+                      <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7   hover:bg-gray-50">
+                        {link.name}
+                        <ChevronDownIcon
+                          className={open ? 'rotate-180 h-5 w-5 flex-none' : 'h-5 w-5 flex-none'}
+                          aria-hidden="true"
+                        />
+                      </DisclosureButton>
+                      <DisclosurePanel className="mt-2 space-y-2">
+                        {link.dropDowns?.map((item) => (
+                          <DisclosureButton
+                            key={'mm'+item.name}
+                            as={Link}
+                            href={item.href}
+                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7   hover:bg-gray-50"
+                            onClick={() => { setMobileMenuOpen(false) }}
+                          >
+                            {item.name}
+                          </DisclosureButton>
+                        ))}
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
+                    );
+                  }
                   return (
                     <Link
                       key={link.name}
