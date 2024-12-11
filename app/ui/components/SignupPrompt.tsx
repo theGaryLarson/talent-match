@@ -5,7 +5,7 @@ import Image from 'next/image';
 interface Props {
   className?: string;
   vectorImgSrc: string;
-  prompt: string;
+  prompt?: string;
 }
 
 export default function SignupPrompt({

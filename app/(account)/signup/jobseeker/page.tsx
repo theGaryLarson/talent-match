@@ -42,12 +42,7 @@ export default function JobseekerSignupFinishPage() {
       <SignupHeader />
 
       <main className="mx-auto max-w-screen-sm-tablet overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
-        <SignupPrompt
-          vectorImgSrc={vectorImgSrc}
-          prompt={
-            'Create a free TWC account to access job guides, 1:1 webinars, jobs & opportunities. (Placeholder)'
-          }
-        />
+        <SignupPrompt vectorImgSrc={vectorImgSrc} />
         <section className="mx-auto w-full px-8 laptop:pt-24 ">
           <form className="mx-auto flex flex-col gap-6 laptop:max-w-screen-sm-tablet">
             <fieldset className="flex flex-col gap-3">
