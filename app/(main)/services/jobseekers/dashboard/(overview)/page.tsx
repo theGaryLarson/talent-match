@@ -45,7 +45,7 @@ export default async function Page() {
       <WorkShops />
       <CareerPrep
         enrollmentStatus={carrerPrepEnrollment?.enrollment}
-        track={carrerPrepEnrollment?.AutoRecommendedTrack}
+        track={carrerPrepEnrollment?.AssignedTrack}
         jobseekerId={session?.user.jobseekerId ?? ''}
         caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? 'Our'} ${carrerPrepEnrollment?.CaseManger?.last_name ?? 'Carrer Navigator'}`}
       />

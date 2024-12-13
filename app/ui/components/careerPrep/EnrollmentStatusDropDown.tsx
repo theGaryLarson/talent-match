@@ -1,10 +1,12 @@
 'use client'
 import { CareerPrepStatus } from '@/app/lib/admin/careerPrep';
+import { useRouter } from "next/navigation";
 
 export default function EnrollmentStatusDropDown(props: {
   careerPrepEnrollmentStatus: CareerPrepStatus;
   jobseekerId:string
 }) {
+  const router = useRouter();
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>)=>{
         //todo add fetch call here to update status
         const newStatus = event.target.value as CareerPrepStatus;
@@ -28,6 +30,7 @@ export default function EnrollmentStatusDropDown(props: {
         })
         .then((data) => {
           console.log('Status updated successfully:', data);
+          router.refresh();
         })
         .catch((error) => {
           console.error('Error updating status:', error);

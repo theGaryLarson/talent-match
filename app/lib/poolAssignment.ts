@@ -86,7 +86,6 @@ export const enum PoolCategories {
 export enum CareerPrepTrack {
     ACCELERATED = 'ACCELERATED',
     STANDARD = 'STANDARD',
-    EXTENDED = 'EXTENDED',
 }
 
 /**

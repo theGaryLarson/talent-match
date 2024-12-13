@@ -166,7 +166,7 @@ export default function InputFileDropzone({
               )}
             {fileSelected != '' && filesizeExceeded && (
               <p className="mb-2 text-sm text-red-500 dark:text-red-400">
-                File is too large: {fileSelected}
+                File is too large! {/*{fileSelected}*/}
               </p>
             )}
           </div>
