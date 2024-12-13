@@ -340,7 +340,7 @@ export default function CreateJobseekerProfileShowcasePage() {
               fileTypeText="PDF"
               blobPrefix={'resume' as BlobPrefix}
               accept=".pdf"
-              maxSizeMB={5}
+              maxSizeMB={1}
               userId={session?.user?.id!}
               onDocUpload={handleResumeUpload}
               autoloadedUrl={

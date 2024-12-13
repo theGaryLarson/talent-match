@@ -238,7 +238,7 @@ export default function CreateJobseekerProfileIntroPage() {
               id="profile-creation-intro-avatar-upload"
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
-              maxSizeMB={5}
+              maxSizeMB={1}
               userId={session?.user?.id!}
               onImageUpload={handleImageUpload}
               initialImageUrl={session?.user?.image || introData.photoUrl || ''}
