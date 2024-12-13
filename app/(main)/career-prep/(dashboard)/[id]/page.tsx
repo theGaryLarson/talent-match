@@ -6,6 +6,7 @@ import NoteContainer from "@/app/ui/components/careerPrep/NoteContainer";
 import Tabs from "@/app/ui/components/Tabs";
 import RecommendedTrackDropDown from "../../../../ui/components/careerPrep/RecommendedTrackDropDown";
 import LikertRating from "@/app/ui/components/careerPrep/LikertRating";
+import SelfAssementReadOnly from "@/app/ui/components/careerPrep/SelfAssementReadOnly";
 
 export default async function page({ params }: { params: { id: string } }){
     const client = await getCareerPrepStudentDetailView(params.id);
@@ -26,7 +27,7 @@ export default async function page({ params }: { params: { id: string } }){
             
             {/* <BasicModal buttonText="Add Meeting info"><p>texter</p></BasicModal> */}
             <h2><b>Assessment Date:</b>{client.data?.assessmentDate}</h2>
-            <PrepAssesmentView id={params.id}/>
+            <SelfAssementReadOnly id={params.id}/>
             <h2><b>Highest Level of Education:</b> {client.data?.education}</h2>
             <h2><b>Email address:</b> {client.data?.emailAddress}</h2>
             <h2><b>Pool:</b> {client.data?.poolAssignment}</h2>
@@ -48,42 +49,3 @@ export default async function page({ params }: { params: { id: string } }){
 }
 
 
-async function PrepAssesmentView(params:{id:string}){
-    const assessment = await getCareerPrepAssessment(params.id)
-    return(
-        <div>
-          <h1 className="text-xl font-bold"> Self Assessments Taken</h1>
-            <div className="space-y-2">
-              <AssessmentModal list={assessment?.BrandingRating} title={"Branding Rating"}/>
-              <AssessmentModal list={assessment?.CybersecurityRating} title="Cyber Security"/>
-              <AssessmentModal list={assessment?.DataAnalyticsRating} title="Data Analytics"/>
-              <AssessmentModal list={assessment?.ITCloudRating} title="IT CLoud" />
-              <AssessmentModal list={assessment?.SoftwareDevRating} title='Software Dev'/>
-            </div>
-
-        </div>
-    );
-}
-
-function AssessmentModal({list, title}:{list:any[]|undefined, title:string}){
-  return(
-    (list != undefined && list.length > 0)?
-      <BasicModal buttonText={title}>
-        {
-          <div className="h-[500px] flex flex-col flex-wrap">
-            {
-          Object.entries(list[0] || {}) // Use first item in array
-            .filter(([key, value]) => typeof value === 'number') // Filter only numeric values
-            .map(([key, value]) => (
-              <div key={key} className="m-2.5">
-                <label htmlFor={key} className="capitalize">
-                  {key.replace(/([A-Z])/g, ' $1')}:
-                </label>
-                <LikertRating value={value as number}  />
-              </div>
-            ))
-        }
-        </div>}
-      </BasicModal>:''
-  )
-}
