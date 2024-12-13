@@ -73,13 +73,13 @@ const TopLevelLinks: LinkItem[] = [
     href: 'https://cfajobs.powerappsportals.com/',
     target: '_blank',
     rel: 'oopener noreferrer',
-  },
+  },*/
   {
     name: 'Join Our Community',
     href: 'https://forum.watechwfcoalition.org/',
     target: '_blank',
     rel: 'oopener noreferrer',
-  },*/
+  },
   { name: 'About Us', href: '/about-us' },
   // { name: 'Explore', href: '/underconstruction' },
   // {
