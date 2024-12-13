@@ -4,11 +4,11 @@ import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
 
 const labels: { [index: string]: string } = {
-  1: 'Useless',
-  2: 'Poor',
-  3: 'Ok',
-  4: 'Good',
-  5: 'Excellent+',
+  1: 'Not Proficient',
+  2: 'Novice',
+  3: 'Beginner',
+  4: 'Competent',
+  5: 'Proficient',
 };
 
 export default function LikertRating({value}:{value:number}) {
