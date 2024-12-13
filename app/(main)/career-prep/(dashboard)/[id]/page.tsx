@@ -68,7 +68,8 @@ async function PrepAssesmentView(params:{id:string}){
 function AssessmentModal({list, title}:{list:any[]|undefined, title:string}){
   return(
     (list != undefined && list.length > 0)?
-      <BasicModal buttonText={title} children={
+      <BasicModal buttonText={title}>
+        {
           <div className="h-[500px] flex flex-col flex-wrap">
             {
           Object.entries(list[0] || {}) // Use first item in array
@@ -83,6 +84,6 @@ function AssessmentModal({list, title}:{list:any[]|undefined, title:string}){
             ))
         }
         </div>}
-        />:''
+      </BasicModal>:''
   )
 }

@@ -1819,7 +1819,7 @@ export const AgreementLevelLabels: Record<AgreementLevel, string> = {
 export enum SkillProficiency {
   NotProficient = 1,
   Novice = 2,
-  AdvancedBeginner = 3,
+  Beginner = 3,
   Competent = 4,
   Proficient = 5,
 }
@@ -1827,7 +1827,7 @@ export enum SkillProficiency {
 export const SkillProficiencyLabels: Record<SkillProficiency, string> = {
   [SkillProficiency.NotProficient]: 'Not Proficient',
   [SkillProficiency.Novice]: 'Novice',
-  [SkillProficiency.AdvancedBeginner]: 'Advanced Beginner',
+  [SkillProficiency.Beginner]: 'Beginner',
   [SkillProficiency.Competent]: 'Competent',
   [SkillProficiency.Proficient]: 'Proficient',
 };
