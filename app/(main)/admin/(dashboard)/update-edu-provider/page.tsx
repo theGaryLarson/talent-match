@@ -188,7 +188,7 @@ export default function UpdateTrainingProviderPage() {
               id="avatarUpload"
               fileTypeText="SVG, PNG or JPG"
               accept=".png,.jpg,.jpeg,.svg"
-              maxSizeMB={5}
+              maxSizeMB={1}
               userId={eduProviderId}
               onImageUpload={(url) => {
                 setLogoUrl(url);
