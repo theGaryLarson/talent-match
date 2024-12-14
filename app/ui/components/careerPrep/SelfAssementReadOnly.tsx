@@ -15,7 +15,7 @@ export default async function SelfAssementReadOnly(params:{id:string}){
         <div>
           <h1 className="text-xl font-bold"> Self Assessments Taken</h1>
             <div className="space-y-2">
-            {allEmpty ? (
+              {allEmpty ? (
           <p className="text-gray-500">No Assessments Found</p>
         ) : (
           <>
@@ -37,7 +37,7 @@ function AssessmentModal({list, title}:{list:any[]|undefined, title:string}){
     (list != undefined && list.length > 0)?
       <BasicModal buttonText={title}>
         {
-          <div className="h-[500px] flex flex-col flex-wrap">
+          <div className="h-[650px] w-fit flex flex-col flex-wrap">
             {
           Object.entries(list[0] || {}) // Use first item in array
             .filter(([key, value]) => typeof value === 'number') // Filter only numeric values
