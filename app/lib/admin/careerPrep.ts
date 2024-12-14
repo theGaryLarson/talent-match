@@ -919,7 +919,28 @@ export const submitCareerPrepAssessment = async (
     return { success: false, status: 500 };
   }
 };
-
+/**
+ * 
+ * @param jobseekerId 
+ * @returns 
+ */
+export const getCareerPrepAssessment = async (jobseekerId: string) =>{
+//todo: add find on careerprepAssesmert
+  try {
+    const result = await prisma.careerPrepAssessment.findUnique({where:{jobseekerId:jobseekerId}, include:{
+      CybersecurityRating:true,
+      DataAnalyticsRating:true,
+      ITCloudRating:true,
+      SoftwareDevRating:true,
+      DurableSkillsRating:true,
+      BrandingRating:true
+    }})
+    console.log("assess:",result)
+    return result
+  } catch (error) {
+    
+  }
+}
 /**
  * Submits a career preparation skills assessment with session data.
  *
@@ -1798,7 +1819,7 @@ export const AgreementLevelLabels: Record<AgreementLevel, string> = {
 export enum SkillProficiency {
   NotProficient = 1,
   Novice = 2,
-  AdvancedBeginner = 3,
+  Beginner = 3,
   Competent = 4,
   Proficient = 5,
 }
@@ -1806,7 +1827,7 @@ export enum SkillProficiency {
 export const SkillProficiencyLabels: Record<SkillProficiency, string> = {
   [SkillProficiency.NotProficient]: 'Not Proficient',
   [SkillProficiency.Novice]: 'Novice',
-  [SkillProficiency.AdvancedBeginner]: 'Advanced Beginner',
+  [SkillProficiency.Beginner]: 'Beginner',
   [SkillProficiency.Competent]: 'Competent',
   [SkillProficiency.Proficient]: 'Proficient',
 };
