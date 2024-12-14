@@ -3,16 +3,29 @@ import BasicModal from "./BasicModal";
 import LikertRating from "./LikertRating";
 
 export default async function SelfAssementReadOnly(params:{id:string}){
-    const assessment = await getCareerPrepAssessment(params.id)
+    const assessment = await getCareerPrepAssessment(params.id);
+    const allEmpty = [
+      assessment?.BrandingRating,
+      assessment?.CybersecurityRating,
+      assessment?.DataAnalyticsRating,
+      assessment?.ITCloudRating,
+      assessment?.SoftwareDevRating,
+    ].every((list) => !list || list.length === 0);
     return(
         <div>
           <h1 className="text-xl font-bold"> Self Assessments Taken</h1>
             <div className="space-y-2">
-              <AssessmentModal list={assessment?.BrandingRating} title={"Branding Rating"}/>
-              <AssessmentModal list={assessment?.CybersecurityRating} title="Cyber Security"/>
-              <AssessmentModal list={assessment?.DataAnalyticsRating} title="Data Analytics"/>
-              <AssessmentModal list={assessment?.ITCloudRating} title="IT CLoud" />
-              <AssessmentModal list={assessment?.SoftwareDevRating} title='Software Dev'/>
+            {allEmpty ? (
+          <p className="text-gray-500">No Assessments Found</p>
+        ) : (
+          <>
+            <AssessmentModal list={assessment?.BrandingRating} title="Branding Rating" />
+            <AssessmentModal list={assessment?.CybersecurityRating} title="Cyber Security" />
+            <AssessmentModal list={assessment?.DataAnalyticsRating} title="Data Analytics" />
+            <AssessmentModal list={assessment?.ITCloudRating} title="IT Cloud" />
+            <AssessmentModal list={assessment?.SoftwareDevRating} title="Software Dev" />
+          </>
+        )}
             </div>
 
         </div>
