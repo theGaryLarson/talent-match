@@ -33,7 +33,7 @@ steps:
       path: '$(System.DefaultWorkingDirectory)/.next/cache'
 
   - script: |
-      npx prisma generate
+      pnpm prisma generate
       pnpm run build
     displayName: 'Build app'
 
