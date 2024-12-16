@@ -22,8 +22,6 @@ steps:
     displayName: 'Install Node.js'
 
   - script: |
-      npm cache clean --force
-      npm cache verify
       npm ci
     displayName: 'Install dependencies'
 
