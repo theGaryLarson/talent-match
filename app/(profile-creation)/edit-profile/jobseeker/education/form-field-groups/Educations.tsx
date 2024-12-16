@@ -118,7 +118,6 @@ export default memo(function Educations({
       const changedEducations: EducationData[] = [...data];
       const updatedEducation = changedEducations[index];
       updatedEducation[key] = value;
-      console.log('updatede', updatedEducation);
       if (key === classEdProviderObject) {
         if (typeof value === 'string') {
           updatedEducation[classEdProviderName] = value;

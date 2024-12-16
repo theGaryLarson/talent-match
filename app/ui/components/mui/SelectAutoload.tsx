@@ -56,6 +56,8 @@ export default function SelectAutoload<ValueType>({
   React.useEffect(() => {
     const autoload = async () => {
       try {
+        setLoading(true);
+
         const response = await fetch(apiAutoloadRoute);
         const data: ValueType[] = await response.json();
 
@@ -67,7 +69,7 @@ export default function SelectAutoload<ValueType>({
       }
     };
     autoload();
-  }, []);
+  }, [apiAutoloadRoute]);
 
   return (
     <div className={className}>
@@ -98,12 +100,14 @@ export default function SelectAutoload<ValueType>({
             onChange={handleChange}
             input={<OutlinedInput notched label={label} />}
             renderValue={(selected) => {
-              if (!selected) {
+              let option = getOptionFromId(options, selected);
+              if (selected && option) {
+                return getOptionLabel(option);
+              }
+              else {
+                setSelectValue('');
                 return <span className="text-gray-500">{placeholder}</span>;
               }
-
-              let option = getOptionFromId(options, selected);
-              return (option && getOptionLabel(option)) ?? '';
             }}
             inputProps={{ 'aria-label': label }}
             {...rest}
