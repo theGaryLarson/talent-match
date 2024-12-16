@@ -453,10 +453,9 @@ export default function CreateEmployerProfilePage() {
                 id={`${formNamePrefix}linkedInUrl`}
                 placeholder="www.linkedin.com/username"
                 onChange={handleFieldChange}
-                value={profileData.linkedInUrl}
-                required
+                value={profileData.linkedInUrl??''}
               >
-                LinkedIn URL *
+                LinkedIn URL
               </InputTextWithLabel>
             </div>
           </fieldset>
