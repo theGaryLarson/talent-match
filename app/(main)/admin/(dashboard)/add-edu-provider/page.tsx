@@ -83,7 +83,7 @@ export default function Page() {
           id="avatarUpload"
           fileTypeText="SVG, PNG or JPG"
           accept=".png,.jpg,.jpeg,.svg"
-          maxSizeMB={5}
+          maxSizeMB={1}
           userId="user-id-placeholder" // Replace with actual user ID
           onImageUpload={(url) => {
             console.log("Received URL in Page.tsx:", url); // Log the received URL
