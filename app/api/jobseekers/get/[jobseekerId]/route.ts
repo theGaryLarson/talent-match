@@ -11,14 +11,24 @@ export async function GET(
   try {
     let session = await auth();
 
-    // Check if the session exists, user has the EMPLOYER role, and is approved
-    if (!session?.user ||
-      !session.user.roles.includes(Role.EMPLOYER) ||
-      !session.user.employeeIsApproved) {
+    // Check if the session exists
+    if (!session?.user) {
       return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
 
+    const { roles, employeeIsApproved, jobseekerId: userJobseekerId } = session.user;
     const jobseekerId = params.jobseekerId;
+
+    // Allow access if:
+    // 1. The user is an EMPLOYER and is approved, OR
+    // 2. The user is a JOBSEEKER and their jobseekerId matches the requested jobseekerId
+    const isEmployerApproved = roles.includes(Role.EMPLOYER) && employeeIsApproved;
+    const isJobseekerViewingOwnData = roles.includes(Role.JOBSEEKER) && userJobseekerId === jobseekerId;
+
+    if (!isEmployerApproved && !isJobseekerViewingOwnData) {
+      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+    }
+
     const jobseekerEmployerView = await getJobSeekerEmployerView(jobseekerId);
 
     if (!jobseekerEmployerView) {
