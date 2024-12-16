@@ -547,7 +547,7 @@ export default function page() {
             </h3>
             <p>
               Organizations and individuals active in networking and utilizing
-              the Coalition’s resources.
+              the Coalition&apos;s resources.
             </p>
           </div>
         </div>

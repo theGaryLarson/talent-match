@@ -13,22 +13,22 @@ export default function Page() {
       <div className="container mx-auto flex flex-col items-center space-y-8 px-8 py-16 md:px-12 lg:px-16">
         <div className="text-center">
           <span className="font-['Roboto'] text-6xl font-normal leading-[66px] text-[#014260]">
-            It’s Not a Job Board—
+            It&apos;s Not a Job Board—
             <br />
-            It’s a{' '}
+            It&apos;s a{' '}
           </span>
           <span className="font-['Roboto'] text-6xl font-medium leading-[66px] text-[#047f9c]">
             Launchpad
           </span>
         </div>
         <div className="text-center font-['Roboto'] text-2xl font-normal leading-relaxed text-[#0f1728]">
-          Our Career Portal is designed to help you position yourself as a top
-          job candidate in today’s digital world
+          Our Talent Portal is designed to help you position yourself as a top
+          job candidate in today&apos;s digital world
         </div>
         <br />
         <CircleBlurb/>
-        <div className="text-center"><span className="text-[#014260] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">Career </span><span className="text-[#047f9c] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">Portal</span></div>
-        <div className="text-center text-[#0f1728] text-2xl font-normal font-['Roboto'] leading-relaxed">Our Career Portal is designed to help you position yourself as a top job candidate in today’s digital world</div>
+        <div className="text-center"><span className="text-[#014260] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">Talent </span><span className="text-[#047f9c] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">Portal</span></div>
+        <div className="text-center text-[#0f1728] text-2xl font-normal font-['Roboto'] leading-relaxed">Our Talent Portal is designed to help you position yourself as a top job candidate in today&apos;s digital world</div>
         <br/>
         <TimeLine/>
         

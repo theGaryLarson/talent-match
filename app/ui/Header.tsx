@@ -46,13 +46,13 @@ const TopLevelLinks: LinkItem[] = [
     href: 'https://cfajobs.powerappsportals.com/',
     target: '_blank',
     rel: 'oopener noreferrer',
-  },
+  },*/
   {
     name: 'Join Our Community',
     href: 'https://forum.watechwfcoalition.org/',
     target: '_blank',
     rel: 'oopener noreferrer',
-  },*/
+  },
   { name: 'About Us', href: '/about-us' },
   // { name: 'Explore', href: '/underconstruction' },
   // {
@@ -74,7 +74,7 @@ export default function Header() {
     ) {
       setHeaderTW('w-full z-10 absolute text-white');
     } else if (pathname.startsWith('/services/training-programs/')) {
-      setHeaderTW('bg-[#003350] text-white')
+      setHeaderTW('bg-[#003350] text-white');
     } else {
       setHeaderTW('bg-white');
     }

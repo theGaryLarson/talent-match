@@ -115,7 +115,7 @@ export default function Page() {
         </Typography>
         <Typography>
           As a Washington Jobs Initiative (WJI) program provider partnered with the Washington Tech Workforce Coalition (WTWC)
-          and funded by the Good Jobs Challenge (GJC) Grant, Computing For All’s Career Prep training program prioritizes individuals and
+          and funded by the Good Jobs Challenge (GJC) Grant, Computing For All&apos;s Career Prep training program prioritizes individuals and
           communities kept furthest from opportunity. This includes but is not limited to:
         </Typography>
         <List sx={{ listStyleType: 'disc', '& .MuiListItem-root': { display: 'list-item', marginLeft: 3 }, }}>
