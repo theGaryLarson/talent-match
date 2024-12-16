@@ -22,7 +22,7 @@ steps:
     displayName: 'Install Node.js'
 
   - script: |
-      npm ci --verbose
+      npm install --verbose
     displayName: 'Install dependencies'
 
   - task: Cache@2
