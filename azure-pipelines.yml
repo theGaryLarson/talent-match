@@ -22,8 +22,9 @@ steps:
     displayName: 'Install Node.js'
 
   - script: |
-      npm install -g pnpm
-      pnpm install
+      npm cache clean --force
+      npm cache verify
+      npm ci
     displayName: 'Install dependencies'
 
   - task: Cache@2
@@ -33,13 +34,13 @@ steps:
       path: '$(System.DefaultWorkingDirectory)/.next/cache'
 
   - script: |
-      pnpm prisma generate
-      pnpm run build
+      npx prisma generate
+      npm run build
     displayName: 'Build app'
 
   - script: |
-      pnpm run coverage
-      pnpm run test:ci
+      npm run coverage
+      npm run test:ci
     displayName: 'Run Vitest tests with coverage'
 
   - task: PublishCodeCoverageResults@2
