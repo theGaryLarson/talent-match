@@ -187,7 +187,7 @@ export type PostEmployerProfileDTO = {
 
   // Work Info
   currentJobTitle: string;
-  linkedInUrl: string;
+  linkedInUrl?: string;
   workAddressId?: string;
   hasAgreedTerms: boolean;
 
