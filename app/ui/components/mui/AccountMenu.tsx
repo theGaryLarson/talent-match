@@ -170,19 +170,6 @@ export default function AccountMenu() {
           ''
         )}
 
-        {role?.includes(Role.JOBSEEKER) ? (
-          <Link href={'/edit-profile/jobseeker/introduction'}>
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              Edit Profile
-            </MenuItem>
-          </Link>
-        ) : (
-          ''
-        )}
-
         {role?.includes(Role.EMPLOYER) ? (
           <Link href="/edit-profile/employer/profile">
             <MenuItem onClick={handleClose}>

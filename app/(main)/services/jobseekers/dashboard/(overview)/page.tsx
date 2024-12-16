@@ -9,6 +9,7 @@ import {
 } from '@/app/lib/jobseeker';
 import { CareerPrepTrack, PoolCategories } from '@/app/lib/poolAssignment';
 import Avatar from '@/app/ui/components/Avatar';
+import RoundedButton from '@/app/ui/components/RoundedButton';
 import { auth } from '@/auth';
 import { WarningAmberOutlined } from '@mui/icons-material';
 import Image from 'next/image';
@@ -65,19 +66,7 @@ async function NameTitleTag(props: {
       <div className="flex w-full flex-wrap items-center justify-between p-4">
         <h2 className="font-bold">{props.name}</h2>
         <p>
-          <Link
-            className="LINK mx-2"
-            href={`/services/jobseekers/${session?.user.jobseekerId!}`}
-          >
-            View My Profile
-          </Link>
-
-          <Link
-            className="LINK mx-2"
-            href="/edit-profile/jobseeker/introduction"
-          >
-            Edit My Profile
-          </Link>
+          <RoundedButton content={'My Profile'} link={`/services/jobseekers/${session?.user.jobseekerId!}`} invertColor={true}></RoundedButton>
         </p>
       </div>
     </div>
