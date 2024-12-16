@@ -22,7 +22,8 @@ steps:
     displayName: 'Install Node.js'
 
   - script: |
-      npm install --verbose
+      npm install -g pnpm
+      pnpm install
     displayName: 'Install dependencies'
 
   - task: Cache@2
@@ -33,12 +34,12 @@ steps:
 
   - script: |
       npx prisma generate
-      npm run build
+      pnpm run build
     displayName: 'Build app'
 
   - script: |
-      npm run coverage
-      npm run test:ci
+      pnpm run coverage
+      pnpm run test:ci
     displayName: 'Run Vitest tests with coverage'
 
   - task: PublishCodeCoverageResults@2
