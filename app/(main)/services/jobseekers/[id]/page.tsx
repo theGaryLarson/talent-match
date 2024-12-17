@@ -54,7 +54,7 @@ async function fetchResume(id: string) {
   return response.json();
 }
 
-export default function page({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: { id: string } }) {
   const [jobseeker, setJobseeker] = useState<JobseekerProfileDTO>();
   const [videoID, setVideoID] = useState('');
   const [resumeUrl, setResumeUrl] = useState('');
@@ -62,6 +62,15 @@ export default function page({ params }: { params: { id: string } }) {
 
   const session = useSession();
   const isOwnProfile = session?.data?.user.jobseekerId === params.id;
+
+  const execResumeQuery = useCallback(async (userId: string) => { // fetch resume url
+    try {
+      const data = await fetchResume(userId);
+      setResumeUrl(data);
+    } catch (error) {
+      console.error('Error fetching job seekers:', error);
+    }
+  }, []);
 
   const execJobseekerQuery = useCallback(async () => { // fetch jobseeker data
     try {
@@ -85,20 +94,11 @@ export default function page({ params }: { params: { id: string } }) {
     } catch (error) {
       console.error('Error fetching job seekers:', error);
     }
-  }, []);
-
-  const execResumeQuery = useCallback(async (userId: string) => { // fetch resume url
-    try {
-      const data = await fetchResume(userId);
-      setResumeUrl(data);
-    } catch (error) {
-      console.error('Error fetching job seekers:', error);
-    }
-  }, []);
+  }, [params.id, videoID, execResumeQuery]);
 
   useEffect(() => {
     execJobseekerQuery();
-  }, []);
+  }, [execJobseekerQuery]);
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
