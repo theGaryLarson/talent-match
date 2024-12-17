@@ -9,11 +9,14 @@ import Bookmark from './Bookmark';
 import { ShareIcon } from '@heroicons/react/24/outline';
 import { Button, Modal } from 'flowbite-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import JobListingModalView from './JobListingModalView';
 
 export default function JobListingCardView({
   joblisting,
+  isBookmarked = false,
 }: {
   joblisting: any;
+    isBookmarked: boolean;
 }) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -21,26 +24,18 @@ export default function JobListingCardView({
   const searchParams = useSearchParams();
   const sessionJobseekerId = session?.user?.jobseekerId;
 
-  const name: string = joblisting?.job_title;
-  //const pfpPicSrc: string = jobseeker?.users?.photo_url ?? '';
+  const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting?.employment_type;
-  const aboutMe: string = joblisting?.job_description ?? '';
+  const company_name: string = joblisting?.companies.company_name;
+  const company_image: string = joblisting?.companies.company_logo_url;
+  const industry: string = joblisting?.industry_sectors.sector_title;
+  const is_paid: boolean = joblisting?.is_paid;
+  const salary_range: string = joblisting?.salary_range ?? '';
+  const description: string = joblisting?.job_description ?? '';
   const id: string = joblisting?.job_posting_id;
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
-  let isBookmarked: boolean = false;
   const [openModal, setOpenModal] = useState(false);
-
-  // are they bookmarked?
-  /*if (jobseeker.BookmarkedJobseeker != undefined) {
-    // we get back all bookmarks related to this jobseeker, so filter by company/employer ID
-    for (let i = 0; i < jobseeker.BookmarkedJobseeker?.length; i++) {
-      if (jobseeker.BookmarkedJobseeker[i].companyId == session?.user.companyId &&
-        jobseeker.BookmarkedJobseeker[i].employerId == session.user.employerId)
-        isBookmarked = true;
-      break;
-    }
-  }*/
 
   const showBookmarks = session?.user.roles.includes(Role.JOBSEEKER);
 
@@ -76,19 +71,18 @@ export default function JobListingCardView({
 
   return (
     <>
-      <div className="w-full rounded-lg border border-2 border-cyan-600 p-2 phone:p-4">
+      <div className="w-full rounded-lg border-2 border-cyan-600 p-2 phone:p-4">
         {/* top row */}
         <div className="flex flex-row items-center">
           {/* picture */}
-          <div className="shrink-0">{/*<Avatar imgsrc={pfpPicSrc} /> */}</div>
-
+          <div className="shrink-0">{<Avatar imgsrc={company_image} />}</div>
           {/* name and info */}
+          {/* TODO: This should link to the company's page so the jobseeker or whoever can see other postings by that company and other details */}
           <div className="grow pl-2 sm-tablet:pl-4">
-            <p className="text-wrap font-bold">{name}</p>
+            <p className="text-wrap font-bold">{job_title}</p>
             <p className="text-wrap text-sm sm-tablet:text-base">
-              {employment_type}
+              {company_name}
             </p>
-            {/* <p className="text-wrap text-slate-400 text-sm">{yearsExp}, highest degree: {highestDegree}</p> */}
             <p className="text-wrap text-sm text-slate-400 sm-tablet:text-base">
               {location}
             </p>
@@ -99,7 +93,7 @@ export default function JobListingCardView({
             <div className="h-min w-max">
               <Button
                 onClick={() => handleModalChange(true)}
-                className="inline-block w-fit rounded-full border border-2 border-cyan-600 bg-white px-2 py-2 text-sm text-cyan-600 hover:bg-gray-200 tablet:px-4 tablet:text-base laptop:px-6 laptop:text-lg"
+                className="inline-block w-fit rounded-full border-2 border-cyan-600 bg-white px-2 py-2 text-sm text-cyan-600 hover:bg-gray-200 tablet:px-4 tablet:text-base laptop:px-6 laptop:text-lg"
               >
                 <strong>View Job</strong>
               </Button>
@@ -119,9 +113,6 @@ export default function JobListingCardView({
               ) : (
                 ''
               )}
-              <ShareButton href={'/services/joblistings/' + id}>
-                <ShareIcon className="h-10 w-10 stroke-2" />
-              </ShareButton>
             </div>
           </div>
         </div>
@@ -129,10 +120,12 @@ export default function JobListingCardView({
         {/* bottom row */}
         <div className="mt-2">
           {/* about me */}
-          <p className="line-clamp-3">{aboutMe}</p>
+          <p className="line-clamp-3">{description}</p>
 
           {/* school */}
-          <h4 className="mt-2 text-sm italic text-slate-400">school</h4>
+          <h4 className="mt-2 text-sm italic text-slate-400">
+            {employment_type} | {salary_range}
+          </h4>
 
           {/* skills */}
           <div className="mt-2 flex grow text-sm tablet:text-base">
@@ -140,24 +133,11 @@ export default function JobListingCardView({
           </div>
         </div>
       </div>
-      <Modal
-        show={openModal}
-        size="5xl"
-        onClose={() => handleModalChange(false)}
-        popup
-      >
-        <Modal.Header />
-        <Modal.Body>
-          <div className="space-y-6 p-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              {joblisting.job_title}
-            </h3>
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              {joblisting.job_description}
-            </p>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <JobListingModalView
+        openModal={openModal}
+        handleModalChange={handleModalChange}
+        joblisting={joblisting}
+      />
     </>
   );
 }
