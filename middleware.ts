@@ -36,6 +36,7 @@ export default auth((req) => {
       '/services/employers/dashboard',
       '/services/jobseekers/',
       //'/services/joblistings',
+      '/api/jobseekers/get/',
       '/api/joblistings/',
       '/api/employers/',
       '/api/companies',
