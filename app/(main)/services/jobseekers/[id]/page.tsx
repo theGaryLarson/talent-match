@@ -55,7 +55,7 @@ async function fetchResume(id: string) {
 }
 
 export default function page({ params }: { params: { id: string } }) {
-  const [jobseeker, setJobseeker] = useState<JobseekerProfileDTO>(); // TODO: use a DTO to fix the red squigglies
+  const [jobseeker, setJobseeker] = useState<JobseekerProfileDTO>();
   const [videoID, setVideoID] = useState('');
   const [resumeUrl, setResumeUrl] = useState('');
   const [editView, setEditView] = useState(false);
@@ -100,9 +100,30 @@ export default function page({ params }: { params: { id: string } }) {
     execJobseekerQuery();
   }, []);
 
-  return ( // TODO: don't render before we get the data back. MUI skeleton?
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newView: string,
+  ) => {
+    setEditView(newView === "edit");
+  };
+
+  return (
     <main className="space-y-3 bg-gray-bg px-4 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px]">
       <DeletionFlag deletionDate={undefined} />
+      {isOwnProfile &&
+        <div className="w-full grid content-center place-content-center place-self-center">
+          <ToggleButtonGroup
+            color="primary"
+            value={editView}
+            exclusive
+            onChange={handleChange}
+            aria-label="Edit view"
+          >
+            <ToggleButton value="edit" selected={editView} >My view</ToggleButton>
+            <ToggleButton value="read-only" selected={!editView} >Showcase</ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+      }
       <div className="flex flex-wrap gap-4">
         <div className="group flex grow items-center rounded-md border bg-white">
           <div className="flex items-center gap-5 p-4 w-full justify-between">
@@ -112,9 +133,11 @@ export default function page({ params }: { params: { id: string } }) {
                 scale={1.5}
               ></Avatar>
               <div>
-                <h1 className="text-2xl font-bold">
-                  {jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name}
-                </h1>
+                {jobseeker?.users.first_name &&
+                  <h1 className="text-2xl font-bold">
+                    {jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name}
+                  </h1>
+                }
                 <h2></h2>
                 <h2>{jobseeker?.current_job_title}</h2>
                 <h2>
@@ -131,7 +154,7 @@ export default function page({ params }: { params: { id: string } }) {
                 <h2>{jobseeker?.current_grade_level}</h2>
               </div>
             </div>
-            {isOwnProfile &&
+            {isOwnProfile && editView &&
               <div className="edit-btn opacity-25 group-hover:opacity-100">
                 <Link href={'/edit-profile/jobseeker/introduction'}>
                   <EditIcon />
@@ -158,7 +181,7 @@ export default function page({ params }: { params: { id: string } }) {
           <div className="group space-y-4 rounded-md border bg-white p-4">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold">Introduction</h1>
-              {isOwnProfile &&
+              {isOwnProfile && editView &&
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/introduction'}>
                     <EditIcon />
@@ -174,7 +197,7 @@ export default function page({ params }: { params: { id: string } }) {
               <h1 className="text-2xl font-bold">
                 Work Experience {jobseeker?.years_work_exp ? "(" + jobseeker?.years_work_exp + "Y)" : ""}
               </h1>
-              {isOwnProfile &&
+              {isOwnProfile && editView &&
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/work-experience'}>
                     <EditIcon />
@@ -223,7 +246,7 @@ export default function page({ params }: { params: { id: string } }) {
           <div className="group space-y-4 rounded-md border bg-white p-4">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold">Education</h1>
-              {isOwnProfile &&
+              {isOwnProfile && editView &&
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/education'}>
                     <EditIcon />
@@ -271,7 +294,7 @@ export default function page({ params }: { params: { id: string } }) {
           <div className="group space-y-4 rounded-md border bg-white p-4">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold ">Projects</h1>
-              {isOwnProfile &&
+              {isOwnProfile && editView &&
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/education'}>
                     <EditIcon />
@@ -329,7 +352,7 @@ export default function page({ params }: { params: { id: string } }) {
               <h1 id="skills" className="text-2xl font-bold">
                 Skills
               </h1>
-              {isOwnProfile &&
+              {isOwnProfile && editView &&
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/showcase'}>
                     <EditIcon />
@@ -349,7 +372,7 @@ export default function page({ params }: { params: { id: string } }) {
           <div className="group space-y-4 rounded-md border bg-white p-4">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold">Preferences</h1>
-              {isOwnProfile &&
+              {isOwnProfile && editView &&
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/preferences'}>
                     <EditIcon />
@@ -360,30 +383,32 @@ export default function page({ params }: { params: { id: string } }) {
             <p>I am looking for {jobseeker?.employment_type_sought} roles</p>
             <p>My targeted pathway is {jobseeker?.pathways?.pathway_title}</p>
           </div>
-          <div className="group space-y-4 rounded-md border bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold">Resume</h1>
-              {isOwnProfile &&
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/showcase'}>
-                    <EditIcon />
-                  </Link>
-                </div>
-              }
+          {resumeUrl &&
+            <div className="group space-y-4 rounded-md border bg-white p-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold">Resume</h1>
+                {isOwnProfile && editView &&
+                  <div className="edit-btn opacity-25 group-hover:opacity-100">
+                    <Link href={'/edit-profile/jobseeker/showcase'}>
+                      <EditIcon />
+                    </Link>
+                  </div>
+                }
+              </div>
+              {resumeUrl ? (
+                <Link href={resumeUrl} target="_blank">
+                  View Resume
+                </Link>
+              ) : (
+                ''
+              )}
             </div>
-            {resumeUrl ? (
-              <Link href={resumeUrl} target="_blank">
-                View Resume
-              </Link>
-            ) : (
-              ''
-            )}
-          </div>
+          }
 
           <div className="group space-y-4 rounded-md border bg-white p-4">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold">Portfolio</h1>
-              {isOwnProfile &&
+              {isOwnProfile && editView &&
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/showcase'}>
                     <EditIcon />
