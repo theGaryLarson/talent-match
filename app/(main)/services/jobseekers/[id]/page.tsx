@@ -10,6 +10,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
+import JobseekerProfileDTO from '@/data/dtos/JobseekerProfileDTO';
 
 const monthNames = [
   'Jan', 'Feb', 'Mar', 'Apr',
@@ -27,7 +28,7 @@ function formatUrl(url: string) {
   return `https://${url}`;
 }
 
-async function fetchJobseeker(id: string) {
+async function fetchJobseeker(id: string): Promise<JobseekerProfileDTO> {
   const response = await fetch('/api/jobseekers/get/' + id, { // Make the request
     method: 'GET',
     headers: {
@@ -54,11 +55,11 @@ async function fetchResume(id: string) {
 }
 
 export default function page({ params }: { params: { id: string } }) {
-  const [jobseeker, setJobseeker] = useState();
+  const [jobseeker, setJobseeker] = useState<JobseekerProfileDTO>(); // TODO: use a DTO to fix the red squigglies
   const [videoID, setVideoID] = useState('');
   const [resumeUrl, setResumeUrl] = useState('');
   const [editView, setEditView] = useState(false);
-  
+
   const session = useSession();
   const isOwnProfile = session?.data?.user.jobseekerId === params.id;
 
@@ -99,7 +100,7 @@ export default function page({ params }: { params: { id: string } }) {
     execJobseekerQuery();
   }, []);
 
-  return (
+  return ( // TODO: don't render before we get the data back. MUI skeleton?
     <main className="space-y-3 bg-gray-bg px-4 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px]">
       <DeletionFlag deletionDate={undefined} />
       <div className="flex flex-wrap gap-4">
@@ -284,7 +285,7 @@ export default function page({ params }: { params: { id: string } }) {
                 className="rounded-md border bg-gray-bg p-4"
                 key={experience.projectId}
               >
-                <h2 className="text-xl">{experience.projTitle}</h2>
+                <h2 className="text-xl">{experience.projectTitle}</h2>
                 <span className="flex gap-1">
                   <svg
                     width="15"
