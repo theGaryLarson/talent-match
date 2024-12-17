@@ -37,6 +37,7 @@ export default auth((req) => {
       '/services/jobseekers/',
       //'/services/joblistings',
       '/api/jobseekers/get/',
+      '/api/jobseekers/resume/get/',
       '/api/joblistings/',
       '/api/employers/',
       '/api/companies',
