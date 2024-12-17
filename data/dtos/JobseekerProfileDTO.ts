@@ -16,7 +16,12 @@ export type JobseekerProfileDTO = {
     jobseeker_education: EducationDTO[];
     project_experiences: ProjectExperienceDTO[];
     jobseeker_has_skills: JobseekerSkillDTO[];
+    pathways: Pathways;
 };
+
+type Pathways = {
+    pathway_title: string;
+}
 
 type UserDTO = {
     id: string;

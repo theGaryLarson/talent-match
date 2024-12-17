@@ -206,12 +206,12 @@ export default function page({ params }: { params: { id: string } }) {
                     />
                   </svg>
                   <p className="text-xs">
-                    {monthNames[experience.startDate.getMonth()]}{' '}
-                    {experience.startDate.getFullYear()} -{' '}
+                    {monthNames[new Date(experience.startDate).getMonth()]}{' '}
+                    {new Date(experience.startDate).getFullYear()} -{' '}
                     {experience.endDate
-                      ? monthNames[experience.endDate.getMonth()] +
+                      ? monthNames[new Date(experience.endDate).getMonth()] +
                       ' ' +
-                      experience.endDate.getFullYear()
+                      new Date(experience.endDate).getFullYear()
                       : 'Present'}
                   </p>
                 </span>
@@ -257,10 +257,10 @@ export default function page({ params }: { params: { id: string } }) {
                       />
                     </svg>
                     <p className="text-xs">
-                      {monthNames[education.startDate.getMonth()]}{' '}
-                      {education.startDate.getFullYear()} -{' '}
-                      {monthNames[education.gradDate.getMonth()]}{' '}
-                      {education.gradDate.getFullYear()}
+                      {monthNames[new Date(education.startDate).getMonth()]}{' '}
+                      {new Date(education.startDate).getFullYear()} -{' '}
+                      {monthNames[new Date(education.gradDate).getMonth()]}{' '}
+                      {new Date(education.gradDate).getFullYear()}
                     </p>
                   </span>
                 </div>
@@ -302,12 +302,12 @@ export default function page({ params }: { params: { id: string } }) {
                     />
                   </svg>
                   <p className="text-xs">
-                    {monthNames[experience.startDate.getMonth()]}{' '}
-                    {experience.startDate.getFullYear()} -{' '}
+                    {monthNames[new Date(experience.startDate).getMonth()]}{' '}
+                    {new Date(experience.startDate).getFullYear()} -{' '}
                     {experience.completionDate
-                      ? monthNames[experience.completionDate.getMonth()] +
+                      ? monthNames[new Date(experience.completionDate).getMonth()] +
                       ' ' +
-                      experience.completionDate.getFullYear()
+                      new Date(experience.completionDate).getFullYear()
                       : 'Present'}
                   </p>
                 </span>
