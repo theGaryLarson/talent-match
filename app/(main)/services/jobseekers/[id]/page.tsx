@@ -1,12 +1,13 @@
-import { getJobSeekerEmployerView } from '@/app/lib/prisma';
+'use client';
+
 import Avatar from '@/app/ui/components/Avatar';
 import Skills from '@/app/ui/components/Skills';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
-import { auth } from '@/auth';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
-import { getResumeUrl } from '@/app/lib/services/azureBlobService';
 import EditIcon from '@mui/icons-material/Edit';
 import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 
@@ -25,31 +26,78 @@ function formatUrl(url: string) {
   // Default to https:// but don't force it, allow users to adjust
   return `https://${url}`;
 }
-export const metadata = {
-  title: 'WA Tech Workforce Coalition',
-};
-export default async function page({ params }: { params: { id: string } }) {
-  let jobseeker = await getJobSeekerEmployerView(params.id);
-  metadata.title =
-    jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name;
-  let resume_url = await getResumeUrl(jobseeker?.users.id ?? '');
-  const session = await auth();
-  const isOwnProfile = session?.user.jobseekerId === params.id;
 
-  let videoID = '';
-  if (jobseeker?.video_url) {
-    const parsedUrl = new URL(jobseeker?.video_url);
-    console.log(parsedUrl);
-    if (parsedUrl.hostname === 'youtu.be') {
-      videoID = parsedUrl.pathname.slice(1);
-    } else if (
-      parsedUrl.hostname === 'www.youtube.com' ||
-      parsedUrl.hostname === 'youtube.com'
-    ) {
-      videoID = new URLSearchParams(parsedUrl.search).get('v') ?? '';
+async function fetchJobseeker(id: string) {
+  const response = await fetch('/api/jobseekers/get/' + id, { // Make the request
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
     }
-    console.log('Vid id is: ', videoID);
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
   }
+  return response.json();
+}
+
+async function fetchResume(id: string) {
+  const response = await fetch('/api/jobseekers/resume/get/' + id, { // Make the request
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+}
+
+export default function page({ params }: { params: { id: string } }) {
+  const [jobseeker, setJobseeker] = useState();
+  const [videoID, setVideoID] = useState('');
+  const [resumeUrl, setResumeUrl] = useState('');
+  const [editView, setEditView] = useState(false);
+  
+  const session = useSession();
+  const isOwnProfile = session?.data?.user.jobseekerId === params.id;
+
+  const execJobseekerQuery = useCallback(async () => { // fetch jobseeker data
+    try {
+      const data = await fetchJobseeker(params.id);
+      setJobseeker(data);
+      execResumeQuery(data.users.id);
+
+      if (data?.video_url) {
+        const parsedUrl = new URL(data?.video_url);
+        console.log(parsedUrl);
+        if (parsedUrl.hostname === 'youtu.be') {
+          setVideoID(parsedUrl.pathname.slice(1));
+        } else if (
+          parsedUrl.hostname === 'www.youtube.com' ||
+          parsedUrl.hostname === 'youtube.com'
+        ) {
+          setVideoID(new URLSearchParams(parsedUrl.search).get('v') ?? '');
+        }
+        console.log('Vid id is: ', videoID);
+      }
+    } catch (error) {
+      console.error('Error fetching job seekers:', error);
+    }
+  }, []);
+
+  const execResumeQuery = useCallback(async (userId: string) => { // fetch resume url
+    try {
+      const data = await fetchResume(userId);
+      setResumeUrl(data);
+    } catch (error) {
+      console.error('Error fetching job seekers:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    execJobseekerQuery();
+  }, []);
 
   return (
     <main className="space-y-3 bg-gray-bg px-4 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px]">
@@ -322,8 +370,8 @@ export default async function page({ params }: { params: { id: string } }) {
                 </div>
               }
             </div>
-            {resume_url ? (
-              <Link href={resume_url} target="_blank">
+            {resumeUrl ? (
+              <Link href={resumeUrl} target="_blank">
                 View Resume
               </Link>
             ) : (
