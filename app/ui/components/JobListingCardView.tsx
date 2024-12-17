@@ -10,6 +10,7 @@ import { ShareIcon } from '@heroicons/react/24/outline';
 import { Button, Modal } from 'flowbite-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import JobListingModalView from './JobListingModalView';
+import { SkillDTO } from '@/data/dtos/SkillDTO';
 
 export default function JobListingCardView({
   joblisting,
@@ -30,6 +31,7 @@ export default function JobListingCardView({
   const company_image: string = joblisting?.companies.company_logo_url;
   const industry: string = joblisting?.industry_sectors.sector_title;
   const is_paid: boolean = joblisting?.is_paid;
+  const skills: SkillDTO[] = joblisting?.skills;
   const salary_range: string = joblisting?.salary_range ?? '';
   const description: string = joblisting?.job_description ?? '';
   const id: string = joblisting?.job_posting_id;
@@ -129,7 +131,7 @@ export default function JobListingCardView({
 
           {/* skills */}
           <div className="mt-2 flex grow text-sm tablet:text-base">
-            <Skills skillsList={[]} maxNumSkills={5} jobseekerID={id} />
+            <Skills skillsList={skills} maxNumSkills={5} jobseekerID={undefined} />
           </div>
         </div>
       </div>

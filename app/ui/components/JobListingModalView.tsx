@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, Modal } from 'flowbite-react';
 import Avatar from './Avatar';
+import Skills from './Skills';
+import { SkillDTO } from '@/data/dtos/SkillDTO';
 
 export default function JobListingModalView({
   openModal,
@@ -16,6 +18,7 @@ export default function JobListingModalView({
   const company_name: string = joblisting?.companies.company_name;
   const company_image: string = joblisting?.companies.company_logo_url;
   const industry: string = joblisting?.industry_sectors.sector_title;
+  const skills: SkillDTO[] = joblisting?.skills;
   const is_paid: boolean = joblisting?.is_paid;
   const salary_range: string = joblisting?.salary_range ?? '';
   const description: string = joblisting?.job_description ?? '';
@@ -86,11 +89,9 @@ export default function JobListingModalView({
               <p className="font-medium text-gray-700 dark:text-gray-200">
                 Skills:
               </p>
-              <ul className="list-inside list-disc text-gray-500 dark:text-gray-400">
-                {joblisting?.skills.map((skill, index) => (
-                  <li key={index}>{skill}</li>
-                ))}
-              </ul>
+              <div className="mt-2 flex grow text-sm tablet:text-base">
+                <Skills skillsList={skills} maxNumSkills={5} jobseekerID={undefined} />
+              </div>
             </div>
           )}
 
