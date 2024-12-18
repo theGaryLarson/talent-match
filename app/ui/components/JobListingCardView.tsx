@@ -48,7 +48,7 @@ export default function JobListingCardView({
     } else {
       newSearchParams.delete('job');
     }
-    router.push(`${pathname}?${newSearchParams.toString()}`);
+    router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
   };
 
   useEffect(() => {
