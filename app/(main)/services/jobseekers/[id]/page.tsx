@@ -95,7 +95,7 @@ export default function Page({ params }: { params: { id: string } }) {
     } catch (error) {
       console.error('Error fetching job seekers:', error);
     }
-  }, [params.id, videoID, execResumeQuery]);
+  }, [params.id, videoID, execResumeQuery, jobseeker?.users.first_name, jobseeker?.users.last_name]);
 
   useEffect(() => {
     execJobseekerQuery();
