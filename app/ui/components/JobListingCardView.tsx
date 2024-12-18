@@ -2,22 +2,21 @@
 import { useState, useEffect } from 'react';
 import Avatar from './Avatar';
 import Skills from './Skills';
-import ShareButton from './ShareButton';
 import { useSession } from 'next-auth/react';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import Bookmark from './Bookmark';
-import { ShareIcon } from '@heroicons/react/24/outline';
 import { Button, Modal } from 'flowbite-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import JobListingModalView from './JobListingModalView';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
+import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 
 export default function JobListingCardView({
   joblisting,
   isBookmarked = false,
 }: {
-  joblisting: any;
-    isBookmarked: boolean;
+  joblisting: JobListingCardViewDTO;
+  isBookmarked: boolean;
 }) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -26,15 +25,15 @@ export default function JobListingCardView({
   const sessionJobseekerId = session?.user?.jobseekerId;
 
   const job_title: string = joblisting?.job_title;
-  const employment_type: string = joblisting?.employment_type;
-  const company_name: string = joblisting?.companies.company_name;
-  const company_image: string = joblisting?.companies.company_logo_url;
-  const industry: string = joblisting?.industry_sectors.sector_title;
-  const is_paid: boolean = joblisting?.is_paid;
-  const skills: SkillDTO[] = joblisting?.skills;
+  const employment_type: string = joblisting.employment_type ?? '';
+  const company_name: string = joblisting.companies.company_name;
+  const company_image: string = joblisting.companies.company_logo_url;
+  const industry: string = joblisting.industry_sectors.sector_title;
+  const is_paid: boolean = joblisting.is_paid ?? true;
+  const skills: SkillDTO[] = joblisting.skills ?? [];
   const salary_range: string = joblisting?.salary_range ?? '';
   const description: string = joblisting?.job_description ?? '';
-  const id: string = joblisting?.job_posting_id;
+  const id: string = joblisting?.job_posting_id ?? '';
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
   const [openModal, setOpenModal] = useState(false);
@@ -131,7 +130,11 @@ export default function JobListingCardView({
 
           {/* skills */}
           <div className="mt-2 flex grow text-sm tablet:text-base">
-            <Skills skillsList={skills} maxNumSkills={5} jobseekerID={undefined} />
+            <Skills
+              skillsList={skills}
+              maxNumSkills={5}
+              jobseekerID={undefined}
+            />
           </div>
         </div>
       </div>

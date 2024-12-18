@@ -10,15 +10,21 @@ import SortDropdown from '@/app/ui/components/mui/SortDropdown';
 import { TextField } from '@mui/material';
 import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
+import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 
 const resultsPerPage = 50;
 
 interface JobListingQueryResult {
-  filteredJobPostings: any;
+  filteredJobPostings: JobListingCardViewDTO[];
   totalCount: number;
 }
 
 async function fetchJobPosts(
+  jobTitle: string = '',
+  skills: string[] = [],
+  industrySector: string[] = [],
+  zipCode: string = '',
+  sortBy: string = 'publish_date',
   maxResults: number = resultsPerPage,
   page: number = 1,
 ): Promise<JobListingQueryResult> {
@@ -27,7 +33,15 @@ async function fetchJobPosts(
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ maxResults, page }),
+    body: JSON.stringify({
+      jobTitle,
+      skills,
+      industrySector,
+      zipCode,
+      sortBy,
+      maxResults,
+      page,
+    }),
   });
   if (!response.ok) {
     throw new Error('Failed to fetch data');
@@ -50,7 +64,7 @@ async function fetchBookmarkedJobs(): Promise<any> {
 
 export default function Page() {
   // Listview data
-  const [joblistings, setJobListings] = useState<any>([]);
+  const [joblistings, setJobListings] = useState<JobListingCardViewDTO[]>([]);
   const [myBookMarkedJobs, setMyBookmarkedJobs] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -66,13 +80,6 @@ export default function Page() {
   const [sortBy, setSortBy] = useState<string>();
   const [totalResults, setTotalResults] = useState<number>();
   const [page, setPage] = useState<number>();
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
-    setQueryParam('page', encodeURIComponent(value.toString()));
-    setPage(value);
-  };
 
   const pathname = usePathname();
   const router = useRouter();
@@ -90,33 +97,42 @@ export default function Page() {
     [queryParams, pathname, router],
   );
 
-  const getParam = useCallback(
-    (param: string) => {
-      const retrievedParam: string | null = queryParams.get(param);
-      var result: string = '';
-      if (retrievedParam != null) result = decodeURIComponent(retrievedParam);
-      return result;
-    },
-    [queryParams],
-  );
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ) => {
+    setQueryParam('page', encodeURIComponent(value.toString()));
+    setPage(value);
+  };
 
-  const getArrayParam = useCallback(
-    (param: string) => {
-      const retrievedParam: string | null = queryParams.get(param);
-      var result: string[] = [];
-      if (retrievedParam != null && retrievedParam.length > 0)
-        result = decodeURIComponent(retrievedParam).split(',');
-      return result;
-    },
-    [queryParams],
-  );
+  function getParam(param: string) {
+    const retrievedParam: string | null = queryParams.get(param);
+    var result: string = '';
+    if (retrievedParam != null) result = decodeURIComponent(retrievedParam);
+    return result;
+  }
+
+  function getArrayParam(param: string) {
+    const retrievedParam: string | null = queryParams.get(param);
+    var result: string[] = [];
+    if (retrievedParam != null && retrievedParam.length > 0)
+      result = decodeURIComponent(retrievedParam).split(',');
+    return result;
+  }
 
   const execQuery = useCallback(async () => {
     setLoading(true);
     setError(false);
     try {
-      const data = await fetchJobPosts(resultsPerPage, page);
-      console.log(data);
+      const data = await fetchJobPosts(
+        jobTitle,
+        skillsList,
+        industry,
+        zipCode,
+        sortBy,
+        resultsPerPage,
+        page,
+      );
       setJobListings(data.filteredJobPostings);
       setTotalResults(data.totalCount);
     } catch (error) {
@@ -125,7 +141,7 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }, [page]);
+  }, [page, industry, jobTitle, skillsList, zipCode, sortBy]);
 
   useEffect(() => {
     const fetchBookmarked = async () => {
@@ -141,23 +157,54 @@ export default function Page() {
     fetchBookmarked();
   }, []);
 
+  useEffect(() => {
+    // 1. Initial Load: Set state from URL params (only once)
+    const initializeStateFromParams = () => {
+      setJobTitle(getParam('jobTitle'));
+      setSkillsList(getArrayParam('skills'));
+      setIndustry(getArrayParam('industry'));
+      setZipCode(getParam('zipcode'));
+      setSortBy(getParam('sort') != '' ? getParam('sort') : 'publish_date');
+      setPage(+getParam('page') == 0 ? 1 : +getParam('page'));
+    };
+
+    // Check if state has already been initialized from params
+    if (
+      jobTitle === undefined &&
+      skillsList === undefined &&
+      industry === undefined &&
+      zipCode === undefined &&
+      sortBy === undefined &&
+      page === undefined
+    ) {
+      initializeStateFromParams();
+    }
+  });
+
+  useEffect(() => {
+    // 2. Subsequent Updates: Execute query (debounced) whenever relevant state changes
+    if (
+      jobTitle !== undefined &&
+      skillsList !== undefined &&
+      industry !== undefined &&
+      zipCode !== undefined &&
+      sortBy !== undefined &&
+      page !== undefined
+    ) {
+      // Check that they are defined
+      const timeoutId = setTimeout(() => {
+        execQuery();
+      }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
+      return () => clearTimeout(timeoutId);
+    }
+  }, [jobTitle, skillsList, industry, zipCode, sortBy, page, execQuery]);
+
   const isBookmarked = (jobId: string) => {
     return myBookMarkedJobs.includes(jobId);
   };
 
-  useEffect(() => {
-    if (page == undefined) {
-      +getParam('page') == 0 ? setPage(1) : setPage(+getParam('page')); // parseInt(null) returns NaN but +null returns 0!
-    } else {
-      const timeoutId = setTimeout(() => {
-        execQuery();
-      }, 500);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [page, execQuery]); // Including getParam as a dependency would cause query to re-activate every time a user views a job (modal).
-
   return (
-    <main className="m-2 mb-0 w-full pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">
+    <main className="mb-0 pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">
       <h1 className="mb-4 text-2xl font-bold">Job Listings</h1>
 
       {/* Job Title Search Bar */}
@@ -170,7 +217,7 @@ export default function Page() {
           setQueryParam('jobTitle', event.target.value);
           setJobTitle(event.target.value);
         }}
-        sx={{mb: 3}}
+        sx={{ mb: 3 }}
       />
 
       {/* Skill Search Bar */}
@@ -266,24 +313,24 @@ export default function Page() {
             }}
           />
         </div>
-        <div className="float-left items-center px-4 w-1/2 tablet:w-1/3">
-        {/* Sorting */}
-        <div className="float-right mt-6">
-          <SortDropdown
-            id="jobseeker-listview-sort"
-            label="Sort by:"
-            value={getParam('sort')}
-            onChange={(event) => {
-              setQueryParam('sort', event.target.value);
-              setSortBy(event.target.value);
-            }}
-            options={[
-              // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
-              { label: 'Newest', value: 'newest' },
-            ]}
-          />
+        <div className="float-left w-1/2 items-center px-4 tablet:w-1/3">
+          {/* Sorting */}
+          <div className="float-right mt-6">
+            <SortDropdown
+              id="jobseeker-listview-sort"
+              label="Sort by:"
+              value={getParam('sort')}
+              onChange={(event) => {
+                setQueryParam('sort', event.target.value);
+                setSortBy(event.target.value);
+              }}
+              options={[
+                // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
+                { label: 'Newest', value: 'publish_date' },
+              ]}
+            />
+          </div>
         </div>
-      </div>
       </div>
 
       {/* Loading */}

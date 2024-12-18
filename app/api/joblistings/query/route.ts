@@ -4,51 +4,95 @@ import {
   jobSeekerCardViewSelect,
   jobseekerQueryTestSelect,
 } from '@/app/lib/prisma';
-import { educationRank } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { HighestCompletedEducationLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import {devLog} from "@/app/lib/utils";
-import {PoolCategories} from "@/app/lib/poolAssignment";
+import { devLog } from '@/app/lib/utils';
 
 const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   const {
+    jobTitle = '',
+    skills = [],
+    industrySector = [],
+    zipCode = '',
     sortBy = 'publish_date',
-    maxResults = 50,
     page = 1,
+    maxResults = 50,
   } = await request.json();
 
+  const andConditions: any[] = [];
   const orderBy = [{ publish_date: 'desc' as const }];
   // Determine the number of results to skip based on the page number and maxResults
   const skip = (page - 1) * maxResults;
 
+  console.log("ZUPCODEO EOODE: ", zipCode);
+
+  if (jobTitle) {
+    andConditions.push({
+      job_title: {
+        contains: jobTitle,
+      },
+    });
+  }
+
+  if (skills.length > 0) {
+    const orConditions = [
+      {
+        skills: {
+          skill_name: {
+            in: skills,
+          },
+        },
+      },
+    ];
+    andConditions.push({ OR: orConditions });
+  }
+
+  if (industrySector.length > 0) {
+      andConditions.push({
+        industry_sectors: {
+            sector_title: {
+              in: industrySector,
+            },
+        },
+      });
+    }
+
+  if (zipCode) {
+    andConditions.push({
+      zip: {
+        startsWith: zipCode,
+      },
+    });
+  }
+
   const [filteredJobPostings, totalCount] = await prisma.$transaction([
     prisma.job_postings.findMany({
-      include:{
-        skills:true,
-        industry_sectors:{
-          select:{
-            sector_title:true
-          }
+      where: andConditions.length > 0 ? { AND: andConditions } : undefined,
+      include: {
+        skills: true,
+        industry_sectors: {
+          select: {
+            sector_title: true,
+          },
         },
-        companies:true,
-        techArea:{
-          select:{
-            title:true
-          }
+        companies: true,
+        techArea: {
+          select: {
+            title: true,
+          },
         },
-        jobApplications:{
-          select:{
+        jobApplications: {
+          select: {
             jobseekerId: true,
-          }
-        }
+          },
+        },
       },
       take: maxResults,
       skip: skip,
       orderBy: orderBy,
     }),
     prisma.job_postings.count({
-      where: undefined,
+      where: andConditions.length > 0 ? { AND: andConditions } : undefined,
     }),
   ]);
 

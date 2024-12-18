@@ -3,6 +3,7 @@ import { Button, Modal } from 'flowbite-react';
 import Avatar from './Avatar';
 import Skills from './Skills';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
+import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 
 export default function JobListingModalView({
   openModal,
@@ -11,18 +12,18 @@ export default function JobListingModalView({
 }: {
   openModal: boolean;
   handleModalChange: (open: boolean) => void;
-  joblisting: any;
+  joblisting: JobListingCardViewDTO;
 }) {
   const job_title: string = joblisting?.job_title;
-  const employment_type: string = joblisting?.employment_type;
+  const employment_type: string = joblisting?.employment_type ?? '';
   const company_name: string = joblisting?.companies.company_name;
   const company_image: string = joblisting?.companies.company_logo_url;
   const industry: string = joblisting?.industry_sectors.sector_title;
-  const skills: SkillDTO[] = joblisting?.skills;
-  const is_paid: boolean = joblisting?.is_paid;
+  const skills: SkillDTO[] = joblisting?.skills ?? [];
+  const is_paid: boolean = joblisting?.is_paid ?? true;
   const salary_range: string = joblisting?.salary_range ?? '';
   const description: string = joblisting?.job_description ?? '';
-  const id: string = joblisting?.job_posting_id;
+  const id: string = joblisting?.job_posting_id ?? '';
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
 
@@ -84,7 +85,7 @@ export default function JobListingModalView({
           </div>
 
           {/* Skills */}
-          {joblisting?.skills.length > 0 && (
+          {skills.length > 0 && (
             <div>
               <p className="font-medium text-gray-700 dark:text-gray-200">
                 Skills:
