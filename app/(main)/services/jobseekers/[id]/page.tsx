@@ -76,7 +76,6 @@ export default function Page({ params }: { params: { id: string } }) {
     try {
       const data = await fetchJobseeker(params.id);
       setJobseeker(data);
-      execResumeQuery(data.users.id);
 
       if (data?.video_url) {
         const parsedUrl = new URL(data?.video_url);
@@ -90,6 +89,8 @@ export default function Page({ params }: { params: { id: string } }) {
           setVideoID(new URLSearchParams(parsedUrl.search).get('v') ?? '');
         }
         console.log('Vid id is: ', videoID);
+        document.title = (jobseeker?.users.first_name || "") + " " + (jobseeker?.users.last_name || "");
+        execResumeQuery(data.users.id);
       }
     } catch (error) {
       console.error('Error fetching job seekers:', error);
