@@ -10,7 +10,7 @@ export default function Bookmark({ bookmarked, addUrl, removeUrl }:
     async function toggleBookmark() {
         const initalState = isBookmarked;
         setIsBookmarked(!isBookmarked); // optimistic
-        
+
         const url = isBookmarked ? removeUrl : addUrl;
         let response = await fetch(url, {
           method: 'POST',
@@ -21,19 +21,19 @@ export default function Bookmark({ bookmarked, addUrl, removeUrl }:
         });
         if (!response.ok) { // issue setting bookmark, correct our optimism :(
           setIsBookmarked(initalState);
-          
+
         }else{
-       
+
             router.refresh();
-       
+
         }
     }
 
     return (
-        <div className="p-2 rounded-full hover:bg-slate-200">
-            { isBookmarked ? 
+        <button className="p-2 rounded-full hover:bg-slate-200 outline-cyan-500">
+            { isBookmarked ?
                 <BookmarkIconSolid className="h-10 w-10 stroke-2" onClick={toggleBookmark} /> :
                 <BookmarkIconOutline className="h-10 w-10 stroke-2" onClick={toggleBookmark} /> }
-        </div>
+        </button>
     )
 }
