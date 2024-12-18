@@ -20,9 +20,9 @@ export async function GET(
     const jobseekerId = params.jobseekerId;
 
     // Allow access if:
-    // 1. The user is an EMPLOYER and is approved, OR
+    // 1. The user is an EMPLOYER and is approved, OR ADMIN, OR...
     // 2. The user is a JOBSEEKER and their jobseekerId matches the requested jobseekerId
-    const isEmployerApproved = roles.includes(Role.EMPLOYER) && employeeIsApproved;
+    const isEmployerApproved = (roles.includes(Role.EMPLOYER) && employeeIsApproved) || roles.includes(Role.ADMIN);
     const isJobseekerViewingOwnData = roles.includes(Role.JOBSEEKER) && userJobseekerId === jobseekerId;
 
     if (!isEmployerApproved && !isJobseekerViewingOwnData) {
