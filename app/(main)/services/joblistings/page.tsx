@@ -314,12 +314,13 @@ export default function Page() {
           />
         </div>
         <div className="float-left w-1/2 items-center px-4 tablet:w-1/3">
+          <div className="w-full flow-root pb-4 mt-2">
           {/* Sorting */}
           <div className="float-right mt-6">
             <SortDropdown
               id="jobseeker-listview-sort"
               label="Sort by:"
-              value={getParam('sort')}
+              value={getParam('sort') == '' ? 'publish_date' : getParam('sort')}
               onChange={(event) => {
                 setQueryParam('sort', event.target.value);
                 setSortBy(event.target.value);
@@ -329,6 +330,7 @@ export default function Page() {
                 { label: 'Newest', value: 'publish_date' },
               ]}
             />
+          </div>
           </div>
         </div>
       </div>

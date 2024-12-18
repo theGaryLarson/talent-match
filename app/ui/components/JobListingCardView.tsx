@@ -5,7 +5,7 @@ import Skills from './Skills';
 import { useSession } from 'next-auth/react';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import Bookmark from './Bookmark';
-import { Button, Modal } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import JobListingModalView from './JobListingModalView';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
@@ -22,7 +22,6 @@ export default function JobListingCardView({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const sessionJobseekerId = session?.user?.jobseekerId;
 
   const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting.employment_type ?? '';
@@ -40,7 +39,6 @@ export default function JobListingCardView({
 
   const showBookmarks = session?.user.roles.includes(Role.JOBSEEKER);
 
-  // Function to update the query parameter
   const updateQueryParam = (jobId: string | null) => {
     const newSearchParams = new URLSearchParams(searchParams);
     if (jobId) {
@@ -60,7 +58,6 @@ export default function JobListingCardView({
     }
   }, [searchParams, id]);
 
-  // Function to handle modal open state change
   const handleModalChange = (open: boolean) => {
     setOpenModal(open);
     if (open) {
@@ -77,7 +74,7 @@ export default function JobListingCardView({
         <div className="flex flex-row items-center">
           {/* picture */}
           <div className="shrink-0">{<Avatar imgsrc={company_image} />}</div>
-          {/* name and info */}
+          {/* name and location */}
           {/* TODO: This should link to the company's page so the jobseeker or whoever can see other postings by that company and other details */}
           <div className="grow pl-2 sm-tablet:pl-4">
             <p className="text-wrap font-bold">{job_title}</p>
@@ -89,7 +86,7 @@ export default function JobListingCardView({
             </p>
           </div>
 
-          {/* view and share */}
+          {/* view and bookmark */}
           <div className="flex flex-col">
             <div className="h-min w-max">
               <Button
@@ -120,10 +117,10 @@ export default function JobListingCardView({
 
         {/* bottom row */}
         <div className="mt-2">
-          {/* about me */}
+          {/* job description */}
           <p className="line-clamp-3">{description}</p>
 
-          {/* school */}
+          {/* employment type and salary */}
           <h4 className="mt-2 text-sm italic text-slate-400">
             {employment_type} | {salary_range}
           </h4>

@@ -122,31 +122,21 @@ export default function JobListingModalView({
             </p>
           </div>
 
-          {/* Application Links */}
-          <div className="mt-6 flex space-x-4">
-            {joblisting?.job_post_url && (
-              <Button
-                href={joblisting?.job_post_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block"
-              >
-                Apply on Company Website
-              </Button>
-            )}
-            {joblisting?.assessment_url && (
-              <Button
-                href={joblisting?.assessment_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block"
-              >
-                Take Assessment
-              </Button>
-            )}
-          </div>
+
         </div>
       </Modal.Body>
+      <Modal.Footer>{/* Application Links */}
+        {joblisting?.job_post_url && (
+          <Button
+            href={joblisting?.job_post_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block"
+          >
+            Apply on Company Website
+          </Button>
+        )}
+      </Modal.Footer>
     </Modal>
   );
 }
