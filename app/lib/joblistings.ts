@@ -19,7 +19,7 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   if(Session?.user.roles.includes(Role.ADMIN)){
     company_id = jobData.company_id;
   }
-  
+
   try {
 if (!company_id) {
     throw new Error(
@@ -78,7 +78,7 @@ if (!company_id) {
         skills:{
           connect: jobData.skillIds?.map((skillId:string)=>({skill_id:skillId}))
         }
-        
+
     }});
 
     return newJobListing;
@@ -133,7 +133,7 @@ export async function getMyJobListings() {
         employer_id: Session?.user.employerId
       }, include:{
         industry_sectors:true,
-        
+
       }
     })
     return results;
@@ -143,7 +143,6 @@ export async function getMyJobListings() {
   }
 }
 export async function deleteJobListing(jobPostingId:string) {
-  console.log("I made it here")
   let Session = await auth();
   if (!Session?.user.employerId) {
     throw new Error('Failed to delete job listing: employer ID not found in session');
@@ -248,6 +247,7 @@ export async function unbookmarkJobPosting(jobPostId: string) {
     prisma.$disconnect();
   }
 }
+
 export async function getAllJobPosts(){
   try {
     let results = prisma.job_postings.findMany();
@@ -255,6 +255,103 @@ export async function getAllJobPosts(){
   } catch (error) {
     console.error(error)
   }
+}
+
+export async function getJobListingsFiltered(request: Request){
+  const {
+    jobTitle = '',
+    skills = [],
+    industrySector = [],
+    zipCode = '',
+    sortBy = 'publish_date',
+    page = 1,
+    maxResults = 50,
+  } = await request.json();
+
+  const andConditions: any[] = [];
+  const orderBy = [{ publish_date: 'desc' as const }];
+  // Determine the number of results to skip based on the page number and maxResults
+  const skip = (page - 1) * maxResults;
+
+  const normalizedSkills: string[] = skills.filter(
+    (skill: string) => skill && skill.trim() !== '',
+  );
+
+  if (jobTitle) {
+    andConditions.push({
+      job_title: {
+        contains: jobTitle,
+      },
+    });
+  }
+
+  if (normalizedSkills.length > 0) {
+    const orConditions = [
+      {
+        skills: {
+          some: {
+            skill_name: {
+              in: normalizedSkills,
+            },
+          },
+        },
+      },
+    ];
+    andConditions.push({ OR: orConditions });
+  }
+
+  if (industrySector.length > 0) {
+      andConditions.push({
+        industry_sectors: {
+            sector_title: {
+              in: industrySector,
+            },
+        },
+      });
+    }
+
+  if (zipCode) {
+    andConditions.push({
+      zip: {
+        startsWith: zipCode,
+      },
+    });
+  }
+
+  const [filteredJobPostings, totalCount] = await prisma.$transaction([
+    prisma.job_postings.findMany({
+      where: andConditions.length > 0 ? { AND: andConditions } : undefined,
+      include: {
+        skills: true,
+        industry_sectors: {
+          select: {
+            sector_title: true,
+          },
+        },
+        companies: true,
+        techArea: {
+          select: {
+            title: true,
+          },
+        },
+        jobApplications: {
+          select: {
+            jobseekerId: true,
+          },
+        },
+      },
+      take: maxResults,
+      skip: skip,
+      orderBy: orderBy,
+    }),
+    prisma.job_postings.count({
+      where: andConditions.length > 0 ? { AND: andConditions } : undefined,
+    }),
+  ]);
+  return {
+    filteredJobPostings,
+    totalCount,
+  };
 }
 
 
@@ -271,7 +368,6 @@ export async function getJobSeekerBookmarkedJobs(){
           jobseekerId: session.user.jobseekerId,
           jobStatus: 'Bookmarked'
     }});
-    console.log("here",result)
     return result;
   } catch (error) {
       console.error(error)
