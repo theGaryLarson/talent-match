@@ -547,7 +547,7 @@ model job_postings {
   tech_area_id      String?           @db.UniqueIdentifier
   sector_id         String?           @db.UniqueIdentifier
   job_title         String            @db.VarChar(255)
-  job_description   String            @db.VarChar(255)
+  job_description   String            @db.Text
   is_internship     Boolean           @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
   is_paid           Boolean           @default(true, map: "DF__job_posti__is_pa__5812160E") @db.Bit
   employment_type   String            @default("N'full-time'", map: "DF__job_posti__emplo__59063A47") @db.NVarChar(255)
