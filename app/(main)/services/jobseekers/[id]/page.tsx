@@ -1,24 +1,21 @@
-import { getJobSeekerEmployerView } from '@/app/lib/prisma';
+'use client';
+
 import Avatar from '@/app/ui/components/Avatar';
 import Skills from '@/app/ui/components/Skills';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
-import { auth } from '@/auth';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
-import { getResumeUrl } from '@/app/lib/services/azureBlobService';
+import EditIcon from '@mui/icons-material/Edit';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import JobseekerProfileDTO from '@/data/dtos/JobseekerProfileDTO';
+
 const monthNames = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
+  'Jan', 'Feb', 'Mar', 'Apr',
+  'May', 'Jun', 'Jul', 'Aug',
+  'Sep', 'Oct', 'Nov', 'Dec',];
 
 function formatUrl(url: string) {
   if (!url) return '';
@@ -30,59 +27,141 @@ function formatUrl(url: string) {
   // Default to https:// but don't force it, allow users to adjust
   return `https://${url}`;
 }
-export const metadata = {
-  title: 'WA Tech Workforce Coalition',
-};
-export default async function page({ params }: { params: { id: string } }) {
-  let jobseeker = await getJobSeekerEmployerView(params.id);
-  metadata.title =
-    jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name;
-  let resume_url = await getResumeUrl(jobseeker?.users.id ?? '');
-  const session = await auth();
-  let videoID = '';
-  if (jobseeker?.video_url) {
-    const parsedUrl = new URL(jobseeker?.video_url);
-    console.log(parsedUrl);
-    if (parsedUrl.hostname === 'youtu.be') {
-      videoID = parsedUrl.pathname.slice(1);
-    } else if (
-      parsedUrl.hostname === 'www.youtube.com' ||
-      parsedUrl.hostname === 'youtube.com'
-    ) {
-      videoID = new URLSearchParams(parsedUrl.search).get('v') ?? '';
+
+async function fetchJobseeker(id: string): Promise<JobseekerProfileDTO> {
+  const response = await fetch('/api/jobseekers/get/' + id, { // Make the request
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
     }
-    console.log('Vid id is: ', videoID);
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
   }
+  return response.json();
+}
+
+async function fetchResume(id: string) {
+  const response = await fetch('/api/jobseekers/resume/get/' + id, { // Make the request
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+}
+
+export default function Page({ params }: { params: { id: string } }) {
+  const [jobseeker, setJobseeker] = useState<JobseekerProfileDTO>();
+  const [videoID, setVideoID] = useState('');
+  const [resumeUrl, setResumeUrl] = useState('');
+  const [editView, setEditView] = useState(false);
+
+  const session = useSession();
+  const isOwnProfile = session?.data?.user.jobseekerId === params.id;
+
+  const execResumeQuery = useCallback(async (userId: string) => { // fetch resume url
+    try {
+      const data = await fetchResume(userId);
+      setResumeUrl(data);
+    } catch (error) {
+      console.error('Error fetching job seekers:', error);
+    }
+  }, []);
+
+  const execJobseekerQuery = useCallback(async () => { // fetch jobseeker data
+    try {
+      const data = await fetchJobseeker(params.id);
+      setJobseeker(data);
+
+      if (data?.video_url) {
+        const parsedUrl = new URL(data?.video_url);
+        console.log(parsedUrl);
+        if (parsedUrl.hostname === 'youtu.be') {
+          setVideoID(parsedUrl.pathname.slice(1));
+        } else if (
+          parsedUrl.hostname === 'www.youtube.com' ||
+          parsedUrl.hostname === 'youtube.com'
+        ) {
+          setVideoID(new URLSearchParams(parsedUrl.search).get('v') ?? '');
+        }
+        console.log('Vid id is: ', videoID);
+        document.title = (jobseeker?.users.first_name || "") + " " + (jobseeker?.users.last_name || "");
+        execResumeQuery(data.users.id);
+      }
+    } catch (error) {
+      console.error('Error fetching job seekers:', error);
+    }
+  }, [params.id, videoID, execResumeQuery, jobseeker?.users.first_name, jobseeker?.users.last_name]);
+
+  useEffect(() => {
+    execJobseekerQuery();
+  }, [execJobseekerQuery]);
+
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newView: string,
+  ) => {
+    setEditView(newView === "edit");
+  };
 
   return (
     <main className="space-y-3 bg-gray-bg px-4 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px]">
       <DeletionFlag deletionDate={undefined} />
+      {isOwnProfile &&
+        <div className="w-full grid content-center place-content-center place-self-center">
+          <ToggleButtonGroup
+            color="primary"
+            value={editView}
+            exclusive
+            onChange={handleChange}
+            aria-label="Edit view"
+          >
+            <ToggleButton value="edit" selected={editView} >My view</ToggleButton>
+            <ToggleButton value="read-only" selected={!editView} >Showcase</ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+      }
       <div className="flex flex-wrap gap-4">
-        <div className="flex grow items-center rounded-md border bg-white">
-          <div className="flex items-center gap-5 p-4">
-            <Avatar
-              imgsrc={jobseeker?.users.photo_url ?? undefined}
-              scale={1.5}
-            ></Avatar>
-            <div>
-              <h1 className="text-2xl font-bold">
-                {jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name}
-              </h1>
-              <h2></h2>
-              <h2>{jobseeker?.current_job_title}</h2>
-              <h2>
-                {jobseeker?.jobseeker_education[0]
-                  ? jobseeker.jobseeker_education[0].eduProviders?.name +
+        <div className="group flex grow items-center rounded-md border bg-white">
+          <div className="flex items-center gap-5 p-4 w-full justify-between">
+            <div className="flex items-center gap-5">
+              <Avatar
+                imgsrc={jobseeker?.users.photo_url ?? undefined}
+                scale={1.5}
+              ></Avatar>
+              <div>
+                {jobseeker?.users.first_name &&
+                  <h1 className="text-2xl font-bold">
+                    {jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name}
+                  </h1>
+                }
+                <h2></h2>
+                <h2>{jobseeker?.current_job_title}</h2>
+                <h2>
+                  {jobseeker?.jobseeker_education[0]
+                    ? jobseeker.jobseeker_education[0].eduProviders?.name +
                     ' | ' +
                     jobseeker.jobseeker_education[0].degreeType +
                     ' | ' +
                     (jobseeker?.jobseeker_education[0]?.program?.title
                       ? jobseeker.jobseeker_education[0].program.title
                       : '')
-                  : ''}
-              </h2>
-              <h2>{jobseeker?.current_grade_level}</h2>
+                    : ''}
+                </h2>
+                <h2>{jobseeker?.current_grade_level}</h2>
+              </div>
             </div>
+            {isOwnProfile && editView &&
+              <div className="edit-btn opacity-25 group-hover:opacity-100">
+                <Link href={'/edit-profile/jobseeker/introduction'}>
+                  <EditIcon />
+                </Link>
+              </div>
+            }
           </div>
         </div>
         {videoID != '' ? (
@@ -99,18 +178,33 @@ export default async function page({ params }: { params: { id: string } }) {
         )}
       </div>
       <div className="flex flex-wrap gap-4">
-        <div className=" grow space-y-3">
-          <div className="space-y-4 rounded-md border bg-white p-4">
-            <h1 className="text-2xl font-bold">Introduction</h1>
+        <div className="grow space-y-3">
+          <div className="group space-y-4 rounded-md border bg-white p-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold">Introduction</h1>
+              {isOwnProfile && editView &&
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/introduction'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              }
+            </div>
             <p>{jobseeker?.intro_headline}</p>
           </div>
 
-          <div className="space-y-4 rounded-md border bg-white p-4">
+          <div className="group space-y-4 rounded-md border bg-white p-4">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold">Work Experience</h1>
               <h1 className="text-2xl font-bold">
-                {jobseeker?.years_work_exp}Y
+                Work Experience {jobseeker?.years_work_exp ? "(" + jobseeker?.years_work_exp + "Y)" : ""}
               </h1>
+              {isOwnProfile && editView &&
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/work-experience'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              }
             </div>
             {jobseeker?.work_experiences.map((experience) => (
               <div
@@ -136,12 +230,12 @@ export default async function page({ params }: { params: { id: string } }) {
                     />
                   </svg>
                   <p className="text-xs">
-                    {monthNames[experience.startDate.getMonth()]}{' '}
-                    {experience.startDate.getFullYear()} -{' '}
+                    {monthNames[new Date(experience.startDate).getMonth()]}{' '}
+                    {new Date(experience.startDate).getFullYear()} -{' '}
                     {experience.endDate
-                      ? monthNames[experience.endDate.getMonth()] +
-                        ' ' +
-                        experience.endDate.getFullYear()
+                      ? monthNames[new Date(experience.endDate).getMonth()] +
+                      ' ' +
+                      new Date(experience.endDate).getFullYear()
                       : 'Present'}
                   </p>
                 </span>
@@ -150,8 +244,17 @@ export default async function page({ params }: { params: { id: string } }) {
             ))}
           </div>
 
-          <div className="space-y-4 rounded-md border bg-white p-4">
-            <h1 className="text-2xl font-bold">Education</h1>
+          <div className="group space-y-4 rounded-md border bg-white p-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold">Education</h1>
+              {isOwnProfile && editView &&
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/education'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              }
+            </div>
             {jobseeker?.jobseeker_education.map((education) => {
               return (
                 <div
@@ -178,10 +281,10 @@ export default async function page({ params }: { params: { id: string } }) {
                       />
                     </svg>
                     <p className="text-xs">
-                      {monthNames[education.startDate.getMonth()]}{' '}
-                      {education.startDate.getFullYear()} -{' '}
-                      {monthNames[education.gradDate.getMonth()]}{' '}
-                      {education.gradDate.getFullYear()}
+                      {monthNames[new Date(education.startDate).getMonth()]}{' '}
+                      {new Date(education.startDate).getFullYear()} -{' '}
+                      {monthNames[new Date(education.gradDate).getMonth()]}{' '}
+                      {new Date(education.gradDate).getFullYear()}
                     </p>
                   </span>
                 </div>
@@ -189,15 +292,24 @@ export default async function page({ params }: { params: { id: string } }) {
             })}
           </div>
 
-          <div className="space-y-4 rounded-md border bg-white p-4">
-            <h1 className="text-2xl font-bold ">Projects</h1>
+          <div className="group space-y-4 rounded-md border bg-white p-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold ">Projects</h1>
+              {isOwnProfile && editView &&
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/education'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              }
+            </div>
 
             {jobseeker?.project_experiences.map((experience) => (
               <div
                 className="rounded-md border bg-gray-bg p-4"
                 key={experience.projectId}
               >
-                <h2 className="text-xl">{experience.projTitle}</h2>
+                <h2 className="text-xl">{experience.projectTitle}</h2>
                 <span className="flex gap-1">
                   <svg
                     width="15"
@@ -214,12 +326,12 @@ export default async function page({ params }: { params: { id: string } }) {
                     />
                   </svg>
                   <p className="text-xs">
-                    {monthNames[experience.startDate.getMonth()]}{' '}
-                    {experience.startDate.getFullYear()} -{' '}
+                    {monthNames[new Date(experience.startDate).getMonth()]}{' '}
+                    {new Date(experience.startDate).getFullYear()} -{' '}
                     {experience.completionDate
-                      ? monthNames[experience.completionDate.getMonth()] +
-                        ' ' +
-                        experience.completionDate.getFullYear()
+                      ? monthNames[new Date(experience.completionDate).getMonth()] +
+                      ' ' +
+                      new Date(experience.completionDate).getFullYear()
                       : 'Present'}
                   </p>
                 </span>
@@ -235,11 +347,20 @@ export default async function page({ params }: { params: { id: string } }) {
             ))}
           </div>
         </div>
-        <div className=" grow space-y-3">
-          <div className="space-y-4 rounded-md border bg-white p-4">
-            <h1 id="skills" className="text-2xl font-bold">
-              Skills
-            </h1>
+        <div className="grow space-y-3">
+          <div className="group space-y-4 rounded-md border bg-white p-4">
+            <div className="flex items-center justify-between">
+              <h1 id="skills" className="text-2xl font-bold">
+                Skills
+              </h1>
+              {isOwnProfile && editView &&
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/showcase'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              }
+            </div>
             <div className="flex flex-wrap gap-4">
               <Skills
                 skillsList={jobseeker?.jobseeker_has_skills.map(
@@ -249,24 +370,53 @@ export default async function page({ params }: { params: { id: string } }) {
               />
             </div>
           </div>
-          <div className="space-y-4 rounded-md border bg-white p-4">
-            <h1 className="text-2xl font-bold">Preferences</h1>
+          <div className="group space-y-4 rounded-md border bg-white p-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold">Preferences</h1>
+              {isOwnProfile && editView &&
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/preferences'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              }
+            </div>
             <p>I am looking for {jobseeker?.employment_type_sought} roles</p>
             <p>My targeted pathway is {jobseeker?.pathways?.pathway_title}</p>
           </div>
-          <div className="space-y-4 rounded-md border bg-white p-4">
-            <h1 className="text-2xl font-bold">Resume</h1>
-            {resume_url ? (
-              <a href={resume_url} target="_blank">
-                View Resume
-              </a>
-            ) : (
-              ''
-            )}
-          </div>
+          {resumeUrl &&
+            <div className="group space-y-4 rounded-md border bg-white p-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold">Resume</h1>
+                {isOwnProfile && editView &&
+                  <div className="edit-btn opacity-25 group-hover:opacity-100">
+                    <Link href={'/edit-profile/jobseeker/showcase'}>
+                      <EditIcon />
+                    </Link>
+                  </div>
+                }
+              </div>
+              {resumeUrl ? (
+                <Link href={resumeUrl} target="_blank">
+                  View Resume
+                </Link>
+              ) : (
+                ''
+              )}
+            </div>
+          }
 
-          <div className="space-y-4 rounded-md border bg-white p-4">
-            <h1 className="text-2xl font-bold">Portfolio</h1>
+          <div className="group space-y-4 rounded-md border bg-white p-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold">Portfolio</h1>
+              {isOwnProfile && editView &&
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/showcase'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              }
+            </div>
             {jobseeker?.portfolio_url ? (
               <a href={formatUrl(jobseeker?.portfolio_url)} target="_blank">
                 {jobseeker?.portfolio_url}

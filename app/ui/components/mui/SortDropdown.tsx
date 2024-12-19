@@ -27,7 +27,7 @@ export default function SortDropdown({
         className="shadow-transparent border-none"
         labelId={id + "-label"}
         id={id}
-        value={value == "" ? "yearsExp" : value}
+        value={value}
         label={label}
         onChange={onChange}
         sx={{ "&.MuiInput-underline": { '&:before': { borderBottom: "none", }, }, }}

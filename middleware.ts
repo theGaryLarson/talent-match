@@ -23,7 +23,7 @@ export default auth((req) => {
       '/services/jobseekers/dashboard',
       '/services/jobseekers/dashboard/my-applications',
       '/services/jobseekers/',
-      //'/services/joblistings',
+      '/services/joblistings',
       '/api/joblistings/',
       '/api/jobseekers/',
       '/api/edu-providers/',
@@ -35,7 +35,9 @@ export default auth((req) => {
       '/edit-profile/employer/',
       '/services/employers/dashboard',
       '/services/jobseekers/',
-      //'/services/joblistings',
+      '/services/joblistings',
+      '/api/jobseekers/get/',
+      '/api/jobseekers/resume/get/',
       '/api/joblistings/',
       '/api/employers/',
       '/api/companies',
@@ -48,7 +50,7 @@ export default auth((req) => {
       '/career-prep',
       '/services/jobseekers',
       '/api/admin/career-prep/self-assign-case',
-      //'/services/joblistings',
+      '/services/joblistings',
       '/api/jobseekers/career-prep/meeting',
       '/api/admin/career-prep/update-recomended-track/'
       // Add any other routes accessible by case managers

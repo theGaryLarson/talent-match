@@ -44,7 +44,7 @@ async function fetchFilteredJobSeekerCardView(
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ skills, industrySector, educationLevel, trainingProvider, yearsWorkExpMin, yearsWorkExpMax, 
+    body: JSON.stringify({ skills, industrySector, educationLevel, trainingProvider, yearsWorkExpMin, yearsWorkExpMax,
                            zipCode, sortBy, maxResults, page, pool1, pool2, pool3 })
   });
   if (!response.ok) {
@@ -295,7 +295,7 @@ export default function Page() {
           <SortDropdown
             id="jobseeker-listview-sort"
             label="Sort by:"
-            value={getParam("sort")}
+            value={getParam('sort') == '' ? 'yearsExp' : getParam('sort')}
             onChange={(event) => {
               setQueryParam('sort', event.target.value);
               setSortBy(event.target.value);
