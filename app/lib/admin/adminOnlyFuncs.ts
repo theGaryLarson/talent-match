@@ -10,6 +10,7 @@ const prisma: PrismaClient = getPrismaClient();
  * @param newRoles 
  */
 export async function adminUpdateUserRole(userId:string, newRoles:Role[]) {
+  //TODO when node mailer is set up send email to user letting them know their permissions have updated and they need to log out and back in
     try {
       const session = await auth();
       if(!session?.user.roles.includes(Role.ADMIN)){

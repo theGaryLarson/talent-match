@@ -4,18 +4,17 @@ import * as React from 'react';
 import { DataGrid, GridCallbackDetails, GridCellEditStopParams, GridCellParams, GridColDef, MuiEvent } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { Role } from "@/data/dtos/UserInfoDTO";
+import Alert from '@mui/material/Alert';
 import { Autocomplete, AutocompleteRenderInputParams, TextField } from "@mui/material";
 export default function EditUsersTable(params:{users:userDataTable[]}){
-  const roles = ['ADMIN', 'EMPLOYER', 'USER']; // Example roles
   const MultiSelect: GridColDef = {
     field: 'role',
     headerName: 'Roles',
     editable: true,
     width: 500,
-    renderCell:(params)=>(params.formattedValue),
+    //renderCell:(params)=>(params.formattedValue),
     renderEditCell: (params) => {
       const currentRoles = params.value || []; // Handle cases where roles are undefined/null
-
       return (
         <Autocomplete
           fullWidth
@@ -36,6 +35,23 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
               field: params.field,
               value: newValue, // Updates the roles array
             });
+            try {
+              fetch('/api/admin/user-management/roles/',{
+                method:'POST',
+                body:JSON.stringify({userId:params.id, newRoles:newValue})
+              }).then((res)=>{
+                console.log(res)
+                if(!res.ok){
+                  params.api.setEditCellValue({
+                    id: params.id,
+                    field: params.field,
+                    value: params.value, // return to old value on failure to update
+                  });
+                }
+              })
+            } catch (error) {
+              console.error("Falied to upate roles")
+            }
           }}
         />
       );
@@ -55,11 +71,6 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
             role: Array.isArray(user.role) ? user.role : user.role.split(','), // Ensure role is always an array
           }));
         
-          const handleEditStop = (params: GridCellEditStopParams) => {
-            console.log('Edited cell:', params);
-            // Add logic to save changes to the backend if needed.
-          };
-        
     return(
 <Paper sx={{ height: 1000, width: '100%' }}>
     <h1 className="text-3xl">NOT CONNECTED TO BACKEND YET</h1>
@@ -69,7 +80,6 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
           pageSizeOptions={[5, 10, 100]}
           sx={{ border: 0 }}
           getRowId={(row) => row.id}
-          onCellEditStop={handleEditStop}
         />
       </Paper>
     );
