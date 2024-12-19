@@ -11,20 +11,21 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
     field: 'role',
     headerName: 'Roles',
     editable: true,
-    width: 300,
-    renderCell:(params)=>(params.value),
+    width: 500,
+    renderCell:(params)=>(params.formattedValue),
     renderEditCell: (params) => {
       const currentRoles = params.value || []; // Handle cases where roles are undefined/null
 
       return (
         <Autocomplete
+          fullWidth
           multiple
           options={Object.values(Role)}
           value={currentRoles}
           renderInput={(params) => (
             <TextField
+              sx={{margin:0}}
               {...params}
-              label="Select Roles"
               placeholder="Add roles"
             />
           )}
