@@ -39,41 +39,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
+import { SelectAllRounded } from '@mui/icons-material';
 
 const formNamePrefix = 'profile-creation-profile-';
 
 export default function CreateEmployerProfilePage() {
-  const profileStoreData = useSelector(
-    (state: RootState) => state.employer.profile,
-  );
-  devLog('initial psd', profileStoreData);
-  const [profileData, setProfileData] = useState<PostEmployerProfileDTO>({
-    ...profileStoreData,
-  });
-
-  const [companyData, setCompanyData] = useState<PostEmployerProfileDTO>({
-    ...profileStoreData,
-  });
-
-  const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
-    ReadCompanyInfoDTO | string
-  >('');
-  const [selectedWorkLocation, setSelectedWorkLocation] =
-    useState<PostAddressDTO>({
-      city: '',
-      state: '',
-      stateCode: '',
-      zip: '',
-      county: '',
-    } as PostAddressDTO);
-
-  // using to track whether selectCompanyDropDownData is a string or object. In this way I can prevent Basic Info section
-  // from resetting when retyping or correcting Company name.
-  const prevSelectCompanyDropdownData =
-    useRef<typeof selectCompanyDropdownData>();
-
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -83,34 +53,54 @@ export default function CreateEmployerProfilePage() {
 
   // const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [isCompanySelected, setIsCompanySelected] = useState<boolean>(false);
 
-  const openSnackbar = () => {
-    setOpen(true);
-  };
+  const profileStoreData = useSelector(
+    (state: RootState) => state.employer.profile,
+  );
 
-  const [companyName, setCompanyName] = useState<string>('');
-  const [workAddress, setWorkAddress] = useState<ReadAddressDTO>(null);
+  const [profileData, setProfileData] = useState<PostEmployerProfileDTO>({
+    ...profileStoreData,
+  });
+
+  const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
+    ReadCompanyInfoDTO | string
+  >(profileStoreData.companyId ? ({
+    companyId: profileStoreData.companyId,
+    companyName: profileStoreData.companyName,
+    companyEmail: profileStoreData.companyEmail,
+    yearFounded: profileStoreData.yearFounded,
+    companyAddresses: profileStoreData.companyAddresses as ReadAddressDTO[],
+  }) : (profileStoreData.companyName ?? ''));
+
+  const [isCompanySelected, setIsCompanySelected] = useState<boolean>(Boolean(profileStoreData.companyId));
+
+  const [workAddress, setWorkAddress] = useState<ReadAddressDTO>(profileStoreData.companyAddresses?.find(address => address.addressId === profileStoreData.workAddressId) as ReadAddressDTO ?? (profileStoreData.workAddressId ? ({
+    addressId: profileStoreData.workAddressId,
+    city: '',
+    state: '',
+    stateCode: '',
+    zip: '',
+    county: ''
+  }) : null));
 
   useEffect(() => {
     const initializeFormFields = async () => {
       if (!session?.user) return;
       if (status === 'authenticated') {
         if (_.isEqual(profileStoreData, initialState.profile)) {
+
+          devLog('fetching fresh from database');
+
           const {
             id,
             firstName,
             lastName,
-            email,
             image,
-            companyId,
-            employerId,
           } = session.user;
-          devLog('session user', session.user);
 
           try {
             const response = await fetch(
-              `/api/companies/name/get/${profileStoreData.companyId}`,
+              `/api/employers/account/professional-info/get/${id}`,
               {
                 method: 'GET',
                 headers: {
@@ -132,7 +122,18 @@ export default function CreateEmployerProfilePage() {
               );
             } else {
               let { result } = await response.json();
-              setCompanyName(result.company_name);
+
+              setSelectCompanyDropdownData(result.companyId ? ({
+                companyId: result.companyId,
+                companyName: result.companyName,
+                companyEmail: result.companyEmail,
+                yearFounded: result.yearFounded,
+              }) : (result.companyName ?? ''));
+
+              setWorkAddress(result.companyAddress ? { ...result.companyAddress } : '');
+
+              setIsCompanySelected(Boolean(result.companyId));
+
               setProfileData({
                 ...profileData,
                 userId: id!,
@@ -148,52 +149,34 @@ export default function CreateEmployerProfilePage() {
 
                 // COMPANY Section
 
-                // companyId: result.companyId,
+                companyId: result.companyId ?? undefined,
+                companyName: result.companyName,
                 currentJobTitle: result.currentJobTitle ?? '',
                 linkedInUrl: result.linkedInUrl ?? '',
-                workAddressId: result.workAddressId ?? '',
+                workAddressId: result.companyAddress?.addressId ?? undefined,
               });
             }
           } catch (error) {}
         } else {
           devLog('fetching from redux store');
         }
-        setAvatarUrl(profileData.photoUrl ?? session.user?.image!);
       }
     };
     initializeFormFields();
-    dispatch(setPageSaved('disclosures'));
+    dispatch(setPageSaved('employer-profile'));
     devLog(profileData);
   }, [session?.user?.id, pathname]);
 
-  // used to manage changes on selectCompanyDropDownData depending on its type (object or string).
-  useEffect(() => {
-    devLog('Updated selectCompanyDropdownData:', selectCompanyDropdownData);
-    if (
-      selectCompanyDropdownData &&
-      typeof selectCompanyDropdownData === 'object' &&
-      selectCompanyDropdownData.companyId
-    ) {
-      openSnackbar();
-      setIsCompanySelected(true);
-      setProfileData((prevState) => ({
-        ...prevState,
-        companyId: selectCompanyDropdownData.companyId,
-        companyName: selectCompanyDropdownData.companyName,
-        yearFounded: selectCompanyDropdownData.yearFounded?.toString() || '',
-        websiteUrl: selectCompanyDropdownData.websiteUrl,
-      }));
-    } else {
-      setIsCompanySelected(false);
-    }
-  }, [selectCompanyDropdownData]);
+  const openSnackbar = () => {
+    setOpen(true);
+  };
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     devLog(name, value);
-    dispatch(setPageDirty('disclosures')); //FIXME: Review with Gage disclosures change to profile
+    dispatch(setPageDirty('employer-profile')); //FIXME: Review with Gage disclosures change to profile
     const fieldName = name.substring(formNamePrefix.length);
 
     let updatedValue: any = value; // Declare a flexible type for the updated value
@@ -211,47 +194,12 @@ export default function CreateEmployerProfilePage() {
     }
   };
 
-  // Handle address selection from autocomplete
-  const handleAddressSelection = (
-    e: SyntheticEvent<Element, Event>,
-    val: string | ReadAddressDTO | null,
-  ) => {
-    dispatch(setPageDirty('company'));
-    if (val && typeof val === 'object' && 'zip' in val) {
-      setSelectedWorkLocation((prevState) => ({
-        ...prevState,
-        zip: val.zip!,
-      }));
-      const selectedZipCode = val.zip; // Only extract the zipCode
-      // Append the selected zipCode to companyAddresses if it's not already there
-      setCompanyData((prevData) => {
-        const alreadyExists = prevData.companyAddresses?.some(
-          (location) => location.zip === selectedZipCode,
-        );
-
-        if (!alreadyExists) {
-          const updatedAddresses = prevData.companyAddresses
-            ? [...prevData.companyAddresses, val]
-            : [val];
-
-          return {
-            ...prevData,
-            companyAddresses: updatedAddresses,
-          };
-        }
-
-        return prevData; // Return unchanged if already exists
-      });
-    }
-  };
-
   const handleAvatarUpload = (url: string) => {
     updateSessionProperties({
       image: url,
     })
       .then(() => {
-        dispatch(setPageDirty('personal')); //FIXME: Check with Gage if anything needed here to change personal to profile
-        setAvatarUrl(url);
+        dispatch(setPageDirty('employer-profile')); //FIXME: Check with Gage if anything needed here to change personal to profile
         setProfileData((prevPersonalData) => ({
           ...prevPersonalData,
           photoUrl: url,
@@ -270,12 +218,13 @@ export default function CreateEmployerProfilePage() {
       return;
     }
 
-    // setProfileData( prevState => ({
-    //   ...prevState,
-    //   hasAgreedTerms: termsAccepted,
-    // }));
-
-    // setOpen(true);
+    const updatedProfileData = {
+      ...profileData,
+      companyId: typeof selectCompanyDropdownData !== 'string' ? selectCompanyDropdownData.companyId : '',
+      companyName: typeof selectCompanyDropdownData !== 'string' ? selectCompanyDropdownData.companyName : selectCompanyDropdownData,
+      workAddressId: workAddress ? workAddress.addressId : undefined
+    };
+    setProfileData(updatedProfileData);
 
     try {
       const response = await fetch(`/api/employers/account/profile/upsert`, {
@@ -283,20 +232,26 @@ export default function CreateEmployerProfilePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...profileData,
-        }),
+        body: JSON.stringify(updatedProfileData),
       });
 
       if (response.ok) {
         const result = await response.json();
-        dispatch(setPageSaved('disclosures'));
-        dispatch(setProfile(profileData));
-        devLog('profileData submit ok', profileData);
+        dispatch(setPageSaved('employer-profile'));
+        dispatch(setProfile(updatedProfileData));
+
+        // Update session properties using the custom hook
+        await updateSessionProperties({
+          firstName: updatedProfileData.firstName,
+          lastName: updatedProfileData.lastName,
+          image: updatedProfileData.photoUrl,
+        });
+
+        devLog('profileData submit ok', updatedProfileData);
         router.push('/edit-profile/employer/congratulations');
       } else {
         const errorData = await response.json();
-        devLog('profileData submit error', profileData);
+        devLog('profileData submit error', updatedProfileData);
       }
     } catch (error) {}
   };
@@ -403,14 +358,35 @@ export default function CreateEmployerProfilePage() {
                 noResultsText="No company found, existing company required. Please contact administrator."
                 allowNewOption={false}
                 value={
-                  selectCompanyDropdownData || companyData.companyName || ''
+                  selectCompanyDropdownData ?? ''
                 }
                 onChange={(e, val) => {
-                  // logic predominately handled in useEffect
-                  // Always update the dropdown value whether an existing company (object) or new company (string)
-                  setSelectCompanyDropdownData(
-                    typeof val === 'object' && val !== null ? { ...val } : '',
-                  );
+                  setWorkAddress(null);
+                  setProfileData(prevState => ({
+                    ...prevState,
+                    workAddressId: undefined
+                  }));
+
+                  const newDropdownData = typeof val === 'object' && val !== null ? { ...val } : '';
+                  setSelectCompanyDropdownData(newDropdownData);
+
+                  if (
+                    newDropdownData &&
+                    typeof newDropdownData === 'object' &&
+                    newDropdownData.companyId
+                  ) {
+                    openSnackbar();
+                    setIsCompanySelected(true);
+                    setProfileData((prevState) => ({
+                      ...prevState,
+                      companyId: newDropdownData.companyId,
+                      companyName: newDropdownData.companyName,
+                      yearFounded: newDropdownData.yearFounded,
+                      websiteUrl: newDropdownData.websiteUrl,
+                    }));
+                  } else {
+                    setIsCompanySelected(false);
+                  }
                 }}
                 searchPlaceholder="Company name"
                 getOptionLabel={(option: ReadCompanyInfoDTO) =>
@@ -443,44 +419,33 @@ export default function CreateEmployerProfilePage() {
               </InputTextWithLabel>
               {isCompanySelected && (
                 <div>
-                  {!isCompanySelected ? (
-                    // status === 'loading' ? (
-                    <CircularProgress /> // Show a loader until the session is loaded
-                  ) : (
-                    <SelectAutoload
-                      id={`${formNamePrefix}workAddressId`}
-                      className="select-autoload"
-                      apiAutoloadRoute={`/api/companies/locations/get/${profileData.companyId}`}
-                      label="Work Location *"
-                      value={workAddress}
-                      onChange={(val) => {
-                        setWorkAddress(val);
-                        setProfileData((prevState) => ({
-                          ...prevState,
-                          workAddressId: val?.addressId
-                            ? val.addressId
-                            : undefined,
-                        }));
-                      }}
-                      placeholder="Your work location"
-                      loadingText="Retrieving work locations..."
-                      getOptionLabel={(option: ReadAddressDTO) =>
-                        `${option?.city}, ${option?.stateCode} ${option?.zip}`
-                      }
-                      getOptionId={(option: ReadAddressDTO) =>
-                        option?.addressId!
-                      }
-                      getOptionFromId={(
-                        options: ReadAddressDTO[],
-                        id: string,
-                      ) => {
-                        return (
-                          options.find((item) => item?.addressId === id) || null
-                        );
-                      }}
-                      required
-                    />
-                  )}
+                  <SelectAutoload
+                    id={`${formNamePrefix}workAddressId`}
+                    className="select-autoload"
+                    apiAutoloadRoute={`/api/companies/locations/get/${profileData.companyId}`}
+                    label="Work Location *"
+                    value={workAddress}
+                    onChange={(val) => {
+                      setWorkAddress(val);
+                    }}
+                    placeholder="Your work location"
+                    loadingText="Retrieving work locations..."
+                    getOptionLabel={(option: ReadAddressDTO) =>
+                      `${option?.city}, ${option?.stateCode} ${option?.zip}`
+                    }
+                    getOptionId={(option: ReadAddressDTO) =>
+                      option?.addressId!
+                    }
+                    getOptionFromId={(
+                      options: ReadAddressDTO[],
+                      id: string,
+                    ) => {
+                      return (
+                        options.find((item) => item?.addressId === id) || null
+                      );
+                    }}
+                    required
+                  />
                 </div>
               )}
 
@@ -488,10 +453,9 @@ export default function CreateEmployerProfilePage() {
                 id={`${formNamePrefix}linkedInUrl`}
                 placeholder="www.linkedin.com/username"
                 onChange={handleFieldChange}
-                value={profileData.linkedInUrl}
-                required
+                value={profileData.linkedInUrl??''}
               >
-                LinkedIn URL *
+                LinkedIn URL
               </InputTextWithLabel>
             </div>
           </fieldset>
