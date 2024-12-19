@@ -4,9 +4,44 @@ import * as React from 'react';
 import { DataGrid, GridCallbackDetails, GridCellEditStopParams, GridCellParams, GridColDef, MuiEvent } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { Role } from "@/data/dtos/UserInfoDTO";
+import { Button } from "@mui/material";
 import Alert from '@mui/material/Alert';
 import { Autocomplete, AutocompleteRenderInputParams, TextField } from "@mui/material";
 export default function EditUsersTable(params:{users:userDataTable[]}){
+  
+  
+  const handleDelete = async (userId: number, name:string) => {
+    if (!confirm(`Are you sure you want to delete user ${name} with ID ${userId}?`)) {
+      return;
+    }
+
+    try {
+      //example, will fail everytime backend funciton not implmented
+      const response = await fetch(`/api/admin/user-management/delete/`, {
+        method: 'DELETE',
+        body: JSON.stringify({ userId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete user. ");
+      }
+
+      //setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      alert(`User with ID ${userId} deleted successfully.`);
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while deleting the user. (Backend not connected for this yet -Damien)");
+    }
+  };
+
+  
+  
+  
+  
+  
+  
+  
+  
   const MultiSelect: GridColDef = {
     field: 'role',
     headerName: 'Roles',
@@ -64,7 +99,21 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
             {field:'email', headerName:"email", width:200},
             MultiSelect,
             {field: 'zip', headerName:'zip'},
-            {field:'is_marked_deletion', headerName:'Marked For Deletion'}
+            {field:'is_marked_deletion', headerName:'Marked For Deletion'},
+            {
+              field: 'actions',
+              headerName: 'Actions',
+              width: 150,
+              renderCell: (params) => (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleDelete(params.row.id, (params.row.first_name+' '+params.row.last_name))}
+                >
+                  Delete
+                </Button>
+              ),
+            },
           ];
           const rows = params.users.map((user) => ({
             ...user,
