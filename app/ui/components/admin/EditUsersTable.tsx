@@ -63,8 +63,8 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
             { field: 'last_name', headerName: 'Last name', width: 130 },
             {field:'email', headerName:"email", width:200},
             MultiSelect,
-            {field: 'zip', headerName:'zip'}
-            
+            {field: 'zip', headerName:'zip'},
+            {field:'is_marked_deletion', headerName:'Marked For Deletion'}
           ];
           const rows = params.users.map((user) => ({
             ...user,
