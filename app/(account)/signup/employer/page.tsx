@@ -81,6 +81,7 @@ export default function EmployerSignUpFinish() {
                   body: JSON.stringify({
                     userId: session?.user.id,
                     role: Role.EMPLOYER,
+                    agreedTerms: termsAgree,
                   }),
                 });
                 // console.log('response:', response);
