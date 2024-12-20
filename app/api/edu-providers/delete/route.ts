@@ -1,4 +1,4 @@
-import { deleteEduProvider } from "@/app/lib/eduProviders";
+import { deleteEduProvider } from "@/app/lib/admin/eduProviderPartner";
 import { auth } from "@/auth";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { NextResponse } from "next/server";

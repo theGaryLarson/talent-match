@@ -129,10 +129,41 @@ export const addTrainingPartner = async (newPartner: AddTrainingPartnerDTO) => {
     return null; // Return null if an error occurs
   }
 };
+/**
+ * Fully Deletes an edu provider along with their addresses and programs
+ * @param providerId 
+ * @returns 
+ */
+export async function deleteEduProvider(providerId: string) {
+  try {
+      const [deletedAddresses, deletedPrograms, deletedProvider] = await prisma.$transaction([
+          prisma.edu_addresses.deleteMany({
+              where: { edu_provider_id: providerId },
+          }),
+          prisma.provider_programs.deleteMany({
+              where: { edu_provider_id: providerId },
+          }),
+          prisma.edu_providers.delete({
+              where: { id: providerId },
+          }),
+      ]);
+      return {
+          status: 200,
+          data: {
+              deletedAddresses,
+              deletedPrograms,
+              deletedProvider,
+          },
+      };
+  } catch (error) {
+      console.error('Error during provider deletion:', error);
 
-export const removeTrainingPartner = async (eduProviderId: string) => {
-  // I don't think we will ever want to remove an education provider
-};
+      return {
+          status: 500,
+          error: 'Failed to delete the provider. Ensure there are no remaining dependencies.',
+      };
+  }
+}
 
 
 

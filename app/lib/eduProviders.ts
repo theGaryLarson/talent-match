@@ -237,33 +237,3 @@ export function isEnumValue<T extends { [key: string]: string | number | null }>
     return Object.values(enumObj).includes(value);
 }
 
-export async function deleteEduProvider(providerId: string) {
-    try {
-        const [deletedAddresses, deletedPrograms, deletedProvider] = await prisma.$transaction([
-            prisma.edu_addresses.deleteMany({
-                where: { edu_provider_id: providerId },
-            }),
-            prisma.provider_programs.deleteMany({
-                where: { edu_provider_id: providerId },
-            }),
-            prisma.edu_providers.delete({
-                where: { id: providerId },
-            }),
-        ]);
-        return {
-            status: 200,
-            data: {
-                deletedAddresses,
-                deletedPrograms,
-                deletedProvider,
-            },
-        };
-    } catch (error) {
-        console.error('Error during provider deletion:', error);
-
-        return {
-            status: 500,
-            error: 'Failed to delete the provider. Ensure there are no remaining dependencies.',
-        };
-    }
-}
