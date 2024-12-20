@@ -63,7 +63,7 @@ export async function PATCH(request: Request) {
         },
         update: {
           job_title: currentJobTitle,
-          linkedin_url: linkedInUrl,
+          ...(linkedInUrl && { linkedin_url: linkedInUrl }),
           ...(workAddressId && {
             company_addresses: {
               connect: {
