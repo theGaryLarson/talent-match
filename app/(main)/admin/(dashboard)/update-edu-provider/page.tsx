@@ -8,7 +8,9 @@ import { EducationLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { ReadEduProviderDTO } from '@/app/lib/eduProviders';
 import { TrainingProviderDropdownDTO } from '@/data/dtos/TrainingProviderDropdownDTO';
 import { AddTrainingPartnerDTO } from '@/app/lib/admin/eduProviderPartner';
-
+import { Button } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 export default function UpdateTrainingProviderPage() {
   const [selectedProviderName, setSelectedProviderName] = useState<string>('');
   const [selectedProviderId, setSelectedProviderId] = useState<string>('');
@@ -344,8 +346,9 @@ export default function UpdateTrainingProviderPage() {
           </div>
 
           {/* Submit Button */}
-          <div>
-            <button type="submit">Update Provider</button>
+          <div className='flex justify-evenly gap-2 py-3'>
+            <Button onClick={()=>alert('Not Yet connected to backend')} startIcon={<DeleteIcon />} variant="outlined">Delete</Button>
+            <Button type="submit" endIcon={<ArrowCircleRightOutlinedIcon/>} variant="contained">Update Provider</Button>
           </div>
         </form>
       )}

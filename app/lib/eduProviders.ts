@@ -237,3 +237,11 @@ export function isEnumValue<T extends { [key: string]: string | number | null }>
     return Object.values(enumObj).includes(value);
 }
 
+export async function deleteEduProvidor(providerId:string){
+    try{
+        let res = await prisma.edu_providers.delete({where:{id:providerId}});
+        return res;
+    }catch(e){
+        console.error(e)
+    }
+}
