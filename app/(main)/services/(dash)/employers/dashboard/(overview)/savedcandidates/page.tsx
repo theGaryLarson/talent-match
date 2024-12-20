@@ -9,8 +9,8 @@ export default async function Page() {
     <main className="m-2 mb-0 w-full space-y-4 pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">
       <h1 className="text-2xl font-medium">Saved Candidates</h1>
       <div className="space-y-4">
-        
-        
+
+
         {(bookmarkedJobseekers == null || bookmarkedJobseekers.length < 1)?<div><p>No Saved Candidates Found: <Link href={'/services/talent-search'} className='LINK'>Find Candidates here</Link></p></div>:bookmarkedJobseekers?.map((jobseeker) => {
           return (
             <JobSeekerCardView
@@ -28,12 +28,13 @@ export default async function Page() {
                 jobseeker_education: jobseeker.jobseeker.jobseeker_education, //TODO needs fixing to match dtos
                 jobseeker_has_skills: jobseeker.jobseeker.jobseeker_has_skills,
               }}
+              isBookmarked={true}
               key={jobseeker.jobseekerId}
             />
           );
         })}
-        
-        
+
+
 
 
 
