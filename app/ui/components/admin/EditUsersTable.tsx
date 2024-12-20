@@ -17,7 +17,7 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
 
     try {
       //example, will fail everytime backend funciton not implmented
-      const response = await fetch(`/api/admin/user-management/delete/`, {
+      const response = await fetch(`/api/admin/user-management/delete`, {
         method: 'DELETE',
         body: JSON.stringify({ userId }),
       });
