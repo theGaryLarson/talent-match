@@ -141,8 +141,8 @@ export default function Page() {
   useEffect(() => {
     const fetchBookmarked = async () => {
       try {
-        const bookmarkedJobs = await fetchBookmarkedJobseekers();
-        const jobseekerIds = bookmarkedJobs.map((item: any) => item.jobseekerId);
+        const bookmarkedJobseekers = await fetchBookmarkedJobseekers();
+        const jobseekerIds = bookmarkedJobseekers.map((item: any) => item.jobseekerId);
 
         setBookmarkedJobseekers(jobseekerIds);
       } catch (error) {
