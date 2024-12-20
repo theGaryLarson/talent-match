@@ -154,6 +154,37 @@ export default function UpdateTrainingProviderPage() {
     }
   };
 
+
+  const handleDelete = async (providerId:string) => {
+    if (!confirm(`Are you sure you want to delete this training provider ${selectedProviderName} id:${selectedProviderId}?`)) {
+      return;
+    }
+
+    try {
+      //example, will fail everytime backend funciton not implmentedapp\api\edu-providers\delete\route.ts
+      const response = await fetch(`/api/edu-providers/delete`, {
+        method: 'DELETE',
+        body: JSON.stringify({providerId}),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete user. ");
+      }
+
+      //setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      setProviderOptions(providerOptions.filter((p)=>(p.id != providerId)))
+      setSelectedProviderId('');
+      alert(`User with ID ${providerId} deleted successfully.`);
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while deleting the user. (Backend not connected for this yet -Damien)");
+    }
+  };
+
+
+
+
+
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold">Update Training Provider</h1>
@@ -347,7 +378,7 @@ export default function UpdateTrainingProviderPage() {
 
           {/* Submit Button */}
           <div className='flex justify-evenly gap-2 py-3'>
-            <Button onClick={()=>alert('Not Yet connected to backend')} startIcon={<DeleteIcon />} variant="outlined">Delete</Button>
+            <Button onClick={()=>handleDelete(eduProviderId)} startIcon={<DeleteIcon />} variant="outlined">Delete</Button>
             <Button type="submit" endIcon={<ArrowCircleRightOutlinedIcon/>} variant="contained">Update Provider</Button>
           </div>
         </form>

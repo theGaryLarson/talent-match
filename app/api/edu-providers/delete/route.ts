@@ -1,4 +1,4 @@
-import { deleteEduProvidor } from "@/app/lib/eduProviders";
+import { deleteEduProvider } from "@/app/lib/eduProviders";
 import { auth } from "@/auth";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { NextResponse } from "next/server";
@@ -6,10 +6,12 @@ import { NextResponse } from "next/server";
  * not implemented yet
  * @returns 
  */
-export async function DELTE(){
+export async function DELETE(req: Request){
     const session = await auth();
+    const body:{providerId:string} = await req.json()
     if(!session?.user.roles.includes(Role.ADMIN)){
         return NextResponse.json({},{status:401})
     }
-    return NextResponse.json({},{status:501})
+    let result = await deleteEduProvider(body.providerId);
+    return NextResponse.json(result)
 }
