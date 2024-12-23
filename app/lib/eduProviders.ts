@@ -124,7 +124,7 @@ export const getAllEduProvidersDetail = async (): Promise<ReadEduProviderDTO[] |
         eduProviderId: provider.id,
           eduLevel: provider.edu_type ? (provider.edu_type as EducationLevel) : undefined,
           providerName: provider.name,
-          logoUrl: '', // Assuming you need to add logic for generating logoUrl
+          logoUrl: provider.logoUrl || '', // Assuming you need to add logic for generating logoUrl
           contactName: provider.contact || undefined,
           contactEmail: provider.contact_email || undefined,
           url: provider.edu_url || undefined,
