@@ -6,9 +6,8 @@ import RoundedButton from "./RoundedButton";
 export default async function TrainingProviderMembers() {
     let trainingProviders: ReadEduProviderDTO[] | null = await getAllEduProvidersDetail();
 
-    // bg-neutral-100
     return (
-        <div className="w-full px-8 laptop:px-24 py-4 flex-col justify-center items-center gap-5 inline-flex">
+        <div className="w-full py-4 flex-col justify-center items-center gap-5 inline-flex">
             <div className="mt-8 self-stretch text-center text-sky-900 text-xl font-semibold font-['Roboto'] uppercase leading-loose tracking-widest">
                 Coalition Training Provider Members
             </div>

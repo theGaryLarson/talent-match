@@ -15,7 +15,7 @@ export default function Page() {
                     </div>
                 </div>
             </div>
-            <div className="mt-12">
+            <div className="mt-12 px-8 laptop:px-24">
                 <TrainingProviderMembers></TrainingProviderMembers>
             </div>
         </main>
