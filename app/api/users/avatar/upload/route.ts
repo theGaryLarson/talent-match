@@ -2,7 +2,7 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { uploadAvatar } from "@/app/lib/services/azureBlobService";
-import { auth } from "@/auth";
+// import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
