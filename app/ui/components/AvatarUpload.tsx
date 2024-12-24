@@ -61,7 +61,7 @@ export default function AvatarUpload({
         const payload = {
           file: fileBufferView,
           fileName: file.name,
-          userId: userId,
+          userId: userId, // @Rory
         };
 
         // Make a POST request to the API route
