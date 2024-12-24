@@ -91,7 +91,7 @@ export const getEduProviderDetail = async (eduProviderId: string): Promise<ReadE
         eduProviderId: data.id,
         eduLevel: data.edu_type ? (data.edu_type as EducationLevel) : undefined,
         providerName: data.name,
-        logoUrl: '', // Assuming you need to add logic for generating logoUrl
+        logoUrl: data.logoUrl || '', // Assuming you need to add logic for generating logoUrl
         contactName: data.contact || undefined,
         contactEmail: data.contact_email || undefined,
         url: data.edu_url || undefined,
