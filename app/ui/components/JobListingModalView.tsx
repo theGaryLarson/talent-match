@@ -1,9 +1,12 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import { Button, Modal } from 'flowbite-react';
 import Avatar from './Avatar';
 import Skills from './Skills';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
+import { useSession } from 'next-auth/react';
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 export default function JobListingModalView({
   openModal,
@@ -14,6 +17,9 @@ export default function JobListingModalView({
   handleModalChange: (open: boolean) => void;
   joblisting: JobListingCardViewDTO;
 }) {
+  const [applied, setApplied] = useState<boolean>(joblisting?.hasApplied);
+  const { data: session } = useSession();
+
   const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting?.employment_type ?? '';
   const company_name: string = joblisting?.companies.company_name;
@@ -26,6 +32,28 @@ export default function JobListingModalView({
   const id: string = joblisting?.job_posting_id ?? '';
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
+  const showApply = session?.user.roles.includes(Role.JOBSEEKER);
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`/api/joblistings/apply/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update application status');
+      }
+      setApplied(true);
+    } catch (error) {
+      console.error('Error updating application:', error);
+    }
+  };
 
   return (
     <Modal
@@ -125,18 +153,19 @@ export default function JobListingModalView({
 
         </div>
       </Modal.Body>
-      <Modal.Footer>{/* Application Links */}
-        {joblisting?.job_post_url && (
+      {showApply && (<Modal.Footer>
+        <form onSubmit={handleSubmit}>
           <Button
-            href={joblisting?.job_post_url}
+            type={"submit"}
+            disabled={applied}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block"
           >
-            Apply on Company Website
+            {applied ? "Applied" : "Apply"}
           </Button>
-        )}
-      </Modal.Footer>
+        </form>
+      </Modal.Footer>)}
     </Modal>
   );
 }

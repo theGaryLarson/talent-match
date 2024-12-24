@@ -258,6 +258,9 @@ export async function getAllJobPosts(){
 }
 
 export async function getJobListingsFiltered(request: Request){
+  const session = await auth();
+  const jobseekerId = session?.user?.jobseekerId;
+  
   const {
     jobTitle = '',
     skills = [],
@@ -334,11 +337,14 @@ export async function getJobListingsFiltered(request: Request){
             title: true,
           },
         },
-        jobApplications: {
-          select: {
-            jobseekerId: true,
+        jobApplications: jobseekerId ? {
+          where: {
+            jobseekerId: jobseekerId,
           },
-        },
+          select: {
+            jobStatus: true,
+          },
+        } : false,
       },
       take: maxResults,
       skip: skip,
@@ -348,8 +354,18 @@ export async function getJobListingsFiltered(request: Request){
       where: andConditions.length > 0 ? { AND: andConditions } : undefined,
     }),
   ]);
+
+  const transformedJobPostings = filteredJobPostings.map(posting => {
+    const statuses = posting.jobApplications?.map(status => status.jobStatus) || [];
+    return {
+      ...posting,
+      hasApplied: statuses.includes('Applied'),
+      isBookmarked: statuses.includes('Bookmarked'),
+      jobApplications: undefined,
+    };
+  });
   return {
-    filteredJobPostings,
+    filteredJobPostings: transformedJobPostings,
     totalCount,
   };
 }
