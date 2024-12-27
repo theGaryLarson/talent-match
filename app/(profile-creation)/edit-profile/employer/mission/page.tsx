@@ -130,8 +130,8 @@ export default function CreateEmployerCompanyInfoMissionPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(4 / 6) * 100} size="sm" />
-        <p>Step 4/6</p>
+        <ProgressBarFlat progress={(4 / 5) * 100} size="sm" />
+        <p>Step 4/5</p>
         <h1>Company Info</h1>
         <p className="subtitle">* Indicates a required field</p>
         <h2>Mission</h2>

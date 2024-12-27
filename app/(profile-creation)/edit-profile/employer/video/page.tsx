@@ -114,7 +114,7 @@ export default function CreateJobseekerProfileIntroPage() {
         const result = await response.json();
         dispatch(setPageSaved('video'));
         dispatch(setVideo(videoData));
-        router.push('/edit-profile/employer/disclosures');
+        router.push('/edit-profile/employer/congratulations');
       } else {
         const errorData = await response.json();
       }
@@ -125,9 +125,9 @@ export default function CreateJobseekerProfileIntroPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(5 / 5) * 100} size="sm" />
 
-        <p>Step 5/6</p>
+        <p>Step 5/5</p>
         <h1>Company Video</h1>
         <p className="subtitle">* Indicates a required field</p>
 

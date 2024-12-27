@@ -1,31 +1,16 @@
 'use client';
 
-import React, {
-  ChangeEvent,
-  FormEvent,
-  SyntheticEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import type { RootState } from '@/lib/employerStore';
-import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
+import type { RootState } from '@/lib/employerStore';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import { Button } from 'flowbite-react';
 import { DatePicker } from '@mui/x-date-pickers';
-import { Typography } from '@mui/material';
-import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
-import dayjs, { Dayjs } from 'dayjs';
-import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
-import { CompanyDropdownDTO } from '@/data/dtos/CompanyDropdownDTO';
 import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
-import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
+import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import {
@@ -34,85 +19,57 @@ import {
   ReadAddressDTO,
   ReadCompanyInfoDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
-import {
-  setCompany,
-  initialState,
-} from '@/lib/features/profileCreation/employerSlice';
-import {
-  setPageDirty,
-  setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import _ from 'lodash';
+import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
+import { setCompany, initialState } from '@/lib/features/profileCreation/employerSlice';
+import { setPageDirty, setPageSaved } from '@/lib/features/profileCreation/saveSlice';
+import dayjs, { Dayjs } from 'dayjs';
 import { devLog } from '@/app/lib/utils';
+import _ from 'lodash';
+import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
 const formNamePrefix = 'profile-creation-company-';
 
 export default function CreateEmployerCompanyInfoPage() {
-  const companyStoreData = useSelector(
-    (state: RootState) => state.employer.company,
+  const companyStoreData = useSelector((state: RootState) => state.employer.company);
+  const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({ ...companyStoreData });
+  const [yearFounded, setYearFounded] = useState<Dayjs | null>(
+    companyData.yearFounded ? dayjs(companyData.yearFounded) : null
   );
-
-  //NOTE: companyData is the master object for this entire page
-  const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({
-    ...companyStoreData,
+  const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(null);
+  const [selectedWorkLocation, setSelectedWorkLocation] = useState<PostAddressDTO>({
+    city: '',
+    state: '',
+    stateCode: '',
+    zip: '',
+    county: '',
   });
+
   const dispatch = useDispatch();
   const router = useRouter();
-
-  //NOTE: per review yearFounded potentially may not be reduced into master object due to Dayjs
-  const [yearFounded, setYearFounded] = useState<Dayjs | null>(
-    companyData.yearFounded === '' ? null : dayjs(companyData.yearFounded),
-  );
-  const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
-  const updateSessionProperties = useUpdateSession(); // TODO: update session with companyId and isApproved value if company exists
-
-  const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
-    ReadCompanyInfoDTO | string
-  >('');
-  const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
-    null,
-  );
-  const [selectedWorkLocation, setSelectedWorkLocation] =
-    useState<PostAddressDTO>({
-      city: '',
-      state: '',
-      stateCode: '',
-      zip: '',
-      county: '',
-    } as PostAddressDTO);
-
   const pathname = usePathname();
-  // using to track whether selectCompanyDropDownData is a string or object. In this way I can prevent Basic Info section
-  // from resetting when retyping or correcting Company name.
-  const prevSelectCompanyDropdownData =
-    useRef<typeof selectCompanyDropdownData>();
+  const { data: session } = useSession();
+  const updateSessionProperties = useUpdateSession();
 
   useEffect(() => {
     if (!session?.user?.id) return;
-    devLog(session);
+
     const fetchCompanyData = async (companyId: string) => {
       try {
-        const response = await fetch(
-          `/api/employers/account/company-info/get/${companyId}`,
-        );
-
+        const response = await fetch(`/api/employers/account/company-info/get/${companyId}`);
         if (!response.ok) {
           console.warn('Data fetching failed. Using initialized fields.');
-          return; // Skip updating if fetching fails
+          return;
         }
 
         const fetchedData: ReadCompanyInfoDTO = (await response.json()).result;
-        devLog('fetchedData', fetchedData);
-        const companyZips: PostAddressDTO[] = (
-          fetchedData?.companyAddresses || []
-        )
-          .filter((addr): addr is ReadAddressDTO => addr?.zip !== undefined) // Filter out addresses with undefined zipCode
+        const companyZips: PostAddressDTO[] = (fetchedData?.companyAddresses || [])
+          .filter((addr): addr is ReadAddressDTO => addr?.zip !== undefined)
           .map((addr) => ({
             city: addr?.city,
             stateCode: addr?.stateCode,
             zip: addr?.zip!,
           }));
-        devLog('companyZips', companyZips);
+
         const updatedCompanyData: PostCompanyInfoDTO = {
           userId: session?.user?.id!,
           employerId: session?.user?.employerId || undefined,
@@ -134,31 +91,11 @@ export default function CreateEmployerCompanyInfoPage() {
           companySize: fetchedData.companySize || '',
           estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
         };
-        devLog('updatedCompanyData', updatedCompanyData);
-        setCompanyData((prevState) => ({
-          ...prevState,
-          ...updatedCompanyData,
-        }));
-        devLog('setCompanyData', companyData);
+
+        setCompanyData(updatedCompanyData);
         setYearFounded(
-          fetchedData.yearFounded
-            ? dayjs().year(parseInt(fetchedData.yearFounded))
-            : null,
+          fetchedData.yearFounded ? dayjs().year(parseInt(fetchedData.yearFounded)) : null
         );
-        setSelectCompanyDropdownData({
-          // userId: session.user.id!,
-          companyId: fetchedData.companyId,
-          companyName: fetchedData.companyName,
-          logoUrl: fetchedData.logoUrl || undefined,
-          industrySectorId: fetchedData.industrySectorId || undefined,
-          websiteUrl: fetchedData.websiteUrl || '',
-          yearFounded: fetchedData.yearFounded ? fetchedData.yearFounded : '',
-          companyEmail: fetchedData.companyEmail || '',
-          companyPhone: fetchedData.companyPhone || '',
-          companySize: fetchedData.companySize || '',
-          estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
-          createdBy: fetchedData.createdBy || '',
-        });
 
         setIndustry({
           industry_sector_id: fetchedData.industrySectorId ?? '',
@@ -169,339 +106,141 @@ export default function CreateEmployerCompanyInfoPage() {
       }
     };
 
-    /* ANCHOR - core logic of initial form, checks if
-    (a) no prior company data in store => use defaults and session data
-      (b) if user & companyId => fetch companyData
-      (c) else if no user & companyId => creates new company id, but may not need to be created if prior dropdown company selected?
-    (d) prior data exists => use prior data
-    */
-    const initializeFormFields = () => {
-      // if no company data for the employer (companyStoreData contains redux store init values)
-      if (_.isEqual(companyStoreData, initialState.company)) {
-        if (session?.user?.companyId) {
-          devLog('session.user.companyId: ', session.user.companyId);
-          fetchCompanyData(session.user.companyId);
-        }
-      } else {
-        // redux store contains company data
-        setCompanyData(companyStoreData);
-        setYearFounded(
-          companyData.yearFounded ? dayjs(companyData.yearFounded) : null,
-        );
-      }
-    };
+    if (_.isEqual(companyStoreData, initialState.company) && session?.user?.companyId) {
+      fetchCompanyData(session.user.companyId);
+    } else {
+      setCompanyData(companyStoreData);
+      setYearFounded(companyData.yearFounded ? dayjs(companyData.yearFounded) : null);
+    }
 
-    initializeFormFields();
     dispatch(setPageSaved('company'));
   }, [session?.user.id, pathname]);
 
-  // used to manage changes on selectCompanyDropDownData depending on its type (object or string).
-  useEffect(() => {
-    if (
-      typeof selectCompanyDropdownData === 'object' &&
-      selectCompanyDropdownData !== null
-    ) {
-      // Company selected from dropdown
-      const companyObj = selectCompanyDropdownData;
-      setYearFounded(
-        companyObj.yearFounded
-          ? dayjs().year(parseInt(companyObj.yearFounded, 10))
-          : null,
-      );
-      setCompanyData({
-        ...companyData,
-        companyId: companyObj.companyId,
-        companyName: companyObj.companyName,
-        yearFounded: companyObj.yearFounded?.toString() || '',
-        websiteUrl: companyObj.websiteUrl,
-      });
-      setIndustry({
-        // do this inside of companyData object rather than separate state. First ensure companyDataObject has been transformed to a PostCompanyInfoDTO
-        industry_sector_id: companyObj.industrySectorId ?? '',
-        sector_title: '', // Not needed; only ID is required
-      });
-    }
-
-    if (prevSelectCompanyDropdownData.current !== selectCompanyDropdownData) {
-      dispatch(setPageDirty('company'));
-    }
-
-    // Update the previous value
-    prevSelectCompanyDropdownData.current = selectCompanyDropdownData;
-  }, [selectCompanyDropdownData, pathname]);
-
-  const handleFieldChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    console.log(name, value);
     const fieldName = name.substring(formNamePrefix.length);
-    console.log(fieldName);
     dispatch(setPageDirty('company'));
+
     if (companyData.hasOwnProperty(fieldName)) {
       setCompanyData((prevState) => ({
-        ...companyData,
+        ...prevState,
         [fieldName]: value,
       }));
     }
-
-    // added for editing existing
-    if (
-      typeof selectCompanyDropdownData === 'object' &&
-      selectCompanyDropdownData?.hasOwnProperty(fieldName)
-    ) {
-      setSelectCompanyDropdownData({
-        ...selectCompanyDropdownData,
-        [fieldName]: value,
-      });
-    }
   };
 
-  // Handle address selection from autocomplete
   const handleAddressSelection = (
-    e: SyntheticEvent<Element, Event>,
-    val: string | ReadAddressDTO | null,
+    e: React.SyntheticEvent<Element, Event>,
+    val: string | ReadAddressDTO | null
   ) => {
     dispatch(setPageDirty('company'));
-    console.log('handleAddressSelection');
     if (val && typeof val === 'object' && 'zip' in val) {
       setSelectedWorkLocation((prevState) => ({
         ...prevState,
         zip: val.zip!,
       }));
-      const selectedZipCode = val.zip; // Only extract the zipCode
-      // Append the selected zipCode to companyAddresses if it's not already there
+
       setCompanyData((prevData) => {
         const alreadyExists = prevData.companyAddresses?.some(
-          (location) => location.zip === selectedZipCode,
+          (location) => location.zip === val.zip
         );
 
         if (!alreadyExists) {
-          const updatedAddresses = prevData.companyAddresses
-            ? [...prevData.companyAddresses, val]
-            : [val];
-
+          const updatedAddresses = prevData.companyAddresses ? [...prevData.companyAddresses, val] : [val];
           return {
             ...prevData,
             companyAddresses: updatedAddresses,
           };
         }
-
-        return prevData; // Return unchanged if already exists
+        return prevData;
       });
     }
   };
 
   const handleImageUpload = (url: string) => {
     dispatch(setPageDirty('company'));
-    // Update companyData.logoUrl in all cases
     setCompanyData((prevState) => ({
       ...prevState,
       logoUrl: url,
     }));
-
-    // If selectCompanyDropdownData is an object, update its logoUrl
-    if (
-      typeof selectCompanyDropdownData === 'object' &&
-      selectCompanyDropdownData !== null
-    ) {
-      setSelectCompanyDropdownData({
-        ...selectCompanyDropdownData,
-        logoUrl: url,
-      });
-    }
   };
 
-  //ANCHOR - handle submit, finalizes data that will be updated in store/database
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    devLog('yearFounded', yearFounded); // Ensure that year_founded is correctly updated
-    if (!session || !session.user) {
-      console.error('User session is not available.');
-      return;
-    }
-    setCompanyData({
-      ...companyData,
-      employerId: session?.user.employerId!,
-    });
 
-    if (companyData.companyName === '' || null) {
-      // TODO: if chosenCompany does not have name, it does not exist, setup warning Toast for existing company or contact CFA to be added
-      console.error('Company name is not available.');
-      return;
-    }
+    if (!session?.user?.id || !session?.user?.employerId) {
+        console.error('User session or required fields are not available.');
+        return;
+      }
 
-    // company exists in selection
-    if (typeof selectCompanyDropdownData !== 'string') {
-      setCompanyData({
+    const finalCompanyData: PostCompanyInfoDTO = {
         ...companyData,
-        employerId: session.user.employerId!,
-        companyId: selectCompanyDropdownData.companyId,
-        companyName: selectCompanyDropdownData.companyName,
-        industrySectorId: selectCompanyDropdownData.industrySectorId,
-        logoUrl: selectCompanyDropdownData.logoUrl,
-        websiteUrl: selectCompanyDropdownData.websiteUrl,
-        companyEmail: selectCompanyDropdownData.companyEmail,
-        companyPhone: selectCompanyDropdownData.companyPhone,
-        yearFounded: selectCompanyDropdownData.yearFounded
-          ? selectCompanyDropdownData.yearFounded.toString()
-          : '',
-        companySize: selectCompanyDropdownData.companySize ?? '', //not sure why null needed here
-        estimatedAnnualHires:
-          selectCompanyDropdownData.estimatedAnnualHires ?? '', // not sure why null needed here
-      });
-      devLog(companyData);
-      // new company: values stored in companyData from page inputs
-    }
+        userId: session.user.id,
+        employerId: session.user.employerId
+      };
 
-    //ANCHOR - on submit, try to upsert chosenCompanyData, finalized/corrected data above
     try {
-      console.log(companyData);
-      const response = await fetch(
-        '/api/employers/account/company-info/upsert',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...companyData,
-            userId: session.user.id,
-            employerId: session.user.employerId,
-            logoUrl: companyData.logoUrl || companyData.logoUrl, // couldn't find why this isn't passed. Hack fix to ensure its set...
-          }),
+      const response = await fetch('/api/employers/account/company-info/upsert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify(finalCompanyData),
+      });
 
       if (response.ok) {
-        dispatch(setCompany(companyData));
-        if (typeof selectCompanyDropdownData !== 'string') {
-          // company selection from drop-down exists. use the dropdown object data
-          await updateSessionProperties({
-            companyId: selectCompanyDropdownData.companyId,
-            companyIsApproved: selectCompanyDropdownData.isApproved,
-          });
-        } else {
-          console.error('Company may not exist');
-        }
+        dispatch(setCompany(finalCompanyData));
+        await updateSessionProperties({
+          companyId: finalCompanyData.companyId
+        });
 
-        // if (typeof selectCompanyDropdownData === 'object') {
-        router.push('/edit-profile/employer/disclosures');
-        // }
-
+        router.push('/edit-profile/employer/about');
         dispatch(setPageSaved('company'));
       } else {
         const errorData = await response.json();
+        console.error('Failed to update company info:', errorData);
       }
-    } catch (error) {}
-  };
-
-  const [open, setOpen] = useState<boolean>(false);
-
-  const openSnackbar = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string,
-  ) => {
-    if (reason === 'clickaway') {
-      return;
+    } catch (error) {
+      console.error('Error updating company info:', error);
     }
-    setOpen(false);
   };
 
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(2 / 3) * 100} size="sm" />
-        <p>Step 2/3</p>
-        <h1>Company Info</h1>
-        <p className="subtitle">* Indicates a required field</p>
-
-        <SnackbarWithIcon
-          open={open}
-          onClose={handleClose}
-          variant="success"
-          message={
-            <div>
-              <Typography variant="body1">Autofill completed!</Typography>
-              <Typography variant="body2">
-                Company info has been loaded.
-              </Typography>
-            </div>
-          }
-        />
-
+      <ProgressBarFlat progress={(2 / 5) * 100} size="sm" />
+      <p className='mb-6'>Step 2/5</p>
         <form onSubmit={handleSubmit}>
           <div className="profile-form-grid md:grid-cols-2">
-            <TextFieldWithAutocomplete
-              apiSearchRoute="/api/companies/search/"
-              fieldLabel="Company Name *"
-              id="profile-creation-company-companyName"
-              className="text-field-autocomplete"
-              searchingText="Searching..."
-              noResultsText="No company found, existing company required. Please contact administrator."
-              allowNewOption={false}
-              value={selectCompanyDropdownData || companyData.companyName || ''}
-              onChange={(e, val) => {
-                // logic predominately handled in useEffect
-                // Always update the dropdown value whether an existing company (object) or new company (string)
-                setSelectCompanyDropdownData(val ?? '');
-                if (selectCompanyDropdownData !== '') {
-                  openSnackbar();
-                }
+            <SelectAutoload
+              id="profile-creation-company-industrySectorTitle"
+              apiAutoloadRoute="/api/employers/industry-sectors"
+              label="Industry Sector *"
+              className="select-autoload"
+              value={industry}
+              onChange={(val) => {
+                setIndustry(val);
+                setCompanyData({
+                  ...companyData,
+                  industrySectorId: val?.industry_sector_id!,
+                  industrySectorTitle: val?.sector_title,
+                });
               }}
-              searchPlaceholder="Company name"
-              getOptionLabel={(option: ReadCompanyInfoDTO) =>
-                option.companyName ?? ''
+              placeholder="Your company's industry sector"
+              loadingText="Retrieving industry sectors..."
+              getOptionLabel={(option: IndustrySectorDropdownDTO) => option.sector_title}
+              getOptionId={(option: IndustrySectorDropdownDTO) => option.industry_sector_id ?? ''}
+              getOptionFromId={(options: IndustrySectorDropdownDTO[], id: string) =>
+                options.find((item) => item.industry_sector_id === id) || null
               }
+              required
             />
-
-            {typeof selectCompanyDropdownData === 'string' &&
-              selectCompanyDropdownData.trim() !== '' && (
-                <SelectAutoload
-                  id="profile-creation-company-industrySectorTitle"
-                  apiAutoloadRoute="/api/employers/industry-sectors"
-                  label="Industry Sector *"
-                  className="select-autoload"
-                  value={industry}
-                  onChange={(val) => {
-                    setIndustry(val);
-                    setCompanyData({
-                      ...companyData,
-                      industrySectorId: val?.industry_sector_id!,
-                      industrySectorTitle: val?.sector_title,
-                    });
-                  }}
-                  placeholder="Your company's industry sector"
-                  loadingText="Retrieving industry sectors..."
-                  getOptionLabel={(option: IndustrySectorDropdownDTO) =>
-                    option.sector_title
-                  }
-                  getOptionId={(option: IndustrySectorDropdownDTO) =>
-                    option.industry_sector_id ?? ''
-                  }
-                  getOptionFromId={(
-                    options: IndustrySectorDropdownDTO[],
-                    id: string,
-                  ) =>
-                    options.find((item) => item.industry_sector_id === id) ||
-                    null
-                  }
-                  required
-                />
-              )}
           </div>
 
-          {/* NOTE: Per current process companies are manually added, therefore following code note needed. However may be useful to keep if in the future we scale and process is updated to allow users to edit company info
           <fieldset>
             <legend>
-              <h2>
-                Logo <span className="subtitle-optional">(optional)</span>
-              </h2>
+              <h2>Logo <span className="subtitle-optional">(optional)</span></h2>
             </legend>
             <AvatarUpload
               id="profile-creation-company-logoUrl"
@@ -510,21 +249,11 @@ export default function CreateEmployerCompanyInfoPage() {
               maxSizeMB={1}
               userId={companyData.companyId!}
               onImageUpload={handleImageUpload}
-              initialImageUrl={
-                typeof selectCompanyDropdownData === 'object' &&
-                selectCompanyDropdownData !== null &&
-                selectCompanyDropdownData.logoUrl
-                  ? selectCompanyDropdownData.logoUrl
-                  : '' // fixme: use placeholder image for logo instead of empty string ''
-              }
-              disabled={
-                session?.user?.employeeIsApproved ||
-                (typeof selectCompanyDropdownData !== 'string' &&
-                  session?.user?.employerId ===
-                    selectCompanyDropdownData.createdBy)
-              }
+              initialImageUrl={companyData.logoUrl || ''}
+              disabled={session?.user?.employeeIsApproved}
             />
           </fieldset>
+
           <fieldset>
             <h2>Basic Info</h2>
             <div className="profile-form-grid tablet:grid-cols-2">
@@ -532,46 +261,37 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-websiteUrl"
                 placeholder="www.company.com"
                 onChange={handleFieldChange}
-                value={
-                  (typeof selectCompanyDropdownData === 'object'
-                    ? selectCompanyDropdownData.websiteUrl
-                    : companyData.websiteUrl) ?? ''
-                }
+                value={companyData.websiteUrl ?? ''}
                 disabled={session?.user?.employeeIsApproved}
                 required
               >
                 Company Website *
               </InputTextWithLabel>
+
               <InputTextWithLabel
                 type="email"
                 id="profile-creation-company-companyEmail"
                 placeholder="hello@company.com"
                 onChange={handleFieldChange}
-                value={
-                  (typeof selectCompanyDropdownData === 'object'
-                    ? selectCompanyDropdownData.companyEmail
-                    : companyData.companyEmail) ?? ''
-                }
+                value={companyData.companyEmail ?? ''}
                 disabled={session?.user?.employeeIsApproved}
                 required
               >
                 Company Email *
               </InputTextWithLabel>
+
               <InputTextWithLabel
                 type="tel"
                 id="profile-creation-company-companyPhone"
                 onChange={handleFieldChange}
                 placeholder="(555) 123-4567"
-                value={
-                  (typeof selectCompanyDropdownData === 'object'
-                    ? selectCompanyDropdownData.companyPhone
-                    : companyData.companyPhone) ?? ''
-                }
+                value={companyData.companyPhone ?? ''}
                 disabled={session?.user?.employeeIsApproved}
                 required
               >
                 Company Phone Number *
               </InputTextWithLabel>
+
               <DatePicker
                 label={'Year Founded *'}
                 views={['year']}
@@ -600,48 +320,40 @@ export default function CreateEmployerCompanyInfoPage() {
                   { label: '5000+', value: '5000+' },
                 ]}
                 placeholder="Please select"
-                value={
-                  (typeof selectCompanyDropdownData === 'object'
-                    ? selectCompanyDropdownData.companySize
-                    : companyData.companySize) ?? ''
-                }
+                value={companyData.companySize ?? ''}
                 disabled={session?.user?.employeeIsApproved}
               >
                 Company Size *
               </SelectOptionsWithLabel>
+
               <InputTextWithLabel
                 id="profile-creation-company-estimatedAnnualHires"
                 name="profile-creation-company-estimatedAnnualHires"
                 placeholder="100"
                 onChange={handleFieldChange}
-                value={
-                  (typeof selectCompanyDropdownData === 'object'
-                    ? selectCompanyDropdownData.estimatedAnnualHires
-                    : companyData.estimatedAnnualHires) || ''
-                }
+                value={companyData.estimatedAnnualHires || ''}
                 disabled={session?.user?.employeeIsApproved}
-                // required
+                required
               >
                 Estimated Annual Hires *
               </InputTextWithLabel>
+
               <TextFieldWithAutocomplete
-                apiSearchRoute={`/api/postal-geo-data/zip/search/`} // Use generic search API
+                apiSearchRoute="/api/postal-geo-data/zip/search/"
                 fieldLabel="Company Location *"
                 id="profile-creation-company-companyAddresses"
                 className="text-field-autocomplete"
                 searchingText="Searching..."
                 noResultsText="No postal code found..."
-                value={selectedWorkLocation?.zip ?? ''} // Control the value via searchTerm, similar to selectCompanyDropdownData for company name
-                onChange={(e, val) => {
-                  // Handle the selected address and set the searchTerm
-                  devLog('val', val);
-                  handleAddressSelection(e, val);
-                }}
+                value={selectedWorkLocation?.zip ?? ''}
+                disabled={session?.user?.employeeIsApproved}
+                onChange={handleAddressSelection}
                 searchPlaceholder="Company Location Postal Code"
                 getOptionLabel={(option: ReadAddressDTO) =>
                   `${option?.city}, ${option?.stateCode} ${option?.zip}`
                 }
               />
+
               <div className="selected-locations">
                 {companyData?.companyAddresses?.map((location, index) => (
                   <div key={index} className="location-tag">
@@ -649,9 +361,8 @@ export default function CreateEmployerCompanyInfoPage() {
                   </div>
                 ))}
               </div>
-            </div> 
+            </div>
           </fieldset>
-            */}
 
           <div className="profile-form-progress-btn-group">
             <Button
