@@ -24,12 +24,12 @@ export default async function page({ params }: { params: { id: string } }) {
       <div className="self-stretch flex-col justify-center items-start gap-6 flex">
         <div className="self-stretch justify-center items-center gap-10 inline-flex">
           <div className="w-52 h-32 relative">
-            <Image src="/images/landing/TWC-logo.svg" width={242} height={155} alt="TWC logo" className="w-52 h-32"/>
+            <Image src="/images/landing/TWC-logo.svg" width={242} height={155} alt="TWC logo" className="w-52 h-32" />
           </div>
-          <div className="border-2 border-cyan-700 flex-col justify-start items-start inline-flex">
+          {provider?.logoUrl && <div className="border-2 border-cyan-700 flex-col justify-start items-start inline-flex">
             <div className="w-[0px] h-20 relative" />
-          </div>
-          <Image src={provider?.logoUrl || ''} width={242} height={155} alt={provider?.providerName + " logo"} className="w-52 h-32"/>
+          </div>}
+          {provider?.logoUrl && <Image src={provider?.logoUrl || ''} width={242} height={155} alt={provider?.providerName + " logo"} className="w-52 h-32"/>}
         </div>
         <div className="mt-8 self-stretch text-sky-900 text-5xl font-normal font-['Roboto'] capitalize leading-10">
           Description
