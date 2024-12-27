@@ -1271,6 +1271,43 @@ function getRandomUserPhoto() {
     return `https://randomuser.me/api/portraits/${gender}/${number}.jpg`;
 }
 
+function getRandomLogo() {
+    const domain = faker.helpers.arrayElement([
+        "google.com",
+        "apple.com",
+        "microsoft.com",
+        "amazon.com",
+        "facebook.com",
+        "twitter.com",
+        "linkedin.com",
+        "instagram.com",
+        "salesforce.com",
+        "oracle.com",
+        "adobe.com",
+        "netflix.com",
+        "spotify.com",
+        "uber.com",
+        "lyft.com",
+        "tesla.com",
+        "airbnb.com",
+        "dropbox.com",
+        "slack.com",
+        "zoom.us",
+        "stripe.com",
+        "paypal.com",
+        "shopify.com",
+        "github.com",
+        "bitbucket.org",
+        "asana.com",
+        "atlassian.com",
+        "squareup.com",
+        "intuit.com",
+        "zendesk.com",
+        "hubspot.com",
+    ]);
+    return `https://logo.clearbit.com/${domain}`;
+}
+
 
 /////////////////////////////////////////////////
 /////////////   seed functions  /////////////////
@@ -2073,7 +2110,7 @@ async function seedMockCompanies() {
                 company_id: uuidv4(),
                 industry_sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                 company_name: faker.company.name(),
-                company_logo_url: faker.internet.url(),
+                company_logo_url: getRandomLogo(),
                 about_us: faker.lorem.sentences(2),
                 company_email: faker.internet.email(),
                 year_founded: faker.number.int({min: 1900, max: 2024}),

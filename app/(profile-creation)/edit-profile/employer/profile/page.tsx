@@ -220,6 +220,7 @@ export default function CreateEmployerProfilePage() {
 
     const updatedProfileData = {
       ...profileData,
+      userId: session.user.id ?? '',
       companyId: typeof selectCompanyDropdownData !== 'string' ? selectCompanyDropdownData.companyId : '',
       companyName: typeof selectCompanyDropdownData !== 'string' ? selectCompanyDropdownData.companyName : selectCompanyDropdownData,
       workAddressId: workAddress ? workAddress.addressId : undefined
