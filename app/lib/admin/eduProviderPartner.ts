@@ -4,6 +4,7 @@ import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { devLog } from '@/app/lib/utils';
 import {PrismaClient} from "@prisma/client";
 import { auth } from "@/auth"
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -166,6 +167,53 @@ export async function deleteEduProvider(providerId: string) {
 }
 
 
+export type addProviderProgramDTO = {
+  eduProviderId:string,
+  pathwayId?:string,
+  targetedJobRoles?:string,
+  description:string,
+  months?:string,
+  hoursPerWeek?:string,
+  targetPopulation?:string,
+  serviceArea?:string,
+  pathways?:string,
+  programDescription?:string,
+  locations:string,
+  about:string,
+  tuition:string,
+  fees:string,
+  costSummery:string,
+  locationsType?:string,
+  setStartedUrl?:string,
+  faq:string,
+  eduLevel:string,
+  programLength:string
+}
+export async function addProviderProgram(params:addProviderProgramDTO) {
+  try {
+    console.log('tried adding a program with data:', params)
+  } catch (error) {
+    
+  }
+}
+
+export async function deleteProviderProgram(trainingProgramId:string){
+  const session = await auth();
+  if(!session?.user.roles.includes(Role.ADMIN))return {status:401};
+
+  try {
+    const result = await prisma.provider_programs.delete({where:{training_program_id:trainingProgramId}})
+    return result;
+  } catch (error) {
+    
+  }
+}
+
+
+
+
+
+
 
 export const getTrainingPartners = async (): Promise<{ success: true; result: AdminTrainingPartnerViewDTO[] }> => {
   const partners = await prisma.edu_providers.findMany({
@@ -210,5 +258,6 @@ export const getTrainingPartners = async (): Promise<{ success: true; result: Ad
 export const getJobseekersByTrainingPartner = async (providerId: string) => {
   //TODO: Sort by is_verified
 };
+
 
 export const updateJobseekerTrainingProgram = async (jobseekerId: string) => {};

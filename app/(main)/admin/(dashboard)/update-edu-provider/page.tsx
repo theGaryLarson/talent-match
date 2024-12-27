@@ -11,6 +11,7 @@ import { AddTrainingPartnerDTO } from '@/app/lib/admin/eduProviderPartner';
 import { Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import AddProviderProgramsFrom from '@/app/ui/components/admin/AddProviderProgramsFrom';
 export default function UpdateTrainingProviderPage() {
   const [selectedProviderName, setSelectedProviderName] = useState<string>('');
   const [selectedProviderId, setSelectedProviderId] = useState<string>('');
@@ -212,6 +213,7 @@ export default function UpdateTrainingProviderPage() {
 
       {/* Form */}
       {selectedProviderId && (
+        <div>
         <form onSubmit={onSubmit} className="space-y-3">
 
           {/* TP Logo Upload */}
@@ -382,7 +384,9 @@ export default function UpdateTrainingProviderPage() {
             <Button type="submit" endIcon={<ArrowCircleRightOutlinedIcon/>} variant="contained">Update Provider</Button>
           </div>
         </form>
-      )}
+        <AddProviderProgramsFrom providerId={selectedProviderId+selectedProviderName}/>
+        </div>  
+    )}
     </div>
   );
 }
