@@ -250,7 +250,7 @@ export default function CreateEmployerCompanyInfoPage() {
               userId={companyData.companyId!}
               onImageUpload={handleImageUpload}
               initialImageUrl={companyData.logoUrl || ''}
-              disabled={session?.user?.employeeIsApproved}
+              disabled={!session?.user?.employeeIsApproved}
             />
           </fieldset>
 
@@ -262,7 +262,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 placeholder="www.company.com"
                 onChange={handleFieldChange}
                 value={companyData.websiteUrl ?? ''}
-                disabled={session?.user?.employeeIsApproved}
+                disabled={!session?.user?.employeeIsApproved}
                 required
               >
                 Company Website *
@@ -274,7 +274,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 placeholder="hello@company.com"
                 onChange={handleFieldChange}
                 value={companyData.companyEmail ?? ''}
-                disabled={session?.user?.employeeIsApproved}
+                disabled={!session?.user?.employeeIsApproved}
                 required
               >
                 Company Email *
@@ -286,7 +286,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 onChange={handleFieldChange}
                 placeholder="(555) 123-4567"
                 value={companyData.companyPhone ?? ''}
-                disabled={session?.user?.employeeIsApproved}
+                disabled={!session?.user?.employeeIsApproved}
                 required
               >
                 Company Phone Number *
@@ -304,7 +304,7 @@ export default function CreateEmployerCompanyInfoPage() {
                   });
                 }}
                 className="year-picker"
-                disabled={session?.user?.employeeIsApproved}
+                disabled={!session?.user?.employeeIsApproved}
               />
 
               <SelectOptionsWithLabel
@@ -321,7 +321,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 ]}
                 placeholder="Please select"
                 value={companyData.companySize ?? ''}
-                disabled={session?.user?.employeeIsApproved}
+                disabled={!session?.user?.employeeIsApproved}
               >
                 Company Size *
               </SelectOptionsWithLabel>
@@ -332,7 +332,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 placeholder="100"
                 onChange={handleFieldChange}
                 value={companyData.estimatedAnnualHires || ''}
-                disabled={session?.user?.employeeIsApproved}
+                disabled={!session?.user?.employeeIsApproved}
                 required
               >
                 Estimated Annual Hires *
@@ -346,7 +346,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 searchingText="Searching..."
                 noResultsText="No postal code found..."
                 value={selectedWorkLocation?.zip ?? ''}
-                disabled={session?.user?.employeeIsApproved}
+                disabled={!session?.user?.employeeIsApproved}
                 onChange={handleAddressSelection}
                 searchPlaceholder="Company Location Postal Code"
                 getOptionLabel={(option: ReadAddressDTO) =>
