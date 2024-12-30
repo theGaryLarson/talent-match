@@ -40,18 +40,15 @@ export default function SelectAutoload<ValueType>({
   getOptionFromId,
   ...rest
 }: Props<ValueType>) {
-  const [selectValue, setSelectValue] = React.useState<string>(
-    value ? getOptionId(value) : '',
-  );
   const [options, setOptions] = React.useState<ValueType[]>([]);
   const [loading, setLoading] = React.useState(true);
 
+  const selectValue = value ? getOptionId(value) : '';
+
   const handleChange = (event: SelectChangeEvent<string>) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectValue(value);
-    onChange(getOptionFromId(options, value));
+    const selectedValue = event.target.value;
+    const selectedOption = getOptionFromId(options, selectedValue);
+    onChange(selectedOption);
   };
 
   // Load the inital filter values
@@ -62,16 +59,68 @@ export default function SelectAutoload<ValueType>({
 
         const response = await fetch(apiAutoloadRoute);
         const data: ValueType[] = await response.json();
-
-        setOptions(data); // Update the options with fetched data
+        setOptions(data);
 
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
     };
     autoload();
   }, [apiAutoloadRoute]);
+
+  const renderLoadingSelect = () => (
+    <Select
+      displayEmpty
+      value=""
+      disabled
+      renderValue={() => (
+        <span className="text-gray-500">
+          <CircularProgress color="inherit" size={20} /> {loadingText}
+        </span>
+      )}
+    >
+      <MenuItem disabled>
+        <span>
+          <CircularProgress color="inherit" size={20} /> {loadingText}
+        </span>
+      </MenuItem>
+    </Select>
+  );
+
+  const renderLoadedSelect = () => (
+    <Select
+      id={id}
+      displayEmpty
+      value={selectValue}
+      onChange={handleChange}
+      input={<OutlinedInput notched label={label} />}
+      renderValue={(selected) => {
+        if (!selected) {
+          return <span className="text-gray-500">{placeholder}</span>;
+        }
+        const option = getOptionFromId(options, selected);
+        return option ? (
+          getOptionLabel(option)
+        ) : (
+          <span className="text-gray-500">{placeholder}</span>
+        );
+      }}
+      inputProps={{ 'aria-label': label }}
+      {...rest}
+    >
+      <MenuItem disabled value="">
+        {placeholder}
+      </MenuItem>
+      {options.map((option) => (
+        <MenuItem key={getOptionId(option)} value={getOptionId(option)}>
+          {getOptionLabel(option)}
+        </MenuItem>
+      ))}
+    </Select>
+  );
 
   return (
     <div className={className}>
@@ -79,49 +128,7 @@ export default function SelectAutoload<ValueType>({
         <InputLabel htmlFor={id} shrink>
           {label}
         </InputLabel>
-        {loading ? (
-          <Select
-            displayEmpty
-            renderValue={(selected) => (
-              <span className="text-gray-500">
-                <CircularProgress color="inherit" size={20} /> {loadingText}
-              </span>
-            )}
-          >
-            <MenuItem disabled>
-              <span>
-                <CircularProgress color="inherit" size={20} /> {loadingText}
-              </span>
-            </MenuItem>
-          </Select>
-        ) : (
-          <Select
-            id={id}
-            displayEmpty
-            value={selectValue}
-            onChange={handleChange}
-            input={<OutlinedInput notched label={label} />}
-            renderValue={(selected) => {
-              let option = getOptionFromId(options, selected);
-              if (selected && option) {
-                return getOptionLabel(option);
-              }
-              else {
-                setSelectValue('');
-                return <span className="text-gray-500">{placeholder}</span>;
-              }
-            }}
-            inputProps={{ 'aria-label': label }}
-            {...rest}
-          >
-            <MenuItem disabled>{placeholder}</MenuItem>
-            {options.map((option) => (
-              <MenuItem key={getOptionId(option)} value={getOptionId(option)}>
-                {getOptionLabel(option)}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
+        {loading ? renderLoadingSelect() : renderLoadedSelect()}
       </FormControl>
     </div>
   );
