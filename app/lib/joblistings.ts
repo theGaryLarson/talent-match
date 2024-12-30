@@ -125,13 +125,14 @@ export async function getMyJobListings() {
   }
   try {
     let results = prisma.job_postings.findMany({
-      where: {
-        employer_id: Session?.user.employerId,
-      },
-      include: {
-        industry_sectors: true,
-      },
-    });
+      where:{
+        employer_id: Session?.user.employerId
+      }, include:{
+        industry_sectors:true,
+        companies: true,
+        skills: true,
+      }
+    })
     return results;
   } catch (e) {
     console.error(e);
@@ -435,14 +436,22 @@ export async function getJobSeekerBookmarkedJobs() {
   }
   try {
     const result = await prisma.jobseekerJobPosting.findMany({
-      include: {
-        job_posting: true,
-      },
-      where: {
-        jobseekerId: session.user.jobseekerId,
-        jobStatus: 'Bookmarked',
-      },
-    });
+      include:{
+        job_posting: {
+          include: {
+            companies: true,
+            skills: true,
+            industry_sectors: {
+              select: {
+                sector_title: true,
+              },
+            },
+          }
+        },
+     }, where:{
+          jobseekerId: session.user.jobseekerId,
+          jobStatus: 'Bookmarked'
+    }});
     return result;
   } catch (error) {
     console.error(error);

@@ -24,8 +24,8 @@ export default function JobListingCardView({
   const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting.employment_type ?? '';
   const company_name: string = joblisting.companies.company_name;
-  const company_image: string = joblisting.companies.company_logo_url;
-  const industry: string = joblisting.industry_sectors.sector_title;
+  const company_image: string = joblisting.companies.company_logo_url ?? '';
+  const industry: string = joblisting.industry_sectors?.sector_title ?? '';
   const is_paid: boolean = joblisting.is_paid ?? true;
   const skills: SkillDTO[] = joblisting.skills ?? [];
   const salary_range: string = joblisting?.salary_range ?? '';

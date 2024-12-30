@@ -23,8 +23,8 @@ export default function JobListingModalView({
   const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting?.employment_type ?? '';
   const company_name: string = joblisting?.companies.company_name;
-  const company_image: string = joblisting?.companies.company_logo_url;
-  const industry: string = joblisting?.industry_sectors.sector_title;
+  const company_image: string = joblisting?.companies.company_logo_url ?? '';
+  const industry: string = joblisting?.industry_sectors?.sector_title ?? '';
   const skills: SkillDTO[] = joblisting?.skills ?? [];
   const is_paid: boolean = joblisting?.is_paid ?? true;
   const salary_range: string = joblisting?.salary_range ?? '';
