@@ -125,6 +125,9 @@ export default function CreateEmployerCompanyInfoAboutPage() {
         router.push('/edit-profile/employer/mission');
       } else {
         const errorData = await response.json();
+        if (!session?.user?.employeeIsApproved) {
+          router.push('/edit-profile/employer/mission');
+        }
       }
     } catch (error) {}
   };
@@ -146,6 +149,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
               <TextareaWithLabel
                 id="profile-creation-company-aboutUs"
                 placeholder="About your company"
+                disabled={!session?.user?.employeeIsApproved}
                 rows="16"
                 onChange={handleFieldChange}
                 required

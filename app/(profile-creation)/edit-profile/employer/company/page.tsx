@@ -216,6 +216,7 @@ export default function CreateEmployerCompanyInfoPage() {
             <SelectAutoload
               id="profile-creation-company-industrySectorTitle"
               apiAutoloadRoute="/api/employers/industry-sectors"
+              disabled={!session?.user?.employeeIsApproved}
               label="Industry Sector *"
               className="select-autoload"
               value={industry}

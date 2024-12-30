@@ -117,6 +117,8 @@ export default function CreateJobseekerProfileIntroPage() {
         router.push('/edit-profile/employer/congratulations');
       } else {
         const errorData = await response.json();
+        if (!session?.user?.employeeIsApproved)
+          router.push('/edit-profile/employer/congratulations');
       }
     } catch (error) {}
   };
@@ -161,6 +163,7 @@ export default function CreateJobseekerProfileIntroPage() {
             <fieldset>
               <InputTextWithLabel
                 id="profile-creation-company-videoUrl"
+                disabled={!session?.user?.employeeIsApproved}
                 placeholder="Youtube link url"
                 onChange={handleFieldChange}
                 value={videoData.videoUrl}

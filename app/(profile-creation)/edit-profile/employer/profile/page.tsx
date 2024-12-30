@@ -57,7 +57,7 @@ export default function CreateEmployerProfilePage() {
 
   // const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [companyExists, setCompanyExists] = useState<boolean | null>(null);
+  const [companyExists, setCompanyExists] = useState<boolean>(true);
   const [newCompany, setNewCompany] = useState<CompanyEmployerCreationDTO>({companyName: '', yearFounded: undefined});
   const [yearFounded, setYearFounded] = useState<Dayjs | null>(
     newCompany.yearFounded ? dayjs(newCompany.yearFounded) : null
@@ -283,6 +283,10 @@ export default function CreateEmployerProfilePage() {
 
           // Update session properties using the custom hook
           await updateSessionProperties({
+            companyId: updatedProfileData.companyId,
+            employeeIsApproved: true,
+            companyName: updatedProfileData.companyName,
+            companyEmail: updatedProfileData.companyEmail,
             firstName: updatedProfileData.firstName,
             lastName: updatedProfileData.lastName,
             image: updatedProfileData.photoUrl,
@@ -532,16 +536,6 @@ export default function CreateEmployerProfilePage() {
 
           <fieldset>
             <div className="profile-form-grid">
-              {/* This field will be automated */}
-              {/* <InputTextWithLabel
-                id="profile-creation-profile-name"
-                placeholder="Automated"
-                value={profileStoreData.companyName}
-                disabled={!!profileStoreData.companyName}
-                required
-              >
-                Company Name
-              </InputTextWithLabel> */}
               <InputTextWithLabel
                 id={`${formNamePrefix}currentJobTitle`}
                 placeholder="Job Title"
@@ -557,7 +551,7 @@ export default function CreateEmployerProfilePage() {
                     id={`${formNamePrefix}workAddressId`}
                     className="select-autoload"
                     apiAutoloadRoute={`/api/companies/locations/get/${profileData.companyId}`}
-                    label="Work Location *"
+                    label="Work Location"
                     value={workAddress}
                     onChange={(val) => {
                       setWorkAddress(val);
@@ -578,7 +572,6 @@ export default function CreateEmployerProfilePage() {
                         options.find((item) => item?.addressId === id) || null
                       );
                     }}
-                    required
                   />
                 </div>
               )}

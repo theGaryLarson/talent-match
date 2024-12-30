@@ -122,6 +122,8 @@ export default function CreateEmployerCompanyInfoMissionPage() {
         router.push('/edit-profile/employer/video');
       } else {
         const errorData = await response.json();
+        if (!session?.user?.employeeIsApproved)
+          router.push('/edit-profile/employer/video');
       }
     } catch (error) {}
   };
@@ -143,6 +145,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
               <TextareaWithLabel
                 id="profile-creation-company-mission-mission"
                 placeholder="Tell your company mission"
+                disabled={!session?.user?.employeeIsApproved}
                 rows="16"
                 required
                 onChange={handleFieldChange}
