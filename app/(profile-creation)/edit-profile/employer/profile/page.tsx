@@ -265,6 +265,7 @@ export default function CreateEmployerProfilePage() {
         userId: session.user.id ?? '',
         companyId: companyDetails.company_id,
         companyName: companyDetails.company_name,
+        isApprovedEmployee: companyExists === false,
       };
       setProfileData(updatedProfileData);
 
