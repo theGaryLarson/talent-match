@@ -197,6 +197,8 @@ export default function CreateEmployerCompanyInfoPage() {
         router.push('/edit-profile/employer/about');
         dispatch(setPageSaved('company'));
       } else {
+        if (!session?.user?.employeeIsApproved)
+          router.push('/edit-profile/employer/about');
         const errorData = await response.json();
         console.error('Failed to update company info:', errorData);
       }

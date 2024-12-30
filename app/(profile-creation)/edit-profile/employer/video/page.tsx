@@ -65,7 +65,7 @@ export default function CreateJobseekerProfileIntroPage() {
               setVideoData({
                 ...videoData,
                 companyId: result.companyId,
-                videoUrl: result.video ?? '',
+                videoUrl: result.videoUrl ?? '',
               });
             }
           } catch (error) {}
