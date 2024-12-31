@@ -142,7 +142,6 @@ export type ReadEmployerRecordDTO = {
   work_address_id: string | null;
   job_title: string | null;
   linkedin_url: string | null;
-  hasAgreedTerms: boolean;
   is_verified_employee: boolean;
 } | null;
 
