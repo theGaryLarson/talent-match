@@ -21,6 +21,7 @@ export async function PATCH(request: Request) {
       workAddressId,
       companyId,
       photoUrl,
+      isApprovedEmployee,
     } = body;
 
     if (!userId) {
@@ -64,6 +65,7 @@ export async function PATCH(request: Request) {
         update: {
           job_title: currentJobTitle,
           linkedin_url: linkedInUrl,
+          ...(isApprovedEmployee && {is_verified_employee: isApprovedEmployee}),
           ...(workAddressId && {
             company_addresses: {
               connect: {
@@ -90,6 +92,7 @@ export async function PATCH(request: Request) {
               id: session?.user.id!,
             },
           },
+          ...(isApprovedEmployee && {is_verified_employee: isApprovedEmployee}),
           ...(workAddressId && {
             company_addresses: {
               connect: {

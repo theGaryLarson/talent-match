@@ -125,6 +125,9 @@ export default function CreateEmployerCompanyInfoAboutPage() {
         router.push('/edit-profile/employer/mission');
       } else {
         const errorData = await response.json();
+        if (!session?.user?.employeeIsApproved) {
+          router.push('/edit-profile/employer/mission');
+        }
       }
     } catch (error) {}
   };
@@ -133,8 +136,8 @@ export default function CreateEmployerCompanyInfoAboutPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(3 / 6) * 100} size="sm" />
-        <p>Step 3/6</p>
+        <ProgressBarFlat progress={(3 / 5) * 100} size="sm" />
+        <p>Step 3/5</p>
         <h1>Company Info</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -146,6 +149,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
               <TextareaWithLabel
                 id="profile-creation-company-aboutUs"
                 placeholder="About your company"
+                disabled={!session?.user?.employeeIsApproved}
                 rows="16"
                 onChange={handleFieldChange}
                 required
