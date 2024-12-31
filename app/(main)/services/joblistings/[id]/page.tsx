@@ -5,7 +5,8 @@ import DeleteJobPostingButton from "@/app/ui/components/jobPostings/DeleteJobPos
 import { auth } from "@/auth";
 import Link from "next/link";
 
-export default async function page({params}:{params: {id:string}}){
+export default async function page(props:{params: Promise<{id:string}>}) {
+    const params = await props.params;
     const jobListing = await getJobListingById(params.id);
     const session = await auth();
     if(jobListing == null || jobListing == undefined){
@@ -34,4 +35,5 @@ export default async function page({params}:{params: {id:string}}){
         </main>
 
 
-    );}
+    );
+}
