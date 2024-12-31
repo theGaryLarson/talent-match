@@ -122,6 +122,8 @@ export default function CreateEmployerCompanyInfoMissionPage() {
         router.push('/edit-profile/employer/video');
       } else {
         const errorData = await response.json();
+        if (!session?.user?.employeeIsApproved)
+          router.push('/edit-profile/employer/video');
       }
     } catch (error) {}
   };
@@ -130,8 +132,8 @@ export default function CreateEmployerCompanyInfoMissionPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(4 / 6) * 100} size="sm" />
-        <p>Step 4/6</p>
+        <ProgressBarFlat progress={(4 / 5) * 100} size="sm" />
+        <p>Step 4/5</p>
         <h1>Company Info</h1>
         <p className="subtitle">* Indicates a required field</p>
         <h2>Mission</h2>
@@ -143,6 +145,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
               <TextareaWithLabel
                 id="profile-creation-company-mission-mission"
                 placeholder="Tell your company mission"
+                disabled={!session?.user?.employeeIsApproved}
                 rows="16"
                 required
                 onChange={handleFieldChange}

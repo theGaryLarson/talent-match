@@ -6,7 +6,6 @@ export async function POST(request: Request, {params}: {params: {jobPostId: stri
     if (!jobPostId) {
         return NextResponse.json({ error: 'jobPostId is required.' }, { status: 400 });
     }
-    console.log("api noticed")
     const result = await ApplyToJob(jobPostId);
     return NextResponse.json(result);
 }

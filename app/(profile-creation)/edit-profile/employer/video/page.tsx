@@ -65,7 +65,7 @@ export default function CreateJobseekerProfileIntroPage() {
               setVideoData({
                 ...videoData,
                 companyId: result.companyId,
-                videoUrl: result.video ?? '',
+                videoUrl: result.videoUrl ?? '',
               });
             }
           } catch (error) {}
@@ -114,9 +114,11 @@ export default function CreateJobseekerProfileIntroPage() {
         const result = await response.json();
         dispatch(setPageSaved('video'));
         dispatch(setVideo(videoData));
-        router.push('/edit-profile/employer/disclosures');
+        router.push('/edit-profile/employer/congratulations');
       } else {
         const errorData = await response.json();
+        if (!session?.user?.employeeIsApproved)
+          router.push('/edit-profile/employer/congratulations');
       }
     } catch (error) {}
   };
@@ -125,9 +127,9 @@ export default function CreateJobseekerProfileIntroPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(5 / 5) * 100} size="sm" />
 
-        <p>Step 5/6</p>
+        <p>Step 5/5</p>
         <h1>Company Video</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -161,6 +163,7 @@ export default function CreateJobseekerProfileIntroPage() {
             <fieldset>
               <InputTextWithLabel
                 id="profile-creation-company-videoUrl"
+                disabled={!session?.user?.employeeIsApproved}
                 placeholder="Youtube link url"
                 onChange={handleFieldChange}
                 value={videoData.videoUrl}

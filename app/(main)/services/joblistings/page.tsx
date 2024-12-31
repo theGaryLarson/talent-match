@@ -49,23 +49,9 @@ async function fetchJobPosts(
   return response.json();
 }
 
-async function fetchBookmarkedJobs(): Promise<any> {
-  const response = await fetch('/api/jobseekers/joblistings/get', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  return response.json();
-}
-
 export default function Page() {
   // Listview data
   const [joblistings, setJobListings] = useState<JobListingCardViewDTO[]>([]);
-  const [myBookMarkedJobs, setMyBookmarkedJobs] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
@@ -144,20 +130,6 @@ export default function Page() {
   }, [page, industry, jobTitle, skillsList, zipCode, sortBy]);
 
   useEffect(() => {
-    const fetchBookmarked = async () => {
-      try {
-        const bookmarkedJobs = await fetchBookmarkedJobs();
-        const jobPostIds = bookmarkedJobs.map((item: any) => item.jobPostId);
-        setMyBookmarkedJobs(jobPostIds);
-      } catch (error) {
-        console.error('Error fetching bookmarked jobs:', error);
-      }
-    };
-
-    fetchBookmarked();
-  }, []);
-
-  useEffect(() => {
     // 1. Initial Load: Set state from URL params (only once)
     const initializeStateFromParams = () => {
       setJobTitle(getParam('jobTitle'));
@@ -198,10 +170,6 @@ export default function Page() {
       return () => clearTimeout(timeoutId);
     }
   }, [jobTitle, skillsList, industry, zipCode, sortBy, page, execQuery]);
-
-  const isBookmarked = (jobId: string) => {
-    return myBookMarkedJobs.includes(jobId);
-  };
 
   return (
     <main className="mb-0 pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">
@@ -356,10 +324,9 @@ export default function Page() {
       {/* else, Display Results */}
       {!loading && !error ? (
         <div className="space-y-4">
-          {joblistings?.map((joblisting: any) => (
+          {joblistings?.map((joblisting: JobListingCardViewDTO) => (
             <JobListingCardView
               joblisting={joblisting}
-              isBookmarked={isBookmarked(joblisting.job_posting_id)}
               key={joblisting.job_posting_id}
             />
           ))}

@@ -580,7 +580,8 @@ model JobseekerJobPosting {
   id           String       @id(clustered: false, map: "jobseeker_job_posting_PRIMARY") @default(uuid()) @db.UniqueIdentifier
   jobPostId    String       @db.UniqueIdentifier
   jobseekerId  String       @db.UniqueIdentifier
-  jobStatus    String       @default("Bookmarked") @db.VarChar(45)
+  jobStatus    String       @default("Not Selected") @db.VarChar(45)
+  isBookmarked Boolean?     @default(false)
   savedAt      DateTime     @default(now())
   appliedDate  DateTime?
   followUpDate DateTime?

@@ -184,6 +184,7 @@ export type PostEmployerProfileDTO = {
   email: string;
   phone?: string | null;
   photoUrl?: string | null;
+  isApprovedEmployee?: boolean;
 
   // Work Info
   currentJobTitle: string;

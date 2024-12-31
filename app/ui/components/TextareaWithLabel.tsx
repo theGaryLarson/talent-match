@@ -1,6 +1,7 @@
 interface Props {
   children?: React.ReactNode,
   id: string,
+  disabled?: boolean,
   className?: string,
   [key: string]: any,
 }
@@ -8,6 +9,7 @@ interface Props {
 export default function TextareaWithLabel({
   children,
   id,
+  disabled=false,
   className="",
   ...rest
 }: Props){
@@ -16,6 +18,7 @@ export default function TextareaWithLabel({
       <textarea
         id={id}
         name={id}
+        disabled={disabled}
         rows={5}
         className="border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
         {...rest}

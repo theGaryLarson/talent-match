@@ -13,10 +13,8 @@ import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 
 export default function JobListingCardView({
   joblisting,
-  isBookmarked = false,
 }: {
   joblisting: JobListingCardViewDTO;
-  isBookmarked: boolean;
 }) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -36,6 +34,7 @@ export default function JobListingCardView({
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
   const [openModal, setOpenModal] = useState(false);
+  const isBookmarked = joblisting?.isBookmarked;
 
   const showBookmarks = session?.user.roles.includes(Role.JOBSEEKER);
 
