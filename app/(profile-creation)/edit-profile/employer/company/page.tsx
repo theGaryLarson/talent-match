@@ -102,7 +102,6 @@ export default function CreateEmployerCompanyInfoPage() {
           companySize: fetchedData.companySize || '',
           estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
         };
-
         setCompanyData(updatedCompanyData);
         setYearFounded(
           fetchedData.yearFounded ? dayjs().year(parseInt(fetchedData.yearFounded)) : null
@@ -123,7 +122,9 @@ export default function CreateEmployerCompanyInfoPage() {
       setCompanyData(companyStoreData);
       setYearFounded(companyData.yearFounded ? dayjs(companyData.yearFounded) : null);
     }
-
+    console.log('updatedCompanyData', companyData)
+    console.log('companyStoreData', companyStoreData)
+    console.log(session)
     dispatch(setPageSaved('company'));
   }, [session?.user.id, pathname]);
 
@@ -183,7 +184,7 @@ export default function CreateEmployerCompanyInfoPage() {
         console.error('User session or required fields are not available.');
         return;
       }
-
+    console.log('session', session)
     const finalCompanyData: PostCompanyInfoDTO = {
         ...companyData,
         userId: session.user.id,
