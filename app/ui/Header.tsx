@@ -142,7 +142,7 @@ const TopLevelLinks: LinkItem[] = [
       },
     ],
   },
-  { name: 'Events', href: '/services/events' },
+  // { name: 'Events', href: '/services/events' },
   {
     name: 'Coalition',
     href: '',
