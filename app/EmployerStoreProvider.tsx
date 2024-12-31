@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { makeStore, AppStore } from '@/lib/employerStore';
 import {
   EmployerState,
-  initializePersonal,
+  setPersonal,
 } from '@/lib/features/profileCreation/employerSlice';
 
 interface Props {
@@ -21,7 +21,7 @@ export default function StoreProvider({
     // Create the store instance the first time this renders
     storeRef.current = makeStore();
     if (employer !== null) {
-      storeRef.current.dispatch(initializePersonal(employer.personal));
+      storeRef.current.dispatch(setPersonal(employer.personal));
     }
   }
 
