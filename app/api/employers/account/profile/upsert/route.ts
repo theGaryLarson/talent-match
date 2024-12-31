@@ -88,7 +88,6 @@ export async function PATCH(request: Request) {
           employer_id: session?.user.employerId!,
           job_title: currentJobTitle,
           linkedin_url: linkedInUrl,
-          hasAgreedTerms: false,
           is_verified_employee: false,
           users: {
             connect: {
