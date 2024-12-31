@@ -115,16 +115,15 @@ export default function CreateEmployerCompanyInfoPage() {
         console.warn('Error fetching company data. Using initialized fields.');
       }
     };
-
-    if (_.isEqual(companyStoreData, initialState.company) && session?.user?.companyId) {
-      fetchCompanyData(session.user.companyId);
+    // console.log('isEqual', _.isEqual(companyStoreData, initialState.company))
+    // have to use session here because employerInfo isn't set yet.
+    if (_.isEqual(companyStoreData, initialState.company) && session.user.companyId) {
+      fetchCompanyData(session.user.companyId ?? '');
+      console.log('fetchedCompanyData')
     } else {
       setCompanyData(companyStoreData);
       setYearFounded(companyData.yearFounded ? dayjs(companyData.yearFounded) : null);
     }
-    console.log('updatedCompanyData', companyData)
-    console.log('companyStoreData', companyStoreData)
-    console.log(session)
     dispatch(setPageSaved('company'));
   }, [session?.user.id, pathname]);
 
@@ -132,6 +131,7 @@ export default function CreateEmployerCompanyInfoPage() {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
     dispatch(setPageDirty('company'));
+    // console.log('companyData', companyData)
 
     if (companyData.hasOwnProperty(fieldName)) {
       setCompanyData((prevState) => ({
@@ -184,11 +184,12 @@ export default function CreateEmployerCompanyInfoPage() {
         console.error('User session or required fields are not available.');
         return;
       }
-    console.log('session', session)
+    // console.log('employerInfo', employerInfo)
     const finalCompanyData: PostCompanyInfoDTO = {
         ...companyData,
-        userId: session.user.id,
-        employerId: session.user.employerId
+        userId: employerInfo?.user_id!,
+        employerId: employerInfo?.employer_id!,
+        companyId: employerInfo?.company_id!,
       };
     try {
       const response = await fetch('/api/employers/account/company-info/upsert', {
