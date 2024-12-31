@@ -2345,7 +2345,7 @@ async function seedJobPostings() {
                             sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                             tech_area_id: faker.helpers.arrayElement(techAreas).id,
                             job_title: faker.helpers.arrayElement(itJobTitles),
-                            job_description: faker.person.jobDescriptor(),
+                            job_description: faker.lorem.sentences(faker.number.int({ min: 2, max: 5 })),
                             is_internship: isInternship,
                             is_paid: isPaid,
                             employment_type: faker.helpers.arrayElement(['Full-time job', 'Part-time job', 'Internship', 'On-campus job', 'Contract']),
