@@ -12,7 +12,7 @@ import { Role } from '@/data/dtos/UserInfoDTO';
 import Bookmark from './Bookmark';
 import { ShareIcon } from '@heroicons/react/24/outline';
 
-export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerCardViewDTO }) {
+export default function JobSeekerCardView({ jobseeker, isBookmarked = false, }: { jobseeker: JobSeekerCardViewDTO; isBookmarked: boolean; }) {
   const { data: session } = useSession();
   const sessionJobseekerId = session?.user?.jobseekerId;
 
@@ -27,18 +27,6 @@ export default function JobSeekerCardView({ jobseeker }: { jobseeker: JobSeekerC
   const highestDegree: string = jobseeker.highest_level_of_study_completed ?? '';
   const skills: SkillDTO[] = jobseeker?.jobseeker_has_skills ?
     jobseeker?.jobseeker_has_skills.map((item: JobseekerSkillDTO) => item.skills) : [];
-  let isBookmarked: boolean = false;
-
-  // are they bookmarked?
-  if (jobseeker.BookmarkedJobseeker != undefined) {
-    // we get back all bookmarks related to this jobseeker, so filter by company/employer ID
-    for (let i = 0; i < jobseeker.BookmarkedJobseeker?.length; i++) {
-      if (jobseeker.BookmarkedJobseeker[i].companyId == session?.user.companyId &&
-        jobseeker.BookmarkedJobseeker[i].employerId == session.user.employerId)
-        isBookmarked = true;
-      break;
-    }
-  }
 
   // Decide what school to show
   let school = "";
