@@ -34,7 +34,8 @@ export default function JobListingCardView({
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
   const [openModal, setOpenModal] = useState(false);
-  const isBookmarked = joblisting?.isBookmarked;
+  const isBookmarked = joblisting?.isBookmarked ?? false;
+  console.log(joblisting);
 
   const showBookmarks = session?.user.roles.includes(Role.JOBSEEKER);
 
@@ -117,7 +118,7 @@ export default function JobListingCardView({
         {/* bottom row */}
         <div className="mt-2">
           {/* job description */}
-          <p className="line-clamp-3">{description}</p>
+          <p className="line-clamp-3 break-words">{description}</p>
 
           {/* employment type and salary */}
           <h4 className="mt-2 text-sm italic text-slate-400">

@@ -400,6 +400,7 @@ export async function getJobListingsFiltered(request: Request) {
               },
               select: {
                 jobStatus: true,
+                isBookmarked: true,
               },
             }
           : false,
@@ -414,13 +415,18 @@ export async function getJobListingsFiltered(request: Request) {
   ]);
 
   const transformedJobPostings = filteredJobPostings.map((posting) => {
-    const statuses =
-      posting.jobApplications?.map((status) => status.jobStatus) || [];
+    if (posting.jobApplications && posting.jobApplications.length > 0) {
+      const jobStatus = posting.jobApplications?.[0].jobStatus || ''
+      const isBookmarked = posting.jobApplications?.[0].isBookmarked || false
+      return {
+        ...posting,
+        hasApplied: jobStatus !== '',
+        isBookmarked: isBookmarked,
+        jobApplications: undefined,
+      };
+    }
     return {
       ...posting,
-      hasApplied: statuses.includes('Applied'),
-      isBookmarked: statuses.includes('Bookmarked'),
-      jobApplications: undefined,
     };
   });
   return {
@@ -450,7 +456,7 @@ export async function getJobSeekerBookmarkedJobs() {
         },
      }, where:{
           jobseekerId: session.user.jobseekerId,
-          jobStatus: 'Bookmarked'
+          isBookmarked: true
     }});
     return result;
   } catch (error) {

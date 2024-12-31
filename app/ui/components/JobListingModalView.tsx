@@ -17,7 +17,7 @@ export default function JobListingModalView({
   handleModalChange: (open: boolean) => void;
   joblisting: JobListingCardViewDTO;
 }) {
-  const [applied, setApplied] = useState<boolean>(joblisting?.hasApplied);
+  const [applied, setApplied] = useState<boolean>(joblisting?.hasApplied ?? false);
   const { data: session } = useSession();
 
   const job_title: string = joblisting?.job_title;
@@ -107,7 +107,7 @@ export default function JobListingModalView({
             <p className="font-medium text-gray-700 dark:text-gray-200">
               Description:
             </p>
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 break-words">
               {description}
             </p>
           </div>

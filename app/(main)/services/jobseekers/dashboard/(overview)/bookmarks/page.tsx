@@ -26,8 +26,7 @@ export default async function page() {
         {myBookMarkedJobs.map((job) => (
           <div key={job.job_posting.job_posting_id}>
             <JobListingCardView
-              joblisting={job.job_posting}
-              isBookmarked={true}
+            joblisting={{ ...job.job_posting, isBookmarked: job.isBookmarked ?? false, hasApplied: job.jobStatus !== '' }}
             />
           </div>
         ))}

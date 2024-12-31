@@ -9,8 +9,8 @@ export type JobListingCardViewDTO = {
   job_title: string;
   job_description: string;
   is_internship?: boolean;
-  hasApplied: boolean;
-  isBookmarked: boolean;
+  hasApplied?: boolean;
+  isBookmarked?: boolean;
   is_paid?: boolean;
   employment_type?: string;
   location: string;
