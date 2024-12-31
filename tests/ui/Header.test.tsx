@@ -4,6 +4,13 @@ import Header from '../../app/ui/Header';
 import { usePathname } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
 
+// Mock ResizeObserver
+global.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+};
+
 vi.mock('next/link', () => ({
     default: ({ children, ...props }: { children: React.ReactNode }) => <a {...props}>{children}</a>,
 }));
