@@ -135,8 +135,20 @@ export async function getAllIndustrySectors() {
     return res;
 }
 
-export async function getEmployer(userId: string) {
-  const res = await prisma.employers.findUnique({
+export type ReadEmployerRecordDTO = {
+  company_id: string | null;
+  employer_id: string;
+  user_id: string;
+  work_address_id: string | null;
+  job_title: string | null;
+  linkedin_url: string | null;
+  hasAgreedTerms: boolean;
+  is_verified_employee: boolean;
+} | null;
+
+
+export async function getEmployer(userId: string): Promise<ReadEmployerRecordDTO> {
+  const res: ReadEmployerRecordDTO = await prisma.employers.findUnique({
     where: {
       user_id: userId,
     }
@@ -150,6 +162,6 @@ export async function getEmployerWithSession() {
   if (!userId) {
     return
   }
-  const res = await getEmployer(userId);
+  const res: ReadEmployerRecordDTO = await getEmployer(userId);
   return res
 }

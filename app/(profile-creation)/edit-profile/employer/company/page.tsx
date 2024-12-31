@@ -26,6 +26,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { devLog } from '@/app/lib/utils';
 import _ from 'lodash';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
+import {ReadEmployerRecordDTO} from "@/app/lib/employer";
 
 const formNamePrefix = 'profile-creation-company-';
 
@@ -43,12 +44,23 @@ export default function CreateEmployerCompanyInfoPage() {
     zip: '',
     county: '',
   });
+  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>()
 
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const { data: session } = useSession();
   const updateSessionProperties = useUpdateSession();
+
+  // get employers.is_verified_employee
+  useEffect(()=>{
+    fetch('/api/employers/account/profile/get').then((res)=>{
+      return res.json();
+    }).then((jsonData)=>{
+      setEmployerInfo(jsonData)
+    });
+
+  }, [])
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -69,7 +81,6 @@ export default function CreateEmployerCompanyInfoPage() {
             stateCode: addr?.stateCode,
             zip: addr?.zip!,
           }));
-
         const updatedCompanyData: PostCompanyInfoDTO = {
           userId: session?.user?.id!,
           employerId: session?.user?.employerId || undefined,
@@ -178,7 +189,6 @@ export default function CreateEmployerCompanyInfoPage() {
         userId: session.user.id,
         employerId: session.user.employerId
       };
-
     try {
       const response = await fetch('/api/employers/account/company-info/upsert', {
         method: 'POST',
@@ -197,7 +207,7 @@ export default function CreateEmployerCompanyInfoPage() {
         router.push('/edit-profile/employer/about');
         dispatch(setPageSaved('company'));
       } else {
-        if (!session?.user?.employeeIsApproved)
+        if (!employerInfo?.is_verified_employee)
           router.push('/edit-profile/employer/about');
         const errorData = await response.json();
         console.error('Failed to update company info:', errorData);
@@ -218,7 +228,7 @@ export default function CreateEmployerCompanyInfoPage() {
             <SelectAutoload
               id="profile-creation-company-industrySectorTitle"
               apiAutoloadRoute="/api/employers/industry-sectors"
-              disabled={!session?.user?.employeeIsApproved}
+              disabled={!employerInfo?.is_verified_employee}
               label="Industry Sector *"
               className="select-autoload"
               value={industry}
@@ -253,7 +263,7 @@ export default function CreateEmployerCompanyInfoPage() {
               userId={companyData.companyId!}
               onImageUpload={handleImageUpload}
               initialImageUrl={companyData.logoUrl || ''}
-              disabled={!session?.user?.employeeIsApproved}
+              disabled={!employerInfo?.is_verified_employee}
             />
           </fieldset>
 
@@ -265,7 +275,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 placeholder="www.company.com"
                 onChange={handleFieldChange}
                 value={companyData.websiteUrl ?? ''}
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
                 required
               >
                 Company Website *
@@ -277,7 +287,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 placeholder="hello@company.com"
                 onChange={handleFieldChange}
                 value={companyData.companyEmail ?? ''}
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
                 required
               >
                 Company Email *
@@ -289,7 +299,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 onChange={handleFieldChange}
                 placeholder="(555) 123-4567"
                 value={companyData.companyPhone ?? ''}
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
                 required
               >
                 Company Phone Number *
@@ -307,7 +317,7 @@ export default function CreateEmployerCompanyInfoPage() {
                   });
                 }}
                 className="year-picker"
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
               />
 
               <SelectOptionsWithLabel
@@ -324,7 +334,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 ]}
                 placeholder="Please select"
                 value={companyData.companySize ?? ''}
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
               >
                 Company Size *
               </SelectOptionsWithLabel>
@@ -335,7 +345,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 placeholder="100"
                 onChange={handleFieldChange}
                 value={companyData.estimatedAnnualHires || ''}
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
                 required
               >
                 Estimated Annual Hires *
@@ -349,7 +359,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 searchingText="Searching..."
                 noResultsText="No postal code found..."
                 value={selectedWorkLocation?.zip ?? ''}
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
                 onChange={handleAddressSelection}
                 searchPlaceholder="Company Location Postal Code"
                 getOptionLabel={(option: ReadAddressDTO) =>

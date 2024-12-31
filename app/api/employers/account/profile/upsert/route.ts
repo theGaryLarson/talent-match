@@ -53,10 +53,13 @@ export async function PATCH(request: Request) {
           first_name: firstName,
           last_name: lastName,
           email: session?.user.email!,
-          has_agreed_terms: false, // TODO: check employer flow to confirm this record is already created on sign-up page
+          has_agreed_terms: false,
           createdAt: new Date(Date.now()),
         },
       });
+
+      // fixme: need to fetch current companyId. If it is different need to set is_verified_employee to false.
+      //  but if the employer is the creator of the company or just editing their profile need to keep is_verified_employee set to true.
 
       await prisma.employers.upsert({
         where: {
