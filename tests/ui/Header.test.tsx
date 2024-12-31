@@ -1,5 +1,4 @@
 import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import Header from '../../app/ui/Header';
 import { usePathname } from 'next/navigation';
@@ -44,19 +43,19 @@ describe('Header', () => {
 
         const topLinkForEmployers = screen.getByText('For Employers');
         expect(topLinkForEmployers).toBeDefined();
-        await userEvent.click(topLinkForEmployers);
+        fireEvent.click(topLinkForEmployers);
         expect(screen.getByText('Landing Page')).toBeDefined();
         expect(screen.getByText('Talent Showcase')).toBeDefined();
 
         const topLinkForJobseekers = screen.getByText('For Jobseekers');
         expect(topLinkForJobseekers).toBeDefined();
-        await userEvent.click(topLinkForJobseekers);
+        fireEvent.click(topLinkForJobseekers);
         expect(screen.getByText('Landing Page')).toBeDefined();
         expect(screen.getByText('Job Listings')).toBeDefined();
 
         const topLinkOurCommunity = screen.getByText('Our Community');
         expect(topLinkOurCommunity).toBeDefined();
-        await userEvent.click(topLinkOurCommunity);
+        fireEvent.click(topLinkOurCommunity);
         expect(screen.getByText('Join Our Community')).toBeDefined();
         expect(screen.getByText('Careers')).toBeDefined();
 
@@ -64,7 +63,7 @@ describe('Header', () => {
 
         const topLinkCoalition = screen.getByText('Coalition');
         expect(topLinkCoalition).toBeDefined();
-        await userEvent.click(topLinkCoalition);
+        fireEvent.click(topLinkCoalition);
         expect(screen.getByText('Training Providers')).toBeDefined();
 
         expect(screen.getByText('About Us')).toBeDefined();
@@ -92,8 +91,31 @@ describe('Header', () => {
 
         const mobileMenu = screen.getByRole('dialog');
 
+        const topLinkForEmployers = within(mobileMenu).getByText('For Employers');
+        expect(topLinkForEmployers).toBeDefined();
+        fireEvent.click(topLinkForEmployers);
+        expect(within(mobileMenu).getByText('Landing Page')).toBeDefined();
         expect(within(mobileMenu).getByText('Talent Showcase')).toBeDefined();
-        expect(within(mobileMenu).getByText('For Employers')).toBeDefined();
-        expect(within(mobileMenu).getByText('For Job Seekers')).toBeDefined();
+
+        const topLinkForJobseekers = within(mobileMenu).getByText('For Jobseekers');
+        expect(topLinkForJobseekers).toBeDefined();
+        fireEvent.click(topLinkForJobseekers);
+        expect(within(mobileMenu).getByText('Landing Page')).toBeDefined();
+        expect(within(mobileMenu).getByText('Job Listings')).toBeDefined();
+
+        const topLinkOurCommunity = within(mobileMenu).getByText('Our Community');
+        expect(topLinkOurCommunity).toBeDefined();
+        fireEvent.click(topLinkOurCommunity);
+        expect(within(mobileMenu).getByText('Join Our Community')).toBeDefined();
+        expect(within(mobileMenu).getByText('Careers')).toBeDefined();
+
+        expect(within(mobileMenu).getByText('Events')).toBeDefined();
+
+        const topLinkCoalition = within(mobileMenu).getByText('Coalition');
+        expect(topLinkCoalition).toBeDefined();
+        fireEvent.click(topLinkCoalition);
+        expect(within(mobileMenu).getByText('Training Providers')).toBeDefined();
+
+        expect(within(mobileMenu).getByText('About Us')).toBeDefined();
     });
 });
