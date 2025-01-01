@@ -34,7 +34,7 @@ export default function AccountMenu() {
 
   var textColor = 'text-black';
   if (pathname == '/services/jobseekers' ||
-      pathname == '/services/employers' || 
+      pathname == '/services/employers' ||
       pathname.startsWith('/services/training-programs/')) {
     textColor = 'text-white';
   }
@@ -195,12 +195,8 @@ export default function AccountMenu() {
         ) : (
           <div>
             <Divider />
-            <Link href={'/'}>
-              <MenuItem
-                onClick={async () => {
-                  await signOut();
-                }}
-              >
+            <Link href={'/signout'}>
+              <MenuItem>
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>
