@@ -120,13 +120,10 @@ export async function createCompany(companyData: CompanyEmployerCreationDTO) {
   }
 }
 
-
-
 export async function getAllCompanies() {
     const res = await prisma.companies.findMany();
     return res;
 }
-
 
 export async function getAllTechAreas(){
     const res = await prisma.technology_areas.findMany();
@@ -136,4 +133,34 @@ export async function getAllTechAreas(){
 export async function getAllIndustrySectors() {
     const res = await prisma.industry_sectors.findMany();
     return res;
+}
+
+export type ReadEmployerRecordDTO = {
+  company_id: string | null;
+  employer_id: string;
+  user_id: string;
+  work_address_id: string | null;
+  job_title: string | null;
+  linkedin_url: string | null;
+  is_verified_employee: boolean;
+} | null;
+
+
+export async function getEmployer(userId: string): Promise<ReadEmployerRecordDTO> {
+  const res: ReadEmployerRecordDTO = await prisma.employers.findUnique({
+    where: {
+      user_id: userId,
+    }
+  });
+  return res
+}
+
+export async function getEmployerWithSession() {
+  const session = await auth();
+  const userId = session?.user.id;
+  if (!userId) {
+    return
+  }
+  const res: ReadEmployerRecordDTO = await getEmployer(userId);
+  return res
 }

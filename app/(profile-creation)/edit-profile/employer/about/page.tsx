@@ -23,6 +23,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
+import {ReadEmployerRecordDTO} from "@/app/lib/employer";
 
 const formNamePrefix = 'profile-creation-company-';
 
@@ -37,7 +38,18 @@ export default function CreateEmployerCompanyInfoAboutPage() {
   const router = useRouter();
 
   const { data: session, update, status } = useSession();
+  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>()
   const updateSessionProperties = useUpdateSession();
+
+  // get employers.is_verified_employee
+  useEffect(()=>{
+    fetch('/api/employers/account/profile/get').then((res)=>{
+      return res.json();
+    }).then((jsonData)=>{
+      setEmployerInfo(jsonData)
+    });
+
+  }, [])
 
   useEffect(() => {
     const initializeFormFields = async () => {
@@ -149,7 +161,7 @@ export default function CreateEmployerCompanyInfoAboutPage() {
               <TextareaWithLabel
                 id="profile-creation-company-aboutUs"
                 placeholder="About your company"
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
                 rows="16"
                 onChange={handleFieldChange}
                 required
