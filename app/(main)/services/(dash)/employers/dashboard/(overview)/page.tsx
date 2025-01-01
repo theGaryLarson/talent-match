@@ -12,7 +12,7 @@ export const metadata = {
 };
 export default async function Page() {
   const session = await auth();
-  
+
   const proInfo = await getEmployerById(session?.user.employerId??'');
   const company = await getCompanyById(proInfo?.company_id??'');
   if(!proInfo || company == undefined){
