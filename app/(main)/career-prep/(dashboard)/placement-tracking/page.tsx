@@ -1,6 +1,8 @@
 import { getAllJobPosts } from "@/app/lib/joblistings";
+import JobTrackingTable from "@/app/ui/components/careerPrep/JobTrackingTable";
 import { auth } from "@/auth";
 import { sendWelcomeEmail } from "@/lib/smtp/send-welcome-email";
+import * as React from "react";
 
 export default async function Page() {
     const jobposts = await getAllJobPosts();
@@ -12,9 +14,14 @@ export default async function Page() {
     //         recipient:session.user.email
     //     });
     // }
+    if(!jobposts){
+        return <></>
+    }
     return(
-        <>
+        <main className="flex flex-col">
         <h1>job tracking</h1>
-        </>
+        <JobTrackingTable data={jobposts} />
+        </main>
     );
 }
+

@@ -308,7 +308,11 @@ export async function getAllJobPosts() {
     let results = prisma.job_postings.findMany({include:{
       jobApplications:{
         include:{
-          Jobseekers:true
+          Jobseekers:{
+            include:{
+              users:true
+            }
+          }
         },
       }
     }});
