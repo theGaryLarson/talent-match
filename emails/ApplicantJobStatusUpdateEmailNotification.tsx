@@ -16,34 +16,36 @@ import {
   //import { Routes } from '@/constants/routes';
   //import { getBaseUrl } from '@/lib/urls/get-base-url';
   
-  export type CareerPrepNotificationData = {
-    recipient: string;
+  export type CareerPrepJobStatusNotificationData = {
     navigatorName: string;
     applicantName: string;
+    jobId:string;
+    jobTitle:string;
+    Company:string
   };
   
-  export const CareerNewPrepApplicantEmailNotification = ({navigatorName}: CareerPrepNotificationData) => (
+  export const ApplicantJobStatusUpdateEmailNotification = (data: CareerPrepJobStatusNotificationData) => (
     <Html>
       <Head />
-      <Preview>New Career Prep Case Available!</Preview>
+      <Preview>{`New Applicant for ${data.jobTitle} @ ${data.Company}`}</Preview>
       <Tailwind>
         <Body className="m-auto bg-white px-2 font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px]">
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-            New Career Prep Case(s) Available!
+            {`New Applicant for ${data.jobTitle} @ ${data.Company}`}
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
-              Hello {navigatorName},
+              Hello {data.navigatorName},
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
-              There has been a new application to the career prep platform that needs your attention. 
+              {`${data.applicantName} has applied to ${data.jobTitle} @ ${data.Company}`}
             </Text>
             <Section className="my-[32px] text-center">
               <Button
                 className="rounded bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
-                href={`https://www.watechcoalition.org/career-prep/new-cases`}
+                href={`https://www.watechcoalition.org/career-prep/placement-tracking`}
               >
-                Claim or View New Cases Here
+                View Updates Here
               </Button>
             </Section>
             <Text className="text-[14px] leading-[24px] text-black">
