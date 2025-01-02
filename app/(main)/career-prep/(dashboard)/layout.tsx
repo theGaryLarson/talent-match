@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-
+import CasesOutlinedIcon from '@mui/icons-material/CasesOutlined';
+import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
+import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import { auth } from '@/auth';
 import { BookmarkIcon } from '@heroicons/react/24/outline';
 export default async function layout({ children }: { children: React.ReactNode }) {
@@ -21,14 +23,14 @@ export default async function layout({ children }: { children: React.ReactNode }
           href="/career-prep/my-case-load"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
-          <BookmarkIcon width={24}/>
+          <CasesOutlinedIcon/>
           My Case Load
         </Link>
         <Link
           href="/career-prep/new-cases"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
-          <BookmarkIcon width={24}/>
+          <CreateNewFolderOutlinedIcon/>
           Unassigned Cases
         </Link> 
         
@@ -36,8 +38,8 @@ export default async function layout({ children }: { children: React.ReactNode }
           href="/career-prep/placement-tracking"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
-          <BookmarkIcon width={24}/>
-          Placement Tracking
+          <TableChartOutlinedIcon/>
+          Application Status
         </Link>
         
         {/* 
