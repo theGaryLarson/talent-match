@@ -6,7 +6,7 @@ import {PostEmployerWorkDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function PATCH(request: Request, {params}: { params: { } }) {
+export async function PATCH(request: Request, {params}: { params: any }) {
     try {
         // Get essentials from session, not the request
         let session = await auth();

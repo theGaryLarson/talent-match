@@ -4,10 +4,8 @@ import { auth } from "@/auth";
 import {Role} from "@/data/dtos/UserInfoDTO";
 
 
-export async function GET(
-  request: Request,
-  { params }: { params: { jobseekerId: string } },
-) {
+export async function GET(request: Request, props: { params: Promise<{ jobseekerId: string }> }) {
+  const params = await props.params;
   try {
     let session = await auth();
 
