@@ -30,6 +30,7 @@ import { useRouter } from 'next/navigation';
 import '@/app/ui/profile-creation.css';
 import Confetti from '@/app/ui/components/Confetti';
 import { Button } from 'flowbite-react';
+import { JSX } from 'react/jsx-runtime';
 
 interface EvaluationTableProps {
   questions: {

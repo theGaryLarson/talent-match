@@ -12,7 +12,7 @@ import {
   LinearProgress,
   useTheme,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, use } from "react";
 import JobDescription from "../../ui/occupation/job-description";
 import EmploymentDetails from "../../ui/occupation/employment-details";
 import OccupationDetails from "../../ui/occupation/occupation-details";
@@ -28,7 +28,8 @@ import WageTrendDetails from "../../ui/occupation/wage-trend-details";
 import JobListings from "../../ui/occupation/job-listings";
 import Programs from "../../ui/occupation/programs";
 
-export default function Page({ params }: { params: { occupation: string } }) {
+export default function Page(props: { params: Promise<{ occupation: string }> }) {
+  const params = use(props.params);
   const { instance, accounts, inProgress } = useMsal();
   const isAuthenticated = useIsAuthenticated();
   const [data, setData] = useState<IRelatedData>();
@@ -76,121 +77,119 @@ export default function Page({ params }: { params: { occupation: string } }) {
     fetchOccupationsFromApi();
   }, [accounts, instance, inProgress, isAuthenticated, params.occupation]);
 
-  return (
-    <>
-      {data && (
-        <Container maxWidth="xl">
-          <Box mb={2}>
-            <Box sx={{ mb: 3 }}>
-              <Button sx={{ my: 2 }} variant="contained"
-                LinkComponent={NextLink} onClick={() => router.push('/ess/pathways')}>
-                See other Pathways
-              </Button>
-              <Typography variant="h2" component="h2" fontWeight="bold" sx={{ wordBreak: "break-word" }}>
-                {data.cfa_name}
-              </Typography>
-            </Box>
-            {data.cfa_whattheydo && (
-              <JobDescription description={data.cfa_whattheydo} />
-            )}
-            {
-              <Programs cipsocs={cipSocs} />
-            }
-            {
-              <Card sx={{ p: 2, mb: 2, mt: 2 }}>
-                <CardContent>
-                  <Typography variant="h5" fontWeight="bold">
-                    DevMatch Assessments
-                  </Typography>
-                  <Button variant="contained" onClick={toggleFullscreen} sx={{ mb: 1 }}>Enter Fullscreen</Button>
-                  <iframe
-                    ref={iframeRef}
-                    allow="fullscreen; clipboard-read; clipboard-write; keyboard-map"
-                    // candidateId only accepts a number. This will need changes.
-                    src={`https://app.devmatch.io/embedded/welcome?projectId=1312&candidateId=${accounts[0].homeAccountId.replace(/\D/g, '')}`}
-                    style={{ width: '100%', height: '400px', border: 'none' }}
-                  ></iframe>
-                </CardContent>
-              </Card>
-            }
-            {
-              <Card sx={{ p: 2, mb: 2, mt: 2 }}>
-                <CardContent>
-                  <Typography variant="h5" fontWeight="bold">
-                    Skill Gap Analysis
-                  </Typography>
-                  {/*<iframe
-                    id="inlineFrameExample"
-                    title="Inline Frame Example"
-                    width="900"
-                    height="1000"
-                    src="https://lightcast.io/open-skills/resume">
-                </iframe>*/}
-                </CardContent>
-              </Card>
-            }
-            {data.cfa_educationbreakdown_Occupation.length > 0 &&
-              <Card sx={{ p: 2, mb: 2, mt: 2 }}>
-                <CardContent>
-                  <EducationExperienceDetails occupation={data} />
-                  <Grid2 container spacing={2} sx={{ mt: 2 }}>
-                    <Grid2 size={{ xs: 12, md: 6 }}>
-                      <Typography variant="h5" fontWeight="bold">Wage Trend</Typography>
-                      <WageTrendDetails occupation={data} />
-                    </Grid2>
-                    <Grid2 size={{ xs: 12, md: 6 }}>
-                      <Typography variant="h5" fontWeight="bold">Job Trends</Typography>
-                      <Box sx={{ color: theme.palette.primary.main }}>
-                        <Typography variant="h6">Average Monthly Job Postings</Typography>
-                        <LinearProgress
-                          variant="determinate"
-                          value={
-                            (data.cfa_avgmonthlypostingsaug2023july2024 /
-                              (data.cfa_avgmonthlypostingsaug2023july2024 + 100)) *
-                            100
-                          }
-                        />
-                        <Typography>{data.cfa_avgmonthlypostingsaug2023july2024}</Typography>
-                      </Box>
-                      <Box sx={{ color: theme.palette.primary.main }}>
-                        <Typography variant="h6">Average Monthly Hired</Typography>
-                        <LinearProgress
-                          variant="determinate"
-                          value={
-                            (data.cfa_avgmonthlyhiresaug2023july2024 /
-                              (data.cfa_avgmonthlyhiresaug2023july2024 + 100)) *
-                            100
-                          }
-                        />
-                        <Typography>{data.cfa_avgmonthlyhiresaug2023july2024}</Typography>
-                      </Box>
-                    </Grid2>
-                  </Grid2>
-                </CardContent>
-              </Card>
-            }
-            {data.cfa_jobpostingsregionalbreakdown_Occupation.length > 0 &&
-              <Card sx={{ p: 2, mb: 2, mt: 2 }}>
-                <CardContent>
-                  <RegionSelect
-                    regions={data.cfa_jobpostingsregionalbreakdown_Occupation}
-                    region={region}
-                    handleRegionChange={handleRegionChange}
-                  />
-                  <EmploymentDetails occupation={data} regionId={region} />
-                </CardContent>
-              </Card>
-            }
-            {
-              <OccupationDetails occupation={data} />
-            }
-            {
-              <JobListings cfa_code={data.cfa_code} />
-            }
+  return (<>
+    {data && (
+      <Container maxWidth="xl">
+        <Box mb={2}>
+          <Box sx={{ mb: 3 }}>
+            <Button sx={{ my: 2 }} variant="contained"
+              LinkComponent={NextLink} onClick={() => router.push('/ess/pathways')}>
+              See other Pathways
+            </Button>
+            <Typography variant="h2" component="h2" fontWeight="bold" sx={{ wordBreak: "break-word" }}>
+              {data.cfa_name}
+            </Typography>
           </Box>
-        </Container >
-      )
-      }
-    </>
-  );
+          {data.cfa_whattheydo && (
+            <JobDescription description={data.cfa_whattheydo} />
+          )}
+          {
+            <Programs cipsocs={cipSocs} />
+          }
+          {
+            <Card sx={{ p: 2, mb: 2, mt: 2 }}>
+              <CardContent>
+                <Typography variant="h5" fontWeight="bold">
+                  DevMatch Assessments
+                </Typography>
+                <Button variant="contained" onClick={toggleFullscreen} sx={{ mb: 1 }}>Enter Fullscreen</Button>
+                <iframe
+                  ref={iframeRef}
+                  allow="fullscreen; clipboard-read; clipboard-write; keyboard-map"
+                  // candidateId only accepts a number. This will need changes.
+                  src={`https://app.devmatch.io/embedded/welcome?projectId=1312&candidateId=${accounts[0].homeAccountId.replace(/\D/g, '')}`}
+                  style={{ width: '100%', height: '400px', border: 'none' }}
+                ></iframe>
+              </CardContent>
+            </Card>
+          }
+          {
+            <Card sx={{ p: 2, mb: 2, mt: 2 }}>
+              <CardContent>
+                <Typography variant="h5" fontWeight="bold">
+                  Skill Gap Analysis
+                </Typography>
+                {/*<iframe
+                  id="inlineFrameExample"
+                  title="Inline Frame Example"
+                  width="900"
+                  height="1000"
+                  src="https://lightcast.io/open-skills/resume">
+              </iframe>*/}
+              </CardContent>
+            </Card>
+          }
+          {data.cfa_educationbreakdown_Occupation.length > 0 &&
+            <Card sx={{ p: 2, mb: 2, mt: 2 }}>
+              <CardContent>
+                <EducationExperienceDetails occupation={data} />
+                <Grid2 container spacing={2} sx={{ mt: 2 }}>
+                  <Grid2 size={{ xs: 12, md: 6 }}>
+                    <Typography variant="h5" fontWeight="bold">Wage Trend</Typography>
+                    <WageTrendDetails occupation={data} />
+                  </Grid2>
+                  <Grid2 size={{ xs: 12, md: 6 }}>
+                    <Typography variant="h5" fontWeight="bold">Job Trends</Typography>
+                    <Box sx={{ color: theme.palette.primary.main }}>
+                      <Typography variant="h6">Average Monthly Job Postings</Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          (data.cfa_avgmonthlypostingsaug2023july2024 /
+                            (data.cfa_avgmonthlypostingsaug2023july2024 + 100)) *
+                          100
+                        }
+                      />
+                      <Typography>{data.cfa_avgmonthlypostingsaug2023july2024}</Typography>
+                    </Box>
+                    <Box sx={{ color: theme.palette.primary.main }}>
+                      <Typography variant="h6">Average Monthly Hired</Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          (data.cfa_avgmonthlyhiresaug2023july2024 /
+                            (data.cfa_avgmonthlyhiresaug2023july2024 + 100)) *
+                          100
+                        }
+                      />
+                      <Typography>{data.cfa_avgmonthlyhiresaug2023july2024}</Typography>
+                    </Box>
+                  </Grid2>
+                </Grid2>
+              </CardContent>
+            </Card>
+          }
+          {data.cfa_jobpostingsregionalbreakdown_Occupation.length > 0 &&
+            <Card sx={{ p: 2, mb: 2, mt: 2 }}>
+              <CardContent>
+                <RegionSelect
+                  regions={data.cfa_jobpostingsregionalbreakdown_Occupation}
+                  region={region}
+                  handleRegionChange={handleRegionChange}
+                />
+                <EmploymentDetails occupation={data} regionId={region} />
+              </CardContent>
+            </Card>
+          }
+          {
+            <OccupationDetails occupation={data} />
+          }
+          {
+            <JobListings cfa_code={data.cfa_code} />
+          }
+        </Box>
+      </Container >
+    )
+    }
+  </>);
 }

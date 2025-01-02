@@ -5,7 +5,7 @@ import {NextResponse} from "next/server";
 
 const prisma: PrismaClient = getPrismaClient()
 
-export async function PATCH(request: Request, {params}: {params: {userId: string}}) {
+export async function PATCH(request: Request) {
     try {
         // Get essentials from session, not the request
         let session = await auth();

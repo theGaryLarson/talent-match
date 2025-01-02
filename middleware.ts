@@ -111,6 +111,17 @@ export default auth((req) => {
     return NextResponse.redirect(homeUrl);
   }
 
+  if (!req.auth) {
+    const isProtectedRoute = !publicRoutes.includes(pathname) &&
+      !pathname.startsWith('/services/training-programs/');
+
+    if (isProtectedRoute) {
+      const signInUrl = new URL('/signin', req.nextUrl.origin);
+      signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+
   if (req.auth && pathname === '/signin') {
     if (userRoles.includes(Role.GUEST)) {
       return NextResponse.redirect(new URL('/signup', req.nextUrl.origin));

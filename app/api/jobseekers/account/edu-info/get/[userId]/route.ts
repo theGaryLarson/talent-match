@@ -18,10 +18,8 @@ import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(
-  request: Request,
-  { params }: { params: { userId: string } },
-) {
+export async function GET(request: Request, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   try {
     const userId = params.userId;
     if (!userId) {
