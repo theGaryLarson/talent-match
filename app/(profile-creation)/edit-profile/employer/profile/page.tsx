@@ -57,7 +57,9 @@ export default function CreateEmployerProfilePage() {
 
   // const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [companyExists, setCompanyExists] = useState<boolean>(true);
+  const [companyExists, setCompanyExists] = useState<{
+    value: boolean;
+  }>({ value: true });
   const [newCompany, setNewCompany] = useState<CompanyEmployerCreationDTO>({companyName: '', yearFounded: undefined});
   const [yearFounded, setYearFounded] = useState<Dayjs | null>(
     newCompany.yearFounded ? dayjs(newCompany.yearFounded) : null
@@ -140,7 +142,7 @@ export default function CreateEmployerProfilePage() {
                 yearFounded: result.yearFounded,
               }) : (result.companyName ?? ''));
 
-              setCompanyExists(result.companyId !== null);
+              setCompanyExists({ value: result.companyId !== null });
 
               setWorkAddress(result.companyAddress ? { ...result.companyAddress } : '');
 
@@ -185,7 +187,7 @@ export default function CreateEmployerProfilePage() {
 
   const handleCompanyExistsChange = (e: ChangeEvent<HTMLInputElement>) => {
       const exists = e.target.value === 'yes';
-      setCompanyExists(exists);
+      setCompanyExists({value: exists});
 
       setSelectCompanyDropdownData('');
       setIsCompanySelected(false);
@@ -245,7 +247,7 @@ export default function CreateEmployerProfilePage() {
       return;
     }
 
-    if (companyExists === false) {
+    if (companyExists.value === false) {
       const response = await fetch(`/api/employers/account/company/create`, {
         method: 'POST',
         headers: {
@@ -265,7 +267,7 @@ export default function CreateEmployerProfilePage() {
         userId: session.user.id ?? '',
         companyId: companyDetails.company_id,
         companyName: companyDetails.company_name,
-        isApprovedEmployee: companyExists === false,
+        isApprovedEmployee: companyExists.value === false,
       };
       setProfileData(updatedProfileData);
 
@@ -444,11 +446,11 @@ export default function CreateEmployerProfilePage() {
                 <p>Is the company already a part of the site?</p>
                 <div className="flex space-x-4 items-center">
                   <label className="flex items-center space-x-2">
-                    <input type="radio" name="company_exists" value="yes" onChange={handleCompanyExistsChange} checked={companyExists === true} required />
+                    <input type="radio" name="company_exists" value="yes" onChange={handleCompanyExistsChange} checked={companyExists.value === true} required />
                     <span>Yes</span>
                   </label>
                   <label className="flex items-center space-x-2">
-                    <input type="radio" name="company_exists" value="no" onChange={handleCompanyExistsChange} checked={companyExists === false} required />
+                    <input type="radio" name="company_exists" value="no" onChange={handleCompanyExistsChange} checked={companyExists.value === false} required />
                     <span>No</span>
                   </label>
                 </div>
@@ -457,7 +459,7 @@ export default function CreateEmployerProfilePage() {
           </fieldset>
           <fieldset>
             <div className="profile-form-grid md:grid-cols-2">
-              {companyExists === true ? (
+              {companyExists.value === true ? (
                 <TextFieldWithAutocomplete
                   apiSearchRoute="/api/companies/search/"
                   fieldLabel="Company Name *"
@@ -500,7 +502,7 @@ export default function CreateEmployerProfilePage() {
                     option.companyName ?? ''
                   }
                 />
-              ) : companyExists === false ? (
+              ) : companyExists.value === false ? (
                 <>
                   <InputTextWithLabel
                     id={`${formNamePrefix}newCompanyName`}

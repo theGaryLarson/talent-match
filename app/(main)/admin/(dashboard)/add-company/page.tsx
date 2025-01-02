@@ -51,8 +51,7 @@ export default function Page() {
       } else {
         // Await the response JSON
         const data = await response.json();
-        console.log("company created: ", data)
-       
+
       }
     } catch (error) {
       console.error('Error creating job listing:', error);

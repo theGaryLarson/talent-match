@@ -17,14 +17,14 @@ export default function JobListingModalView({
   handleModalChange: (open: boolean) => void;
   joblisting: JobListingCardViewDTO;
 }) {
-  const [applied, setApplied] = useState<boolean>(joblisting?.hasApplied);
+  const [applied, setApplied] = useState<boolean>(joblisting?.hasApplied ?? false);
   const { data: session } = useSession();
 
   const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting?.employment_type ?? '';
   const company_name: string = joblisting?.companies.company_name;
-  const company_image: string = joblisting?.companies.company_logo_url;
-  const industry: string = joblisting?.industry_sectors.sector_title;
+  const company_image: string = joblisting?.companies.company_logo_url ?? '';
+  const industry: string = joblisting?.industry_sectors?.sector_title ?? '';
   const skills: SkillDTO[] = joblisting?.skills ?? [];
   const is_paid: boolean = joblisting?.is_paid ?? true;
   const salary_range: string = joblisting?.salary_range ?? '';
@@ -107,7 +107,7 @@ export default function JobListingModalView({
             <p className="font-medium text-gray-700 dark:text-gray-200">
               Description:
             </p>
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 break-words">
               {description}
             </p>
           </div>

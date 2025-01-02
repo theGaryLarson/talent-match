@@ -63,7 +63,10 @@ export async function POST(request: Request) {
         // const newCompanyId: string = session?.user.companyId!;
         if (!companyId) {
             console.error('Company Id needs created and passed to this route first.')
-            return;
+            return NextResponse.json(
+              { success: false, error: 'Company Id needs to be created and passed to this route first.' },
+              { status: 400 } // Bad Request
+            );
         }
 
         const upsertedCompany = await prisma.companies.upsert({

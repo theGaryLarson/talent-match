@@ -24,6 +24,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
+import {ReadEmployerRecordDTO} from "@/app/lib/employer";
 
 const formNamePrefix = 'profile-creation-company-mission-';
 
@@ -34,6 +35,8 @@ export default function CreateEmployerCompanyInfoMissionPage() {
   const [missionData, setMissionData] = useState<PostEmployerMissionDTO>({
     ...missionStoreData,
   });
+  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>()
+
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -41,13 +44,22 @@ export default function CreateEmployerCompanyInfoMissionPage() {
   const { data: session, update, status } = useSession();
   const updateSessionProperties = useUpdateSession();
 
+  // get employers.is_verified_employee
+  useEffect(()=>{
+    fetch('/api/employers/account/profile/get').then((res)=>{
+      return res.json();
+    }).then((jsonData)=>{
+      setEmployerInfo(jsonData)
+    });
+
+  }, [])
+
   useEffect(() => {
     const initializeFormFields = async () => {
       console.log('session', session);
       if (!session?.user.id) return;
       if (status === 'authenticated') {
         if (_.isEqual(missionStoreData, initialState.mission)) {
-          const { id, companyId, employerId } = session.user;
 
           try {
             const response = await fetch(
@@ -145,7 +157,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
               <TextareaWithLabel
                 id="profile-creation-company-mission-mission"
                 placeholder="Tell your company mission"
-                disabled={!session?.user?.employeeIsApproved}
+                disabled={!employerInfo?.is_verified_employee}
                 rows="16"
                 required
                 onChange={handleFieldChange}

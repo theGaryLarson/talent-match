@@ -517,7 +517,7 @@ model employers {
   work_address_id      String?                @db.UniqueIdentifier
   job_title            String?                @db.VarChar(255)
   linkedin_url         String?                @db.VarChar(255)
-  hasAgreedTerms       Boolean                @default(false) @map("has_agreed_terms")
+  // hasAgreedTerms       Boolean                @default(false) @map("has_agreed_terms")
   is_verified_employee Boolean                @default(false, map: "DF__employers__is_verified") @db.Bit
   users                User                   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_employer_user1")
   companies            companies?             @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")

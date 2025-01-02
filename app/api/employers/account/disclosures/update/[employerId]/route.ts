@@ -16,7 +16,7 @@ export async function PATCH(request: Request, {params}: { params: { } }) {
             return NextResponse.json({success: false, error: `A uuidv4 employerId  is required.`}, {status: 400})
         }
         const body: PostEmployerWorkDTO = await request.json();
-        const { currentJobTitle, linkedInUrl, workAddressId, hasAgreedTerms } = body;
+        const { currentJobTitle, linkedInUrl, workAddressId } = body;
         const result = await prisma.employers.update({
             where: {
                 employer_id: employerId,
@@ -30,7 +30,6 @@ export async function PATCH(request: Request, {params}: { params: { } }) {
                 job_title: true,
                 linkedin_url: true,
                 work_address_id: true,
-                hasAgreedTerms: true,
             }
         })
         return NextResponse.json({ success: true, result }, { status: 200 });

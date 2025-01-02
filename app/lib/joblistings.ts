@@ -125,13 +125,14 @@ export async function getMyJobListings() {
   }
   try {
     let results = prisma.job_postings.findMany({
-      where: {
-        employer_id: Session?.user.employerId,
-      },
-      include: {
-        industry_sectors: true,
-      },
-    });
+      where:{
+        employer_id: Session?.user.employerId
+      }, include:{
+        industry_sectors:true,
+        companies: true,
+        skills: true,
+      }
+    })
     return results;
   } catch (e) {
     console.error(e);
@@ -409,6 +410,7 @@ export async function getJobListingsFiltered(request: Request) {
               },
               select: {
                 jobStatus: true,
+                isBookmarked: true,
               },
             }
           : false,
@@ -423,13 +425,18 @@ export async function getJobListingsFiltered(request: Request) {
   ]);
 
   const transformedJobPostings = filteredJobPostings.map((posting) => {
-    const statuses =
-      posting.jobApplications?.map((status) => status.jobStatus) || [];
+    if (posting.jobApplications && posting.jobApplications.length > 0) {
+      const jobStatus = posting.jobApplications?.[0].jobStatus || ''
+      const isBookmarked = posting.jobApplications?.[0].isBookmarked || false
+      return {
+        ...posting,
+        hasApplied: jobStatus !== '',
+        isBookmarked: isBookmarked,
+        jobApplications: undefined,
+      };
+    }
     return {
       ...posting,
-      hasApplied: statuses.includes('Applied'),
-      isBookmarked: statuses.includes('Bookmarked'),
-      jobApplications: undefined,
     };
   });
   return {
@@ -445,14 +452,22 @@ export async function getJobSeekerBookmarkedJobs() {
   }
   try {
     const result = await prisma.jobseekerJobPosting.findMany({
-      include: {
-        job_posting: true,
-      },
-      where: {
-        jobseekerId: session.user.jobseekerId,
-        jobStatus: 'Bookmarked',
-      },
-    });
+      include:{
+        job_posting: {
+          include: {
+            companies: true,
+            skills: true,
+            industry_sectors: {
+              select: {
+                sector_title: true,
+              },
+            },
+          }
+        },
+     }, where:{
+          jobseekerId: session.user.jobseekerId,
+          isBookmarked: true
+    }});
     return result;
   } catch (error) {
     console.error(error);

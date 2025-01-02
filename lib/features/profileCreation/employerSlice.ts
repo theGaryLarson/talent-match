@@ -109,7 +109,6 @@ export const initialState: EmployerState = {
     currentJobTitle: '',
     linkedInUrl: '',
     workAddressId: '',
-    hasAgreedTerms: false,
   },
   video: {
     companyId: '',
