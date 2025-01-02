@@ -98,7 +98,7 @@ export default function AvatarUpload({
       fileSelected.lastIndexOf('.'),
       fileSelected.length,
     );
-    validFiletype = accept.split(',').includes(fileType);
+    validFiletype = accept.split(',').includes(fileType.toLowerCase());
   }
 
   const fileTypeTextPlusSizeLimit =
