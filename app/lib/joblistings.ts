@@ -315,7 +315,8 @@ export async function getAllJobPosts() {
             }
           }
         },
-      }
+      },
+      companies:true
     }});
     return results;
   } catch (error) {

@@ -15,11 +15,11 @@ export default async function Page() {
     //     });
     // }
     if(!jobposts){
-        return <></>
+        return <main><h1 className="text-2xl">No Job Lisings Found</h1></main>
     }
     return(
         <main className="flex flex-col">
-        <h1>job tracking</h1>
+        <h1 className="text-2xl">Job Tracking</h1>
         <JobTrackingTable data={jobposts} />
         </main>
     );

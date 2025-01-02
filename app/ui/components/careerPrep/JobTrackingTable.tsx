@@ -13,6 +13,9 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import React from 'react';
+import Link from 'next/link';
+import { Button } from '@mui/material';
+import Router from 'next/router';
 
 interface JobApplication {
   id: string;
@@ -57,6 +60,9 @@ interface JobPosting {
   job_post_url: string|null;
   assessment_url: string|null;
   jobApplications: JobApplication[];
+  companies:{
+    company_name:string;
+  }
 }
 
 interface RowProps {
@@ -81,7 +87,7 @@ function Row({ row }: RowProps) {
         <TableCell component="th" scope="row">
           {row.job_title}
         </TableCell>
-        <TableCell>{row.company_id}</TableCell>
+        <TableCell>{row.companies.company_name}</TableCell>
         <TableCell>{row.location}</TableCell>
         <TableCell>{row.employment_type}</TableCell>
         <TableCell>{row.salary_range}</TableCell>
@@ -107,7 +113,7 @@ function Row({ row }: RowProps) {
                 <TableBody>
                   {row.jobApplications.map((app) => (
                     <TableRow key={app.id}>
-                      <TableCell>{app.Jobseekers.users.first_name} {app.Jobseekers.users.last_name}</TableCell>
+                      <TableCell><Link href={'/services/jobseekers/'+app.jobseekerId} className='LINK' target='_blank'>{app.Jobseekers.users.first_name} {app.Jobseekers.users.last_name}</Link></TableCell>
                       <TableCell>{app.jobStatus}</TableCell>
                       <TableCell>{app.Jobseekers.assignedPool}</TableCell>
                       <TableCell>{app.appliedDate?new Date(app.appliedDate).toLocaleDateString():''}</TableCell>
@@ -137,7 +143,7 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
           <TableRow>
             <TableCell />
             <TableCell>Job Title</TableCell>
-            <TableCell>Company ID</TableCell>
+            <TableCell>Company</TableCell>
             <TableCell>Location</TableCell>
             <TableCell>Employment Type</TableCell>
             <TableCell>Salary Range</TableCell>
@@ -152,3 +158,5 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
     </TableContainer>
   );
 }
+
+
