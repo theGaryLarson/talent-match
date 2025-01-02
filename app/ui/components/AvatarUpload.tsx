@@ -118,7 +118,7 @@ export default function AvatarUpload({
           // img={filePath}
           img={(props) => (
             <img
-              src={filePath || initialImageUrl}
+              src={filePath || initialImageUrl || undefined}
               alt="Uploaded Avatar"
               {...props}
               {...imageProps}
