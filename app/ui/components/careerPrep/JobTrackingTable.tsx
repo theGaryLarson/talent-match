@@ -16,6 +16,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@mui/material';
 import Router from 'next/router';
+import JobStatusDropDown from './JobStatusDropDown';
+import { JobStatus } from '@/app/lib/jobseekerJobTracking';
 
 interface JobApplication {
   id: string;
@@ -114,7 +116,7 @@ function Row({ row }: RowProps) {
                   {row.jobApplications.map((app) => (
                     <TableRow key={app.id}>
                       <TableCell><Link href={'/services/jobseekers/'+app.jobseekerId} className='LINK' target='_blank'>{app.Jobseekers.users.first_name} {app.Jobseekers.users.last_name}</Link></TableCell>
-                      <TableCell>{app.jobStatus}</TableCell>
+                      <TableCell><JobStatusDropDown currentJobStatus={app.jobStatus as JobStatus} jobAppId={app.id}/></TableCell>
                       <TableCell>{app.Jobseekers.assignedPool}</TableCell>
                       <TableCell>{app.appliedDate?new Date(app.appliedDate).toLocaleDateString():''}</TableCell>
                       <TableCell>{app.followUpDate ? new Date(app.followUpDate).toLocaleDateString() : 'N/A'}</TableCell>
