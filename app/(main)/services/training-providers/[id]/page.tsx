@@ -7,6 +7,7 @@ export default async function page({ params }: { params: { id: string } }) {
   let provider: ReadEduProviderDTO | null = await getEduProviderDetail(params.id);
   let programs: ReadEduProviderProgramCardDTO[] = await getProviderProgramCardView(params.id);
 
+  // Create a list of unique pathways this provider offers
   let careerPrograms: EduProviderPathways[] = [];
   programs.forEach((program) => {
     program.pathway.forEach((pathway) => {
@@ -26,14 +27,17 @@ export default async function page({ params }: { params: { id: string } }) {
           <div className="w-52 h-32 relative">
             <Image src="/images/landing/TWC-logo.svg" width={242} height={155} alt="TWC logo" className="w-52 h-32" />
           </div>
-          {provider?.logoUrl && <div className="border-2 border-cyan-700 flex-col justify-start items-start inline-flex">
-            <div className="w-[0px] h-20 relative" />
+          {provider?.logoUrl &&
+            <div className="border-2 border-cyan-700 flex-col justify-start items-start inline-flex">
+              <div className="w-[0px] h-20 relative" />
+            </div>}
+          {provider?.logoUrl &&
+            <Image src={provider?.logoUrl || ''} width={242} height={155} alt={provider?.providerName + " logo"} className="w-52 h-32" />}
+        </div>
+        {provider?.providerDescription &&
+          <div className="mt-8 self-stretch text-sky-900 text-5xl font-normal font-['Roboto'] capitalize leading-10">
+            Description
           </div>}
-          {provider?.logoUrl && <Image src={provider?.logoUrl || ''} width={242} height={155} alt={provider?.providerName + " logo"} className="w-52 h-32"/>}
-        </div>
-        <div className="mt-8 self-stretch text-sky-900 text-5xl font-normal font-['Roboto'] capitalize leading-10">
-          Description
-        </div>
         <div className="self-stretch">
           <span className="text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">
             {provider?.providerDescription}
@@ -45,7 +49,7 @@ export default async function page({ params }: { params: { id: string } }) {
       </div>
       <div className="self-stretch px-12 flex-col justify-start items-center gap-5 flex">
         <div className="self-stretch h-72 flex-col justify-center items-start gap-2.5 flex">
-          <div className="self-stretch">
+          <div className="mt-12 self-stretch">
             <span className="text-sky-900 text-3xl font-normal font-['Roboto'] leading-10">
               {provider?.mission}
             </span>
