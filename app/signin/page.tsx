@@ -6,9 +6,9 @@ import Image from 'next/image';
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: { callbackUrl?: string };
+  searchParams: Promise<{ callbackUrl?: string }>;
 }) {
-  const callbackUrl = searchParams.callbackUrl || '/';
+  const callbackUrl = (await searchParams).callbackUrl || '/';
 
   console.log(providerMap);
   return (

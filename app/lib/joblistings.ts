@@ -306,7 +306,18 @@ export async function unbookmarkJobPosting(jobPostId: string) {
 
 export async function getAllJobPosts() {
   try {
-    let results = prisma.job_postings.findMany();
+    let results = prisma.job_postings.findMany({include:{
+      jobApplications:{
+        include:{
+          Jobseekers:{
+            include:{
+              users:true
+            }
+          }
+        },
+      },
+      companies:true
+    }});
     return results;
   } catch (error) {
     console.error(error);
