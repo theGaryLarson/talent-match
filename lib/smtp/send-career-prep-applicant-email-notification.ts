@@ -3,12 +3,10 @@ import { render } from '@react-email/render';
 import { sendEmail } from '@/lib/smtp/mailer/send-email';
 import { getAllCareerNavigators } from '@/app/lib/admin/careerPrep';
 
-
-
 export async function sendCareerPrepApplicantEmailNotificationEmail(applicantName:string) {
-    const carrerNavs = await getAllCareerNavigators();
-    if(!carrerNavs) return;
-    carrerNavs.forEach((cn)=>{
+    const careerNavs = await getAllCareerNavigators();
+    if(!careerNavs) return;
+    careerNavs.forEach((cn)=>{
         sendSingleCareerPrepApplicantEmailNotificationEmail({
             recipient: cn.email,
             applicantName: applicantName,

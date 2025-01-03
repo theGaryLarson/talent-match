@@ -8,9 +8,9 @@ import { ApplicantJobStatusUpdateEmailNotification, CareerPrepJobStatusNotificat
 
 
 export async function sendJobApplicantEmailNotificationEmail(data:CareerPrepJobStatusNotificationData) {
-    const carrerNavs = await getAllCareerNavigators();
-    if(!carrerNavs) return;
-    carrerNavs.forEach((cn)=>{
+    const careerNavs = await getAllCareerNavigators();
+    if(!careerNavs) return;
+    careerNavs.forEach((cn)=>{
         sendSingleJobApplicantEmailNotificationEmail({recipient:cn.email, ...data})
     })
 }
