@@ -332,7 +332,7 @@ export default function CreateEmployerProfilePage() {
         await updateSessionProperties({
           firstName: updatedProfileData.firstName,
           lastName: updatedProfileData.lastName,
-          image: updatedProfileData.photoUrl,
+          ...(updatedProfileData.photoUrl && {image: updatedProfileData.photoUrl}),
         });
 
         devLog('profileData submit ok', updatedProfileData);
