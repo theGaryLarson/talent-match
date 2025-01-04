@@ -48,8 +48,8 @@ export default async function page({ params }: { params: { id: string } }) {
         <div className="w-px h-5 relative" />
       </div>
       <div className="self-stretch px-12 flex-col justify-start items-center gap-5 flex">
-        <div className="self-stretch h-72 flex-col justify-center items-start gap-2.5 flex">
-          <div className="mt-12 self-stretch">
+        <div className="self-stretch flex-col justify-center items-start gap-2.5 flex">
+          <div className="self-stretch">
             <span className="text-sky-900 text-3xl font-normal font-['Roboto'] leading-10">
               {provider?.mission}
             </span>
