@@ -10,8 +10,14 @@ export default function Page() {
                     <div className="mt-24 mb-12 self-stretch text-center text-cyan-700 text-6xl font-normal font-['Roboto'] capitalize leading-10">
                         Coalition Training Providers
                     </div>
-                    <div className="self-stretch"><span className="text-red-600 text-xl font-normal font-['Roboto'] leading-loose">
-                        [NEED COPY FROM MARKETING - MICHAEL, SCOTTY, JIM]</span><span className="text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.</span>
+                    <div className="self-stretch">
+                        <p className="text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">
+                            Employer members of The Coalition benefit from direct access to high quality talent pools offered by a dedicated network of training providers.  In some cases, the training provider delivers added value to candidates that are enrolled in certificate or degree programs at leading colleges.  Each training provider specializes in developing candidates from diverse backgrounds, preparing them with industry-recognized credentials and career-readiness training for in-demand Tech roles.  Graduates range from veterans with Tech experience and security clearances to Seniors in BA/BAS degree programs to promising candidates from BIPOC and underrepresented communities.
+                        </p>
+                        <br/>
+                        <p className="text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">
+                            Please browse the individual pages of our network training partners on this site to learn more.
+                        </p>
                     </div>
                 </div>
             </div>
