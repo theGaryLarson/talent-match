@@ -11,11 +11,31 @@ import { useSession } from 'next-auth/react';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import JobseekerProfileDTO from '@/data/dtos/JobseekerProfileDTO';
+import {
+  Box,
+  Card,
+  Container,
+  Divider,
+  Grid2,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
 
 const monthNames = [
-  'Jan', 'Feb', 'Mar', 'Apr',
-  'May', 'Jun', 'Jul', 'Aug',
-  'Sep', 'Oct', 'Nov', 'Dec',];
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 function formatUrl(url: string) {
   if (!url) return '';
@@ -29,11 +49,12 @@ function formatUrl(url: string) {
 }
 
 async function fetchJobseeker(id: string): Promise<JobseekerProfileDTO> {
-  const response = await fetch('/api/jobseekers/get/' + id, { // Make the request
+  const response = await fetch('/api/jobseekers/get/' + id, {
+    // Make the request
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
   if (!response.ok) {
     throw new Error('Failed to fetch data');
@@ -42,11 +63,12 @@ async function fetchJobseeker(id: string): Promise<JobseekerProfileDTO> {
 }
 
 async function fetchResume(id: string) {
-  const response = await fetch('/api/jobseekers/resume/get/' + id, { // Make the request
+  const response = await fetch('/api/jobseekers/resume/get/' + id, {
+    // Make the request
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
   if (!response.ok) {
     throw new Error('Failed to fetch data');
@@ -64,7 +86,8 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
   const session = useSession();
   const isOwnProfile = session?.data?.user.jobseekerId === params.id;
 
-  const execResumeQuery = useCallback(async (userId: string) => { // fetch resume url
+  const execResumeQuery = useCallback(async (userId: string) => {
+    // fetch resume url
     try {
       const data = await fetchResume(userId);
       setResumeUrl(data);
@@ -73,11 +96,11 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
     }
   }, []);
 
-  const execJobseekerQuery = useCallback(async () => { // fetch jobseeker data
+  const execJobseekerQuery = useCallback(async () => {
+    // fetch jobseeker data
     try {
       const data = await fetchJobseeker(params.id);
       setJobseeker(data);
-
       if (data?.video_url) {
         const parsedUrl = new URL(data?.video_url);
         console.log(parsedUrl);
@@ -90,13 +113,22 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
           setVideoID(new URLSearchParams(parsedUrl.search).get('v') ?? '');
         }
         console.log('Vid id is: ', videoID);
-        document.title = (jobseeker?.users.first_name || "") + " " + (jobseeker?.users.last_name || "");
+        document.title =
+          (jobseeker?.users.first_name || '') +
+          ' ' +
+          (jobseeker?.users.last_name || '');
         execResumeQuery(data.users.id);
       }
     } catch (error) {
       console.error('Error fetching job seekers:', error);
     }
-  }, [params.id, videoID, execResumeQuery, jobseeker?.users.first_name, jobseeker?.users.last_name]);
+  }, [
+    params.id,
+    videoID,
+    execResumeQuery,
+    jobseeker?.users.first_name,
+    jobseeker?.users.last_name,
+  ]);
 
   useEffect(() => {
     execJobseekerQuery();
@@ -106,14 +138,14 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
     event: React.MouseEvent<HTMLElement>,
     newView: string,
   ) => {
-    setEditView(newView === "edit");
+    setEditView(newView === 'edit');
   };
 
   return (
-    <main className="space-y-3 bg-gray-bg px-4 py-8 font-['Roboto'] tablet:px-[150px] laptop:px-[200px]">
+    <Container sx={{ pb: 4 }}>
       <DeletionFlag deletionDate={undefined} />
-      {isOwnProfile &&
-        <div className="w-full grid content-center place-content-center place-self-center">
+      {isOwnProfile && (
+        <Box className="my-4 grid w-full place-content-center content-center place-self-center">
           <ToggleButtonGroup
             color="primary"
             value={editView}
@@ -121,155 +153,126 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             onChange={handleChange}
             aria-label="Edit view"
           >
-            <ToggleButton value="edit" selected={editView} >My view</ToggleButton>
-            <ToggleButton value="read-only" selected={!editView} >Showcase</ToggleButton>
+            <ToggleButton value="edit" selected={editView}>
+              My view
+            </ToggleButton>
+            <ToggleButton value="read-only" selected={!editView}>
+              Showcase
+            </ToggleButton>
           </ToggleButtonGroup>
-        </div>
-      }
-      <div className="flex flex-wrap gap-4">
-        <div className="group flex grow items-center rounded-md border bg-white">
-          <div className="flex items-center gap-5 p-4 w-full justify-between">
-            <div className="flex items-center gap-5">
+        </Box>
+      )}
+
+      <Grid2 container spacing={2} sx={{mb: 2}}>
+        <Grid2>
+          <Card variant="outlined">
+            <Stack
+              spacing={2}
+              direction={'row'}
+              sx={{ padding: 2, alignItems: 'center' }}
+            >
               <Avatar
                 imgsrc={jobseeker?.users.photo_url ?? undefined}
                 scale={1.5}
               ></Avatar>
-              <div>
-                {jobseeker?.users.first_name &&
+              <Stack direction={'column'}>
+                {jobseeker?.users.first_name && (
                   <h1 className="text-2xl font-bold">
-                    {jobseeker?.users.first_name + ' ' + jobseeker?.users.last_name}
+                    {jobseeker?.users.first_name +
+                      ' ' +
+                      jobseeker?.users.last_name}
                   </h1>
-                }
-                <h2></h2>
+                )}
                 <h2>{jobseeker?.current_job_title}</h2>
                 <h2>
                   {jobseeker?.jobseeker_education[0]
                     ? jobseeker.jobseeker_education[0].eduProviders?.name +
-                    ' | ' +
-                    jobseeker.jobseeker_education[0].degreeType +
-                    ' | ' +
-                    (jobseeker?.jobseeker_education[0]?.program?.title
-                      ? jobseeker.jobseeker_education[0].program.title
-                      : '')
+                      ' | ' +
+                      jobseeker.jobseeker_education[0].degreeType +
+                      ' | ' +
+                      (jobseeker?.jobseeker_education[0]?.program?.title
+                        ? jobseeker.jobseeker_education[0].program.title
+                        : '')
                     : ''}
                 </h2>
                 <h2>{jobseeker?.current_grade_level}</h2>
-              </div>
-            </div>
-            {isOwnProfile && editView &&
-              <div className="edit-btn opacity-25 group-hover:opacity-100">
-                <Link href={'/edit-profile/jobseeker/introduction'}>
-                  <EditIcon />
-                </Link>
-              </div>
-            }
-          </div>
-        </div>
-        {videoID != '' ? (
-          <iframe
-            className="aspect-video min-w-[200px] grow"
-            src={`https://www.youtube.com/embed/${videoID}?autoplay=0`}
-            title="YouTube video player"
-            allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          ></iframe>
-        ) : (
-          ''
-        )}
-      </div>
-      <div className="flex flex-wrap gap-4">
-        <div className="grow space-y-3">
-          <div className="group space-y-4 rounded-md border bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold">Introduction</h1>
-              {isOwnProfile && editView &&
+              </Stack>
+              {isOwnProfile && editView && (
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/introduction'}>
                     <EditIcon />
                   </Link>
                 </div>
-              }
-            </div>
+              )}
+            </Stack>
+          </Card>
+        </Grid2>
+        <Grid2>
+          {videoID && (
+            <iframe
+              className="aspect-video min-w-[200px]"
+              src={`https://www.youtube.com/embed/${videoID}?autoplay=0`}
+              title="YouTube video player"
+              allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+              style={{ width: '100%', maxWidth: '600px' }}
+            ></iframe>
+          )}
+        </Grid2>
+      </Grid2>
+      <Container>
+        <Stack
+          spacing={2}
+          divider={<Divider orientation="horizontal" flexItem />}
+        >
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Introduction
+              </Typography>
+              {isOwnProfile && editView && (
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/introduction'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              )}
+            </Stack>
             <p>{jobseeker?.intro_headline}</p>
-          </div>
-
-          <div className="group space-y-4 rounded-md border bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold">
-                Work Experience {jobseeker?.years_work_exp ? "(" + jobseeker?.years_work_exp + "Y)" : ""}
-              </h1>
-              {isOwnProfile && editView &&
+          </Box>
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Work Experience{' '}
+                {jobseeker?.years_work_exp
+                  ? '(' + jobseeker?.years_work_exp + 'Y)'
+                  : ''}
+              </Typography>
+              {isOwnProfile && editView && (
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/work-experience'}>
                     <EditIcon />
                   </Link>
                 </div>
-              }
-            </div>
-            {jobseeker?.work_experiences.map((experience) => (
-              <div
-                key={experience.workId}
-                className="rounded-md border bg-gray-bg p-4"
-              >
-                <h2 className="text-xl font-bold">
-                  {experience.company} | {experience.jobTitle}
-                </h2>
-                <span className="flex gap-1">
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+              )}
+            </Stack>
+            <Stack
+              spacing={1}
+              sx={{ pl: 2 }}
+            >
+              {jobseeker?.work_experiences.map((experience) => (
+                <Box key={experience.workId}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
                   >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z"
-                      fill="#047089"
-                    />
-                  </svg>
-                  <p className="text-xs">
-                    {monthNames[new Date(experience.startDate).getMonth()]}{' '}
-                    {new Date(experience.startDate).getFullYear()} -{' '}
-                    {experience.endDate
-                      ? monthNames[new Date(experience.endDate).getMonth()] +
-                      ' ' +
-                      new Date(experience.endDate).getFullYear()
-                      : 'Present'}
-                  </p>
-                </span>
-                <p>{experience.responsibilities}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="group space-y-4 rounded-md border bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold">Education</h1>
-              {isOwnProfile && editView &&
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/education'}>
-                    <EditIcon />
-                  </Link>
-                </div>
-              }
-            </div>
-            {jobseeker?.jobseeker_education.map((education) => {
-              return (
-                <div
-                  key={education.id}
-                  className="rounded-md border bg-gray-bg p-4"
-                >
-                  <h3 className="font-bold">{education.eduProviders.name}</h3>
-                  <p>
-                    {education?.program?.title} | {education.degreeType}s
-                  </p>
-                  <span className="flex gap-1">
+                    {experience.company} | {experience.jobTitle}
+                  </Typography>
+                  <Stack spacing={1} direction="row">
                     <svg
-                      width="15"
-                      height="15"
+                      width="20"
+                      height="20"
                       viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -281,122 +284,196 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                         fill="#047089"
                       />
                     </svg>
-                    <p className="text-xs">
-                      {monthNames[new Date(education.startDate).getMonth()]}{' '}
-                      {new Date(education.startDate).getFullYear()} -{' '}
-                      {monthNames[new Date(education.gradDate).getMonth()]}{' '}
-                      {new Date(education.gradDate).getFullYear()}
-                    </p>
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="group space-y-4 rounded-md border bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold ">Projects</h1>
-              {isOwnProfile && editView &&
+                    <Typography className="text-xs">
+                      {monthNames[new Date(experience.startDate).getMonth()]}{' '}
+                      {new Date(experience.startDate).getFullYear()} -{' '}
+                      {experience.endDate
+                        ? monthNames[new Date(experience.endDate).getMonth()] +
+                          ' ' +
+                          new Date(experience.endDate).getFullYear()
+                        : 'Present'}
+                    </Typography>
+                  </Stack>
+                  <p>{experience.responsibilities}</p>
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Education
+              </Typography>
+              {isOwnProfile && editView && (
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/education'}>
                     <EditIcon />
                   </Link>
                 </div>
-              }
-            </div>
-
-            {jobseeker?.project_experiences.map((experience) => (
-              <div
-                className="rounded-md border bg-gray-bg p-4"
-                key={experience.projectId}
-              >
-                <h2 className="text-xl">{experience.projectTitle}</h2>
-                <span className="flex gap-1">
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+              )}
+            </Stack>
+            <Stack
+              divider={<Divider orientation="horizontal" flexItem />}
+              sx={{ pl: 2 }}
+            >
+              {jobseeker?.jobseeker_education.map((education) => (
+                <Box key={education.id}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
                   >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z"
-                      fill="#047089"
-                    />
-                  </svg>
-                  <p className="text-xs">
-                    {monthNames[new Date(experience.startDate).getMonth()]}{' '}
-                    {new Date(experience.startDate).getFullYear()} -{' '}
-                    {experience.completionDate
-                      ? monthNames[new Date(experience.completionDate).getMonth()] +
-                      ' ' +
-                      new Date(experience.completionDate).getFullYear()
-                      : 'Present'}
-                  </p>
-                </span>
-                <p>{experience.problemSolvedDescription}</p>
-                {experience.demoUrl ? (
-                  <a target="_blank" href={experience.demoUrl}>
-                    {experience.demoUrl}
-                  </a>
-                ) : (
-                  ''
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="grow space-y-3">
-          <div className="group space-y-4 rounded-md border bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h1 id="skills" className="text-2xl font-bold">
+                    {education.eduProviders.name}
+                  </Typography>
+                  <Typography>
+                    {education?.program?.title} | {education.degreeType}
+                  </Typography>
+                  <Stack spacing={1} direction="row">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z"
+                        fill="#047089"
+                      />
+                    </svg>
+                    <Typography className="text-xs">
+                      {monthNames[new Date(education.startDate).getMonth()]}{' '}
+                      {new Date(education.startDate).getFullYear()} -{' '}
+                      {monthNames[new Date(education.gradDate).getMonth()]}{' '}
+                      {new Date(education.gradDate).getFullYear()}
+                    </Typography>
+                  </Stack>
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Projects
+              </Typography>
+              {isOwnProfile && editView && (
+                <div className="edit-btn opacity-25 group-hover:opacity-100">
+                  <Link href={'/edit-profile/jobseeker/education'}>
+                    <EditIcon />
+                  </Link>
+                </div>
+              )}
+            </Stack>
+            <Stack
+              spacing={1}
+              sx={{ pl: 2 }}
+            >
+              {jobseeker?.project_experiences.map((experience) => (
+                <Box key={experience.projectId}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >
+                    {experience.projTitle}
+                  </Typography>
+                  <Stack spacing={1} direction="row">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z"
+                        fill="#047089"
+                      />
+                    </svg>
+                    <Typography className="text-xs">
+                      {monthNames[new Date(experience.startDate).getMonth()]}{' '}
+                      {new Date(experience.startDate).getFullYear()} -{' '}
+                      {experience.completionDate
+                        ? monthNames[
+                            new Date(experience.completionDate).getMonth()
+                          ] +
+                          ' ' +
+                          new Date(experience.completionDate).getFullYear()
+                        : 'Present'}
+                    </Typography>
+                  </Stack>
+                  <p>{experience.problemSolvedDescription}</p>
+                  {experience.repoUrl ? (
+                    <a target="_blank" href={experience.repoUrl}>
+                      {experience.repoUrl}
+                    </a>
+                  ) : (
+                    ''
+                  )}
+                  <Skills
+                    skillsList={experience.project_has_skills.map(
+                      (item: JobseekerSkillDTO) => item.skills,
+                    )}
+                    maxNumSkills={0}
+                    key={experience.projectId + 'skills'}
+                  />
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Skills
-              </h1>
-              {isOwnProfile && editView &&
+              </Typography>
+              {isOwnProfile && editView && (
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/showcase'}>
                     <EditIcon />
                   </Link>
                 </div>
-              }
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <Skills
-                skillsList={jobseeker?.jobseeker_has_skills.map(
-                  (item: JobseekerSkillDTO) => item.skills,
-                )}
-                maxNumSkills={0}
-              />
-            </div>
-          </div>
-          <div className="group space-y-4 rounded-md border bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold">Preferences</h1>
-              {isOwnProfile && editView &&
+              )}
+            </Stack>
+            <Skills
+              skillsList={jobseeker?.jobseeker_has_skills.map(
+                (item: JobseekerSkillDTO) => item.skills,
+              )}
+              maxNumSkills={0}
+            />
+          </Box>
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Preferences
+              </Typography>
+              {isOwnProfile && editView && (
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/preferences'}>
                     <EditIcon />
                   </Link>
                 </div>
-              }
-            </div>
+              )}
+            </Stack>
             <p>I am looking for {jobseeker?.employment_type_sought} roles</p>
             <p>My targeted pathway is {jobseeker?.pathways?.pathway_title}</p>
-          </div>
-          {resumeUrl &&
-            <div className="group space-y-4 rounded-md border bg-white p-4">
-              <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Resume</h1>
-                {isOwnProfile && editView &&
+          </Box>
+          {resumeUrl && (
+            <Box>
+              <Stack spacing={2} direction={'row'}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                  Resume
+                </Typography>
+                {isOwnProfile && editView && (
                   <div className="edit-btn opacity-25 group-hover:opacity-100">
                     <Link href={'/edit-profile/jobseeker/showcase'}>
                       <EditIcon />
                     </Link>
                   </div>
-                }
-              </div>
+                )}
+              </Stack>
               {resumeUrl ? (
                 <Link href={resumeUrl} target="_blank">
                   View Resume
@@ -404,20 +481,21 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               ) : (
                 ''
               )}
-            </div>
-          }
-
-          <div className="group space-y-4 rounded-md border bg-white p-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold">Portfolio</h1>
-              {isOwnProfile && editView &&
+            </Box>
+          )}
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Portfolio
+              </Typography>
+              {isOwnProfile && editView && (
                 <div className="edit-btn opacity-25 group-hover:opacity-100">
                   <Link href={'/edit-profile/jobseeker/showcase'}>
                     <EditIcon />
                   </Link>
                 </div>
-              }
-            </div>
+              )}
+            </Stack>
             {jobseeker?.portfolio_url ? (
               <a href={formatUrl(jobseeker?.portfolio_url)} target="_blank">
                 {jobseeker?.portfolio_url}
@@ -425,14 +503,9 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             ) : (
               ''
             )}
-          </div>
-        </div>
-      </div>
-    </main>
+          </Box>
+        </Stack>
+      </Container>
+    </Container>
   );
-}
-function validYouTubeLink(url: string) {
-  if (url == '') return true;
-  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
-  return regex.test(url);
 }
