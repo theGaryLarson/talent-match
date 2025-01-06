@@ -38,20 +38,38 @@ export default function JobListingModalView({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch(`/api/joblistings/apply/${id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    if (!applied) {
+      try {
+        const response = await fetch(`/api/joblistings/apply/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to update application status');
+        if (!response.ok) {
+          throw new Error('Failed to update application status');
+        }
+        setApplied(true);
+      } catch (error) {
+        console.error('Error updating application:', error);
       }
-      setApplied(true);
-    } catch (error) {
-      console.error('Error updating application:', error);
+    } else {
+      try {
+        const response = await fetch(`/api/joblistings/withdraw/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update application status');
+        }
+        setApplied(false);
+      } catch (error) {
+        console.error('Error updating application:', error);
+      }
     }
   };
 
@@ -157,12 +175,11 @@ export default function JobListingModalView({
         <form onSubmit={handleSubmit}>
           <Button
             type={"submit"}
-            disabled={applied}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block"
           >
-            {applied ? "Applied" : "Apply"}
+            {applied ? "Withdraw Application" : "Apply"}
           </Button>
         </form>
       </Modal.Footer>)}

@@ -35,7 +35,6 @@ export default function JobListingCardView({
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
   const [openModal, setOpenModal] = useState(false);
   const isBookmarked = joblisting?.isBookmarked ?? false;
-  console.log(joblisting);
 
   const showBookmarks = session?.user.roles.includes(Role.JOBSEEKER);
 
