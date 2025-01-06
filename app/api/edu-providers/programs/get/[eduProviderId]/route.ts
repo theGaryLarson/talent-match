@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'; // Adjust imports based on your framework
 import { getProviderProgramCardView } from "@/app/lib/eduProviders";
-export async function GET(request: Request, { params }: { params: { eduProviderId: string } }) {
+export async function GET(request: Request, props: { params: Promise<{ eduProviderId: string }> }) {
+  const params = await props.params;
   const  eduProviderId = params.eduProviderId;
 
   if (!eduProviderId) {
