@@ -5,9 +5,9 @@ import Link from 'next/link';
 export default function Page() {
     return (
         <main>
-            <div className="px-64 flex-col justify-start items-center gap-5 inline-flex">
+            <div className="px-8 sm-tablet:px-12 tablet:px-24 laptop:px-64 flex-col justify-start items-center gap-5 inline-flex">
                 <div className="self-stretch flex-col justify-center items-center gap-6 flex">
-                    <div className="mt-24 mb-12 self-stretch text-center text-cyan-700 text-6xl font-normal font-['Roboto'] capitalize leading-10">
+                    <div className="mt-24 mb-12 self-stretch text-center text-cyan-700 text-6xl font-normal font-['Roboto'] capitalize leading-normal">
                         Coalition Training Providers
                     </div>
                     <div className="self-stretch">
