@@ -179,7 +179,7 @@ export default function JobListingModalView({
             rel="noopener noreferrer"
             className="inline-block"
           >
-            {applied ? "Applied" : "Apply"}
+            {applied ? "Withdraw Application" : "Apply"}
           </Button>
         </form>
       </Modal.Footer>)}
