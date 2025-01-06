@@ -1,4 +1,5 @@
 import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
+import { SkillDTO } from "./SkillDTO";
 
 export type JobseekerProfileDTO = {
     jobseeker_id: string;
@@ -66,14 +67,15 @@ type EducationDTO = {
 };
 
 type ProjectExperienceDTO = {
-    projectId: string;
-    projectTitle: string;
-    startDate: string;
-    completionDate: string;
-    teamSize: number;
-    repoUrl: string;
-    demoUrl: string;
-    problemSolvedDescription: string;
+  projectId: string;
+  projTitle: string;
+  startDate: string;
+  completionDate: string;
+  teamSize: number;
+  repoUrl: string;
+  demoUrl: string;
+  problemSolvedDescription: string;
+  project_has_skills: JobseekerSkillDTO[];
 };
 
 export default JobseekerProfileDTO;

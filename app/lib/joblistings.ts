@@ -7,6 +7,7 @@ import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
 import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
+import { CareerPrepStatus } from './admin/careerPrep';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
@@ -188,7 +189,7 @@ export async function ApplyToJob(jobPostingId: string) {
           id: existingApplication.id,
         },
         data: {
-          jobStatus: 'Applied',
+          jobStatus: CareerPrepStatus.Applied,
           appliedDate: new Date(),
         },
       });
@@ -198,7 +199,7 @@ export async function ApplyToJob(jobPostingId: string) {
           id: uuidv4(),
           jobPostId: jobPostingId,
           jobseekerId: Session.user.jobseekerId,
-          jobStatus: 'Applied',
+          jobStatus: CareerPrepStatus.Applied,
           appliedDate: new Date(),
           isBookmarked: false,
         },
@@ -206,6 +207,50 @@ export async function ApplyToJob(jobPostingId: string) {
     }
   } catch (error) {
     console.error('Error in ApplyToJob:', error);
+    throw error;
+  }
+}
+
+export async function WithdrawFromJob(jobPostingId: string) {
+  let Session = await auth();
+  try {
+    if (!Session?.user.jobseekerId) {
+      throw new Error(
+        'Failed to Withdraw from job: jobseeker ID not found in session',
+      );
+    }
+
+    const existingApplication = await prisma.jobseekerJobPosting.findFirst({
+      where: {
+        jobPostId: jobPostingId,
+        jobseekerId: Session.user.jobseekerId,
+      },
+    });
+
+    if (existingApplication) {
+      return await prisma.jobseekerJobPosting.update({
+        where: {
+          id: existingApplication.id,
+        },
+        data: {
+          jobStatus: CareerPrepStatus.Withdrawn,
+          appliedDate: new Date(),
+        },
+      });
+    } else {
+      return await prisma.jobseekerJobPosting.create({
+        data: {
+          id: uuidv4(),
+          jobPostId: jobPostingId,
+          jobseekerId: Session.user.jobseekerId,
+          jobStatus: CareerPrepStatus.Withdrawn,
+          appliedDate: new Date(),
+          isBookmarked: false,
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Error in WithdrawFromJob:', error);
     throw error;
   }
 }
