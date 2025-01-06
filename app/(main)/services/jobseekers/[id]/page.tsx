@@ -6,7 +6,7 @@ import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
 import EditIcon from '@mui/icons-material/Edit';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, use } from 'react';
 import { useSession } from 'next-auth/react';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -54,7 +54,8 @@ async function fetchResume(id: string) {
   return response.json();
 }
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const [jobseeker, setJobseeker] = useState<JobseekerProfileDTO>();
   const [videoID, setVideoID] = useState('');
   const [resumeUrl, setResumeUrl] = useState('');

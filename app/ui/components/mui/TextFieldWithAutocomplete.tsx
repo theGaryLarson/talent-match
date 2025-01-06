@@ -20,6 +20,7 @@ interface Props<ValueType> {
   noResultsText?: string | undefined;
   allowNewOption?: boolean;
   value: string | ValueType;
+  disabled?: boolean;
   onChange: (
     event: SyntheticEvent<Element, Event>,
     value: string | ValueType | null,
@@ -39,6 +40,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
   noResultsText,
   allowNewOption = true,
   value = '',
+  disabled,
   onChange,
   searchingText,
   searchPlaceholder,
@@ -87,6 +89,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
       loading={loading}
       loadingText={searchingText}
       noOptionsText={noResultsText}
+      disabled={disabled}
       value={value}
       filterOptions={(options, params) => {
         if (loading) {

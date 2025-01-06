@@ -9,12 +9,13 @@ import LikertRating from "@/app/ui/components/careerPrep/LikertRating";
 import SelfAssementReadOnly from "@/app/ui/components/careerPrep/SelfAssementReadOnly";
 import Link from "next/link";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-export default async function page({ params }: { params: { id: string } }){
+export default async function page(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const client = await getCareerPrepStudentDetailView(params.id);
     const careerPrepEnrollment = await getCareerPrepStatus(params.id);
     const notes = await getCareerPrepStudentNotes(params.id);
     const meetings = await getMeetingByJobSeeker(params.id);
-    
+
     if(!client.data){
         return <div><h1>ERROR</h1></div>
     }

@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { auth } from "@/auth";
+import { v4 as uuidv4 } from 'uuid';
+import { CompanyEmployerCreationDTO } from '@/data/dtos/CompanyEmployerCreateionDTO';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -90,13 +92,38 @@ export const deleteEmployerWithSession = async (): Promise<void> => {
   }
 };
 
-
+export async function createCompany(companyData: CompanyEmployerCreationDTO) {
+  const session = await auth();
+  if(!session?.user.roles.includes(Role.EMPLOYER)){
+      throw new Error("Must Be Employer to complete this task")
+  }
+  if(!session?.user.id){
+      throw new Error("Must Be a user")
+  }
+  try{
+    let result = await prisma.companies.create(
+      {
+        data:{
+          company_name: companyData.companyName,
+          company_email: session.user.email ?? '',
+          company_id: uuidv4(),
+          about_us: '',
+          year_founded: companyData.yearFounded ?? 2024,
+          createdBy: session.user.id,
+          company_mission: ''
+        }
+      }
+    )
+    return result;
+  } catch(e) {
+    console.error(e)
+  }
+}
 
 export async function getAllCompanies() {
     const res = await prisma.companies.findMany();
     return res;
 }
-
 
 export async function getAllTechAreas(){
     const res = await prisma.technology_areas.findMany();
@@ -106,4 +133,34 @@ export async function getAllTechAreas(){
 export async function getAllIndustrySectors() {
     const res = await prisma.industry_sectors.findMany();
     return res;
+}
+
+export type ReadEmployerRecordDTO = {
+  company_id: string | null;
+  employer_id: string;
+  user_id: string;
+  work_address_id: string | null;
+  job_title: string | null;
+  linkedin_url: string | null;
+  is_verified_employee: boolean;
+} | null;
+
+
+export async function getEmployer(userId: string): Promise<ReadEmployerRecordDTO> {
+  const res: ReadEmployerRecordDTO = await prisma.employers.findUnique({
+    where: {
+      user_id: userId,
+    }
+  });
+  return res
+}
+
+export async function getEmployerWithSession() {
+  const session = await auth();
+  const userId = session?.user.id;
+  if (!userId) {
+    return
+  }
+  const res: ReadEmployerRecordDTO = await getEmployer(userId);
+  return res
 }

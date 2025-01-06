@@ -13,10 +13,8 @@ import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 
 export default function JobListingCardView({
   joblisting,
-  isBookmarked = false,
 }: {
   joblisting: JobListingCardViewDTO;
-  isBookmarked: boolean;
 }) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -26,8 +24,8 @@ export default function JobListingCardView({
   const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting.employment_type ?? '';
   const company_name: string = joblisting.companies.company_name;
-  const company_image: string = joblisting.companies.company_logo_url;
-  const industry: string = joblisting.industry_sectors.sector_title;
+  const company_image: string = joblisting.companies.company_logo_url ?? '';
+  const industry: string = joblisting.industry_sectors?.sector_title ?? '';
   const is_paid: boolean = joblisting.is_paid ?? true;
   const skills: SkillDTO[] = joblisting.skills ?? [];
   const salary_range: string = joblisting?.salary_range ?? '';
@@ -36,6 +34,8 @@ export default function JobListingCardView({
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
   const [openModal, setOpenModal] = useState(false);
+  const isBookmarked = joblisting?.isBookmarked ?? false;
+  console.log(joblisting);
 
   const showBookmarks = session?.user.roles.includes(Role.JOBSEEKER);
 
@@ -118,7 +118,7 @@ export default function JobListingCardView({
         {/* bottom row */}
         <div className="mt-2">
           {/* job description */}
-          <p className="line-clamp-3">{description}</p>
+          <p className="line-clamp-3 break-words">{description}</p>
 
           {/* employment type and salary */}
           <h4 className="mt-2 text-sm italic text-slate-400">

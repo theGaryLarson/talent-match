@@ -5,10 +5,8 @@ import { ReadEmployerAboutDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(
-  request: Request,
-  { params }: { params: { companyId: string } },
-) {
+export async function GET(request: Request, props: { params: Promise<{ companyId: string }> }) {
+  const params = await props.params;
   try {
     const companyId = params.companyId;
 
