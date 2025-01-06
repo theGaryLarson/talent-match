@@ -3,10 +3,6 @@ const nextConfig = {
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
-  // TODO: remove once Damien implements suspense and/or uses loading skeleton.
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
   images: {
     remotePatterns: [
       {
@@ -20,6 +16,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'randomuser.me'
+      },
+      {
+        protocol: 'https',
+        hostname: 'logo.clearbit.com'
       },
       {
         protocol: 'http',

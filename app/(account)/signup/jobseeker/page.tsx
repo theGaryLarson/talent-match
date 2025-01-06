@@ -147,6 +147,7 @@ export default function JobseekerSignupFinishPage() {
                     role: Role.JOBSEEKER,
                     sendNewJobPosts: checkboxState.jobNotifications,
                     sendCareerOpportunities: checkboxState.opportunities,
+                    agreedTerms: termsAgree,
                   }),
                 });
                 if (response.ok) {

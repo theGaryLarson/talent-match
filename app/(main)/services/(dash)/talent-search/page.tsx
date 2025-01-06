@@ -53,9 +53,23 @@ async function fetchFilteredJobSeekerCardView(
   return response.json();
 }
 
+async function fetchBookmarkedJobseekers(): Promise<any> {
+  const response = await fetch('/api/companies/bookmark/getJobseekers', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+}
+
 export default function Page() {
   // Listview data
   const [jobseekers, setJobSeekers] = useState<JobSeekerCardViewDTO[]>([]);
+  const [bookmarkedJobseekers, setBookmarkedJobseekers] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
@@ -123,6 +137,24 @@ export default function Page() {
       setLoading(false);
     }
   }, [skillsList, industry, eduLevel, trainingProvider, yearsExpMin, yearsExpMax, zipCode, sortBy, page]);
+
+  useEffect(() => {
+    const fetchBookmarked = async () => {
+      try {
+        const bookmarkedJobseekers = await fetchBookmarkedJobseekers();
+        const jobseekerIds = bookmarkedJobseekers.map((item: any) => item.jobseekerId);
+
+        setBookmarkedJobseekers(jobseekerIds);
+      } catch (error) {
+        console.error('Error fetching bookmarked jobs:', error);
+      }
+    };
+    fetchBookmarked();
+  }, []);
+
+  const isBookmarked = (jobseekerId: string) => {
+    return bookmarkedJobseekers.includes(jobseekerId);
+  };
 
   useEffect(() => {
     // on initial page load, get the params from URL if they exist
@@ -318,7 +350,7 @@ export default function Page() {
       {/* else, Display Results */}
       {!loading && !error ?
         <div className="space-y-4">{jobseekers.map((jobSeeker: JobSeekerCardViewDTO) => (
-          <JobSeekerCardView jobseeker={jobSeeker} key={jobSeeker.jobseeker_id} />))}
+          <JobSeekerCardView jobseeker={jobSeeker} isBookmarked={isBookmarked(jobSeeker.jobseeker_id)} key={jobSeeker.jobseeker_id} />))}
         </div> : ""
       }
 

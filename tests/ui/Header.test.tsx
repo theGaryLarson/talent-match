@@ -4,6 +4,13 @@ import Header from '../../app/ui/Header';
 import { usePathname } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
 
+// Mock ResizeObserver
+global.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+};
+
 vi.mock('next/link', () => ({
     default: ({ children, ...props }: { children: React.ReactNode }) => <a {...props}>{children}</a>,
 }));
@@ -35,14 +42,38 @@ describe('Header', () => {
         cleanup();
     });
 
-    it('renders the logo and navigation links', () => {
+    it('renders the logo and navigation links', async () => {
         vi.mocked(usePathname).mockReturnValue('/');
         renderWithProviders(<Header />);
 
         expect(screen.getByAltText('Tech Workforce Coalition')).toBeDefined();
+
+        const topLinkForEmployers = screen.getByText('For Employers');
+        expect(topLinkForEmployers).toBeDefined();
+        fireEvent.click(topLinkForEmployers);
+        // expect(screen.getByText('Landing Page')).not.toBeNull(); // Causes duplicate existence error
         expect(screen.getByText('Talent Showcase')).toBeDefined();
-        expect(screen.getByText('For Employers')).toBeDefined();
-        expect(screen.getByText('For Job Seekers')).toBeDefined();
+
+        const topLinkForJobseekers = screen.getByText('For Jobseekers');
+        expect(topLinkForJobseekers).toBeDefined();
+        fireEvent.click(topLinkForJobseekers);
+        // expect(screen.getByText('Landing Page')).not.toBeNull(); // Causes duplicate existence error
+        expect(screen.getByText('Job Listings')).toBeDefined();
+
+        const topLinkOurCommunity = screen.getByText('Our Community');
+        expect(topLinkOurCommunity).toBeDefined();
+        fireEvent.click(topLinkOurCommunity);
+        expect(screen.getByText('Join Our Community')).toBeDefined();
+        expect(screen.getByText('Careers')).toBeDefined();
+
+        // expect(screen.getByText('Events')).toBeDefined();
+
+        const topLinkCoalition = screen.getByText('Coalition');
+        expect(topLinkCoalition).toBeDefined();
+        fireEvent.click(topLinkCoalition);
+        expect(screen.getByText('Training Providers')).toBeDefined();
+
+        expect(screen.getByText('About Us')).toBeDefined();
     });
 
     it('changes logo based on pathname', () => {
@@ -67,8 +98,31 @@ describe('Header', () => {
 
         const mobileMenu = screen.getByRole('dialog');
 
+        const topLinkForEmployers = within(mobileMenu).getByText('For Employers');
+        expect(topLinkForEmployers).toBeDefined();
+        fireEvent.click(topLinkForEmployers);
+        // expect(within(mobileMenu).getByText('Landing Page')).not.toBeNull(); // Causes duplicate existence error
         expect(within(mobileMenu).getByText('Talent Showcase')).toBeDefined();
-        expect(within(mobileMenu).getByText('For Employers')).toBeDefined();
-        expect(within(mobileMenu).getByText('For Job Seekers')).toBeDefined();
+
+        const topLinkForJobseekers = within(mobileMenu).getByText('For Jobseekers');
+        expect(topLinkForJobseekers).toBeDefined();
+        fireEvent.click(topLinkForJobseekers);
+        // expect(within(mobileMenu).getByText('Landing Page')).not.toBeNull(); // Causes duplicate existence error
+        expect(within(mobileMenu).getByText('Job Listings')).toBeDefined();
+
+        const topLinkOurCommunity = within(mobileMenu).getByText('Our Community');
+        expect(topLinkOurCommunity).toBeDefined();
+        fireEvent.click(topLinkOurCommunity);
+        expect(within(mobileMenu).getByText('Join Our Community')).toBeDefined();
+        expect(within(mobileMenu).getByText('Careers')).toBeDefined();
+
+        // expect(within(mobileMenu).getByText('Events')).toBeDefined();
+
+        const topLinkCoalition = within(mobileMenu).getByText('Coalition');
+        expect(topLinkCoalition).toBeDefined();
+        fireEvent.click(topLinkCoalition);
+        expect(within(mobileMenu).getByText('Training Providers')).toBeDefined();
+
+        expect(within(mobileMenu).getByText('About Us')).toBeDefined();
     });
 });

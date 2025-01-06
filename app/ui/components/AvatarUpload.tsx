@@ -61,7 +61,7 @@ export default function AvatarUpload({
         const payload = {
           file: fileBufferView,
           fileName: file.name,
-          userId: userId,
+          userId: userId, // @Rory
         };
 
         // Make a POST request to the API route
@@ -118,7 +118,7 @@ export default function AvatarUpload({
           // img={filePath}
           img={(props) => (
             <img
-              src={filePath || initialImageUrl}
+              src={filePath || initialImageUrl || undefined}
               alt="Uploaded Avatar"
               {...props}
               {...imageProps}

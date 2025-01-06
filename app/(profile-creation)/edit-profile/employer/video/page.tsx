@@ -20,6 +20,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
+import {ReadEmployerRecordDTO} from "@/app/lib/employer";
 
 const formNamePrefix = 'profile-creation-company-';
 
@@ -35,11 +36,22 @@ export default function CreateJobseekerProfileIntroPage() {
   const router = useRouter();
 
   const { data: session, update, status } = useSession();
+  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>()
+
   const updateSessionProperties = useUpdateSession();
+
+  // get employers.is_verified_employee
+  useEffect(()=>{
+    fetch('/api/employers/account/profile/get').then((res)=>{
+      return res.json();
+    }).then((jsonData)=>{
+      setEmployerInfo(jsonData)
+    });
+
+  }, [])
 
   useEffect(() => {
     const initializeFormFields = async () => {
-      console.log('session', session);
       if (!session?.user.id) return;
       if (status === 'authenticated') {
         if (_.isEqual(videoStoreData, initialState.video)) {
@@ -61,11 +73,10 @@ export default function CreateJobseekerProfileIntroPage() {
             } else {
               let { result } = await response.json();
 
-              console.log('fetchedData', result);
               setVideoData({
                 ...videoData,
                 companyId: result.companyId,
-                videoUrl: result.video ?? '',
+                videoUrl: result.videoUrl ?? '',
               });
             }
           } catch (error) {}
@@ -83,7 +94,6 @@ export default function CreateJobseekerProfileIntroPage() {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    console.log(name, value);
     dispatch(setPageDirty('video'));
     const fieldName = name.substring(formNamePrefix.length);
     if (videoData.hasOwnProperty(fieldName)) {
@@ -114,9 +124,11 @@ export default function CreateJobseekerProfileIntroPage() {
         const result = await response.json();
         dispatch(setPageSaved('video'));
         dispatch(setVideo(videoData));
-        router.push('/edit-profile/employer/disclosures');
+        router.push('/edit-profile/employer/congratulations');
       } else {
         const errorData = await response.json();
+        if (!session?.user?.employeeIsApproved)
+          router.push('/edit-profile/employer/congratulations');
       }
     } catch (error) {}
   };
@@ -125,9 +137,9 @@ export default function CreateJobseekerProfileIntroPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(5 / 5) * 100} size="sm" />
 
-        <p>Step 5/6</p>
+        <p>Step 5/5</p>
         <h1>Company Video</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -161,6 +173,7 @@ export default function CreateJobseekerProfileIntroPage() {
             <fieldset>
               <InputTextWithLabel
                 id="profile-creation-company-videoUrl"
+                disabled={!employerInfo?.is_verified_employee}
                 placeholder="Youtube link url"
                 onChange={handleFieldChange}
                 value={videoData.videoUrl}

@@ -295,9 +295,9 @@ export default function page() {
                       <path
                         d="M26.4601 8.65576L12.2736 22.8423L5.8252 16.3939"
                         stroke="#047F9C"
-                        stroke-width="5.72221"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="5.72221"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                   </div>

@@ -19,6 +19,7 @@ export default async function SelfAssementReadOnly(params:{id:string}){
           <p className="text-gray-500">No Assessments Found</p>
         ) : (
           <>
+            <AssessmentModal list={assessment?.DurableSkillsRating} title={"Durable Skills"}/>
             <AssessmentModal list={assessment?.BrandingRating} title="Branding Rating" />
             <AssessmentModal list={assessment?.CybersecurityRating} title="Cyber Security" />
             <AssessmentModal list={assessment?.DataAnalyticsRating} title="Data Analytics" />

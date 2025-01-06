@@ -7,19 +7,22 @@ import Tabs from "@/app/ui/components/Tabs";
 import RecommendedTrackDropDown from "../../../../ui/components/careerPrep/RecommendedTrackDropDown";
 import LikertRating from "@/app/ui/components/careerPrep/LikertRating";
 import SelfAssementReadOnly from "@/app/ui/components/careerPrep/SelfAssementReadOnly";
-
-export default async function page({ params }: { params: { id: string } }){
+import Link from "next/link";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+export default async function page(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const client = await getCareerPrepStudentDetailView(params.id);
     const careerPrepEnrollment = await getCareerPrepStatus(params.id);
     const notes = await getCareerPrepStudentNotes(params.id);
     const meetings = await getMeetingByJobSeeker(params.id);
-    
+
     if(!client.data){
         return <div><h1>ERROR</h1></div>
     }
     return(
         <main className="space-y-3 pr-[100px] w-full">
             <div className="inline-flex"><h1 className="text-2xl">{client.data?.firstName} {client.data?.lastName} ({client.data?.pronouns})</h1><AddMeetingModal jsId={params.id}/></div>
+            <div><Link href={'/services/jobseekers/'+params.id} target='_blank' className="LINK">View Profile <OpenInNewIcon/></Link></div>
             <h2><b>Status: </b><EnrollmentStatusDropDown careerPrepEnrollmentStatus={client.data?.prepEnrollmentStatus} jobseekerId={params.id}/></h2>
             <h2><b>Auto Recommended Track: </b>{careerPrepEnrollment?.AutoRecommendedTrack}</h2>
             <h2><b>Assigned Track: </b><RecommendedTrackDropDown jobseekerId={params.id} careerPrepTrack={careerPrepEnrollment?.AssignedTrack}/></h2>

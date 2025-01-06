@@ -15,6 +15,8 @@ export default auth((req) => {
       '/signup/jobseeker',
       '/signup/employer',
       '/api/users/',
+      '/api/users/role/update',
+      '/api/users/avatar/upload',
     ],
     [Role.JOBSEEKER]: [
       '/edit-profile/jobseeker/',
@@ -103,13 +105,26 @@ export default auth((req) => {
     return false;
   }
 
-  // Handle special cases
-  if (pathname === '/') {
-    return NextResponse.next();
-  }
-
   if (!req.auth && pathname === '/signout') {
     return NextResponse.redirect(homeUrl);
+  }
+
+  if (!req.auth) {
+    const isProtectedRoute = !publicRoutes.includes(pathname) &&
+      !pathname.startsWith('/services/training-programs/');
+
+    if (isProtectedRoute) {
+      const signInUrl = new URL('/signin', req.nextUrl.origin);
+      signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+
+  if (req.auth && userRoles.includes(Role.GUEST)) {
+    if (roleRoutes.GUEST.includes(pathname) || pathname == "/signout") {
+      return NextResponse.next();
+    }
+    return NextResponse.redirect(new URL('/signup', req.nextUrl.origin));
   }
 
   if (req.auth && pathname === '/signin') {
