@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getCareerPrepStudentsCardViewByCaseManagerSession, getUnManagedCareerPrepStudents } from '@/app/lib/admin/careerPrep';
 import CareerPrepStudentsCard from '@/app/ui/components/careerPrep/CareerPrepStudentsCard';
 export const metadata = {

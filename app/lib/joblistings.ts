@@ -514,7 +514,19 @@ export async function getJobSeekerBookmarkedJobs() {
           jobseekerId: session.user.jobseekerId,
           isBookmarked: true
     }});
-    return result;
+
+    const transformedJobPostings = result.map((posting) => {
+      const jobStatus = posting.jobStatus || ''
+      const isBookmarked = posting.isBookmarked || false
+      return {
+        ...posting.job_posting,
+        hasApplied: jobStatus !== '',
+        isBookmarked: isBookmarked,
+        jobApplications: undefined,
+      };
+    });
+
+    return transformedJobPostings;
   } catch (error) {
     console.error(error);
   }
@@ -532,13 +544,33 @@ export async function getJobSeekerAppliedJobs() {
         jobseekerId: session.user.jobseekerId,
         jobStatus: 'Applied', // Ensure you fetch only "Applied" jobs
       },
-      include: {
-        job_posting: true, // Include related job posting details
-      },
+      include:{
+        job_posting: {
+          include: {
+            companies: true,
+            skills: true,
+            industry_sectors: {
+              select: {
+                sector_title: true,
+              },
+            },
+          }
+        },
+     },
     });
 
-    // Transform the result to match the previous data structure
-    return result.map((job) => job.job_posting);
+    const transformedJobPostings = result.map((posting) => {
+      const jobStatus = posting.jobStatus || ''
+      const isBookmarked = posting.isBookmarked || false
+      return {
+        ...posting.job_posting,
+        hasApplied: jobStatus !== '',
+        isBookmarked: isBookmarked,
+        jobApplications: undefined,
+      };
+    });
+
+    return transformedJobPostings;
   } catch (error) {
     console.error(error);
   }
