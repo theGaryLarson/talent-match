@@ -5,6 +5,7 @@ import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { auth } from '@/auth';
 import { BookmarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { Dashboard } from '@mui/icons-material';
 export default async function layout({
   children,
 }: {
@@ -70,8 +71,15 @@ export default async function layout({
             href="/services/jobseekers/dashboard"
             className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
           >
+            <Dashboard />
+            Dashboard
+          </Link>
+          <Link
+            href={"/services/jobseekers/" + session?.user.jobseekerId}
+            className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+          >
             <PersonOutlineOutlinedIcon />
-            Home
+            My Profile
           </Link>
           <Link
             href="/services/joblistings"
