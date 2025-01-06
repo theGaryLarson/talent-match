@@ -18,17 +18,17 @@ export default async function page({ params }: { params: { id: string } }) {
   });
 
   return (
-    <div className="px-64 flex-col justify-start items-center gap-5 inline-flex">
+    <div className="px-8 sm-tablet:px-12 tablet:px-64 flex-col justify-start items-center gap-5 inline-flex">
       <div className="flex-col justify-start items-start flex">
         <div className="w-px h-10 relative" />
       </div>
       <div className="self-stretch flex-col justify-center items-start gap-6 flex">
         <div className="self-stretch justify-center items-center gap-10 inline-flex">
-          <div className="w-52 h-32 relative">
+          <div className="hidden sm-tablet:block h-32 relative">
             <Image src="/images/landing/TWC-logo.svg" width={242} height={155} alt="TWC logo" className="w-52 h-32" />
           </div>
           {provider?.logoUrl &&
-            <div className="border-2 border-cyan-700 flex-col justify-start items-start inline-flex">
+            <div className="hidden sm-tablet:block border-2 border-cyan-700 flex-col justify-start items-start inline-flex">
               <div className="w-[0px] h-20 relative" />
             </div>}
           {provider?.logoUrl &&
@@ -47,7 +47,7 @@ export default async function page({ params }: { params: { id: string } }) {
       <div className="flex-col justify-start items-start flex">
         <div className="w-px h-5 relative" />
       </div>
-      <div className="self-stretch px-12 flex-col justify-start items-center gap-5 flex">
+      <div className="self-stretch sm-tablet:px-12 flex-col justify-start items-center gap-5 flex">
         <div className="self-stretch flex-col justify-center items-start gap-2.5 flex">
           <div className="self-stretch">
             <span className="text-sky-900 text-3xl font-normal font-['Roboto'] leading-10">
@@ -64,14 +64,14 @@ export default async function page({ params }: { params: { id: string } }) {
             <div className="w-px h-10 relative" />
           </div>
           <div className="self-stretch justify-center items-start gap-2.5 inline-flex">
-            <div className="w-96 flex-col justify-start items-center gap-2.5 inline-flex">
+            <div className="w-full flex-col justify-start items-center gap-2.5 inline-flex">
               <div className="text-center text-cyan-600 text-xl font-semibold font-['Roboto'] uppercase leading-snug tracking-widest">Contact</div>
               <div className="self-stretch text-center text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">
                 {provider?.contactName}<br />
                 {provider?.contactEmail}
               </div>
             </div>
-            <div className="w-96 flex-col justify-start items-center gap-2.5 inline-flex">
+            <div className="w-full flex-col justify-start items-center gap-2.5 inline-flex">
               <div className="text-cyan-600 text-xl font-semibold font-['Roboto'] uppercase leading-snug tracking-widest">Career programs</div>
               <div className="whitespace-pre-wrap self-stretch text-center text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">
                 {careerPrograms.join("\n")}
