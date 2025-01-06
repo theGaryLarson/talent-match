@@ -5,7 +5,6 @@ import Skills from '@/app/ui/components/Skills';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
 import EditIcon from '@mui/icons-material/Edit';
-import Link from 'next/link';
 import { useCallback, useEffect, useState, use } from 'react';
 import { useSession } from 'next-auth/react';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -17,10 +16,11 @@ import {
   Container,
   Divider,
   Grid2,
-  Paper,
+  Link,
   Stack,
   Typography,
 } from '@mui/material';
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 const monthNames = [
   'Jan',
@@ -163,7 +163,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
         </Box>
       )}
 
-      <Grid2 container spacing={2} sx={{mb: 2}}>
+      <Grid2 container spacing={2} sx={{ mb: 2, justifyContent: 'center' }}>
         <Grid2>
           <Card variant="outlined">
             <Stack
@@ -198,11 +198,17 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 <h2>{jobseeker?.current_grade_level}</h2>
               </Stack>
               {isOwnProfile && editView && (
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/introduction'}>
-                    <EditIcon />
-                  </Link>
-                </div>
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/introduction'}
+                >
+                  <EditIcon />
+                </Link>
               )}
             </Stack>
           </Card>
@@ -232,14 +238,73 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 Introduction
               </Typography>
               {isOwnProfile && editView && (
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/introduction'}>
-                    <EditIcon />
-                  </Link>
-                </div>
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/introduction'}
+                >
+                  <EditIcon />
+                </Link>
               )}
             </Stack>
-            <p>{jobseeker?.intro_headline}</p>
+            <Typography sx={{ pl: 2 }}>{jobseeker?.intro_headline}</Typography>
+          </Box>
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Preferences
+              </Typography>
+              {isOwnProfile && editView && (
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/preferences'}
+                >
+                  <EditIcon />
+                </Link>
+              )}
+            </Stack>
+            <Typography sx={{ pl: 2 }}>
+              I am looking for {jobseeker?.employment_type_sought} roles
+              <br />
+              My targeted pathway is {jobseeker?.pathways?.pathway_title}
+            </Typography>
+          </Box>
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Skills
+              </Typography>
+              {isOwnProfile && editView && (
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/showcase'}
+                >
+                  <EditIcon />
+                </Link>
+              )}
+            </Stack>
+            <Box sx={{ pl: 2 }}>
+              <Skills
+                skillsList={jobseeker?.jobseeker_has_skills.map(
+                  (item: JobseekerSkillDTO) => item.skills,
+                )}
+                maxNumSkills={0}
+              />
+            </Box>
           </Box>
           <Box>
             <Stack spacing={2} direction={'row'}>
@@ -250,17 +315,20 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                   : ''}
               </Typography>
               {isOwnProfile && editView && (
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/work-experience'}>
-                    <EditIcon />
-                  </Link>
-                </div>
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/work-experience'}
+                >
+                  <EditIcon />
+                </Link>
               )}
             </Stack>
-            <Stack
-              spacing={1}
-              sx={{ pl: 2 }}
-            >
+            <Stack spacing={1} sx={{ pl: 2 }}>
               {jobseeker?.work_experiences.map((experience) => (
                 <Box key={experience.workId}>
                   <Typography
@@ -305,11 +373,17 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 Education
               </Typography>
               {isOwnProfile && editView && (
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/education'}>
-                    <EditIcon />
-                  </Link>
-                </div>
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/education'}
+                >
+                  <EditIcon />
+                </Link>
               )}
             </Stack>
             <Stack
@@ -359,17 +433,20 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 Projects
               </Typography>
               {isOwnProfile && editView && (
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/education'}>
-                    <EditIcon />
-                  </Link>
-                </div>
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/education'}
+                >
+                  <EditIcon />
+                </Link>
               )}
             </Stack>
-            <Stack
-              spacing={1}
-              sx={{ pl: 2 }}
-            >
+            <Stack spacing={1} sx={{ pl: 2 }}>
               {jobseeker?.project_experiences.map((experience) => (
                 <Box key={experience.projectId}>
                   <Typography
@@ -405,14 +482,18 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                         : 'Present'}
                     </Typography>
                   </Stack>
-                  <p>{experience.problemSolvedDescription}</p>
                   {experience.repoUrl ? (
-                    <a target="_blank" href={experience.repoUrl}>
+                    <Link
+                      sx={{ wordBreak: 'break-all' }}
+                      target="_blank"
+                      href={experience.repoUrl}
+                    >
                       {experience.repoUrl}
-                    </a>
+                    </Link>
                   ) : (
                     ''
                   )}
+                  <p>{experience.problemSolvedDescription}</p>
                   <Skills
                     skillsList={experience.project_has_skills.map(
                       (item: JobseekerSkillDTO) => item.skills,
@@ -424,82 +505,66 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               ))}
             </Stack>
           </Box>
-          <Box>
-            <Stack spacing={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                Skills
-              </Typography>
-              {isOwnProfile && editView && (
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/showcase'}>
-                    <EditIcon />
-                  </Link>
-                </div>
-              )}
-            </Stack>
-            <Skills
-              skillsList={jobseeker?.jobseeker_has_skills.map(
-                (item: JobseekerSkillDTO) => item.skills,
-              )}
-              maxNumSkills={0}
-            />
-          </Box>
-          <Box>
-            <Stack spacing={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                Preferences
-              </Typography>
-              {isOwnProfile && editView && (
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/preferences'}>
-                    <EditIcon />
-                  </Link>
-                </div>
-              )}
-            </Stack>
-            <p>I am looking for {jobseeker?.employment_type_sought} roles</p>
-            <p>My targeted pathway is {jobseeker?.pathways?.pathway_title}</p>
-          </Box>
-          {resumeUrl && (
-            <Box>
-              <Stack spacing={2} direction={'row'}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                  Resume
-                </Typography>
-                {isOwnProfile && editView && (
-                  <div className="edit-btn opacity-25 group-hover:opacity-100">
-                    <Link href={'/edit-profile/jobseeker/showcase'}>
+          {(session.data?.user.employeeIsApproved ||
+            session.data?.user.jobseekerId == params.id ||
+            session.data?.user.roles.includes(Role.ADMIN) ||
+            session.data?.user.roles.includes(Role.CASE_MANAGER)) &&
+            resumeUrl && (
+              <Box>
+                <Stack spacing={2} direction={'row'}>
+                  <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                    Resume
+                  </Typography>
+                  {isOwnProfile && editView && (
+                    <Link
+                      sx={{
+                        opacity: 0.65,
+                        '&:hover': {
+                          opacity: 1,
+                        },
+                      }}
+                      href={'/edit-profile/jobseeker/showcase'}
+                    >
                       <EditIcon />
                     </Link>
-                  </div>
+                  )}
+                </Stack>
+                {resumeUrl ? (
+                  <Link sx={{ pl: 2 }} href={resumeUrl} target="_blank">
+                    View Resume
+                  </Link>
+                ) : (
+                  ''
                 )}
-              </Stack>
-              {resumeUrl ? (
-                <Link href={resumeUrl} target="_blank">
-                  View Resume
-                </Link>
-              ) : (
-                ''
-              )}
-            </Box>
-          )}
+              </Box>
+            )}
           <Box>
             <Stack spacing={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Portfolio
               </Typography>
               {isOwnProfile && editView && (
-                <div className="edit-btn opacity-25 group-hover:opacity-100">
-                  <Link href={'/edit-profile/jobseeker/showcase'}>
-                    <EditIcon />
-                  </Link>
-                </div>
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/showcase'}
+                >
+                  <EditIcon />
+                </Link>
               )}
             </Stack>
             {jobseeker?.portfolio_url ? (
-              <a href={formatUrl(jobseeker?.portfolio_url)} target="_blank">
+              <Link
+                sx={{ pl: 2 }}
+                href={formatUrl(jobseeker?.portfolio_url)}
+                target="_blank"
+              >
                 {jobseeker?.portfolio_url}
-              </a>
+              </Link>
             ) : (
               ''
             )}
