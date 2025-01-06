@@ -476,7 +476,7 @@ export async function getJobListingsFiltered(request: Request) {
       const isBookmarked = posting.jobApplications?.[0].isBookmarked || false
       return {
         ...posting,
-        hasApplied: jobStatus !== '',
+        jobStatus: jobStatus,
         isBookmarked: isBookmarked,
         jobApplications: undefined,
       };
@@ -520,7 +520,7 @@ export async function getJobSeekerBookmarkedJobs() {
       const isBookmarked = posting.isBookmarked || false
       return {
         ...posting.job_posting,
-        hasApplied: jobStatus !== '',
+        jobStatus: jobStatus,
         isBookmarked: isBookmarked,
         jobApplications: undefined,
       };
@@ -564,7 +564,7 @@ export async function getJobSeekerAppliedJobs() {
       const isBookmarked = posting.isBookmarked || false
       return {
         ...posting.job_posting,
-        hasApplied: jobStatus !== '',
+        jobStatus: jobStatus,
         isBookmarked: isBookmarked,
         jobApplications: undefined,
       };
