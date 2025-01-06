@@ -18,7 +18,7 @@ const providers: Provider[] = [
   MicrosoftEntraID({
     clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,
     clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
-    issuer: process.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID,
+    issuer: `https://login.microsoftonline.com/${process.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID}/v2.0`,
   }),
   // LinkedIn
 ];
