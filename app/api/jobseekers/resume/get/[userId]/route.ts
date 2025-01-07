@@ -28,15 +28,16 @@ export async function GET(
     } = session.user;
 
     // Allow access if:
-    // 1. The user is an EMPLOYER and is approved, OR ADMIN, OR...
+    // 1. The user is an EMPLOYER and is approved, OR ADMIN, OR CASEMANAGER
     // 2. The user is a JOBSEEKER and their jobseekerId matches the requested jobseekerId
-    const isEmployerApproved =
+    const isApprovedRole =
       (roles.includes(Role.EMPLOYER) && employeeIsApproved) ||
-      roles.includes(Role.ADMIN);
+      roles.includes(Role.ADMIN) ||
+      roles.includes(Role.CASE_MANAGER);
     const isJobseekerViewingOwnData =
       roles.includes(Role.JOBSEEKER) && userJobseekerId === userId;
 
-    if (!isEmployerApproved && !isJobseekerViewingOwnData) {
+    if (!isApprovedRole && !isJobseekerViewingOwnData) {
       return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
 
