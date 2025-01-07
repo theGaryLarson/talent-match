@@ -40,6 +40,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
 import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
 import { SelectAllRounded } from '@mui/icons-material';
+import { CompanyEmployerCreationDTO } from '@/data/dtos/CompanyEmployerCreateionDTO';
+import { DatePicker } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
+import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
 const formNamePrefix = 'profile-creation-profile-';
 
@@ -53,6 +57,14 @@ export default function CreateEmployerProfilePage() {
 
   // const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [companyExists, setCompanyExists] = useState<{
+    value: boolean;
+  }>({ value: true });
+  const [newCompany, setNewCompany] = useState<CompanyEmployerCreationDTO>({companyName: '', yearFounded: undefined});
+  const [yearFounded, setYearFounded] = useState<Dayjs | null>(
+    newCompany.yearFounded ? dayjs(newCompany.yearFounded) : null
+  );
+
 
   const profileStoreData = useSelector(
     (state: RootState) => state.employer.profile,
@@ -130,6 +142,8 @@ export default function CreateEmployerProfilePage() {
                 yearFounded: result.yearFounded,
               }) : (result.companyName ?? ''));
 
+              setCompanyExists({ value: result.companyId !== null });
+
               setWorkAddress(result.companyAddress ? { ...result.companyAddress } : '');
 
               setIsCompanySelected(Boolean(result.companyId));
@@ -170,6 +184,21 @@ export default function CreateEmployerProfilePage() {
   const openSnackbar = () => {
     setOpen(true);
   };
+
+  const handleCompanyExistsChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const exists = e.target.value === 'yes';
+      setCompanyExists({value: exists});
+
+      setSelectCompanyDropdownData('');
+      setIsCompanySelected(false);
+      setWorkAddress(null);
+      setProfileData(prevState => ({
+        ...prevState,
+        companyId: undefined,
+        companyName: '',
+        workAddressId: undefined
+      }));
+    };
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -218,6 +247,64 @@ export default function CreateEmployerProfilePage() {
       return;
     }
 
+    if (companyExists.value === false) {
+      const response = await fetch(`/api/employers/account/company/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newCompany),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        devLog('newCompany submit error', newCompany);
+        return;
+      }
+      let companyDetails = await response.json();
+
+      const updatedProfileData = {
+        ...profileData,
+        userId: session.user.id ?? '',
+        companyId: companyDetails.company_id,
+        companyName: companyDetails.company_name,
+        isApprovedEmployee: companyExists.value === false,
+      };
+      setProfileData(updatedProfileData);
+
+      try {
+        const response = await fetch(`/api/employers/account/profile/upsert`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedProfileData),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          dispatch(setProfile(updatedProfileData));
+
+          // Update session properties using the custom hook
+          await updateSessionProperties({
+            companyId: updatedProfileData.companyId,
+            employeeIsApproved: true,
+            companyName: updatedProfileData.companyName,
+            companyEmail: updatedProfileData.companyEmail,
+            firstName: updatedProfileData.firstName,
+            lastName: updatedProfileData.lastName,
+            image: updatedProfileData.photoUrl,
+          });
+
+          devLog('profileData submit ok', updatedProfileData);
+          router.push('/edit-profile/employer/company');
+        } else {
+          const errorData = await response.json();
+          devLog('profileData submit error', updatedProfileData);
+        }
+      } catch (error) {}
+      return;
+    }
+
     const updatedProfileData = {
       ...profileData,
       userId: session.user.id ?? '',
@@ -245,7 +332,7 @@ export default function CreateEmployerProfilePage() {
         await updateSessionProperties({
           firstName: updatedProfileData.firstName,
           lastName: updatedProfileData.lastName,
-          image: updatedProfileData.photoUrl,
+          ...(updatedProfileData.photoUrl && {image: updatedProfileData.photoUrl}),
         });
 
         devLog('profileData submit ok', updatedProfileData);
@@ -271,9 +358,14 @@ export default function CreateEmployerProfilePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        {/* <ProgressBarFlat progress={(3 / 3) * 100} size="sm" /> */}
 
-        {/* <p>Step 3/3</p> */}
+        {!companyExists && (
+        <>
+          <ProgressBarFlat progress={(1 / 5) * 100} size="sm" />
+          <p>Step 1/5</p>
+        </>
+        )}
+
         <h1>Employer Profile</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -350,65 +442,103 @@ export default function CreateEmployerProfilePage() {
 
           <fieldset>
             <div className="profile-form-grid md:grid-cols-2">
-              <TextFieldWithAutocomplete
-                apiSearchRoute="/api/companies/search/"
-                fieldLabel="Company Name *"
-                id="profile-creation-profile-companyName"
-                className="text-field-autocomplete"
-                searchingText="Searching..."
-                noResultsText="No company found, existing company required. Please contact administrator."
-                allowNewOption={false}
-                value={
-                  selectCompanyDropdownData ?? ''
-                }
-                onChange={(e, val) => {
-                  setWorkAddress(null);
-                  setProfileData(prevState => ({
-                    ...prevState,
-                    workAddressId: undefined
-                  }));
-
-                  const newDropdownData = typeof val === 'object' && val !== null ? { ...val } : '';
-                  setSelectCompanyDropdownData(newDropdownData);
-
-                  if (
-                    newDropdownData &&
-                    typeof newDropdownData === 'object' &&
-                    newDropdownData.companyId
-                  ) {
-                    openSnackbar();
-                    setIsCompanySelected(true);
-                    setProfileData((prevState) => ({
+              <div>
+                <p>Is the company already a part of the site?</p>
+                <div className="flex space-x-4 items-center">
+                  <label className="flex items-center space-x-2">
+                    <input type="radio" name="company_exists" value="yes" onChange={handleCompanyExistsChange} checked={companyExists.value === true} required />
+                    <span>Yes</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <input type="radio" name="company_exists" value="no" onChange={handleCompanyExistsChange} checked={companyExists.value === false} required />
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <div className="profile-form-grid md:grid-cols-2">
+              {companyExists.value === true ? (
+                <TextFieldWithAutocomplete
+                  apiSearchRoute="/api/companies/search/"
+                  fieldLabel="Company Name *"
+                  id="profile-creation-profile-companyName"
+                  className="text-field-autocomplete"
+                  searchingText="Searching..."
+                  noResultsText="No company found, existing company required. Please create a new one."
+                  allowNewOption={false}
+                  value={selectCompanyDropdownData ?? ''}
+                  onChange={(e, val) => {
+                    setWorkAddress(null);
+                    setProfileData(prevState => ({
                       ...prevState,
-                      companyId: newDropdownData.companyId,
-                      companyName: newDropdownData.companyName,
-                      yearFounded: newDropdownData.yearFounded,
-                      websiteUrl: newDropdownData.websiteUrl,
+                      workAddressId: undefined
                     }));
-                  } else {
-                    setIsCompanySelected(false);
+
+                    const newDropdownData = typeof val === 'object' && val !== null ? { ...val } : '';
+                    setSelectCompanyDropdownData(newDropdownData);
+
+                    if (
+                      newDropdownData &&
+                      typeof newDropdownData === 'object' &&
+                      newDropdownData.companyId
+                    ) {
+                      openSnackbar();
+                      setIsCompanySelected(true);
+                      setProfileData((prevState) => ({
+                        ...prevState,
+                        companyId: newDropdownData.companyId,
+                        companyName: newDropdownData.companyName,
+                        yearFounded: newDropdownData.yearFounded,
+                        websiteUrl: newDropdownData.websiteUrl,
+                      }));
+                    } else {
+                      setIsCompanySelected(false);
+                    }
+                  }}
+                  searchPlaceholder="Company name"
+                  getOptionLabel={(option: ReadCompanyInfoDTO) =>
+                    option.companyName ?? ''
                   }
-                }}
-                searchPlaceholder="Company name"
-                getOptionLabel={(option: ReadCompanyInfoDTO) =>
-                  option.companyName ?? ''
-                }
-              />
+                />
+              ) : companyExists.value === false ? (
+                <>
+                  <InputTextWithLabel
+                    id={`${formNamePrefix}newCompanyName`}
+                    placeholder="Enter company name"
+                    onChange={(e) => {
+                      handleFieldChange(e);
+                      setNewCompany((prevData) => ({
+                        ...prevData,
+                        companyName: e.target.value
+                      }));
+                    }}
+                    value={newCompany?.companyName}
+                    required
+                  >
+                    Company Name
+                  </InputTextWithLabel>
+                  <DatePicker
+                    label={'Year Founded *'}
+                    views={['year']}
+                    value={yearFounded}
+                    onChange={(newValue) => {
+                      setYearFounded(newValue);
+                      setNewCompany((prevData) => ({
+                        ...prevData,
+                        yearFounded: newValue?.year(),
+                      }));
+                    }}
+                    className="year-picker"
+                  />
+                </>
+              ) : null}
             </div>
           </fieldset>
 
           <fieldset>
             <div className="profile-form-grid">
-              {/* This field will be automated */}
-              {/* <InputTextWithLabel
-                id="profile-creation-profile-name"
-                placeholder="Automated"
-                value={profileStoreData.companyName}
-                disabled={!!profileStoreData.companyName}
-                required
-              >
-                Company Name
-              </InputTextWithLabel> */}
               <InputTextWithLabel
                 id={`${formNamePrefix}currentJobTitle`}
                 placeholder="Job Title"
@@ -424,7 +554,7 @@ export default function CreateEmployerProfilePage() {
                     id={`${formNamePrefix}workAddressId`}
                     className="select-autoload"
                     apiAutoloadRoute={`/api/companies/locations/get/${profileData.companyId}`}
-                    label="Work Location *"
+                    label="Work Location"
                     value={workAddress}
                     onChange={(val) => {
                       setWorkAddress(val);
@@ -445,7 +575,6 @@ export default function CreateEmployerProfilePage() {
                         options.find((item) => item?.addressId === id) || null
                       );
                     }}
-                    required
                   />
                 </div>
               )}
@@ -460,28 +589,10 @@ export default function CreateEmployerProfilePage() {
               </InputTextWithLabel>
             </div>
           </fieldset>
-          {/*<legend>*/}
-          {/*  <h2>Terms</h2>*/}
-          {/*</legend>*/}
-          {/*<Label className="block">*/}
-          {/*  <Checkbox*/}
-          {/*    name={`${formNamePrefix}hasAgreedTerms`}*/}
-          {/*    checked={termsAccepted}*/}
-          {/*    onChange={(event) => setTermsAccepted(event.target.checked)}*/}
-          {/*  />{' '}*/}
-          {/*  By signing up you agree to our terms of use. **/}
-          {/*</Label>*/}
 
           <div className="profile-form-progress-btn-single-end">
-            {/* <Button
-              pill
-              className="custom-outline-btn"
-              onClick={() => router.push('/edit-profile/employer/company')}
-            >
-              Cancel
-            </Button> */}
             <Button pill type="submit">
-              Submit
+              {companyExists ? "Submit" : "Save and Continue"}
             </Button>
           </div>
         </form>

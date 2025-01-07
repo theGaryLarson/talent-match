@@ -3,7 +3,8 @@ import {PrismaClient} from "@prisma/client";
 import {NextResponse} from "next/server";
 import {getUserByEmail} from "@/app/lib/user";
 
-export async function GET(request: Request, {params}: {params: {email: string}}) {
+export async function GET(request: Request, props: {params: Promise<{email: string}>}) {
+    const params = await props.params;
     try {
         const { email } = params;
         const result = await getUserByEmail(email);

@@ -1,6 +1,7 @@
 import RoundedButton from '../ui/components/RoundedButton';
 import Image from 'next/image';
 import Link from 'next/link';
+import TrainingProviderMembers from '../ui/components/TrainingProviderMembers';
 
 //entire TWC landing page
 export const metadata = {
@@ -148,21 +149,9 @@ export default function Page() {
                 </div>
             </div>
 
-            {/* footer - join the team of coalition members */}
-            <div className="mt-40 w-full px-8 laptop:px-24 py-4 bg-neutral-100 flex-col justify-center items-center gap-5 inline-flex">
-                <div className="mt-8 self-stretch text-center text-sky-900 text-xl font-semibold font-['Roboto'] uppercase leading-loose tracking-widest">
-                    Join the team of Coalition Training Providers
-                </div>
-                <div className="w-full pb-8 justify-center items-center gap-10 inline-flex flex-wrap">
-                    <Image width={500} height={500} className="w-32" src="/images/training-providers/riipen.svg" alt="Riipen logo" />
-                    <Image width={500} height={500} className="w-48" src="/images/training-providers/per-scholas.svg" alt="per scholas logo" />
-                    <Image width={500} height={500} className="w-36" src="/images/training-providers/codeday.svg" alt="codeday logo" />
-                    <Image width={500} height={500} className="w-32" src="/images/training-providers/year-up.svg" alt="year up logo" />
-                    <Image width={500} height={500} className="w-36" src="/images/training-providers/north-seattle-college.svg" alt="North Seattle college logo" />
-                    <Image width={600} height={125} className="w-32" src="/images/training-providers/WTIA.png" alt="WTIA logo" />
-                    <Image width={1304} height={319} className="w-48" src="/images/training-providers/saint-martins.png" alt="Saint Martins logo" />
-                    <Image width={500} height={193} className="w-48" src="/images/training-providers/career-connect-wa.png" alt="Carrer Connect WA logo" />
-                </div>
+            {/* footer - join the team of coalition members bg-neutral-100 */}
+            <div className="mt-40 px-8 laptop:px-24">
+                <TrainingProviderMembers></TrainingProviderMembers>
             </div>
         </div>
     );

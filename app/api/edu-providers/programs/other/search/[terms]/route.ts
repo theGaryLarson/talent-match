@@ -1,6 +1,7 @@
 import { searchEduProviderOtherPrograms, searchEduProviderPreApprenticeshipPrograms } from '@/app/lib/prisma';
 
-export async function GET(req:Request, { params }: { params: { terms: string } }) {
+export async function GET(req:Request, props: { params: Promise<{ terms: string }> }) {
+  const params = await props.params;
   const terms = decodeURIComponent(params.terms);
   const searchResults = await searchEduProviderOtherPrograms(terms);
 

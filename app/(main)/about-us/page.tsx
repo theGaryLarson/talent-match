@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import RoundedButton from '@/app/ui/components/RoundedButton';
+import TrainingProviderMembers from '@/app/ui/components/TrainingProviderMembers';
 
 export const metadata = {
   title: 'About Us',
@@ -294,9 +295,9 @@ export default function page() {
                       <path
                         d="M26.4601 8.65576L12.2736 22.8423L5.8252 16.3939"
                         stroke="#047F9C"
-                        stroke-width="5.72221"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="5.72221"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                   </div>
@@ -335,81 +336,10 @@ export default function page() {
             </div>
           </div>
         </section>
-        <section className="mx-auto max-w-[1235px] font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-gray-800">
-          <h3 className="text-center text-[22px] font-semibold uppercase leading-[30.80px] text-blue-textdark2">
-            Coalition Training Providers Members
-          </h3>
-          <div className="mb-[40px] mt-[20px] flex flex-wrap items-center justify-center gap-x-[100px] gap-y-[50px] py-[10px]">
-            <Image
-              height="44"
-              width="131"
-              className="max-w-[131px]"
-              src="/images/training-providers/riipen.svg"
-              alt="Riipen Logo"
-            />
-            <Image
-              height="35"
-              width="402"
-              className="max-w-[402px]"
-              src="/images/training-providers/per-scholas.svg"
-              alt="Per Scholas Logo"
-            />
-            <Image
-              height="44"
-              width="219"
-              className="max-w-[219px]"
-              src="/images/training-providers/codeday.svg"
-              alt="Code Day Logo"
-            />
-            <Image
-              height="56"
-              width="159"
-              className="max-w-[159px]"
-              src="/images/training-providers/year-up.svg"
-              alt="Year Up Logo"
-            />
-            <Image
-              height="44"
-              width="230"
-              className="max-w-[230px]"
-              src="/images/training-providers/north-seattle-college.svg"
-              alt="North Seattle College Logo"
-            />
-            <Image
-              height="48"
-              width="230"
-              className="max-w-[230px]"
-              src="/images/training-providers/WTIA.png"
-              alt="Washington Technology Industry Association (WTIA) Logo"
-            />
-            <Image
-              height="60"
-              width="246"
-              className="max-w-[246px]"
-              src="/images/training-providers/saint-martins.png"
-              alt="Saint Martin's University Logo"
-            />
-            <Image
-              height="60"
-              width="155"
-              className="max-w-[155px]"
-              src="/images/training-providers/career-connect-wa.png"
-              alt="Career Connect Washington Logo"
-            />
-          </div>
-          <div className="pb-[34px] text-center">
-            <RoundedButton
-              content="Join the Coalition"
-              link="/join"
-              invertColor
-              snug
-              newColors
-              bold={false}
-              className="capitalize"
-            />
-          </div>
-        </section>
       </section>
+      <section className="mx-auto max-w-[1235px] font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-gray-800">
+          <TrainingProviderMembers></TrainingProviderMembers>
+        </section>
       <section
         className="box-border space-y-[68px] bg-white px-[1em] pb-[34px] pt-[54px] font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-gray-800"
         id="about-us-industry-committee"

@@ -109,7 +109,6 @@ export const initialState: EmployerState = {
     currentJobTitle: '',
     linkedInUrl: '',
     workAddressId: '',
-    hasAgreedTerms: false,
   },
   video: {
     companyId: '',
@@ -125,9 +124,6 @@ export const employerSlice = createSlice({
 
   // REVIEW: each field will need its own reducer? unsure if best, seems there should be a way to deconstruct ...state then update this.id/param specific?
   reducers: {
-    initializeProfile: (state, action: PayloadAction<PostEmployerProfileDTO>) => {
-      state.profile = action.payload;
-    },
     setProfile: (state, action: PayloadAction<PostEmployerProfileDTO>) => {
       state.profile = action.payload;
     },
@@ -139,47 +135,20 @@ export const employerSlice = createSlice({
       const { field, value } = action.payload;
       state.profile[field] = value;
     },
-    initializeAbout: (state, action: PayloadAction<PostEmployerAboutDTO>) => {
-      state.about = action.payload;
-    },
     setAbout: (state, action: PayloadAction<PostEmployerAboutDTO>) => {
       state.about = action.payload;
-    },
-    initializeMission: (
-      state,
-      action: PayloadAction<PostEmployerMissionDTO>,
-    ) => {
-      state.mission = action.payload;
     },
     setMission: (state, action: PayloadAction<PostEmployerMissionDTO>) => {
       state.mission = action.payload;
     },
-    initializeVideo: (state, action: PayloadAction<PostEmployerVideoDTO>) => {
-      state.video = action.payload;
-    },
     setVideo: (state, action: PayloadAction<PostEmployerVideoDTO>) => {
       state.video = action.payload;
-    },
-    initializeDisclosures: (
-      state,
-      action: PayloadAction<PostEmployerWorkDTO>,
-    ) => {
-      state.disclosures = action.payload;
     },
     setDisclosures: (state, action: PayloadAction<PostEmployerWorkDTO>) => {
       state.disclosures = action.payload;
     },
-    initializePersonal: (
-      state,
-      action: PayloadAction<PostEmployerPersonalDTO>,
-    ) => {
-      state.personal = action.payload;
-    },
     setPersonal: (state, action: PayloadAction<PostEmployerPersonalDTO>) => {
       state.personal = action.payload;
-    },
-    initializeCompany: (state, action: PayloadAction<PostCompanyInfoDTO>) => {
-      state.company = action.payload;
     },
     setCompany: (state, action: PayloadAction<PostCompanyInfoDTO>) => {
       state.company = action.payload;
@@ -188,20 +157,13 @@ export const employerSlice = createSlice({
 });
 
 export const {
-  initializeProfile,
   setProfile,
   updateProfileField,
-  initializeAbout,
   setAbout,
-  initializeMission,
   setMission,
-  initializeVideo,
   setVideo,
-  initializeDisclosures,
   setDisclosures,
-  initializePersonal,
   setPersonal,
-  initializeCompany,
   setCompany,
 } = employerSlice.actions;
 

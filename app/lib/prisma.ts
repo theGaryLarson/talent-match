@@ -373,13 +373,6 @@ export const jobSeekerCardViewSelect = {
       pathway_title: true,
     },
   },
-  BookmarkedJobseeker: {
-    select: {
-      jobseekerId: true,
-      companyId: true,
-      employerId: true,
-    },
-  },
   work_experiences: {
     select: {
       industrySector: {
@@ -554,6 +547,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
             select: {
               skills: {
                 select: {
+                  skill_id: true,
                   skill_name: true,
                   skill_info_url: true,
                 },
@@ -768,8 +762,8 @@ try {
               },
               edLevel: true,
               enrollmentStatus: true,
-              startDate: true, 
-              gradDate: true, 
+              startDate: true,
+              gradDate: true,
               degreeType: true
             }
           },
@@ -852,7 +846,7 @@ export async function getCompanyById(companyId: string) {
         }
       }
     )
-    return company ?? undefined; 
+    return company ?? undefined;
   } catch (e) {
     console.log(e)
   }
@@ -860,7 +854,7 @@ export async function getCompanyById(companyId: string) {
 /**
  * @author Damien Cruz
  * @param employerId the ID of the employer
- * @returns 
+ * @returns
  */
 export async function getEmployerById(employerId: string) {
   try {

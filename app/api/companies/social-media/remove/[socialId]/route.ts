@@ -10,7 +10,8 @@ import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function DELETE(request: Request, {params}: {params: {socialId: string}}) {
+export async function DELETE(request: Request, props: {params: Promise<{socialId: string}>}) {
+    const params = await props.params;
     try {
         // Get essentials from session, not the request
         let session = await auth();

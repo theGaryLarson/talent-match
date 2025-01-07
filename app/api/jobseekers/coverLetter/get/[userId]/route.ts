@@ -3,10 +3,8 @@ import { getCoverLetterUrl } from '@/app/lib/services/azureBlobService';
 
 // const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(
-    request: Request,
-    { params }: { params: { userId: string } },
-) {
+export async function GET(request: Request, props: { params: Promise<{ userId: string }> }) {
+    const params = await props.params;
     try {
         const userId = params.userId;
         const url = await getCoverLetterUrl(userId);

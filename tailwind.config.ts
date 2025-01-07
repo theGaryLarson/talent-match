@@ -1,12 +1,12 @@
 import type { Config } from 'tailwindcss';
-import flowbite from 'flowbite-react/tailwind';
+import {content, plugin} from 'flowbite-react/tailwind';
 
 const config: Config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
-    flowbite.content(),
+    content(),
   ],
   theme: {
     screens: {
@@ -112,6 +112,6 @@ const config: Config = {
       roboto: ['Roboto'],
     },
   },
-  plugins: [require('@tailwindcss/forms'), flowbite.plugin()],
+  plugins: [require('@tailwindcss/forms'), plugin()],
 };
 export default config;
