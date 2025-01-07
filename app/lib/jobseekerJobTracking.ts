@@ -1,7 +1,6 @@
 
 export enum JobStatus {
-    Bookmarked = "Bookmarked",
-    Applying = "Applying",
+    // Applying = "Applying",
     Applied = "Applied",
     Interviewing = "Interviewing",
     Negotiating = "Negotiating",
@@ -9,5 +8,5 @@ export enum JobStatus {
     IWithdrew = "I Withdrew",
     NotSelected = "Not Selected",
     NoResponse = "No Response",
-    Archived = "Archived"
+    // Archived = "Archived"
 }

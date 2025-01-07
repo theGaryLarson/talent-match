@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { auth } from '@/auth';
 
-export default async function page({ params }: { params: { id: string } }) {
+export default async function page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await auth();
   let trainingProgramDetails: ReadEduProviderProgramDetailDTO = await getProviderProgramDetailView(params.id);
 

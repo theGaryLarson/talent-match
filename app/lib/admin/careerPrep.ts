@@ -9,6 +9,7 @@ import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { auth } from '@/auth';
 import { devLog } from '@/app/lib/utils';
 import TransactionClient = Prisma.TransactionClient;
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -277,6 +278,22 @@ export const selfAssignAsCaseManager = async (
     return { success: false, status: 500 };
   }
 };
+
+
+export const getAllCareerNavigators = async ()=>{
+  try {
+    let users = await prisma.user.findMany({select:{
+      email:true,
+      role:true,
+      first_name:true,
+      last_name:true
+    }})
+    return users.filter((user)=>user.role.includes(Role.CASE_MANAGER))
+  } catch (error) {
+    
+  }
+}
+
 
 export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
   try {

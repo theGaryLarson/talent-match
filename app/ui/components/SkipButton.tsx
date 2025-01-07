@@ -24,7 +24,7 @@ function SkipButton() {
   } else if (currentPath.includes('/edit-profile/employer')) {
     pageSequence = [
       'personal',
-      'company',
+      // 'company',
       // 'about',
       // 'mission',
       // 'video',

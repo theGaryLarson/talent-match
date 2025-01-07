@@ -13,6 +13,7 @@ interface Props<ValueType> {
   id: string;
   className?: string;
   apiAutoloadRoute: string;
+  disabled?: boolean;
   label: string;
   value: ValueType | null;
   onChange: (val: ValueType | null) => void;
@@ -28,6 +29,7 @@ export default function SelectAutoload<ValueType>({
   id,
   className = '',
   apiAutoloadRoute,
+  disabled = false,
   label,
   value,
   onChange,
@@ -122,7 +124,7 @@ export default function SelectAutoload<ValueType>({
 
   return (
     <div className={className}>
-      <FormControl fullWidth variant="outlined">
+      <FormControl disabled={disabled} fullWidth variant="outlined">
         <InputLabel htmlFor={id} shrink>
           {label}
         </InputLabel>

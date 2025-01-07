@@ -15,6 +15,8 @@ export default auth((req) => {
       '/signup/jobseeker',
       '/signup/employer',
       '/api/users/',
+      '/api/users/role/update',
+      '/api/users/avatar/upload',
     ],
     [Role.JOBSEEKER]: [
       '/edit-profile/jobseeker/',
@@ -23,7 +25,7 @@ export default auth((req) => {
       '/services/jobseekers/dashboard',
       '/services/jobseekers/dashboard/my-applications',
       '/services/jobseekers/',
-      //'/services/joblistings',
+      '/services/joblistings',
       '/api/joblistings/',
       '/api/jobseekers/',
       '/api/edu-providers/',
@@ -35,7 +37,9 @@ export default auth((req) => {
       '/edit-profile/employer/',
       '/services/employers/dashboard',
       '/services/jobseekers/',
-      //'/services/joblistings',
+      '/services/joblistings',
+      '/api/jobseekers/get/',
+      '/api/jobseekers/resume/get/',
       '/api/joblistings/',
       '/api/employers/',
       '/api/companies',
@@ -48,7 +52,7 @@ export default auth((req) => {
       '/career-prep',
       '/services/jobseekers',
       '/api/admin/career-prep/self-assign-case',
-      //'/services/joblistings',
+      '/services/joblistings',
       '/api/jobseekers/career-prep/meeting',
       '/api/admin/career-prep/update-recomended-track/'
       // Add any other routes accessible by case managers
@@ -100,13 +104,26 @@ export default auth((req) => {
     return false;
   }
 
-  // Handle special cases
-  if (pathname === '/') {
-    return NextResponse.next();
-  }
-
   if (!req.auth && pathname === '/signout') {
     return NextResponse.redirect(homeUrl);
+  }
+
+  if (!req.auth) {
+    const isProtectedRoute = !publicRoutes.includes(pathname) &&
+      !pathname.startsWith('/services/training-programs/');
+
+    if (isProtectedRoute) {
+      const signInUrl = new URL('/signin', req.nextUrl.origin);
+      signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+
+  if (req.auth && userRoles.includes(Role.GUEST)) {
+    if (roleRoutes.GUEST.includes(pathname) || pathname == "/signout") {
+      return NextResponse.next();
+    }
+    return NextResponse.redirect(new URL('/signup', req.nextUrl.origin));
   }
 
   if (req.auth && pathname === '/signin') {

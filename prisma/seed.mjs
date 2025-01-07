@@ -1271,6 +1271,43 @@ function getRandomUserPhoto() {
     return `https://randomuser.me/api/portraits/${gender}/${number}.jpg`;
 }
 
+function getRandomLogo() {
+    const domain = faker.helpers.arrayElement([
+        "google.com",
+        "apple.com",
+        "microsoft.com",
+        "amazon.com",
+        "facebook.com",
+        "twitter.com",
+        "linkedin.com",
+        "instagram.com",
+        "salesforce.com",
+        "oracle.com",
+        "adobe.com",
+        "netflix.com",
+        "spotify.com",
+        "uber.com",
+        "lyft.com",
+        "tesla.com",
+        "airbnb.com",
+        "dropbox.com",
+        "slack.com",
+        "zoom.us",
+        "stripe.com",
+        "paypal.com",
+        "shopify.com",
+        "github.com",
+        "bitbucket.org",
+        "asana.com",
+        "atlassian.com",
+        "squareup.com",
+        "intuit.com",
+        "zendesk.com",
+        "hubspot.com",
+    ]);
+    return `https://logo.clearbit.com/${domain}`;
+}
+
 
 /////////////////////////////////////////////////
 /////////////   seed functions  /////////////////
@@ -1314,6 +1351,7 @@ async function seedMockUsers(numUsers = 4) {
         for (let idx = 0; idx < numUsers; idx++) {
             const fName = faker.person.firstName();
             const lName = faker.person.lastName();
+            const filteredRoles = roles.filter((role) => role !== 'CASE_MANAGER');
             await prisma.user.create({
                 data: {
                     id: uuidv4(),
@@ -1321,7 +1359,7 @@ async function seedMockUsers(numUsers = 4) {
                     last_name: lName,
                     birthdate: faker.date.birthdate({min: 18, max: 65, mode: "age"}),
                     email: faker.internet.email({firstName: fName, lastName: lName}),
-                    role: faker.helpers.arrayElement(roles),
+                    role: faker.helpers.arrayElement(filteredRoles),
                     phone: generatePhoneNumber(),
                     photo_url: getRandomUserPhoto(),
                     locationData: {
@@ -1334,7 +1372,27 @@ async function seedMockUsers(numUsers = 4) {
             });
         }
     }
-    console.log(`Seeded ${numUsers} users.\n`)
+    const fName = faker.person.firstName();
+    const lName = faker.person.lastName();
+    await prisma.user.create({
+        data: {
+            id: uuidv4(),
+            first_name: fName,
+            last_name: lName,
+            birthdate: faker.date.birthdate({min: 18, max: 65, mode: "age"}),
+            email: faker.internet.email({firstName: fName, lastName: lName}),
+            role: 'CASE_MANAGER',
+            phone: generatePhoneNumber(),
+            photo_url: getRandomUserPhoto(),
+            locationData: {
+                connect: {
+                    zip: faker.helpers.arrayElement(waLocations).zip,
+                }
+            },
+            createdAt: new Date().toISOString()
+        }
+    });
+    console.log(`Seeded ${ numUsers + 1 } users.\n`)
 }
 
 export const EduProviderPathways = { // maps to TypeScript enum EduProviderPathways
@@ -2073,7 +2131,7 @@ async function seedMockCompanies() {
                 company_id: uuidv4(),
                 industry_sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                 company_name: faker.company.name(),
-                company_logo_url: faker.internet.url(),
+                company_logo_url: getRandomLogo(),
                 about_us: faker.lorem.sentences(2),
                 company_email: faker.internet.email(),
                 year_founded: faker.number.int({min: 1900, max: 2024}),
@@ -2308,7 +2366,7 @@ async function seedJobPostings() {
                             sector_id: faker.helpers.arrayElement(sectors).industry_sector_id,
                             tech_area_id: faker.helpers.arrayElement(techAreas).id,
                             job_title: faker.helpers.arrayElement(itJobTitles),
-                            job_description: faker.person.jobDescriptor(),
+                            job_description: faker.lorem.sentences(faker.number.int({ min: 2, max: 5 })),
                             is_internship: isInternship,
                             is_paid: isPaid,
                             employment_type: faker.helpers.arrayElement(['Full-time job', 'Part-time job', 'Internship', 'On-campus job', 'Contract']),
@@ -2493,7 +2551,7 @@ async function seedCaseMgmt() {
         where: {
             role: 'CASE_MANAGER',
         },
-        take: 3,
+        take: 1,
     })
     for (const s of careerPrepStudents) {
         if (faker.datatype.boolean({probability: 0.75})) {

@@ -3,11 +3,13 @@ import {
     CareerPrepSkillsAssessmentDTO,
     submitCareerPrepAssessmentWithSession,
 } from "@/app/lib/admin/careerPrep";
+import { sendCareerPrepApplicantEmailNotificationEmail } from "@/lib/smtp/send-career-prep-applicant-email-notification";
 
 
 export async function POST(request: Request) {
     const body: CareerPrepSkillsAssessmentDTO = await request.json()
 
     const result = await submitCareerPrepAssessmentWithSession(body);
+    const email = await sendCareerPrepApplicantEmailNotificationEmail(body.jobseekerId);
     return NextResponse.json(result);
 }

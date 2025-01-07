@@ -16,8 +16,13 @@ import {
 } from '@headlessui/react';
 import {
   Bars3Icon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
+  BuildingOffice2Icon,
+  SparklesIcon,
+  BriefcaseIcon,
+  NewspaperIcon,
+  UserGroupIcon,
+  QuestionMarkCircleIcon,
+  UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
@@ -38,11 +43,13 @@ type DropDownItem = {
   description: string;
   href: string;
   icon: React.ForwardRefExoticComponent<
-    React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
-      title?: string;
-      titleId?: string;
-    } & React.RefAttributes<SVGSVGElement>
+  React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
+    title?: string;
+    titleId?: string;
+  } & React.RefAttributes<SVGSVGElement>
   >;
+  target?: string;
+  rel?: string;
 };
 
 const TopLevelLinks: LinkItem[] = [
@@ -64,28 +71,91 @@ const TopLevelLinks: LinkItem[] = [
   //     },
   //   ],
   // },
-  { name: 'Talent Showcase', href: '/services/talent-search' },
-  { name: 'For Employers', href: '/services/employers' },
-  { name: 'For Job Seekers', href: '/services/jobseekers' },
-  { name: 'Careers', href: '/services/careers' },
-  /*{
-    name: 'Find a Job',
-    href: 'https://cfajobs.powerappsportals.com/',
-    target: '_blank',
-    rel: 'oopener noreferrer',
-  },*/
+  // { name: 'Talent Showcase', href: '/services/talent-search' },
+  // { name: 'For Employers', href: '/services/employers' },
+  // { name: 'For Job Seekers', href: '/services/jobseekers' },
+  // { name: 'Careers', href: '/services/careers' },
+  // /*{
+  //   name: 'Find a Job',
+  //   href: 'https://cfajobs.powerappsportals.com/',
+  //   target: '_blank',
+  //   rel: 'noopener noreferrer',
+  // },*/
+  // {
+  //   name: 'Join Our Community',
+  //   href: 'https://forum.watechwfcoalition.org/',
+  //   target: '_blank',
+  //   rel: 'noopener noreferrer',
   {
-    name: 'Join Our Community',
-    href: 'https://forum.watechwfcoalition.org/',
-    target: '_blank',
-    rel: 'oopener noreferrer',
+    name: 'For Employers',
+    href: '',
+    dropDowns: [
+      {
+        name: 'Landing Page',
+        description: 'Informational page for employers',
+        href: '/services/employers',
+        icon: BuildingOffice2Icon,
+      },
+      {
+        name: 'Talent Showcase',
+        description: 'Find talent',
+        href: '/services/talent-search',
+        icon: SparklesIcon,
+      },
+    ],
+  },
+  {
+    name: 'For Jobseekers',
+    href: '',
+    dropDowns: [
+      {
+        name: 'Landing Page',
+        description: 'Informational page for job seekers',
+        href: '/services/jobseekers',
+        icon: BriefcaseIcon,
+      },
+      {
+        name: 'Job Listings',
+        description: 'Find jobs',
+        href: '/services/joblistings',
+        icon: NewspaperIcon,
+      },
+    ],
+  },
+  {
+    name: 'Our Community',
+    href: '',
+    dropDowns: [
+      {
+        name: 'Join Our Community',
+        description: 'Connect with others on our community forum',
+        href: 'https://forum.watechwfcoalition.org/',
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        icon: UsersIcon,
+      },
+      {
+        name: 'Careers',
+        description: 'Learn about different careers in tech',
+        href: '/services/careers',
+        icon: QuestionMarkCircleIcon,
+      },
+    ],
+  },
+  // { name: 'Events', href: '/services/events' },
+  {
+    name: 'Coalition',
+    href: '',
+    dropDowns: [
+      {
+        name: 'Training Providers',
+        description: 'Learn about the training providers in our coalition',
+        href: '/services/training-providers',
+        icon: UserGroupIcon,
+      },
+    ],
   },
   { name: 'About Us', href: '/about-us' },
-  // { name: 'Explore', href: '/underconstruction' },
-  // {
-  //   name: "Contact Us",
-  //   href: "/underconstruction"
-  // }
 ];
 
 export default function Header() {
@@ -179,6 +249,8 @@ export default function Header() {
                                 key={item.name}
                                 href={item.href}
                                 className="block font-semibold  text-black"
+                                target={item.target || '_self'}
+                                rel={item.rel || ''}
                                 onClick={() => {
                                   close();
                                 }}
@@ -284,6 +356,8 @@ export default function Header() {
                             as={Link}
                             href={item.href}
                             className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7   hover:bg-gray-50"
+                            target={item.target || '_self'}
+                            rel={item.rel || ''}
                             onClick={() => { setMobileMenuOpen(false) }}
                           >
                             {item.name}

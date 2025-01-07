@@ -34,7 +34,7 @@ export default function AccountMenu() {
 
   var textColor = 'text-black';
   if (pathname == '/services/jobseekers' ||
-      pathname == '/services/employers' || 
+      pathname == '/services/employers' ||
       pathname.startsWith('/services/training-programs/')) {
     textColor = 'text-white';
   }
@@ -170,19 +170,6 @@ export default function AccountMenu() {
           ''
         )}
 
-        {role?.includes(Role.JOBSEEKER) ? (
-          <Link href={'/edit-profile/jobseeker/introduction'}>
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              Edit Profile
-            </MenuItem>
-          </Link>
-        ) : (
-          ''
-        )}
-
         {role?.includes(Role.EMPLOYER) ? (
           <Link href="/edit-profile/employer/profile">
             <MenuItem onClick={handleClose}>
@@ -208,12 +195,8 @@ export default function AccountMenu() {
         ) : (
           <div>
             <Divider />
-            <Link href={'/'}>
-              <MenuItem
-                onClick={async () => {
-                  await signOut();
-                }}
-              >
+            <Link href={'/signout'}>
+              <MenuItem>
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>
