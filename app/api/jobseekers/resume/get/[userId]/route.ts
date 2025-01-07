@@ -24,18 +24,17 @@ export async function GET(
     const {
       roles,
       employeeIsApproved,
-      jobseekerId: userJobseekerId,
     } = session.user;
 
     // Allow access if:
     // 1. The user is an EMPLOYER and is approved, OR ADMIN, OR CASEMANAGER
-    // 2. The user is a JOBSEEKER and their jobseekerId matches the requested jobseekerId
+    // 2. The user is a JOBSEEKER and their session.user.id matches the requested userId
     const isApprovedRole =
       (roles.includes(Role.EMPLOYER) && employeeIsApproved) ||
       roles.includes(Role.ADMIN) ||
       roles.includes(Role.CASE_MANAGER);
     const isJobseekerViewingOwnData =
-      roles.includes(Role.JOBSEEKER) && userJobseekerId === userId;
+      roles.includes(Role.JOBSEEKER) && session.user.id === userId;
 
     if (!isApprovedRole && !isJobseekerViewingOwnData) {
       return NextResponse.json({ error: 'Page not found' }, { status: 404 });
