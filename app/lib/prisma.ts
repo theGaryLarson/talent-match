@@ -547,6 +547,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
             select: {
               skills: {
                 select: {
+                  skill_id: true,
                   skill_name: true,
                   skill_info_url: true,
                 },

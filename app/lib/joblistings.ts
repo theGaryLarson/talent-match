@@ -7,6 +7,7 @@ import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
 import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
+import { CareerPrepStatus } from './admin/careerPrep';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
@@ -188,7 +189,7 @@ export async function ApplyToJob(jobPostingId: string) {
           id: existingApplication.id,
         },
         data: {
-          jobStatus: 'Applied',
+          jobStatus: CareerPrepStatus.Applied,
           appliedDate: new Date(),
         },
       });
@@ -198,7 +199,7 @@ export async function ApplyToJob(jobPostingId: string) {
           id: uuidv4(),
           jobPostId: jobPostingId,
           jobseekerId: Session.user.jobseekerId,
-          jobStatus: 'Applied',
+          jobStatus: CareerPrepStatus.Applied,
           appliedDate: new Date(),
           isBookmarked: false,
         },
@@ -206,6 +207,50 @@ export async function ApplyToJob(jobPostingId: string) {
     }
   } catch (error) {
     console.error('Error in ApplyToJob:', error);
+    throw error;
+  }
+}
+
+export async function WithdrawFromJob(jobPostingId: string) {
+  let Session = await auth();
+  try {
+    if (!Session?.user.jobseekerId) {
+      throw new Error(
+        'Failed to Withdraw from job: jobseeker ID not found in session',
+      );
+    }
+
+    const existingApplication = await prisma.jobseekerJobPosting.findFirst({
+      where: {
+        jobPostId: jobPostingId,
+        jobseekerId: Session.user.jobseekerId,
+      },
+    });
+
+    if (existingApplication) {
+      return await prisma.jobseekerJobPosting.update({
+        where: {
+          id: existingApplication.id,
+        },
+        data: {
+          jobStatus: CareerPrepStatus.Withdrawn,
+          appliedDate: new Date(),
+        },
+      });
+    } else {
+      return await prisma.jobseekerJobPosting.create({
+        data: {
+          id: uuidv4(),
+          jobPostId: jobPostingId,
+          jobseekerId: Session.user.jobseekerId,
+          jobStatus: CareerPrepStatus.Withdrawn,
+          appliedDate: new Date(),
+          isBookmarked: false,
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Error in WithdrawFromJob:', error);
     throw error;
   }
 }
@@ -427,11 +472,11 @@ export async function getJobListingsFiltered(request: Request) {
 
   const transformedJobPostings = filteredJobPostings.map((posting) => {
     if (posting.jobApplications && posting.jobApplications.length > 0) {
-      const jobStatus = posting.jobApplications?.[0].jobStatus || ''
-      const isBookmarked = posting.jobApplications?.[0].isBookmarked || false
+      const jobStatus = posting.jobApplications?.[0].jobStatus;
+      const isBookmarked = posting.jobApplications?.[0].isBookmarked || false;
       return {
         ...posting,
-        hasApplied: jobStatus !== '',
+        jobStatus: jobStatus,
         isBookmarked: isBookmarked,
         jobApplications: undefined,
       };
@@ -469,7 +514,19 @@ export async function getJobSeekerBookmarkedJobs() {
           jobseekerId: session.user.jobseekerId,
           isBookmarked: true
     }});
-    return result;
+
+    const transformedJobPostings = result.map((posting) => {
+      const jobStatus = posting.jobStatus;
+      const isBookmarked = posting.isBookmarked || false;
+      return {
+        ...posting.job_posting,
+        jobStatus: jobStatus,
+        isBookmarked: isBookmarked,
+        jobApplications: undefined,
+      };
+    });
+
+    return transformedJobPostings;
   } catch (error) {
     console.error(error);
   }
@@ -487,13 +544,33 @@ export async function getJobSeekerAppliedJobs() {
         jobseekerId: session.user.jobseekerId,
         jobStatus: 'Applied', // Ensure you fetch only "Applied" jobs
       },
-      include: {
-        job_posting: true, // Include related job posting details
-      },
+      include:{
+        job_posting: {
+          include: {
+            companies: true,
+            skills: true,
+            industry_sectors: {
+              select: {
+                sector_title: true,
+              },
+            },
+          }
+        },
+     },
     });
 
-    // Transform the result to match the previous data structure
-    return result.map((job) => job.job_posting);
+    const transformedJobPostings = result.map((posting) => {
+      const jobStatus = posting.jobStatus;
+      const isBookmarked = posting.isBookmarked || false;
+      return {
+        ...posting.job_posting,
+        jobStatus: jobStatus,
+        isBookmarked: isBookmarked,
+        jobApplications: undefined,
+      };
+    });
+
+    return transformedJobPostings;
   } catch (error) {
     console.error(error);
   }
