@@ -40,7 +40,7 @@ export default function JobListingModalView({
   const id: string = joblisting?.job_posting_id ?? '';
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
-  const showApply = session?.user.roles.includes(Role.JOBSEEKER);
+  const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,7 +182,7 @@ export default function JobListingModalView({
           </div>
         </div>
       </Modal.Body>
-      {showApply && (
+      {isJobseeker && (
         <Modal.Footer>
           <form onSubmit={handleSubmit}>
             <Button

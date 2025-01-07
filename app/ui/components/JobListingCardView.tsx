@@ -37,7 +37,7 @@ export default function JobListingCardView({
   const [openModal, setOpenModal] = useState(false);
   const isBookmarked = joblisting?.isBookmarked ?? false;
 
-  const showBookmarks = session?.user.roles.includes(Role.JOBSEEKER);
+  const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   const updateQueryParam = (jobId: string | null) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -97,7 +97,7 @@ export default function JobListingCardView({
               </Button>
             </div>
             <div className="mr-2 mt-2 flex flex-row place-self-end text-cyan-600">
-              {showBookmarks ? (
+              {isJobseeker ? (
                 <Bookmark
                   bookmarked={isBookmarked}
                   addUrl={
@@ -134,7 +134,7 @@ export default function JobListingCardView({
             <h4 className="mt-2 text-sm italic text-slate-400">
               {employment_type} | {salary_range}
             </h4>
-            <Chip variant='outlined' color='primary' label={(joblisting.jobStatus == undefined || joblisting.jobStatus.toString() == '') ? 'Not Applied' : joblisting.jobStatus} />
+            {isJobseeker && <Chip variant='outlined' color='primary' label={(joblisting.jobStatus == undefined || joblisting.jobStatus.toString() == '') ? 'Not Applied' : joblisting.jobStatus} />}
           </Stack>
         </div>
       </div>

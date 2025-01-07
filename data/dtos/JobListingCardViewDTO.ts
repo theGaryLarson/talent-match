@@ -1,4 +1,3 @@
-import { JobStatus } from "@/app/lib/jobseekerJobTracking";
 import { SkillDTO } from "./SkillDTO";
 
 export type JobListingCardViewDTO = {
@@ -10,7 +9,7 @@ export type JobListingCardViewDTO = {
   job_title: string;
   job_description: string;
   is_internship?: boolean;
-  jobStatus?: JobStatus;
+  jobStatus: string;
   isBookmarked?: boolean;
   is_paid?: boolean;
   employment_type?: string;

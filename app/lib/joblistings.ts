@@ -472,8 +472,8 @@ export async function getJobListingsFiltered(request: Request) {
 
   const transformedJobPostings = filteredJobPostings.map((posting) => {
     if (posting.jobApplications && posting.jobApplications.length > 0) {
-      const jobStatus = posting.jobApplications?.[0].jobStatus || ''
-      const isBookmarked = posting.jobApplications?.[0].isBookmarked || false
+      const jobStatus = posting.jobApplications?.[0].jobStatus;
+      const isBookmarked = posting.jobApplications?.[0].isBookmarked || false;
       return {
         ...posting,
         jobStatus: jobStatus,
@@ -516,8 +516,8 @@ export async function getJobSeekerBookmarkedJobs() {
     }});
 
     const transformedJobPostings = result.map((posting) => {
-      const jobStatus = posting.jobStatus || ''
-      const isBookmarked = posting.isBookmarked || false
+      const jobStatus = posting.jobStatus;
+      const isBookmarked = posting.isBookmarked || false;
       return {
         ...posting.job_posting,
         jobStatus: jobStatus,
@@ -560,8 +560,8 @@ export async function getJobSeekerAppliedJobs() {
     });
 
     const transformedJobPostings = result.map((posting) => {
-      const jobStatus = posting.jobStatus || ''
-      const isBookmarked = posting.isBookmarked || false
+      const jobStatus = posting.jobStatus;
+      const isBookmarked = posting.isBookmarked || false;
       return {
         ...posting.job_posting,
         jobStatus: jobStatus,
