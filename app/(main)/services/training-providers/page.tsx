@@ -12,9 +12,9 @@ export default function Page() {
                     </div>
                     <div className="self-stretch">
                         <p className="text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">
-                            Employer members of The Coalition benefit from direct access to high quality talent pools offered by a dedicated network of training providers.  In some cases, the training provider delivers added value to candidates that are enrolled in certificate or degree programs at leading colleges.  Each training provider specializes in developing candidates from diverse backgrounds, preparing them with industry-recognized credentials and career-readiness training for in-demand Tech roles.  Graduates range from veterans with Tech experience and security clearances to Seniors in BA/BAS degree programs to promising candidates from BIPOC and underrepresented communities.
+                            Employer members of The Coalition benefit from direct access to high quality talent pools offered by a dedicated network of training providers. Each training provider specializes in developing candidates from diverse backgrounds, preparing them with industry-recognized credentials and career-readiness training for in-demand Tech roles.  Graduates range from veterans with Tech experience and security clearances to Seniors in BA/BAS degree programs who have undergone additional practical training to promising candidates from BIPOC and underrepresented communities.
                         </p>
-                        <br/>
+                        <br />
                         <p className="text-zinc-900 text-xl font-normal font-['Roboto'] leading-loose">
                             Please browse the individual pages of our network training partners on this site to learn more.
                         </p>
