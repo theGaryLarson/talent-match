@@ -91,7 +91,7 @@ export const getEduProviderDetail = async (eduProviderId: string): Promise<ReadE
         eduProviderId: data.id,
         eduLevel: data.edu_type ? (data.edu_type as EducationLevel) : undefined,
         providerName: data.name,
-        logoUrl: '', // Assuming you need to add logic for generating logoUrl
+        logoUrl: data.logoUrl || '', // Assuming you need to add logic for generating logoUrl
         contactName: data.contact || undefined,
         contactEmail: data.contact_email || undefined,
         url: data.edu_url || undefined,
@@ -110,40 +110,86 @@ export const getEduProviderDetail = async (eduProviderId: string): Promise<ReadE
     return transformedData;
 };
 
-export const getProviderProgramCardView = async (pathway: EduProviderPathways): Promise<ReadEduProviderProgramCardDTO[]> => {
+export const getAllEduProvidersDetail = async (): Promise<ReadEduProviderDTO[] | null> => {
+    const data = await prisma.edu_providers.findMany({
+        where: {
+            isCoalitionMember: true,
+        }
+    });
+
+    if (!data) return null; // Return null if the provider is not found
+
+    // Transform and map the data to ReadEduProviderDTO
+    const transformedData: ReadEduProviderDTO[] = data.map(provider => ({
+        eduProviderId: provider.id,
+          eduLevel: provider.edu_type ? (provider.edu_type as EducationLevel) : undefined,
+          providerName: provider.name,
+          logoUrl: provider.logoUrl || '', // Assuming you need to add logic for generating logoUrl
+          contactName: provider.contact || undefined,
+          contactEmail: provider.contact_email || undefined,
+          url: provider.edu_url || undefined,
+          mission: provider.mission || undefined,
+          providerDescription: provider.providerDescription || undefined,
+          setsApartStatement: provider.setsApartStatement || undefined,
+          screeningCriteria: provider.screeningCriteria || undefined,
+          recruitingSources: provider.recruitingSources || undefined,
+          programCount: provider.programCount || undefined,
+          cost: provider.cost || undefined,
+          isAdminReviewed: provider.isAdminReviewed || false,
+          isCoalitionMember: provider.isCoalitionMember || false,
+          createdBy: provider.userId || undefined,
+    }));
+
+    return transformedData;
+};
+
+// Overload signatures
+export async function getProviderProgramCardView(pathway: EduProviderPathways): Promise<ReadEduProviderProgramCardDTO[]>;
+export async function getProviderProgramCardView(eduProviderId: string): Promise<ReadEduProviderProgramCardDTO[]>;
+
+// Implementation
+export async function getProviderProgramCardView(param: EduProviderPathways | string): Promise<ReadEduProviderProgramCardDTO[]> {
+    const isPathway = typeof param === 'string' && Object.values(EduProviderPathways).includes(param as EduProviderPathways);
+
     // Fetch all programs
     const data = await prisma.provider_programs.findMany({
         include: {
             Program: true, // Include related program details
             edu_provider: true, // Include related edu_provider details
         },
+        where: isPathway
+          ? undefined // No filtering on pathway at query level
+          : { edu_provider_id: param as string }, // Filter by eduProviderId
     });
 
     // Transform and filter the data
     const programCards: ReadEduProviderProgramCardDTO[] = data
-        .filter(program => {
-            if (!program.pathways) return false; // Skip if pathways field is null/undefined
-            const pathwaysArray = program.pathways.split('~').map(path => path.trim());
-            return pathwaysArray.includes(pathway); // Filter programs matching the pathway
-        })
-        .map(program => ({
-            programId: program.training_program_id,
-            programName: program.Program.title,
-            logoUrl: program.edu_provider.logoUrl || '',
-            eduProviderId: program.edu_provider_id,
-            eduProviderName: program.edu_provider.name,
-            eduLevel: isEnumValue(EducationLevel, program.eduLevel) ? program.eduLevel as EducationLevel : null,
-            programLength: program.programLength || '',
-            tuition: program.tuition || '',
-            fees: program.fees || '',
-            locationType: isEnumValue(LocationType, program.locationType) ? program.locationType as LocationType : null,
-            pathway: program.pathways
-                ? program.pathways
-                    .split('~')
-                    .map(path => path.trim())
-                    .filter((path): path is EduProviderPathways => isEnumValue(EduProviderPathways, path))
-                : [],
-        }));
+      .filter(program => {
+          if (isPathway) {
+              if (!program.pathways) return false; // Skip if pathways field is null/undefined
+              const pathwaysArray = program.pathways.split('~').map(path => path.trim());
+              return pathwaysArray.includes(param as EduProviderPathways); // Filter programs matching the pathway
+          }
+          return true; // No additional filtering for eduProviderId
+      })
+      .map(program => ({
+          programId: program.training_program_id,
+          programName: program.Program.title,
+          logoUrl: program.edu_provider.logoUrl || '',
+          eduProviderId: program.edu_provider_id,
+          eduProviderName: program.edu_provider.name,
+          eduLevel: isEnumValue(EducationLevel, program.eduLevel) ? program.eduLevel as EducationLevel : null,
+          programLength: program.programLength || '',
+          tuition: program.tuition || '',
+          fees: program.fees || '',
+          locationType: isEnumValue(LocationType, program.locationType) ? program.locationType as LocationType : null,
+          pathway: program.pathways
+            ? program.pathways
+              .split('~')
+              .map(path => path.trim())
+              .filter((path): path is EduProviderPathways => isEnumValue(EduProviderPathways, path))
+            : [],
+      }));
 
     return programCards;
 };

@@ -1,5 +1,6 @@
 import { getJobSeekerBookmarkedJobs } from '@/app/lib/joblistings';
 import JobListingCardView from '@/app/ui/components/JobListingCardView';
+import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 import Link from 'next/link';
 
 export default async function page() {
@@ -10,7 +11,7 @@ export default async function page() {
         <p>
           No Saved Job Posts Found:{' '}
           <Link
-            href={'/services/jobseekers/dashboard/jobsearch'}
+            href={'/services/joblistings'}
             className="LINK"
           >
             Find Job Listings here
@@ -24,9 +25,9 @@ export default async function page() {
       <h1 className="mb-4 text-2xl font-bold">Bookmarked Jobs</h1>
       <div className="space-y-4">
         {myBookMarkedJobs.map((job) => (
-          <div key={job.job_posting.job_posting_id}>
+          <div key={job.job_posting_id}>
             <JobListingCardView
-            joblisting={{ ...job.job_posting, isBookmarked: job.isBookmarked ?? false, hasApplied: job.jobStatus !== '' }}
+            joblisting={{ ...job }}
             />
           </div>
         ))}

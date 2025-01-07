@@ -67,7 +67,7 @@ export async function PATCH(request: Request) {
         },
         update: {
           job_title: currentJobTitle,
-          linkedin_url: linkedInUrl,
+          ...(linkedInUrl && { linkedin_url: linkedInUrl }),
           ...(isApprovedEmployee && {is_verified_employee: isApprovedEmployee}),
           ...(workAddressId && {
             company_addresses: {
