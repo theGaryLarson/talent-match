@@ -10,6 +10,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import JobListingModalView from './JobListingModalView';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
+import { Chip, Stack } from '@mui/material';
 
 export default function JobListingCardView({
   joblisting,
@@ -36,7 +37,7 @@ export default function JobListingCardView({
   const [openModal, setOpenModal] = useState(false);
   const isBookmarked = joblisting?.isBookmarked ?? false;
 
-  const showBookmarks = session?.user.roles.includes(Role.JOBSEEKER);
+  const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   const updateQueryParam = (jobId: string | null) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -96,7 +97,7 @@ export default function JobListingCardView({
               </Button>
             </div>
             <div className="mr-2 mt-2 flex flex-row place-self-end text-cyan-600">
-              {showBookmarks ? (
+              {isJobseeker ? (
                 <Bookmark
                   bookmarked={isBookmarked}
                   addUrl={
@@ -119,11 +120,6 @@ export default function JobListingCardView({
           {/* job description */}
           <p className="line-clamp-3 break-words">{description}</p>
 
-          {/* employment type and salary */}
-          <h4 className="mt-2 text-sm italic text-slate-400">
-            {employment_type} | {salary_range}
-          </h4>
-
           {/* skills */}
           <div className="mt-2 flex grow text-sm tablet:text-base">
             <Skills
@@ -132,6 +128,14 @@ export default function JobListingCardView({
               jobseekerID={undefined}
             />
           </div>
+
+          {/* employment type, salary, and job status */}
+          <Stack direction={'row'} sx={{justifyContent: 'space-between'}}>
+            <h4 className="mt-2 text-sm italic text-slate-400">
+              {employment_type} | {salary_range}
+            </h4>
+            {isJobseeker && <Chip variant='outlined' color='primary' label={(joblisting.jobStatus == undefined || joblisting.jobStatus.toString() == '') ? 'Not Applied' : joblisting.jobStatus} />}
+          </Stack>
         </div>
       </div>
       <JobListingModalView
