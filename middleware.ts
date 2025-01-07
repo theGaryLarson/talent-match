@@ -111,7 +111,8 @@ export default auth((req) => {
 
   if (!req.auth) {
     const isProtectedRoute = !publicRoutes.includes(pathname) &&
-      !pathname.startsWith('/services/training-programs/');
+      !pathname.startsWith('/services/training-programs') && 
+      !pathname.startsWith('/services/training-providers');
 
     if (isProtectedRoute) {
       const signInUrl = new URL('/signin', req.nextUrl.origin);
