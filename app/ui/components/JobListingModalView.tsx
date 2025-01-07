@@ -7,6 +7,7 @@ import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 import { useSession } from 'next-auth/react';
 import { Role } from '@/data/dtos/UserInfoDTO';
+import { JobStatus } from '@/app/lib/jobseekerJobTracking';
 
 export default function JobListingModalView({
   openModal,
@@ -17,7 +18,14 @@ export default function JobListingModalView({
   handleModalChange: (open: boolean) => void;
   joblisting: JobListingCardViewDTO;
 }) {
-  const [applied, setApplied] = useState<boolean>(joblisting?.hasApplied ?? false);
+  const [applied, setApplied] = useState<boolean>(
+    joblisting?.jobStatus == JobStatus.Accepted ||
+      joblisting?.jobStatus == JobStatus.Applied ||
+      joblisting?.jobStatus == JobStatus.Interviewing ||
+      joblisting?.jobStatus == JobStatus.Negotiating ||
+      joblisting?.jobStatus == JobStatus.NoResponse ||
+      joblisting?.jobStatus == JobStatus.NotSelected
+  );
   const { data: session } = useSession();
 
   const job_title: string = joblisting?.job_title;
@@ -32,26 +40,43 @@ export default function JobListingModalView({
   const id: string = joblisting?.job_posting_id ?? '';
   const location: string =
     joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
-  const showApply = session?.user.roles.includes(Role.JOBSEEKER);
-
+  const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch(`/api/joblistings/apply/${id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    if (!applied) {
+      try {
+        const response = await fetch(`/api/joblistings/apply/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to update application status');
+        if (!response.ok) {
+          throw new Error('Failed to update application status');
+        }
+        setApplied(true);
+      } catch (error) {
+        console.error('Error updating application:', error);
       }
-      setApplied(true);
-    } catch (error) {
-      console.error('Error updating application:', error);
+    } else {
+      try {
+        const response = await fetch(`/api/joblistings/withdraw/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update application status');
+        }
+        setApplied(false);
+      } catch (error) {
+        console.error('Error updating application:', error);
+      }
     }
   };
 
@@ -74,7 +99,9 @@ export default function JobListingModalView({
             <div>
               <h4 className="text-lg font-semibold">{job_title}</h4>
               <p>{company_name}</p>
-              <p className="text-wrap text-sm text-slate-400 sm-tablet:text-bas">{location}</p>
+              <p className="sm-tablet:text-bas text-wrap text-sm text-slate-400">
+                {location}
+              </p>
             </div>
           </div>
 
@@ -107,7 +134,7 @@ export default function JobListingModalView({
             <p className="font-medium text-gray-700 dark:text-gray-200">
               Description:
             </p>
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 break-words">
+            <p className="break-words text-base leading-relaxed text-gray-500 dark:text-gray-400">
               {description}
             </p>
           </div>
@@ -119,7 +146,11 @@ export default function JobListingModalView({
                 Skills:
               </p>
               <div className="mt-2 flex grow text-sm tablet:text-base">
-                <Skills skillsList={skills} maxNumSkills={5} jobseekerID={undefined} />
+                <Skills
+                  skillsList={skills}
+                  maxNumSkills={5}
+                  jobseekerID={undefined}
+                />
               </div>
             </div>
           )}
@@ -149,23 +180,22 @@ export default function JobListingModalView({
               {joblisting?.companies.company_vision}
             </p>
           </div>
-
-
         </div>
       </Modal.Body>
-      {showApply && (<Modal.Footer>
-        <form onSubmit={handleSubmit}>
-          <Button
-            type={"submit"}
-            disabled={applied}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block"
-          >
-            {applied ? "Applied" : "Apply"}
-          </Button>
-        </form>
-      </Modal.Footer>)}
+      {isJobseeker && (
+        <Modal.Footer>
+          <form onSubmit={handleSubmit}>
+            <Button
+              type={'submit'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block"
+            >
+              {applied ? 'Withdraw Application' : 'Apply'}
+            </Button>
+          </form>
+        </Modal.Footer>
+      )}
     </Modal>
   );
 }
