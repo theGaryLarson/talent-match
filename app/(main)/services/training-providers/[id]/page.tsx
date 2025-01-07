@@ -1,12 +1,12 @@
 import { EduProviderPathways, getEduProviderDetail, getProviderProgramCardView, ReadEduProviderDTO, ReadEduProviderProgramCardDTO } from '@/app/lib/eduProviders';
 import TrainingProgramCard from '@/app/ui/components/career/TrainingProgramCard';
-import { use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function page(props: { params: Promise<{ id: string }> }) {
-  let provider: ReadEduProviderDTO | null = await getEduProviderDetail(use(props.params).id);
-  let programs: ReadEduProviderProgramCardDTO[] = await getProviderProgramCardView(use(props.params).id);
+  const params = await props.params;
+  let provider: ReadEduProviderDTO | null = await getEduProviderDetail(params.id);
+  let programs: ReadEduProviderProgramCardDTO[] = await getProviderProgramCardView(params.id);
 
   // Create a list of unique pathways this provider offers
   let careerPrograms: EduProviderPathways[] = [];
