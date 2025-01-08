@@ -12,9 +12,9 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Button } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import Router from 'next/router';
 import JobStatusDropDown from './JobStatusDropDown';
 import { JobStatus } from '@/app/lib/jobseekerJobTracking';
@@ -24,20 +24,20 @@ interface JobApplication {
   jobPostId: string;
   jobseekerId: string;
   jobStatus: string;
-  isBookmarked: boolean|null;
+  isBookmarked: boolean | null;
   savedAt: Date;
-  appliedDate: Date|null;
-  followUpDate: Date| null;
+  appliedDate: Date | null;
+  followUpDate: Date | null;
   Jobseekers: {
     jobseeker_id: string;
-    assignedPool:string|null;
+    assignedPool: string | null;
     user_id: string;
-    intro_headline: string|null;
-    years_work_exp: number|null;
-    users:{
-        first_name:string|null;
-        last_name:string|null;
-    }
+    intro_headline: string | null;
+    years_work_exp: number | null;
+    users: {
+      first_name: string | null;
+      last_name: string | null;
+    };
   };
 }
 
@@ -45,9 +45,9 @@ interface JobPosting {
   job_posting_id: string;
   company_id: string;
   location_id: string;
-  employer_id: string|null;
-  tech_area_id: string|null;
-  sector_id: string|null;
+  employer_id: string | null;
+  tech_area_id: string | null;
+  sector_id: string | null;
   job_title: string;
   job_description: string;
   is_internship: boolean;
@@ -59,12 +59,12 @@ interface JobPosting {
   zip: string;
   publish_date: Date;
   unpublish_date: Date;
-  job_post_url: string|null;
-  assessment_url: string|null;
+  job_post_url: string | null;
+  assessment_url: string | null;
   jobApplications: JobApplication[];
-  companies:{
-    company_name:string;
-  }
+  companies: {
+    company_name: string;
+  };
 }
 
 interface RowProps {
@@ -115,10 +115,14 @@ function Row({ row }: RowProps) {
                 <TableBody>
                   {row.jobApplications.map((app) => (
                     <TableRow key={app.id}>
-                      <TableCell><Link href={'/services/jobseekers/'+app.jobseekerId} className='LINK' target='_blank'>{app.Jobseekers.users.first_name} {app.Jobseekers.users.last_name}</Link></TableCell>
+                      <TableCell>
+                        <Link href={'/services/jobseekers/' + app.jobseekerId} className='LINK' target='_blank'>
+                          {app.Jobseekers.users.first_name} {app.Jobseekers.users.last_name}
+                        </Link>
+                      </TableCell>
                       <TableCell><JobStatusDropDown currentJobStatus={app.jobStatus as JobStatus} jobAppId={app.id}/></TableCell>
                       <TableCell>{app.Jobseekers.assignedPool}</TableCell>
-                      <TableCell>{app.appliedDate?new Date(app.appliedDate).toLocaleDateString():''}</TableCell>
+                      <TableCell>{app.appliedDate ? new Date(app.appliedDate).toLocaleDateString() : ''}</TableCell>
                       <TableCell>{app.followUpDate ? new Date(app.followUpDate).toLocaleDateString() : 'N/A'}</TableCell>
                       <TableCell>{app.Jobseekers.intro_headline}</TableCell>
                     </TableRow>
@@ -138,27 +142,46 @@ interface JobTrackingTableProps {
 }
 
 export default function JobTrackingTable({ data }: JobTrackingTableProps) {
+  const [filter, setFilter] = useState<string>('');
+
+  // Filter the job postings based on job title, company name, or location
+  const filteredData = data.filter(item => 
+    item.job_title.toLowerCase().includes(filter.toLowerCase()) ||
+    item.companies.company_name.toLowerCase().includes(filter.toLowerCase()) ||
+    item.location.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Job Title</TableCell>
-            <TableCell>Company</TableCell>
-            <TableCell>Location</TableCell>
-            <TableCell>Employment Type</TableCell>
-            <TableCell>Salary Range</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((item) => (
-            <Row key={item.job_posting_id} row={item} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box sx={{ padding: 2 }}>
+      {/* Search Filter */}
+      <TextField
+        label="Filter by Job Title, Company, or Location"
+        variant="outlined"
+        fullWidth
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        sx={{ marginBottom: 2 }}
+      />
+
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Job Title</TableCell>
+              <TableCell>Company</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Employment Type</TableCell>
+              <TableCell>Salary Range</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.map((item) => (
+              <Row key={item.job_posting_id} row={item} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
-
-
