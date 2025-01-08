@@ -4,6 +4,7 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
+import Radio from '@mui/material/Radio';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
@@ -14,7 +15,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Button, TextField } from '@mui/material';
+import { Button, FormControlLabel, FormLabel, RadioGroup, TextField } from '@mui/material';
 import Router from 'next/router';
 import JobStatusDropDown from './JobStatusDropDown';
 import { JobStatus } from '@/app/lib/jobseekerJobTracking';
@@ -143,12 +144,14 @@ interface JobTrackingTableProps {
 
 export default function JobTrackingTable({ data }: JobTrackingTableProps) {
   const [filter, setFilter] = useState<string>('');
-
+  const [location, setLocation] = useState<string>('');
   // Filter the job postings based on job title, company name, or location
   const filteredData = data.filter(item => 
     item.job_title.toLowerCase().includes(filter.toLowerCase()) ||
     item.companies.company_name.toLowerCase().includes(filter.toLowerCase()) ||
     item.location.toLowerCase().includes(filter.toLowerCase())
+  ).filter(item =>
+    item.location.toLowerCase().includes(location)
   );
 
   return (
@@ -162,6 +165,20 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
         onChange={(e) => setFilter(e.target.value)}
         sx={{ marginBottom: 2 }}
       />
+      <div>
+       <RadioGroup
+    aria-labelledby="demo-controlled-radio-buttons-group"
+    name="controlled-radio-buttons-group"
+    value={location}
+    onChange={(e)=>setLocation(e.target.value)}
+  >
+    <FormLabel id="demo-radio-buttons-group-label">Location Type</FormLabel>
+    <FormControlLabel value="remote" control={<Radio />} label="Remote" />
+    <FormControlLabel value="hybrid" control={<Radio />} label="Hybrid" />
+    <FormControlLabel value="on-site" control={<Radio />} label="On-Site" />
+    <FormControlLabel value="" control={<Radio />} label="Any" />
+  </RadioGroup>
+  </div>
 
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
