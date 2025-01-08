@@ -8,6 +8,7 @@ import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { CareerPrepStatus } from './admin/careerPrep';
+import { JobStatus } from './jobseekerJobTracking';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
@@ -542,7 +543,9 @@ export async function getJobSeekerAppliedJobs() {
     const result = await prisma.jobseekerJobPosting.findMany({
       where: {
         jobseekerId: session.user.jobseekerId,
-        jobStatus: 'Applied', // Ensure you fetch only "Applied" jobs
+        NOT: {
+          jobStatus: JobStatus.IWithdrew
+        }
       },
       include:{
         job_posting: {
