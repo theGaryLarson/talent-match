@@ -3,6 +3,8 @@ import {PrismaClient} from '@prisma/client';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {auth} from "@/auth";
+import { deleteEmployer } from '../employer';
+import { deleteJobseeker } from '../jobseeker';
 const prisma: PrismaClient = getPrismaClient();
 /**
  * fully replaces the users role with the role[] provided
@@ -24,4 +26,32 @@ export async function adminUpdateUserRole(userId:string, newRoles:Role[]) {
     } catch (error) {
       console.error(error);
     }
+  }
+
+
+  export async function adminDeleteUser(userId:string){
+    const session = await auth();
+    let res;
+    try {
+      if(!session?.user.roles.includes(Role.ADMIN)){
+        throw new Error("ADMIN Role Needed for this function");
+      }
+      const user = await prisma.user.findUnique({where:{
+        id:userId
+      }})
+      if(user?.role.includes(Role.EMPLOYER)){
+        res = await deleteEmployer(userId);
+      }else if(user?.role.includes(Role.JOBSEEKER)){
+        res = await deleteJobseeker(userId)
+      }
+      if(res == 'failed'){
+        return undefined;
+      }
+      return {message:'User Deleted'}
+    } catch (error) {
+      
+    }
+    
+
+
   }

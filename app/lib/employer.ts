@@ -19,7 +19,7 @@ const prisma: PrismaClient = getPrismaClient();
  * @param {string} userId - The unique identifier of the user whose employer record should be deleted.
  * @returns {Promise<void>} - A Promise that resolves when the employer is successfully deleted.
  */
-export const deleteEmployer = async (userId: string): Promise<void> => {
+export const deleteEmployer = async (userId: string) => {
     try {
         // Start a transaction
         await prisma.$transaction(async (prisma) => {

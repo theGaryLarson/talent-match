@@ -234,28 +234,4 @@ export async function validateUserProfile() {
 }
 
 
-//unused
-// export async function removeRoleFromUser(userId: string, roleToRemove: Role): Promise<void> {
-//   // Fetch the user by ID
-//   const user = await prisma.user.findUnique({ where: { id: userId } });
-
-//   if (!user) {
-//     throw new Error('User not found');
-//   }
-
-//   // Split and map roles from the user, ensuring formatting consistency
-//   const roles = user.role.split(',').map((r: string) => r.trim().toUpperCase() as Role);
-
-//   // Filter out the role to remove
-//   const newRoles = roles
-//       .filter((r: Role) => r !== roleToRemove)
-//       .join(',');
-
-//   // Update the user's roles in the database
-//   await prisma.user.update({
-//     where: { id: userId },
-//     data: { role: newRoles },
-//   });
-// }
-
 

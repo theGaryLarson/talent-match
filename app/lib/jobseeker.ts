@@ -229,7 +229,7 @@ export async function getCareerPrepAssementStatus(){
  * @param {string} userId - The ID of the user associated with the jobseeker to be deleted.
  * @returns {Promise<void>}
  */
-export const deleteJobseeker = async (userId: string): Promise<void> => {
+export const deleteJobseeker = async (userId: string) =>{
   // Find the jobseeker by userId
   const jobseeker = await prisma.jobseekers.findUnique({
     where: { user_id: userId },
@@ -298,8 +298,8 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
         }
       });
     } catch (error) {
-      console.error('Error deleting jobseeker:', error);
-      throw error;
+      console.error('Error deleting jobseeker:');
+      return 'failed';
     } finally {
       await prisma.$disconnect();
     }
