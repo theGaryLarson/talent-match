@@ -54,7 +54,7 @@ export default auth((req) => {
       '/api/admin/career-prep/self-assign-case',
       '/services/joblistings',
       '/api/jobseekers/career-prep/meeting',
-      '/api/admin/career-prep/update-recomended-track/'
+      '/api/admin/career-prep/update-recomended-track/',
       // Add any other routes accessible by case managers
     ],
     [Role.ADMIN]: [], // Admin has full access, so this can be empty
@@ -111,18 +111,21 @@ export default auth((req) => {
 
   if (!req.auth) {
     const isProtectedRoute = !publicRoutes.includes(pathname) &&
-      !pathname.startsWith('/services/training-programs') && 
+      !pathname.startsWith('/services/training-programs') &&
       !pathname.startsWith('/services/training-providers');
 
     if (isProtectedRoute) {
       const signInUrl = new URL('/signin', req.nextUrl.origin);
-      signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search);
+      signInUrl.searchParams.set(
+        'callbackUrl',
+        req.nextUrl.pathname + req.nextUrl.search,
+      );
       return NextResponse.redirect(signInUrl);
     }
   }
 
   if (req.auth && userRoles.includes(Role.GUEST)) {
-    if (roleRoutes.GUEST.includes(pathname) || pathname == "/signout") {
+    if (roleRoutes.GUEST.includes(pathname) || pathname == '/signout') {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL('/signup', req.nextUrl.origin));
@@ -152,19 +155,22 @@ export default auth((req) => {
       userRoles.includes(Role.JOBSEEKER) &&
       pathname.startsWith('/services/jobseekers/')
     ) {
-      // Jobseekers can only access their own profile
-      const requestedId = pathname.replace('/services/jobseekers/', '');
-      if (
-        !pathname.startsWith('/services/jobseekers/dashboard') &&
-        pathname !== '/services/jobseekers/career-prep/skill-assessment' &&
-        pathname !== '/services/jobseekers/career-prep/enrollment' &&
-        requestedId !== jobseekerId
-      ) {
-        console.log(
-          'Access denied: Jobseeker can only access their own profile',
-        );
-        return NextResponse.redirect(homeUrl);
-      }
+      // REVIEW: Previously Jobseekers can only access their own profile, removed due to update in policy, however uncertain if any other conditionals effected
+      // const requestedId = pathname.replace('/services/jobseekers/', '');
+      // if (
+      //   !pathname.startsWith('/services/jobseekers/dashboard') &&
+      //   pathname !== '/services/jobseekers/career-prep/skill-assessment' &&
+      //   pathname !== '/services/jobseekers/career-prep/enrollment' &&
+      //   requestedId !== jobseekerId
+      // ) {
+      //   console.log(
+      //     'Access denied: Jobseeker can only access their own profile',
+      //   );
+      //   return NextResponse.redirect(homeUrl);
+      // }
+
+      // Allow jobseekers to access any jobseeker profile
+      return NextResponse.next();
     }
 
     // Case managers might have additional access controls
@@ -188,7 +194,5 @@ export default auth((req) => {
  * - favicon.ico, sitemap.xml, robots.txt (metadata files)
  */
 export const config = {
-  matcher: [
-    '/((?!api/auth|_next/static|_next/image|images|favicon.ico).*)',
-  ],
+  matcher: ['/((?!api/auth|_next/static|_next/image|images|favicon.ico).*)'],
 };
