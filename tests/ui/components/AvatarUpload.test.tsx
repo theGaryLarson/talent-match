@@ -14,6 +14,7 @@ const defaultProps = {
     onImageUpload: mockOnImageUpload,
     initialImageUrl: 'http://example.com/initial-avatar.png',
     disabled: false,
+    apiPath: '/api/users/avatar/upload',
 };
 
 describe('AvatarUpload', () => {

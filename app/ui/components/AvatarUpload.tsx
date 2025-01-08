@@ -12,6 +12,7 @@ interface Props {
   onImageUpload: (url: string) => void;
   initialImageUrl: string; // new prop to accept session image URL
   disabled?: boolean;
+  apiPath: string;
 }
 
 export default function AvatarUpload({
@@ -23,6 +24,7 @@ export default function AvatarUpload({
   onImageUpload,
   initialImageUrl,
   disabled,
+  apiPath,
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
   const [fileSelected, setFileSelected] = useState('');
@@ -61,11 +63,11 @@ export default function AvatarUpload({
         const payload = {
           file: fileBufferView,
           fileName: file.name,
-          userId: userId, // @Rory
+          id: userId,
         };
 
         // Make a POST request to the API route
-        const response = await fetch('/api/users/avatar/upload', {
+        const response = await fetch(apiPath, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -98,7 +100,7 @@ export default function AvatarUpload({
       fileSelected.lastIndexOf('.'),
       fileSelected.length,
     );
-    validFiletype = accept.split(',').includes(fileType);
+    validFiletype = accept.split(',').includes(fileType.toLowerCase());
   }
 
   const fileTypeTextPlusSizeLimit =
