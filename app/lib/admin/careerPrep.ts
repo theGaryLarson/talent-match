@@ -10,6 +10,7 @@ import { auth } from '@/auth';
 import { devLog } from '@/app/lib/utils';
 import TransactionClient = Prisma.TransactionClient;
 import { Role } from '@/data/dtos/UserInfoDTO';
+import { JobStatus } from '../jobseekerJobTracking';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -1906,4 +1907,17 @@ export async function getMeetingByJobSeeker(jobseekerId: string) {
     console.error(error);
     return [];
   }
+}
+
+
+export async function updateJobStatus(newStatus:JobStatus, joinTableId:string) {
+    try {
+      return await prisma.jobseekerJobPosting.update({where:{
+          id:joinTableId
+      },
+    data:{
+      jobStatus:newStatus
+    }})
+    } catch (error) {
+    }
 }

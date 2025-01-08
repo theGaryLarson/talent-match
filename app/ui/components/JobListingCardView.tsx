@@ -131,10 +131,15 @@ export default function JobListingCardView({
 
           {/* employment type, salary, and job status */}
           <Stack direction={'row'} sx={{justifyContent: 'space-between'}}>
+            <div>
             <h4 className="mt-2 text-sm italic text-slate-400">
-              {employment_type} | {salary_range}
+              {employment_type}
             </h4>
-            {isJobseeker && <Chip variant='outlined' color='primary' label={(joblisting.jobStatus == undefined || joblisting.jobStatus.toString() == '') ? 'Not Applied' : joblisting.jobStatus} />}
+            <h4 className="mt-2 text-sm italic text-slate-400">
+            {salary_range}
+            </h4>
+            </div>
+            {isJobseeker && <Chip variant='outlined' color='primary' sx={{alignSelf: 'end'}} label={(joblisting.jobStatus == undefined || joblisting.jobStatus.toString() == '') ? 'Not Applied' : joblisting.jobStatus} />}
           </Stack>
         </div>
       </div>
