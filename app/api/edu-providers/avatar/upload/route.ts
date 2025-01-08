@@ -10,16 +10,16 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
     try {
         let session = await auth();
-        const sessionUserId: string = session?.user.id!;
+        const trainerIsApproved: boolean = false; // TODO: read whether the trainer is approved once this info exists
 
         const body = await request.json();
         const { file, fileName, id } = body; // destructured userId from the body
 
         if (!file || !id) {
-            return NextResponse.json({ success: false, error: "Missing file or userId" }, { status: 400 });
+            return NextResponse.json({ success: false, error: "Missing file or eduProviderId" }, { status: 400 });
         }
 
-        if (id !== sessionUserId && !session?.user.roles.includes(Role.ADMIN)) {
+        if (!trainerIsApproved && !session?.user.roles.includes(Role.ADMIN)) {
             return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         }
 
