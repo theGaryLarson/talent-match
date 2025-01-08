@@ -6,8 +6,6 @@ import { Button } from '@mui/material';
 import { ArrowCircleRightOutlined } from '@mui/icons-material';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 //TODO: Add ability to add a company logo
-//TODO: add phone number input 
-//TODO: add company Website url
 
 export default function Page() {
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
@@ -37,6 +35,10 @@ export default function Page() {
         companyMission: formData.get('company_mission') as string,
         estimatedAnnualHires: parseInt(formData.get("hires") as string, 10),
         industrySectorId: formData.get('sector') as string,
+
+        companyWebsiteUrl: formData.get('company_url') as string,
+        companyVision: formData.get('company_vision') as string,
+        companyPhone: formData.get('company_phone') as string,
 
     };
     try {
@@ -79,23 +81,37 @@ export default function Page() {
         </select>
       </div>
 
-      {/* Job Description */}
+      {/* Company about*/}
       <div className="grid grid-cols-1">
         <label htmlFor="about_company">About Company *</label>
         <textarea name="about_company" required />
       </div>
-  {/* Job Description */}
+  {/* Company mission */}
   <div className="grid grid-cols-1">
         <label htmlFor="company_mission">Company Mission</label>
         <textarea name="company_mission" />
       </div>
-
+{/* Job Description */}
+<div className="grid grid-cols-1">
+        <label htmlFor="company_vision">Company Vision</label>
+        <textarea name="company_vision" />
+      </div>
 
 
       {/*company email */}
       <div className="grid grid-cols-1">
         <label htmlFor="company_email">Company Email *</label>
         <input type='email' name="company_email" required />
+      </div>
+      {/*company email */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="company_phone">Company Phone</label>
+        <input  type='tel' name="company_phone"/>
+      </div>
+      {/*company url */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="company_url">Company URL <span className='text-xs'>(http:// required)</span></label>
+        <input type='url' name="company_url" placeholder="http://www.example.com" />
       </div>
 
       {/* year founded */}
