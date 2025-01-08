@@ -15,6 +15,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Slider from '@mui/material/Slider';
 import { TrainingProviderDropdownDTO } from '@/data/dtos/TrainingProviderDropdownDTO';
 import SingleSelectFilterAutoload from '@/app/ui/components/mui/SingleSelectFilterAutoload';
+import { useSession } from 'next-auth/react';
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 const resultsPerPage = 50;
 
@@ -67,6 +69,7 @@ async function fetchBookmarkedJobseekers(): Promise<any> {
 }
 
 export default function Page() {
+  const { data: session } = useSession();
   // Listview data
   const [jobseekers, setJobSeekers] = useState<JobSeekerCardViewDTO[]>([]);
   const [bookmarkedJobseekers, setBookmarkedJobseekers] = useState<string[]>([]);
@@ -141,10 +144,14 @@ export default function Page() {
   useEffect(() => {
     const fetchBookmarked = async () => {
       try {
-        const bookmarkedJobseekers = await fetchBookmarkedJobseekers();
-        const jobseekerIds = bookmarkedJobseekers.map((item: any) => item.jobseekerId);
+        if (session?.user.roles.includes(Role.EMPLOYER)) {
+          const bookmarkedJobseekers = await fetchBookmarkedJobseekers();
+          const jobseekerIds = bookmarkedJobseekers.map((item: any) => item.jobseekerId);
 
         setBookmarkedJobseekers(jobseekerIds);
+        } else {
+          setBookmarkedJobseekers([]);
+        }
       } catch (error) {
         console.error('Error fetching bookmarked jobs:', error);
       }
