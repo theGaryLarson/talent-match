@@ -10,8 +10,8 @@ const theme = createTheme({
           borderRadius: '9999px', // Rounded pill shape
           textTransform: 'none', // Disable uppercase
           fontWeight: 500, // Consistent with Tailwind's 'font-medium'
-          transition: 'all 0.2s ease-in-out', // Smooth hover and focus effects
-          padding: '0.625rem 1.25rem', // Tailwind's 'px-5 py-2.5'
+          transition: 'all 0.3s ease-in-out', // Smooth hover and focus effects
+          padding: '0.5rem 1.25rem', // Tailwind's 'py-2 px-5'
 
           // Default Primary Button (Idle State)
           backgroundColor: '#047F9C', // Tailwind's button.primary.idle.bg
