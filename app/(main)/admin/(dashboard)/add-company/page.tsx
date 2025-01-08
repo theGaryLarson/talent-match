@@ -2,6 +2,9 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { CompanyAdminCreationDTO } from '@/data/dtos/CompanyAdminCreationDTO';
 import { industry_sectors } from '@prisma/client';
+import { Button } from '@mui/material';
+import { ArrowCircleRightOutlined } from '@mui/icons-material';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 //TODO: Add ability to add a company logo
 //TODO: add phone number input 
 //TODO: add company Website url
@@ -18,6 +21,7 @@ export default function Page() {
   },[])
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    let form = event.currentTarget;
     const formData = new FormData(event.currentTarget);
     const submitButton = event.currentTarget.querySelector(
       'button[type="submit"]',
@@ -44,17 +48,16 @@ export default function Page() {
         body: JSON.stringify(companyData), // Send as JSON
       });
 
-      if (!response.ok) {
-        // If response is not OK, handle error
-        console.error('Failed to create company');
-        return;
+      if (response.ok) {
+        alert('Company created successfully!');
+        form.reset()
       } else {
-        // Await the response JSON
-        const data = await response.json();
-
+        alert('Failed to create company');
       }
     } catch (error) {
       console.error('Error creating job listing:', error);
+    } finally {
+      if (submitButton) submitButton.disabled = false;
     }
   }
   return (
@@ -112,8 +115,9 @@ export default function Page() {
       </div>
 
       {/* Submit Button */}
-      <div>
-        <button type="submit">Create Company</button>
+      <div className='grid grid-cols-2 gap-2'>
+        <Button type='reset' variant="outlined" startIcon={<HighlightOffOutlinedIcon/>} >Reset Form</Button>
+        <Button type="submit" endIcon={<ArrowCircleRightOutlined/>} variant="contained">Create Company</Button>
       </div>
     </form>
   );
