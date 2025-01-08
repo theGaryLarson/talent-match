@@ -6,16 +6,16 @@ import { Role } from "@/data/dtos/UserInfoDTO";
 export async function POST(request: Request) {
     try {
         let session = await auth();
-        const sessionUserId: string = session?.user.id!;
+        const employeeIsApproved: boolean = session?.user.employeeIsApproved || false;
 
         const body = await request.json();
         const { file, fileName, id } = body; // destructured userId from the body
 
         if (!file || !id) {
-            return NextResponse.json({ success: false, error: "Missing file or userId" }, { status: 400 });
+            return NextResponse.json({ success: false, error: "Missing file or companyId" }, { status: 400 });
         }
 
-        if (id !== sessionUserId && !session?.user.roles.includes(Role.ADMIN)) {
+        if (!employeeIsApproved && !session?.user.roles.includes(Role.ADMIN)) {
             return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         }
 
