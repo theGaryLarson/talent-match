@@ -16,14 +16,14 @@ import { Tailwind } from '@react-email/tailwind';
 //import { Routes } from '@/constants/routes';
 //import { getBaseUrl } from '@/lib/urls/get-base-url';
 
-export type DevPlanNotificationData = {
+export type NotificationData = {
   recipient: string;
   name: string;
 };
 
-export const CPStatusPlanCreatedNotification = ({
+export const CPStatusEnrolledNotification = ({
   name,
-}: DevPlanNotificationData) => (
+}: NotificationData) => (
   <Html>
     <Head />
     <Preview>You’re Officially Enrolled!</Preview>
