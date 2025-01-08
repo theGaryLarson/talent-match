@@ -242,6 +242,7 @@ export default function CreateJobseekerProfileIntroPage() {
               userId={session?.user?.id!}
               onImageUpload={handleImageUpload}
               initialImageUrl={session?.user?.image || introData.photoUrl || ''}
+              apiPath='/api/users/avatar/upload'
             />
           </fieldset>
           <fieldset>
