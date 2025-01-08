@@ -107,7 +107,10 @@ export async function getJobListingById(joblistingId: string) {
         },
         jobApplications: {
           select: {
+            isBookmarked: true,
+            jobPostId: true,
             jobseekerId: true,
+            jobStatus: true,
           },
         },
       },
@@ -169,19 +172,21 @@ export async function deleteJobListing(jobPostingId: string) {
 
 export async function ApplyToJob(jobPostingId: string) {
   let Session = await auth();
+  console.log('TRACK: 1');
   try {
     if (!Session?.user.jobseekerId) {
       throw new Error(
         'Failed to apply to job: jobseeker ID not found in session',
       );
     }
-
+    
     const existingApplication = await prisma.jobseekerJobPosting.findFirst({
       where: {
         jobPostId: jobPostingId,
         jobseekerId: Session.user.jobseekerId,
       },
     });
+    console.log('TRACK: 2', existingApplication);
 
     if (existingApplication) {
       return await prisma.jobseekerJobPosting.update({
@@ -194,15 +199,17 @@ export async function ApplyToJob(jobPostingId: string) {
         },
       });
     } else {
+      const applicationData = {
+        id: uuidv4(),
+        jobPostId: jobPostingId,
+        jobseekerId: Session.user.jobseekerId,
+        jobStatus: CareerPrepStatus.Applied,
+        appliedDate: new Date(),
+        isBookmarked: false,
+      };
+      console.log('TRACK 3:', applicationData)
       return await prisma.jobseekerJobPosting.create({
-        data: {
-          id: uuidv4(),
-          jobPostId: jobPostingId,
-          jobseekerId: Session.user.jobseekerId,
-          jobStatus: CareerPrepStatus.Applied,
-          appliedDate: new Date(),
-          isBookmarked: false,
-        },
+        data: applicationData,
       });
     }
   } catch (error) {
