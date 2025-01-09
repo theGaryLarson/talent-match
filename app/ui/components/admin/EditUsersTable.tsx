@@ -8,9 +8,14 @@ import { Button } from "@mui/material";
 import Alert from '@mui/material/Alert';
 import { Autocomplete, AutocompleteRenderInputParams, TextField } from "@mui/material";
 export default function EditUsersTable(params:{users:userDataTable[]}){
+  const [rows, setRows] = React.useState(
+    params.users.map((user) => ({
+      ...user,
+      role: Array.isArray(user.role) ? user.role : user.role.split(','),
+    }))
+  );
   
-  
-  const handleDelete = async (userId: number, name:string) => {
+  const handleDelete = async (userId: string, name:string) => {
     if (!confirm(`Are you sure you want to delete user ${name} with ID ${userId}?`)) {
       return;
     }
@@ -26,21 +31,13 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
         throw new Error("Failed to delete user. ");
       }
 
-      //setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      setRows((prevRows) => prevRows.filter((row) => row.id !== userId));
       alert(`User with ID ${userId} deleted successfully.`);
     } catch (error) {
       console.error(error);
       alert("An error occurred while deleting the user. (Backend not connected for this yet -Damien)");
     }
   };
-
-  
-  
-  
-  
-  
-  
-  
   
   const MultiSelect: GridColDef = {
     field: 'role',
@@ -115,10 +112,8 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
               ),
             },
           ];
-          const rows = params.users.map((user) => ({
-            ...user,
-            role: Array.isArray(user.role) ? user.role : user.role.split(','), // Ensure role is always an array
-          }));
+
+        
         
     return(
 <Paper sx={{ height: 1000, width: '100%' }}>

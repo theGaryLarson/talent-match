@@ -58,9 +58,10 @@ export const deleteEmployer = async (userId: string) => {
                 });
             }
         });
+        return true;
     } catch (error: any) {
         console.error('Error deleting employer:', error);
-        throw error;
+        return false;
     } finally {
         await prisma.$disconnect();
     }

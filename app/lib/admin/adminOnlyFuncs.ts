@@ -31,7 +31,7 @@ export async function adminUpdateUserRole(userId:string, newRoles:Role[]) {
 
   export async function adminDeleteUser(userId:string){
     const session = await auth();
-    let res;
+    let res:boolean = false;
     try {
       if(!session?.user.roles.includes(Role.ADMIN)){
         throw new Error("ADMIN Role Needed for this function");
@@ -43,11 +43,20 @@ export async function adminUpdateUserRole(userId:string, newRoles:Role[]) {
         res = await deleteEmployer(userId);
       }else if(user?.role.includes(Role.JOBSEEKER)){
         res = await deleteJobseeker(userId)
+      }else{
+        try {
+          await prisma.user.delete({where:{
+          id:userId}})
+          res = true;
+        } catch (error) {
+          res = false;
+        }
+        
       }
-      if(res == 'failed'){
-        return undefined;
+      if(!res){
+        return {status:500};  
       }
-      return {message:'User Deleted'}
+      return {status:200}
     } catch (error) {
       
     }

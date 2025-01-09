@@ -257,6 +257,7 @@ export const deleteJobseeker = async (userId: string) =>{
       where: { jobseeker_id: jobseeker_id },
       data: { is_marked_deletion: new Date() },
     });
+    return true;
   } else {
     try {
       // Start a transaction
@@ -297,9 +298,10 @@ export const deleteJobseeker = async (userId: string) =>{
           });
         }
       });
+      return true;
     } catch (error) {
       console.error('Error deleting jobseeker:');
-      return 'failed';
+      return false;
     } finally {
       await prisma.$disconnect();
     }
