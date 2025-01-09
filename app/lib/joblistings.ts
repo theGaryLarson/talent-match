@@ -193,6 +193,18 @@ export async function ApplyToJob(jobPostingId: string) {
           jobStatus: CareerPrepStatus.Applied,
           appliedDate: new Date(),
         },
+        include:{
+          job_posting:{
+            include:{
+              companies:true
+            }
+          },
+          Jobseekers:{
+            include:{
+              users:true
+            }
+          }
+        }
       });
     } else {
       return await prisma.jobseekerJobPosting.create({
@@ -204,6 +216,23 @@ export async function ApplyToJob(jobPostingId: string) {
           appliedDate: new Date(),
           isBookmarked: false,
         },
+        include:{
+          job_posting:{
+            include:{
+              companies:true
+            }
+          },
+          Jobseekers:{
+            include:{
+              users:{
+                select:{
+                  first_name:true,
+                  last_name:true
+                }
+              }
+            }
+          }
+        }
       });
     }
   } catch (error) {
