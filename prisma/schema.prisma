@@ -314,7 +314,7 @@ model CareerPrepAssessment {
   streetAddress           String?               @db.VarChar(255)
   priorityPopulations     String?               @db.Text
   updatedAt               DateTime              @updatedAt @db.DateTime
-  Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
+  Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1", onDelete:Cascade)
   CaseMgmt                CaseMgmt?
   CaseMgmtNotes           CaseMgmtNotes[]
   CybersecurityRating     CybersecurityRating[]
@@ -340,7 +340,7 @@ model CybersecurityRating {
   computationalThinking Int                  @db.TinyInt
   apiUsage              Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1")
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1", onDelete:Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -363,7 +363,7 @@ model DataAnalyticsRating {
   databases             Int                  @db.TinyInt
   computationalThinking Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1")
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1", onDelete:Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -386,7 +386,7 @@ model ITCloudRating {
   httpResponseCodes     Int                  @db.TinyInt
   computationalThinking Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1")
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1", onDelete:Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -409,7 +409,7 @@ model SoftwareDevRating {
   computationalThinking        Int                  @db.TinyInt
   softwareOptimization         Int                  @db.TinyInt
   updatedAt                    DateTime             @updatedAt @db.DateTime
-  PrepAssessment               CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1")
+  PrepAssessment               CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1", onDelete:Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -436,7 +436,7 @@ model DurableSkillsRating {
   relationshipBuilding   Int                  @db.TinyInt
   documentationSkills    Int                  @db.TinyInt
   updatedAt              DateTime             @updatedAt @db.DateTime
-  PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1")
+  PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1", onDelete:Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -461,7 +461,7 @@ model BrandingRating {
   developmentPlan          Int                  @db.TinyInt
   mentorship               Int                  @db.TinyInt
   updatedAt                DateTime             @updatedAt @db.DateTime
-  PrepAssessment           CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1")
+  PrepAssessment           CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1", onDelete:Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -477,7 +477,7 @@ model CaseMgmt {
   prepActualEndDate       DateTime?            @db.DateTime
   createdAt               DateTime             @default(now()) @db.DateTime
   updatedAt               DateTime             @updatedAt @db.DateTime
-  PrepAssessment          CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
+  PrepAssessment          CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onDelete:Cascade)
   CaseManager             User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
   Meeting                 Meeting[]
 
@@ -494,7 +494,7 @@ model CaseMgmtNotes {
   createdBy      String               @db.UniqueIdentifier
   createdAt      DateTime             @default(now()) @db.DateTime
   updatedAt      DateTime             @updatedAt @db.DateTime
-  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
+  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1", onDelete:Cascade)
   Author         User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
 }
 
@@ -505,7 +505,7 @@ model Meeting {
   meetingAgenda String?  @db.NText
   meetingDate   DateTime @db.DateTime
   updatedAt     DateTime @updatedAt @db.DateTime
-  caseMgmt      CaseMgmt @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
+  caseMgmt      CaseMgmt @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1", onDelete:Cascade)
 }
 
 //////////////////////////////////////////////////////////////////////////
