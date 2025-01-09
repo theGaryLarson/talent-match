@@ -10,7 +10,6 @@ import {
   JsDisclosuresPostDTO,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
-import { Label, List, ListItem } from 'flowbite-react';
 import { Button } from '@mui/material';
 
 import {
