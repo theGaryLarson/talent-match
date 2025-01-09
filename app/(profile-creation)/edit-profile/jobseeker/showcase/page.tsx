@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-// import { Button } from 'flowbite-react';
 import { Button } from '@mui/material';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import TextFieldWithSeparatedLabel from '@/app/ui/components/mui/TextFieldWithSeparatedLabel';
@@ -351,8 +350,6 @@ export default function CreateJobseekerProfileShowcasePage() {
           </div>
           <div className="profile-form-progress-btn-group">
             <Button
-              // pill
-              // className="custom-outline-btn"
               variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/preferences');
