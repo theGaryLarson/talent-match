@@ -10,11 +10,11 @@ export async function POST(request: Request, props: {params: Promise<{jobPostId:
     }
     const result = await ApplyToJob(jobPostId);
     sendJobApplicantEmailNotificationEmail({
-        applicantName: '',
+        applicantName: `${result.Jobseekers.users.first_name} ${result.Jobseekers.users.last_name}`,
         jobId: result.jobPostId,
         navigatorName: "",
-        jobTitle: "",
-        Company: ""
+        jobTitle: result.job_posting.job_title,
+        Company: result.job_posting.companies.company_name
     })
     return NextResponse.json(result);
 }
