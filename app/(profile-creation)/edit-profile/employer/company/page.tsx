@@ -266,6 +266,7 @@ export default function CreateEmployerCompanyInfoPage() {
               onImageUpload={handleImageUpload}
               initialImageUrl={companyData.logoUrl || ''}
               disabled={!employerInfo?.is_verified_employee}
+              apiPath='/api/companies/avatar/upload'
             />
           </fieldset>
 

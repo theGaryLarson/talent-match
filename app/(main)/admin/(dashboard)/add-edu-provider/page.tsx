@@ -97,6 +97,7 @@ export default function Page() {
             }
           }}
           initialImageUrl=""
+          apiPath='/api/edu-providers/avatar/upload'
         />
         {/* Hidden input to store avatar URL */}
         <input type="hidden" name="logoUrl" id="logoUrl"/>
