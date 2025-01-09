@@ -32,12 +32,14 @@ interface JobApplication {
   Jobseekers: {
     jobseeker_id: string;
     assignedPool: string | null;
+    highest_level_of_study_completed: string| null;
     user_id: string;
     intro_headline: string | null;
     years_work_exp: number | null;
     users: {
       first_name: string | null;
       last_name: string | null;
+      email:string;
     };
   };
 }
@@ -94,6 +96,7 @@ function Row({ row }: RowProps) {
         <TableCell>{row.location}</TableCell>
         <TableCell>{row.employment_type}</TableCell>
         <TableCell>{row.salary_range}</TableCell>
+        <TableCell>{row.unpublish_date.toDateString()}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -106,11 +109,12 @@ function Row({ row }: RowProps) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Years Of Exp</TableCell>
                     <TableCell>Job Status</TableCell>
                     <TableCell>Assigned Pool</TableCell>
                     <TableCell>Applied Date</TableCell>
                     <TableCell>Follow-Up Date</TableCell>
-                    <TableCell>Jobseeker Intro</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -121,11 +125,13 @@ function Row({ row }: RowProps) {
                           {app.Jobseekers.users.first_name} {app.Jobseekers.users.last_name}
                         </Link>
                       </TableCell>
+                      <TableCell>{app.Jobseekers.users.email}</TableCell>
+                      <TableCell>{app.Jobseekers.years_work_exp}</TableCell>
                       <TableCell><JobStatusDropDown currentJobStatus={app.jobStatus as JobStatus} jobAppId={app.id}/></TableCell>
                       <TableCell>{app.Jobseekers.assignedPool}</TableCell>
                       <TableCell>{app.appliedDate ? new Date(app.appliedDate).toLocaleDateString() : ''}</TableCell>
                       <TableCell>{app.followUpDate ? new Date(app.followUpDate).toLocaleDateString() : 'N/A'}</TableCell>
-                      <TableCell>{app.Jobseekers.intro_headline}</TableCell>
+              
                     </TableRow>
                   ))}
                 </TableBody>
@@ -190,6 +196,7 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
               <TableCell>Location</TableCell>
               <TableCell>Employment Type</TableCell>
               <TableCell>Salary Range</TableCell>
+              <TableCell>Application Deadline</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
