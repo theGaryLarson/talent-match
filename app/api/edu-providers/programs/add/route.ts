@@ -4,6 +4,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
    const body:addProviderProgramDTO = await req.json() 
    console.log('api hit');
-   const result = addProviderProgram(body);
-return NextResponse.json({status:200})
+   const result = await addProviderProgram(body);
+return NextResponse.json({},result)
 }

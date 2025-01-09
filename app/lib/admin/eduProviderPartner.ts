@@ -192,9 +192,11 @@ export type addProviderProgramDTO = {
 export async function addProviderProgram(params:addProviderProgramDTO) {
   try {
     console.log('tried adding a program with data:', params)
+    
   } catch (error) {
     
   }
+  return {status: 501};
 }
 
 export async function deleteProviderProgram(trainingProgramId:string){
