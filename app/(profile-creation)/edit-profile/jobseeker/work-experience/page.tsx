@@ -3,8 +3,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
-import { Button, Label } from 'flowbite-react';
-import { Radio, RadioGroup } from '@mui/material';
+import { Label } from 'flowbite-react';
+import { Button, Radio, RadioGroup } from '@mui/material';
 import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
 import WorkExperiences, {
   defaultWorkExperienceData,
@@ -417,11 +417,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               onUpdate={handleUpdate}
               onRemove={removeWorkExperience}
             />
-            <Button
-              pill
-              className="custom-outline-btn"
-              onClick={addNewWorkExperience}
-            >
+            <Button variant="outlined" onClick={addNewWorkExperience}>
               <MdAdd className="mr-2 h-5 w-5" />
               Add work experience
             </Button>
@@ -447,11 +443,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               onUpdate={handleUpdate}
               onRemove={removeInternshipExperience}
             />
-            <Button
-              pill
-              className="custom-outline-btn"
-              onClick={addNewInternshipExperience}
-            >
+            <Button variant="outlined" onClick={addNewInternshipExperience}>
               <MdAdd className="mr-2 h-5 w-5" />
               Add internship experience
             </Button>
@@ -541,17 +533,14 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
           </fieldset>
           <div className="profile-form-progress-btn-group">
             <Button
-              pill
-              className="custom-outline-btn"
+              variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/education');
               }}
             >
               Previous
             </Button>
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            <Button type="submit">Save and continue</Button>
           </div>
         </form>
       </section>

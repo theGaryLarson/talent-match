@@ -24,7 +24,7 @@ const theme = createTheme({
           '&:focus': {
             backgroundColor: '#3699B0', // Tailwind's button.primary.focus.bg
             color: '#ffffff', // Tailwind's button.primary.focus.text
-            boxShadow: '0 0 0 4px rgba(54, 153, 176, 0.3)', // Mimic focus ring
+            boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)', // Mimic focus ring
           },
           '&:active': {
             backgroundColor: '#006682', // Tailwind's button.primary.active.bg
@@ -50,9 +50,9 @@ const theme = createTheme({
             color: '#014260', // Tailwind's button.secondary.hover.text
           },
           '&:focus': {
-            backgroundColor: '#D6F1F7', // Tailwind's button.secondary.focus.bg
-            color: '#014260', // Tailwind's button.secondary.focus.text
-            boxShadow: '0 0 0 4px rgba(214, 241, 247, 0.3)', // Mimic focus ring
+            backgroundColor: '#ffffff', // Tailwind's button.secondary.focus.bg
+            color: '#047f9c', // Tailwind's button.secondary.focus.text
+            boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)', // Mimic focus ring
           },
           '&:active': {
             backgroundColor: '#C4EBF3', // Tailwind's button.secondary.active.bg
