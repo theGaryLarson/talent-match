@@ -101,6 +101,14 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
     try {
       const data = await fetchJobseeker(params.id);
       setJobseeker(data);
+      if (
+        session.data?.user.employeeIsApproved ||
+        session.data?.user.jobseekerId == params.id ||
+        session.data?.user.roles.includes(Role.ADMIN) ||
+        session.data?.user.roles.includes(Role.CASE_MANAGER)
+      ) {
+        execResumeQuery(data.users.id);
+      }
       if (data?.video_url) {
         const parsedUrl = new URL(data?.video_url);
         console.log(parsedUrl);
@@ -117,7 +125,6 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
           (jobseeker?.users.first_name || '') +
           ' ' +
           (jobseeker?.users.last_name || '');
-        execResumeQuery(data.users.id);
       }
     } catch (error) {
       console.error('Error fetching job seekers:', error);
@@ -505,39 +512,33 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               ))}
             </Stack>
           </Box>
-          {(session.data?.user.employeeIsApproved ||
-            session.data?.user.jobseekerId == params.id ||
-            session.data?.user.roles.includes(Role.ADMIN) ||
-            session.data?.user.roles.includes(Role.CASE_MANAGER)) &&
-            resumeUrl && (
-              <Box>
-                <Stack spacing={2} direction={'row'}>
-                  <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                    Resume
-                  </Typography>
-                  {isOwnProfile && editView && (
-                    <Link
-                      sx={{
-                        opacity: 0.65,
-                        '&:hover': {
-                          opacity: 1,
-                        },
-                      }}
-                      href={'/edit-profile/jobseeker/showcase'}
-                    >
-                      <EditIcon />
-                    </Link>
-                  )}
-                </Stack>
-                {resumeUrl ? (
-                  <Link sx={{ pl: 2 }} href={resumeUrl} target="_blank">
-                    View Resume
+            <Box>
+              <Stack spacing={2} direction={'row'}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                  Resume
+                </Typography>
+                {isOwnProfile && editView && (
+                  <Link
+                    sx={{
+                      opacity: 0.65,
+                      '&:hover': {
+                        opacity: 1,
+                      },
+                    }}
+                    href={'/edit-profile/jobseeker/showcase'}
+                  >
+                    <EditIcon />
                   </Link>
-                ) : (
-                  ''
                 )}
-              </Box>
-            )}
+              </Stack>
+              {resumeUrl ? (
+                <Link sx={{ pl: 2 }} href={resumeUrl} target="_blank">
+                  View Resume
+                </Link>
+              ) : (
+                ''
+              )}
+            </Box>
           <Box>
             <Stack spacing={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
