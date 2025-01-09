@@ -4,7 +4,7 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
-import { Button } from 'flowbite-react';
+import { Button } from '@mui/material';
 import {
   CertDTO,
   HighestCompletedEducationLevel,
@@ -530,7 +530,7 @@ export default function CreateJobseekerProfileEducationPage() {
               onUpdate={handleUpdate}
               onRemove={removeEducation}
             />
-            <Button pill color="gray" onClick={addNewEducation}>
+            <Button variant="outlined" onClick={addNewEducation}>
               <MdAdd className="mr-2 h-5 w-5" />
               Add education detail
             </Button>
@@ -544,7 +544,7 @@ export default function CreateJobseekerProfileEducationPage() {
               onUpdate={handleUpdate}
               onRemove={removeLicense}
             />
-            <Button pill color="gray" onClick={addNewLicense}>
+            <Button variant="outlined" onClick={addNewLicense}>
               <MdAdd className="mr-2 h-5 w-5" />
               Add license or certification
             </Button>
@@ -563,24 +563,21 @@ export default function CreateJobseekerProfileEducationPage() {
               onUpdate={handleUpdate}
               onRemove={removeProjectExperience}
             />
-            <Button pill color="gray" onClick={addNewProjectExperience}>
+            <Button variant="outlined" onClick={addNewProjectExperience}>
               <MdAdd className="mr-2 h-5 w-5" />
               Add project experience
             </Button>
           </fieldset>
           <div className="profile-form-progress-btn-group flex">
             <Button
-              pill
-              className="custom-outline-btn"
+              variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/showcase');
               }}
             >
               Previous
             </Button>
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            <Button type="submit">Save and continue</Button>
           </div>
         </form>
       </section>
