@@ -1,12 +1,11 @@
 'use client'
 import { userDataTable } from "@/app/lib/user";
 import * as React from 'react';
-import { DataGrid, GridCallbackDetails, GridCellEditStopParams, GridCellParams, GridColDef, MuiEvent } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { Button } from "@mui/material";
-import Alert from '@mui/material/Alert';
-import { Autocomplete, AutocompleteRenderInputParams, TextField } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 export default function EditUsersTable(params:{users:userDataTable[]}){
   const [rows, setRows] = React.useState(
     params.users.map((user) => ({
@@ -117,7 +116,6 @@ export default function EditUsersTable(params:{users:userDataTable[]}){
         
     return(
 <Paper sx={{ height: 1000, width: '100%' }}>
-    <h1 className="text-3xl">NOT CONNECTED TO BACKEND YET</h1>
         <DataGrid
           rows={rows}
           columns={columns}
