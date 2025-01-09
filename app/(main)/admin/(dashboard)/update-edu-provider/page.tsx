@@ -195,6 +195,7 @@ export default function UpdateTrainingProviderPage() {
                 setInitialImageUrl(url);
               }}
               initialImageUrl={logoUrl}
+              apiPath='/api/edu-providers/avatar/upload'
             />
           </div>
 

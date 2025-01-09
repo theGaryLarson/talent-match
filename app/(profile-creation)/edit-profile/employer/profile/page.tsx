@@ -414,6 +414,7 @@ export default function CreateEmployerProfilePage() {
               userId={session?.user.id!}
               onImageUpload={handleAvatarUpload}
               initialImageUrl={session?.user?.image!}
+              apiPath='/api/users/avatar/upload'
             />
           </fieldset>
 
