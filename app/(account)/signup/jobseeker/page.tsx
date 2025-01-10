@@ -137,20 +137,13 @@ export default function JobseekerSignupFinishPage() {
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
-                let response = await fetch('/api/users/role/update', {
-                  method: 'PATCH',
+                let response = await fetch('/api/jobseekers/create', {
+                  method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    userId: session?.user.id,
-                    role: Role.JOBSEEKER,
-                    sendNewJobPosts: checkboxState.jobNotifications,
-                    sendCareerOpportunities: checkboxState.opportunities,
-                    agreedTerms: termsAgree,
-                  }),
-                });
+                  }});
                 if (response.ok) {
+                  let data = await response.json();
                   let rolesArray = session?.user.roles || [];
                   rolesArray = rolesArray.filter(
                     (role: Role) => role !== Role.GUEST,
@@ -160,7 +153,7 @@ export default function JobseekerSignupFinishPage() {
                     rolesArray.push(Role.JOBSEEKER);
                   }
                   await updateSessionProperties({
-                    jobseekerId: uuidv4(),
+                    jobseekerId: data.jobseekerData.jobseeker_id,
                     roles: rolesArray,
                   });
                   router.push('/edit-profile/jobseeker/introduction');

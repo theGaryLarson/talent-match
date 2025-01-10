@@ -6,6 +6,7 @@ import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {auth} from "@/auth";
 import {NextResponse} from "next/server";
 import { setPoolWithSession } from "@/app/lib/jobseeker";
+import { type } from 'os';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -154,6 +155,38 @@ export async function getUserByEmail(
   }
 }
 
+
+
+export type userDataTable = {
+  id: string;
+  role: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  phone: string | null;
+  zip: string | null;
+  is_marked_deletion: Date | null;
+}
+
+export async function getAllUsers() {
+  try {
+    const res = await prisma.user.findMany({select:{
+      id:true,
+      is_marked_deletion:true,
+      first_name:true,
+      last_name:true,
+      email:true,
+      phone:true,
+      zip:true,
+      role:true
+    }});
+    return res;
+  } catch (error) {
+    console.error(error)
+    return [];
+  }
+}
+
 export async function unflagDeletion() {
   const session = await auth();
   if (!session?.user?.id){
@@ -200,26 +233,5 @@ export async function validateUserProfile() {
   }
 }
 
-export async function removeRoleFromUser(userId: string, roleToRemove: Role): Promise<void> {
-  // Fetch the user by ID
-  const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  // Split and map roles from the user, ensuring formatting consistency
-  const roles = user.role.split(',').map((r: string) => r.trim().toUpperCase() as Role);
-
-  // Filter out the role to remove
-  const newRoles = roles
-      .filter((r: Role) => r !== roleToRemove)
-      .join(',');
-
-  // Update the user's roles in the database
-  await prisma.user.update({
-    where: { id: userId },
-    data: { role: newRoles },
-  });
-}
 
