@@ -4,6 +4,7 @@ import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { devLog } from '@/app/lib/utils';
 import {PrismaClient} from "@prisma/client";
 import { auth } from "@/auth"
+import { Role } from '@/data/dtos/UserInfoDTO';
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -129,10 +130,90 @@ export const addTrainingPartner = async (newPartner: AddTrainingPartnerDTO) => {
     return null; // Return null if an error occurs
   }
 };
+/**
+ * Fully Deletes an edu provider along with their addresses and programs
+ * @param providerId 
+ * @returns 
+ */
+export async function deleteEduProvider(providerId: string) {
+  try {
+      const [deletedAddresses, deletedPrograms, deletedProvider] = await prisma.$transaction([
+          prisma.edu_addresses.deleteMany({
+              where: { edu_provider_id: providerId },
+          }),
+          prisma.provider_programs.deleteMany({
+              where: { edu_provider_id: providerId },
+          }),
+          prisma.edu_providers.delete({
+              where: { id: providerId },
+          }),
+      ]);
+      return {
+          status: 200,
+          data: {
+              deletedAddresses,
+              deletedPrograms,
+              deletedProvider,
+          },
+      };
+  } catch (error) {
+      console.error('Error during provider deletion:', error);
 
-export const removeTrainingPartner = async (eduProviderId: string) => {
-  // I don't think we will ever want to remove an education provider
-};
+      return {
+          status: 500,
+          error: 'Failed to delete the provider. Ensure there are no remaining dependencies.',
+      };
+  }
+}
+
+
+export type addProviderProgramDTO = {
+  eduProviderId:string,
+  pathwayId?:string,
+  targetedJobRoles?:string,
+  description:string,
+  months?:string,
+  hoursPerWeek?:string,
+  targetPopulation?:string,
+  serviceArea?:string,
+  pathways?:string,
+  programDescription?:string,
+  locations:string,
+  about:string,
+  tuition:string,
+  fees:string,
+  costSummery:string,
+  locationsType?:string,
+  setStartedUrl?:string,
+  faq:string,
+  eduLevel:string,
+  programLength:string
+}
+export async function addProviderProgram(params:addProviderProgramDTO) {
+  try {
+    console.log('tried adding a program with data:', params)
+    
+  } catch (error) {
+    
+  }
+  return {status: 501};
+}
+
+export async function deleteProviderProgram(trainingProgramId:string){
+  const session = await auth();
+  if(!session?.user.roles.includes(Role.ADMIN))return {status:401};
+
+  try {
+    const result = await prisma.provider_programs.delete({where:{training_program_id:trainingProgramId}})
+    return result;
+  } catch (error) {
+    
+  }
+}
+
+
+
+
 
 
 
@@ -179,5 +260,6 @@ export const getTrainingPartners = async (): Promise<{ success: true; result: Ad
 export const getJobseekersByTrainingPartner = async (providerId: string) => {
   //TODO: Sort by is_verified
 };
+
 
 export const updateJobseekerTrainingProgram = async (jobseekerId: string) => {};

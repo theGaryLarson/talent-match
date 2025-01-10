@@ -4,7 +4,7 @@ export const metadata = {
   title: "My Dashboard"
 };
 export default async function Page() {
-  const clients = await getUnManagedCareerPrepStudents();
+  const clients = (await getUnManagedCareerPrepStudents()).sort((a, b) => a.careerPrepAssessmentDate.getTime() - b.careerPrepAssessmentDate.getTime());
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <h1 className="text-2xl font-medium">

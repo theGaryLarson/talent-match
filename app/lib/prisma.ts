@@ -617,52 +617,6 @@ export async function getTechnologyAreas() {
   return technologyAreas;
 }
 
-export async function deleteUser(role: Role, userId: string) {
-  try {
-    if (role === Role.JOBSEEKER) {
-      await deleteJobseeker(userId);
-    }
-
-    if (role === Role.EMPLOYER) {
-      await deleteEmployer(userId);
-    }
-  } catch (e) {
-
-  }
-
-}
-
-async function deleteJobseeker(userId: string) {
-  // TODO: cannot be hard deleted if they have participated in a WJI Training Partner program.
-  //  check training_provider.iscoalitionmember prior to deleting. If jobseeker is a coalition member perform soft delete.
-  const jobseekerRecord = await prisma.user.findUnique({
-    where: {
-      id: userId
-    },
-    include: {
-      jobseekers: {
-        select: {
-          jobseeker_id: true,
-        },
-        include: {
-          jobseeker_education: {
-            include: {
-              eduProviders: {
-                select: {
-                  isCoalitionMember: true,
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  })
-}
-
-async function deleteEmployer(userId: string) {
-
-}
 
 export async function bookmarkJobseeker(jobseekerId: string) {
   const session = await auth();
