@@ -17,6 +17,7 @@ export default auth((req) => {
       '/api/users/',
       '/api/users/role/update',
       '/api/users/avatar/upload',
+      '/api/jobseekers/create',
     ],
     [Role.JOBSEEKER]: [
       '/edit-profile/jobseeker/',
