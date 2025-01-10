@@ -125,7 +125,7 @@ export default auth((req) => {
   }
 
   if (req.auth && userRoles.includes(Role.GUEST)) {
-    if (roleRoutes.GUEST.includes(pathname) || pathname == '/signout') {
+    if (roleRoutes.GUEST.includes(pathname) || pathname == '/policies/terms-of-service' || pathname == '/signout') {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL('/signup', req.nextUrl.origin));
