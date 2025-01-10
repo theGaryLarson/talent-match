@@ -12,6 +12,21 @@ import Avatar from "@/app/ui/components/Avatar";
 import { useState } from "react";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import { useSession } from "next-auth/react";
+import { calculateDaysAway } from "@/app/lib/utils";
+
+function daysAwayToString(date:Date) :string {
+    const daysAway = calculateDaysAway(date);
+    if (daysAway === 0) {
+        return "today";
+    } else {
+        const plural = (Math.abs(daysAway) === 1) ? '' : 's';
+        if (daysAway < 0) {
+            return `${Math.abs(daysAway)} day${plural} ago`;
+        } else {
+            return `in ${daysAway} day${plural}`;
+        }
+    }
+}
 
 interface Props {
     joblisting:any;
@@ -23,14 +38,6 @@ export default function JobPostingPage({
     params,
 }:Props) {
     const { data: session } = useSession();
-    const [applied, setApplied] = useState<boolean>(
-        joblisting.jobStatus == JobStatus.Accepted ||
-        joblisting.jobStatus == JobStatus.Applied ||
-        joblisting.jobStatus == JobStatus.Interviewing ||
-        joblisting.jobStatus == JobStatus.Negotiating ||
-        joblisting.jobStatus == JobStatus.NoResponse ||
-        joblisting.jobStatus == JobStatus.NotSelected
-    );
 
     const job_title: string = joblisting?.job_title ?? '';
     const employment_type: string = joblisting?.employment_type ?? '';
@@ -38,150 +45,152 @@ export default function JobPostingPage({
     const company_image: string = joblisting?.companies.company_logo_url ?? '';
     const industry: string = joblisting?.industry_sectors?.sector_title ?? '';
     const skills: SkillDTO[] = joblisting?.skills ?? [];
-    const is_paid: boolean = joblisting?.is_paid ?? true;
     const salary_range: string = joblisting?.salary_range ?? '';
     const description: string = joblisting?.job_description ?? '';
-    const id: string = joblisting?.job_posting_id ?? '';
-    const location: string =
-    joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
+    const location: string = joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
     const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!applied) {
-            try {
-            const response = await fetch(`/api/joblistings/apply/${id}`, {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update application status');
-            }
-            setApplied(true);
-            } catch (error) {
-            console.error('Error updating application:', error);
-            }
-        } else {
-            try {
-            const response = await fetch(`/api/joblistings/withdraw/${id}`, {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update application status');
-            }
-            setApplied(false);
-            } catch (error) {
-            console.error('Error updating application:', error);
-            }
-        }
-    };
-
     return (
-        <>
-            <div className="space-y-4 mb-8">
-                {/* Job Title & Company */}
-                <div className="flex items-center space-x-4">
-                {company_image && (
-                    <Avatar imgsrc={company_image ?? undefined} scale={1} />
-                )}
-                <div>
-                    <h4 className="text-lg font-semibold">{job_title}</h4>
-                    <p>{company_name}</p>
-                    <p className="sm-tablet:text-bas text-wrap text-sm text-slate-400">
-                    {location}
-                    </p>
+        <main className="space-y-4 mb-8 mr-2">
+            {/* Job Title & Company */}
+            <div className="block tablet:flex tablet:flex-wrap">
+                <div className="flex items-center space-x-4 mb-4">
+                    {company_image && (
+                        <div className="min-w-[85px]">
+                            <Avatar imgsrc={company_image ?? undefined} scale={1} />
+                        </div>
+                    )}
+                    <div>
+                        <h4 className="text-lg font-semibold">
+                            {job_title}
+                        </h4>
+                        <p>
+                            {company_name}
+                        </p>
+                        <p className="capitalize sm-tablet:text-bas text-wrap text-sm text-gray-500 dark:text-gray-400">
+                            {location}
+                        </p>
+                    </div>
+                    <div className="self-start">
+                        {
+                            session && session.user.jobseekerId
+                                ?   <Bookmark
+                                        bookmarked={
+                                            joblisting?.jobApplications.find(
+                                                (app:any) => (
+                                                    app.jobPostId === params.id
+                                                    && app.jobseekerId === session.user.jobseekerId
+                                                )
+                                            )?.isBookmarked
+                                            ?? false
+                                        }
+                                        addUrl={`/api/joblistings/bookmark/add/${joblisting?.job_posting_id}`}
+                                        removeUrl={`/api/joblistings/bookmark/remove/${joblisting?.job_posting_id}`}
+                                    />
+                                :   ""
+                        }
+                        {
+                            session && joblisting && session.user.companyId === joblisting.company_id
+                                ?   <DeleteJobPostingButton id={params.id}/>
+                                :   ""
+                        }
+                    </div>
                 </div>
-                </div>
+                {
+                    joblisting &&
+                    <div className="grow self-center mb-8 mr-4 text-left tablet:text-right text-gray-500 dark:text-gray-400">
+                        <p className="text-sm">Posted {daysAwayToString(joblisting.publish_date)} @ {joblisting.publish_date.toLocaleString('en-us', { timeZoneName:'short', month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' })}</p>
+                        <p className="text-sm">Closing {daysAwayToString(joblisting.unpublish_date)} @ {joblisting.unpublish_date.toLocaleString('en-us', { timeZoneName:'short', month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' })}</p>
+                    </div>
+                }
+            </div>
 
-                {/* Job Details */}
-                <div className="md:grid-cols-2 grid grid-cols-1 gap-4">
+            {/* Job Details */}
+            <div className="sm-tablet:grid-cols-3 grid grid-cols-1 gap-4">
                 <div>
-                    <p className="font-medium text-gray-700 dark:text-gray-200">
-                    Employment Type:
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">
+                        Employment Type:
                     </p>
-                    <p className="text-gray-500 dark:text-gray-400">
-                    {employment_type}
+                    <p className="capitalize text-gray-500 dark:text-gray-400">
+                        {employment_type}
                     </p>
-                </div>
-                <div>
-                    <p className="font-medium text-gray-700 dark:text-gray-200">
-                    Salary:
-                    </p>
-                    <p className="text-gray-500 dark:text-gray-400">{salary_range}</p>
                 </div>
                 <div>
-                    <p className="font-medium text-gray-700 dark:text-gray-200">
-                    Industry:
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">
+                        Salary:
                     </p>
-                    <p className="text-gray-500 dark:text-gray-400">{industry}</p>
+                    <p className="capitalize text-gray-500 dark:text-gray-400">
+                        {salary_range}
+                    </p>
                 </div>
+                <div>
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">
+                        Industry:
+                    </p>
+                    <p className="capitalize text-gray-500 dark:text-gray-400">
+                        {industry}
+                    </p>
                 </div>
+            </div>
 
-                {/* Job Description */}
-                <div>
-                <p className="font-medium text-gray-700 dark:text-gray-200">
+            {/* Job Description */}
+            <div>
+                <p className="font-semibold text-gray-700 dark:text-gray-200">
                     Description:
                 </p>
                 <p className="break-words text-base leading-relaxed text-gray-500 dark:text-gray-400">
                     {description}
                 </p>
-                </div>
+            </div>
 
-                {/* Skills */}
-                {skills.length > 0 && (
-                <div>
-                    <p className="font-medium text-gray-700 dark:text-gray-200">
+            {/* Skills */}
+            {skills.length > 0 && (
+            <div>
+                <p className="font-semibold text-gray-700 dark:text-gray-200">
                     Skills:
-                    </p>
-                    <div className="mt-2 flex grow text-sm tablet:text-base">
+                </p>
+                <div className="mt-2 flex grow text-sm tablet:text-base">
                     <Skills
                         skillsList={skills}
                         maxNumSkills={5}
                         jobseekerID={undefined}
                     />
-                    </div>
                 </div>
-                )}
-
-                {/* Company Information */}
-                <div>
-                <p className="font-medium text-gray-700 dark:text-gray-200">
-                    About {company_name}:
-                </p>
-                <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                    {joblisting?.companies.about_us}
-                </p>
-                </div>
-                <div>
-                <p className="font-medium text-gray-700 dark:text-gray-200">
-                    Our Mission:
-                </p>
-                <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                    {joblisting?.companies.company_mission}
-                </p>
-                </div>
-                <div>
-                <p className="font-medium text-gray-700 dark:text-gray-200">
-                    Our Vision:
-                </p>
-                <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                    {joblisting?.companies.company_vision}
-                </p>
-                </div>
-                {isJobseeker && (
-                    <div>
-                        <ApplyToJobButton id={params.id}/>
-                    </div>
-                )}
             </div>
-        </>
+            )}
+
+            {/* Company Information */}
+            <div className="space-y-4 p-2 bg-gray-bg rounded-md">
+                <div>
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">
+                        About {company_name}:
+                    </p>
+                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                        {joblisting?.companies.about_us}
+                    </p>
+                </div>
+                <div>
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">
+                        Our Mission:
+                    </p>
+                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                        {joblisting?.companies.company_mission}
+                    </p>
+                </div>
+                <div>
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">
+                        Our Vision:
+                    </p>
+                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                        {joblisting?.companies.company_vision}
+                    </p>
+                </div>
+            </div>
+            {isJobseeker && (
+                <div>
+                    <ApplyToJobButton id={params.id} appliedStatus={joblisting.jobStatus}/>
+                </div>
+            )}
+        </main>
     );
 }
