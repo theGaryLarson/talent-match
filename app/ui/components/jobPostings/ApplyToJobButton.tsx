@@ -1,13 +1,29 @@
 'use client'
 
-import { useState } from "react";
-import React, { MouseEvent } from 'react';
-export default function ApplyToJobButton({ id }:{id:string}){
-  const [fetchIsHappening, setFetchIsHappening] = useState<boolean>(false);
-  const [hasApplied, setHasApplied] = useState<boolean>(false);
+import React, { MouseEvent, useState } from "react";
+import RoundedButton from "@/app/ui/components/RoundedButton";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
 
-  const handleApplicationClick = async (e: MouseEvent<HTMLButtonElement>) => {
-    console.log('test',id);
+interface Props {
+  id: string;
+  appliedStatus?: string;
+}
+
+export default function ApplyToJobButton({
+  id,
+  appliedStatus = "",
+}: Props){
+  const [fetchIsHappening, setFetchIsHappening] = useState<boolean>(false);
+  const [hasApplied, setHasApplied] = useState<boolean>(
+    appliedStatus == JobStatus.Accepted ||
+    appliedStatus == JobStatus.Applied ||
+    appliedStatus == JobStatus.Interviewing ||
+    appliedStatus == JobStatus.Negotiating ||
+    appliedStatus == JobStatus.NoResponse ||
+    appliedStatus == JobStatus.NotSelected
+  );
+
+  const handleApplicationClick = async (e: MouseEvent<HTMLAnchorElement>) => {
     try {
       setFetchIsHappening(true);
       if (!hasApplied) {
@@ -44,5 +60,16 @@ export default function ApplyToJobButton({ id }:{id:string}){
     }
   }
 
-  return <button className="box-border w-fit rounded-full bg-blue-background px-10 py-3 text-white hover:bg-blue-400" disabled={fetchIsHappening} onClick={handleApplicationClick}>{hasApplied?'Withdraw Application':'Apply'}</button>
+  return (
+    <RoundedButton
+      content={hasApplied ? 'Withdraw Application' : 'Apply'}
+      invertColor
+      snug
+      newColors
+      bold={false}
+      className="capitalize"
+      disabled={fetchIsHappening}
+      onClick={handleApplicationClick}
+    />
+  );
 }
