@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { auth } from "@/auth";
@@ -6,6 +6,50 @@ import { v4 as uuidv4 } from 'uuid';
 import { CompanyEmployerCreationDTO } from '@/data/dtos/CompanyEmployerCreateionDTO';
 
 const prisma: PrismaClient = getPrismaClient();
+
+
+
+/**
+ * Create an employer (for an existing user) and associated data from the database.
+ *
+ * @param {string} userId - The ID of the user to become a jobseeker.
+ * @returns {Promise<employers>}
+ * @throws {Error} If user creation fails
+ */
+ export async function createEmployer(userId: string): Promise<Prisma.employersGetPayload<{}>> {
+  try {
+    // Use a transaction to ensure both operations succeed or fail together
+    const result = await prisma.$transaction(async (prisma) => {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          role: Role.EMPLOYER,
+          has_agreed_terms: true,
+          updatedAt: new Date()
+        }
+      });
+
+      const employer = await prisma.employers.create({
+        data: {
+          employer_id: uuidv4(),
+          user_id: userId,
+        }
+      });
+
+      return employer;
+    });
+
+    return result;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Handle known Prisma errors (e.g., unique constraint violations)
+      if (error.code === 'P2002') {
+        throw new Error('The Employer data/role already exists for this user');
+      }
+    }
+    throw error;
+  }
+}
 
 /**
  * Deletes an employer from the database based on the provided user ID.
