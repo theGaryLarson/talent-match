@@ -8,6 +8,7 @@ import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { CareerPrepStatus } from './admin/careerPrep';
+import { JobStatus } from './jobseekerJobTracking';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
@@ -172,7 +173,6 @@ export async function deleteJobListing(jobPostingId: string) {
 
 export async function ApplyToJob(jobPostingId: string) {
   let Session = await auth();
-  console.log('TRACK: 1');
   try {
     if (!Session?.user.jobseekerId) {
       throw new Error(
@@ -186,7 +186,6 @@ export async function ApplyToJob(jobPostingId: string) {
         jobseekerId: Session.user.jobseekerId,
       },
     });
-    console.log('TRACK: 2', existingApplication);
 
     if (existingApplication) {
       return await prisma.jobseekerJobPosting.update({
@@ -197,6 +196,18 @@ export async function ApplyToJob(jobPostingId: string) {
           jobStatus: CareerPrepStatus.Applied,
           appliedDate: new Date(),
         },
+        include:{
+          job_posting:{
+            include:{
+              companies:true
+            }
+          },
+          Jobseekers:{
+            include:{
+              users:true
+            }
+          }
+        }
       });
     } else {
       const applicationData = {
@@ -207,9 +218,25 @@ export async function ApplyToJob(jobPostingId: string) {
         appliedDate: new Date(),
         isBookmarked: false,
       };
-      console.log('TRACK 3:', applicationData)
       return await prisma.jobseekerJobPosting.create({
         data: applicationData,
+        include:{
+          job_posting:{
+            include:{
+              companies:true
+            }
+          },
+          Jobseekers:{
+            include:{
+              users:{
+                select:{
+                  first_name:true,
+                  last_name:true
+                }
+              }
+            }
+          }
+        }
       });
     }
   } catch (error) {
@@ -549,7 +576,9 @@ export async function getJobSeekerAppliedJobs() {
     const result = await prisma.jobseekerJobPosting.findMany({
       where: {
         jobseekerId: session.user.jobseekerId,
-        jobStatus: 'Applied', // Ensure you fetch only "Applied" jobs
+        NOT: {
+          jobStatus: JobStatus.IWithdrew
+        }
       },
       include:{
         job_posting: {

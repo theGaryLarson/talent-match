@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import { auth } from '@/auth';
 import { BookmarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { AddBusinessOutlined } from '@mui/icons-material';
@@ -42,13 +40,13 @@ export default async function layout({ children }: { children: React.ReactNode }
           <AddBusinessOutlined/>
           Add a Company
         </Link>
-        {/* <Link
-          href="/admin"
-          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200 REPLACE-BEFORE-RELEASE"
+        <Link
+          href="/admin/user-management"
+          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
         >
-          <EmailOutlinedIcon />
-          Inbox
-        </Link> */}
+          <ManageAccountsOutlinedIcon/>
+          User Management
+        </Link>
         <Link
           href="/admin/postjob"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"

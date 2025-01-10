@@ -2,9 +2,10 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { CompanyAdminCreationDTO } from '@/data/dtos/CompanyAdminCreationDTO';
 import { industry_sectors } from '@prisma/client';
+import { Button } from '@mui/material';
+import { ArrowCircleRightOutlined } from '@mui/icons-material';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 //TODO: Add ability to add a company logo
-//TODO: add phone number input 
-//TODO: add company Website url
 
 export default function Page() {
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
@@ -18,6 +19,7 @@ export default function Page() {
   },[])
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    let form = event.currentTarget;
     const formData = new FormData(event.currentTarget);
     const submitButton = event.currentTarget.querySelector(
       'button[type="submit"]',
@@ -34,6 +36,10 @@ export default function Page() {
         estimatedAnnualHires: parseInt(formData.get("hires") as string, 10),
         industrySectorId: formData.get('sector') as string,
 
+        companyWebsiteUrl: formData.get('company_url') as string,
+        companyVision: formData.get('company_vision') as string,
+        companyPhone: formData.get('company_phone') as string,
+
     };
     try {
       const response = await fetch('/api/companies/create', {
@@ -44,17 +50,16 @@ export default function Page() {
         body: JSON.stringify(companyData), // Send as JSON
       });
 
-      if (!response.ok) {
-        // If response is not OK, handle error
-        console.error('Failed to create company');
-        return;
+      if (response.ok) {
+        alert('Company created successfully!');
+        form.reset()
       } else {
-        // Await the response JSON
-        const data = await response.json();
-
+        alert('Failed to create company');
       }
     } catch (error) {
       console.error('Error creating job listing:', error);
+    } finally {
+      if (submitButton) submitButton.disabled = false;
     }
   }
   return (
@@ -76,23 +81,37 @@ export default function Page() {
         </select>
       </div>
 
-      {/* Job Description */}
+      {/* Company about*/}
       <div className="grid grid-cols-1">
         <label htmlFor="about_company">About Company *</label>
         <textarea name="about_company" required />
       </div>
-  {/* Job Description */}
+  {/* Company mission */}
   <div className="grid grid-cols-1">
         <label htmlFor="company_mission">Company Mission</label>
         <textarea name="company_mission" />
       </div>
-
+{/* Job Description */}
+<div className="grid grid-cols-1">
+        <label htmlFor="company_vision">Company Vision</label>
+        <textarea name="company_vision" />
+      </div>
 
 
       {/*company email */}
       <div className="grid grid-cols-1">
         <label htmlFor="company_email">Company Email *</label>
         <input type='email' name="company_email" required />
+      </div>
+      {/*company email */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="company_phone">Company Phone</label>
+        <input  type='tel' name="company_phone"/>
+      </div>
+      {/*company url */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="company_url">Company URL <span className='text-xs'>(http:// required)</span></label>
+        <input type='url' name="company_url" placeholder="http://www.example.com" />
       </div>
 
       {/* year founded */}
@@ -112,8 +131,9 @@ export default function Page() {
       </div>
 
       {/* Submit Button */}
-      <div>
-        <button type="submit">Create Company</button>
+      <div className='grid grid-cols-2 gap-2'>
+        <Button type='reset' variant="outlined" startIcon={<HighlightOffOutlinedIcon/>} >Reset Form</Button>
+        <Button type="submit" endIcon={<ArrowCircleRightOutlined/>} variant="contained">Create Company</Button>
       </div>
     </form>
   );

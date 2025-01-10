@@ -7,8 +7,6 @@ export const metadata = {
   title: "My Dashboard"
 };
 export default async function Page() {
-  const numOfJobsekers = await getNumOfJobseekers();
-  const numOfEmployers = await getNumOfIndividualEmployers()
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <h1 className="text-2xl font-medium">
@@ -36,7 +34,7 @@ async function GenderPie(){
           data: chartData,
         },
       ]}
-      width={400}
+      width={600}
       height={200}
     /></div>
   );
@@ -53,7 +51,7 @@ async function NewUsersByQaurter(){
           <BarChart
             xAxis={[{ scaleType: 'band', data: xAxis }]}
             series={[{ data: seriesData }]}
-            width={500}
+            width={600}
             height={300}
           />
           </div>
