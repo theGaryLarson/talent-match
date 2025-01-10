@@ -73,18 +73,12 @@ export default function EmployerSignUpFinish() {
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
-                let response = await fetch('/api/users/role/update', {
-                  method: 'PATCH',
+                let response = await fetch('/api/employers/create', {
+                  method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    userId: session?.user.id,
-                    role: Role.EMPLOYER,
-                    agreedTerms: termsAgree,
-                  }),
-                });
-                // console.log('response:', response);
+                  }});
+                let data = await response.json();
                 if (response.ok) {
                   let rolesArray = session?.user.roles || []
                   rolesArray = rolesArray.filter((role: Role) => role !== Role.GUEST)
@@ -93,7 +87,7 @@ export default function EmployerSignUpFinish() {
                     rolesArray.push(Role.EMPLOYER);
                   }
                   await updateSessionProperties({
-                    employerId: uuidv4(),
+                    employerId: data.employerData.employer_id,
                     roles: rolesArray,
                   });
                   router.push('/edit-profile/employer/profile');

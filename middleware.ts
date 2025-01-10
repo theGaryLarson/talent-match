@@ -17,6 +17,8 @@ export default auth((req) => {
       '/api/users/',
       '/api/users/role/update',
       '/api/users/avatar/upload',
+      '/api/jobseekers/create',
+      '/api/employers/create',
     ],
     [Role.JOBSEEKER]: [
       '/edit-profile/jobseeker/',
@@ -125,7 +127,7 @@ export default auth((req) => {
   }
 
   if (req.auth && userRoles.includes(Role.GUEST)) {
-    if (roleRoutes.GUEST.includes(pathname) || pathname == '/signout') {
+    if (roleRoutes.GUEST.includes(pathname) || pathname == '/policies/terms-of-service' || pathname == '/signout') {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL('/signup', req.nextUrl.origin));
