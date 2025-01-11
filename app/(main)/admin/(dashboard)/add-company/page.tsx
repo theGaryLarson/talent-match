@@ -5,6 +5,7 @@ import { industry_sectors } from '@prisma/client';
 import { Button } from '@mui/material';
 import { ArrowCircleRightOutlined } from '@mui/icons-material';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 //TODO: Add ability to add a company logo
 
 export default function Page() {
@@ -122,7 +123,27 @@ export default function Page() {
 
       <div className="grid grid-cols-1">
         <label htmlFor="size">Number Of Employes</label>
-        <input type="number" name="size"/>
+        {/* <input type="number" name="size"/> */}
+        <select name="size">
+          <option value={'1-10'}>
+          1-10
+          </option>
+          <option value={'51-200'}>
+          51-200
+          </option>
+          <option value={'201-500'}>
+          201-500
+          </option>
+          <option value={'501-1000'}>
+          501-1000
+          </option>
+          <option value={'1001-5000'}>
+          1001-5000
+          </option>
+          <option value={'5000+'}>
+          5000+
+          </option>
+        </select>
       </div>
 
       <div className="grid grid-cols-1">
