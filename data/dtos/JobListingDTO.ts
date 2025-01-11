@@ -12,6 +12,8 @@ export type JobPostCreationDTO = {
     location: string;
     salary_range: string;
     //county: string;
+    relocation_services:boolean;
+    visa_sponsership:boolean
     zip: string;
     //publish_date?: Date;
     unpublish_date?: Date;

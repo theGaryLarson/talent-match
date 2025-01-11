@@ -41,7 +41,9 @@ export default function Page() {
       skillIds: skills?.map((v) => v.skill_id),
       tech_area_id: formData.get('area') as string,
       sector_id: formData.get('sector') as string,
-      company_id: formData.get('company') as string
+      company_id: formData.get('company') as string,
+      relocation_services: formData.get('relocation') === 'yes',
+      visa_sponsership: formData.get('visas') === 'yes'
     };
     try {
       const response = await fetch('/api/joblistings/add', {
@@ -158,6 +160,32 @@ export default function Page() {
           </label>
           <label>
             <input type="radio" name="is_paid" value="no" required />
+            No
+          </label>
+        </div>
+      </div>
+      <div>
+        <label>Does This Position Offer Relocation Services?</label>
+        <div>
+          <label>
+            <input type="radio" name="relocation" value="yes" required />
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="relocation" value="no" required />
+            No
+          </label>
+        </div>
+      </div>
+      <div>
+        <label>Is Position willing to sponsor H1B visas</label>
+        <div>
+          <label>
+            <input type="radio" name="visas" value="yes" required />
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="visas" value="no" required />
             No
           </label>
         </div>

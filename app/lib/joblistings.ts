@@ -61,6 +61,8 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
+        relocation_services_available:jobData.relocation_services,
+        offer_visa_sponsorship:jobData.visa_sponsership,
         zip: jobData.zip,
         employment_type: jobData.employment_type || 'full-time',
         location: jobData.location,
