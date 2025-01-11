@@ -5,7 +5,6 @@ import { industry_sectors } from '@prisma/client';
 import { Button } from '@mui/material';
 import { ArrowCircleRightOutlined } from '@mui/icons-material';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
-import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 //TODO: Add ability to add a company logo
 
 export default function Page() {

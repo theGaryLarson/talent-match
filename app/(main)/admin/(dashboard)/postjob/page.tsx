@@ -5,7 +5,9 @@ import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { companies, industry_sectors, technology_areas } from '@prisma/client';
 import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
-
+import { Button } from '@mui/material';
+import { ArrowCircleRightOutlined } from '@mui/icons-material';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 export default function Page() {
   const router = useRouter();
@@ -209,7 +211,7 @@ export default function Page() {
       </div>
       {/* Unpublish Date */}
       <div className="grid grid-cols-1">
-        <label htmlFor="unpublish_date">Unpublish Date</label>
+        <label htmlFor="unpublish_date">Application Deadline</label>
         <input type="date" name="unpublish_date" min={new Date().toISOString().split("T")[0]}/>
       </div>
 
@@ -250,6 +252,10 @@ export default function Page() {
       {/* Submit Button */}
       <div>
         <button type="submit">Create Job Listing</button>
+      </div>
+      <div className='grid grid-cols-2 gap-2'>
+        <Button type='reset' variant="outlined" startIcon={<HighlightOffOutlinedIcon/>} >Reset Form</Button>
+        <Button type="submit" endIcon={<ArrowCircleRightOutlined/>} variant="contained">Create Job Listing</Button>
       </div>
     </form>
   );
