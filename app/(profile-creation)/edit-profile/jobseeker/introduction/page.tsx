@@ -8,7 +8,7 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
-import { Button } from '@mui/material';
+import PillButton from '@/app/ui/components/PillButton';
 
 import { devLog, formatPhoneE164 } from '@/app/lib/utils';
 import parsePhoneNumberFromString from 'libphonenumber-js';
@@ -692,7 +692,7 @@ export default function CreateJobseekerProfileIntroPage() {
             {/* <Button variant="outlined">
               Cancel
             </Button> */}
-            <Button type="submit">Save and continue</Button>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

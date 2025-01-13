@@ -10,7 +10,7 @@ import {
   JsDisclosuresPostDTO,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
-import { Button } from '@mui/material';
+import PillButton from '@/app/ui/components/PillButton';
 
 import {
   FormControl,
@@ -422,15 +422,15 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             )}
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button
+            <PillButton
               variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/work-experience');
               }}
             >
               Previous
-            </Button>
-            <Button type="submit">Submit</Button>
+            </PillButton>
+            <PillButton type="submit">Submit</PillButton>
           </div>
         </form>
       </section>

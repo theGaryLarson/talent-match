@@ -3,18 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
-// REVIEW: testing redux
-// import type { RootState } from '@/lib/store';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
 import {
-  Button,
   FormControl,
   FormControlLabel,
   FormLabel,
   Radio,
   RadioGroup,
 } from '@mui/material';
+import PillButton from '@/app/ui/components/PillButton';
 import { useRouter } from 'next/navigation';
 import { JsPreferencesDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useSession } from 'next-auth/react';
@@ -154,7 +150,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
               <fieldset>
                 <legend>What are you looking for?</legend>
                 <div className="container">
-                  <Button
+                  <PillButton
                     sx={{
                       m: 2, // Margin all sides equivalent to 'm-2'
                       backgroundColor:
@@ -170,8 +166,8 @@ export default function CreateJobseekerProfilePreferencesPage() {
                     }}
                   >
                     Full-time job
-                  </Button>
-                  <Button
+                  </PillButton>
+                  <PillButton
                     sx={{
                       m: 2,
                       backgroundColor:
@@ -187,8 +183,8 @@ export default function CreateJobseekerProfilePreferencesPage() {
                     }}
                   >
                     Part-time job
-                  </Button>
-                  <Button
+                  </PillButton>
+                  <PillButton
                     sx={{
                       m: 2,
                       backgroundColor:
@@ -204,8 +200,8 @@ export default function CreateJobseekerProfilePreferencesPage() {
                     }}
                   >
                     Internship
-                  </Button>
-                  <Button
+                  </PillButton>
+                  <PillButton
                     sx={{
                       m: 2,
                       backgroundColor:
@@ -221,7 +217,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                     }}
                   >
                     On-campus job
-                  </Button>
+                  </PillButton>
                 </div>
               </fieldset>
               <FormControl component="fieldset">
@@ -267,15 +263,15 @@ export default function CreateJobseekerProfilePreferencesPage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
-            <Button
+            <PillButton
               variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/introduction');
               }}
             >
               Previous
-            </Button>
-            <Button type="submit">Save and continue</Button>
+            </PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

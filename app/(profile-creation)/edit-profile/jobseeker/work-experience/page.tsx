@@ -4,7 +4,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
 import { Label } from 'flowbite-react';
-import { Button, Radio, RadioGroup } from '@mui/material';
+import { Radio, RadioGroup } from '@mui/material';
+import PillButton from '@/app/ui/components/PillButton';
 import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
 import WorkExperiences, {
   defaultWorkExperienceData,
@@ -417,10 +418,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               onUpdate={handleUpdate}
               onRemove={removeWorkExperience}
             />
-            <Button variant="outlined" onClick={addNewWorkExperience}>
+            <PillButton variant="outlined" onClick={addNewWorkExperience}>
               <MdAdd className="mr-2 h-5 w-5" />
               Add work experience
-            </Button>
+            </PillButton>
           </fieldset>
           <fieldset className="internship-experience-groups">
             <legend>
@@ -443,10 +444,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               onUpdate={handleUpdate}
               onRemove={removeInternshipExperience}
             />
-            <Button variant="outlined" onClick={addNewInternshipExperience}>
+            <PillButton variant="outlined" onClick={addNewInternshipExperience}>
               <MdAdd className="mr-2 h-5 w-5" />
               Add internship experience
-            </Button>
+            </PillButton>
           </fieldset>
           <fieldset>
             <legend>
@@ -532,15 +533,15 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             </div>
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button
+            <PillButton
               variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/education');
               }}
             >
               Previous
-            </Button>
-            <Button type="submit">Save and continue</Button>
+            </PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

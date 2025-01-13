@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import Confetti from '@/app/ui/components/Confetti';
 
-import { Button } from '@mui/material';
+import PillButton from '@/app/ui/components/PillButton';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
@@ -43,7 +43,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
         <h1>Congrats on completing your profile, {firstName}!</h1>
 
         <p className="subtitle-congrats">{`Let's kickstart your career journey!`}</p>
-        <Button onClick={handleClick}>Get Started</Button>
+        <PillButton onClick={handleClick}>Get Started</PillButton>
       </section>
     </main>
   );
