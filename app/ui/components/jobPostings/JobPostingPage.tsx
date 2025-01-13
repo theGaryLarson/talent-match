@@ -51,7 +51,7 @@ export default function JobPostingPage({
     const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
     return (
-        <main className="space-y-4 mb-8 mr-2">
+        <main className="space-y-4 mb-8 mr-4">
             {/* Job Title & Company */}
             <div className="block tablet:flex tablet:flex-wrap">
                 <div className="flex items-center space-x-4 mb-4">
@@ -99,8 +99,8 @@ export default function JobPostingPage({
                 {
                     joblisting &&
                     <div className="grow self-center mb-8 mr-4 text-left tablet:text-right text-gray-500 dark:text-gray-400">
-                        <p className="text-sm">Posted {daysAwayToString(joblisting.publish_date)} @ {joblisting.publish_date.toLocaleString('en-us', { timeZoneName:'short', month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' })}</p>
-                        <p className="text-sm">Closing {daysAwayToString(joblisting.unpublish_date)} @ {joblisting.unpublish_date.toLocaleString('en-us', { timeZoneName:'short', month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' })}</p>
+                        <p className="text-sm">Posted {daysAwayToString(joblisting.publish_date)} @ {joblisting.publish_date.toLocaleString('en-us', { timeZoneName:'short', month: 'numeric', day: 'numeric', year: 'numeric', /*hour: 'numeric', minute: 'numeric'*/ })}</p>
+                        <p className="text-sm">Closing {daysAwayToString(joblisting.unpublish_date)} @ {joblisting.unpublish_date.toLocaleString('en-us', { timeZoneName:'short', month: 'numeric', day: 'numeric', year: 'numeric', /*hour: 'numeric', minute: 'numeric'*/ })}</p>
                     </div>
                 }
             </div>
