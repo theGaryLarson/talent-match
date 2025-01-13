@@ -1,23 +1,29 @@
 import Link from 'next/link';
+import React, { MouseEvent } from 'react';
 
 interface Props {
   content: string;
-  link: string;
   invertColor: boolean;
+  link?: string;
   bold?: boolean;
   snug?: boolean;
   className?: string;
   newColors?: boolean;
+  disabled?: boolean;
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => Promise<void>;
 }
 
 export default function RoundedButton({
   content,
   link,
   invertColor,
+  onClick,
   bold = true,
   snug = false,
   className = '',
   newColors = false,
+  disabled = false,
+  ...rest
 }: Props) {
   const isPrimary = invertColor;
   let bgColorIdle = '';
@@ -77,7 +83,7 @@ export default function RoundedButton({
 
   return (
     <Link
-      href={link}
+      href={(!disabled && link)? link : "#"}
       className={`
         box-border
         inline-block
@@ -99,6 +105,8 @@ export default function RoundedButton({
         ${!snug ? 'px-10' : 'px-6 leading-tight'}
         py-3
         ${className}`}
+      onClick={(!disabled && onClick)? onClick : undefined}
+      {...rest}
     >
       {bold ? <strong>{content}</strong> : <>{content}</>}
     </Link>

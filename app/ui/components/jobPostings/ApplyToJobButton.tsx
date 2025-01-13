@@ -1,28 +1,75 @@
 'use client'
 
-import { useState } from "react";
-import React, { MouseEvent } from 'react';
-export default function ApplyToJobButton(params: {id:string}){
-  const [hasApplied, setHasApplied] = useState<boolean>(false)
-    const save = async (e: MouseEvent<HTMLButtonElement>) => {
-        try {
-            setHasApplied(true)
-            const response = await fetch(`/api/joblistings/apply/${params.id}`, {
-              method: 'POST', // or 'PUT', depending on the behavior of your API
-              headers: {
-                'Content-Type': 'application/json'
-              },
-            });
-        
-            if (!response.ok) {
-              throw new Error(`Error: ${response.status}`);
-            }
-            const data = await response.json();
-            console.log('Job post saved successfully:', data);
-            return data;
-          } catch (error) {
-            console.error('Error saving job post:', error);
-          }
+import React, { MouseEvent, useState } from "react";
+import RoundedButton from "@/app/ui/components/RoundedButton";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
+
+interface Props {
+  id: string;
+  appliedStatus?: string;
+}
+
+export default function ApplyToJobButton({
+  id,
+  appliedStatus = "",
+}: Props){
+  const [fetchIsHappening, setFetchIsHappening] = useState<boolean>(false);
+  const [hasApplied, setHasApplied] = useState<boolean>(
+    appliedStatus == JobStatus.Accepted ||
+    appliedStatus == JobStatus.Applied ||
+    appliedStatus == JobStatus.Interviewing ||
+    appliedStatus == JobStatus.Negotiating ||
+    appliedStatus == JobStatus.NoResponse ||
+    appliedStatus == JobStatus.NotSelected
+  );
+
+  const handleApplicationClick = async (e: MouseEvent<HTMLAnchorElement>) => {
+    try {
+      setFetchIsHappening(true);
+      if (!hasApplied) {
+        const response = await fetch(`/api/joblistings/apply/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          console.log('error',response);
+          throw new Error('Failed to update application status. ');
+        }
+        setHasApplied(true);
+      }
+      else {
+        const response = await fetch(`/api/joblistings/withdraw/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update application status');
+        }
+        setHasApplied(false);
+      }
+    } catch (error) {
+      console.error('Error updating application:', error);
+    } finally {
+      setFetchIsHappening(false);
     }
-return <button className="box-border w-fit rounded-full bg-blue-background px-10 py-3 text-white hover:bg-blue-400" disabled={hasApplied} onClick={save}>{hasApplied?'Applied':'Apply'}</button>
+  }
+
+  return (
+    <RoundedButton
+      content={hasApplied ? 'Withdraw Application' : 'Apply'}
+      invertColor
+      snug
+      newColors
+      bold={false}
+      className="capitalize"
+      disabled={fetchIsHappening}
+      onClick={handleApplicationClick}
+    />
+  );
 }
