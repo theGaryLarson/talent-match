@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { companies, Prisma, PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { auth } from "@/auth";
@@ -164,6 +164,34 @@ export async function createCompany(companyData: CompanyEmployerCreationDTO) {
     console.error(e)
   }
 }
+
+
+
+
+export async function updateCompany(companyData: Partial<Prisma.companiesUncheckedCreateInput>) {
+  try {
+    if (!companyData.company_id) {
+      throw new Error('company_id is required to update a company');
+    }
+
+    // Remove company_id from data to avoid updating the primary key
+    const { company_id, ...data } = companyData;
+
+    console.log('Prisma update input:', { where: { company_id }, data });
+
+    const result = await prisma.companies.update({
+      where: { company_id },
+      data,
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Error updating company:', error);
+    throw new Error('Failed to update company');
+  }
+}
+
+
 
 export async function getAllCompanies() {
     const res = await prisma.companies.findMany();
