@@ -16,9 +16,10 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button, FormControlLabel, FormLabel, RadioGroup, TextField } from '@mui/material';
-import Router from 'next/router';
 import JobStatusDropDown from './JobStatusDropDown';
 import { JobStatus } from '@/app/lib/jobseekerJobTracking';
+import ViewResume from './ViewResume';
+
 
 interface JobApplication {
   id: string;
@@ -32,12 +33,14 @@ interface JobApplication {
   Jobseekers: {
     jobseeker_id: string;
     assignedPool: string | null;
+    highest_level_of_study_completed: string| null;
     user_id: string;
     intro_headline: string | null;
     years_work_exp: number | null;
     users: {
       first_name: string | null;
       last_name: string | null;
+      email:string;
     };
   };
 }
@@ -74,7 +77,6 @@ interface RowProps {
 
 function Row({ row }: RowProps) {
   const [open, setOpen] = React.useState(false);
-
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -91,13 +93,14 @@ function Row({ row }: RowProps) {
           {row.job_title}
         </TableCell>
         <TableCell>{row.companies.company_name}</TableCell>
-        <TableCell>{row.location}</TableCell>
+        {/* <TableCell>{row.location}</TableCell>
         <TableCell>{row.employment_type}</TableCell>
-        <TableCell>{row.salary_range}</TableCell>
+        <TableCell>{row.salary_range}</TableCell> */}
+        <TableCell>{row.unpublish_date.toDateString()}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={open} timeout="auto">
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
                 Job Applications
@@ -106,11 +109,14 @@ function Row({ row }: RowProps) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Years Of Exp</TableCell>
+                    <TableCell>Highest Level of Education</TableCell>
+                    <TableCell>Resume</TableCell>
                     <TableCell>Job Status</TableCell>
                     <TableCell>Assigned Pool</TableCell>
                     <TableCell>Applied Date</TableCell>
                     <TableCell>Follow-Up Date</TableCell>
-                    <TableCell>Jobseeker Intro</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -121,11 +127,15 @@ function Row({ row }: RowProps) {
                           {app.Jobseekers.users.first_name} {app.Jobseekers.users.last_name}
                         </Link>
                       </TableCell>
+                      <TableCell>{app.Jobseekers.users.email}</TableCell>
+                      <TableCell>{app.Jobseekers.years_work_exp}</TableCell>
+                      <TableCell>{app.Jobseekers.highest_level_of_study_completed}</TableCell>
+                      <TableCell><ViewResume userId={app.Jobseekers.user_id}></ViewResume></TableCell>
                       <TableCell><JobStatusDropDown currentJobStatus={app.jobStatus as JobStatus} jobAppId={app.id}/></TableCell>
                       <TableCell>{app.Jobseekers.assignedPool}</TableCell>
                       <TableCell>{app.appliedDate ? new Date(app.appliedDate).toLocaleDateString() : ''}</TableCell>
                       <TableCell>{app.followUpDate ? new Date(app.followUpDate).toLocaleDateString() : 'N/A'}</TableCell>
-                      <TableCell>{app.Jobseekers.intro_headline}</TableCell>
+              
                     </TableRow>
                   ))}
                 </TableBody>
@@ -187,9 +197,10 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
               <TableCell />
               <TableCell>Job Title</TableCell>
               <TableCell>Company</TableCell>
-              <TableCell>Location</TableCell>
+              {/* <TableCell>Location</TableCell>
               <TableCell>Employment Type</TableCell>
-              <TableCell>Salary Range</TableCell>
+              <TableCell>Salary Range</TableCell> */}
+              <TableCell>Application Deadline</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
