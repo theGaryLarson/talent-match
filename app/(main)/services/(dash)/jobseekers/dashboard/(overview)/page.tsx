@@ -47,12 +47,12 @@ export default async function Page() {
       <Stack
         direction={'row'}
         spacing={2}
-        sx={{my: '0.25rem', width: '100%', placeContent: 'center', alignContent: 'center', placeSelf: 'center'}}
+        sx={{my: '0.25rem', width: '100%', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch'}}
       >
-        <Button pill value="edit" href="#">
+        <Button pill href="#">
           Dashboard
         </Button>
-        <Typography variant="h4" sx={{ fontWeight: 300 }}>
+        <Typography variant="h4" sx={{ fontSize: '24px', textAlign: 'center', fontWeight: 400 }}>
           |
         </Typography>
         <Button

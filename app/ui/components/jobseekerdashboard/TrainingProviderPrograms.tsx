@@ -1,4 +1,4 @@
-import { Grid2 } from '@mui/material';
+import { Grid2, Stack } from '@mui/material';
 import { ReadEduProviderProgramCardDTO } from '@/app/lib/eduProviders';
 import TrainingProgramCard from '@/app/ui/components/career/TrainingProgramCard';
 import { Button } from 'flowbite-react';
@@ -9,8 +9,8 @@ export default async function TrainingProviderPrograms({
   programs: ReadEduProviderProgramCardDTO[];
 }) {
   return (
-    <Grid2 container rowSpacing={2} columns={1}>
-      <Grid2 container size={1} sx={{ justifyContent: 'space-between' }}>
+    <Stack direction={'column'} spacing={2}>
+      <Grid2 container sx={{ justifyContent: 'space-between' }}>
         <p className="self-center text-xl font-medium text-black/90">
           Coalition Training Provider Programs
         </p>
@@ -28,6 +28,6 @@ export default async function TrainingProviderPrograms({
           return TrainingProgramCard(program);
         })}
       </Grid2>
-    </Grid2>
+    </Stack>
   );
 }

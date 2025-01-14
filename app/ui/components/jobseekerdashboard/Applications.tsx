@@ -33,7 +33,7 @@ const statusConfig: StatusConfigType = {
     variant: 'filled',
   },
   [JobStatus.Negotiating]: {
-    color: 'warning',
+    color: 'secondary',
     variant: 'filled',
   },
   [JobStatus.Accepted]: {
@@ -42,7 +42,7 @@ const statusConfig: StatusConfigType = {
   },
   [JobStatus.IWithdrew]: {
     color: 'error',
-    variant: 'filled',
+    variant: 'outlined',
   },
   [JobStatus.NotSelected]: {
     color: 'error',
