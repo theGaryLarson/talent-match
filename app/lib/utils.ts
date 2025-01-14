@@ -96,6 +96,22 @@ export const normalizeDate = (date: string): string => {
   return d.toISOString();
 };
 
+export const calculateDaysAway = (date: Date): number => {
+  const now = new Date();
+
+  // Normalize the dates to account for local midnight
+  const d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+  // Calculate the difference in milliseconds
+  const diffInMs = d2.getTime() - d1.getTime();
+
+  // Convert milliseconds to days
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  return diffInDays;
+}
+
 /**
  * Formats a phone number in E.164 format.
  * @param {string|null} phoneCountryCode - The country code of the phone number.

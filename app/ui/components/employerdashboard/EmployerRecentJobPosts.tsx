@@ -89,36 +89,29 @@ function SingleJobPost({
       dayPostedText = `Posted ${days} Days Ago`;
   }
   return (
-    <>
-      <div className="flex justify-between px-2">
-        <button
-          className="flex items-center"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <div className="flex items-center justify-start gap-2">
-            <div className="font-['Roboto'] text-sm font-semibold leading-[16.80px] tracking-tight text-[#047f9c]">
-              {job.job_title}
-            </div>
-            <div className="font-['Roboto'] text-sm font-normal leading-[16.80px] tracking-tight text-[#181818]">
-              |
-            </div>
-            <div className="font-['Roboto'] text-sm font-normal leading-[16.80px] tracking-tight text-[#181818]">
-              {job.industry_sectors?.sector_title}
-            </div>
-            <div className="font-['Roboto'] text-xs font-normal leading-[14.40px] tracking-tight text-[#797979]">
-              {dayPostedText}
-            </div>
-          </div>
-        </button>
-        <DeleteJobPostingButton id={job.job_posting_id} />
-      </div>
-
-      <JobListingModalView
-        openModal={isModalOpen}
-        handleModalChange={setIsModalOpen}
-        joblisting={job}
-      />
-    </>
+    <div className="flex justify-between px-2">
+      <Link
+        className="flex items-center"
+        href={`/services/joblistings/${job.job_posting_id}`}
+        target="_blank"
+      >
+        <span className="flex items-center justify-start gap-2">
+          <span className="font-['Roboto'] text-sm font-semibold leading-[16.80px] tracking-tight text-[#047f9c]">
+            {job.job_title}
+          </span>
+          <span className="font-['Roboto'] text-sm font-normal leading-[16.80px] tracking-tight text-[#181818]">
+            |
+          </span>
+          <span className="font-['Roboto'] text-sm font-normal leading-[16.80px] tracking-tight text-[#181818]">
+            {job.industry_sectors?.sector_title}
+          </span>
+          <span className="font-['Roboto'] text-xs font-normal leading-[14.40px] tracking-tight text-[#797979]">
+            {dayPostedText}
+          </span>
+        </span>
+      </Link>
+      <DeleteJobPostingButton id={job.job_posting_id} />
+    </div>
   );
 }
 function AddJobLink() {
