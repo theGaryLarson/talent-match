@@ -7,6 +7,8 @@ import '@/app/ui/profile-creation.css';
 import { inter } from '@/app/ui/fonts';
 import ProfileCreationHeader from '@/app/ui/ProfileCreationHeader';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from '@/mui.theme';
 
 // REVIEW: You can locate the store in the layout component if all the routes using that layout need the store.
 import EmployerStoreProvider from '../../../EmployerStoreProvider';
@@ -24,8 +26,11 @@ export default function ProfileCreationLayout({
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
           <AppRouterCacheProvider>
             <SessionProvider>
-              <ProfileCreationHeader />
-              <EmployerStoreProvider>{children}</EmployerStoreProvider>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <ProfileCreationHeader />
+                <EmployerStoreProvider>{children}</EmployerStoreProvider>
+              </ThemeProvider>
             </SessionProvider>
           </AppRouterCacheProvider>
         </LocalizationProvider>
