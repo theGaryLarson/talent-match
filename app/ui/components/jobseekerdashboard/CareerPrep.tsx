@@ -1,0 +1,180 @@
+import { Card, Grid2, Stack } from '@mui/material';
+import Image from 'next/image';
+import Link from 'next/link';
+import {
+  CareerPrepStatus,
+  getMeetingByJobSeeker,
+} from '@/app/lib/admin/careerPrep';
+import { CareerPrepTrack } from '@/app/lib/poolAssignment';
+import { ReactNode } from 'react';
+import { Button } from 'flowbite-react';
+
+export default async function CareerPrep(props: {
+  enrollmentStatus: CareerPrepStatus | undefined;
+  track: CareerPrepTrack | undefined;
+  jobseekerId: string;
+  caseManager: string;
+}) {
+  const Meetings = await getMeetingByJobSeeker(props.jobseekerId);
+
+  let copy: {
+    headline: string;
+    body: ReactNode;
+    button: string;
+    buttonLink: string;
+  };
+  switch (props.enrollmentStatus) {
+    case undefined:
+      copy = {
+        headline: 'Your Journey Starts Here',
+        body: (
+          <div>
+            Once you complete the skills assessment, you’ll be on your way to:
+            <ul className="space-y-3 py-3">
+              <li>A personalized Professional Development Plan</li>
+              <li>A virtual meeting with our Career Navigator</li>
+            </ul>
+          </div>
+        ),
+        button: 'Start',
+        buttonLink: '/services/jobseekers/career-prep/skill-assessment',
+      };
+      break;
+    case CareerPrepStatus.Applied:
+    case CareerPrepStatus.CreatingPlan:
+      copy = {
+        headline: 'Thank You for Taking the Skills Assessment',
+        body: `We’re currently crafting a personalized Professional Development Plan just for you. Within 3-5 business days, you'll receive an email to schedule your first meeting with a dedicated Career Navigator.`,
+        button: 'Learn More',
+        buttonLink: '/about-us', // TODO: onces there's an info page for carreer prep replace this
+      };
+      break;
+
+    case CareerPrepStatus.PlanCreated:
+      copy = {
+        headline: 'Your Personalized Plan is Ready!',
+        body: 'Your Professional Development Plan is ready for your review. Click below to schedule a meeting with our Career Navigator:',
+        button: 'Schedule a Meeting',
+        buttonLink:
+          'https://outlook.office365.com/owa/calendar/CFACareerServices@computingforall.org/bookings/', // Replace with the actual Bookings page link
+      };
+      break;
+
+    case CareerPrepStatus.MeetingScheduled:
+      copy = {
+        headline: 'Your Next Steps',
+        body: (
+          <div>
+            You have an upcoming meeting(s) with {props.caseManager} scheduled
+            for:
+            <ul className="py-3">
+              {Meetings.map((m) => (
+                <li
+                  className="text-lg font-bold text-black"
+                  key={m.id}
+                >{`${m.meetingDate}`}</li>
+              ))}
+            </ul>
+          </div>
+        ), // Replace placeholders with actual data
+        button: 'Reschedule Meeting',
+        buttonLink:
+          'https://outlook.office365.com/owa/calendar/CFACareerServices@computingforall.org/bookings/', // Replace with the actual Reschedule page link
+      };
+      break;
+
+    case CareerPrepStatus.MetCareerNavigator:
+      copy = {
+        headline: 'Complete Your Enrollment',
+        body: `To officially join the program and access your Canvas training, please complete the enrollment form.`,
+        button: 'Enroll Now',
+        buttonLink: '/services/jobseekers/career-prep/enrollment',
+      };
+      break;
+    case CareerPrepStatus.Completed:
+    case CareerPrepStatus.Enrolled:
+      copy = {
+        headline: 'Welcome to Career Prep!',
+        body: "You've officially joined the program! You can now access the Canvas training and begin your journey.",
+        button: 'Access Canvas Training',
+        buttonLink:
+          props.track == CareerPrepTrack.ACCELERATED
+            ? 'https://computingforall.instructure.com/enroll/JKT9EF'
+            : 'https://computingforall.instructure.com/enroll/B33XD4',
+      };
+      break;
+
+    //TODO ask for copy for these Statuses
+    case CareerPrepStatus.Rejected:
+      copy = {
+        headline: 'Application Rejected',
+        body: 'Unfortunately, your application was not approved.',
+        button: 'Contact Us',
+        buttonLink: '/services/jobseekers/career-prep/skill-assessment',
+      };
+      break;
+
+    case CareerPrepStatus.Withdrawn:
+      copy = {
+        headline: 'Application Withdrawn',
+        body: 'You have withdrawn from the program.',
+        button: 'Reapply',
+        buttonLink: '/services/jobseekers/career-prep/skill-assessment',
+      };
+      break;
+
+    default:
+      copy = {
+        headline: 'Status Unknown',
+        body: 'We are unable to determine your status.',
+        button: 'Contact Support',
+        buttonLink:
+          'https://github.com/Computing-For-All/nextjs-issue-tracker/issues/new?assignees=&labels=uat&projects=Computing-For-All%2Fnextjs-issue-tracker&template=application.yml',
+      };
+      break;
+  }
+  return (
+    <div className="space-y-3">
+      <Card
+        elevation={0}
+        sx={{
+          borderRadius: '1rem',
+          backgroundColor: 'rgb(246 246 246 / var(--tw-bg-opacity, 1))',
+          p: '1rem',
+        }}
+      >
+        <Grid2 container spacing={2}>
+          <Image
+            className="rounded-2xl"
+            width={400}
+            height={267}
+            src="/images/stock/careerAssesment.jfif"
+            alt="4 people looking at a computer, ready to start their journey"
+          />
+          <Stack spacing={2} direction={'column'}>
+            <div className="">
+              <div className="self-stretch text-[32px] font-normal leading-[38.40px] text-[#014260]">
+                {copy.headline}
+              </div>
+              <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
+                <div className="font-semibold leading-none tracking-wider text-[#047f9c]">
+                  Career Prep Program
+                </div>
+              </div>
+              <div className="font-normal leading-tight text-[#191919]/60">
+                {copy.body}
+              </div>
+            </div>
+            <Button
+              pill
+              href={copy.buttonLink}
+              className="w-fit p-1 border border-[#047f9c] bg-[#047f9c] font-medium text-white hover:bg-white hover:text-[#047f9c]"
+            >
+              {copy.button}
+            </Button>
+          </Stack>
+        </Grid2>
+      </Card>
+    </div>
+  );
+}

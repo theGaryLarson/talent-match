@@ -18,6 +18,7 @@ export default function RootLayout({
           {/* <ThemeProvider theme={theme}>
             <CssBaseline /> */}
           {/* adding this flex stuff so the footer is always at the bottom of the screen */}
+
           <div className="flex h-screen flex-col">
             <Header />
 
