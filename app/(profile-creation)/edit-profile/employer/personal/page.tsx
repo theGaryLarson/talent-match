@@ -8,7 +8,7 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
-import { Button, Progress } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import TextField from '@mui/material/TextField';
 import dayjs, { Dayjs } from 'dayjs';
@@ -241,7 +241,7 @@ export default function CreateEmployerPersonalPage() {
               userId={session?.user.id!}
               onImageUpload={handleAvatarUpload}
               initialImageUrl={session?.user?.image!}
-              apiPath='/api/users/avatar/upload'
+              apiPath="/api/users/avatar/upload"
             />
           </fieldset>
           <fieldset>
@@ -721,12 +721,10 @@ export default function CreateEmployerPersonalPage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-single-end">
-            {/* <Button pill className="custom-outline-btn">
+            {/* <PillButton className="custom-outline-btn">
               Cancel
-            </Button> */}
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            </PillButton> */}
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>
