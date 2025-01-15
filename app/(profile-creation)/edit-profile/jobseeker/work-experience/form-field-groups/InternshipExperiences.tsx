@@ -1,6 +1,7 @@
 import React, { memo, useCallback } from 'react';
-import { Button, Label } from 'flowbite-react';
+import { Label } from 'flowbite-react';
 import { Checkbox } from '@mui/material';
+import PillButton from '@/app/ui/components/PillButton';
 import { MdClose } from 'react-icons/md';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
@@ -80,15 +81,12 @@ export default memo(function InternshipExperiences({
     <fieldset key={classNamePrefix + internshipExperience.workId + '-key'}>
       <legend className="flex w-full justify-between">
         <h3>Internship Experience {index + 1}</h3>
-        <Button
+        <PillButton
           onClick={() => onRemove(internshipExperience.workId)}
-          size="xs"
-          color="dark"
-          outline
-          pill
+          variant="outlined"
         >
           <MdClose className="h-5 w-5" />
-        </Button>
+        </PillButton>
       </legend>
       <div className="profile-form-grid">
         <InputTextWithLabel
