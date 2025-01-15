@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { Button } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import { MdClose } from 'react-icons/md';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import { v4 as uuidv4 } from 'uuid';
@@ -57,15 +57,9 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
     <fieldset key={classNamePrefix + license.certId + '-key'}>
       <legend className="flex w-full justify-between">
         <h3>License or Certification {index + 1}</h3>
-        <Button
-          onClick={() => onRemove(license.certId)}
-          size="xs"
-          color="dark"
-          outline
-          pill
-        >
+        <PillButton onClick={() => onRemove(license.certId)} variant="outlined">
           <MdClose className="h-5 w-5" />
-        </Button>
+        </PillButton>
       </legend>
       <div className="profile-form-grid">
         <InputTextWithLabel

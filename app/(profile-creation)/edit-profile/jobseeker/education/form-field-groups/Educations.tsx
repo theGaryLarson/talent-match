@@ -1,7 +1,8 @@
 import React, { memo, useCallback, useState } from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import { Button, Label } from 'flowbite-react';
+import { Label } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import {
   Radio,
   Checkbox,
@@ -150,15 +151,9 @@ export default memo(function Educations({
     <fieldset key={classNamePrefix + education.id + '-key'}>
       <legend className="flex w-full justify-between">
         <h3>Education Detail {index + 1}</h3>
-        <Button
-          onClick={() => onRemove(education.id)}
-          size="xs"
-          color="dark"
-          outline
-          pill
-        >
+        <PillButton onClick={() => onRemove(education.id)} variant="outlined">
           <MdClose className="h-5 w-5" />
-        </Button>
+        </PillButton>
       </legend>
 
       <div>
