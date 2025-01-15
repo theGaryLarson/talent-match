@@ -1,8 +1,6 @@
 'use client';
 import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
-import Header from '@/app/ui/Header';
-import Footer from '@/app/ui/Footer';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from '@/mui.theme';

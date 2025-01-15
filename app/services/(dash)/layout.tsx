@@ -5,16 +5,17 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { BookmarkIcon } from '@heroicons/react/24/outline';
 import {
-  CalendarTodayOutlined,
+  BookmarkBorderRounded,
+  CalendarTodayRounded,
   InboxOutlined,
   LogoutRounded,
   Menu,
   NotificationsOutlined,
+  PersonOutlineRounded,
   QuestionAnswerOutlined,
-  Task,
   TaskOutlined,
-  TimelineOutlined,
-  WorkOutlineOutlined,
+  TimelineRounded,
+  WorkOutlineRounded,
 } from '@mui/icons-material';
 import {
   AppBar,
@@ -66,7 +67,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/services/jobseekers/dashboard' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
           >
             <div className="ml-10 space-x-1">
-              <PersonOutlineOutlinedIcon />
+              <PersonOutlineRounded />
               <span>Home</span>
             </div>
           </Link>
@@ -84,8 +85,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/services/joblistings' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
           >
             <div className="ml-10 space-x-1">
-              <WorkOutlineOutlined />
+              <WorkOutlineRounded />
               <span>Jobs</span>
+            </div>
+          </Link>
+          <Link
+            href="/services/jobseekers/dashboard/bookmarks"
+            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/services/jobseekers/dashboard/bookmarks' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
+          >
+            <div className="ml-10 space-x-1">
+              <BookmarkBorderRounded />
+              <span>Saved Jobs</span>
             </div>
           </Link>
           <Link
@@ -102,7 +112,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/underconstruction' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
           >
             <div className="ml-10 space-x-1">
-              <CalendarTodayOutlined />
+              <CalendarTodayRounded />
               <span>Events</span>
             </div>
           </Link>
@@ -111,7 +121,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/underconstruction' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
           >
             <div className="ml-10 space-x-1">
-              <TimelineOutlined />
+              <TimelineRounded />
               <span>Career Services</span>
             </div>
           </Link>

@@ -64,9 +64,9 @@ export default async function Page() {
           alignSelf: 'stretch',
         }}
       >
-        <Button pill href="#">
+        <PillButton href="#">
           Dashboard
-        </Button>
+        </PillButton>
         <Typography
           variant="h4"
           sx={{ fontSize: '24px', textAlign: 'center', fontWeight: 400 }}
