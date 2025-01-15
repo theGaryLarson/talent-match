@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Divider from '@mui/material/Divider';
-import { Button } from 'flowbite-react';
 
 export default function SignupHeader({ className }: { className?: string }) {
   return (
