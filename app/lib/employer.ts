@@ -197,7 +197,13 @@ export async function getAllCompanies() {
     const res = await prisma.companies.findMany();
     return res;
 }
-
+export async function getAllEmployers(){
+  return await prisma.employers.findMany({
+    include:{
+      users:true
+    }
+  })
+}
 export async function getAllTechAreas(){
     const res = await prisma.technology_areas.findMany();
     return res;

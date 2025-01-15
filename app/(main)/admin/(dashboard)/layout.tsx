@@ -48,6 +48,13 @@ export default async function layout({ children }: { children: React.ReactNode }
           Update Company
         </Link>
         <Link
+          href="/admin/verify"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <AddBusinessOutlined/>
+          Verify
+        </Link>
+        <Link
           href="/admin/user-management"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
         >

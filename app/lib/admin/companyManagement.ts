@@ -11,8 +11,9 @@ export async function adminCreateCompany(companyData:CompanyAdminCreationDTO) {
         throw new Error("Must Be Admin to complete this task")
     }
     if(!Session?.user.id){
-        throw new Error("Must Be Admin to complete this task")
+        throw new Error("Must Be a user to complete this task")
     }
+    let t = Session?.user.roles.includes(Role.ADMIN)
     try{
         let result = await prisma.companies.create(
             {
@@ -27,7 +28,7 @@ export async function adminCreateCompany(companyData:CompanyAdminCreationDTO) {
                     company_mission: companyData.companyMission,
                     estimated_annual_hires:companyData.estimatedAnnualHires,
                     industry_sector_id:companyData.industrySectorId,
-                    
+                    is_approved: true, //since this is created by an employer currently
                     company_website_url:companyData.companyWebsiteUrl,
                     company_phone:companyData.companyPhone,
                     company_vision: companyData.companyVision,
@@ -38,5 +39,25 @@ export async function adminCreateCompany(companyData:CompanyAdminCreationDTO) {
         return result;
     }catch(e){
         console.error(e)
+    }
+}
+
+export async function adminUpdateCompanyApproval(companyId:string,isApproved:boolean ) {
+    try {
+        const Session = await auth();
+        if(!Session?.user.roles.includes(Role.ADMIN)){
+            throw new Error("Must Be Admin to complete this task")
+        }
+        let res = await prisma.companies.update({
+            where:{
+                company_id:companyId
+            },
+            data:{
+                is_approved:isApproved
+            }
+        })
+        return res;
+    } catch (error) {
+        console.error(error) 
     }
 }
