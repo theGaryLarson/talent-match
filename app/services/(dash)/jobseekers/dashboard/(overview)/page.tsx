@@ -1,5 +1,8 @@
 import { auth } from '@/auth';
-import { getPoolWithSession, getCareerPrepAssementStatus } from '@/app/lib/jobseeker';
+import {
+  getPoolWithSession,
+  getCareerPrepAssementStatus,
+} from '@/app/lib/jobseeker';
 import { getJobSeekerEmployerView } from '@/app/lib/prisma';
 import { getJobSeekerAppliedJobs } from '@/app/lib/joblistings';
 import { getCareerPrepStatus } from '@/app/lib/admin/careerPrep';
@@ -11,6 +14,7 @@ import Applications from '@/app/ui/components/jobseekerdashboard/Applications';
 import Events from '@/app/ui/components/jobseekerdashboard/Events';
 import TrainingProviderPrograms from '@/app/ui/components/jobseekerdashboard/TrainingProviderPrograms';
 import CallToActionBanner from '@/app/ui/components/jobseekerdashboard/CallToActionBanner';
+import PillButton from '@/app/ui/components/PillButton';
 
 export const metadata = {
   title: 'My Dashboard',
@@ -20,25 +24,30 @@ export default async function Page() {
   const session = await auth();
   const pool = await getPoolWithSession();
 
-  const [
-    AssementInfo,
-    jobseekerData,
-    appliedJobs,
-    carrerPrepEnrollment
-  ] = await Promise.all([
-    getCareerPrepAssementStatus(),
-    getJobSeekerEmployerView(session?.user.jobseekerId || ''),
-    getJobSeekerAppliedJobs(),
-    getCareerPrepStatus(session?.user.jobseekerId ?? '')
-  ]);
+  const [AssementInfo, jobseekerData, appliedJobs, carrerPrepEnrollment] =
+    await Promise.all([
+      getCareerPrepAssementStatus(),
+      getJobSeekerEmployerView(session?.user.jobseekerId || ''),
+      getJobSeekerAppliedJobs(),
+      getCareerPrepStatus(session?.user.jobseekerId ?? ''),
+    ]);
 
-  const providerPrograms = (await getProviderProgramCardView(jobseekerData?.pathways?.pathway_title || '')).splice(0,3);
+  const providerPrograms = (
+    await getProviderProgramCardView(
+      jobseekerData?.pathways?.pathway_title || '',
+    )
+  ).splice(0, 3);
   const slicedAppliedJobs = appliedJobs?.slice(0, 3);
 
-  const hasTakenTest = AssementInfo != undefined && AssementInfo.CareerPrepAssessment.length > 0;
+  const hasTakenTest =
+    AssementInfo != undefined && AssementInfo.CareerPrepAssessment.length > 0;
 
   return (
-    <Stack direction={'column'} spacing={4} sx={{mb: 12, mr: 4}}>
+    <Stack
+      direction={'column'}
+      spacing={4}
+      sx={{ mt: '25px', mb: 12, mx: { xs: 3, md: 6 } }}
+    >
       {/*hasTakenTest ? (
         ''
       ) : (
@@ -47,22 +56,33 @@ export default async function Page() {
       <Stack
         direction={'row'}
         spacing={2}
-        sx={{my: '0.25rem', width: '100%', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch'}}
+        sx={{
+          mb: '0.25rem',
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          alignSelf: 'stretch',
+        }}
       >
         <Button pill href="#">
           Dashboard
         </Button>
-        <Typography variant="h4" sx={{ fontSize: '24px', textAlign: 'center', fontWeight: 400 }}>
+        <Typography
+          variant="h4"
+          sx={{ fontSize: '24px', textAlign: 'center', fontWeight: 400 }}
+        >
           |
         </Typography>
-        <Button
-          pill
-          outline
+        <PillButton
+          disableElevation
           href={'/services/jobseekers/' + session?.user.jobseekerId}
-          value="read-only"
+          sx={{
+            backgroundColor: '#f6f6f6',
+            color: '#014260',
+          }}
         >
           Showcase
-        </Button>
+        </PillButton>
       </Stack>
       <h1 className="text-[32px] text-black/90">
         Welcome back, {session?.user.firstName}

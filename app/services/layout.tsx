@@ -1,3 +1,4 @@
+'use client';
 import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import Header from '@/app/ui/Header';
@@ -15,17 +16,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <SessionProvider>
-          {/* <ThemeProvider theme={theme}>
-            <CssBaseline /> */}
-          {/* adding this flex stuff so the footer is always at the bottom of the screen */}
-          <div className="flex h-screen flex-col">
-            <Header />
-
-            <div className="flex-grow">{children}</div>
-
-            <Footer />
-          </div>
-          {/* </ThemeProvider> */}
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>

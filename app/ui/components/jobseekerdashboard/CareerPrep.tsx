@@ -7,7 +7,7 @@ import {
 } from '@/app/lib/admin/careerPrep';
 import { CareerPrepTrack } from '@/app/lib/poolAssignment';
 import { ReactNode } from 'react';
-import { Button } from 'flowbite-react';
+import RoundedButton from '../RoundedButton';
 
 export default async function CareerPrep(props: {
   enrollmentStatus: CareerPrepStatus | undefined;
@@ -151,8 +151,8 @@ export default async function CareerPrep(props: {
             src="/images/stock/careerAssesment.jfif"
             alt="4 people looking at a computer, ready to start their journey"
           />
-          <Stack spacing={2} direction={'column'}>
-            <div className="">
+          <Grid2 container spacing={2} direction={'column'}>
+            <div>
               <div className="self-stretch text-[32px] font-normal leading-[38.40px] text-[#014260]">
                 {copy.headline}
               </div>
@@ -165,14 +165,13 @@ export default async function CareerPrep(props: {
                 {copy.body}
               </div>
             </div>
-            <Button
-              pill
-              href={copy.buttonLink}
-              className="w-fit p-1 border border-[#047f9c] bg-[#047f9c] font-medium text-white hover:bg-white hover:text-[#047f9c]"
-            >
-              {copy.button}
-            </Button>
-          </Stack>
+            <RoundedButton
+              snug
+              invertColor
+              link={copy.buttonLink}
+              content={copy.button}
+            />
+          </Grid2>
         </Grid2>
       </Card>
     </div>

@@ -9,12 +9,17 @@ import {
   TableBody,
   Chip,
   ChipProps,
+  Box,
+  Typography,
+  Stack,
+  Divider,
 } from '@mui/material';
-import { Button } from 'flowbite-react';
 import { ArrowCircleRightOutlined } from '@mui/icons-material';
 import Link from 'next/link';
 import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 import { JobStatus } from '@/app/lib/jobseekerJobTracking';
+import RoundedButton from '../RoundedButton';
+import PillButton from '../PillButton';
 
 type StatusConfigType = {
   [K in JobStatus]: {
@@ -81,16 +86,31 @@ export default async function Applications({
 
   return (
     <Grid2 container rowSpacing={2} columns={1}>
-      <Grid2 container size={1} sx={{ justifyContent: 'space-between' }}>
+      <Grid2
+        container
+        spacing={1}
+        size={1}
+        sx={{ justifyContent: 'space-between' }}
+      >
         <p className="self-center text-xl font-medium text-black/90">
           Application Status
         </p>
-        <Button pill outline href="/services/joblistings">
+        <PillButton
+          href="/services/joblistings"
+          disableElevation
+          sx={{
+            backgroundColor: '#f6f6f6',
+            color: '#014260',
+          }}
+        >
           Search Jobs
-        </Button>
+        </PillButton>
       </Grid2>
       <Grid2 size={1}>
-        <Card variant="outlined" sx={{ p: 1 }}>
+        <Card
+          variant="outlined"
+          sx={{ p: 1, display: { xs: 'none', md: 'block' } }}
+        >
           <TableContainer>
             <Table>
               <TableHead>
@@ -113,7 +133,13 @@ export default async function Applications({
                   >
                     <TableCell>{job.job_title}</TableCell>
                     <TableCell>{job.companies.company_name}</TableCell>
-                    <TableCell>{job.unpublish_date?.toDateString()}</TableCell>
+                    <TableCell>
+                      {job.unpublish_date?.toLocaleString(undefined, {
+                        weekday: 'long',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </TableCell>
                     <TableCell
                       sx={{
                         display: 'flex',
@@ -139,6 +165,41 @@ export default async function Applications({
               </TableBody>
             </Table>
           </TableContainer>
+        </Card>
+        <Card variant="outlined" sx={{ display: { xs: 'block', md: 'none' } }}>
+          <Stack spacing={1} direction={'column'} sx={{ pt: 1 }}>
+            {jobs.map((job, index) => (
+              <Box key={job.job_posting_id + 'sm'} sx={{ px: 2 }}>
+                <Typography>{job.job_title}</Typography>
+                <Typography>{job.companies.company_name}</Typography>
+                <Typography>
+                  {job.unpublish_date?.toLocaleString(undefined, {
+                    weekday: 'long',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </Typography>
+                <Chip
+                  label={job.jobStatus}
+                  color={getStatusStyle(job.jobStatus).color}
+                  variant={getStatusStyle(job.jobStatus).variant}
+                  size="small"
+                />
+
+                <Link
+                  target="_blank"
+                  href={'/services/joblistings/' + job.job_posting_id}
+                >
+                  <Typography sx={{ textAlign: 'end', mb: 1 }}>
+                    <ArrowCircleRightOutlined />
+                  </Typography>
+                </Link>
+                {index !== jobs.length - 1 && (
+                  <Divider variant="middle" orientation="horizontal" />
+                )}
+              </Box>
+            ))}
+          </Stack>
         </Card>
       </Grid2>
     </Grid2>

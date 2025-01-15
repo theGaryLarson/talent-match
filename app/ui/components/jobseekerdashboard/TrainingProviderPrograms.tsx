@@ -2,6 +2,8 @@ import { Grid2, Stack } from '@mui/material';
 import { ReadEduProviderProgramCardDTO } from '@/app/lib/eduProviders';
 import TrainingProgramCard from '@/app/ui/components/career/TrainingProgramCard';
 import { Button } from 'flowbite-react';
+import RoundedButton from '../RoundedButton';
+import PillButton from '../PillButton';
 
 export default async function TrainingProviderPrograms({
   programs,
@@ -10,13 +12,20 @@ export default async function TrainingProviderPrograms({
 }) {
   return (
     <Stack direction={'column'} spacing={2}>
-      <Grid2 container sx={{ justifyContent: 'space-between' }}>
+      <Grid2 spacing={1} container sx={{ justifyContent: 'space-between' }}>
         <p className="self-center text-xl font-medium text-black/90">
           Coalition Training Provider Programs
         </p>
-        <Button pill outline href="/services/training-providers">
+        <PillButton
+          href="/services/training-providers"
+          disableElevation
+          sx={{
+            backgroundColor: '#f6f6f6',
+            color: '#014260',
+          }}
+        >
           See More
-        </Button>
+        </PillButton>
       </Grid2>
       <p>
         Kickstart your career with practical, industry-relevant training. These
