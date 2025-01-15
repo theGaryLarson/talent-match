@@ -3,10 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 
-// REVIEW: testing redux
-// import type { RootState } from '@/lib/store';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
 import {
   FormControl,
   FormControlLabel,
@@ -14,7 +10,7 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material';
-import { Button } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import { useRouter } from 'next/navigation';
 import { JsPreferencesDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useSession } from 'next-auth/react';
@@ -30,7 +26,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-import { CareerPrepPathways } from '@/app/lib/admin/careerPrep'
+import { CareerPrepPathways } from '@/app/lib/admin/careerPrep';
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -154,54 +150,74 @@ export default function CreateJobseekerProfilePreferencesPage() {
               <fieldset>
                 <legend>What are you looking for?</legend>
                 <div className="container">
-                  <Button
-                    pill
-                    className={`custom-outline-btn m-2 inline-block ${
-                      employmentType !== 'Full-time' ? '' : 'selected'
-                    }`}
-                    // variant="outlined"
+                  <PillButton
+                    sx={{
+                      m: 2, // Margin all sides equivalent to 'm-2'
+                      backgroundColor:
+                        employmentType === 'Full-time'
+                          ? '#047F9C'
+                          : 'transparent',
+                      color:
+                        employmentType === 'Full-time' ? '#ffffff' : '#047F9C',
+                    }}
+                    variant="outlined"
                     onClick={() => {
                       setEmploymentType('Full-time');
                     }}
                   >
                     Full-time job
-                  </Button>
-                  <Button
-                    pill
-                    className={`custom-outline-btn m-2 inline-block ${
-                      employmentType !== 'Part-time' ? '' : 'selected'
-                    }`}
-                    // variant="outlined"
+                  </PillButton>
+                  <PillButton
+                    sx={{
+                      m: 2,
+                      backgroundColor:
+                        employmentType === 'Part-time'
+                          ? '#047F9C'
+                          : 'transparent',
+                      color:
+                        employmentType === 'Part-time' ? '#ffffff' : '#047F9C',
+                    }}
+                    variant="outlined"
                     onClick={() => {
                       setEmploymentType('Part-time');
                     }}
                   >
                     Part-time job
-                  </Button>
-                  <Button
-                    pill
-                    className={`custom-outline-btn m-2 inline-block ${
-                      employmentType !== 'Internship' ? '' : 'selected'
-                    }`}
-                    // variant="outlined"
+                  </PillButton>
+                  <PillButton
+                    sx={{
+                      m: 2,
+                      backgroundColor:
+                        employmentType === 'Internship'
+                          ? '#047F9C'
+                          : 'transparent',
+                      color:
+                        employmentType === 'Internship' ? '#ffffff' : '#047F9C',
+                    }}
+                    variant="outlined"
                     onClick={() => {
                       setEmploymentType('Internship');
                     }}
                   >
                     Internship
-                  </Button>
-                  <Button
-                    pill
-                    className={`custom-outline-btn m-2 inline-block ${
-                      employmentType !== 'On-campus' ? '' : 'selected'
-                    }`}
-                    // variant="outlined"
+                  </PillButton>
+                  <PillButton
+                    sx={{
+                      m: 2,
+                      backgroundColor:
+                        employmentType === 'On-campus'
+                          ? '#047F9C'
+                          : 'transparent',
+                      color:
+                        employmentType === 'On-campus' ? '#ffffff' : '#047F9C',
+                    }}
+                    variant="outlined"
                     onClick={() => {
                       setEmploymentType('On-campus');
                     }}
                   >
                     On-campus job
-                  </Button>
+                  </PillButton>
                 </div>
               </fieldset>
               <FormControl component="fieldset">
@@ -247,18 +263,15 @@ export default function CreateJobseekerProfilePreferencesPage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
-            <Button
-              pill
-              className="custom-outline-btn"
+            <PillButton
+              variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/introduction');
               }}
             >
               Previous
-            </Button>
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            </PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

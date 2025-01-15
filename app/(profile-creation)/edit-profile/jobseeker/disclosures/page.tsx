@@ -10,7 +10,8 @@ import {
   JsDisclosuresPostDTO,
 } from '@/data/dtos/JobSeekerProfileCreationDTOs';
 import { useRouter } from 'next/navigation';
-import { Button, Label, List, ListItem } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
+
 import {
   FormControl,
   FormControlLabel,
@@ -421,18 +422,15 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             )}
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button
-              pill
-              className="custom-outline-btn"
+            <PillButton
+              variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/work-experience');
               }}
             >
               Previous
-            </Button>
-            <Button pill type="submit">
-              Submit
-            </Button>
+            </PillButton>
+            <PillButton type="submit">Submit</PillButton>
           </div>
         </form>
       </section>

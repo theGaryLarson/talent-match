@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import { Button } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import TextFieldWithSeparatedLabel from '@/app/ui/components/mui/TextFieldWithSeparatedLabel';
 import TextFieldWithNoLabel from '@/app/ui/components/mui/TextFieldWithNoLabel';
@@ -349,18 +349,15 @@ export default function CreateJobseekerProfileShowcasePage() {
             />
           </div>
           <div className="profile-form-progress-btn-group">
-            <Button
-              pill
-              className="custom-outline-btn"
+            <PillButton
+              variant="outlined"
               onClick={() => {
                 router.push('/edit-profile/jobseeker/preferences');
               }}
             >
               Previous
-            </Button>
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            </PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

@@ -8,7 +8,8 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
-import { Button, Progress } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
+
 import { devLog, formatPhoneE164 } from '@/app/lib/utils';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -689,12 +690,10 @@ export default function CreateJobseekerProfileIntroPage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-single-end">
-            {/* <Button pill className="custom-outline-btn">
+            {/* <Button variant="outlined">
               Cancel
             </Button> */}
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>
