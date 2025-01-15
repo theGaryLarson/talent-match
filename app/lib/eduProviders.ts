@@ -46,6 +46,8 @@ export type ReadEduProviderProgramDetailDTO = {
     programName: string, // provider_programs join programs on program_id
     eduProviderId: string, //edu_providers.id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
+    description?: string,
+    targetedJobRoles?: string[],
     locations: string[], // provider_programs.locations. Saved as TEXT field in db but separate into list on DTO delimiter (~)
     programLength: string, // provider_programs.programLength
     about: string, // provider_programs.about Possibly use Quill to implement this
@@ -63,9 +65,10 @@ export type PostEduProviderProgramDetailDTO = {
     logoUrl?: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
     eduProviderId: string, //edu_providers.id
     eduProviderName?: string, // provider_programs join edu_providers on edu_provider_id
+    description?: string,
     locations?: string[], // provider_programs.locations. Saved as TEXT field in db but separate into list on DTO delimiter (~)
     programLength?: string,
-    targetedJobRoles?: string, // delimited list of job roles. delimiter ~
+    targetedJobRoles?: string[], // delimited list of job roles. delimiter ~
     about?: string, // provider_programs.about Possibly use Quill to implement this
     tuition?: string, // provider_programs.tuition
     fees?: string, // provider_programs.fees
@@ -326,12 +329,38 @@ export const upsertTrainingProviderProgram = async (programDetail: PostEduProvid
                 training_program_id: providerProgram?.training_program_id || uuidv4(),
             },
             update: {
-                // TODO: fill-in appropriate fields for update & create
+                program_id: generalProgram.id,
+                edu_provider_id: programDetail.eduProviderId,
+                description: programDetail.description,
+                targetedJobRoles: programDetail.targetedJobRoles?.join('~'),
+                locations: programDetail.locations?.join('~'),
+                programLength: programDetail.programLength,
+                about: programDetail.about,
+                tuition: programDetail.tuition,
+                fees: programDetail.fees,
+                costSummary: programDetail.costSummary,
+                locationType: programDetail.locationType,
+                getStartedUrl: programDetail.getStartedUrl,
+                faq: JSON.stringify(programDetail.faq),
+                pathways: programDetail.pathways.join('~'),
             },
             create: {
                 training_program_id: uuidv4(),
                 program_id: generalProgram.id,
-                edu_provider_id: programDetail.eduProviderId
+                edu_provider_id: programDetail.eduProviderId,
+                description: programDetail.description,
+                targetedJobRoles: programDetail.targetedJobRoles?.join('~'),
+                locations: programDetail.locations?.join('~'),
+                programLength: programDetail.programLength,
+                about: programDetail.about,
+                tuition: programDetail.tuition,
+                fees: programDetail.fees,
+                costSummary: programDetail.costSummary,
+                locationType: programDetail.locationType,
+                getStartedUrl: programDetail.getStartedUrl,
+                faq: JSON.stringify(programDetail.faq),
+                pathways: programDetail.pathways.join('~'),
+
             },
             select: {
                 training_program_id: true,
