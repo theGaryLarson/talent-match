@@ -90,7 +90,7 @@ export default function JobPostingPage({
                                 :   ""
                         }
                         {
-                            session && joblisting && session.user.companyId === joblisting.company_id
+                            session && joblisting && (session.user.companyId === joblisting.company_id || session.user.roles.includes(Role.ADMIN))
                                 ?   <DeleteJobPostingButton id={params.id}/>
                                 :   ""
                         }
