@@ -852,7 +852,7 @@ model provider_program_has_skills {
   training_program_id String            @db.UniqueIdentifier
   skill_id            String            @db.UniqueIdentifier
   skills              skills            @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_training_program_has_skills_skills1")
-  provider_programs   provider_programs @relation(fields: [training_program_id], references: [training_program_id], onUpdate: NoAction, map: "fk_training_program_has_skills_training_program1")
+  provider_programs   provider_programs @relation(fields: [training_program_id], references: [training_program_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_training_program_has_skills_training_program1")
 
   @@id([training_program_id, skill_id], map: "training_program_has_skills_PRIMARY", clustered: false)
   @@index([skill_id], map: "fk_training_program_has_skills_skills1_idx")
@@ -884,7 +884,7 @@ model provider_programs {
   programLength       String? @db.Text
 
   provider_program_has_skills provider_program_has_skills[]
-  edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
+  edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, onDelete: Cascade, map: "fk_training_program_training_provider1")
   Program                     programs                      @relation(fields: [program_id], references: [id], onUpdate: NoAction, map: "fk_provider_programs_programs1")
 
   @@index([edu_provider_id], map: "training_programs_fk_training_program_training_provider1_idx")
