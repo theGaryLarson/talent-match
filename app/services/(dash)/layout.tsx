@@ -30,7 +30,7 @@ import {
 import Image from 'next/image';
 import Avatar from '@/app/ui/components/Avatar';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import PillButton from '@/app/ui/components/PillButton';
 import Header from '@/app/ui/Header';
@@ -141,9 +141,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   let { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleDrawerToggle = () => {
+  const handleDrawerToggle = useCallback(() => {
     setMobileOpen(!mobileOpen);
-  };
+  }, [mobileOpen]);
 
   if (status === 'loading') {
     return (
@@ -288,7 +288,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             open={mobileOpen}
             onClose={handleDrawerToggle}
             ModalProps={{
-              keepMounted: true, // Better open performance on mobile
+              keepMounted: true,
             }}
             sx={{
               display: { xs: 'block', md: 'none' },
