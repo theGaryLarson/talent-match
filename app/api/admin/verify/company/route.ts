@@ -1,7 +1,7 @@
 import { adminUpdateCompanyApproval } from "@/app/lib/admin/companyManagement"
 import { NextResponse } from "next/server"
 
-export async function UPDATE(req:Request){
+export async function POST(req:Request){
     const body:{companyId:string, isApproved:boolean} = await req.json()
     const res = await adminUpdateCompanyApproval(body.companyId, body.isApproved)
     if(res){

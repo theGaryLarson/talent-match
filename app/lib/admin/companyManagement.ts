@@ -61,3 +61,18 @@ export async function adminUpdateCompanyApproval(companyId:string,isApproved:boo
         console.error(error) 
     }
 }
+
+export async function getAllCompaniesWithAllEmployers(){
+    try{
+        const res = await prisma.companies.findMany({include:{
+            employers:{
+                include:{
+                    users:true
+                }
+            }
+        }});
+        return res;
+    }catch(error){
+        return[];
+    }
+}
