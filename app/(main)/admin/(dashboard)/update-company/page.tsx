@@ -31,7 +31,6 @@ export default function Page() {
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>([]);
   const [selectedCompanyOgInfo, setSelectedCompanyOginfo] = useState<companies>(companyStartInfo);
   const [formData, setFormData] = useState<companies>(companyStartInfo);
-
   useEffect(() => {
     fetch('/api/companies/getall')
       .then((res) => res.json())
@@ -58,6 +57,7 @@ export default function Page() {
   }, [selectedCompany]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    console.log(formData.is_approved)
     const { name, value, type } = e.target;
     const checked = 'checked' in e.target ? e.target.checked : undefined;
     setFormData((prevData) => ({
@@ -75,6 +75,7 @@ export default function Page() {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
+        setSelectedCompanyOginfo(formData)
         alert('Company updated successfully');
       } else {
         console.error('Failed to update company');
@@ -129,7 +130,10 @@ export default function Page() {
               ))}
             </select>
           </div>
-
+          <div>
+            <input type="checkbox" name='is_approved' checked={formData.is_approved} onChange={handleInputChange}/>
+            <label htmlFor="is_approved">Company is approved</label>
+          </div>
           <div className="grid grid-cols-1">
             <label htmlFor="about_us">About Company *</label>
             <textarea

@@ -550,6 +550,7 @@ model job_postings {
   job_description               String            @db.Text
   is_internship                 Boolean           @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
   is_paid                       Boolean           @default(true, map: "DF__job_posti__is_pa__5812160E") @db.Bit
+  is_apprenticeship             Boolean           @default(false)
   employment_type               String            @default("N'full-time'", map: "DF__job_posti__emplo__59063A47") @db.NVarChar(255)
   location                      String            @db.NVarChar(255)
   salary_range                  String            @db.VarChar(45)

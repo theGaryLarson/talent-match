@@ -29,6 +29,7 @@ export default function Page() {
       job_description: formData.get('job_description') as string,
       is_internship: formData.get('is_internship') === 'yes',
       is_paid: formData.get('is_paid') === 'yes',
+      is_apprenticeship: formData.get('is_apprenticeship') === 'yes',
       employment_type: formData.get('employment_type') as string,
       location: formData.get('location') as string,
       salary_range: formData.get('salary_range') as string,
@@ -145,6 +146,20 @@ export default function Page() {
           </label>
           <label>
             <input type="radio" name="is_internship" value="no" required />
+            No
+          </label>
+        </div>
+      </div>
+      {/* Apprentaceship */}
+      <div>
+        <label>Is this an apprenticeship?</label>
+        <div>
+          <label>
+            <input type="radio" name="is_apprenticeship" value="yes" required />
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="is_apprenticeship" value="no" required />
             No
           </label>
         </div>

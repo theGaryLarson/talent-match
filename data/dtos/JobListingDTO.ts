@@ -7,6 +7,7 @@ export type JobPostCreationDTO = {
     job_title: string;
     job_description: string;
     is_internship?: boolean;
+    is_apprenticeship:boolean;
     is_paid?: boolean;
     employment_type?: string;
     location: string;

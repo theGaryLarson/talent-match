@@ -65,6 +65,7 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         offer_visa_sponsorship:jobData.visa_sponsership,
         zip: jobData.zip,
         employment_type: jobData.employment_type || 'full-time',
+        is_apprenticeship:jobData.is_apprenticeship,
         location: jobData.location,
         salary_range: jobData.salary_range,
         county: postalGeoData?.county ?? '',
