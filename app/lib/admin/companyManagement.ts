@@ -62,6 +62,29 @@ export async function adminUpdateCompanyApproval(companyId:string,isApproved:boo
     }
 }
 
+
+export async function adminEmployerApproval(employerId:string, isVerifed:boolean) {
+    try {
+        const Session = await auth();
+        if(!Session?.user.roles.includes(Role.ADMIN)){
+            throw new Error("Must Be Admin to complete this task")
+        }
+        const res = await prisma.employers.update(
+            {
+                where:{
+                    employer_id:employerId
+                },
+                data:{
+                    is_verified_employee:isVerifed
+                }
+            }
+        )
+        return res;
+    } catch (error) {
+        
+    }
+}
+
 export async function getAllCompaniesWithAllEmployers(){
     try{
         const res = await prisma.companies.findMany({include:{

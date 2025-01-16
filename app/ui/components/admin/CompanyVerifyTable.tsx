@@ -17,7 +17,7 @@ function Row({company}:{ company:(companies&{employers:(employers&{users:User})[
         const response = await fetch('/api/admin/verify/company', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({companyId:company.company_id, isApproved:isApproved }),
+            body: JSON.stringify({companyId:company.company_id, isApproved:!isApproved }),
           });
           if (response.ok) {
             await response.json();
@@ -72,6 +72,36 @@ function Row({company}:{ company:(companies&{employers:(employers&{users:User})[
                 </TableHead>
                 <TableBody>
                     {company.employers.map((employee)=>{
+                        const [loadingEmployee, setLoadingEmployee] = useState(false);
+                        const [failedEmployee, setFailedEmployee] = useState(false);
+                        const [verifedEmployee, setVerifedEmployee] = useState(employee.is_verified_employee)
+                        const handleVerifyEmployee = async () => {
+                            try {
+                              setLoadingEmployee(true);
+                              const response = await fetch('/api/admin/verify/employer', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  employerId: employee.employer_id,
+                                  isVerified: !verifedEmployee,
+                                }),
+                              });
+                      
+                              if (response.ok) {
+                                const res = await response.json();
+                                setVerifedEmployee(res.is_verified_employee)
+                                setFailedEmployee(false);
+                              } else {
+                                setFailedEmployee(true);
+                                window.alert('Action Failed. Check your internet connection.');
+                              }
+                            } catch (error) {
+                              console.error('Error:', error);
+                              setFailedEmployee(true);
+                            } finally {
+                              setLoadingEmployee(false);
+                            }
+                          };
                      return(
                         <TableRow key={employee.employer_id}>
                   <TableCell>
@@ -81,7 +111,11 @@ function Row({company}:{ company:(companies&{employers:(employers&{users:User})[
                     {employee.users.email}
                   </TableCell>
                   <TableCell>
-                    {employee.is_verified_employee?"True":"False"}
+                  <Button onClick={handleVerifyEmployee} disabled={loadingEmployee}>
+            {loadingEmployee
+              ? "Loading..."
+              : verifedEmployee? "Revoke Verification": "Verify"}
+          </Button>
                   </TableCell>
                   </TableRow>
                      );   
