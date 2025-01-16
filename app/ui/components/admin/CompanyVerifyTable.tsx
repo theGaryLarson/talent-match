@@ -1,6 +1,5 @@
 'use client'
-import { JobStatus } from "@/app/lib/jobseekerJobTracking";
-import { Box, Button, Collapse, IconButton, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Collapse, FormControlLabel, FormGroup, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { companies, employers, User } from "@prisma/client";
@@ -133,8 +132,14 @@ function Row({company}:{ company:(companies&{employers:(employers&{users:User})[
 export default function CompanyVerifyTable(props:{
     companies:(companies&{employers:(employers&{users:User})[]})[]
 }){
+    const [checked, setChecked] = React.useState(true);
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {setChecked(event.target.checked);};
+    const filteredCompanies = checked?props.companies.filter((company)=>(!company.is_approved || company.employers.some((e)=>(!e.is_verified_employee)))):props.companies;
     return(
         <Box sx={{padding:2}}>
+            <FormGroup>
+            <FormControlLabel   control={<Checkbox checked={checked} onChange={handleChange} />} label="Only Show Companies That Need Approval or have Unverfied Employees" />
+            </FormGroup>
             <TableContainer component={Paper}>
                 <Table aria-label="collapsible table">
                 <TableHead>
@@ -149,7 +154,14 @@ export default function CompanyVerifyTable(props:{
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {props.companies.map((company)=>(<Row company={company} key={company.company_id}/>))}
+                    {filteredCompanies.map((company)=>(<Row company={company} key={company.company_id}/>))}
+                    {filteredCompanies.length == 0&&
+                    <TableRow>
+
+                    <TableCell colSpan={6}>
+                        No Companies are in need of approval at this time'
+                    </TableCell>
+                    </TableRow>}
                 </TableBody>
                 </Table>
             </TableContainer>
