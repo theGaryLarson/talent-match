@@ -68,7 +68,7 @@ async function fetchBookmarkedJobseekers(): Promise<any> {
   return response.json();
 }
 
-export default function Page() {
+export default function TalentSearch() {
   const { data: session } = useSession();
   // Listview data
   const [jobseekers, setJobSeekers] = useState<JobSeekerCardViewDTO[]>([]);

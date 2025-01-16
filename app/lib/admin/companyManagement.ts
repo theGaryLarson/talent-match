@@ -26,7 +26,12 @@ export async function adminCreateCompany(companyData:CompanyAdminCreationDTO) {
                     createdBy:Session.user.id,
                     company_mission: companyData.companyMission,
                     estimated_annual_hires:companyData.estimatedAnnualHires,
-                    industry_sector_id:companyData.industrySectorId
+                    industry_sector_id:companyData.industrySectorId,
+                    
+                    company_website_url:companyData.companyWebsiteUrl,
+                    company_phone:companyData.companyPhone,
+                    company_vision: companyData.companyVision,
+
                 }
             }
         )

@@ -7,7 +7,6 @@ import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
 import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
-import { CareerPrepStatus } from './admin/careerPrep';
 import { JobStatus } from './jobseekerJobTracking';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -108,7 +107,10 @@ export async function getJobListingById(joblistingId: string) {
         },
         jobApplications: {
           select: {
+            isBookmarked: true,
+            jobPostId: true,
             jobseekerId: true,
+            jobStatus: true,
           },
         },
       },
@@ -190,7 +192,7 @@ export async function ApplyToJob(jobPostingId: string) {
           id: existingApplication.id,
         },
         data: {
-          jobStatus: CareerPrepStatus.Applied,
+          jobStatus: JobStatus.Applied,
           appliedDate: new Date(),
         },
         include:{
@@ -207,15 +209,16 @@ export async function ApplyToJob(jobPostingId: string) {
         }
       });
     } else {
+      const applicationData = {
+        id: uuidv4(),
+        jobPostId: jobPostingId,
+        jobseekerId: Session.user.jobseekerId,
+        jobStatus: JobStatus.Applied,
+        appliedDate: new Date(),
+        isBookmarked: false,
+      };
       return await prisma.jobseekerJobPosting.create({
-        data: {
-          id: uuidv4(),
-          jobPostId: jobPostingId,
-          jobseekerId: Session.user.jobseekerId,
-          jobStatus: CareerPrepStatus.Applied,
-          appliedDate: new Date(),
-          isBookmarked: false,
-        },
+        data: applicationData,
         include:{
           job_posting:{
             include:{
@@ -263,7 +266,7 @@ export async function WithdrawFromJob(jobPostingId: string) {
           id: existingApplication.id,
         },
         data: {
-          jobStatus: CareerPrepStatus.Withdrawn,
+          jobStatus: JobStatus.IWithdrew,
           appliedDate: new Date(),
         },
       });
@@ -273,7 +276,7 @@ export async function WithdrawFromJob(jobPostingId: string) {
           id: uuidv4(),
           jobPostId: jobPostingId,
           jobseekerId: Session.user.jobseekerId,
-          jobStatus: CareerPrepStatus.Withdrawn,
+          jobStatus: JobStatus.IWithdrew,
           appliedDate: new Date(),
           isBookmarked: false,
         },
@@ -572,9 +575,6 @@ export async function getJobSeekerAppliedJobs() {
     const result = await prisma.jobseekerJobPosting.findMany({
       where: {
         jobseekerId: session.user.jobseekerId,
-        NOT: {
-          jobStatus: JobStatus.IWithdrew
-        }
       },
       include:{
         job_posting: {
