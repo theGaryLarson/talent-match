@@ -299,7 +299,7 @@ export const getProviderProgramDetailView = async (
 
 export const upsertTrainingProviderProgram = async (programDetail: PostEduProviderProgramDetailDTO) => {
 
-    await prisma.$transaction(async (prisma) => {
+    return await prisma.$transaction(async (prisma) => {
 
         // find the general program name for the jobseeker education drop-down. If it doesn't exist create it.
         const  generalProgram = await prisma.programs.upsert({

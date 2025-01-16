@@ -57,7 +57,6 @@ export default function Page() {
   }, [selectedCompany]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    console.log(formData.is_approved)
     const { name, value, type } = e.target;
     const checked = 'checked' in e.target ? e.target.checked : undefined;
     setFormData((prevData) => ({

@@ -187,7 +187,7 @@ export default function UpdateTrainingProviderPage() {
 
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-6/12">
       <h1 className="text-xl font-bold">Update Training Provider</h1>
 
       {/* Training Provider Selection */}
@@ -213,7 +213,7 @@ export default function UpdateTrainingProviderPage() {
 
       {/* Form */}
       {selectedProviderId && (
-        <div>
+        <div className='w-full'>
         <form onSubmit={onSubmit} className="space-y-3">
 
           {/* TP Logo Upload */}
