@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {EducationLevel} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { v4 as uuidv4 } from "uuid";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -45,6 +46,8 @@ export type ReadEduProviderProgramDetailDTO = {
     programName: string, // provider_programs join programs on program_id
     eduProviderId: string, //edu_providers.id
     eduProviderName: string, // provider_programs join edu_providers on edu_provider_id
+    description?: string,
+    targetedJobRoles?: string[],
     locations: string[], // provider_programs.locations. Saved as TEXT field in db but separate into list on DTO delimiter (~)
     programLength: string, // provider_programs.programLength
     about: string, // provider_programs.about Possibly use Quill to implement this
@@ -54,6 +57,25 @@ export type ReadEduProviderProgramDetailDTO = {
     locationType: LocationType | null, // provider_programs.locationType (enum LocationType)
     getStartedUrl: string, // provider_programs.getStartedUrl
     faq: { question: string, answer: string }[], // provider_programs.faq as TEXT field parse response with JSON.parse, JSON.stringify
+    pathways: EduProviderPathways[] // provider_programs.pathways will need converted from string to list and each item cast into EduProviderPathways enum
+}
+
+export type PostEduProviderProgramDetailDTO = {
+    programName: string, // provider_programs join programs on program_id (if doesn't exist in programs table add it first)
+    logoUrl?: string // will use blobStorage ss method to retrieve image url. getEduProviderLogo(eduProviderId)
+    eduProviderId: string, //edu_providers.id
+    eduProviderName?: string, // provider_programs join edu_providers on edu_provider_id
+    description?: string,
+    locations?: string[], // provider_programs.locations. Saved as TEXT field in db but separate into list on DTO delimiter (~)
+    programLength?: string,
+    targetedJobRoles?: string[], // delimited list of job roles. delimiter ~
+    about?: string, // provider_programs.about Possibly use Quill to implement this
+    tuition?: string, // provider_programs.tuition
+    fees?: string, // provider_programs.fees
+    costSummary?: string, // provider_programs.costSummary
+    locationType?: LocationType | null, // provider_programs.locationType (enum LocationType)
+    getStartedUrl?: string, // provider_programs.getStartedUrl
+    faq?: { question: string, answer: string }[], // provider_programs.faq as TEXT field parse response with JSON.parse, JSON.stringify
     pathways: EduProviderPathways[] // provider_programs.pathways will need converted from string to list and each item cast into EduProviderPathways enum
 }
 
@@ -274,6 +296,214 @@ export const getProviderProgramDetailView = async (
 
     return dto;
 };
+
+export const upsertTrainingProviderProgram = async (programDetail: PostEduProviderProgramDetailDTO) => {
+
+    await prisma.$transaction(async (prisma) => {
+
+        // find the general program name for the jobseeker education drop-down. If it doesn't exist create it.
+        const  generalProgram = await prisma.programs.upsert({
+            where: {
+                title: programDetail.programName
+            },
+            update: {
+                title: programDetail.programName
+            },
+            create: {
+                id: uuidv4(),
+                title: programDetail.programName
+            }
+        });
+
+        // retrieve training_program_id
+        const providerProgram = await prisma.provider_programs.findFirst({
+            where: {
+                edu_provider_id: programDetail.eduProviderId,
+                program_id: generalProgram.id,
+            }
+        });
+
+        // upsert provider program entry with training_program_id
+        const updatedProviderProgram = await prisma.provider_programs.upsert({
+            where: {
+                training_program_id: providerProgram?.training_program_id || uuidv4(),
+            },
+            update: {
+                program_id: generalProgram.id,
+                edu_provider_id: programDetail.eduProviderId,
+                description: programDetail.description,
+                targetedJobRoles: programDetail.targetedJobRoles?.join('~'),
+                locations: programDetail.locations?.join('~'),
+                programLength: programDetail.programLength,
+                about: programDetail.about,
+                tuition: programDetail.tuition,
+                fees: programDetail.fees,
+                costSummary: programDetail.costSummary,
+                locationType: programDetail.locationType,
+                getStartedUrl: programDetail.getStartedUrl,
+                faq: JSON.stringify(programDetail.faq),
+                pathways: programDetail.pathways.join('~'),
+            },
+            create: {
+                training_program_id: uuidv4(),
+                program_id: generalProgram.id,
+                edu_provider_id: programDetail.eduProviderId,
+                description: programDetail.description,
+                targetedJobRoles: programDetail.targetedJobRoles?.join('~'),
+                locations: programDetail.locations?.join('~'),
+                programLength: programDetail.programLength,
+                about: programDetail.about,
+                tuition: programDetail.tuition,
+                fees: programDetail.fees,
+                costSummary: programDetail.costSummary,
+                locationType: programDetail.locationType,
+                getStartedUrl: programDetail.getStartedUrl,
+                faq: JSON.stringify(programDetail.faq),
+                pathways: programDetail.pathways.join('~'),
+
+            },
+            select: {
+                training_program_id: true,
+                about: true,
+                tuition: true,
+                fees: true,
+                costSummary: true,
+                locationType: true,
+                programLength: true,
+                getStartedUrl: true,
+                faq: true,
+                pathways: true,
+                locations: true,
+                edu_provider: {
+                    select: {
+                        id: true,
+                        name: true,
+                        logoUrl: true,
+                    },
+                },
+                Program: {
+                    select: {
+                        title: true,
+                    },
+                },
+            },
+        });
+
+        // Safe JSON parsing for FAQ
+        let faq: { question: string; answer: string }[] = [];
+        if (updatedProviderProgram.faq) {
+            try {
+                faq = JSON.parse(updatedProviderProgram.faq);
+            } catch (error) {
+                console.error('Failed to parse FAQ JSON:', error);
+                faq = [];
+            }
+        }
+
+        // Map the database fields to the DTO
+        const dto: ReadEduProviderProgramDetailDTO = {
+            programId: updatedProviderProgram.training_program_id,
+            programName: updatedProviderProgram.Program.title,
+            logoUrl: updatedProviderProgram.edu_provider.logoUrl || '',
+            eduProviderId: updatedProviderProgram.edu_provider.id,
+            eduProviderName: updatedProviderProgram.edu_provider.name,
+            locations: updatedProviderProgram.locations
+              ? updatedProviderProgram.locations.split('~').map(location => location.trim())
+              : [],
+            about: updatedProviderProgram.about || '',
+            tuition: updatedProviderProgram.tuition || undefined,
+            fees: updatedProviderProgram.fees || undefined,
+            costSummary: updatedProviderProgram.costSummary || undefined,
+            locationType: isEnumValue(LocationType, updatedProviderProgram.locationType) ? updatedProviderProgram.locationType as LocationType : null,
+            programLength: updatedProviderProgram.programLength || '',
+            getStartedUrl: updatedProviderProgram.getStartedUrl || '',
+            faq: faq,
+            pathways: updatedProviderProgram.pathways
+              ? updatedProviderProgram.pathways
+                .split('~')
+                .map(path => path.trim())
+                .filter((path): path is EduProviderPathways =>
+                  isEnumValue(EduProviderPathways, path)
+                )
+              : [],
+        };
+
+        return dto;
+    });
+}
+
+export const deleteTrainingProviderProgram = async (providerProgramId: string) => {
+ const deletedProviderProgram = await prisma.provider_programs.delete({
+     where: {
+         training_program_id: providerProgramId
+     },
+     select: {
+         training_program_id: true,
+         about: true,
+         tuition: true,
+         fees: true,
+         costSummary: true,
+         locationType: true,
+         programLength: true,
+         getStartedUrl: true,
+         faq: true,
+         pathways: true,
+         locations: true,
+         edu_provider: {
+             select: {
+                 id: true,
+                 name: true,
+                 logoUrl: true,
+             },
+         },
+         Program: {
+             select: {
+                 title: true,
+             },
+         },
+     },
+ });
+    // Safe JSON parsing for FAQ
+    let faq: { question: string; answer: string }[] = [];
+    if (deletedProviderProgram.faq) {
+        try {
+            faq = JSON.parse(deletedProviderProgram.faq);
+        } catch (error) {
+            console.error('Failed to parse FAQ JSON:', error);
+            faq = [];
+        }
+    }
+
+    // Map the database fields to the DTO
+    const dto: ReadEduProviderProgramDetailDTO = {
+        programId: deletedProviderProgram.training_program_id,
+        programName: deletedProviderProgram.Program.title,
+        logoUrl: deletedProviderProgram.edu_provider.logoUrl || '',
+        eduProviderId: deletedProviderProgram.edu_provider.id,
+        eduProviderName: deletedProviderProgram.edu_provider.name,
+        locations: deletedProviderProgram.locations
+          ? deletedProviderProgram.locations.split('~').map(location => location.trim())
+          : [],
+        about: deletedProviderProgram.about || '',
+        tuition: deletedProviderProgram.tuition || undefined,
+        fees: deletedProviderProgram.fees || undefined,
+        costSummary: deletedProviderProgram.costSummary || undefined,
+        locationType: isEnumValue(LocationType, deletedProviderProgram.locationType) ? deletedProviderProgram.locationType as LocationType : null,
+        programLength: deletedProviderProgram.programLength || '',
+        getStartedUrl: deletedProviderProgram.getStartedUrl || '',
+        faq: faq,
+        pathways: deletedProviderProgram.pathways
+          ? deletedProviderProgram.pathways
+            .split('~')
+            .map(path => path.trim())
+            .filter((path): path is EduProviderPathways =>
+              isEnumValue(EduProviderPathways, path)
+            )
+          : [],
+    };
+
+    return dto;
+}
 
 export function isEnumValue<T extends { [key: string]: string | number | null }>(
     enumObj: T,
