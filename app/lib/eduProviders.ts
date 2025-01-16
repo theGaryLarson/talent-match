@@ -431,79 +431,80 @@ export const upsertTrainingProviderProgram = async (programDetail: PostEduProvid
         return dto;
     });
 }
+// //Redundent, already have a delete provider program in /lib/admin/eduProviderPartners line 202
+// export const deleteTrainingProviderProgram = async (providerProgramId: string) => {
+//  const deletedProviderProgram = await prisma.provider_programs.delete({
+//      where: {
+//          training_program_id: providerProgramId
+//      },
+//      select: {
+//          training_program_id: true,
+//          about: true,
+//          tuition: true,
+//          fees: true,
+//          costSummary: true,
+//          locationType: true,
+//          programLength: true,
+//          getStartedUrl: true,
+//          faq: true,
+//          pathways: true,
+//          locations: true,
+//          edu_provider: {
+//              select: {
+//                  id: true,
+//                  name: true,
+//                  logoUrl: true,
+//              },
+//          },
+//          Program: {
+//              select: {
+//                  title: true,
+//              },
+//          },
+//      },
+//  });
 
-export const deleteTrainingProviderProgram = async (providerProgramId: string) => {
- const deletedProviderProgram = await prisma.provider_programs.delete({
-     where: {
-         training_program_id: providerProgramId
-     },
-     select: {
-         training_program_id: true,
-         about: true,
-         tuition: true,
-         fees: true,
-         costSummary: true,
-         locationType: true,
-         programLength: true,
-         getStartedUrl: true,
-         faq: true,
-         pathways: true,
-         locations: true,
-         edu_provider: {
-             select: {
-                 id: true,
-                 name: true,
-                 logoUrl: true,
-             },
-         },
-         Program: {
-             select: {
-                 title: true,
-             },
-         },
-     },
- });
-    // Safe JSON parsing for FAQ
-    let faq: { question: string; answer: string }[] = [];
-    if (deletedProviderProgram.faq) {
-        try {
-            faq = JSON.parse(deletedProviderProgram.faq);
-        } catch (error) {
-            console.error('Failed to parse FAQ JSON:', error);
-            faq = [];
-        }
-    }
+//     // Safe JSON parsing for FAQ
+//     let faq: { question: string; answer: string }[] = [];
+//     if (deletedProviderProgram.faq) {
+//         try {
+//             faq = JSON.parse(deletedProviderProgram.faq);
+//         } catch (error) {
+//             console.error('Failed to parse FAQ JSON:', error);
+//             faq = [];
+//         }
+//     }
 
-    // Map the database fields to the DTO
-    const dto: ReadEduProviderProgramDetailDTO = {
-        programId: deletedProviderProgram.training_program_id,
-        programName: deletedProviderProgram.Program.title,
-        logoUrl: deletedProviderProgram.edu_provider.logoUrl || '',
-        eduProviderId: deletedProviderProgram.edu_provider.id,
-        eduProviderName: deletedProviderProgram.edu_provider.name,
-        locations: deletedProviderProgram.locations
-          ? deletedProviderProgram.locations.split('~').map(location => location.trim())
-          : [],
-        about: deletedProviderProgram.about || '',
-        tuition: deletedProviderProgram.tuition || undefined,
-        fees: deletedProviderProgram.fees || undefined,
-        costSummary: deletedProviderProgram.costSummary || undefined,
-        locationType: isEnumValue(LocationType, deletedProviderProgram.locationType) ? deletedProviderProgram.locationType as LocationType : null,
-        programLength: deletedProviderProgram.programLength || '',
-        getStartedUrl: deletedProviderProgram.getStartedUrl || '',
-        faq: faq,
-        pathways: deletedProviderProgram.pathways
-          ? deletedProviderProgram.pathways
-            .split('~')
-            .map(path => path.trim())
-            .filter((path): path is EduProviderPathways =>
-              isEnumValue(EduProviderPathways, path)
-            )
-          : [],
-    };
+//     // Map the database fields to the DTO
+//     const dto: ReadEduProviderProgramDetailDTO = {
+//         programId: deletedProviderProgram.training_program_id,
+//         programName: deletedProviderProgram.Program.title,
+//         logoUrl: deletedProviderProgram.edu_provider.logoUrl || '',
+//         eduProviderId: deletedProviderProgram.edu_provider.id,
+//         eduProviderName: deletedProviderProgram.edu_provider.name,
+//         locations: deletedProviderProgram.locations
+//           ? deletedProviderProgram.locations.split('~').map(location => location.trim())
+//           : [],
+//         about: deletedProviderProgram.about || '',
+//         tuition: deletedProviderProgram.tuition || undefined,
+//         fees: deletedProviderProgram.fees || undefined,
+//         costSummary: deletedProviderProgram.costSummary || undefined,
+//         locationType: isEnumValue(LocationType, deletedProviderProgram.locationType) ? deletedProviderProgram.locationType as LocationType : null,
+//         programLength: deletedProviderProgram.programLength || '',
+//         getStartedUrl: deletedProviderProgram.getStartedUrl || '',
+//         faq: faq,
+//         pathways: deletedProviderProgram.pathways
+//           ? deletedProviderProgram.pathways
+//             .split('~')
+//             .map(path => path.trim())
+//             .filter((path): path is EduProviderPathways =>
+//               isEnumValue(EduProviderPathways, path)
+//             )
+//           : [],
+//     };
 
-    return dto;
-}
+//     return dto;
+// }
 
 export function isEnumValue<T extends { [key: string]: string | number | null }>(
     enumObj: T,
