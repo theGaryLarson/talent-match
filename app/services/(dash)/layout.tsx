@@ -8,6 +8,7 @@ import {
   BookmarkBorderRounded,
   CalendarTodayRounded,
   InboxOutlined,
+  LinkedIn,
   LogoutRounded,
   Menu,
   NotificationsOutlined,
@@ -37,150 +38,133 @@ import Footer from '@/app/ui/Footer';
 
 const drawerWidth = 260;
 
+const JobseekerDrawer = ({ session }: { session: any }) => {
+  const pathname = usePathname();
+
+  const links = [
+    {
+      href: '/services/jobseekers/dashboard',
+      icon: <PersonOutlineRounded />,
+      label: 'Home',
+    },
+    { href: '/underconstruction', icon: <InboxOutlined />, label: 'Inbox' },
+    {
+      href: '/services/joblistings',
+      icon: <WorkOutlineRounded />,
+      label: 'Jobs',
+    },
+    {
+      href: '/services/jobseekers/dashboard/bookmarks',
+      icon: <BookmarkBorderRounded />,
+      label: 'Saved Jobs',
+    },
+    {
+      href: '/services/jobseekers/dashboard/my-applications',
+      icon: <TaskOutlined />,
+      label: 'Applications',
+    },
+    {
+      href: '/underconstruction',
+      icon: <CalendarTodayRounded />,
+      label: 'Events',
+    },
+    {
+      href: '/underconstruction',
+      icon: <TimelineRounded />,
+      label: 'Career Services',
+    },
+    {
+      href: 'https://forum.watechwfcoalition.org/',
+      icon: <QuestionAnswerOutlined />,
+      label: 'Community Network',
+      external: true,
+    },
+  ];
+
+  return (
+    <>
+      <Toolbar sx={{ height: '76px', mb: '25px' }} />
+      <div className="flex flex-col text-button-secondary-idle-text">
+        <Stack
+          direction={'row'}
+          spacing={1}
+          sx={{ alignItems: 'center', ml: 5, mb: 3 }}
+        >
+          <Avatar scale={0.66} imgsrc={session?.user.image || ''} />
+          <div>
+            <p className="text-wrap font-bold">{session?.user.name}</p>
+            <Link
+              href={'/edit-profile/jobseeker/introduction'}
+              className="text-wrap text-sm text-primary-600 sm-tablet:text-base"
+            >
+              Edit Profile
+            </Link>
+          </div>
+        </Stack>
+        {links.map((link) => (
+          <Link
+            key={link.label + link.href}
+            href={link.href}
+            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${
+              pathname === link.href
+                ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg'
+                : 'hover:bg-gray-200'
+            }`}
+            target={link.external ? '_blank' : undefined}
+          >
+            <div className="ml-10 space-x-1">
+              {link.icon}
+              <span>{link.label}</span>
+            </div>
+          </Link>
+        ))}
+        <PillButton
+          startIcon={<LogoutRounded />}
+          disableElevation
+          href="/signout"
+          sx={{
+            ml: 5,
+            mt: 3,
+            width: '123px',
+            backgroundColor: '#f6f6f6',
+            color: '#014260',
+          }}
+        >
+          Log Out
+        </PillButton>
+      </div>
+    </>
+  );
+};
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   let { data: session, status } = useSession();
-
-  const JobseekerDrawer = () => {
-    const pathname = usePathname();
-    return (
-      <>
-        <Toolbar sx={{ height: '76px', mb: '25px' }} />
-        <div className="flex flex-col text-button-secondary-idle-text">
-          <Stack
-            direction={'row'}
-            spacing={1}
-            sx={{ alignItems: 'center', ml: 5, mb: 3 }}
-          >
-            <Avatar scale={0.66} imgsrc={session?.user.image || ''} />
-            <div>
-              <p className="text-wrap font-bold">{session?.user.name}</p>
-              <Link
-                href={'/edit-profile/jobseeker/introduction'}
-                className="text-wrap text-sm text-primary-600 sm-tablet:text-base"
-              >
-                Edit Profile
-              </Link>
-            </div>
-          </Stack>
-          <Link
-            href={'/services/jobseekers/dashboard'}
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/services/jobseekers/dashboard' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
-          >
-            <div className="ml-10 space-x-1">
-              <PersonOutlineRounded />
-              <span>Home</span>
-            </div>
-          </Link>
-          <Link
-            href={'/underconstruction'}
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/underconstruction' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
-          >
-            <div className="ml-10 space-x-1">
-              <InboxOutlined />
-              <span>Inbox</span>
-            </div>
-          </Link>
-          <Link
-            href="/services/joblistings"
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/services/joblistings' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
-          >
-            <div className="ml-10 space-x-1">
-              <WorkOutlineRounded />
-              <span>Jobs</span>
-            </div>
-          </Link>
-          <Link
-            href="/services/jobseekers/dashboard/bookmarks"
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/services/jobseekers/dashboard/bookmarks' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
-          >
-            <div className="ml-10 space-x-1">
-              <BookmarkBorderRounded />
-              <span>Saved Jobs</span>
-            </div>
-          </Link>
-          <Link
-            href="/services/jobseekers/dashboard/my-applications"
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/services/jobseekers/dashboard/my-applications' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
-          >
-            <div className="ml-10 space-x-1">
-              <TaskOutlined />
-              <span>Applications</span>
-            </div>
-          </Link>
-          <Link
-            href="/underconstruction"
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/underconstruction' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
-          >
-            <div className="ml-10 space-x-1">
-              <CalendarTodayRounded />
-              <span>Events</span>
-            </div>
-          </Link>
-          <Link
-            href="/underconstruction"
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/underconstruction' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
-          >
-            <div className="ml-10 space-x-1">
-              <TimelineRounded />
-              <span>Career Services</span>
-            </div>
-          </Link>
-          <Link
-            href="https://forum.watechwfcoalition.org/"
-            target="_blank"
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${pathname === '/underconstruction' ? 'bg-button-secondary-idle-text text-button-secondary-idle-bg' : 'hover:bg-gray-200'}`}
-          >
-            <div className="ml-10 space-x-1">
-              <QuestionAnswerOutlined />
-              <span>Community Network</span>
-            </div>
-          </Link>
-          <PillButton
-            startIcon={<LogoutRounded />}
-            disableElevation
-            href="/signout"
-            sx={{
-              ml: 5,
-              mt: 3,
-              width: '123px',
-              backgroundColor: '#f6f6f6',
-              color: '#014260',
-            }}
-          >
-            Log Out
-          </PillButton>
-        </div>
-      </>
-    );
-  };
-
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  if (status === "loading") {
-     return (
-       <div className="min-h-screen">
-         {/* Header skeleton */}
-         <div className="animate-pulse">
-           <div className="h-[76px] border-b bg-white">
-             <div className="flex h-full items-center justify-between px-4">
-               <div className="h-[50px] w-[75px] bg-gray-200"></div>
-             </div>
-           </div>
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen">
+        {/* Header skeleton */}
+        <div className="animate-pulse">
+          <div className="h-[76px] border-b bg-white">
+            <div className="flex h-full items-center justify-between px-4">
+              <div className="h-[50px] w-[75px] bg-gray-200"></div>
+            </div>
+          </div>
 
-           {/* Main content with right drawer */}
-           <div className="flex justify-between">
-             {/* Main content area */}
-             <div className="flex-1 p-4">
-             </div>
-           </div>
-         </div>
-       </div>
-     );
-   }
+          {/* Main content with right drawer */}
+          <div className="flex justify-between">
+            {/* Main content area */}
+            <div className="flex-1 p-4"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (session?.user.employerId) {
     return (
@@ -239,7 +223,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     );
   } else if (session?.user.jobseekerId) {
     return (
-      <div>
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <AppBar
           position="sticky"
           variant="outlined"
@@ -261,7 +251,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 color="inherit"
                 aria-label="open notifications"
                 edge="start"
-                sx={{ mr: { xs: 2, sm: 4 } }}
+                sx={{ mr: { xs: 2, md: 4 } }}
               >
                 <NotificationsOutlined />
               </IconButton>
@@ -270,7 +260,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{ display: { xs: 'block', sm: 'none' } }}
+                sx={{ display: { xs: 'block', md: 'none' } }}
               >
                 <Menu />
               </IconButton>
@@ -278,19 +268,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Toolbar>
         </AppBar>
         <Grid2
-          sx={{ display: { xs: 'none', sm: 'block' }, width: drawerWidth }}
+          sx={{ display: { xs: 'none', md: 'block' }, width: drawerWidth }}
         >
           <Drawer
             elevation={0}
             variant="permanent"
             anchor="right"
             sx={{
-              display: { xs: 'none', sm: 'block' },
+              display: { xs: 'none', md: 'block' },
               width: drawerWidth,
               '& .MuiDrawer-paper': { border: 0, width: drawerWidth },
             }}
           >
-            {<JobseekerDrawer />}
+            <JobseekerDrawer session={session} />
           </Drawer>
           <Drawer
             variant="temporary"
@@ -301,22 +291,52 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               keepMounted: true, // Better open performance on mobile
             }}
             sx={{
-              display: { xs: 'block', sm: 'none' },
+              display: { xs: 'block', md: 'none' },
               '& .MuiDrawer-paper': {
                 boxSizing: 'border-box',
                 width: drawerWidth,
               },
             }}
           >
-            <JobseekerDrawer />
+            <JobseekerDrawer session={session} />
           </Drawer>
         </Grid2>
         <Box
           component="main"
-          sx={{ flexGrow: 1, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+          sx={{ flexGrow: 1, width: { md: `calc(100% - ${drawerWidth}px)` } }}
         >
           {children}
         </Box>
+        <Grid2
+          spacing={2}
+          container
+          sx={{
+            position: 'relative',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            px: 5,
+            py: 2.5,
+            zIndex: 9000,
+            bgcolor: '#F6F6F6',
+          }}
+        >
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Link href={'/policies/terms-of-service'}>Terms of Service</Link>
+            {/*<Link href={'/underconstruction'}>Privacy Policy</Link>
+            <Link href={'/underconstruction'}>Cookie Settings</Link>*/}
+          </Stack>
+          <div>
+            <p>
+              Follow Us{' '}
+              <Link
+                target="_blank"
+                href="https://www.linkedin.com/company/washington-tech-workforce-coalition"
+              >
+                <LinkedIn />
+              </Link>
+            </p>
+          </div>
+        </Grid2>
       </div>
     );
   } else {

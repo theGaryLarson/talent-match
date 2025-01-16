@@ -109,7 +109,7 @@ export default async function Applications({
       <Grid2 size={1}>
         <Card
           variant="outlined"
-          sx={{ p: 1, display: { xs: 'none', md: 'block' } }}
+          sx={{ p: 1, display: { xs: 'none', sm: 'block' } }}
         >
           <TableContainer>
             <Table>
@@ -166,7 +166,7 @@ export default async function Applications({
             </Table>
           </TableContainer>
         </Card>
-        <Card variant="outlined" sx={{ display: { xs: 'block', md: 'none' } }}>
+        <Card variant="outlined" sx={{ display: { xs: 'block', sm: 'none' } }}>
           <Stack spacing={1} direction={'column'} sx={{ pt: 1 }}>
             {jobs.map((job, index) => (
               <Box key={job.job_posting_id + 'sm'} sx={{ px: 2 }}>
