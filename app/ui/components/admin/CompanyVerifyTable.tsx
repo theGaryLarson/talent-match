@@ -5,6 +5,61 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { companies, employers, User } from "@prisma/client";
 import React, { useState } from "react";
 
+
+
+
+
+function EmployeeRow({employee}:{employee:(employers&{users:User})}){
+    const [loadingEmployee, setLoadingEmployee] = useState(false);
+    const [failedEmployee, setFailedEmployee] = useState(false);
+    const [verifedEmployee, setVerifedEmployee] = useState(employee.is_verified_employee)
+    const handleVerifyEmployee = async () => {
+        try {
+          setLoadingEmployee(true);
+          const response = await fetch('/api/admin/verify/employer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              employerId: employee.employer_id,
+              isVerified: !verifedEmployee,
+            }),
+          });
+  
+          if (response.ok) {
+            const res = await response.json();
+            setVerifedEmployee(res.is_verified_employee)
+            setFailedEmployee(false);
+          } else {
+            setFailedEmployee(true);
+            window.alert('Action Failed. Check your internet connection.');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          setFailedEmployee(true);
+        } finally {
+          setLoadingEmployee(false);
+        }
+      };
+ return(
+    <TableRow>
+        <TableCell>
+            {employee.users.first_name} {employee.users.last_name}
+        </TableCell>
+<TableCell>
+{employee.users.email}
+</TableCell>
+<TableCell>
+<Button onClick={handleVerifyEmployee} disabled={loadingEmployee}>
+{loadingEmployee
+? "Loading..."
+: verifedEmployee? "Revoke Verification": "Verify"}
+</Button>
+</TableCell>
+</TableRow>
+ );   
+}
+
+
 function Row({company}:{ company:(companies&{employers:(employers&{users:User})[]})}){
     const [open, setOpen] = React.useState(false);
     const [isApproved, setIsApproved] = useState(company.is_approved);
@@ -70,55 +125,7 @@ function Row({company}:{ company:(companies&{employers:(employers&{users:User})[
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                    {company.employers.map((employee)=>{
-                        const [loadingEmployee, setLoadingEmployee] = useState(false);
-                        const [failedEmployee, setFailedEmployee] = useState(false);
-                        const [verifedEmployee, setVerifedEmployee] = useState(employee.is_verified_employee)
-                        const handleVerifyEmployee = async () => {
-                            try {
-                              setLoadingEmployee(true);
-                              const response = await fetch('/api/admin/verify/employer', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                  employerId: employee.employer_id,
-                                  isVerified: !verifedEmployee,
-                                }),
-                              });
-                      
-                              if (response.ok) {
-                                const res = await response.json();
-                                setVerifedEmployee(res.is_verified_employee)
-                                setFailedEmployee(false);
-                              } else {
-                                setFailedEmployee(true);
-                                window.alert('Action Failed. Check your internet connection.');
-                              }
-                            } catch (error) {
-                              console.error('Error:', error);
-                              setFailedEmployee(true);
-                            } finally {
-                              setLoadingEmployee(false);
-                            }
-                          };
-                     return(
-                        <TableRow key={employee.employer_id}>
-                  <TableCell>
-                    {employee.users.first_name} {employee.users.last_name}
-                  </TableCell>
-                  <TableCell>
-                    {employee.users.email}
-                  </TableCell>
-                  <TableCell>
-                  <Button onClick={handleVerifyEmployee} disabled={loadingEmployee}>
-            {loadingEmployee
-              ? "Loading..."
-              : verifedEmployee? "Revoke Verification": "Verify"}
-          </Button>
-                  </TableCell>
-                  </TableRow>
-                     );   
-                    })}
+                    {company.employers.map((emp)=><EmployeeRow employee={emp} key={emp.employer_id}/>)}
                     
                 </TableBody>
               </Table>
@@ -159,7 +166,7 @@ export default function CompanyVerifyTable(props:{
                     <TableRow>
 
                     <TableCell colSpan={6}>
-                        No Companies are in need of approval at this time'
+                        No Companies are in need of approval at this time
                     </TableCell>
                     </TableRow>}
                 </TableBody>
