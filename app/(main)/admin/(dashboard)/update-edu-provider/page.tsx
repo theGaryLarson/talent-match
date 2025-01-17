@@ -214,6 +214,7 @@ export default function UpdateTrainingProviderPage() {
       {/* Form */}
       {selectedProviderId && (
         <div className='w-full'>
+          
         <form onSubmit={onSubmit} className="space-y-3">
 
           {/* TP Logo Upload */}
@@ -385,7 +386,7 @@ export default function UpdateTrainingProviderPage() {
             <Button type="submit" endIcon={<ArrowCircleRightOutlinedIcon/>} variant="contained">Update Provider</Button>
           </div>
         </form>
-        <AddProviderProgramsFrom providerId={selectedProviderId+selectedProviderName}/>
+        <AddProviderProgramsFrom providerId={selectedProviderId}/>
         </div>  
     )}
     </div>
