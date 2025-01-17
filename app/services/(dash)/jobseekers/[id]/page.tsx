@@ -577,7 +577,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               ''
             )}
           </Box>
-          {jobseeker?.linkedin_url && (
+          {(jobseeker?.linkedin_url || isOwnProfile) && (
             <Box>
               <Stack spacing={2} direction={'row'}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
@@ -597,9 +597,11 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                   </Link>
                 )}
               </Stack>
-              <Link sx={{ pl: 2 }} href={"https://www.linkedin.com" + jobseeker.linkedin_url.toLowerCase().split('linkedin.com')[1]} target="_blank">
-                {"https://www.linkedin.com" + jobseeker.linkedin_url.toLowerCase().split('linkedin.com')[1]}
-              </Link>
+              {jobseeker?.linkedin_url && (
+                <Link sx={{ pl: 2 }} href={"https://www.linkedin.com" + jobseeker.linkedin_url.toLowerCase().split('linkedin.com')[1]} target="_blank">
+                  {"https://www.linkedin.com" + jobseeker.linkedin_url.toLowerCase().split('linkedin.com')[1]}
+                </Link>
+              )}
             </Box>
           )}
         </Stack>
