@@ -370,7 +370,6 @@ export default function CreateJobseekerProfileShowcasePage() {
             <PillButton
               variant="outlined"
               onClick={() => {
-                console.log('clicked')
                 router.push('/edit-profile/jobseeker/preferences');
               }}
             >
