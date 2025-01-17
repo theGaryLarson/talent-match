@@ -35,7 +35,7 @@ export default function JobListingCardView({
   const description: string = joblisting?.job_description ?? '';
   const id: string = joblisting?.job_posting_id ?? '';
   const location: string =
-    joblisting?.location + ', ' + joblisting?.company_addresses.locationData.city + ', ' + joblisting?.zip;
+    joblisting?.location + ', ' + joblisting?.company_addresses?.locationData?.city + ', ' + joblisting?.zip;
 
   // const [openModal, setOpenModal] = useState(false);
 
