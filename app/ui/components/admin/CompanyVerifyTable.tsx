@@ -4,6 +4,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { companies, employers, User } from "@prisma/client";
 import React, { useState } from "react";
+import CompanyDeleteButton from "./CompayDeleteButton";
 
 
 
@@ -106,6 +107,9 @@ function Row({company}:{ company:(companies&{employers:(employers&{users:User})[
   {loading?"Loading..":isApproved ? "Revoke Approval" : "Approve"}
 </Button>
         </TableCell>
+        <TableCell>
+          <CompanyDeleteButton companyId={company.company_id}/>
+        </TableCell>
       </TableRow>
 
       <TableRow>
@@ -157,6 +161,9 @@ export default function CompanyVerifyTable(props:{
                     </TableCell>
                     <TableCell>
                         Is Approved
+                    </TableCell>
+                    <TableCell>
+                      Delete?
                     </TableCell>
                     </TableRow>
                 </TableHead>
