@@ -60,8 +60,11 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
+        relocation_services_available:jobData.relocation_services,
+        offer_visa_sponsorship:jobData.visa_sponsership,
         zip: jobData.zip,
         employment_type: jobData.employment_type || 'full-time',
+        is_apprenticeship:jobData.is_apprenticeship,
         location: jobData.location,
         salary_range: jobData.salary_range,
         county: postalGeoData?.county ?? '',
@@ -145,23 +148,29 @@ export async function getMyJobListings() {
 }
 export async function deleteJobListing(jobPostingId: string) {
   let Session = await auth();
-  if (!Session?.user.employerId) {
+  if (!Session?.user.employerId && !Session?.user.roles.includes(Role.ADMIN)) {
     throw new Error(
       'Failed to delete job listing: employer ID not found in session',
     );
   }
-  if (!Session.user.companyId) {
+  if (!Session.user.companyId && !Session?.user.roles.includes(Role.ADMIN)) {
     throw new Error(
       'Failed to delete job listing: company ID not found in session',
     );
   }
 
   try {
+    let job = await prisma.job_postings.findUnique(
+      {where:{
+        job_posting_id:jobPostingId
+      }}
+    )
+    if(job?.employer_id != Session.user.companyId && !Session?.user.roles.includes(Role.ADMIN)){
+      throw new Error('not an employer of this company')
+    }
     let result = await prisma.job_postings.delete({
       where: {
-        job_posting_id: jobPostingId,
-        employer_id: Session.user.employerId,
-        company_id: Session.user.companyId,
+        job_posting_id: jobPostingId
       },
     });
     return result;
