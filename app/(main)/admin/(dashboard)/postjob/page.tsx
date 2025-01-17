@@ -5,7 +5,9 @@ import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { companies, industry_sectors, technology_areas } from '@prisma/client';
 import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
-
+import { Button } from '@mui/material';
+import { ArrowCircleRightOutlined } from '@mui/icons-material';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 export default function Page() {
   const router = useRouter();
@@ -27,6 +29,7 @@ export default function Page() {
       job_description: formData.get('job_description') as string,
       is_internship: formData.get('is_internship') === 'yes',
       is_paid: formData.get('is_paid') === 'yes',
+      is_apprenticeship: formData.get('is_apprenticeship') === 'yes',
       employment_type: formData.get('employment_type') as string,
       location: formData.get('location') as string,
       salary_range: formData.get('salary_range') as string,
@@ -39,7 +42,9 @@ export default function Page() {
       skillIds: skills?.map((v) => v.skill_id),
       tech_area_id: formData.get('area') as string,
       sector_id: formData.get('sector') as string,
-      company_id: formData.get('company') as string
+      company_id: formData.get('company') as string,
+      relocation_services: formData.get('relocation') === 'yes',
+      visa_sponsership: formData.get('visas') === 'yes'
     };
     try {
       const response = await fetch('/api/joblistings/add', {
@@ -145,6 +150,20 @@ export default function Page() {
           </label>
         </div>
       </div>
+      {/* Apprentaceship */}
+      <div>
+        <label>Is this an apprenticeship?</label>
+        <div>
+          <label>
+            <input type="radio" name="is_apprenticeship" value="yes" required />
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="is_apprenticeship" value="no" required />
+            No
+          </label>
+        </div>
+      </div>
 
       {/* Paid */}
       <div>
@@ -156,6 +175,32 @@ export default function Page() {
           </label>
           <label>
             <input type="radio" name="is_paid" value="no" required />
+            No
+          </label>
+        </div>
+      </div>
+      <div>
+        <label>Does This Position Offer Relocation Services?</label>
+        <div>
+          <label>
+            <input type="radio" name="relocation" value="yes" required />
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="relocation" value="no" required />
+            No
+          </label>
+        </div>
+      </div>
+      <div>
+        <label>Is Position willing to sponsor H1B visas</label>
+        <div>
+          <label>
+            <input type="radio" name="visas" value="yes" required />
+            Yes
+          </label>
+          <label>
+            <input type="radio" name="visas" value="no" required />
             No
           </label>
         </div>
@@ -209,7 +254,7 @@ export default function Page() {
       </div>
       {/* Unpublish Date */}
       <div className="grid grid-cols-1">
-        <label htmlFor="unpublish_date">Unpublish Date</label>
+        <label htmlFor="unpublish_date">Application Deadline</label>
         <input type="date" name="unpublish_date" min={new Date().toISOString().split("T")[0]}/>
       </div>
 
@@ -250,6 +295,10 @@ export default function Page() {
       {/* Submit Button */}
       <div>
         <button type="submit">Create Job Listing</button>
+      </div>
+      <div className='grid grid-cols-2 gap-2'>
+        <Button type='reset' variant="outlined" startIcon={<HighlightOffOutlinedIcon/>} >Reset Form</Button>
+        <Button type="submit" endIcon={<ArrowCircleRightOutlined/>} variant="contained">Create Job Listing</Button>
       </div>
     </form>
   );

@@ -7,7 +7,6 @@ import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
 import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
-import { CareerPrepStatus } from './admin/careerPrep';
 import { JobStatus } from './jobseekerJobTracking';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -61,8 +60,11 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
+        relocation_services_available:jobData.relocation_services,
+        offer_visa_sponsorship:jobData.visa_sponsership,
         zip: jobData.zip,
         employment_type: jobData.employment_type || 'full-time',
+        is_apprenticeship:jobData.is_apprenticeship,
         location: jobData.location,
         salary_range: jobData.salary_range,
         county: postalGeoData?.county ?? '',
@@ -146,23 +148,29 @@ export async function getMyJobListings() {
 }
 export async function deleteJobListing(jobPostingId: string) {
   let Session = await auth();
-  if (!Session?.user.employerId) {
+  if (!Session?.user.employerId && !Session?.user.roles.includes(Role.ADMIN)) {
     throw new Error(
       'Failed to delete job listing: employer ID not found in session',
     );
   }
-  if (!Session.user.companyId) {
+  if (!Session.user.companyId && !Session?.user.roles.includes(Role.ADMIN)) {
     throw new Error(
       'Failed to delete job listing: company ID not found in session',
     );
   }
 
   try {
+    let job = await prisma.job_postings.findUnique(
+      {where:{
+        job_posting_id:jobPostingId
+      }}
+    )
+    if(job?.employer_id != Session.user.companyId && !Session?.user.roles.includes(Role.ADMIN)){
+      throw new Error('not an employer of this company')
+    }
     let result = await prisma.job_postings.delete({
       where: {
-        job_posting_id: jobPostingId,
-        employer_id: Session.user.employerId,
-        company_id: Session.user.companyId,
+        job_posting_id: jobPostingId
       },
     });
     return result;
@@ -179,7 +187,7 @@ export async function ApplyToJob(jobPostingId: string) {
         'Failed to apply to job: jobseeker ID not found in session',
       );
     }
-    
+
     const existingApplication = await prisma.jobseekerJobPosting.findFirst({
       where: {
         jobPostId: jobPostingId,
@@ -193,7 +201,7 @@ export async function ApplyToJob(jobPostingId: string) {
           id: existingApplication.id,
         },
         data: {
-          jobStatus: CareerPrepStatus.Applied,
+          jobStatus: JobStatus.Applied,
           appliedDate: new Date(),
         },
         include:{
@@ -214,7 +222,7 @@ export async function ApplyToJob(jobPostingId: string) {
         id: uuidv4(),
         jobPostId: jobPostingId,
         jobseekerId: Session.user.jobseekerId,
-        jobStatus: CareerPrepStatus.Applied,
+        jobStatus: JobStatus.Applied,
         appliedDate: new Date(),
         isBookmarked: false,
       };
@@ -267,7 +275,7 @@ export async function WithdrawFromJob(jobPostingId: string) {
           id: existingApplication.id,
         },
         data: {
-          jobStatus: CareerPrepStatus.Withdrawn,
+          jobStatus: JobStatus.IWithdrew,
           appliedDate: new Date(),
         },
       });
@@ -277,7 +285,7 @@ export async function WithdrawFromJob(jobPostingId: string) {
           id: uuidv4(),
           jobPostId: jobPostingId,
           jobseekerId: Session.user.jobseekerId,
-          jobStatus: CareerPrepStatus.Withdrawn,
+          jobStatus: JobStatus.IWithdrew,
           appliedDate: new Date(),
           isBookmarked: false,
         },
@@ -576,9 +584,6 @@ export async function getJobSeekerAppliedJobs() {
     const result = await prisma.jobseekerJobPosting.findMany({
       where: {
         jobseekerId: session.user.jobseekerId,
-        NOT: {
-          jobStatus: JobStatus.IWithdrew
-        }
       },
       include:{
         job_posting: {

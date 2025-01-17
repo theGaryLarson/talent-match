@@ -167,37 +167,29 @@ export async function deleteEduProvider(providerId: string) {
 }
 
 
-export type addProviderProgramDTO = {
-  eduProviderId:string,
-  pathwayId?:string,
-  targetedJobRoles?:string,
-  description:string,
-  months?:string,
-  hoursPerWeek?:string,
-  targetPopulation?:string,
-  serviceArea?:string,
-  pathways?:string,
-  programDescription?:string,
-  locations:string,
-  about:string,
-  tuition:string,
-  fees:string,
-  costSummery:string,
-  locationsType?:string,
-  setStartedUrl?:string,
-  faq:string,
-  eduLevel:string,
-  programLength:string
-}
-export async function addProviderProgram(params:addProviderProgramDTO) {
-  try {
-    console.log('tried adding a program with data:', params)
-    
-  } catch (error) {
-    
-  }
-  return {status: 501};
-}
+// export type addProviderProgramDTO = {
+//   eduProviderId:string,
+//   pathwayId?:string,
+//   targetedJobRoles?:string,
+//   description:string,
+//   months?:string,
+//   hoursPerWeek?:string,
+//   targetPopulation?:string,
+//   serviceArea?:string,
+//   pathways?:string,
+//   programDescription?:string,
+//   locations:string,
+//   about:string,
+//   tuition:string,
+//   fees:string,
+//   costSummery:string,
+//   locationsType?:string,
+//   setStartedUrl?:string,
+//   faq:string,
+//   eduLevel:string,
+//   programLength:string
+// }
+
 
 export async function deleteProviderProgram(trainingProgramId:string){
   const session = await auth();
@@ -212,7 +204,16 @@ export async function deleteProviderProgram(trainingProgramId:string){
 }
 
 
-
+export async function getProviderProgramByProvider(providerId:string){
+  try {
+    const result = await prisma.provider_programs.findMany({where:{
+      edu_provider_id:providerId
+    }})
+    return result;
+  } catch (error) {
+    
+  }
+}
 
 
 

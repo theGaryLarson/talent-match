@@ -21,6 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Role } from '@/data/dtos/UserInfoDTO';
+import PillButton from '@/app/ui/components/PillButton';
 
 const monthNames = [
   'Jan',
@@ -81,7 +82,6 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
   const [jobseeker, setJobseeker] = useState<JobseekerProfileDTO>();
   const [videoID, setVideoID] = useState('');
   const [resumeUrl, setResumeUrl] = useState('');
-  const [editView, setEditView] = useState(false);
 
   const session = useSession();
   const isOwnProfile = session?.data?.user.jobseekerId === params.id;
@@ -141,33 +141,40 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
     execJobseekerQuery();
   }, [execJobseekerQuery]);
 
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newView: string,
-  ) => {
-    setEditView(newView === 'edit');
-  };
-
   return (
     <Container sx={{ pb: 4 }}>
       <DeletionFlag deletionDate={undefined} />
       {isOwnProfile && (
-        <Box className="my-4 grid w-full place-content-center content-center place-self-center">
-          <ToggleButtonGroup
-            color="primary"
-            value={editView}
-            exclusive
-            onChange={handleChange}
-            aria-label="Edit view"
+        <Stack
+          direction={'row'}
+          spacing={2}
+          sx={{
+            pt: '25px',
+            mb: 2,
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'stretch',
+          }}
+        >
+          <PillButton disableElevation
+          href={'/services/jobseekers/dashboard'}
+          sx={{
+            backgroundColor: '#f6f6f6',
+            color: '#014260',
+          }}>
+            Dashboard
+          </PillButton>
+          <Typography
+            variant="h4"
+            sx={{ fontSize: '24px', textAlign: 'center', fontWeight: 400 }}
           >
-            <ToggleButton value="edit" selected={editView}>
-              My view
-            </ToggleButton>
-            <ToggleButton value="read-only" selected={!editView}>
-              Showcase
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
+            |
+          </Typography>
+          <PillButton disableElevation>
+            Showcase
+          </PillButton>
+        </Stack>
       )}
 
       <Grid2 container spacing={2} sx={{ mb: 2, justifyContent: 'center' }}>
@@ -204,7 +211,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 </h2>
                 <h2>{jobseeker?.current_grade_level}</h2>
               </Stack>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -244,7 +251,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Introduction
               </Typography>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -265,7 +272,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Preferences
               </Typography>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -290,7 +297,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Skills
               </Typography>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -321,7 +328,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                   ? '(' + jobseeker?.years_work_exp + 'Y)'
                   : ''}
               </Typography>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -379,7 +386,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Education
               </Typography>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -439,7 +446,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Projects
               </Typography>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -517,7 +524,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Resume
               </Typography>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -544,7 +551,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Portfolio
               </Typography>
-              {isOwnProfile && editView && (
+              {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
@@ -576,7 +583,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                   LinkedIn
                 </Typography>
-                {isOwnProfile && editView && (
+                {isOwnProfile && (
                   <Link
                     sx={{
                       opacity: 0.65,

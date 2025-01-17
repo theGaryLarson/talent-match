@@ -205,7 +205,7 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
           </TableHead>
           <TableBody>
             {filteredData.map((item) => (
-              <Row key={item.job_posting_id} row={item} />
+              <Row key={item.job_posting_id} row={item}/>
             ))}
           </TableBody>
         </Table>
