@@ -13,7 +13,7 @@ export default async function Page() {
         Stats:
       </h1>
     <GenderPie/>
-    <NewUsersByQaurter/>
+    <NewUsersByQuarter/>
     </main>
   );
 }
@@ -41,13 +41,13 @@ async function GenderPie(){
 }
 
 
-async function NewUsersByQaurter(){
+async function NewUsersByQuarter(){
         const data = await getUsersCreatedByQuarter();
         const xAxis = data.map((item) => `${item.year}-Q${item.quarter}`);
         const seriesData = data.map((item) => item.userCount);
         return (
           <div className='text-center w-fit'>
-      <h3 className="text-xl">Number Of New Users By Qaurter</h3>
+      <h3 className="text-xl">Number Of New Users By Quarter</h3>
           <BarChart
             xAxis={[{ scaleType: 'band', data: xAxis }]}
             series={[{ data: seriesData }]}
