@@ -39,7 +39,7 @@ export default function JobListingModalView({
   const description: string = joblisting?.job_description ?? '';
   const id: string = joblisting?.job_posting_id ?? '';
   const location: string =
-    joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
+    joblisting?.location + ', ' + joblisting?.company_addresses?.locationData?.city + ', ' + joblisting?.zip;
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   const handleSubmit = async (e: React.FormEvent) => {

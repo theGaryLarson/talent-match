@@ -102,6 +102,11 @@ export async function getJobListingById(joblistingId: string) {
             sector_title: true,
           },
         },
+        company_addresses: {
+          include: {
+            locationData: true
+          }
+        },
         companies: true,
         techArea: {
           select: {
@@ -490,6 +495,11 @@ export async function getJobListingsFiltered(request: Request) {
           select: {
             title: true,
           },
+        },
+        company_addresses: {
+          include: {
+            locationData: true
+          }
         },
         jobApplications: jobseekerId
           ? {
