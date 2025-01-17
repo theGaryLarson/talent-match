@@ -1,7 +1,8 @@
-import { PostEduProviderProgramDetailDTO } from "@/app/lib/eduProviders";
+import { EduProviderPathways, PostEduProviderProgramDetailDTO, ReadEduProviderProgramCardDTO, ReadEduProviderProgramDetailDTO } from "@/app/lib/eduProviders";
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
+import {programs, provider_programs } from "@prisma/client";
 
 export default function AddProviderProgramsForm(props: { providerId: string }) {
     const blankFormData = {
@@ -23,7 +24,33 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
         pathways: []
       }
   const [formData, setFormData] = useState<PostEduProviderProgramDetailDTO>(blankFormData);
-
+  const [programList, setProgramList] = useState<(provider_programs&{Program:programs})[]>();
+  const [selectedProgram, setSelectedProgram] = useState<provider_programs&{Program:programs}>()
+  useEffect(()=>{
+    fetch('/api/admin/edu-providers/'+props.providerId).then((e)=>{
+      return e.json();
+    }).then((res)=>{
+      setProgramList(res)
+    })
+  },[]);
+  useEffect(()=>{
+    setFormData({
+      "programName": selectedProgram?.Program.title??'',
+      "logoUrl": formData.logoUrl,
+      "eduProviderId": props.providerId,
+      "description": selectedProgram?.description??'',
+      "programLength": selectedProgram?.programLength??'',
+      "targetedJobRoles": selectedProgram?.targetedJobRoles?.split(','),
+      "about": selectedProgram?.about??'',
+      "tuition": selectedProgram?.tuition??'',
+      "fees": selectedProgram?.fees??'',
+      "costSummary": selectedProgram?.costSummary??'',
+      //"locationType": selectedProgram?.locationType??'',
+      "getStartedUrl":selectedProgram?.getStartedUrl??'',
+      "faq": JSON.parse(selectedProgram?.faq??'{}'),
+      "pathways": selectedProgram?.pathways?.split('~') as EduProviderPathways[]
+  })
+  },[selectedProgram])
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let form = e.currentTarget;
@@ -61,7 +88,23 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
   return (
     <form className="border p-4 rounded" onSubmit={handleSubmit}>
       <legend className="text-xl font-bold mb-4">Add Programs</legend>
-
+      <div className="grid grid-cols-1">
+        <label htmlFor="company">Select Company</label>
+        <select
+          name='company'
+          id='company'
+          required
+          onChange={(e) => {
+            setSelectedProgram(programList?.find((p)=>(p.training_program_id == e.target.value)))
+          }
+        }
+        >
+          <option value={''}>--Please Select a Company--</option>
+          {programList?.map((comp) => (
+            <option key={comp.training_program_id} value={comp.training_program_id}>{comp.Program.title}</option>
+          ))}
+        </select>
+      </div>
       <div className="grid gap-4 mb-4">
         <label htmlFor="programName">Program Name *</label>
         <input
@@ -91,22 +134,6 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           onChange={handleInputChange}
           className="p-2 border rounded"
         />
-
-        {/* <label htmlFor="locations">Locations</label>
-        {/* <input
-          type="text"
-          id="locations"
-          name="locations"
-          value={formData.locations.join(", ")}
-          onChange={(e) =>
-            setFormData((prevData) => ({
-              ...prevData,
-              locations: e.target.value.split(",").map((loc) => loc.trim())
-            }))
-          }
-          className="p-2 border rounded"
-        /> */}
-
         <label htmlFor="programLength">Program Length</label>
         <input
           type="text"
@@ -195,3 +222,5 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
     </form>
   );
 }
+
+
