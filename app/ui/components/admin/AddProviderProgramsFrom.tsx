@@ -211,6 +211,9 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
         >
           Reset Form
         </Button>
+        {selectedProgram&&(
+          <Button>Delete</Button>
+        )}
         <Button
           type="submit"
           endIcon={<ArrowCircleRightOutlined />}
