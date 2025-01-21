@@ -1,38 +1,51 @@
 import { EduProviderPathways, PostEduProviderProgramDetailDTO, ReadEduProviderProgramCardDTO, ReadEduProviderProgramDetailDTO } from "@/app/lib/eduProviders";
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import {programs, provider_programs } from "@prisma/client";
 
 export default function AddProviderProgramsForm(props: { providerId: string }) {
-    const blankFormData = {
-        programName: "",
-        logoUrl: "",
-        eduProviderId: props.providerId,
-        //eduProviderName: "",
-        description: "",
-        //locations: [],
-        programLength: "",
-        targetedJobRoles: [],
-        about: "",
-        tuition: "",
-        fees: "",
-        costSummary: "",
-        locationType: null,
-        getStartedUrl: "",
-        faq: [],
-        pathways: []
-      }
+    const blankFormData:PostEduProviderProgramDetailDTO = {
+      programName: "",
+      logoUrl: "",
+      eduProviderId: props.providerId,
+      //eduProviderName: "",
+      description: "",
+      //locations: [],
+      programLength: "",
+      targetedJobRoles: [],
+      about: "",
+      tuition: "",
+      fees: "",
+      costSummary: "",
+      locationType: null,
+      getStartedUrl: "",
+      faq: [{ question: "", answer: "" }],
+      pathways: [],
+    }
   const [formData, setFormData] = useState<PostEduProviderProgramDetailDTO>(blankFormData);
   const [programList, setProgramList] = useState<(provider_programs&{Program:programs})[]>();
   const [selectedProgram, setSelectedProgram] = useState<provider_programs&{Program:programs}>()
-  useEffect(()=>{
+  const [entries, setEntries] = useState<Entry[]>([{ question: "", answer: "" }]);
+   // Helper function to validate the FAQ data structure
+   const validateFAQ = (faq: unknown): Entry[] => {
+    if (Array.isArray(faq)) {
+      return faq.every(
+        (item) => typeof item.question === "string" && typeof item.answer === "string"
+      )
+        ? (faq as Entry[])
+        : [{ question: "", answer: "" }];
+    }
+    return [{ question: "", answer: "" }];
+  };
+  const refreshList = ()=>{
     fetch('/api/admin/edu-providers/'+props.providerId).then((e)=>{
       return e.json();
     }).then((res)=>{
       setProgramList(res)
     })
-  },[]);
+  }
+  useEffect(refreshList,[]);
   useEffect(()=>{
     setFormData({
       "programName": selectedProgram?.Program.title??'',
@@ -47,10 +60,17 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       "costSummary": selectedProgram?.costSummary??'',
       //"locationType": selectedProgram?.locationType??'',
       "getStartedUrl":selectedProgram?.getStartedUrl??'',
-      "faq": JSON.parse(selectedProgram?.faq??'{}'),
+      faq: validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")),
       "pathways": selectedProgram?.pathways?.split('~') as EduProviderPathways[]
-  })
+  });
+  setEntries(validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")));
   },[selectedProgram])
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev, // Spread existing formData first
+      faq: entries, // Override the `faq` property with the `entries` array
+    }));
+  }, [entries]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let form = e.currentTarget;
@@ -65,7 +85,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
 
       if (response.ok) {
         alert("Program successfully added!");
-        setFormData(blankFormData)
+        refreshList();
       } else {
         alert("Failed to add program. Please try again.");
       }
@@ -89,17 +109,16 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
     <form className="border p-4 rounded" onSubmit={handleSubmit}>
       <legend className="text-xl font-bold mb-4">Add Programs</legend>
       <div className="grid grid-cols-1">
-        <label htmlFor="company">Select Company</label>
+        <label htmlFor="company">Select Program</label>
         <select
           name='company'
           id='company'
-          required
           onChange={(e) => {
             setSelectedProgram(programList?.find((p)=>(p.training_program_id == e.target.value)))
           }
         }
         >
-          <option value={''}>--Please Select a Company--</option>
+          <option value={''}>--Please Select a Program--</option>
           {programList?.map((comp) => (
             <option key={comp.training_program_id} value={comp.training_program_id}>{comp.Program.title}</option>
           ))}
@@ -183,23 +202,26 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           className="p-2 border rounded"
         />
       </div>
+      <DynamicForm entries={entries} setEntries={setEntries}/>
 
       <div className="flex justify-between gap-4">
-        <Button
+        {/* <Button
           type="reset"
           variant="outlined"
           onClick={() =>
             setFormData({
-              programName: "",
-              logoUrl: "",
+              trainingProgramId: selectedProgram?.training_program_id??'',
+              programName: selectedProgram?.Program.title??'',
+              logoUrl:'',
               eduProviderId: props.providerId,
-              eduProviderName: "",
+              eduProviderName: '',
               description: "",
               locations: [],
               programLength: "",
               targetedJobRoles: [],
               about: "",
               tuition: "",
+              programId:'',
               fees: "",
               costSummary: "",
               locationType: null,
@@ -210,10 +232,11 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           }
         >
           Reset Form
-        </Button>
+        </Button> */}
+        <div>
         {selectedProgram&&(
           <Button>Delete</Button>
-        )}
+        )}</div>
         <Button
           type="submit"
           endIcon={<ArrowCircleRightOutlined />}
@@ -227,3 +250,75 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
 }
 
 
+interface Entry {
+  question: string;
+  answer: string;
+}
+
+const DynamicForm = (props:{setEntries:Dispatch<SetStateAction<Entry[]>>, entries:Entry[]}) => {
+
+  // Handle changes to the input fields
+  const handleChange = (index: number, field: keyof Entry, value: string) => {
+    const updatedEntries = props.entries.map((entry, i) =>
+      i === index ? { ...entry, [field]: value } : entry
+    );
+    props.setEntries(updatedEntries);
+  };
+
+  // Add a new entry
+  const addEntry = () => {
+    props.setEntries([...props.entries, { question: "", answer: "" }]);
+  };
+
+  // Remove an entry
+  const removeEntry = (index: number) => {
+    props.setEntries(props.entries.filter((_, i) => i !== index));
+  };
+
+  console.log("eenn", props.entries)
+  return (
+    <div className="border">
+      <h1>FAQs</h1>
+      {props.entries.map((entry, index) => (
+        <div key={index} className="grid grid-cols-3 p-2">
+          <label>
+            Question:
+            <input
+              type="text"
+              value={entry.question}
+              onChange={(e) => handleChange(index, "question", e.target.value)}
+              placeholder="Enter question"
+              required
+              style={{ marginLeft: "0.5rem" }}
+            />
+          </label>
+          <label>
+            Answer:
+            <input
+              type="text"
+              value={entry.answer}
+              onChange={(e) => handleChange(index, "answer", e.target.value)}
+              placeholder="Enter answer"
+              required
+              style={{ marginLeft: "0.5rem" }}
+            />
+          </label>
+          <Button
+            onClick={() => removeEntry(index)}
+            disabled={props.entries.length === 1}
+            variant="outlined"
+            color="error"
+
+          >
+            Remove
+          </Button>
+        </div>
+      ))}
+      <Button
+        onClick={addEntry}
+      >
+        Add Another FAQ
+      </Button>
+    </div>
+  );
+};
