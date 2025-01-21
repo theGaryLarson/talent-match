@@ -1,4 +1,4 @@
-import { EduProviderPathways, PostEduProviderProgramDetailDTO, ReadEduProviderProgramCardDTO, ReadEduProviderProgramDetailDTO } from "@/app/lib/eduProviders";
+import { EduProviderPathways, LocationType, PostEduProviderProgramDetailDTO, ReadEduProviderProgramCardDTO, ReadEduProviderProgramDetailDTO } from "@/app/lib/eduProviders";
 import { Button } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
@@ -58,7 +58,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       "tuition": selectedProgram?.tuition??'',
       "fees": selectedProgram?.fees??'',
       "costSummary": selectedProgram?.costSummary??'',
-      //"locationType": selectedProgram?.locationType??'',
+      "locationType": selectedProgram?.locationType as LocationType,
       "getStartedUrl":selectedProgram?.getStartedUrl??'',
       faq: validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")),
       "pathways": selectedProgram?.pathways?.split('~') as EduProviderPathways[]
@@ -94,7 +94,9 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       alert("An error occurred while submitting the form.");
     }
   };
+  const handleDelete = ()=>{
 
+  }
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -235,7 +237,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
         </Button> */}
         <div>
         {selectedProgram&&(
-          <Button>Delete</Button>
+          <Button onClick={handleDelete}>Delete Program</Button>
         )}</div>
         <Button
           type="submit"

@@ -386,7 +386,7 @@ export default function UpdateTrainingProviderPage() {
             <Button type="submit" endIcon={<ArrowCircleRightOutlinedIcon/>} variant="contained">Update Provider</Button>
           </div>
         </form>
-        <AddProviderProgramsFrom providerId={selectedProviderId}/>
+        <AddProviderProgramsFrom providerId={selectedProviderId} key={'progadd'+selectedProviderId}/>
         </div>  
     )}
     </div>
