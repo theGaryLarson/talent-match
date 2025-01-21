@@ -121,7 +121,7 @@ export default function Page() {
       </div>
 
       <div className="grid grid-cols-1">
-        <label htmlFor="size">Number Of Employes</label>
+        <label htmlFor="size">Number Of Employees</label>
         {/* <input type="number" name="size"/> */}
         <select name="size">
           <option value={'1-10'}>

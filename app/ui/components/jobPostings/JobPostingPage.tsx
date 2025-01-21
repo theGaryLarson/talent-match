@@ -47,7 +47,7 @@ export default function JobPostingPage({
     const skills: SkillDTO[] = joblisting?.skills ?? [];
     const salary_range: string = joblisting?.salary_range ?? '';
     const description: string = joblisting?.job_description ?? '';
-    const location: string = joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
+    const location: string = joblisting?.location + ', ' + joblisting?.company_addresses?.locationData?.city + ', ' + joblisting?.zip;
     const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
     return (
