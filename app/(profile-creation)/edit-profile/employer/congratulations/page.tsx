@@ -1,42 +1,71 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Confetti from '@/app/ui/components/Confetti';
 // REVIEW: testing redux
 // import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
-import { Button } from "flowbite-react";
+import {
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+} from '@mui/material';
+import { Button } from 'flowbite-react';
 import { useRouter } from 'next/navigation';
-import {useSession} from "next-auth/react";
+import { useSession } from 'next-auth/react';
 
-
-
-export default function EmployerCongratsPage(){
+export default function EmployerCongratsPage() {
   // const { fields } = useSelector((state: RootState) => state.form);
   // const dispatch = useDispatch();
   const [employmentType, setEmploymentType] = useState('');
   const [pathway, setPathway] = useState('');
   const [error, setError] = useState('');
+
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  useEffect(() => {
+    console.log('useEffect: status, session', status, session);
+    if (status === 'authenticated' && session?.user?.employerId) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`/api/employers/validate-profile`, {
+            method: 'PATCH', // Specify the PATCH method
+            headers: {
+              'Content-Type': 'application/json', // Set the content type
+            },
+          });
+          if (!response.ok) {
+            throw new Error('Failed to validate employer profile.');
+          }
+        } catch (error) {
+          console.error('Error fetching employer preferences:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [status, session]);
 
   function handleClick() {
     router.push('/services/employers/dashboard');
   }
 
-
-  return(
+  return (
     <main className="flex justify-center">
-      <aside className="profile-form-aside">
-      </aside>
+      <aside className="profile-form-aside"></aside>
       <section className="profile-form-section main-content">
         <Confetti />
         <h1>{`Congrats on completing your profile, ${session?.user?.firstName}!`}</h1>
 
-        <p className='subtitle-congrats'>{"Let's kickstart your candidate search journey!"}</p>
-        <Button pill onClick={handleClick}>Get Started</Button>
+        <p className="subtitle-congrats">
+          {"Let's kickstart your candidate search journey!"}
+        </p>
+        <Button pill onClick={handleClick}>
+          Get Started
+        </Button>
 
         {/* <form onSubmit={ handleSubmit }>
 
