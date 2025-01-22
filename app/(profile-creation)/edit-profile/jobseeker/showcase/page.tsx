@@ -58,6 +58,7 @@ export default function CreateJobseekerProfileShowcasePage() {
     showcaseData.portfolioPassword ?? '',
   );
   const [videoUrl, setVideoUrl] = useState(showcaseData.video_url ?? '');
+  const [linkedInUrl, setLinkedInUrl] = useState(showcaseData.linkedin_url ?? '');
 
   useEffect(() => {
     if (session?.user?.id && status === 'authenticated') {
@@ -97,6 +98,10 @@ export default function CreateJobseekerProfileShowcasePage() {
               if (fetchedData.video_url) {
                 showcaseData.video_url = fetchedData.video_url;
                 setVideoUrl(showcaseData.video_url);
+              }
+              if (fetchedData.linkedin_url) {
+                showcaseData.linkedin_url = fetchedData.linkedin_url;
+                setLinkedInUrl(showcaseData.linkedin_url);
               }
             }
 
@@ -151,6 +156,7 @@ export default function CreateJobseekerProfileShowcasePage() {
     showcaseData.portfolioUrl = portfolioUrl;
     showcaseData.portfolioPassword = portfolioPassword;
     showcaseData.video_url = videoUrl;
+    showcaseData.linkedin_url = linkedInUrl;
     showcaseData.introduction = introduction;
     showcaseData.resumeUrl = resumeUrl;
 
@@ -280,6 +286,18 @@ export default function CreateJobseekerProfileShowcasePage() {
                   setPortfolioPassword(e.target.value);
                 }}
               />
+
+              <TextFieldWithSeparatedLabel
+                id="profile-creation-showcase-linkedin"
+                label="LinkedIn URL:"
+                placeholder="Example: https://www.linkedin.com/in/username"
+                fullWidth
+                value={linkedInUrl}
+                error={!validLinkedInLink(linkedInUrl)}
+                onChange={(e) => {
+                  setLinkedInUrl(e.target.value);
+                }}
+              />
             </div>
           </fieldset>
           <fieldset>
@@ -368,5 +386,11 @@ export default function CreateJobseekerProfileShowcasePage() {
 function validYouTubeLink(url: string) {
   if (url == '') return true;
   const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+  return regex.test(url);
+}
+
+function validLinkedInLink(url: string) {
+  if (url == '') return true;
+  const regex = /^(https?:\/\/)?(www\.)?(linkedin\.com)\/in\/[A-Za-z0-9]{3,100}\/?$/;
   return regex.test(url);
 }

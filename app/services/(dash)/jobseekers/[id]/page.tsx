@@ -519,33 +519,33 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               ))}
             </Stack>
           </Box>
-            <Box>
-              <Stack spacing={2} direction={'row'}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                  Resume
-                </Typography>
-                {isOwnProfile && (
-                  <Link
-                    sx={{
-                      opacity: 0.65,
-                      '&:hover': {
-                        opacity: 1,
-                      },
-                    }}
-                    href={'/edit-profile/jobseeker/showcase'}
-                  >
-                    <EditIcon />
-                  </Link>
-                )}
-              </Stack>
-              {resumeUrl ? (
-                <Link sx={{ pl: 2 }} href={resumeUrl} target="_blank">
-                  View Resume
+          <Box>
+            <Stack spacing={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Resume
+              </Typography>
+              {isOwnProfile && (
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/showcase'}
+                >
+                  <EditIcon />
                 </Link>
-              ) : (
-                ''
               )}
-            </Box>
+            </Stack>
+            {resumeUrl ? (
+              <Link sx={{ pl: 2 }} href={resumeUrl} target="_blank">
+                View Resume
+              </Link>
+            ) : (
+              ''
+            )}
+          </Box>
           <Box>
             <Stack spacing={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
@@ -577,6 +577,33 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
               ''
             )}
           </Box>
+          {(jobseeker?.linkedin_url || isOwnProfile) && (
+            <Box>
+              <Stack spacing={2} direction={'row'}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                  LinkedIn
+                </Typography>
+                {isOwnProfile && (
+                  <Link
+                    sx={{
+                      opacity: 0.65,
+                      '&:hover': {
+                        opacity: 1,
+                      },
+                    }}
+                    href={'/edit-profile/jobseeker/showcase'}
+                  >
+                    <EditIcon />
+                  </Link>
+                )}
+              </Stack>
+              {jobseeker?.linkedin_url && (
+                <Link sx={{ pl: 2 }} href={"https://www.linkedin.com" + jobseeker.linkedin_url.toLowerCase().split('linkedin.com')[1]} target="_blank">
+                  {"https://www.linkedin.com" + jobseeker.linkedin_url.toLowerCase().split('linkedin.com')[1]}
+                </Link>
+              )}
+            </Box>
+          )}
         </Stack>
       </Container>
     </Container>

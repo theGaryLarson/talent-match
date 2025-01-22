@@ -32,6 +32,7 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
         portfolio_url: true,
         portfolio_password: true,
         video_url: true,
+        linkedin_url: true,
       },
     });
 
@@ -54,6 +55,7 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
         portfolioUrl: showcase.portfolio_url,
         portfolioPassword: showcase.portfolio_password,
         video_url: showcase.video_url,
+        linkedin_url: showcase.linkedin_url,
         skills: mappedSkills,
       };
       // console.log(JSON.stringify(showcase, null ,2))

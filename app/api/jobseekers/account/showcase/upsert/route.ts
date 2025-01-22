@@ -22,6 +22,7 @@ export async function POST(request: Request) {
             portfolioUrl,
             portfolioPassword,
             video_url,
+            linkedin_url,
         } = body;
         const existingJobseeker = await prisma.jobseekers.findUnique({
             where: {
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
                 portfolio_url: true,
                 portfolio_password: true,
                 video_url: true,
+                linkedin_url: true,
             }
         });
 
@@ -60,6 +62,7 @@ export async function POST(request: Request) {
                     portfolio_url: portfolioUrl,
                     portfolio_password: portfolioPassword,
                     video_url: video_url,
+                    linkedin_url: linkedin_url,
                     updatedAt: new Date(),
                     jobseeker_has_skills: {
                         deleteMany: {},
@@ -88,6 +91,7 @@ export async function POST(request: Request) {
                     portfolio_url: true,
                     portfolio_password: true,
                     video_url: true,
+                    linkedin_url: true,
                 }
 
             })
@@ -101,6 +105,7 @@ export async function POST(request: Request) {
                     portfolio_url: portfolioUrl,
                     portfolio_password: portfolioPassword,
                     video_url: video_url,
+                    linkedin_url: linkedin_url,
                     targeted_pathway: undefined, // Provide a default or get from input
                     is_enrolled_ed_program: false, // Provide a default or get from input
                     jobseeker_has_skills: {
@@ -129,6 +134,7 @@ export async function POST(request: Request) {
                     portfolio_url: true,
                     portfolio_password: true,
                     video_url: true,
+                    linkedin_url: true,
                 }
             });
             updatedRecords.push(createdRecord)
@@ -146,6 +152,7 @@ export async function POST(request: Request) {
             portfolioUrl: showcase.portfolio_url,
             portfolioPassword: showcase.portfolio_password,
             video_url: showcase.video_url,
+            linkedin_url: showcase.linkedin_url,
             skills: mappedSkills
         }
         return NextResponse.json({success: true, result}, {status: 200})
