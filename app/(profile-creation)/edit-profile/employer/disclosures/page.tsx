@@ -9,7 +9,6 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import PillButton from '@/app/ui/components/PillButton';
-import { Label } from 'flowbite-react';
 import { Checkbox, Typography } from '@mui/material';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
@@ -277,14 +276,12 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           {/*<legend>*/}
           {/*  <h2>Terms</h2>*/}
           {/*</legend>*/}
-          {/*<Label className="block">*/}
           {/*  <Checkbox*/}
           {/*    name={`${formNamePrefix}hasAgreedTerms`}*/}
           {/*    checked={termsAccepted}*/}
           {/*    onChange={(event) => setTermsAccepted(event.target.checked)}*/}
           {/*  />{' '}*/}
           {/*  By signing up you agree to our terms of use. **/}
-          {/*</Label>*/}
 
           <div className="profile-form-progress-btn-group">
             <PillButton

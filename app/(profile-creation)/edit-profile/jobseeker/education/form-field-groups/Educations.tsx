@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import { Label } from 'flowbite-react';
 import PillButton from '@/app/ui/components/PillButton';
 import {
   Radio,
@@ -340,7 +339,6 @@ export default memo(function Educations({
               />
             </RequiredTooltip>
           </div>
-          {/*<Label>*/}
           {/*  <Checkbox*/}
           {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
           {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
@@ -350,7 +348,6 @@ export default memo(function Educations({
           {/*    }*/}
           {/*  />*/}
           {/*  Current*/}
-          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-high-school-gpa'}
@@ -489,7 +486,6 @@ export default memo(function Educations({
               />
             </RequiredTooltip>
           </div>
-          {/*<Label>*/}
           {/*  <Checkbox*/}
           {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
           {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
@@ -499,7 +495,6 @@ export default memo(function Educations({
           {/*    }*/}
           {/*  />*/}
           {/*  Current*/}
-          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-college-gpa'}
@@ -614,7 +609,6 @@ export default memo(function Educations({
               />
             </RequiredTooltip>
           </div>
-          {/*<Label>*/}
           {/*  <Checkbox*/}
           {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
           {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
@@ -624,7 +618,6 @@ export default memo(function Educations({
           {/*    }*/}
           {/*  />*/}
           {/*  Current*/}
-          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-training-program-gpa'}
@@ -753,7 +746,6 @@ export default memo(function Educations({
               />
             </RequiredTooltip>
           </div>
-          {/*<Label>*/}
           {/*  <Checkbox*/}
           {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
           {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
@@ -763,7 +755,6 @@ export default memo(function Educations({
           {/*    }*/}
           {/*  />*/}
           {/*  Current*/}
-          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-preapprenticeship-gpa'}
@@ -878,7 +869,6 @@ export default memo(function Educations({
               />
             </RequiredTooltip>
           </div>
-          {/*<Label>*/}
           {/*  <Checkbox*/}
           {/*    id={classNamePrefix + education.id + '-' + classIsCurrent}*/}
           {/*    name={classNamePrefix + education.id + '-' + classIsCurrent}*/}
@@ -888,7 +878,6 @@ export default memo(function Educations({
           {/*    }*/}
           {/*  />*/}
           {/*  Current*/}
-          {/*</Label>*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
               id={'profile-creation-education-other-gpa'}

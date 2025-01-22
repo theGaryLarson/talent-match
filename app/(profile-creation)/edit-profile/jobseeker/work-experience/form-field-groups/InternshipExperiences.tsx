@@ -1,5 +1,4 @@
 import React, { memo, useCallback } from 'react';
-import { Label } from 'flowbite-react';
 import { Checkbox } from '@mui/material';
 import PillButton from '@/app/ui/components/PillButton';
 import { MdClose } from 'react-icons/md';
@@ -150,19 +149,15 @@ export default memo(function InternshipExperiences({
           />
         </RequiredTooltip>
       </div>
-      <Label>
-        <Checkbox
-          id={
-            classNamePrefix + internshipExperience.workId + '-' + classCurrent
-          }
-          name={
-            classNamePrefix + internshipExperience.workId + '-' + classCurrent
-          }
-          checked={internshipExperience[classCurrent]}
-          onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
-        />
-        Currently Employed in this Position
-      </Label>
+      <Checkbox
+        id={classNamePrefix + internshipExperience.workId + '-' + classCurrent}
+        name={
+          classNamePrefix + internshipExperience.workId + '-' + classCurrent
+        }
+        checked={internshipExperience[classCurrent]}
+        onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
+      />
+      Currently Employed in this Position
       <div className="profile-form-grid">
         <TextareaWithLabel
           id={

@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
 import { MdAdd } from 'react-icons/md';
-import { Label } from 'flowbite-react';
 import { Radio, RadioGroup } from '@mui/material';
 import PillButton from '@/app/ui/components/PillButton';
 import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
@@ -464,7 +463,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 Are you authorized to work in the United States? *
               </div>
               <RadioGroup>
-                <Label className="block">
+                <div className="block">
                   <Radio
                     name="isAuthorizedToWorkUsa"
                     value="yes"
@@ -477,8 +476,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     required
                   />{' '}
                   Yes
-                </Label>
-                <Label className="block">
+                </div>
+                <div className="block">
                   <Radio
                     name="isAuthorizedToWorkUsa"
                     value="no"
@@ -491,7 +490,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     required
                   />{' '}
                   No
-                </Label>
+                </div>
               </RadioGroup>
             </div>
             <div>
@@ -501,7 +500,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 employment visa status? *
               </p>
               <RadioGroup>
-                <Label className="block">
+                <div className="block">
                   <Radio
                     name="requiresSponsorship"
                     value="yes"
@@ -514,8 +513,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     required
                   />{' '}
                   Yes
-                </Label>
-                <Label className="block">
+                </div>
+                <div className="block">
                   <Radio
                     name="requiresSponsorship"
                     value="no"
@@ -528,7 +527,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     required
                   />{' '}
                   No
-                </Label>
+                </div>
               </RadioGroup>
             </div>
           </fieldset>

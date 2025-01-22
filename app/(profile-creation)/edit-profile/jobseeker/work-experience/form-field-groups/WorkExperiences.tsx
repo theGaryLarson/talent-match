@@ -1,5 +1,4 @@
 import React, { memo, MouseEventHandler, useCallback } from 'react';
-import { Label } from 'flowbite-react';
 import PillButton from '@/app/ui/components/PillButton';
 import { Checkbox } from '@mui/material';
 import { MdClose } from 'react-icons/md';
@@ -186,15 +185,13 @@ export default memo(function WorkExperiences({
           />
         </RequiredTooltip>
       </div>
-      <Label>
-        <Checkbox
-          id={classNamePrefix + workExperience.workId + '-' + classCurrent}
-          name={classNamePrefix + workExperience.workId + '-' + classCurrent}
-          checked={workExperience[classCurrent]}
-          onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
-        />
-        Currently Employed in this Position
-      </Label>
+      <Checkbox
+        id={classNamePrefix + workExperience.workId + '-' + classCurrent}
+        name={classNamePrefix + workExperience.workId + '-' + classCurrent}
+        checked={workExperience[classCurrent]}
+        onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
+      />
+      Currently Employed in this Position
       <div className="profile-form-grid">
         <TextareaWithLabel
           id={classNamePrefix + workExperience.workId + '-' + classExperience}
