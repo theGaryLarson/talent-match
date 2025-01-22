@@ -125,6 +125,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
           sx={{
             ml: 5,
             mt: 3,
+            mb: 3,
             width: '123px',
             backgroundColor: '#f6f6f6',
             color: '#014260',
