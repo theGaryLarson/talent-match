@@ -450,6 +450,77 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           <Box>
             <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Licenses &amp; Certifications
+              </Typography>
+              {isOwnProfile && (
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/education'}
+                >
+                  <EditIcon />
+                </Link>
+              )}
+            </Stack>
+            <Stack gap={1} sx={{ pl: 2 }}>
+              {jobseeker?.certificates.map((certificate) => (
+                <Box key={certificate.certId}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >
+                    {certificate.name}
+                  </Typography>
+                  <Stack gap={1} direction="row">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z"
+                        fill="#047089"
+                      />
+                    </svg>
+                    { certificate.issueDate && <Typography className="text-xs">
+                      {monthNames[certificate.issueDate.getMonth()]}{' '}
+                      {certificate.issueDate.getFullYear()} -{' '}
+                      {certificate.expiryDate
+                        ? monthNames[
+                        certificate.expiryDate.getMonth()
+                        ] +
+                        ' ' +
+                        certificate.expiryDate.getFullYear()
+                        : 'Present'}
+                    </Typography>}
+                  </Stack>
+                  {certificate.credentialUrl ? (
+                    <Link
+                      sx={{ wordBreak: 'break-all' }}
+                      target="_blank"
+                      href={certificate.credentialUrl}
+                    >
+                      {certificate.credentialUrl}
+                    </Link>
+                  ) : (
+                    ''
+                  )}
+                  <p>{certificate.description}</p>
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+          <Box>
+            <Stack gap={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Resume
               </Typography>
               {isOwnProfile && (
