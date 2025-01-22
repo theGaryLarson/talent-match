@@ -114,7 +114,7 @@ export default function AvatarUpload({
             width: '5rem', // Tailwind's w-20
             height: '5rem', // Tailwind's h-20
             flexShrink: 0, // Tailwind's flex-shrink-0
-            borderRadius: '50%', // Mimics Flowbite's rounded
+            borderRadius: '50%', // Mimics rounded
           }}
           data-testid="avatar-image"
         />
