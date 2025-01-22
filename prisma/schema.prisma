@@ -44,6 +44,8 @@ model User {
   companies               companies[]
   CaseMgmt                CaseMgmt[]
   CaseMgmtNotes           CaseMgmtNotes[]
+  events                  EventsOnUsers[] // Many-to-many relationship with Events
+  createdEvents           Events[] // One-to-many relationship with Events
 
   @@map("users")
 }
@@ -110,6 +112,50 @@ model Authenticator {
 /////////////////////////////////////////////////////
 ////////////// End Auth.js models ///////////////////
 /////////////////////////////////////////////////////
+
+///////////// Event models//////////////////////////
+
+
+model Events {
+  id             String          @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  name           String          @db.VarChar(255) // Name of the event
+  description    String?         @db.Text // Longer description of the event
+  location       String?         @db.VarChar(255) // Physical location, if applicable
+  date           DateTime        @db.DateTime // Date of the event
+  zoomSignUpLink String?         @db.VarChar(2083) // Zoom sign-up link (URL)
+  linkTitle      String?         @db.VarChar(255) // Title for the Zoom link
+  blurb          String?         @db.VarChar(255) // One-sentence blurb about the event
+  eventType      String          @db.VarChar(50) // Type of the event
+  createdAt      DateTime        @default(now()) @db.DateTime
+  updatedAt      DateTime?       @updatedAt @db.DateTime
+  attendees      EventsOnUsers[] // Many-to-many relationship with Users
+  createdById    String?         @db.UniqueIdentifier
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@map("events")
+}
+
+model EventsOnUsers {
+  id      String @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  eventId String @db.UniqueIdentifier
+  userId  String @db.UniqueIdentifier
+  event   Events @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([eventId, userId])
+  @@map("events_on_users")
+}
+
+
+
+
+///////////////end event models///////////////////
+
+
+
+
+
 
 model certificates {
   certId        String     @id(clustered: false, map: "certificates_PRIMARY") @map("certification_id") @db.UniqueIdentifier
