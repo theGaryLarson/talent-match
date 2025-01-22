@@ -87,7 +87,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
       <div className="flex flex-col text-button-secondary-idle-text">
         <Stack
           direction={'row'}
-          spacing={1}
+          gap={1}
           sx={{ alignItems: 'center', ml: 5, mb: 3 }}
         >
           <Avatar scale={0.66} imgsrc={session?.user.image || ''} />
@@ -125,6 +125,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
           sx={{
             ml: 5,
             mt: 3,
+            mb: 3,
             width: '123px',
             backgroundColor: '#f6f6f6',
             color: '#014260',
@@ -308,7 +309,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {children}
         </Box>
         <Grid2
-          spacing={2}
+          gap={2}
           container
           sx={{
             position: 'relative',
@@ -320,7 +321,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             bgcolor: '#F6F6F6',
           }}
         >
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} gap={2}>
             <Link href={'/policies/terms-of-service'}>Terms of Service</Link>
             {/*<Link href={'/underconstruction'}>Privacy Policy</Link>
             <Link href={'/underconstruction'}>Cookie Settings</Link>*/}

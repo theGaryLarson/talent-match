@@ -30,12 +30,12 @@ type StatusConfigType = {
 
 const statusConfig: StatusConfigType = {
   [JobStatus.Applied]: {
-    color: 'info',
+    color: 'success',
     variant: 'outlined',
   },
   [JobStatus.Interviewing]: {
     color: 'primary',
-    variant: 'filled',
+    variant: 'outlined',
   },
   [JobStatus.Negotiating]: {
     color: 'secondary',
@@ -92,7 +92,7 @@ export default async function Applications({
         size={1}
         sx={{ justifyContent: 'space-between' }}
       >
-        <p className="self-center text-xl font-medium text-black/90">
+        <p className="self-center text-xl font-medium text-button-secondary-idle-text">
           Application Status
         </p>
         <PillButton
@@ -109,16 +109,16 @@ export default async function Applications({
       <Grid2 size={1}>
         <Card
           variant="outlined"
-          sx={{ p: 1, display: { xs: 'none', sm: 'block' } }}
+          sx={{ display: { xs: 'none', sm: 'block' } }}
         >
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Job Title</TableCell>
-                  <TableCell>Company Name</TableCell>
-                  <TableCell>Deadline</TableCell>
-                  <TableCell>Status</TableCell>
+                  <TableCell sx={{color: '#014260', fontWeight: '600'}}>Job Title</TableCell>
+                  <TableCell sx={{color: '#014260', fontWeight: '600'}}>Company Name</TableCell>
+                  <TableCell sx={{color: '#014260', fontWeight: '600'}}>Deadline</TableCell>
+                  <TableCell sx={{color: '#014260', fontWeight: '600'}}>Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -131,8 +131,8 @@ export default async function Applications({
                       },
                     }}
                   >
-                    <TableCell>{job.job_title}</TableCell>
-                    <TableCell>{job.companies.company_name}</TableCell>
+                    <TableCell sx={{color: '#014260', fontWeight: '600'}}>{job.job_title}</TableCell>
+                    <TableCell sx={{color: '#014260'}}>{job.companies.company_name}</TableCell>
                     <TableCell>
                       {job.unpublish_date?.toLocaleString(undefined, {
                         weekday: 'long',

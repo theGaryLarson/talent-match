@@ -557,6 +557,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
           },
         },
       },
+      certificates: true,
       pathways: {
         select: {
           pathway_title: true,
