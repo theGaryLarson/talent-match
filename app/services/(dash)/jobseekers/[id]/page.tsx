@@ -1,15 +1,8 @@
-'use client';
-
 import Avatar from '@/app/ui/components/Avatar';
 import Skills from '@/app/ui/components/Skills';
 import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
 import DeletionFlag from '@/app/ui/components/DeletionFlag';
 import EditIcon from '@mui/icons-material/Edit';
-import { useCallback, useEffect, useState, use } from 'react';
-import { useSession } from 'next-auth/react';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
-import JobseekerProfileDTO from '@/data/dtos/JobseekerProfileDTO';
 import {
   Box,
   Card,
@@ -22,6 +15,9 @@ import {
 } from '@mui/material';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import PillButton from '@/app/ui/components/PillButton';
+import { getJobSeekerEmployerView } from '@/app/lib/prisma';
+import { getResumeUrl } from '@/app/lib/services/azureBlobService';
+import { auth } from '@/auth';
 
 const monthNames = [
   'Jan',
@@ -41,105 +37,40 @@ const monthNames = [
 function formatUrl(url: string) {
   if (!url) return '';
   if (url == '') return '';
-  // If the URL starts with http:// or https://, return as is
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  // Default to https:// but don't force it, allow users to adjust
   return `https://${url}`;
 }
 
-async function fetchJobseeker(id: string): Promise<JobseekerProfileDTO> {
-  const response = await fetch('/api/jobseekers/get/' + id, {
-    // Make the request
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  return response.json();
-}
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const [params, session] = await Promise.all([props.params, auth()]);
+  const jobseeker = await getJobSeekerEmployerView(params.id);
 
-async function fetchResume(id: string) {
-  const response = await fetch('/api/jobseekers/resume/get/' + id, {
-    // Make the request
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  return response.json();
-}
+  const isOwnProfile = session?.user.jobseekerId === params.id;
+  let videoID = null;
+  let resumeUrl = null;
 
-export default function Page(props: { params: Promise<{ id: string }> }) {
-  const params = use(props.params);
-  const [jobseeker, setJobseeker] = useState<JobseekerProfileDTO>();
-  const [videoID, setVideoID] = useState('');
-  const [resumeUrl, setResumeUrl] = useState('');
-
-  const session = useSession();
-  const isOwnProfile = session?.data?.user.jobseekerId === params.id;
-
-  const execResumeQuery = useCallback(async (userId: string) => {
-    // fetch resume url
-    try {
-      const data = await fetchResume(userId);
-      setResumeUrl(data);
-    } catch (error) {
-      console.error('Error fetching job seekers:', error);
+  if (jobseeker?.video_url) {
+    const parsedUrl = new URL(jobseeker?.video_url);
+    if (parsedUrl.hostname === 'youtu.be') {
+      videoID = parsedUrl.pathname.slice(1);
+    } else if (
+      parsedUrl.hostname === 'www.youtube.com' ||
+      parsedUrl.hostname === 'youtube.com'
+    ) {
+      videoID = new URLSearchParams(parsedUrl.search).get('v') ?? '';
     }
-  }, []);
+  }
 
-  const execJobseekerQuery = useCallback(async () => {
-    // fetch jobseeker data
-    try {
-      const data = await fetchJobseeker(params.id);
-      setJobseeker(data);
-      if (
-        session.data?.user.employeeIsApproved ||
-        session.data?.user.jobseekerId == params.id ||
-        session.data?.user.roles.includes(Role.ADMIN) ||
-        session.data?.user.roles.includes(Role.CASE_MANAGER)
-      ) {
-        execResumeQuery(data.users.id);
-      }
-      if (data?.video_url) {
-        const parsedUrl = new URL(data?.video_url);
-        console.log(parsedUrl);
-        if (parsedUrl.hostname === 'youtu.be') {
-          setVideoID(parsedUrl.pathname.slice(1));
-        } else if (
-          parsedUrl.hostname === 'www.youtube.com' ||
-          parsedUrl.hostname === 'youtube.com'
-        ) {
-          setVideoID(new URLSearchParams(parsedUrl.search).get('v') ?? '');
-        }
-        console.log('Vid id is: ', videoID);
-        document.title =
-          (jobseeker?.users.first_name || '') +
-          ' ' +
-          (jobseeker?.users.last_name || '');
-      }
-    } catch (error) {
-      console.error('Error fetching job seekers:', error);
-    }
-  }, [
-    params.id,
-    videoID,
-    execResumeQuery,
-    jobseeker?.users.first_name,
-    jobseeker?.users.last_name,
-  ]);
-
-  useEffect(() => {
-    execJobseekerQuery();
-  }, [execJobseekerQuery]);
+  if (
+    session?.user.employeeIsApproved ||
+    isOwnProfile ||
+    session?.user.roles.includes(Role.ADMIN) ||
+    session?.user.roles.includes(Role.CASE_MANAGER)
+  ) {
+    if (jobseeker) resumeUrl = await getResumeUrl(jobseeker?.users.id);
+  }
 
   return (
     <Container sx={{ pb: 4 }}>
@@ -147,7 +78,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
       {isOwnProfile && (
         <Stack
           direction={'row'}
-          spacing={2}
+          gap={2}
           sx={{
             pt: '25px',
             mb: 2,
@@ -157,12 +88,14 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             alignSelf: 'stretch',
           }}
         >
-          <PillButton disableElevation
-          href={'/services/jobseekers/dashboard'}
-          sx={{
-            backgroundColor: '#f6f6f6',
-            color: '#014260',
-          }}>
+          <PillButton
+            disableElevation
+            href={'/services/jobseekers/dashboard'}
+            sx={{
+              backgroundColor: '#f6f6f6',
+              color: '#014260',
+            }}
+          >
             Dashboard
           </PillButton>
           <Typography
@@ -171,17 +104,15 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
           >
             |
           </Typography>
-          <PillButton disableElevation>
-            Showcase
-          </PillButton>
+          <PillButton disableElevation>Showcase</PillButton>
         </Stack>
       )}
 
-      <Grid2 container spacing={2} sx={{ mb: 2, justifyContent: 'center' }}>
+      <Grid2 container gap={2} sx={{ mb: 2, justifyContent: 'center' }}>
         <Grid2>
           <Card variant="outlined">
             <Stack
-              spacing={2}
+              gap={2}
               direction={'row'}
               sx={{ padding: 2, alignItems: 'center' }}
             >
@@ -242,12 +173,9 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
         </Grid2>
       </Grid2>
       <Container>
-        <Stack
-          spacing={2}
-          divider={<Divider orientation="horizontal" flexItem />}
-        >
+        <Stack gap={2} divider={<Divider orientation="horizontal" flexItem />}>
           <Box>
-            <Stack spacing={2} direction={'row'}>
+            <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Introduction
               </Typography>
@@ -268,7 +196,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             <Typography sx={{ pl: 2 }}>{jobseeker?.intro_headline}</Typography>
           </Box>
           <Box>
-            <Stack spacing={2} direction={'row'}>
+            <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Preferences
               </Typography>
@@ -293,7 +221,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             </Typography>
           </Box>
           <Box>
-            <Stack spacing={2} direction={'row'}>
+            <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Skills
               </Typography>
@@ -321,7 +249,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             </Box>
           </Box>
           <Box>
-            <Stack spacing={2} direction={'row'}>
+            <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Work Experience{' '}
                 {jobseeker?.years_work_exp
@@ -342,7 +270,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 </Link>
               )}
             </Stack>
-            <Stack spacing={1} sx={{ pl: 2 }}>
+            <Stack gap={1} sx={{ pl: 2 }}>
               {jobseeker?.work_experiences.map((experience) => (
                 <Box key={experience.workId}>
                   <Typography
@@ -351,7 +279,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                   >
                     {experience.company} | {experience.jobTitle}
                   </Typography>
-                  <Stack spacing={1} direction="row">
+                  <Stack gap={1} direction="row">
                     <svg
                       width="20"
                       height="20"
@@ -382,7 +310,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             </Stack>
           </Box>
           <Box>
-            <Stack spacing={2} direction={'row'}>
+            <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Education
               </Typography>
@@ -415,7 +343,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                   <Typography>
                     {education?.program?.title} | {education.degreeType}
                   </Typography>
-                  <Stack spacing={1} direction="row">
+                  <Stack gap={1} direction="row">
                     <svg
                       width="20"
                       height="20"
@@ -442,7 +370,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             </Stack>
           </Box>
           <Box>
-            <Stack spacing={2} direction={'row'}>
+            <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Projects
               </Typography>
@@ -460,7 +388,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 </Link>
               )}
             </Stack>
-            <Stack spacing={1} sx={{ pl: 2 }}>
+            <Stack gap={1} sx={{ pl: 2 }}>
               {jobseeker?.project_experiences.map((experience) => (
                 <Box key={experience.projectId}>
                   <Typography
@@ -469,7 +397,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                   >
                     {experience.projTitle}
                   </Typography>
-                  <Stack spacing={1} direction="row">
+                  <Stack gap={1} direction="row">
                     <svg
                       width="20"
                       height="20"
@@ -520,7 +448,78 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             </Stack>
           </Box>
           <Box>
-            <Stack spacing={2} direction={'row'}>
+            <Stack gap={2} direction={'row'}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Licenses &amp; Certifications
+              </Typography>
+              {isOwnProfile && (
+                <Link
+                  sx={{
+                    opacity: 0.65,
+                    '&:hover': {
+                      opacity: 1,
+                    },
+                  }}
+                  href={'/edit-profile/jobseeker/education'}
+                >
+                  <EditIcon />
+                </Link>
+              )}
+            </Stack>
+            <Stack gap={1} sx={{ pl: 2 }}>
+              {jobseeker?.certificates.map((certificate) => (
+                <Box key={certificate.certId}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >
+                    {certificate.name}
+                  </Typography>
+                  <Stack gap={1} direction="row">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M15.8333 3.33333H15V1.66666H13.3333V3.33333H6.66667V1.66666H5V3.33333H4.16667C3.24167 3.33333 2.5 4.08333 2.5 5V16.6667C2.5 17.5833 3.24167 18.3333 4.16667 18.3333H15.8333C16.75 18.3333 17.5 17.5833 17.5 16.6667V5C17.5 4.08333 16.75 3.33333 15.8333 3.33333ZM15.8333 16.6667H4.16667V7.5H15.8333V16.6667ZM5.41667 10.8333C5.41667 9.68333 6.35 8.75 7.5 8.75C8.65 8.75 9.58333 9.68333 9.58333 10.8333C9.58333 11.9833 8.65 12.9167 7.5 12.9167C6.35 12.9167 5.41667 11.9833 5.41667 10.8333Z"
+                        fill="#047089"
+                      />
+                    </svg>
+                    { certificate.issueDate && <Typography className="text-xs">
+                      {monthNames[certificate.issueDate.getMonth()]}{' '}
+                      {certificate.issueDate.getFullYear()} -{' '}
+                      {certificate.expiryDate
+                        ? monthNames[
+                        certificate.expiryDate.getMonth()
+                        ] +
+                        ' ' +
+                        certificate.expiryDate.getFullYear()
+                        : 'Present'}
+                    </Typography>}
+                  </Stack>
+                  {certificate.credentialUrl ? (
+                    <Link
+                      sx={{ wordBreak: 'break-all' }}
+                      target="_blank"
+                      href={certificate.credentialUrl}
+                    >
+                      {certificate.credentialUrl}
+                    </Link>
+                  ) : (
+                    ''
+                  )}
+                  <p>{certificate.description}</p>
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+          <Box>
+            <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Resume
               </Typography>
@@ -547,7 +546,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             )}
           </Box>
           <Box>
-            <Stack spacing={2} direction={'row'}>
+            <Stack gap={2} direction={'row'}>
               <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                 Portfolio
               </Typography>
@@ -579,7 +578,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
           </Box>
           {(jobseeker?.linkedin_url || isOwnProfile) && (
             <Box>
-              <Stack spacing={2} direction={'row'}>
+              <Stack gap={2} direction={'row'}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                   LinkedIn
                 </Typography>
@@ -598,8 +597,20 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 )}
               </Stack>
               {jobseeker?.linkedin_url && (
-                <Link sx={{ pl: 2 }} href={"https://www.linkedin.com" + jobseeker.linkedin_url.toLowerCase().split('linkedin.com')[1]} target="_blank">
-                  {"https://www.linkedin.com" + jobseeker.linkedin_url.toLowerCase().split('linkedin.com')[1]}
+                <Link
+                  sx={{ pl: 2 }}
+                  href={
+                    'https://www.linkedin.com' +
+                    jobseeker.linkedin_url
+                      .toLowerCase()
+                      .split('linkedin.com')[1]
+                  }
+                  target="_blank"
+                >
+                  {'https://www.linkedin.com' +
+                    jobseeker.linkedin_url
+                      .toLowerCase()
+                      .split('linkedin.com')[1]}
                 </Link>
               )}
             </Box>

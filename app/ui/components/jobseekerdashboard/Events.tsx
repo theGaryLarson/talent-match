@@ -11,7 +11,7 @@ export default async function Events() {
         size={1}
         sx={{ justifyContent: 'space-between' }}
       >
-        <p className="self-center text-xl font-medium text-black/90">
+        <p className="self-center text-xl font-medium text-button-secondary-idle-text">
           Registered Events
         </p>
         <PillButton

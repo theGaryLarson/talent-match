@@ -134,46 +134,44 @@ export default async function CareerPrep(props: {
       break;
   }
   return (
-    <div className="space-y-3">
-      <Card
-        elevation={0}
-        sx={{
-          borderRadius: '1rem',
-          backgroundColor: 'rgb(246 246 246 / var(--tw-bg-opacity, 1))',
-          p: '1rem',
-        }}
-      >
-        <Grid2 container spacing={2}>
-          <Image
-            className="rounded-2xl"
-            width={400}
-            height={267}
-            src="/images/stock/careerAssesment.jfif"
-            alt="4 people looking at a computer, ready to start their journey"
-          />
-          <Grid2 container spacing={2} direction={'column'}>
-            <div>
-              <div className="self-stretch text-[32px] font-normal leading-[38.40px] text-[#014260]">
-                {copy.headline}
-              </div>
-              <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
-                <div className="font-semibold leading-none tracking-wider text-[#047f9c]">
-                  Career Prep Program
-                </div>
-              </div>
-              <div className="font-normal leading-tight text-[#191919]/60">
-                {copy.body}
-              </div>
+    <Card
+      elevation={0}
+      sx={{
+        borderRadius: '1rem',
+        backgroundColor: 'rgb(246 246 246 / var(--tw-bg-opacity, 1))',
+        p: '1rem',
+      }}
+    >
+      <Stack direction={{sx: 'column', lg:'row'}} gap={2}>
+        <Image
+          className="rounded-2xl"
+          width={400}
+          height={267}
+          src="/images/stock/careerAssesment.jfif"
+          alt="4 people looking at a computer, ready to start their journey"
+        />
+        <Grid2 container gap={2} direction={'column'}>
+          <div>
+            <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-[#014260]">
+              {copy.headline}
+            </p>
+            <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
+              <p className="font-semibold leading-none tracking-wider text-[#047f9c]">
+                Career Prep Program
+              </p>
             </div>
-            <RoundedButton
-              snug
-              invertColor
-              link={copy.buttonLink}
-              content={copy.button}
-            />
-          </Grid2>
+            <p className="font-normal leading-tight text-[#191919]/60">
+              {copy.body}
+            </p>
+          </div>
+          <RoundedButton
+            snug
+            invertColor
+            link={copy.buttonLink}
+            content={copy.button}
+          />
         </Grid2>
-      </Card>
-    </div>
+      </Stack>
+    </Card>
   );
 }

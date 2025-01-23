@@ -11,9 +11,9 @@ export default async function TrainingProviderPrograms({
   programs: ReadEduProviderProgramCardDTO[];
 }) {
   return (
-    <Stack direction={'column'} spacing={2}>
-      <Grid2 spacing={1} container sx={{ justifyContent: 'space-between' }}>
-        <p className="self-center text-xl font-medium text-black/90">
+    <Stack direction={'column'} gap={2}>
+      <Grid2 gap={1} container sx={{ justifyContent: 'space-between' }}>
+        <p className="self-center text-xl font-medium text-button-secondary-idle-text">
           Coalition Training Provider Programs
         </p>
         <PillButton
