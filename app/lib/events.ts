@@ -5,7 +5,8 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 export enum EventTypeEnum {
   Workshop = "Workshop",
-  General = "General"
+  General = "General",
+  Event = "Event"
 }
 export type CreateEventData = {
   name: string;

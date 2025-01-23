@@ -132,7 +132,7 @@ export default function EventUpdateForm() {
     }
   },[selectedEventId])
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-lg shadow-md w-6/12">
+    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold">Update an Event</h2>
     <select
         value={selectedEventId || ''}

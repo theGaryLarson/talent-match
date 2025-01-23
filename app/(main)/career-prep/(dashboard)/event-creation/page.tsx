@@ -3,7 +3,7 @@ import EventUpdateForm from "@/app/ui/components/EventCreation/EventUpdateForm";
 
 export default function page(){
     return(
-        <main className="w-full">
+        <main className="w-full gap-4 grid tablet:grid-cols-2 ">
         <EventCreationForm/>
         <EventUpdateForm/>
         </main>
