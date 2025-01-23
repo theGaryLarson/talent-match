@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import { Button } from '@mui/material';
-import { CreateEventData, EventUpdateData } from "@/app/lib/events";
+import {EventTypeEnum, EventUpdateData } from "@/app/lib/events";
 export default function EventCreationForm() {
   // State to manage form input values
   const [eventName, setEventName] = useState<string>("");
@@ -11,7 +11,7 @@ export default function EventCreationForm() {
   const [zoomLink, setZoomLink] = useState<string>("");
   const [linkTitle, setLinkTitle] = useState<string>("");
   const [eventBlurb, setEventBlurb] = useState<string>("");
-  const [eventType, setEventType] = useState<string>("Webinar"); // Consider using a union type for stricter control
+  const [eventType, setEventType] = useState<EventTypeEnum>(EventTypeEnum.Webinar); // Consider using a union type for stricter control
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -62,12 +62,16 @@ export default function EventCreationForm() {
 
 
     // Reset the form
+    resetForm();
+  };
+  const resetForm = ()=>{
     setEventName("");
     setEventDate("");
     setZoomLink("");
     setEventBlurb("");
-    setEventType("Workshop");
-  };
+    setEventDescription("");
+    setEventType(EventTypeEnum.Webinar);
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-lg shadow-md w-6/12">
@@ -132,20 +136,22 @@ export default function EventCreationForm() {
       <div>
         <label htmlFor="eventType" className="block text-sm font-medium">Event Type</label>
         <select
-          id="eventType"
-          value={eventType}
-          onChange={(e) => setEventType(e.target.value)}
-          className="mt-2 p-2 border rounded w-full"
-        >
-          <option value="Workshop">Workshop</option>
-          <option value="Webinar">Webinar</option>
-          <option value="Conference">Conference</option>
-          <option value="Meeting">Meeting</option>
-        </select>
+              id="eventType"
+              value={eventType}
+              onChange={(e) => setEventType(e.target.value as EventTypeEnum)} // Cast to EventType
+              className="mt-2 p-2 border rounded w-full"
+            >
+              {Object.values(EventTypeEnum).map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
       </div>
 
       <div className="mt-4">
-        <Button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">Create Event</Button>
+        <Button onClick={resetForm}>Reset Form</Button>
+        <Button type="submit">Create Event</Button>
       </div>
     </form>
   );

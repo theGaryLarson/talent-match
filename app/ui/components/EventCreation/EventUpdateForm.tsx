@@ -1,13 +1,11 @@
 'use client'
 import { useEffect, useState } from "react";
 import { Button } from '@mui/material';
-import { CreateEventData, EventUpdateData } from "@/app/lib/events";
+import { EventTypeEnum, EventUpdateData } from "@/app/lib/events";
 import { Events } from "@prisma/client";
-import { useRouter } from "next/navigation";
 
 export default function EventUpdateForm() {
   // State to manage form input values
-  const router = useRouter();
   const [selectedEventId, setSelectedEventId] = useState<string>()
   const [existingEvents, setExistingEvents] = useState<Events[]>()
   const [eventName, setEventName] = useState<string>("");
@@ -17,7 +15,7 @@ export default function EventUpdateForm() {
   const [zoomLink, setZoomLink] = useState<string>("");
   const [linkTitle, setLinkTitle] = useState<string>("");
   const [eventBlurb, setEventBlurb] = useState<string>("");
-  const [eventType, setEventType] = useState<string>("Webinar"); // Consider using a union type for stricter control
+  const [eventType, setEventType] = useState<EventTypeEnum>(EventTypeEnum.Webinar); // Consider using a union type for stricter control
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -45,7 +43,7 @@ export default function EventUpdateForm() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({eventId:selectedEventId,updatedData:formData}),
         });
   
         if (!response.ok) {
@@ -57,6 +55,9 @@ export default function EventUpdateForm() {
           console.log('Update sucsess: ', data);
           if (submitButton) submitButton.disabled = false;
           alert('Event updated successfully!');
+          getExistingEvents();
+          setSelectedEventId(undefined);
+
         }
       } catch (error) {
         console.error('Error:', error);
@@ -82,7 +83,7 @@ export default function EventUpdateForm() {
         }
         
     } catch (error) {
-        
+        alert('Delete Failed: '+error)
     }
   }
   const resetForm = ()=>{
@@ -91,7 +92,8 @@ export default function EventUpdateForm() {
     setZoomLink("");
     setEventBlurb("");
     setEventDescription("");
-    setEventType("Workshop");
+    setEventType(EventTypeEnum.Webinar);
+    setSelectedEventId('');
   }
   const getExistingEvents = () => {
     fetch('/api/events')
@@ -115,23 +117,31 @@ export default function EventUpdateForm() {
     const selectedEvent = existingEvents?.find((ev)=>ev.id == selectedEventId)
     if(selectedEvent != undefined){
         const eventDate = new Date(selectedEvent.date);
+    // Convert to local time format required for datetime-local input
+    const localDateTime = new Date(
+      eventDate.getTime() - eventDate.getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .slice(0, 16); // Trim to YYYY-MM-DDTHH:mm
         setEventName(selectedEvent.name);
-        setEventDate(eventDate.toISOString());
+        setEventDate(localDateTime);
         setZoomLink(selectedEvent.zoomSignUpLink??'');
         setEventBlurb(selectedEvent.blurb??"");
         setEventDescription(selectedEvent.description??'')
-        setEventType(selectedEvent.eventType);
+        setEventType(selectedEvent.eventType as EventTypeEnum);
     }
   },[selectedEventId])
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-lg shadow-md w-6/12">
       <h2 className="text-2xl font-semibold">Update an Event</h2>
     <select
+        value={selectedEventId || ''}
         onChange={(e)=>{setSelectedEventId(e.target.value)}}
+        className="mt-2 p-2 border rounded w-full"
     >
-        <option>--Please Select An Event--</option>
+        <option value=''>--Please Select An Event--</option>
         {
-            existingEvents?.map((ev)=><option key={ev.id} value={ev.id}>{ev.name}</option>)
+            existingEvents?.map((ev)=><option key={ev.id} value={ev.id}>{ev.name} - {(new Date(ev.date)).toLocaleDateString()}</option>)
         }
     </select>
       {selectedEventId&&<>
@@ -194,21 +204,22 @@ export default function EventUpdateForm() {
       <div>
         <label htmlFor="eventType" className="block text-sm font-medium">Event Type</label>
         <select
-          id="eventType"
-          value={eventType}
-          onChange={(e) => setEventType(e.target.value)}
-          className="mt-2 p-2 border rounded w-full"
-        >
-          <option value="Workshop">Workshop</option>
-          <option value="Webinar">Webinar</option>
-          <option value="Conference">Conference</option>
-          <option value="Meeting">Meeting</option>
-        </select>
+              id="eventType"
+              value={eventType}
+              onChange={(e) => setEventType(e.target.value as EventTypeEnum)} // Cast to EventType
+              className="mt-2 p-2 border rounded w-full"
+            >
+              {Object.values(EventTypeEnum).map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
       </div>
 
       <div className="mt-4">
         <Button onClick={handleDelete}>Delete Event</Button>
-        <Button type="submit">Create Event</Button>
+        <Button type="submit">Update Event</Button>
       </div>
 
       

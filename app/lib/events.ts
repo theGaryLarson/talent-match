@@ -3,7 +3,12 @@ import { Role } from "@/data/dtos/UserInfoDTO";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
+export enum EventTypeEnum {
+  Workshop = "Workshop",
+  Webinar = "Webinar",
+  Conference = "Conference",
+  Meeting = "Meeting"
+}
 export type CreateEventData = {
   name: string;
   description: string;
@@ -12,7 +17,7 @@ export type CreateEventData = {
   zoomSignUpLink: string;
   linkTitle: string;
   blurb: string;
-  eventType: string; // Consider using a union type for stricter control, e.g., "Webinar" | "Workshop" | "Seminar"
+  eventType: EventTypeEnum; // Consider using a union type for stricter control, e.g., "Webinar" | "Workshop" | "Seminar"
   //createdById: string;
 };
 
