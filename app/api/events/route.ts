@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET - Retrieve Events (you can customize this to return a list of events or specific event)
+// GET - Retrieve All Events 
 export async function GET() {
  const result = await getAllEvents()
  if(result.success){
