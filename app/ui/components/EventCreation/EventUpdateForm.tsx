@@ -15,7 +15,7 @@ export default function EventUpdateForm() {
   const [zoomLink, setZoomLink] = useState<string>("");
   const [linkTitle, setLinkTitle] = useState<string>("");
   const [eventBlurb, setEventBlurb] = useState<string>("");
-  const [eventType, setEventType] = useState<EventTypeEnum>(EventTypeEnum.Webinar); // Consider using a union type for stricter control
+  const [eventType, setEventType] = useState<EventTypeEnum>(EventTypeEnum.General); // Consider using a union type for stricter control
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -92,7 +92,7 @@ export default function EventUpdateForm() {
     setZoomLink("");
     setEventBlurb("");
     setEventDescription("");
-    setEventType(EventTypeEnum.Webinar);
+    setEventType(EventTypeEnum.General);
     setSelectedEventId('');
   }
   const getExistingEvents = () => {
