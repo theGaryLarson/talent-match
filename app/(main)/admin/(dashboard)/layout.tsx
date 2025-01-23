@@ -5,7 +5,7 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import { auth } from '@/auth';
 import { BookmarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
-import { AddBusinessOutlined } from '@mui/icons-material';
+import { AddBusinessOutlined, PsychologyOutlined } from '@mui/icons-material';
 export default async function layout({ children }: { children: React.ReactNode }) {
   let session = await auth()
   console.log(session)
@@ -47,6 +47,20 @@ export default async function layout({ children }: { children: React.ReactNode }
         >
           <AddBusinessOutlined/>
           Update Company
+        </Link>
+        <Link
+          href="/admin/add-skill"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <PsychologyOutlined/>
+          Add Skill
+        </Link>
+        <Link
+          href="/admin/update-skill"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <PsychologyOutlined/>
+          Update Skill
         </Link>
         <Link
           href="/admin/verify"
