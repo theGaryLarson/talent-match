@@ -3,9 +3,13 @@ import { Button, ButtonProps } from '@mui/material';
 
 interface PillButtonProps extends ButtonProps {
   selected?: boolean;
+  target?: string;
+  href?: string;
 }
 
 const PillButton: React.FC<PillButtonProps> = ({
+  target,
+  href,
   selected = false,
   sx,
   variant = 'contained', // Default variant is contained
@@ -14,6 +18,9 @@ const PillButton: React.FC<PillButtonProps> = ({
   return (
     <Button
       variant={variant}
+      component={href ? 'a' : 'button'}
+      href={href || undefined}
+      target={target}
       sx={{
         borderRadius: '9999px', // Rounded pill shape
         textTransform: 'none', // Disable uppercase
