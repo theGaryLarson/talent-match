@@ -3,7 +3,7 @@
 import DividerWithText from '@/app/ui/components/DividerWithText';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import Link from 'next/link';
-import { Button } from 'flowbite-react';
+import { Button } from '@mui/material';
 import SignupPrompt from '@/app/ui/components/SignupPrompt';
 import Image from 'next/image';
 import Footer from '@/app/ui/Footer';
@@ -43,7 +43,7 @@ export default function JobseekerSignupFinishPage() {
 
       <main className="mx-auto max-w-screen-sm-tablet overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
         <SignupPrompt vectorImgSrc={vectorImgSrc} />
-        <section className="mx-auto w-full px-8 laptop:pt-24 ">
+        <section className="mx-auto w-full px-8 laptop:pt-24">
           <form className="mx-auto flex flex-col gap-6 laptop:max-w-screen-sm-tablet">
             <fieldset className="flex flex-col gap-3">
               <div className="inline">
@@ -141,7 +141,8 @@ export default function JobseekerSignupFinishPage() {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                  }});
+                  },
+                });
                 if (response.ok) {
                   let data = await response.json();
                   let rolesArray = session?.user.roles || [];
@@ -159,7 +160,14 @@ export default function JobseekerSignupFinishPage() {
                   router.push('/edit-profile/jobseeker/introduction');
                 }
               }}
-              className="mx-auto my-8 rounded-full focus:ring-0"
+              sx={{
+                marginX: 'auto',
+                marginY: 8,
+                borderRadius: '50%',
+                '&:focus': {
+                  boxShadow: 'none',
+                },
+              }}
               disabled={!(resident && termsAgree)}
             >
               Create account

@@ -3,7 +3,7 @@
 import DividerWithText from '@/app/ui/components/DividerWithText';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import Link from 'next/link';
-import { Button } from 'flowbite-react';
+import { Button } from '@mui/material';
 import SignupPrompt from '@/app/ui/components/SignupPrompt';
 import Image from 'next/image';
 import Footer from '@/app/ui/Footer';
@@ -31,7 +31,7 @@ export default function EmployerSignUpFinish() {
           vectorImgSrc={vectorImgSrc}
           prompt="It's free to set up your company with TWC. We work for YOU - providing customized solutions built within your budget to match your unique business needs. (placeholder)"
         />
-        <section className="mx-auto w-full px-8 laptop:pt-24 ">
+        <section className="mx-auto w-full px-8 laptop:pt-24">
           <form className="mx-auto flex flex-col gap-6 laptop:max-w-screen-sm-tablet">
             <fieldset className="flex flex-col gap-3 disabled:text-gray-400">
               <div>
@@ -45,8 +45,8 @@ export default function EmployerSignUpFinish() {
                   {' '}
                   By signing up you agree to our{' '}
                   <Link
-                    target='_blank'
-                    className='underline'
+                    target="_blank"
+                    className="underline"
                     href="/policies/terms-of-service"
                   >
                     terms of use
@@ -77,11 +77,14 @@ export default function EmployerSignUpFinish() {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                  }});
+                  },
+                });
                 let data = await response.json();
                 if (response.ok) {
-                  let rolesArray = session?.user.roles || []
-                  rolesArray = rolesArray.filter((role: Role) => role !== Role.GUEST)
+                  let rolesArray = session?.user.roles || [];
+                  rolesArray = rolesArray.filter(
+                    (role: Role) => role !== Role.GUEST,
+                  );
                   // Add the new role if it's not already in the roles array
                   if (!rolesArray.includes(Role.EMPLOYER)) {
                     rolesArray.push(Role.EMPLOYER);
@@ -91,9 +94,16 @@ export default function EmployerSignUpFinish() {
                     roles: rolesArray,
                   });
                   router.push('/edit-profile/employer/profile');
-              }
-            }}
-              className="mx-auto my-8 rounded-full focus:ring-0"
+                }
+              }}
+              sx={{
+                marginX: 'auto',
+                marginY: 8,
+                borderRadius: '50%',
+                '&:focus': {
+                  boxShadow: 'none',
+                },
+              }}
               disabled={!termsAgree}
             >
               Create account
