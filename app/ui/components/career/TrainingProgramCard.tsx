@@ -10,19 +10,20 @@ export default async function TrainingProgramCard(program: ReadEduProviderProgra
     return (
         <div className="flex-col justify-start items-start inline-flex">
             <div className="flex-col justify-start items-start flex">
-                <div className="w-80 rounded-3xl flex-col justify-start items-start flex">
+                <div className="group w-80 h-80 rounded-3xl flex-col justify-start items-start flex">
                     <Link href={'/services/training-programs/' + program.programId} className="w-80">
-                    <div className="self-stretch grow shrink basis-0 px-7 py-2 bg-neutral-100 hover:bg-sky-900 text-sky-900 hover:text-neutral-100 rounded-3xl flex-col justify-start items-start flex">
-                        <div className="self-stretch flex-col justify-start items-start flex h-72">
-                            <div className="self-stretch justify-between items-start inline-flex">
-                                <Image src={logoURL} width={144} height={144} alt="Edu provider logo" className="h-36 w-36"/>
-                                {program.eduLevel && <div className="ml-4 px-4 py-2 bg-cyan-700 rounded-full justify-center items-center gap-1 flex">
-                                    <div className="text-center text-white text-sm font-medium font-['Roboto'] capitalize leading-tight tracking-tight">
-                                        {program.eduLevel}
-                                    </div>
-                                </div>}
+                        <div className="self-stretch grow shrink basis-0 px-7 py-2 bg-neutral-100 text-sky-900 rounded-t-3xl flex-col justify-start items-start flex">
+                            {program.eduLevel && <div className="mt-4 px-4 py-2 bg-cyan-700 rounded-full justify-center items-center gap-1 flex">
+                                <div className="text-center text-white text-sm font-medium font-['Roboto'] capitalize leading-tight tracking-tight">
+                                    {program.eduLevel}
+                                </div>
+                            </div>}
+                            <div className="w-full justify-between items-start inline-flex">
+                                <Image src={logoURL} width={144} height={144} alt="Edu provider logo" className="h-36 w-full object-contain" />
                             </div>
-                            <div className="line-clamp-3 self-stretch text-2xl font-normal font-['Roboto']">
+                        </div>
+                        <div className="group-hover:bg-sky-900 group-hover:text-neutral-100 self-stretch grow shrink basis-0 px-6 py-2 bg-neutral-100 text-sky-900 rounded-b-3xl flex-col justify-start items-start flex">
+                            <div className="line-clamp-1 self-stretch text-2xl font-normal font-['Roboto']">
                                 {program.programName}
                             </div>
                             <div className="mt-2 self-stretch justify-start items-start gap-2.5 inline-flex">
@@ -36,7 +37,6 @@ export default async function TrainingProgramCard(program: ReadEduProviderProgra
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </Link>
                 </div>
             </div>
