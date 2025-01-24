@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import {programs, provider_programs } from "@prisma/client";
 import {devLog} from "@/app/lib/utils";
+import { object } from "zod";
 
 export default function AddProviderProgramsForm(props: { providerId: string }) {
     const blankFormData:PostEduProviderProgramDetailDTO = {
@@ -168,7 +169,21 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           onChange={handleInputChange}
           className="p-2 border rounded"
         />
-
+        <label htmlFor="locationType">Location Type</label>
+        <select
+        name="locationType"
+        id="locationType"
+        value={formData.locationType??''}
+        onChange={handleInputChange}
+        >
+          <option value=''>--Please Select a location Type--</option>
+          {
+            Object.values(LocationType).map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>))
+          }
+        </select>
         <label htmlFor="tuition">Tuition</label>
         <input
           type="text"
