@@ -4,7 +4,9 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   cssVariables: true,
   colorSchemes: {
-    light: {},
+    light: {
+      palette: {},
+    },
     dark: false,
   },
   components: {},
