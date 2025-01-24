@@ -27,7 +27,6 @@ export default auth((req) => {
       '/services/jobseekers/dashboard',
       '/services/jobseekers/dashboard/my-applications',
       '/services/jobseekers/',
-      '/services/joblistings',
       '/api/joblistings/',
       '/api/jobseekers/',
       '/api/edu-providers/',
@@ -39,7 +38,6 @@ export default auth((req) => {
       '/edit-profile/employer/',
       '/services/employers/dashboard',
       '/services/jobseekers/',
-      '/services/joblistings',
       '/api/jobseekers/get/',
       '/api/jobseekers/resume/get/',
       '/api/joblistings/',
@@ -54,7 +52,6 @@ export default auth((req) => {
       '/career-prep',
       '/services/jobseekers',
       '/api/admin/career-prep/self-assign-case',
-      '/services/joblistings',
       '/api/jobseekers/career-prep/meeting',
       '/api/admin/career-prep/update-recomended-track/',
       // Add any other routes accessible by case managers
@@ -76,6 +73,7 @@ export default auth((req) => {
     '/services/employers/faq',
     '/services/talent-search',
     '/services/jobseekers',
+    '/services/joblistings',
     '/services/careers',
     '/services/careers/cybersecurity',
     '/services/careers/data-analytics',
@@ -83,6 +81,7 @@ export default auth((req) => {
     '/services/careers/software-developer',
     '/services/training-providers',
     '/api/jobseekers/query',
+    '/api/joblistings/query',
     '/api/employers/industry-sectors',
     '/api/postal-geo-data/zip/search/',
     '/api/employers/training-providers',
@@ -113,6 +112,7 @@ export default auth((req) => {
 
   if (!req.auth) {
     const isProtectedRoute = !publicRoutes.includes(pathname) &&
+      !pathname.startsWith('/services/joblistings') &&
       !pathname.startsWith('/services/training-programs') &&
       !pathname.startsWith('/services/training-providers');
 
@@ -146,7 +146,7 @@ export default auth((req) => {
 
   // Allow public routes
   if (publicRoutes.includes(pathname) || // training providers/programs needs wildcard for id, but all other public routes are explicit
-      pathname.startsWith('/services/training-programs/') || pathname.startsWith('/services/training-providers/')) {
+      pathname.startsWith('/services/training-programs/') || pathname.startsWith('/services/training-providers/') || pathname.startsWith('/services/joblistings')) {
     return NextResponse.next();
   }
 
