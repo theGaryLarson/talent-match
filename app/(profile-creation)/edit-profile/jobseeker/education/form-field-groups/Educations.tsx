@@ -10,7 +10,6 @@ import {
   FormControlLabel,
   RadioGroup,
 } from '@mui/material';
-import { MdClose } from 'react-icons/md';
 import {
   CollegeDegreeType,
   HighSchoolDegreeType,
@@ -27,6 +26,7 @@ import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
+import { Close } from '@mui/icons-material';
 
 const classNamePrefix = 'profile-creation-education-group-';
 
@@ -151,7 +151,7 @@ export default memo(function Educations({
       <legend className="flex w-full justify-between">
         <h3>Education Detail {index + 1}</h3>
         <PillButton onClick={() => onRemove(education.id)} variant="outlined">
-          <MdClose className="h-5 w-5" />
+          <Close className="h-5 w-5" />
         </PillButton>
       </legend>
 

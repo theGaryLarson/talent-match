@@ -1,7 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { Checkbox } from '@mui/material';
 import PillButton from '@/app/ui/components/PillButton';
-import { MdClose } from 'react-icons/md';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,6 +9,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
 import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
+import { Close } from '@mui/icons-material';
 
 const classNamePrefix = 'profile-creation-internship-experience-group-';
 const classCompany = 'company';
@@ -84,7 +84,7 @@ export default memo(function InternshipExperiences({
           onClick={() => onRemove(internshipExperience.workId)}
           variant="outlined"
         >
-          <MdClose className="h-5 w-5" />
+          <Close className="h-5 w-5" />
         </PillButton>
       </legend>
       <div className="profile-form-grid">
