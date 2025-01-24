@@ -33,7 +33,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
               <div className="w-[0px] h-20 relative" />
             </div>}
           {provider?.logoUrl &&
-            <Image src={provider?.logoUrl || ''} width={242} height={155} alt={provider?.providerName + " logo"} className="w-52 h-32" />}
+            <Image src={provider?.logoUrl || ''} width={242} height={155} alt={provider?.providerName + " logo"} className="h-32 object-contain" />}
         </div>
         {provider?.providerDescription &&
           <div className="mt-8 self-stretch text-sky-900 text-5xl font-normal font-['Roboto'] capitalize leading-10">
