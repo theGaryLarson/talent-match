@@ -485,6 +485,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
       employment_type_sought: true,
       targeted_pathway: true,
       portfolio_url: true,
+      linkedin_url: true,
       users: {
         select: {
           id: true,
@@ -556,6 +557,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
           },
         },
       },
+      certificates: true,
       pathways: {
         select: {
           pathway_title: true,

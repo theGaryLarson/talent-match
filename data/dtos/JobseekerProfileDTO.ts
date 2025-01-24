@@ -12,6 +12,7 @@ export type JobseekerProfileDTO = {
     employment_type_sought: string;
     targeted_pathway: string;
     portfolio_url: string;
+    linkedin_url: string;
     users: UserDTO;
     work_experiences: WorkExperienceDTO[];
     jobseeker_education: EducationDTO[];

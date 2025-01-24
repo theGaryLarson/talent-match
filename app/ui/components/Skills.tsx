@@ -1,5 +1,6 @@
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import Pill from "./Pill";
+import { Grid2 } from "@mui/material";
 
 export default function Skills({ skillsList, maxNumSkills, jobseekerID }: {
     skillsList?: SkillDTO[];
@@ -17,7 +18,7 @@ export default function Skills({ skillsList, maxNumSkills, jobseekerID }: {
     }
 
     return (
-        <div className="space-x-2">
+        <Grid2 container gap={1}>
             {skillsList.map((pill) => (
                 <Pill
                     key={pill?.skill_id}
@@ -36,6 +37,6 @@ export default function Skills({ skillsList, maxNumSkills, jobseekerID }: {
                 />
                 : ""
             }
-        </div>
+        </Grid2>
     );
 }

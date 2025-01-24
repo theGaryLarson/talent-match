@@ -7,7 +7,6 @@ import { getJobSeekerEmployerView } from '@/app/lib/prisma';
 import { getJobSeekerAppliedJobs } from '@/app/lib/joblistings';
 import { getCareerPrepStatus } from '@/app/lib/admin/careerPrep';
 import { getProviderProgramCardView } from '@/app/lib/eduProviders';
-import { Button } from 'flowbite-react';
 import { Stack, Typography } from '@mui/material';
 import CareerPrep from '@/app/ui/components/jobseekerdashboard/CareerPrep';
 import Applications from '@/app/ui/components/jobseekerdashboard/Applications';
@@ -84,7 +83,7 @@ export default async function Page() {
           Showcase
         </PillButton>
       </Stack>
-      <h1 className="text-[32px] text-black/90">
+      <h1 className="text-[32px] text-button-secondary-idle-text">
         Welcome back, {session?.user.firstName}
       </h1>
       <CareerPrep
