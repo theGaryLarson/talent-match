@@ -8,6 +8,7 @@ import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 import { useSession } from 'next-auth/react';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { JobStatus } from '@/app/lib/jobseekerJobTracking';
+import { redirect, usePathname } from 'next/navigation';
 
 export default function JobListingModalView({
   openModal,
@@ -27,6 +28,7 @@ export default function JobListingModalView({
       joblisting?.jobStatus == JobStatus.NotSelected
   );
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting?.employment_type ?? '';
@@ -44,6 +46,25 @@ export default function JobListingModalView({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!session?.user) {
+      const base = window.location.origin;
+      const currentUrl = new URL(window.location.href);
+      const pageParam = currentUrl.searchParams.get('page');
+      const jobParam = currentUrl.searchParams.get('job');
+
+      const signInUrl = new URL('/signin', base);
+      let callbackUrlValue = pathname;
+      if (pageParam) {
+        callbackUrlValue += `?page=${pageParam}`;
+        callbackUrlValue += `&job=${jobParam}` ;
+      } else {
+        callbackUrlValue += `?job=${jobParam}`;
+      }
+
+      signInUrl.searchParams.set('callbackUrl', callbackUrlValue);
+      redirect(signInUrl.toString());
+    }
 
     if (!applied) {
       try {
@@ -182,7 +203,7 @@ export default function JobListingModalView({
           </div>
         </div>
       </Modal.Body>
-      {isJobseeker && (
+      {(isJobseeker || !session?.user) && (
         <Modal.Footer>
           <form onSubmit={handleSubmit}>
             <Button
