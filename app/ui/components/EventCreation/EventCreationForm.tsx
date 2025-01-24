@@ -73,6 +73,7 @@ export default function EventCreationForm() {
     setJoinMeetingLink("");
     setEventBlurb("");
     setEventDescription("");
+    setEventLocation("")
     setEventType(EventTypeEnum.General);
   }
 
@@ -116,7 +117,7 @@ export default function EventCreationForm() {
       </div>
 
       <div>
-        <label htmlFor="duration" className="block text-sm font-medium">Event Date</label>
+        <label htmlFor="duration" className="block text-sm font-medium">Event Duration</label>
         <input
           id="duration"
           type="number"

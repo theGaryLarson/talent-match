@@ -8,12 +8,14 @@ export default function EventUpdateForm() {
   // State to manage form input values
   const [selectedEventId, setSelectedEventId] = useState<string>()
   const [existingEvents, setExistingEvents] = useState<Events[]>()
+
   const [eventName, setEventName] = useState<string>("");
   const [eventDescription, setEventDescription] = useState<string>("");
   const [eventLocation, setEventLocation] = useState<string>("");
   const [eventDate, setEventDate] = useState<string>("");
-  const [zoomLink, setZoomLink] = useState<string>("");
-  const [linkTitle, setLinkTitle] = useState<string>("");
+  const [registerLink, setRegisterLink] = useState<string>("");
+  const [duration, setDuration] = useState<number>(90);
+  const [joinMeetingLink, setJoinMeetingLink] = useState("")
   const [eventBlurb, setEventBlurb] = useState<string>("");
   const [eventType, setEventType] = useState<EventTypeEnum>(EventTypeEnum.General); // Consider using a union type for stricter control
   // Handle form submission
@@ -29,10 +31,11 @@ export default function EventUpdateForm() {
       description: eventDescription,
       location: eventLocation,
       date: new Date(eventDate), // Ensure date is correctly formatted
-      registrationLink: zoomLink,
-      linkTitle: linkTitle,
+      registrationLink: registerLink,
+      joinMeetingLink:joinMeetingLink,
       blurb: eventBlurb,
-      eventType: eventType
+      eventType: eventType,
+      duration: duration,
     };
 
     // You can call an API function here to create the event in the database
@@ -89,8 +92,10 @@ export default function EventUpdateForm() {
   const resetForm = ()=>{
     setEventName("");
     setEventDate("");
-    setZoomLink("");
+    setRegisterLink("");
+    setJoinMeetingLink("");
     setEventBlurb("");
+    setEventLocation("")
     setEventDescription("");
     setEventType(EventTypeEnum.General);
     setSelectedEventId('');
@@ -125,8 +130,11 @@ export default function EventUpdateForm() {
       .slice(0, 16); // Trim to YYYY-MM-DDTHH:mm
         setEventName(selectedEvent.name);
         setEventDate(localDateTime);
-        setZoomLink(selectedEvent.zoomSignUpLink??'');
+        setRegisterLink(selectedEvent.registrationLink??'');
+        setJoinMeetingLink(selectedEvent.joinMeetingLink??'');
+        setDuration(selectedEvent.duration)
         setEventBlurb(selectedEvent.blurb??"");
+        setEventLocation(selectedEvent.location)
         setEventDescription(selectedEvent.description??'')
         setEventType(selectedEvent.eventType as EventTypeEnum);
     }
@@ -156,6 +164,17 @@ export default function EventUpdateForm() {
           className="mt-2 p-2 border rounded w-full"
         />
       </div>
+      <div>
+        <label htmlFor="eventLocation" className="block text-sm font-medium">Event Location (Remote or Physical Adress)</label>
+        <input
+          type="text"
+          id="eventLocation"
+          value={eventLocation}
+          onChange={(e) => setEventLocation(e.target.value)}
+          required
+          className="mt-2 p-2 border rounded w-full"
+        />
+      </div>
 
       <div>
         <label htmlFor="eventDate" className="block text-sm font-medium">Event Date</label>
@@ -168,14 +187,36 @@ export default function EventUpdateForm() {
           className="mt-2 p-2 border rounded w-full"
         />
       </div>
+      <div>
+        <label htmlFor="duration" className="block text-sm font-medium">Event Duration(in minutes)</label>
+        <input
+          id="duration"
+          type="number"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value as unknown as number)}
+          required
+          className="mt-2 p-2 border rounded w-full"
+        />
+      </div>
 
       <div>
-        <label htmlFor="zoomLink" className="block text-sm font-medium">Zoom Link</label>
+        <label htmlFor="zoomLink" className="block text-sm font-medium">Register Link</label>
         <input
           type="url"
           id="zoomLink"
-          value={zoomLink}
-          onChange={(e) => setZoomLink(e.target.value)}
+          value={registerLink}
+          onChange={(e) => setRegisterLink(e.target.value)}
+          required
+          className="mt-2 p-2 border rounded w-full"
+        />
+      </div>
+      <div>
+        <label htmlFor="joinLink" className="block text-sm font-medium">Join Link</label>
+        <input
+          type="url"
+          id="joinLink"
+          value={joinMeetingLink}
+          onChange={(e)=>setJoinMeetingLink(e.target.value)}
           required
           className="mt-2 p-2 border rounded w-full"
         />
