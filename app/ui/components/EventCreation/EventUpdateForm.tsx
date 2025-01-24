@@ -125,7 +125,7 @@ export default function EventUpdateForm() {
       .slice(0, 16); // Trim to YYYY-MM-DDTHH:mm
         setEventName(selectedEvent.name);
         setEventDate(localDateTime);
-        setZoomLink(selectedEvent.zoomSignUpLink??'');
+        setZoomLink(selectedEvent.registrationLink??'');
         setEventBlurb(selectedEvent.blurb??"");
         setEventDescription(selectedEvent.description??'')
         setEventType(selectedEvent.eventType as EventTypeEnum);
