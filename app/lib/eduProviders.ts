@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import getPrismaClient from '@/app/lib/prismaClient.mjs';
 import {EducationLevel} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { v4 as uuidv4 } from "uuid";
+import {devLog} from "@/app/lib/utils";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -299,7 +300,9 @@ export const getProviderProgramDetailView = async (
 
 export const upsertTrainingProviderProgram = async (programDetail: PostEduProviderProgramDetailDTO) => {
 
-    return await prisma.$transaction(async (prisma) => {
+    devLog('upsertTrainingProviderProgram > programDetail\n', programDetail)
+
+    return  prisma.$transaction(async (prisma) => {
 
         // find the general program name for the jobseeker education drop-down. If it doesn't exist create it.
         const  generalProgram = await prisma.programs.upsert({
@@ -332,34 +335,34 @@ export const upsertTrainingProviderProgram = async (programDetail: PostEduProvid
                 program_id: generalProgram.id,
                 edu_provider_id: programDetail.eduProviderId,
                 description: programDetail.description,
-                targetedJobRoles: programDetail.targetedJobRoles?.join('~'),
+                targetedJobRoles: programDetail.targetedJobRoles?.join('~') ?? "", // omitted on request by AddProviderProgramsFrom.tsx when a new entry
                 locations: programDetail.locations?.join('~'),
                 programLength: programDetail.programLength,
                 about: programDetail.about,
                 tuition: programDetail.tuition,
                 fees: programDetail.fees,
                 costSummary: programDetail.costSummary,
-                locationType: programDetail.locationType,
+                locationType: programDetail.locationType ?? "", // omitted
                 getStartedUrl: programDetail.getStartedUrl,
-                faq: JSON.stringify(programDetail.faq),
-                pathways: programDetail.pathways.join('~'),
+                faq: JSON.stringify(programDetail.faq || []),
+                pathways: programDetail.pathways?.join(',') || "", // omitted
             },
             create: {
                 training_program_id: uuidv4(),
                 program_id: generalProgram.id,
                 edu_provider_id: programDetail.eduProviderId,
                 description: programDetail.description,
-                targetedJobRoles: programDetail.targetedJobRoles?.join('~'),
+                targetedJobRoles: programDetail.targetedJobRoles?.join('~') ?? "",
                 locations: programDetail.locations?.join('~'),
                 programLength: programDetail.programLength,
                 about: programDetail.about,
                 tuition: programDetail.tuition,
                 fees: programDetail.fees,
                 costSummary: programDetail.costSummary,
-                locationType: programDetail.locationType,
+                locationType: programDetail?.locationType || "",
                 getStartedUrl: programDetail.getStartedUrl,
-                faq: JSON.stringify(programDetail.faq),
-                pathways: programDetail.pathways.join('~'),
+                faq: JSON.stringify(programDetail.faq || []),
+                pathways: programDetail.pathways?.join('~') || "",
 
             },
             select: {
@@ -374,6 +377,7 @@ export const upsertTrainingProviderProgram = async (programDetail: PostEduProvid
                 faq: true,
                 pathways: true,
                 locations: true,
+                targetedJobRoles: true,
                 edu_provider: {
                     select: {
                         id: true,
@@ -417,6 +421,7 @@ export const upsertTrainingProviderProgram = async (programDetail: PostEduProvid
             locationType: isEnumValue(LocationType, updatedProviderProgram.locationType) ? updatedProviderProgram.locationType as LocationType : null,
             programLength: updatedProviderProgram.programLength || '',
             getStartedUrl: updatedProviderProgram.getStartedUrl || '',
+            targetedJobRoles: updatedProviderProgram?.targetedJobRoles?.split('~'), // comma separated from user store with ~ delimiter
             faq: faq,
             pathways: updatedProviderProgram.pathways
               ? updatedProviderProgram.pathways
@@ -431,7 +436,7 @@ export const upsertTrainingProviderProgram = async (programDetail: PostEduProvid
         return dto;
     });
 }
-// //Redundent, already have a delete provider program in /lib/admin/eduProviderPartners line 202
+// //Redundant, already have a delete provider program in /lib/admin/eduProviderPartners line 202
 // export const deleteTrainingProviderProgram = async (providerProgramId: string) => {
 //  const deletedProviderProgram = await prisma.provider_programs.delete({
 //      where: {
