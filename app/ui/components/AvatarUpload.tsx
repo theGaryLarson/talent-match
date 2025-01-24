@@ -137,12 +137,12 @@ export default function AvatarUpload({
             </p>
           )}
           {fileSelected != '' && !filesizeExceeded && !validFiletype && (
-            <p className="font-medium text-red-500 dark:text-red-400">
+            <p className="font-medium text-red-500">
               Unsupported file type: {fileSelected}
             </p>
           )}
           {fileSelected != '' && filesizeExceeded && (
-            <p className="font-medium text-red-500 dark:text-red-400">
+            <p className="font-medium text-red-500">
               File is too large: {fileSelected}
             </p>
           )}

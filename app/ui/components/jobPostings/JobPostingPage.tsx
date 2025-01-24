@@ -60,7 +60,7 @@ export default function JobPostingPage({ joblisting, params }: Props) {
           <div>
             <h4 className="text-lg font-semibold">{job_title}</h4>
             <p>{company_name}</p>
-            <p className="sm-tablet:text-bas text-wrap text-sm capitalize text-gray-500 dark:text-gray-400">
+            <p className="sm-tablet:text-bas text-wrap text-sm capitalize text-gray-500">
               {location}
             </p>
           </div>
@@ -90,7 +90,7 @@ export default function JobPostingPage({ joblisting, params }: Props) {
           </div>
         </div>
         {joblisting && (
-          <div className="mb-8 mr-4 grow self-center text-left text-gray-500 dark:text-gray-400 tablet:text-right">
+          <div className="mb-8 mr-4 grow self-center text-left text-gray-500 tablet:text-right">
             <p className="text-sm">
               Posted {daysAwayToString(joblisting.publish_date)} @{' '}
               {joblisting.publish_date.toLocaleString('en-us', {
@@ -116,26 +116,26 @@ export default function JobPostingPage({ joblisting, params }: Props) {
       {/* Job Details */}
       <div className="grid grid-cols-1 gap-4 sm-tablet:grid-cols-3">
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200">
+          <p className="font-semibold text-gray-700">
             Employment Type:
           </p>
-          <p className="capitalize text-gray-500 dark:text-gray-400">
+          <p className="capitalize text-gray-500">
             {employment_type}
           </p>
         </div>
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200">
+          <p className="font-semibold text-gray-700">
             Salary:
           </p>
-          <p className="capitalize text-gray-500 dark:text-gray-400">
+          <p className="capitalize text-gray-500">
             {salary_range}
           </p>
         </div>
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200">
+          <p className="font-semibold text-gray-700">
             Industry:
           </p>
-          <p className="capitalize text-gray-500 dark:text-gray-400">
+          <p className="capitalize text-gray-500">
             {industry}
           </p>
         </div>
@@ -143,10 +143,10 @@ export default function JobPostingPage({ joblisting, params }: Props) {
 
       {/* Job Description */}
       <div>
-        <p className="font-semibold text-gray-700 dark:text-gray-200">
+        <p className="font-semibold text-gray-700">
           Description:
         </p>
-        <p className="break-words text-base leading-relaxed text-gray-500 dark:text-gray-400">
+        <p className="break-words text-base leading-relaxed text-gray-500">
           {description}
         </p>
       </div>
@@ -154,7 +154,7 @@ export default function JobPostingPage({ joblisting, params }: Props) {
       {/* Skills */}
       {skills.length > 0 && (
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200">
+          <p className="font-semibold text-gray-700">
             Skills:
           </p>
           <div className="mt-2 flex grow text-sm tablet:text-base">
@@ -170,26 +170,26 @@ export default function JobPostingPage({ joblisting, params }: Props) {
       {/* Company Information */}
       <div className="space-y-4 rounded-md bg-gray-bg p-2">
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200">
+          <p className="font-semibold text-gray-700">
             About {company_name}:
           </p>
-          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+          <p className="text-base leading-relaxed text-gray-500">
             {joblisting?.companies.about_us}
           </p>
         </div>
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200">
+          <p className="font-semibold text-gray-700">
             Our Mission:
           </p>
-          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+          <p className="text-base leading-relaxed text-gray-500">
             {joblisting?.companies.company_mission}
           </p>
         </div>
         <div>
-          <p className="font-semibold text-gray-700 dark:text-gray-200">
+          <p className="font-semibold text-gray-700">
             Our Vision:
           </p>
-          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+          <p className="text-base leading-relaxed text-gray-500">
             {joblisting?.companies.company_vision}
           </p>
         </div>

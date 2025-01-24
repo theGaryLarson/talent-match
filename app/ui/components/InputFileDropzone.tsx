@@ -130,9 +130,9 @@ export default function InputFileDropzone({
       // },
     };
 
-    svgCSS = 'text-red-500 dark:text-red-400';
+    svgCSS = 'text-red-500';
   } else if (fileSelected != '') {
-    svgCSS = 'text-gray-500 dark:text-gray-400';
+    svgCSS = 'text-gray-500';
   }
 
   backgroundCSS = {
@@ -169,13 +169,13 @@ export default function InputFileDropzone({
               />
             </svg>
             {fileSelected == '' && (
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-sm text-gray-500">
                 <span className="text-sky-400 underline">Click to upload</span>{' '}
                 or drag and drop
               </p>
             )}
             {fileSelected != '' && !filesizeExceeded && validFiletype && (
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-sm text-gray-500">
                 {fileSelected}
               </p>
             )}
@@ -183,7 +183,7 @@ export default function InputFileDropzone({
               !filesizeExceeded &&
               !validFiletype &&
               !fileSelected.startsWith('http') && (
-                <p className="mb-2 text-sm text-red-500 dark:text-red-400">
+                <p className="mb-2 text-sm text-red-500">
                   Unsupported file type: {fileSelected}
                 </p>
               )}
@@ -191,7 +191,7 @@ export default function InputFileDropzone({
               !filesizeExceeded &&
               !validFiletype &&
               fileSelected.startsWith('http') && (
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mb-2 text-sm text-gray-500">
                   {(() => {
                     const filePath = fileSelected.split('?')[0];
                     const lastSlash = filePath.lastIndexOf('/');
@@ -200,12 +200,12 @@ export default function InputFileDropzone({
                 </p>
               )}
             {fileSelected != '' && filesizeExceeded && (
-              <p className="mb-2 text-sm text-red-500 dark:text-red-400">
+              <p className="mb-2 text-sm text-red-500">
                 File is too large! {/*{fileSelected}*/}
               </p>
             )}
           </div>
-          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-4 text-xs text-gray-500">
             {fileTypeTextPlusSizeLimit}
           </p>
         </div>
