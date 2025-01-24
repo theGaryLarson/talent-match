@@ -13,7 +13,9 @@ export type CreateEventData = {
   description: string;
   location: string;
   date: Date;
-  zoomSignUpLink: string;
+  registrationLink: string;
+  duration: number;
+  joinMeetingLink: string; 
   linkTitle: string;
   blurb: string;
   eventType: EventTypeEnum; // Consider using a union type for stricter control, e.g., "Webinar" | "Workshop" | "Seminar"
@@ -42,11 +44,12 @@ export async function createEvent(data: CreateEventData): Promise<{
           description: data.description,
           location: data.location,
           date: data.date,
-          zoomSignUpLink: data.zoomSignUpLink,
-          linkTitle: data.linkTitle,
+          registrationLink: data.registrationLink,
+          joinMeetingLink: data.joinMeetingLink,
           blurb: data.blurb,
           eventType: data.eventType,
           createdById: session.user.id,
+          duration: data.duration
         },
       });
       return { success: true, event: newEvent };
@@ -90,6 +93,26 @@ export async function getAllEvents(){
         console.error("Error deleting event:", error);
         return { success: false, error: (error as Error).message };
       }
+}
+export async function getRegisteredEvents(includeEvent:boolean){
+  try{
+    const session = await auth();
+    if(!session?.user.id) {
+      return [];
+    }
+    const res = prisma.eventsOnUsers.findMany({
+      where:{
+        userId: session.user.id
+      },
+      include:{
+        event:includeEvent
+      }
+    })
+    return res;
+  }catch(error){
+    console.error(error);
+    return [];
+  }
 }
 
 //todo add protections 

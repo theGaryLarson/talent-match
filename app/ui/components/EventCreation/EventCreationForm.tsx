@@ -8,8 +8,9 @@ export default function EventCreationForm() {
   const [eventDescription, setEventDescription] = useState<string>("");
   const [eventLocation, setEventLocation] = useState<string>("");
   const [eventDate, setEventDate] = useState<string>("");
-  const [zoomLink, setZoomLink] = useState<string>("");
-  const [linkTitle, setLinkTitle] = useState<string>("");
+  const [registerLink, setRegisterLink] = useState<string>("");
+  const [joinMeetingLink, setJoinMeetingLink] = useState("")
+  const [duration, setDuration] = useState<number>(90);
   const [eventBlurb, setEventBlurb] = useState<string>("");
   const [eventType, setEventType] = useState<EventTypeEnum>(EventTypeEnum.General); // Consider using a union type for stricter control
   // Handle form submission
@@ -25,10 +26,11 @@ export default function EventCreationForm() {
       description: eventDescription,
       location: eventLocation,
       date: new Date(eventDate), // Ensure date is correctly formatted
-      zoomSignUpLink: zoomLink,
-      linkTitle: linkTitle,
+      registrationLink: registerLink,
+      joinMeetingLink: joinMeetingLink,
       blurb: eventBlurb,
-      eventType: eventType
+      eventType: eventType,
+      duration: duration,
     };
 
     // You can call an API function here to create the event in the database
@@ -67,7 +69,8 @@ export default function EventCreationForm() {
   const resetForm = ()=>{
     setEventName("");
     setEventDate("");
-    setZoomLink("");
+    setRegisterLink("");
+    setJoinMeetingLink("");
     setEventBlurb("");
     setEventDescription("");
     setEventType(EventTypeEnum.General);
@@ -88,6 +91,17 @@ export default function EventCreationForm() {
           className="mt-2 p-2 border rounded w-full"
         />
       </div>
+      <div>
+        <label htmlFor="eventLocation" className="block text-sm font-medium">Event Location (Remote or Physical Adress)</label>
+        <input
+          type="text"
+          id="eventLocation"
+          value={eventLocation}
+          onChange={(e) => setEventLocation(e.target.value)}
+          required
+          className="mt-2 p-2 border rounded w-full"
+        />
+      </div>
 
       <div>
         <label htmlFor="eventDate" className="block text-sm font-medium">Event Date</label>
@@ -102,17 +116,38 @@ export default function EventCreationForm() {
       </div>
 
       <div>
-        <label htmlFor="zoomLink" className="block text-sm font-medium">Zoom Link</label>
+        <label htmlFor="duration" className="block text-sm font-medium">Event Date</label>
         <input
-          type="url"
-          id="zoomLink"
-          value={zoomLink}
-          onChange={(e) => setZoomLink(e.target.value)}
+          id="duration"
+          type="number"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value as unknown as number)}
           required
           className="mt-2 p-2 border rounded w-full"
         />
       </div>
-
+      <div>
+        <label htmlFor="zoomLink" className="block text-sm font-medium">Register Link</label>
+        <input
+          type="url"
+          id="zoomLink"
+          value={registerLink}
+          onChange={(e) => setRegisterLink(e.target.value)}
+          required
+          className="mt-2 p-2 border rounded w-full"
+        />
+      </div>
+      <div>
+        <label htmlFor="joinLink" className="block text-sm font-medium">Join Link</label>
+        <input
+          type="url"
+          id="joinLink"
+          value={joinMeetingLink}
+          onChange={(e)=>setJoinMeetingLink(e.target.value)}
+          required
+          className="mt-2 p-2 border rounded w-full"
+        />
+      </div>
       <div>
         <label htmlFor="eventBlurb" className="block text-sm font-medium">Event Blurb</label>
         <input

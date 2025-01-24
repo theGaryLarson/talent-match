@@ -29,7 +29,7 @@ export default function EventUpdateForm() {
       description: eventDescription,
       location: eventLocation,
       date: new Date(eventDate), // Ensure date is correctly formatted
-      zoomSignUpLink: zoomLink,
+      registrationLink: zoomLink,
       linkTitle: linkTitle,
       blurb: eventBlurb,
       eventType: eventType

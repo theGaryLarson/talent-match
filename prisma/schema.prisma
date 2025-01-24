@@ -120,10 +120,11 @@ model Events {
   id             String          @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
   name           String          @db.VarChar(255) // Name of the event
   description    String?         @db.Text // Longer description of the event
-  location       String?         @db.VarChar(255) // Physical location, if applicable
+  location       String         @db.VarChar(255) @default("Remote") // Physical location, if applicable
   date           DateTime        @db.DateTime // Date of the event
-  zoomSignUpLink String?         @db.VarChar(2083) // Zoom sign-up link (URL)
-  linkTitle      String?         @db.VarChar(255) // Title for the Zoom link
+  registrationLink String?         @db.VarChar(2083) // Zoom sign-up link (URL)
+  joinMeetingLink    String?         @db.VarChar(2083)
+  duration       Int             @db.Int @default(90)//duration in minutes
   blurb          String?         @db.VarChar(255) // One-sentence blurb about the event
   eventType      String          @db.VarChar(50) // Type of the event
   createdAt      DateTime        @default(now()) @db.DateTime
