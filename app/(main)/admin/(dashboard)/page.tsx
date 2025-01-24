@@ -23,7 +23,7 @@ async function GenderPie(){
   const chartData = Object.entries(genderBreakdownOfJobSeekers).map(([gender, value], index) => ({
     id: index,
     value,
-    label: (gender.length>0?gender:'UNKOWN')+`: ${value}`,
+    label: (gender.length>0?gender:'UNKNOWN')+`: ${value}`,
 }));
   return(
     <div className='text-center w-fit'>
