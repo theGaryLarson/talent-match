@@ -51,7 +51,7 @@ export default function JobPostingPage({
     const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
     return (
-        <main className="space-y-4 mb-8 mr-4">
+        <main className="space-y-4 mb-8 mx-4">
             {/* Job Title & Company */}
             <div className="block tablet:flex tablet:flex-wrap">
                 <div className="flex items-center space-x-4 mb-4">
@@ -161,30 +161,30 @@ export default function JobPostingPage({
 
             {/* Company Information */}
             <div className="space-y-4 p-2 bg-gray-bg rounded-md">
-                <div>
-                    <p className="font-semibold text-gray-700 dark:text-gray-200">
-                        About {company_name}:
-                    </p>
-                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        {joblisting?.companies.about_us}
-                    </p>
-                </div>
-                <div>
+          {joblisting?.companies.about_us && <div>
+            <p className="font-semibold text-gray-700 dark:text-gray-200">
+              About {company_name}:
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              {joblisting?.companies.about_us}
+            </p>
+          </div>}
+                {joblisting?.companies.company_mission && <div>
                     <p className="font-semibold text-gray-700 dark:text-gray-200">
                         Our Mission:
                     </p>
                     <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
                         {joblisting?.companies.company_mission}
                     </p>
-                </div>
-                <div>
-                    <p className="font-semibold text-gray-700 dark:text-gray-200">
-                        Our Vision:
-                    </p>
-                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        {joblisting?.companies.company_vision}
-                    </p>
-                </div>
+                </div>}
+              {joblisting?.companies.company_vision && <div>
+                <p className="font-semibold text-gray-700 dark:text-gray-200">
+                  Our Vision:
+                </p>
+                <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                  {joblisting?.companies.company_vision}
+                </p>
+              </div>}
             </div>
             {(isJobseeker || !session?.user) && (
                 <div>

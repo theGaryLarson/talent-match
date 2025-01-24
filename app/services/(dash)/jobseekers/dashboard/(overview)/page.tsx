@@ -45,7 +45,7 @@ export default async function Page() {
     <Stack
       direction={'column'}
       spacing={4}
-      sx={{ mt: '25px', mb: 12, mx: { xs: 3, md: 6 } }}
+      sx={{ mb: 12, mx: { xs: 3, md: 6 } }}
     >
       {/*hasTakenTest ? (
         ''
@@ -63,7 +63,7 @@ export default async function Page() {
           alignSelf: 'stretch',
         }}
       >
-        <PillButton href="#">
+        <PillButton>
           Dashboard
         </PillButton>
         <Typography

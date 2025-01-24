@@ -8,6 +8,7 @@ import Skills from '../ui/components/Skills';
 import { NextResponse } from 'next/server';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import { JobStatus } from './jobseekerJobTracking';
+import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
@@ -60,11 +61,11 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
-        relocation_services_available:jobData.relocation_services,
-        offer_visa_sponsorship:jobData.visa_sponsership,
+        relocation_services_available: jobData.relocation_services,
+        offer_visa_sponsorship: jobData.visa_sponsership,
         zip: jobData.zip,
         employment_type: jobData.employment_type || 'full-time',
-        is_apprenticeship:jobData.is_apprenticeship,
+        is_apprenticeship: jobData.is_apprenticeship,
         location: jobData.location,
         salary_range: jobData.salary_range,
         county: postalGeoData?.county ?? '',
@@ -104,8 +105,8 @@ export async function getJobListingById(joblistingId: string) {
         },
         company_addresses: {
           include: {
-            locationData: true
-          }
+            locationData: true,
+          },
         },
         companies: true,
         techArea: {
@@ -137,14 +138,15 @@ export async function getMyJobListings() {
   }
   try {
     let results = prisma.job_postings.findMany({
-      where:{
-        employer_id: Session?.user.employerId
-      }, include:{
-        industry_sectors:true,
+      where: {
+        employer_id: Session?.user.employerId,
+      },
+      include: {
+        industry_sectors: true,
         companies: true,
         skills: true,
-      }
-    })
+      },
+    });
     return results;
   } catch (e) {
     console.error(e);
@@ -165,17 +167,20 @@ export async function deleteJobListing(jobPostingId: string) {
   }
 
   try {
-    let job = await prisma.job_postings.findUnique(
-      {where:{
-        job_posting_id:jobPostingId
-      }}
-    )
-    if(job?.employer_id != Session.user.companyId && !Session?.user.roles.includes(Role.ADMIN)){
-      throw new Error('not an employer of this company')
+    let job = await prisma.job_postings.findUnique({
+      where: {
+        job_posting_id: jobPostingId,
+      },
+    });
+    if (
+      job?.employer_id != Session.user.companyId &&
+      !Session?.user.roles.includes(Role.ADMIN)
+    ) {
+      throw new Error('not an employer of this company');
     }
     let result = await prisma.job_postings.delete({
       where: {
-        job_posting_id: jobPostingId
+        job_posting_id: jobPostingId,
       },
     });
     return result;
@@ -209,18 +214,18 @@ export async function ApplyToJob(jobPostingId: string) {
           jobStatus: JobStatus.Applied,
           appliedDate: new Date(),
         },
-        include:{
-          job_posting:{
-            include:{
-              companies:true
-            }
+        include: {
+          job_posting: {
+            include: {
+              companies: true,
+            },
           },
-          Jobseekers:{
-            include:{
-              users:true
-            }
-          }
-        }
+          Jobseekers: {
+            include: {
+              users: true,
+            },
+          },
+        },
       });
     } else {
       return await prisma.jobseekerJobPosting.create({
@@ -238,17 +243,17 @@ export async function ApplyToJob(jobPostingId: string) {
               companies:true
             }
           },
-          Jobseekers:{
-            include:{
-              users:{
-                select:{
-                  first_name:true,
-                  last_name:true
-                }
-              }
-            }
-          }
-        }
+          Jobseekers: {
+            include: {
+              users: {
+                select: {
+                  first_name: true,
+                  last_name: true,
+                },
+              },
+            },
+          },
+        },
       });
     }
   } catch (error) {
@@ -397,18 +402,20 @@ export async function unbookmarkJobPosting(jobPostId: string) {
 
 export async function getAllJobPosts() {
   try {
-    let results = prisma.job_postings.findMany({include:{
-      jobApplications:{
-        include:{
-          Jobseekers:{
-            include:{
-              users:true
-            }
-          }
+    let results = prisma.job_postings.findMany({
+      include: {
+        jobApplications: {
+          include: {
+            Jobseekers: {
+              include: {
+                users: true,
+              },
+            },
+          },
         },
+        companies: true,
       },
-      companies:true
-    }});
+    });
     return results;
   } catch (error) {
     console.error(error);
@@ -497,8 +504,8 @@ export async function getJobListingsFiltered(request: Request) {
         },
         company_addresses: {
           include: {
-            locationData: true
-          }
+            locationData: true,
+          },
         },
         jobApplications: jobseekerId
           ? {
@@ -549,7 +556,7 @@ export async function getJobSeekerBookmarkedJobs() {
   }
   try {
     const result = await prisma.jobseekerJobPosting.findMany({
-      include:{
+      include: {
         job_posting: {
           include: {
             companies: true,
@@ -559,12 +566,14 @@ export async function getJobSeekerBookmarkedJobs() {
                 sector_title: true,
               },
             },
-          }
+          },
         },
-     }, where:{
-          jobseekerId: session.user.jobseekerId,
-          isBookmarked: true
-    }});
+      },
+      where: {
+        jobseekerId: session.user.jobseekerId,
+        isBookmarked: true,
+      },
+    });
 
     const transformedJobPostings = result.map((posting) => {
       const jobStatus = posting.jobStatus;
@@ -594,7 +603,7 @@ export async function getJobSeekerAppliedJobs() {
       where: {
         jobseekerId: session.user.jobseekerId,
       },
-      include:{
+      include: {
         job_posting: {
           include: {
             companies: true,
@@ -604,21 +613,19 @@ export async function getJobSeekerAppliedJobs() {
                 sector_title: true,
               },
             },
-          }
+          },
         },
-     },
+      },
     });
 
-    const transformedJobPostings = result.map((posting) => {
-      const jobStatus = posting.jobStatus;
-      const isBookmarked = posting.isBookmarked || false;
-      return {
+    const transformedJobPostings = result
+      .filter((posting) => posting.jobStatus !== '')
+      .map((posting) => ({
         ...posting.job_posting,
-        jobStatus: jobStatus,
-        isBookmarked: isBookmarked,
+        jobStatus: posting.jobStatus,
+        isBookmarked: posting.isBookmarked || false,
         jobApplications: undefined,
-      };
-    });
+      })) as JobListingCardViewDTO[];
 
     return transformedJobPostings;
   } catch (error) {

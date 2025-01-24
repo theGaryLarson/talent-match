@@ -83,12 +83,12 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
 
   return (
     <>
-      <Toolbar sx={{ height: '76px', mb: '25px' }} />
+      <Toolbar sx={{ height: '76px' }} />
       <div className="flex flex-col text-button-secondary-idle-text">
         <Stack
           direction={'row'}
           gap={1}
-          sx={{ alignItems: 'center', ml: 5, mb: 3 }}
+          sx={{mt: '25px', alignItems: 'center', ml: 5, mb: 3 }}
         >
           <Avatar scale={0.66} imgsrc={session?.user.image || ''} />
           <div>
@@ -304,7 +304,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </Grid2>
         <Box
           component="main"
-          sx={{ flexGrow: 1, width: { md: `calc(100% - ${drawerWidth}px)` } }}
+          sx={{ mt: '25px', flexGrow: 1, width: { md: `calc(100% - ${drawerWidth}px)` } }}
         >
           {children}
         </Box>
