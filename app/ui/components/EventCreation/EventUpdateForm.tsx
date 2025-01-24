@@ -133,6 +133,7 @@ export default function EventUpdateForm() {
         setRegisterLink(selectedEvent.registrationLink??'');
         setJoinMeetingLink(selectedEvent.joinMeetingLink??'');
         setDuration(selectedEvent.duration)
+
         setEventBlurb(selectedEvent.blurb??"");
         setEventLocation(selectedEvent.location)
         setEventDescription(selectedEvent.description??'')
