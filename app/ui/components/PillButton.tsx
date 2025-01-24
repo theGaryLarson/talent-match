@@ -22,11 +22,11 @@ const PillButton: React.FC<PillButtonProps> = ({
       href={href || undefined}
       target={target}
       sx={{
-        borderRadius: '9999px', // Rounded pill shape
-        textTransform: 'none', // Disable uppercase
-        fontWeight: 500, // Consistent with Tailwind's 'font-medium'
-        transition: 'all 0.3s ease-in-out', // Smooth hover and focus effects
-        padding: '0.5rem 1.25rem', // Tailwind's 'py-2 px-5'
+        borderRadius: '9999px',
+        textTransform: 'none',
+        fontWeight: 500,
+        transition: 'all 0.3s ease-in-out',
+        padding: '0.5rem 1.25rem',
 
         // Outlined Button
         ...(variant === 'outlined' && {
@@ -34,45 +34,45 @@ const PillButton: React.FC<PillButtonProps> = ({
           color: '#047f9c', // Per Figma, text matches border
           backgroundColor: 'transparent',
           '&:hover': {
-            backgroundColor: '#E1F5F9', // Tailwind's button.secondary.hover.bg
-            color: '#014260', // Tailwind's button.secondary.hover.text
+            backgroundColor: '#E1F5F9',
+            color: '#014260',
           },
           '&:focus': {
-            backgroundColor: '#047f9c', // Tailwind's button.secondary.focus.bg
-            color: '#ffffff', // Tailwind's button.secondary.focus.text
-            boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)', // Mimic focus ring
+            backgroundColor: '#047f9c',
+            color: '#ffffff',
+            boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)',
           },
           '&:active': {
-            backgroundColor: '#C4EBF3', // Tailwind's button.secondary.active.bg
-            color: '#014260', // Tailwind's button.secondary.active.text
+            backgroundColor: '#C4EBF3',
+            color: '#014260',
           },
           '&.Mui-disabled': {
-            backgroundColor: '#F6F6F6', // Tailwind's button.secondary.disabled.bg
-            color: '#8F8F8F', // Tailwind's button.secondary.disabled.text
+            backgroundColor: '#F6F6F6',
+            color: '#8F8F8F',
           },
         }),
 
         // Default Button
         ...(variant === 'contained' && {
           // Default Primary Button (Idle State)
-          backgroundColor: '#047F9C', // Tailwind's button.primary.idle.bg
-          color: '#ffffff', // Tailwind's button.primary.idle.text
+          backgroundColor: '#047F9C',
+          color: '#ffffff',
           '&:hover': {
-            backgroundColor: '#4FA5BA', // Tailwind's button.primary.hover.bg
-            color: '#ffffff', // Tailwind's button.primary.hover.text
+            backgroundColor: '#4FA5BA',
+            color: '#ffffff',
           },
           '&:focus': {
-            backgroundColor: '#3699B0', // Tailwind's button.primary.focus.bg
-            color: '#ffffff', // Tailwind's button.primary.focus.text
-            boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)', // Mimic focus ring
+            backgroundColor: '#3699B0',
+            color: '#ffffff',
+            boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)',
           },
           '&:active': {
-            backgroundColor: '#006682', // Tailwind's button.primary.active.bg
-            color: '#ffffff', // Tailwind's button.primary.active.text
+            backgroundColor: '#006682',
+            color: '#ffffff',
           },
           '&.Mui-disabled': {
-            backgroundColor: '#E5E5E5', // Tailwind's button.primary.disabled.bg
-            color: '#1919199A', // Tailwind's button.primary.disabled.text
+            backgroundColor: '#E5E5E5',
+            color: '#1919199A',
             cursor: 'not-allowed',
           },
         }),

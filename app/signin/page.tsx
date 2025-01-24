@@ -42,23 +42,23 @@ export default async function SignInPage({
             >
               <Button
                 type="submit"
-                fullWidth // Equivalent to "w-full"
+                fullWidth
                 sx={{
-                  display: 'flex', // Ensures content inside is flex aligned
-                  justifyContent: 'flex-start', // Equivalent to "justify-start"
-                  border: '1px solid rgba(30, 36, 50, 0.23)', // Border style
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  border: '1px solid rgba(30, 36, 50, 0.23)',
                   textTransform: 'none',
                   padding: '0.5rem',
-                  backgroundColor: 'transparent', // Background transparent
+                  backgroundColor: 'transparent',
                   '&:focus': {
-                    backgroundColor: 'rgba(0, 128, 158, 0.23)', // Focus background
-                    boxShadow: 'none', // Removes focus ring
+                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
+                    boxShadow: 'none',
                   },
                   '&:active': {
-                    backgroundColor: 'rgba(0, 128, 158, 0.23)', // Active background
+                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
                   },
                   '&:hover:enabled': {
-                    backgroundColor: 'rgba(0, 128, 158, 0.23)', // Hover background
+                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
                   },
                 }}
               >
@@ -71,12 +71,11 @@ export default async function SignInPage({
                     marginLeft: '0.5rem',
                     marginRight: '0.5rem',
                     display: 'inline',
-                  }} // Equivalent to "mr-2 inline"
+                  }}
                 />
                 <span style={{ color: '#000000' }}>
                   Sign in with {provider.name}
                 </span>{' '}
-                {/* Tailwind's "text-black" */}
               </Button>
             </form>
           ))}
