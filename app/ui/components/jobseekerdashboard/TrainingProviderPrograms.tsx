@@ -1,8 +1,6 @@
 import { Grid2, Stack } from '@mui/material';
 import { ReadEduProviderProgramCardDTO } from '@/app/lib/eduProviders';
 import TrainingProgramCard from '@/app/ui/components/career/TrainingProgramCard';
-import { Button } from 'flowbite-react';
-import RoundedButton from '../RoundedButton';
 import PillButton from '../PillButton';
 
 export default async function TrainingProviderPrograms({
