@@ -1,5 +1,5 @@
 import { EduProviderPathways, LocationType, PostEduProviderProgramDetailDTO, ReadEduProviderProgramCardDTO, ReadEduProviderProgramDetailDTO } from "@/app/lib/eduProviders";
-import { Button } from "@mui/material";
+import { Button,TextField, Chip, Box  } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import {programs, provider_programs } from "@prisma/client";
@@ -13,7 +13,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       eduProviderId: props.providerId,
       //eduProviderName: "",
       description: "",
-      //locations: [],
+      locations: [],
       programLength: "",
       targetedJobRoles: [],
       about: "",
@@ -29,7 +29,8 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
   const [programList, setProgramList] = useState<(provider_programs&{Program:programs})[]>();
   const [selectedProgram, setSelectedProgram] = useState<provider_programs&{Program:programs}>()
   const [entries, setEntries] = useState<Entry[]>([{ question: "", answer: "" }]);
-   // Helper function to validate the FAQ data structure
+  const [locations, setLocations] = useState<string[]>([]); 
+  // Helper function to validate the FAQ data structure
    const validateFAQ = (faq: unknown): Entry[] => {
     if (Array.isArray(faq)) {
       return faq.every(
@@ -61,18 +62,21 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       "fees": selectedProgram?.fees??'',
       "costSummary": selectedProgram?.costSummary??'',
       "locationType": selectedProgram?.locationType as LocationType,
+      locations:selectedProgram?.locations?.split('~') ?? [],
       "getStartedUrl":selectedProgram?.getStartedUrl??'',
       faq: validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")),
       "pathways": selectedProgram?.pathways?.split('~') as EduProviderPathways[]
   });
   setEntries(validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")));
+  setLocations(selectedProgram?.locations?.split('~')??[])
   },[selectedProgram])
   useEffect(() => {
     setFormData((prev) => ({
       ...prev, // Spread existing formData first
       faq: entries, // Override the `faq` property with the `entries` array
+      locations:locations
     }));
-  }, [entries]);
+  }, [entries, locations]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let form = e.currentTarget;
@@ -169,6 +173,8 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           onChange={handleInputChange}
           className="p-2 border rounded"
         />
+        <label>Program Location(s)</label>
+        <StringListInputWithChips stringList={locations} setStringList={setLocations}/>
         <label htmlFor="locationType">Location Type</label>
         <select
         name="locationType"
@@ -279,8 +285,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           type="submit"
           endIcon={<ArrowCircleRightOutlined />}
           variant="contained"
-        >
-          Add Program
+        >{selectedProgram?'Update':'Add'} Program
         </Button>
       </div>
     </form>
@@ -358,5 +363,69 @@ const DynamicForm = (props:{setEntries:Dispatch<SetStateAction<Entry[]>>, entrie
         Add Another FAQ
       </Button>
     </div>
+  );
+};
+
+
+
+
+const StringListInputWithChips = ({stringList, setStringList}:{stringList:string[], setStringList:Dispatch<SetStateAction<string[]>>}) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submission
+      if (inputValue.trim() !== "" && !stringList.includes(inputValue.trim())) {
+        setStringList((prevList) => [...prevList, inputValue.trim()]);
+        setInputValue(""); // Clear input after adding
+      }
+    }
+  };
+
+  const handleDelete = (chipToDelete: string) => {
+    setStringList((prevList) => prevList.filter((chip) => chip !== chipToDelete));
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 1,
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        padding: "8px",
+        "&:focus-within": { borderColor: "blue" },
+      }}
+    >
+      {stringList.map((string, index) => (
+        <Chip
+          key={index}
+          label={string}
+          onDelete={() => handleDelete(string)}
+          variant="outlined"
+        />
+      ))}
+      <TextField
+        variant="outlined"
+        placeholder="Type and press Enter"
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyPress}
+        InputProps={{
+          sx: {
+            border: "none",
+            outline: "none",
+            flex: "1",
+            minWidth: "150px",
+          },
+        }}
+      />
+    </Box>
   );
 };
