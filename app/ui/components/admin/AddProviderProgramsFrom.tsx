@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import {programs, provider_programs } from "@prisma/client";
+import {devLog} from "@/app/lib/utils";
 
 export default function AddProviderProgramsForm(props: { providerId: string }) {
     const blankFormData:PostEduProviderProgramDetailDTO = {
@@ -53,7 +54,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       "eduProviderId": props.providerId,
       "description": selectedProgram?.description??'',
       "programLength": selectedProgram?.programLength??'',
-      "targetedJobRoles": selectedProgram?.targetedJobRoles?.split(','),
+      "targetedJobRoles": selectedProgram?.targetedJobRoles?.split('~'),
       "about": selectedProgram?.about??'',
       "tuition": selectedProgram?.tuition??'',
       "fees": selectedProgram?.fees??'',
@@ -82,6 +83,9 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
         },
         body: JSON.stringify(formData)
       });
+
+      devLog("AddProviderProgramsFrom > final formData", JSON.stringify(formData, null, 2));
+
 
       if (response.ok) {
         alert("Program successfully added!");
@@ -173,6 +177,23 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           value={formData.tuition}
           onChange={handleInputChange}
           className="p-2 border rounded"
+        />
+
+        <label htmlFor="targetedJobRoles">Targeted Job Roles</label>
+        <input
+          type="text"
+          id="targetedJobRoles"
+          name="targetedJobRoles"
+          value={formData.targetedJobRoles?.join(", ") || ""}
+          onChange={(e) => {
+            setFormData((prevData) => ({
+              ...prevData,
+              targetedJobRoles: e.target.value
+                .split(",")        // Split by comma
+                .map((jobRole) => jobRole.trim()) // Trim whitespace
+            }));
+          }}
+          className="rounded border p-2"
         />
 
         <label htmlFor="fees">Fees</label>
