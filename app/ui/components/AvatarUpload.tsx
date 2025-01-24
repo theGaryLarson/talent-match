@@ -111,10 +111,10 @@ export default function AvatarUpload({
           src={filePath || initialImageUrl || undefined}
           alt="Uploaded Avatar"
           sx={{
-            width: '5rem', // Tailwind's w-20
-            height: '5rem', // Tailwind's h-20
-            flexShrink: 0, // Tailwind's flex-shrink-0
-            borderRadius: '50%', // Mimics rounded
+            width: '5rem',
+            height: '5rem',
+            flexShrink: 0,
+            borderRadius: '50%',
           }}
           data-testid="avatar-image"
         />
