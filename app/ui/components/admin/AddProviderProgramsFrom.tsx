@@ -107,9 +107,44 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       alert("An error occurred while submitting the form.");
     }
   };
-  const handleDelete = ()=>{
-
-  }
+  const handleDelete = () => {
+    // Show a confirmation dialog
+    const isConfirmed = window.confirm('Are you sure you want to delete this program? This action cannot be undone.');
+  
+    if (!isConfirmed) {
+      return; // Exit the function if the user cancels
+    }
+  
+    // Proceed with the delete request if confirmed
+    fetch('/api/admin/edu-providers/delete-program', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ provider_program_id:selectedProgram?.training_program_id}),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to delete the program.');
+        }
+        refreshList();
+        setFormData(blankFormData);
+        setEntries([]);
+        setLocations([])
+        setTargetedJobRoles([]);
+        setSelectedProgram(undefined);
+        return response.json(); // Parse the response as JSON
+      })
+      .then((data) => {
+        console.log('Program deleted successfully:', data);
+        alert('Program deleted successfully.');
+        // Optionally update the UI here, such as removing the program from a list
+      })
+      .catch((error) => {
+        console.error('Error deleting program:', error);
+        alert('Failed to delete the program. Please try again.');
+      });
+  };
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
