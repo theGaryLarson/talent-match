@@ -207,7 +207,6 @@ export async function ApplyToJob(jobPostingId: string) {
         },
         data: {
           jobStatus: JobStatus.Applied,
-          jobStatus: JobStatus.Applied,
           appliedDate: new Date(),
         },
         include:{
