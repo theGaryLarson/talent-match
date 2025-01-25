@@ -1,10 +1,9 @@
-import { EduProviderPathways, LocationType, PostEduProviderProgramDetailDTO, ReadEduProviderProgramCardDTO, ReadEduProviderProgramDetailDTO } from "@/app/lib/eduProviders";
+import { EduProviderPathways, LocationType, PostEduProviderProgramDetailDTO} from "@/app/lib/eduProviders";
 import { Button,TextField, Chip, Box  } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import {programs, provider_programs } from "@prisma/client";
 import {devLog} from "@/app/lib/utils";
-import { object } from "zod";
 
 export default function AddProviderProgramsForm(props: { providerId: string }) {
     const blankFormData:PostEduProviderProgramDetailDTO = {
@@ -30,6 +29,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
   const [selectedProgram, setSelectedProgram] = useState<provider_programs&{Program:programs}>()
   const [entries, setEntries] = useState<Entry[]>([{ question: "", answer: "" }]);
   const [locations, setLocations] = useState<string[]>([]); 
+  const [targetedJobRoles, setTargetedJobRoles] = useState<string[]>([]);
   // Helper function to validate the FAQ data structure
    const validateFAQ = (faq: unknown): Entry[] => {
     if (Array.isArray(faq)) {
@@ -69,14 +69,18 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
   });
   setEntries(validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")));
   setLocations(selectedProgram?.locations?.split('~')??[])
+  setTargetedJobRoles(selectedProgram?.targetedJobRoles?.split('~')??[])
   },[selectedProgram])
+
+
   useEffect(() => {
     setFormData((prev) => ({
       ...prev, // Spread existing formData first
       faq: entries, // Override the `faq` property with the `entries` array
-      locations:locations
+      locations:locations,
+      targetedJobRoles:targetedJobRoles
     }));
-  }, [entries, locations]);
+  }, [entries, locations, targetedJobRoles]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let form = e.currentTarget;
@@ -201,21 +205,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
         />
 
         <label htmlFor="targetedJobRoles">Targeted Job Roles</label>
-        <input
-          type="text"
-          id="targetedJobRoles"
-          name="targetedJobRoles"
-          value={formData.targetedJobRoles?.join(", ") || ""}
-          onChange={(e) => {
-            setFormData((prevData) => ({
-              ...prevData,
-              targetedJobRoles: e.target.value
-                .split(",")        // Split by comma
-                .map((jobRole) => jobRole.trim()) // Trim whitespace
-            }));
-          }}
-          className="rounded border p-2"
-        />
+        <StringListInputWithChips stringList={targetedJobRoles} setStringList={setTargetedJobRoles}/>
 
         <label htmlFor="fees">Fees</label>
         <input
