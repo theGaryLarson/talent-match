@@ -631,11 +631,13 @@ export type CreateNoteDTO = {
   jobseekerId: string;
   noteType: NoteType;
   noteContent: string;
+  updatedDate?:Date;
 };
 export type UpdateNoteDTO = {
   noteId: string;
   noteType: NoteType;
   noteContent: string;
+  updatedDate?:Date;
 };
 
 export type CategorizedNotes = {
@@ -710,6 +712,7 @@ export const addCareerPrepStudentNotes = async (
   jobseekerId: string,
   noteContent: string,
   noteType: string,
+  updatedDate:Date
 ) => {
   const Session = await auth();
   try {
@@ -720,11 +723,11 @@ export const addCareerPrepStudentNotes = async (
     const result = await prisma.caseMgmtNotes.create({
       data: {
         jobseekerId: jobseekerId,
-        date: new Date(),
+        date: updatedDate,
         noteType: noteType,
         noteContent: noteContent,
         createdBy: Session.user.id,
-        updatedAt: new Date(),
+        updatedAt: updatedDate,
       },
     });
     return result;
@@ -737,6 +740,7 @@ export async function updateCareerPrepStudentNotes(
   noteId: string,
   noteContent: string,
   noteType: string,
+  updatedDate:Date
 ) {
   const Session = await auth();
   try {
@@ -750,7 +754,7 @@ export async function updateCareerPrepStudentNotes(
       data: {
         noteContent: noteContent,
         noteType: noteType,
-        updatedAt: new Date(),
+        updatedAt: updatedDate,
       },
     });
     return result;
