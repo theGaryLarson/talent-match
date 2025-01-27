@@ -1,7 +1,7 @@
 'use client';
 
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Label } from 'flowbite-react';
+import { FormLabel, SxProps } from '@mui/material';
 import { BlobPrefix } from '@/app/lib/services/azureBlobService';
 
 interface Props {
@@ -93,29 +93,48 @@ export default function InputFileDropzone({
   const fileTypeTextPlusSizeLimit =
     fileTypeText + ' (max. ' + maxSizeMB + ' MB)';
 
-  let backgroundCSS =
-    'border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600';
+  let backgroundCSS: SxProps = {
+    borderColor: 'rgb(209, 213, 219)',
+    backgroundColor: 'rgb(249, 250, 251)',
+    '&:hover': {
+      backgroundColor: 'rgb(243, 244, 246)',
+    },
+  };
   let svgCSS = 'text-sky-500 dark:text-sky-400';
 
   if (
     (!validFiletype || filesizeExceeded) &&
     !fileSelected.startsWith('http')
   ) {
-    backgroundCSS =
-      'border-red-300 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:bg-red-700 dark:hover:border-red-500 dark:hover:bg-red-600';
-    svgCSS = 'text-red-500 dark:text-red-400';
+    backgroundCSS = {
+      borderColor: 'rgb(252, 165, 165)',
+      backgroundColor: 'rgb(254, 242, 242)',
+      '&:hover': {
+        backgroundColor: 'rgb(254, 226, 226)',
+      },
+    };
+
+    svgCSS = 'text-red-500';
   } else if (fileSelected != '') {
-    svgCSS = 'text-gray-500 dark:text-gray-400';
+    svgCSS = 'text-gray-500';
   }
 
-  backgroundCSS = backgroundCSS.concat(
-    'flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed',
-  );
+  backgroundCSS = {
+    ...backgroundCSS,
+    display: 'flex',
+    width: '100%',
+    cursor: 'pointer',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '0.5rem',
+    border: '2px dashed',
+  };
   svgCSS = svgCSS.concat('h-8 w-8 mr-2');
 
   return (
     <div className="relative flex w-full items-center justify-center">
-      <Label htmlFor={id} className={backgroundCSS}>
+      <FormLabel htmlFor={id} sx={backgroundCSS}>
         <div className="flex flex-col items-center justify-center pb-6 pt-5">
           <div className="flex flex-row items-center">
             <svg
@@ -134,13 +153,13 @@ export default function InputFileDropzone({
               />
             </svg>
             {fileSelected == '' && (
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-sm text-gray-500">
                 <span className="text-sky-400 underline">Click to upload</span>{' '}
                 or drag and drop
               </p>
             )}
             {fileSelected != '' && !filesizeExceeded && validFiletype && (
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-sm text-gray-500">
                 {fileSelected}
               </p>
             )}
@@ -148,7 +167,7 @@ export default function InputFileDropzone({
               !filesizeExceeded &&
               !validFiletype &&
               !fileSelected.startsWith('http') && (
-                <p className="mb-2 text-sm text-red-500 dark:text-red-400">
+                <p className="mb-2 text-sm text-red-500">
                   Unsupported file type: {fileSelected}
                 </p>
               )}
@@ -156,7 +175,7 @@ export default function InputFileDropzone({
               !filesizeExceeded &&
               !validFiletype &&
               fileSelected.startsWith('http') && (
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mb-2 text-sm text-gray-500">
                   {(() => {
                     const filePath = fileSelected.split('?')[0];
                     const lastSlash = filePath.lastIndexOf('/');
@@ -165,12 +184,12 @@ export default function InputFileDropzone({
                 </p>
               )}
             {fileSelected != '' && filesizeExceeded && (
-              <p className="mb-2 text-sm text-red-500 dark:text-red-400">
+              <p className="mb-2 text-sm text-red-500">
                 File is too large! {/*{fileSelected}*/}
               </p>
             )}
           </div>
-          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-4 text-xs text-gray-500">
             {fileTypeTextPlusSizeLimit}
           </p>
         </div>
@@ -182,7 +201,7 @@ export default function InputFileDropzone({
           accept={accept}
           onChange={handleChange}
         />
-      </Label>
+      </FormLabel>
     </div>
   );
 }

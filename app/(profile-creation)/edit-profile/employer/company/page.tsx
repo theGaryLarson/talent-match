@@ -7,7 +7,7 @@ import type { RootState } from '@/lib/employerStore';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import AvatarUpload from '@/app/ui/components/AvatarUpload';
-import { Button } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import { DatePicker } from '@mui/x-date-pickers';
 import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
 import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
@@ -20,31 +20,44 @@ import {
   ReadCompanyInfoDTO,
 } from '@/data/dtos/EmployerProfileCreationDTOs';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
-import { setCompany, initialState } from '@/lib/features/profileCreation/employerSlice';
-import { setPageDirty, setPageSaved } from '@/lib/features/profileCreation/saveSlice';
+import {
+  setCompany,
+  initialState,
+} from '@/lib/features/profileCreation/employerSlice';
+import {
+  setPageDirty,
+  setPageSaved,
+} from '@/lib/features/profileCreation/saveSlice';
 import dayjs, { Dayjs } from 'dayjs';
 import { devLog } from '@/app/lib/utils';
 import _ from 'lodash';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import {ReadEmployerRecordDTO} from "@/app/lib/employer";
+import { ReadEmployerRecordDTO } from '@/app/lib/employer';
 
 const formNamePrefix = 'profile-creation-company-';
 
 export default function CreateEmployerCompanyInfoPage() {
-  const companyStoreData = useSelector((state: RootState) => state.employer.company);
-  const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({ ...companyStoreData });
-  const [yearFounded, setYearFounded] = useState<Dayjs | null>(
-    companyData.yearFounded ? dayjs(companyData.yearFounded) : null
+  const companyStoreData = useSelector(
+    (state: RootState) => state.employer.company,
   );
-  const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(null);
-  const [selectedWorkLocation, setSelectedWorkLocation] = useState<PostAddressDTO>({
-    city: '',
-    state: '',
-    stateCode: '',
-    zip: '',
-    county: '',
+  const [companyData, setCompanyData] = useState<PostCompanyInfoDTO>({
+    ...companyStoreData,
   });
-  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>()
+  const [yearFounded, setYearFounded] = useState<Dayjs | null>(
+    companyData.yearFounded ? dayjs(companyData.yearFounded) : null,
+  );
+  const [industry, setIndustry] = useState<IndustrySectorDropdownDTO | null>(
+    null,
+  );
+  const [selectedWorkLocation, setSelectedWorkLocation] =
+    useState<PostAddressDTO>({
+      city: '',
+      state: '',
+      stateCode: '',
+      zip: '',
+      county: '',
+    });
+  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>();
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -53,28 +66,33 @@ export default function CreateEmployerCompanyInfoPage() {
   const updateSessionProperties = useUpdateSession();
 
   // get employers.is_verified_employee
-  useEffect(()=>{
-    fetch('/api/employers/account/profile/get').then((res)=>{
-      return res.json();
-    }).then((jsonData)=>{
-      setEmployerInfo(jsonData)
-    });
-
-  }, [])
+  useEffect(() => {
+    fetch('/api/employers/account/profile/get')
+      .then((res) => {
+        return res.json();
+      })
+      .then((jsonData) => {
+        setEmployerInfo(jsonData);
+      });
+  }, []);
 
   useEffect(() => {
     if (!session?.user?.id) return;
 
     const fetchCompanyData = async (companyId: string) => {
       try {
-        const response = await fetch(`/api/employers/account/company-info/get/${companyId}`);
+        const response = await fetch(
+          `/api/employers/account/company-info/get/${companyId}`,
+        );
         if (!response.ok) {
           console.warn('Data fetching failed. Using initialized fields.');
           return;
         }
 
         const fetchedData: ReadCompanyInfoDTO = (await response.json()).result;
-        const companyZips: PostAddressDTO[] = (fetchedData?.companyAddresses || [])
+        const companyZips: PostAddressDTO[] = (
+          fetchedData?.companyAddresses || []
+        )
           .filter((addr): addr is ReadAddressDTO => addr?.zip !== undefined)
           .map((addr) => ({
             city: addr?.city,
@@ -104,7 +122,9 @@ export default function CreateEmployerCompanyInfoPage() {
         };
         setCompanyData(updatedCompanyData);
         setYearFounded(
-          fetchedData.yearFounded ? dayjs().year(parseInt(fetchedData.yearFounded)) : null
+          fetchedData.yearFounded
+            ? dayjs().year(parseInt(fetchedData.yearFounded))
+            : null,
         );
 
         setIndustry({
@@ -117,17 +137,24 @@ export default function CreateEmployerCompanyInfoPage() {
     };
     // console.log('isEqual', _.isEqual(companyStoreData, initialState.company))
     // have to use session here because employerInfo isn't set yet.
-    if (_.isEqual(companyStoreData, initialState.company) && session.user.companyId) {
+    if (
+      _.isEqual(companyStoreData, initialState.company) &&
+      session.user.companyId
+    ) {
       fetchCompanyData(session.user.companyId ?? '');
-      console.log('fetchedCompanyData')
+      console.log('fetchedCompanyData');
     } else {
       setCompanyData(companyStoreData);
-      setYearFounded(companyData.yearFounded ? dayjs(companyData.yearFounded) : null);
+      setYearFounded(
+        companyData.yearFounded ? dayjs(companyData.yearFounded) : null,
+      );
     }
     dispatch(setPageSaved('company'));
   }, [session?.user.id, pathname]);
 
-  const handleFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleFieldChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
     dispatch(setPageDirty('company'));
@@ -143,7 +170,7 @@ export default function CreateEmployerCompanyInfoPage() {
 
   const handleAddressSelection = (
     e: React.SyntheticEvent<Element, Event>,
-    val: string | ReadAddressDTO | null
+    val: string | ReadAddressDTO | null,
   ) => {
     dispatch(setPageDirty('company'));
     if (val && typeof val === 'object' && 'zip' in val) {
@@ -154,11 +181,13 @@ export default function CreateEmployerCompanyInfoPage() {
 
       setCompanyData((prevData) => {
         const alreadyExists = prevData.companyAddresses?.some(
-          (location) => location.zip === val.zip
+          (location) => location.zip === val.zip,
         );
 
         if (!alreadyExists) {
-          const updatedAddresses = prevData.companyAddresses ? [...prevData.companyAddresses, val] : [val];
+          const updatedAddresses = prevData.companyAddresses
+            ? [...prevData.companyAddresses, val]
+            : [val];
           return {
             ...prevData,
             companyAddresses: updatedAddresses,
@@ -181,29 +210,32 @@ export default function CreateEmployerCompanyInfoPage() {
     e.preventDefault();
 
     if (!session?.user?.id || !session?.user?.employerId) {
-        console.error('User session or required fields are not available.');
-        return;
-      }
+      console.error('User session or required fields are not available.');
+      return;
+    }
     // console.log('employerInfo', employerInfo)
     const finalCompanyData: PostCompanyInfoDTO = {
-        ...companyData,
-        userId: employerInfo?.user_id!,
-        employerId: employerInfo?.employer_id!,
-        companyId: employerInfo?.company_id!,
-      };
+      ...companyData,
+      userId: employerInfo?.user_id!,
+      employerId: employerInfo?.employer_id!,
+      companyId: employerInfo?.company_id!,
+    };
     try {
-      const response = await fetch('/api/employers/account/company-info/upsert', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        '/api/employers/account/company-info/upsert',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(finalCompanyData),
         },
-        body: JSON.stringify(finalCompanyData),
-      });
+      );
 
       if (response.ok) {
         dispatch(setCompany(finalCompanyData));
         await updateSessionProperties({
-          companyId: finalCompanyData.companyId
+          companyId: finalCompanyData.companyId,
         });
 
         router.push('/edit-profile/employer/about');
@@ -223,8 +255,8 @@ export default function CreateEmployerCompanyInfoPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-      <ProgressBarFlat progress={(2 / 5) * 100} size="sm" />
-      <p className='mb-6'>Step 2/5</p>
+        <ProgressBarFlat progress={(2 / 5) * 100} size="sm" />
+        <p className="mb-6">Step 2/5</p>
         <form onSubmit={handleSubmit}>
           <div className="profile-form-grid md:grid-cols-2">
             <SelectAutoload
@@ -244,9 +276,16 @@ export default function CreateEmployerCompanyInfoPage() {
               }}
               placeholder="Your company's industry sector"
               loadingText="Retrieving industry sectors..."
-              getOptionLabel={(option: IndustrySectorDropdownDTO) => option.sector_title}
-              getOptionId={(option: IndustrySectorDropdownDTO) => option.industry_sector_id ?? ''}
-              getOptionFromId={(options: IndustrySectorDropdownDTO[], id: string) =>
+              getOptionLabel={(option: IndustrySectorDropdownDTO) =>
+                option.sector_title
+              }
+              getOptionId={(option: IndustrySectorDropdownDTO) =>
+                option.industry_sector_id ?? ''
+              }
+              getOptionFromId={(
+                options: IndustrySectorDropdownDTO[],
+                id: string,
+              ) =>
                 options.find((item) => item.industry_sector_id === id) || null
               }
               required
@@ -255,7 +294,9 @@ export default function CreateEmployerCompanyInfoPage() {
 
           <fieldset>
             <legend>
-              <h2>Logo <span className="subtitle-optional">(optional)</span></h2>
+              <h2>
+                Logo <span className="subtitle-optional">(optional)</span>
+              </h2>
             </legend>
             <AvatarUpload
               id="profile-creation-company-logoUrl"
@@ -266,7 +307,7 @@ export default function CreateEmployerCompanyInfoPage() {
               onImageUpload={handleImageUpload}
               initialImageUrl={companyData.logoUrl || ''}
               disabled={!employerInfo?.is_verified_employee}
-              apiPath='/api/companies/avatar/upload'
+              apiPath="/api/companies/avatar/upload"
             />
           </fieldset>
 
@@ -381,16 +422,13 @@ export default function CreateEmployerCompanyInfoPage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
-            <Button
-              pill
+            <PillButton
               className="custom-outline-btn"
               onClick={() => router.push('/edit-profile/employer/profile')}
             >
               Previous
-            </Button>
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            </PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

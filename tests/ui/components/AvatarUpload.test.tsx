@@ -33,8 +33,9 @@ describe('AvatarUpload', () => {
     });
 
     it('should render initial image', () => {
-        const img = screen.getByTestId('avatar-image');
-        expect(img).toHaveProperty('src', defaultProps.initialImageUrl);
+        const avatarDiv = screen.getByTestId('avatar-image');
+        const img = avatarDiv.querySelector('img');
+        expect(img?.getAttribute('src')).toBe(defaultProps.initialImageUrl);
     });
 
     it('should handle file upload', async () => {

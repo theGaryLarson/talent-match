@@ -1,10 +1,10 @@
 import React, { memo, useCallback } from 'react';
-import { Button } from 'flowbite-react';
-import { MdClose } from 'react-icons/md';
+import PillButton from '@/app/ui/components/PillButton';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import { v4 as uuidv4 } from 'uuid';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import { Close } from '@mui/icons-material';
 
 const classNamePrefix = 'profile-creation-license-group-';
 const classForName = 'name';
@@ -57,15 +57,9 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
     <fieldset key={classNamePrefix + license.certId + '-key'}>
       <legend className="flex w-full justify-between">
         <h3>License or Certification {index + 1}</h3>
-        <Button
-          onClick={() => onRemove(license.certId)}
-          size="xs"
-          color="dark"
-          outline
-          pill
-        >
-          <MdClose className="h-5 w-5" />
-        </Button>
+        <PillButton onClick={() => onRemove(license.certId)} variant="outlined">
+          <Close className="h-5 w-5" />
+        </PillButton>
       </legend>
       <div className="profile-form-grid">
         <InputTextWithLabel

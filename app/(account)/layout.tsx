@@ -1,6 +1,4 @@
 import '@/app/ui/global.css';
-import { inter } from '@/app/ui/fonts';
-import { SessionProvider } from 'next-auth/react';
 
 export default function AccountLayout({
   children,
@@ -8,12 +6,8 @@ export default function AccountLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.className} flex min-h-screen flex-col antialiased laptop:h-screen`}
-      >
-        <SessionProvider>{children}</SessionProvider>
-      </body>
-    </html>
+    <div className={`flex min-h-screen flex-col laptop:h-screen`}>
+      {children}
+    </div>
   );
 }

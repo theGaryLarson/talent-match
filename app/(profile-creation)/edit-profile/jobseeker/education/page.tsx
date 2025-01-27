@@ -3,7 +3,6 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import { MdAdd } from 'react-icons/md';
 import PillButton from '@/app/ui/components/PillButton';
 import {
   CertDTO,
@@ -47,6 +46,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import dayjs, { Dayjs } from 'dayjs';
 import _ from 'lodash';
+import { Add } from '@mui/icons-material';
 
 interface Data {
   projectExperiences: ProjectExperienceData[];
@@ -531,7 +531,7 @@ export default function CreateJobseekerProfileEducationPage() {
               onRemove={removeEducation}
             />
             <PillButton variant="outlined" onClick={addNewEducation}>
-              <MdAdd className="mr-2 h-5 w-5" />
+              <Add className="mr-2 h-5 w-5" />
               Add education detail
             </PillButton>
           </fieldset>
@@ -545,7 +545,7 @@ export default function CreateJobseekerProfileEducationPage() {
               onRemove={removeLicense}
             />
             <PillButton variant="outlined" onClick={addNewLicense}>
-              <MdAdd className="mr-2 h-5 w-5" />
+              <Add className="mr-2 h-5 w-5" />
               Add license or certification
             </PillButton>
           </fieldset>
@@ -564,7 +564,7 @@ export default function CreateJobseekerProfileEducationPage() {
               onRemove={removeProjectExperience}
             />
             <PillButton variant="outlined" onClick={addNewProjectExperience}>
-              <MdAdd className="mr-2 h-5 w-5" />
+              <Add className="mr-2 h-5 w-5" />
               Add project experience
             </PillButton>
           </fieldset>

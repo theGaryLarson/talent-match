@@ -6,7 +6,7 @@ import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import { Button, Progress } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
 import { PostEmployerVideoDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
@@ -20,7 +20,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-import {ReadEmployerRecordDTO} from "@/app/lib/employer";
+import { ReadEmployerRecordDTO } from '@/app/lib/employer';
 
 const formNamePrefix = 'profile-creation-company-';
 
@@ -36,19 +36,20 @@ export default function CreateJobseekerProfileIntroPage() {
   const router = useRouter();
 
   const { data: session, update, status } = useSession();
-  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>()
+  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>();
 
   const updateSessionProperties = useUpdateSession();
 
   // get employers.is_verified_employee
-  useEffect(()=>{
-    fetch('/api/employers/account/profile/get').then((res)=>{
-      return res.json();
-    }).then((jsonData)=>{
-      setEmployerInfo(jsonData)
-    });
-
-  }, [])
+  useEffect(() => {
+    fetch('/api/employers/account/profile/get')
+      .then((res) => {
+        return res.json();
+      })
+      .then((jsonData) => {
+        setEmployerInfo(jsonData);
+      });
+  }, []);
 
   useEffect(() => {
     const initializeFormFields = async () => {
@@ -184,16 +185,13 @@ export default function CreateJobseekerProfileIntroPage() {
           </div>
 
           <div className="profile-form-progress-btn-group">
-            <Button
-              pill
+            <PillButton
               className="custom-outline-btn"
               onClick={() => router.push('/edit-profile/employer/mission')}
             >
               Previous
-            </Button>
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            </PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

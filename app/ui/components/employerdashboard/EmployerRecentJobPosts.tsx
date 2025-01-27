@@ -5,7 +5,6 @@ import Link from 'next/link';
 import DeleteJobPostingButton from '../jobPostings/DeleteJobPostingButton';
 import { useEffect, useState } from 'react';
 import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
-import JobListingModalView from '../JobListingModalView';
 
 const getDaysSince = (dateStr: string | Date): number => {
   try {
