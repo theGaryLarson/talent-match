@@ -30,49 +30,49 @@ const PillButton: React.FC<PillButtonProps> = ({
 
         // Outlined Button
         ...(variant === 'outlined' && {
-          border: '1px solid #047f9c',
-          color: '#047f9c', // Per Figma, text matches border
+          border: '1px solid primary.main',
+          color: 'primary.main', // Per Figma, text matches border
           backgroundColor: 'transparent',
           '&:hover': {
-            backgroundColor: '#E1F5F9',
-            color: '#014260',
+            backgroundColor: 'primary.light',
+            color: 'secondary.main',
           },
           '&:focus': {
-            backgroundColor: '#047f9c',
-            color: '#ffffff',
+            backgroundColor: 'primary.main',
+            color: 'accent.light',
             boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)',
           },
           '&:active': {
-            backgroundColor: '#C4EBF3',
-            color: '#014260',
+            backgroundColor: 'primary.light',
+            color: 'secondary.main',
           },
           '&.Mui-disabled': {
-            backgroundColor: '#F6F6F6',
-            color: '#8F8F8F',
+            backgroundColor: 'accent.light',
+            color: 'accent.main',
           },
         }),
 
         // Default Button
         ...(variant === 'contained' && {
           // Default Primary Button (Idle State)
-          backgroundColor: '#047F9C',
-          color: '#ffffff',
+          backgroundColor: 'primary.main',
+          color: 'accent.light',
           '&:hover': {
-            backgroundColor: '#4FA5BA',
-            color: '#ffffff',
+            backgroundColor: 'primary.light',
+            color: 'accent.light',
           },
           '&:focus': {
-            backgroundColor: '#3699B0',
-            color: '#ffffff',
+            backgroundColor: 'secondary.light',
+            color: 'accent.light',
             boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)',
           },
           '&:active': {
-            backgroundColor: '#006682',
-            color: '#ffffff',
+            backgroundColor: 'primary.main',
+            color: 'accent.light',
           },
           '&.Mui-disabled': {
-            backgroundColor: '#E5E5E5',
-            color: '#1919199A',
+            backgroundColor: 'accent.main',
+            color: 'accent.dark',
             cursor: 'not-allowed',
           },
         }),
