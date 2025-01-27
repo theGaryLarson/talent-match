@@ -208,6 +208,9 @@ export async function getProviderProgramByProvider(providerId:string){
   try {
     const result = await prisma.provider_programs.findMany({where:{
       edu_provider_id:providerId
+    }, include:{
+      Program:true,
+      
     }})
     return result;
   } catch (error) {

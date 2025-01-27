@@ -2280,50 +2280,50 @@ async function seedCompanyTestimonials() {
     console.log(`Seeded ${count} Company Testimonials.\n`)
 }
 
-async function seedSocialMediaPlatforms() {
-    console.log(`Seeding social media platforms...`);
-    const socialPromises = socialMediaPlatforms.map(async platform => {
-        await prisma.social_media_platforms.create({
-            data: {
-                social_platform_id: uuidv4(),
-                platform: platform.platform,
-                social_logo_url: platform.social_logo_url,
-            }
-        });
-    });
+// async function seedSocialMediaPlatforms() {
+//     console.log(`Seeding social media platforms...`);
+//     const socialPromises = socialMediaPlatforms.map(async platform => {
+//         await prisma.social_media_platforms.create({
+//             data: {
+//                 social_platform_id: uuidv4(),
+//                 platform: platform.platform,
+//                 social_logo_url: platform.social_logo_url,
+//             }
+//         });
+//     });
+//
+//     // Wait for all promises to complete
+//     await Promise.all(socialPromises);
+//     console.log(`Seeded ${socialPromises.length} social media platforms.\n`);
+// }
 
-    // Wait for all promises to complete
-    await Promise.all(socialPromises);
-    console.log(`Seeded ${socialPromises.length} social media platforms.\n`);
-}
-
-async function seedCompanySocialLinks() {
-    console.log(`Seeding Company Social Links...`)
-    const companies = await prisma.companies.findMany();
-    const platforms = await prisma.social_media_platforms.findMany();
-    let count = 0;
-    for (const c of companies) {
-        const employer = await prisma.employers.findFirst({
-            where: {
-                company_id: c.company_id
-            }
-        })
-        for (let i = 0; i < 3; i++) {
-            let platform = platforms.pop();
-            await prisma.company_social_links.create({
-                data: {
-                    social_media_id: uuidv4(),
-                    employer_id: employer.employer_id,
-                    company_id: c.company_id,
-                    social_platform_id: platform.social_platform_id,
-                    social_url: `https://www.${platform.platform.toLowerCase()}/${c.company_name.toLowerCase().replace(/[\s\W]/g, '')}`,
-                }
-            });
-            count++;
-        }
-    }
-    console.log(`Seeded ${count} Company Social Links.\n`)
-}
+// async function seedCompanySocialLinks() {
+//     console.log(`Seeding Company Social Links...`)
+//     const companies = await prisma.companies.findMany();
+//     const platforms = await prisma.social_media_platforms.findMany();
+//     let count = 0;
+//     for (const c of companies) {
+//         const employer = await prisma.employers.findFirst({
+//             where: {
+//                 company_id: c.company_id
+//             }
+//         })
+//         for (let i = 0; i < 3; i++) {
+//             let platform = platforms.pop();
+//             await prisma.company_social_links.create({
+//                 data: {
+//                     social_media_id: uuidv4(),
+//                     employer_id: employer.employer_id,
+//                     company_id: c.company_id,
+//                     social_platform_id: platform.social_platform_id,
+//                     social_url: `https://www.${platform.platform.toLowerCase()}/${c.company_name.toLowerCase().replace(/[\s\W]/g, '')}`,
+//                 }
+//             });
+//             count++;
+//         }
+//     }
+//     console.log(`Seeded ${count} Company Social Links.\n`)
+// }
 
 async function seedJobPostings() {
     try {
@@ -2443,7 +2443,6 @@ async function seedPostalGeoData(jsonFilePath, logFrequency = 10, batchSize = 10
  * - seedSubcategories
  * - seedSkills
  * - seedPostalGeoData
- * - seedSocialMediaPlatforms
  * - seedPrograms
  * - seedEduProviders
  * - seedCompanies
@@ -2457,7 +2456,6 @@ async function seedFoundationalTables() {
     await seedSubcategories();
     await seedSkills(); // TODO: associate skills with a pathway
     await seedPostalGeoData("../data/postal_geo_data.json"); // use in production
-    await seedSocialMediaPlatforms();
     await seedGeneralPrograms();
     await seedPartnerPrograms();
     await seedGeneralEdProviders(); // TODO: get updated list of training provider partners to use in production
@@ -2492,8 +2490,8 @@ async function seedMockEmployerData() {
     await seedMockCompanies(); // TODO: get a list of pre-approved companies to use in production
     await seedEmployers();
     await seedCompanyAddresses();
-    await seedCompanyTestimonials();
-    await seedCompanySocialLinks();
+    // await seedCompanyTestimonials();
+    // await seedCompanySocialLinks();
     await seedJobPostings();
 }
 

@@ -223,16 +223,15 @@ export async function ApplyToJob(jobPostingId: string) {
         }
       });
     } else {
-      const applicationData = {
-        id: uuidv4(),
-        jobPostId: jobPostingId,
-        jobseekerId: Session.user.jobseekerId,
-        jobStatus: JobStatus.Applied,
-        appliedDate: new Date(),
-        isBookmarked: false,
-      };
       return await prisma.jobseekerJobPosting.create({
-        data: applicationData,
+        data: {
+          id: uuidv4(),
+          jobPostId: jobPostingId,
+          jobseekerId: Session.user.jobseekerId,
+          jobStatus: JobStatus.Applied,
+          appliedDate: new Date(),
+          isBookmarked: false,
+        },
         include:{
           job_posting:{
             include:{

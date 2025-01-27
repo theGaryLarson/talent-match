@@ -4,6 +4,7 @@ import { Role } from "@/data/dtos/UserInfoDTO";
 import { PrismaClient } from "@prisma/client";
 import getPrismaClient from "../prismaClient.mjs";
 import { v4 as uuidv4 } from 'uuid';
+import { validate as isUuid } from "uuid";
 const prisma: PrismaClient = getPrismaClient();
 export async function adminCreateCompany(companyData:CompanyAdminCreationDTO) {
     const Session = await auth();
@@ -41,6 +42,37 @@ export async function adminCreateCompany(companyData:CompanyAdminCreationDTO) {
         console.error(e)
     }
 }
+export async function adminDeleteCompany(companyId: string) {
+        const session = await auth();
+    
+        if (!session?.user) {
+            throw new Error("User not authenticated.");
+        }
+    
+        if (!session.user.roles.includes(Role.ADMIN)) {
+            throw new Error("User does not have admin privileges.");
+        }
+    
+        if (!companyId || !isUuid(companyId)) {
+            throw new Error("Invalid company ID.");
+        }
+    
+        try {
+    
+            console.debug("Deleting company with ID:", companyId);
+         
+            // Perform delete
+            //Will currently fail everytime since cascading delete is not set up
+            const result = await prisma.companies.delete({where:{
+                company_id:companyId
+            }});
+    
+            return result;
+        } catch (error: any) {
+            console.error("Error in DELETE handler:", error);
+            throw new Error("Failed to delete company. Please try again.");
+        }
+    }
 
 export async function adminUpdateCompanyApproval(companyId:string,isApproved:boolean ) {
     try {
