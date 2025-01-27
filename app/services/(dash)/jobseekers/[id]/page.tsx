@@ -80,7 +80,6 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           direction={'row'}
           gap={2}
           sx={{
-            pt: '25px',
             mb: 2,
             width: '100%',
             justifyContent: 'center',

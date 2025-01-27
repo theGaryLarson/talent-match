@@ -20,11 +20,11 @@ export default async function page() {
     <main className="mb-0 flex-1 pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">
       <h1 className="mb-4 text-2xl font-bold">Applied Jobs</h1>
       <div className="space-y-4">
-        {myAppliedJobs.map((job) => (
-          <div key={job.job_posting_id}>
+        {myAppliedJobs.map((job) =>
+          job && (<div key={job.job_posting_id}>
             <JobListingCardView joblisting={job} />
-          </div>
-        ))}
+          </div>)
+        )}
       </div>
     </main>
   );

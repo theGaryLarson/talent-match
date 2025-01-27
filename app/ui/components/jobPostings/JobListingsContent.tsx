@@ -172,7 +172,7 @@ export default function JobListingsContent() {
   }, [jobTitle, skillsList, industry, zipCode, sortBy, page, execQuery]);
 
   return (
-    <main className="mb-0 pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">
+    <main className="mb-0 mx-2 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[100px]">
       <h1 className="mb-4 text-2xl font-bold">Job Listings</h1>
 
       {/* Job Title Search Bar */}
