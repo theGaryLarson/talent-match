@@ -54,6 +54,7 @@ export default auth((req) => {
       '/api/admin/career-prep/self-assign-case',
       '/api/jobseekers/career-prep/meeting',
       '/api/admin/career-prep/update-recomended-track/',
+      '/api/joblistings/',
       // Add any other routes accessible by case managers
     ],
     [Role.ADMIN]: [], // Admin has full access, so this can be empty
