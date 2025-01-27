@@ -186,7 +186,7 @@ export default function JobPostingPage({
                     </p>
                 </div>
             </div>
-            {isJobseeker && (
+            {(isJobseeker || !session?.user) && (
                 <div>
                     <ApplyToJobButton id={params.id} appliedStatus={joblisting.jobStatus}/>
                 </div>
