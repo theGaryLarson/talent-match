@@ -31,11 +31,14 @@ export default async function Page() {
       getCareerPrepStatus(session?.user.jobseekerId ?? ''),
     ]);
 
-  const providerPrograms = (
-    await getProviderProgramCardView(
-      jobseekerData?.pathways?.pathway_title || '',
-    )
-  ).splice(0, 3);
+  let providerPrograms;
+  if (jobseekerData && jobseekerData.pathways) {
+    providerPrograms = (
+      await getProviderProgramCardView(
+        jobseekerData?.pathways?.pathway_title || '',
+      )
+    ).splice(0, 3);
+  }
   const slicedAppliedJobs = appliedJobs?.slice(0, 3);
 
   const hasTakenTest =
@@ -63,9 +66,7 @@ export default async function Page() {
           alignSelf: 'stretch',
         }}
       >
-        <PillButton>
-          Dashboard
-        </PillButton>
+        <PillButton>Dashboard</PillButton>
         <Typography
           variant="h4"
           sx={{ fontSize: '24px', textAlign: 'center', fontWeight: 400 }}
@@ -94,7 +95,9 @@ export default async function Page() {
       />
       <Applications jobs={slicedAppliedJobs} />
       <Events />
-      <TrainingProviderPrograms programs={providerPrograms} />
+      {providerPrograms && (
+        <TrainingProviderPrograms programs={providerPrograms} />
+      )}
     </Stack>
   );
 }
