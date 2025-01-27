@@ -1,36 +1,36 @@
-'use client';
+"use client";
 
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import type { RootState } from '@/lib/employerStore';
-import { useSelector, useDispatch } from 'react-redux';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import AvatarUpload from '@/app/ui/components/AvatarUpload';
-import PillButton from '@/app/ui/components/PillButton';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import TextField from '@mui/material/TextField';
-import dayjs, { Dayjs } from 'dayjs';
-import { useSession } from 'next-auth/react';
-import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import type { RootState } from "@/lib/employerStore";
+import { useSelector, useDispatch } from "react-redux";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
+import AvatarUpload from "@/app/ui/components/AvatarUpload";
+import PillButton from "@/app/ui/components/PillButton";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+import dayjs, { Dayjs } from "dayjs";
+import { useSession } from "next-auth/react";
+import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import {
   PostEmployerPersonalDTO,
   ReadEmployerPersonalDTO,
-} from '@/data/dtos/EmployerProfileCreationDTOs';
+} from "@/data/dtos/EmployerProfileCreationDTOs";
 import {
   setPersonal,
   initialState,
-} from '@/lib/features/profileCreation/employerSlice';
+} from "@/lib/features/profileCreation/employerSlice";
 import {
   setPageDirty,
   setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import _ from 'lodash';
-import { devLog } from '@/app/lib/utils';
-import { JsIntroDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+} from "@/lib/features/profileCreation/saveSlice";
+import _ from "lodash";
+import { devLog } from "@/app/lib/utils";
+import { JsIntroDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
-const formNamePrefix = 'profile-creation-personal-';
+const formNamePrefix = "profile-creation-personal-";
 
 export default function CreateEmployerPersonalPage() {
   const personalStoreData = useSelector(
@@ -50,9 +50,9 @@ export default function CreateEmployerPersonalPage() {
 
   useEffect(() => {
     if (!session?.user?.id) return;
-    devLog('session', session.user);
+    devLog("session", session.user);
     const initializeFormFields = async () => {
-      if (status === 'authenticated') {
+      if (status === "authenticated") {
         if (_.isEqual(personalStoreData, initialState.personal)) {
           const { id, firstName, lastName, email, image } = session.user;
 
@@ -65,22 +65,22 @@ export default function CreateEmployerPersonalPage() {
               const errorData = await response.json();
               setPersonalData((prevState) => ({
                 ...prevState,
-                userId: id ?? '',
-                firstName: firstName ?? '',
-                lastName: lastName ?? '',
-                email: email ?? '',
+                userId: id ?? "",
+                firstName: firstName ?? "",
+                lastName: lastName ?? "",
+                email: email ?? "",
                 photoUrl: image,
-                phoneCountryCode: 'United States +1',
+                phoneCountryCode: "United States +1",
               }));
             } else {
               let { result } = await response.json();
               setPersonalData((prevPersonalData) => ({
                 ...prevPersonalData,
                 userId: result.userId,
-                birthDate: result.birthDate ?? '',
+                birthDate: result.birthDate ?? "",
                 email: email!,
-                firstName: firstName ?? '',
-                lastName: lastName ?? '',
+                firstName: firstName ?? "",
+                lastName: lastName ?? "",
                 phone: result.phone,
                 phoneCountryCode: result.phoneCountryCode,
                 photoUrl: image,
@@ -91,7 +91,7 @@ export default function CreateEmployerPersonalPage() {
             // dispatch(submitFormFailure('Failed to submit the form'));
           }
         } else {
-          devLog('fetching from redux store');
+          devLog("fetching from redux store");
         }
 
         // setBirthdate(
@@ -105,7 +105,7 @@ export default function CreateEmployerPersonalPage() {
     };
 
     initializeFormFields();
-    dispatch(setPageSaved('personal'));
+    dispatch(setPageSaved("personal"));
     devLog(personalData);
   }, [session?.user?.id, pathname]);
 
@@ -114,9 +114,9 @@ export default function CreateEmployerPersonalPage() {
   ) => {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
-    dispatch(setPageDirty('personal'));
+    dispatch(setPageDirty("personal"));
 
-    console.log('name', name, 'value', value, 'fieldName,', fieldName);
+    console.log("name", name, "value", value, "fieldName,", fieldName);
     if (personalData.hasOwnProperty(fieldName)) {
       personalData[fieldName as keyof PostEmployerPersonalDTO] = value;
       setPersonalData((prevPersonalData) => ({
@@ -131,7 +131,7 @@ export default function CreateEmployerPersonalPage() {
       image: url,
     })
       .then(() => {
-        dispatch(setPageDirty('personal'));
+        dispatch(setPageDirty("personal"));
         setAvatarUrl(url);
         setPersonalData((prevPersonalData) => ({
           ...prevPersonalData,
@@ -139,13 +139,13 @@ export default function CreateEmployerPersonalPage() {
         }));
       })
       .catch((error) =>
-        console.error('Failed to update session image:', error),
+        console.error("Failed to update session image:", error),
       );
   };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!session || !session.user) {
-      console.error('User session is not available.');
+      console.error("User session is not available.");
       return;
     }
     // Birthdate optional, no longer needed
@@ -163,7 +163,7 @@ export default function CreateEmployerPersonalPage() {
       //   birthdate?.toISOString() ?? dayjs(personalData.birthDate).toISOString(),
       photoUrl: avatarUrl,
     }));
-    devLog('personalData', personalData);
+    devLog("personalData", personalData);
     // Extract firstName, lastName, and name from Redux state fields
 
     const firstName = personalData.firstName;
@@ -172,11 +172,11 @@ export default function CreateEmployerPersonalPage() {
 
     try {
       const response = await fetch(
-        '/api/employers/account/personal-info/upsert',
+        "/api/employers/account/personal-info/upsert",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             ...personalData,
@@ -188,7 +188,7 @@ export default function CreateEmployerPersonalPage() {
           }),
         },
       );
-      devLog('personalData\n', personalData);
+      devLog("personalData\n", personalData);
       if (response.ok) {
         const { result } = await response.json();
 
@@ -199,9 +199,9 @@ export default function CreateEmployerPersonalPage() {
           }),
         );
 
-        dispatch(setPageSaved('personal'));
+        dispatch(setPageSaved("personal"));
 
-        if (session && status === 'authenticated') {
+        if (session && status === "authenticated") {
           await updateSessionProperties({
             firstName,
             lastName,
@@ -210,7 +210,7 @@ export default function CreateEmployerPersonalPage() {
           });
         }
 
-        router.push('/edit-profile/employer/company');
+        router.push("/edit-profile/employer/company");
       } else {
         const errorData = await response.json();
       }

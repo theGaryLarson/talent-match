@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const {execSync} = require('child_process');
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
 
 const execSyncWrapper = (command) => {
   let stdout = null;
@@ -13,15 +13,15 @@ const execSyncWrapper = (command) => {
 };
 
 const main = () => {
-  let gitBranch = execSyncWrapper('git rev-parse --abbrev-ref HEAD');
-  let gitCommitHash = execSyncWrapper('git rev-parse --short=7 HEAD');
+  let gitBranch = execSyncWrapper("git rev-parse --abbrev-ref HEAD");
+  let gitCommitHash = execSyncWrapper("git rev-parse --short=7 HEAD");
 
   const obj = {
     gitBranch,
-    gitCommitHash
+    gitCommitHash,
   };
 
-  const filePath = path.resolve('app', 'generatedGitInfo.json');
+  const filePath = path.resolve("app", "generatedGitInfo.json");
   const fileContents = JSON.stringify(obj, null, 2);
 
   fs.writeFileSync(filePath, fileContents);

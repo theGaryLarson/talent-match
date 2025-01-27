@@ -1,12 +1,9 @@
-import { getIndustrySectors } from '@/app/lib/prisma';
+import { getIndustrySectors } from "@/app/lib/prisma";
 
-export async function GET(req:Request) {
+export async function GET(req: Request) {
   const industrySectors = await getIndustrySectors();
 
-  return Response.json(
-    industrySectors,
-    {
-      status: 200
-    }
-  );
+  return Response.json(industrySectors, {
+    status: 200,
+  });
 }

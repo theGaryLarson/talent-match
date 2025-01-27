@@ -1,13 +1,13 @@
-import NextAuth from 'next-auth';
-import GitHub from 'next-auth/providers/github';
+import NextAuth from "next-auth";
+import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
 // import Microsoft from "next-auth/providers/microsoft-entra-id";
 // import LinkedIn from "next-auth/providers/linkedin";
-import type { Provider } from 'next-auth/providers';
-import { Role } from './data/dtos/UserInfoDTO';
-import { createUser, getUserByEmail } from './app/lib/user';
-import { devLog } from '@/app/lib/utils';
+import type { Provider } from "next-auth/providers";
+import { Role } from "./data/dtos/UserInfoDTO";
+import { createUser, getUserByEmail } from "./app/lib/user";
+import { devLog } from "@/app/lib/utils";
 
 const providers: Provider[] = [
   GitHub,
@@ -24,7 +24,7 @@ const providers: Provider[] = [
 ];
 
 export const providerMap = providers.map((provider) => {
-  if (typeof provider === 'function') {
+  if (typeof provider === "function") {
     const providerData = provider();
     return { id: providerData.id, name: providerData.name };
   } else {
@@ -42,7 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // if (user && user.image && !token.image) {
         //   token.image = user.image;
         // }
-        if (trigger === 'update') {
+        if (trigger === "update") {
           // Iterate over the session properties and dynamically update the token
           Object.entries(session).forEach(([key, value]) => {
             // Dynamically assign updated properties to the token
@@ -62,22 +62,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               //user doesn't exist in database
               const userData = {
                 email: user.email,
-                firstName: user.name?.split(' ')[0] || '',
-                lastName: user.name?.split(' ')[1] || '',
+                firstName: user.name?.split(" ")[0] || "",
+                lastName: user.name?.split(" ")[1] || "",
                 image: user.image,
                 roles: [Role.GUEST], // default role
               };
-              devLog('server-side-default-role\n', userData);
+              devLog("server-side-default-role\n", userData);
 
               // add user to database
               createResponse = await createUser(userData);
 
               if (!createResponse) {
-                console.error('Failed to create user');
-                throw new Error('Failed to create user');
+                console.error("Failed to create user");
+                throw new Error("Failed to create user");
               }
 
-              devLog('User created successfully:', createResponse);
+              devLog("User created successfully:", createResponse);
 
               //assign database values to the token after user is created
               token.id = createResponse.userId;
@@ -92,7 +92,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               token.employeeIsApproved = createResponse.employeeIsApproved;
               token.image = createResponse.image
                 ? createResponse.image
-                : user.image ?? undefined;
+                : (user.image ?? undefined);
             } else {
               // user already exists in database assign the database values to the token
               token.id = fetchResponse.userId;
@@ -107,16 +107,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               token.employeeIsApproved = fetchResponse.employeeIsApproved;
               token.image = fetchResponse.image
                 ? fetchResponse.image
-                : user.image ?? undefined;
+                : (user.image ?? undefined);
             }
           } catch (error) {
-            console.error('Error during user fetch/create:', error);
-            throw new Error('Failed to handle user authentication');
+            console.error("Error during user fetch/create:", error);
+            throw new Error("Failed to handle user authentication");
           }
         }
       } catch (error) {
-        console.error('Error in JWT callback:', error);
-        throw new Error('Failed to handle user authentication');
+        console.error("Error in JWT callback:", error);
+        throw new Error("Failed to handle user authentication");
       }
 
       return token;
@@ -135,8 +135,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.image = token.image;
       return session;
     },
-    async redirect({url, baseUrl}) {
-      if (url.startsWith('/')) {
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) {
         return `${baseUrl}${url}`;
       }
       if (new URL(url).origin === baseUrl) {
@@ -146,18 +146,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   pages: {
-    signIn: '/signin',
-    newUser:'/signup'
+    signIn: "/signin",
+    newUser: "/signup",
   },
   cookies: {
     pkceCodeVerifier: {
-      name: 'next-auth.pkce.code_verifier',
+      name: "next-auth.pkce.code_verifier",
       options: {
         httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
+        sameSite: "lax",
+        path: "/",
         secure: true,
-        domain: process.env.NEXT_PUBLIC_DOMAIN || 'localhost',
+        domain: process.env.NEXT_PUBLIC_DOMAIN || "localhost",
       },
     },
   },

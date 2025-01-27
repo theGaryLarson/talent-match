@@ -1,18 +1,18 @@
-import { auth } from '@/auth';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { PrismaClient, skill_subcategories } from '@prisma/client';
-import getPrismaClient from '../prismaClient.mjs';
-import { v4 as uuidv4 } from 'uuid';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
+import { auth } from "@/auth";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import { PrismaClient, skill_subcategories } from "@prisma/client";
+import getPrismaClient from "../prismaClient.mjs";
+import { v4 as uuidv4 } from "uuid";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
 const prisma: PrismaClient = getPrismaClient();
 
 export async function adminCreateSkills(skillDataArray: SkillDTO[]) {
   const Session = await auth();
   if (!Session?.user.roles.includes(Role.ADMIN)) {
-    throw new Error('Must Be Admin to complete this task');
+    throw new Error("Must Be Admin to complete this task");
   }
   if (!Session?.user.id) {
-    throw new Error('Must Be a user to complete this task');
+    throw new Error("Must Be a user to complete this task");
   }
 
   try {
@@ -41,7 +41,7 @@ export async function adminCreateSkills(skillDataArray: SkillDTO[]) {
       return {
         count: 0,
         skipped: skillDataArray.length,
-        message: 'All skills already exist',
+        message: "All skills already exist",
       };
     }
 
@@ -50,44 +50,42 @@ export async function adminCreateSkills(skillDataArray: SkillDTO[]) {
       data: newSkills.map((skillData) => ({
         skill_id: uuidv4(),
         skill_name: skillData.skill_name,
-        skill_subcategory_id: skillData.skill_subcategory_id || '',
-        skill_info_url: skillData.skill_info_url || '',
+        skill_subcategory_id: skillData.skill_subcategory_id || "",
+        skill_info_url: skillData.skill_info_url || "",
       })),
     });
 
     return result;
   } catch (e) {
-    console.error('Error creating skills:', e);
+    console.error("Error creating skills:", e);
     throw e;
   }
 }
 
-export async function adminUpdateSkill(
-  skillData: SkillDTO,
-) {
+export async function adminUpdateSkill(skillData: SkillDTO) {
   const Session = await auth();
   if (!Session?.user.roles.includes(Role.ADMIN)) {
-    throw new Error('Must Be Admin to complete this task');
+    throw new Error("Must Be Admin to complete this task");
   }
   if (!Session?.user.id) {
-    throw new Error('Must Be a user to complete this task');
+    throw new Error("Must Be a user to complete this task");
   }
 
   try {
     const result = await prisma.skills.update({
       where: {
-        skill_id: skillData.skill_id
+        skill_id: skillData.skill_id,
       },
       data: {
         skill_name: skillData.skill_name,
         skill_subcategory_id: skillData.skill_subcategory_id,
-        skill_info_url: skillData.skill_info_url
+        skill_info_url: skillData.skill_info_url,
       },
     });
 
     return result;
   } catch (e) {
-    console.error('Error updating skill:', e);
+    console.error("Error updating skill:", e);
     throw e;
   }
 }
@@ -95,17 +93,17 @@ export async function adminUpdateSkill(
 export async function adminGetSkills() {
   const Session = await auth();
   if (!Session?.user.roles.includes(Role.ADMIN)) {
-    throw new Error('Must Be Admin to complete this task');
+    throw new Error("Must Be Admin to complete this task");
   }
   if (!Session?.user.id) {
-    throw new Error('Must Be a user to complete this task');
+    throw new Error("Must Be a user to complete this task");
   }
 
   try {
     const result = await prisma.skills.findMany();
     return result;
   } catch (e) {
-    console.error('Error getting skills:', e);
+    console.error("Error getting skills:", e);
     throw e;
   }
 }
@@ -113,7 +111,7 @@ export async function adminGetSkills() {
 export async function adminGetSkillSubcategories() {
   const Session = await auth();
   if (!Session?.user.roles.includes(Role.ADMIN)) {
-    throw new Error('Must Be Admin to complete this task');
+    throw new Error("Must Be Admin to complete this task");
   }
 
   try {
@@ -124,7 +122,7 @@ export async function adminGetSkillSubcategories() {
     });
     return skillSubcategories;
   } catch (e) {
-    console.error('Error fetching skill subcategories:', e);
+    console.error("Error fetching skill subcategories:", e);
     throw e;
   }
 }
@@ -134,10 +132,10 @@ export async function adminCreateSkillSubcategory(
 ) {
   const Session = await auth();
   if (!Session?.user.roles.includes(Role.ADMIN)) {
-    throw new Error('Must Be Admin to complete this task');
+    throw new Error("Must Be Admin to complete this task");
   }
   if (!Session?.user.id) {
-    throw new Error('Must Be a user to complete this task');
+    throw new Error("Must Be a user to complete this task");
   }
 
   try {
@@ -151,7 +149,7 @@ export async function adminCreateSkillSubcategory(
 
     return result;
   } catch (e) {
-    console.error('Error creating skill subcategory:', e);
+    console.error("Error creating skill subcategory:", e);
     throw e;
   }
 }

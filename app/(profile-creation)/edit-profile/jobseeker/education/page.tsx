@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import PillButton from '@/app/ui/components/PillButton';
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
+import PillButton from "@/app/ui/components/PillButton";
 import {
   CertDTO,
   HighestCompletedEducationLevel,
@@ -14,39 +14,39 @@ import {
   PreAEduSystem,
   CollegeDegreeType,
   HighSchoolDegreeType,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { v4 as uuidv4 } from 'uuid';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { useRouter } from 'next/navigation';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { v4 as uuidv4 } from "uuid";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { useRouter } from "next/navigation";
 
 import Educations, {
   defaultEducationData,
   EducationData,
-} from './form-field-groups/Educations';
+} from "./form-field-groups/Educations";
 import Licenses, {
   defaultLicenseData,
   LicenseData,
-} from './form-field-groups/Licenses';
+} from "./form-field-groups/Licenses";
 import ProjectExperiences, {
   defaultProjectExperienceData,
   ProjectExperienceData,
-} from './form-field-groups/ProjectExperiences';
-import { devLog, mapToEnum, mapToEnumOrThrow } from '@/app/lib/utils';
-import { getSession, useSession } from 'next-auth/react';
-import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/jobseekerStore';
+} from "./form-field-groups/ProjectExperiences";
+import { devLog, mapToEnum, mapToEnumOrThrow } from "@/app/lib/utils";
+import { getSession, useSession } from "next-auth/react";
+import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/jobseekerStore";
 import {
   initialState,
   setEducation,
-} from '@/lib/features/profileCreation/jobseekerSlice';
+} from "@/lib/features/profileCreation/jobseekerSlice";
 import {
   setPageDirty,
   setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import dayjs, { Dayjs } from 'dayjs';
-import _ from 'lodash';
-import { Add } from '@mui/icons-material';
+} from "@/lib/features/profileCreation/saveSlice";
+import dayjs, { Dayjs } from "dayjs";
+import _ from "lodash";
+import { Add } from "@mui/icons-material";
 
 interface Data {
   projectExperiences: ProjectExperienceData[];
@@ -64,7 +64,7 @@ export default function CreateJobseekerProfileEducationPage() {
   );
   let educationData = { ...educationStoreData };
   const [error, setError] = useState<string | null>(null);
-  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
+  const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
   const [highestLevelOfStudy, setHighestLevelOfStudy] = useState(
     educationData.highestLevelOfStudy,
@@ -81,7 +81,7 @@ export default function CreateJobseekerProfileEducationPage() {
         completionDate: !Boolean(project.completionDate)
           ? null
           : dayjs(project.completionDate),
-        reference: project.repoUrl ?? '',
+        reference: project.repoUrl ?? "",
         problemSolvedDescription: project.problemSolvedDescription,
         teamSize: project.teamSize,
         skills: project.skills,
@@ -93,8 +93,8 @@ export default function CreateJobseekerProfileEducationPage() {
         certId: cert.certId,
         name: cert.name,
         issuingOrg: cert.issuingOrg,
-        credentialId: cert.credentialId ?? '',
-        credentialUrl: cert.credentialUrl ?? '',
+        credentialId: cert.credentialId ?? "",
+        credentialUrl: cert.credentialUrl ?? "",
         issueDate: !Boolean(cert.issueDate) ? null : dayjs(cert.issueDate),
         expiryDate: !Boolean(cert.expiryDate) ? null : dayjs(cert.expiryDate),
       }),
@@ -104,11 +104,11 @@ export default function CreateJobseekerProfileEducationPage() {
         id: education.id,
         edLevel: education.edLevel ?? EducationLevel.Unselected,
         edProviderObject: {
-          id: education.edProviderId ?? '',
-          name: education.edProviderName ?? '',
+          id: education.edProviderId ?? "",
+          name: education.edProviderName ?? "",
         },
         edProviderId: education.edProviderId,
-        edProviderName: education.edProviderName ?? '',
+        edProviderName: education.edProviderName ?? "",
         isEnrolled: education.isEnrolled,
         enrollmentStatus: education.enrollmentStatus,
         startDate: !Boolean(education.startDate)
@@ -141,7 +141,7 @@ export default function CreateJobseekerProfileEducationPage() {
     setHighestLevelOfStudy(
       mapToEnumOrThrow(event.target.value, HighestCompletedEducationLevel),
     );
-    dispatch(setPageDirty('education'));
+    dispatch(setPageDirty("education"));
   }
 
   function addNewLicense() {
@@ -150,7 +150,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...data,
       licenses: [...data.licenses, newLicenseData],
     });
-    dispatch(setPageDirty('education'));
+    dispatch(setPageDirty("education"));
   }
 
   function removeLicense(byUid: string) {
@@ -158,7 +158,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...data,
       licenses: data.licenses.filter(({ certId: uid }) => uid !== byUid),
     });
-    dispatch(setPageDirty('education'));
+    dispatch(setPageDirty("education"));
   }
 
   function addNewProjectExperience() {
@@ -170,7 +170,7 @@ export default function CreateJobseekerProfileEducationPage() {
         newProjectExperienceData,
       ],
     });
-    dispatch(setPageDirty('education'));
+    dispatch(setPageDirty("education"));
   }
 
   function removeProjectExperience(byUid: string) {
@@ -180,7 +180,7 @@ export default function CreateJobseekerProfileEducationPage() {
         ({ projectId: uid }) => uid !== byUid,
       ),
     });
-    dispatch(setPageDirty('education'));
+    dispatch(setPageDirty("education"));
   }
 
   function addNewEducation() {
@@ -189,7 +189,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...data,
       educations: [...data.educations, newEducationData],
     });
-    dispatch(setPageDirty('education'));
+    dispatch(setPageDirty("education"));
   }
 
   function removeEducation(byUid: string) {
@@ -197,7 +197,7 @@ export default function CreateJobseekerProfileEducationPage() {
       ...data,
       educations: data.educations.filter(({ id: uid }) => uid !== byUid),
     });
-    dispatch(setPageDirty('education'));
+    dispatch(setPageDirty("education"));
   }
 
   const handleUpdate = useCallback((key: string, value: any) => {
@@ -205,19 +205,19 @@ export default function CreateJobseekerProfileEducationPage() {
       ...prevData,
       [key]: value,
     }));
-    dispatch(setPageDirty('education'));
+    dispatch(setPageDirty("education"));
   }, []);
 
   useEffect(() => {
-    if (session?.user?.id && status === 'authenticated') {
+    if (session?.user?.id && status === "authenticated") {
       const initializeFormFields = async () => {
         if (_.isEqual(educationStoreData, initialState.education)) {
           const { id, jobseekerId } = session.user;
 
           try {
-            devLog('fetching fresh');
+            devLog("fetching fresh");
             const response = await fetch(
-              '/api/jobseekers/account/edu-info/get/' + id,
+              "/api/jobseekers/account/edu-info/get/" + id,
             );
 
             if (!response.ok) {
@@ -253,11 +253,11 @@ export default function CreateJobseekerProfileEducationPage() {
                       id: education.id,
                       edLevel: education.edLevel ?? EducationLevel.Unselected,
                       edProviderObject: {
-                        id: education.edProviderId ?? '',
-                        name: education.edProviderName ?? '',
+                        id: education.edProviderId ?? "",
+                        name: education.edProviderName ?? "",
                       },
                       edProviderId: education.edProviderId,
-                      edProviderName: education.edProviderName ?? '',
+                      edProviderName: education.edProviderName ?? "",
                       isEnrolled: education.isEnrolled,
                       enrollmentStatus: education.enrollmentStatus,
                       startDate: dayjs(education.startDate),
@@ -300,7 +300,7 @@ export default function CreateJobseekerProfileEducationPage() {
                       completionDate: project.completionDate
                         ? dayjs(project.completionDate)
                         : null,
-                      reference: project.repoUrl ?? '',
+                      reference: project.repoUrl ?? "",
                       problemSolvedDescription:
                         project.problemSolvedDescription,
                       teamSize: project.teamSize,
@@ -316,8 +316,8 @@ export default function CreateJobseekerProfileEducationPage() {
                       certId: cert.certId,
                       name: cert.name,
                       issuingOrg: cert.issuingOrg,
-                      credentialId: cert.credentialId ?? '',
-                      credentialUrl: cert.credentialUrl ?? '',
+                      credentialId: cert.credentialId ?? "",
+                      credentialUrl: cert.credentialUrl ?? "",
                       issueDate: cert.issueDate ? dayjs(cert.issueDate) : null,
                       expiryDate: cert.expiryDate
                         ? dayjs(cert.expiryDate)
@@ -331,10 +331,10 @@ export default function CreateJobseekerProfileEducationPage() {
             console.error(error);
           }
         } else {
-          devLog('fetching from store');
+          devLog("fetching from store");
         }
       };
-      dispatch(setPageSaved('education'));
+      dispatch(setPageSaved("education"));
       initializeFormFields();
     }
   }, [session?.user?.id]);
@@ -343,11 +343,11 @@ export default function CreateJobseekerProfileEducationPage() {
     event.preventDefault();
 
     if (!session?.user?.id) {
-      console.error('User session is not available.');
+      console.error("User session is not available.");
       return;
     }
 
-    setHasUnmetRequired('');
+    setHasUnmetRequired("");
 
     const userId = session.user.id;
     const form = event.currentTarget as HTMLFormElement;
@@ -360,8 +360,8 @@ export default function CreateJobseekerProfileEducationPage() {
         edProviderName: ed?.edProviderObject?.name || ed?.edProviderName,
         isEnrolled: ed.isEnrolled,
         enrollmentStatus: ed.enrollmentStatus ?? undefined,
-        startDate: ed.startDate?.toISOString() ?? '',
-        gradDate: ed.gradDate?.toISOString() ?? '',
+        startDate: ed.startDate?.toISOString() ?? "",
+        gradDate: ed.gradDate?.toISOString() ?? "",
         degreeType: ed.degreeType || undefined,
         programId: ed?.programObject?.id || ed?.programId || undefined, // Note: no rel with provider_programs pulled from a separate programs table.
         programName: ed?.programObject?.title || ed?.programName || undefined,
@@ -424,8 +424,8 @@ export default function CreateJobseekerProfileEducationPage() {
         projectId: proj.projectId,
         projTitle: proj.projectTitle,
         projectRole: proj.projectRole,
-        startDate: proj.startDate?.toISOString() ?? '',
-        completionDate: proj.completionDate?.toISOString() ?? '',
+        startDate: proj.startDate?.toISOString() ?? "",
+        completionDate: proj.completionDate?.toISOString() ?? "",
         problemSolvedDescription: proj.problemSolvedDescription,
         teamSize: proj.teamSize,
         repoUrl: proj.reference,
@@ -465,10 +465,10 @@ export default function CreateJobseekerProfileEducationPage() {
     };
 
     try {
-      const response = await fetch('/api/jobseekers/account/edu-info/upsert', {
-        method: 'POST',
+      const response = await fetch("/api/jobseekers/account/edu-info/upsert", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(educationData),
       });
@@ -477,10 +477,10 @@ export default function CreateJobseekerProfileEducationPage() {
         const data = await response.json();
         devLog(JSON.stringify(data, null, 2));
 
-        dispatch(setPageSaved('education'));
+        dispatch(setPageSaved("education"));
         dispatch(setEducation(educationData));
 
-        router.push('/edit-profile/jobseeker/work-experience');
+        router.push("/edit-profile/jobseeker/work-experience");
       } else {
         const errorMessage = await response.text(); // Get the error message from the response
         setError(`Failed to save data:\n${errorMessage}`);
@@ -510,7 +510,7 @@ export default function CreateJobseekerProfileEducationPage() {
                 Object.values(HighestCompletedEducationLevel) as string[]
               )
                 .filter(
-                  (value) => value !== 'Certificate (less than two years)', // TODO: review to see if needs included for WJI grant reporting.
+                  (value) => value !== "Certificate (less than two years)", // TODO: review to see if needs included for WJI grant reporting.
                 )
                 .map((value) => ({ label: value, value }))}
               placeholder="Please select"
@@ -572,7 +572,7 @@ export default function CreateJobseekerProfileEducationPage() {
             <PillButton
               variant="outlined"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/showcase');
+                router.push("/edit-profile/jobseeker/showcase");
               }}
             >
               Previous

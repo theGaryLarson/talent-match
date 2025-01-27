@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Avatar } from '@mui/material';
+import { ChangeEvent, useEffect, useState } from "react";
+import { Avatar } from "@mui/material";
 interface Props {
   id: string;
   fileTypeText: string;
@@ -26,8 +26,8 @@ export default function AvatarUpload({
   apiPath,
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
-  const [fileSelected, setFileSelected] = useState('');
-  const [filePath, setFilePath] = useState('');
+  const [fileSelected, setFileSelected] = useState("");
+  const [filePath, setFilePath] = useState("");
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function AvatarUpload({
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null) {
       const file = event.target.files[0];
-      if (file.name !== '') {
+      if (file.name !== "") {
         setFileSelected(file.name);
       }
 
@@ -48,7 +48,7 @@ export default function AvatarUpload({
       if (file.size > maxSize) {
         // file is too large
         setFilesizeExceeded(true);
-        setUploadError('File size exceeded. Please use file less than 5MB.');
+        setUploadError("File size exceeded. Please use file less than 5MB.");
         return;
       } else setFilesizeExceeded(false); // file juuuust right
 
@@ -66,9 +66,9 @@ export default function AvatarUpload({
 
         // Make a POST request to the API route
         const response = await fetch(apiPath, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         });
@@ -80,29 +80,29 @@ export default function AvatarUpload({
           onImageUpload(result.imageUrl); // Return the image URL to the parent component
         } else {
           const errorData = await response.json();
-          setUploadError(errorData.error || 'Failed to upload image');
+          setUploadError(errorData.error || "Failed to upload image");
         }
       } catch (error) {
-        console.error('Error uploading image:', error);
-        setUploadError('Failed to upload image. Please try again.');
+        console.error("Error uploading image:", error);
+        setUploadError("Failed to upload image. Please try again.");
       }
     } else {
-      setFileSelected(''); // no file selected
-      if (filePath !== '') URL.revokeObjectURL(filePath);
+      setFileSelected(""); // no file selected
+      if (filePath !== "") URL.revokeObjectURL(filePath);
     }
   };
 
   let validFiletype = true;
-  if (fileSelected != '') {
+  if (fileSelected != "") {
     const fileType = fileSelected.substring(
-      fileSelected.lastIndexOf('.'),
+      fileSelected.lastIndexOf("."),
       fileSelected.length,
     );
-    validFiletype = accept.split(',').includes(fileType.toLowerCase());
+    validFiletype = accept.split(",").includes(fileType.toLowerCase());
   }
 
   const fileTypeTextPlusSizeLimit =
-    fileTypeText + ' (max. ' + maxSizeMB + ' MB)';
+    fileTypeText + " (max. " + maxSizeMB + " MB)";
 
   return (
     <div>
@@ -111,10 +111,10 @@ export default function AvatarUpload({
           src={filePath || initialImageUrl || undefined}
           alt="Uploaded Avatar"
           sx={{
-            width: '5rem',
-            height: '5rem',
+            width: "5rem",
+            height: "5rem",
             flexShrink: 0,
-            borderRadius: '50%',
+            borderRadius: "50%",
           }}
           data-testid="avatar-image"
         />
@@ -128,20 +128,20 @@ export default function AvatarUpload({
           disabled={disabled}
         />
         <div className="px-6">
-          {fileSelected == '' && (
+          {fileSelected == "" && (
             <p className="font-medium uppercase text-sky-400">Upload Image</p>
           )}
-          {fileSelected != '' && !filesizeExceeded && validFiletype && (
+          {fileSelected != "" && !filesizeExceeded && validFiletype && (
             <p className="font-medium uppercase text-gray-400">
               {fileSelected}
             </p>
           )}
-          {fileSelected != '' && !filesizeExceeded && !validFiletype && (
+          {fileSelected != "" && !filesizeExceeded && !validFiletype && (
             <p className="font-medium text-red-500">
               Unsupported file type: {fileSelected}
             </p>
           )}
-          {fileSelected != '' && filesizeExceeded && (
+          {fileSelected != "" && filesizeExceeded && (
             <p className="font-medium text-red-500">
               File is too large: {fileSelected}
             </p>

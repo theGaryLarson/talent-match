@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState } from "react";
 
 interface Props {
   children: React.ReactNode;
@@ -25,45 +25,45 @@ export default function SelectOptionsWithLabel({
   children,
   id,
   options,
-  className = '',
-  placeholder = '',
+  className = "",
+  placeholder = "",
   required = false,
   onChange,
   value,
   defaultValue,
   disabled = false,
 }: Props & (ManagedValue | DefaultValue)) {
-  const [internalValue, setInternalValue] = useState('');
+  const [internalValue, setInternalValue] = useState("");
 
   return (
-    <div className={'relative ' + className}>
+    <div className={"relative " + className}>
       <div>
         <select
           id={id}
           name={id}
           onChange={onChange ?? ((e) => setInternalValue(e.target.value))}
           value={
-            typeof defaultValue === 'undefined'
+            typeof defaultValue === "undefined"
               ? (value ?? internalValue)
               : undefined
           }
           defaultValue={
-            typeof defaultValue !== 'undefined' ? defaultValue : undefined
+            typeof defaultValue !== "undefined" ? defaultValue : undefined
           }
           className="border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
           required={required}
           disabled={disabled}
         >
-          {placeholder !== '' ? (
+          {placeholder !== "" ? (
             <option value="" disabled>
               {placeholder}
             </option>
           ) : (
-            ''
+            ""
           )}
           {options.map((item) => {
             return (
-              <option key={id + '-option-' + item.value} value={item.value}>
+              <option key={id + "-option-" + item.value} value={item.value}>
                 {item.label}
               </option>
             );

@@ -1,4 +1,4 @@
-import { SkillDTO } from '@/data/dtos/SkillDTO';
+import { SkillDTO } from "@/data/dtos/SkillDTO";
 
 export type JsIntroDTO = {
   email: string;
@@ -62,15 +62,15 @@ export type ProjectExpDTO = {
 // Updated to match WJI grant reporting data (do not modify)
 export enum HighestCompletedEducationLevel {
   // VocationalQualification = 'Vocational Qualification / Certification',
-  NoFormalEducation = 'Not yet completed High School',
-  GED = 'GED',
-  HighSchool = 'High School Diploma',
-  PostHighSchool = 'Some training or study post high school',
-  Certificate = 'Certificate (less than two years)',
+  NoFormalEducation = "Not yet completed High School",
+  GED = "GED",
+  HighSchool = "High School Diploma",
+  PostHighSchool = "Some training or study post high school",
+  Certificate = "Certificate (less than two years)",
   Associates = "Associates's Degree",
   Bachelors = "Bachelor's Degree",
   Masters = "Master's Degree",
-  Doctorate = 'Doctorate',
+  Doctorate = "Doctorate",
 }
 
 // Rank mapping for the enum
@@ -88,37 +88,37 @@ export const educationRank: Record<HighestCompletedEducationLevel, number> = {
 
 // included for WJI grant reporting (do not modify)
 export enum ProgramEnrollmentStatus {
-  Applied = 'Admitted, not yet enrolled',
-  Enrolled = 'Currently active in program',
-  Graduated = 'Graduated / Completed',
-  Withdrawn = 'Withdrawn / terminated',
+  Applied = "Admitted, not yet enrolled",
+  Enrolled = "Currently active in program",
+  Graduated = "Graduated / Completed",
+  Withdrawn = "Withdrawn / terminated",
 }
 export enum CollegeDegreeType {
   AssociatesDegree = "Associate's Degree",
   BachelorsDegree = "Bachelor's Degree",
   MastersDegree = "Master's Degree",
-  DoctoralDegree = 'Doctoral Degree',
+  DoctoralDegree = "Doctoral Degree",
 }
 
 export enum HighSchoolDegreeType {
-  None = 'None',
-  HighSchool = 'Diploma',
-  GED = 'GED',
+  None = "None",
+  HighSchool = "Diploma",
+  GED = "GED",
 }
 
 export enum EducationLevel {
-  Unselected = '',
-  HighSchool = 'High School (K-12)', // TODO: should we change this to K12 ? This reflects options in the training provider data.
-  College = 'College',
-  TrainingProgram = 'Training Program / Bootcamp',
-  PreApprenticeship = 'Pre-Apprenticeship',
-  Other = 'Other',
+  Unselected = "",
+  HighSchool = "High School (K-12)", // TODO: should we change this to K12 ? This reflects options in the training provider data.
+  College = "College",
+  TrainingProgram = "Training Program / Bootcamp",
+  PreApprenticeship = "Pre-Apprenticeship",
+  Other = "Other",
 }
 
 export enum PreAEduSystem {
-  HighSchool = 'High School',
-  College = 'College',
-  Other = 'Other',
+  HighSchool = "High School",
+  College = "College",
+  Other = "Other",
 }
 
 export type JsEducationInfoDTO = {

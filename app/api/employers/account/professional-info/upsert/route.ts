@@ -1,14 +1,15 @@
-import { NextResponse } from 'next/server';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { PrismaClient } from "@prisma/client";
 import {
   CompanyInfoSummaryDTO,
-  PostEmployerWorkDTO, ReadAddressDTO,
+  PostEmployerWorkDTO,
+  ReadAddressDTO,
   ReadEmployerWorkDTO,
-} from '@/data/dtos/EmployerProfileCreationDTOs';
-import { v4 as uuidv4 } from 'uuid';
-import {devLog} from "@/app/lib/utils";
-import { auth } from '@/auth';
+} from "@/data/dtos/EmployerProfileCreationDTOs";
+import { v4 as uuidv4 } from "uuid";
+import { devLog } from "@/app/lib/utils";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
                     stateCode: true,
                     county: true,
                     zip: true,
-                  }
+                  },
                 },
               },
             },
@@ -71,7 +72,8 @@ export async function POST(request: Request) {
       },
     });
     devLog(upsertedEmployer);
-    const companyAddressExists = !!upsertedEmployer?.companies?.company_addresses?.[0]
+    const companyAddressExists =
+      !!upsertedEmployer?.companies?.company_addresses?.[0];
     const result: ReadEmployerWorkDTO & CompanyInfoSummaryDTO = {
       userId: upsertedEmployer.user_id,
       employerId: upsertedEmployer.employer_id,
@@ -81,19 +83,30 @@ export async function POST(request: Request) {
       companyName: upsertedEmployer?.companies?.company_name,
       isVerifiedCompany: upsertedEmployer.companies?.is_approved ?? false,
       isVerifiedEmployee: upsertedEmployer.is_verified_employee,
-      companyAddress: companyAddressExists ? {
-        addressId:
-          upsertedEmployer?.companies?.company_addresses[0].company_address_id,
-        city: upsertedEmployer?.companies?.company_addresses[0].locationData.city,
-        state: upsertedEmployer?.companies?.company_addresses[0].locationData.state,
-        stateCode: upsertedEmployer.companies?.company_addresses[0].locationData.stateCode,
-        zip: upsertedEmployer?.companies?.company_addresses[0].locationData.zip,
-        county: upsertedEmployer.companies?.company_addresses[0].locationData.county,
-      } as ReadAddressDTO : undefined,
+      companyAddress: companyAddressExists
+        ? ({
+            addressId:
+              upsertedEmployer?.companies?.company_addresses[0]
+                .company_address_id,
+            city: upsertedEmployer?.companies?.company_addresses[0].locationData
+              .city,
+            state:
+              upsertedEmployer?.companies?.company_addresses[0].locationData
+                .state,
+            stateCode:
+              upsertedEmployer.companies?.company_addresses[0].locationData
+                .stateCode,
+            zip: upsertedEmployer?.companies?.company_addresses[0].locationData
+              .zip,
+            county:
+              upsertedEmployer.companies?.company_addresses[0].locationData
+                .county,
+          } as ReadAddressDTO)
+        : undefined,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
-    console.error('Error upserting job seeker intro:', e.message);
+    console.error("Error upserting job seeker intro:", e.message);
     return NextResponse.json(
       {
         error: `Failed to upsert employer profession information.\n${e.message}`,

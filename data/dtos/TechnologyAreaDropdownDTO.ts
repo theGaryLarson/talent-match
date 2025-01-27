@@ -1,4 +1,4 @@
 export type TechnologyAreaDropdownDTO = {
-  id: string,
-  title: string
-}
+  id: string;
+  title: string;
+};

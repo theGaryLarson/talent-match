@@ -1,6 +1,6 @@
-const { DefaultAzureCredential } = require('@azure/identity');
-const { SecretClient } = require('@azure/keyvault-secrets');
-require('dotenv').config();
+const { DefaultAzureCredential } = require("@azure/identity");
+const { SecretClient } = require("@azure/keyvault-secrets");
+require("dotenv").config();
 
 const getSecret = async (secretName) => {
   const vaultName = process.env.KEY_VAULT_NAME;
@@ -24,12 +24,12 @@ const loadConfig = async () => {
   };
 
   // Fetch sensitive variables from Azure Key Vault
-  config.mssqlPassword = await getSecret('MSSQL_PASSWORD');
-  config.authSecret = await getSecret('AUTH_SECRET');
-  config.authGithubId = await getSecret('AUTH_GITHUB_ID');
-  config.authGithubSecret = await getSecret('AUTH_GITHUB_SECRET');
-  config.nextAuthSecret = await getSecret('NEXTAUTH_SECRET');
-  config.nextAuthSalt = await getSecret('NEXTAUTH_SALT');
+  config.mssqlPassword = await getSecret("MSSQL_PASSWORD");
+  config.authSecret = await getSecret("AUTH_SECRET");
+  config.authGithubId = await getSecret("AUTH_GITHUB_ID");
+  config.authGithubSecret = await getSecret("AUTH_GITHUB_SECRET");
+  config.nextAuthSecret = await getSecret("NEXTAUTH_SECRET");
+  config.nextAuthSalt = await getSecret("NEXTAUTH_SALT");
 
   // Construct connection strings with the sensitive information
   config.mssqlConnectionString = `mssql://SA:${config.mssqlPassword}@${config.mssqlHost}:${config.mssqlPort}/${config.mssqlDatabase}`;

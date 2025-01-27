@@ -1,11 +1,9 @@
 interface Props {
-  children: React.ReactNode,
-  className?: string,
+  children: React.ReactNode;
+  className?: string;
 }
 
-export default function DividerWithText({
-  children, className = ''
-}: Props){
+export default function DividerWithText({ children, className = "" }: Props) {
   return (
     <div className={"relative py-4 " + className}>
       <div className="absolute inset-0 flex items-center">

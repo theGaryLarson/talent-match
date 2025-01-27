@@ -11,7 +11,11 @@ export default function RegionSelect({
   region,
   handleRegionChange,
 }: {
-  regions: { cfa_aug2023july2024: string, cfa_msa: string, cfa_jobpostingsregionalbreakdownid: string }[];
+  regions: {
+    cfa_aug2023july2024: string;
+    cfa_msa: string;
+    cfa_jobpostingsregionalbreakdownid: string;
+  }[];
   region: string;
   handleRegionChange: (e: SelectChangeEvent) => void;
 }) {
@@ -25,7 +29,10 @@ export default function RegionSelect({
         onChange={handleRegionChange}
       >
         {regions.map((region) => (
-          <MenuItem key={region.cfa_jobpostingsregionalbreakdownid} value={region.cfa_jobpostingsregionalbreakdownid}>
+          <MenuItem
+            key={region.cfa_jobpostingsregionalbreakdownid}
+            value={region.cfa_jobpostingsregionalbreakdownid}
+          >
             {region.cfa_msa}
           </MenuItem>
         ))}

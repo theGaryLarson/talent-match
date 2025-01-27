@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import React, { MouseEvent, useOptimistic, startTransition } from 'react';
-import RoundedButton from '@/app/ui/components/RoundedButton';
-import { JobStatus } from '@/app/lib/jobseekerJobTracking';
-import { useSession } from 'next-auth/react';
-import { redirect, usePathname } from 'next/navigation';
+import React, { MouseEvent, useOptimistic, startTransition } from "react";
+import RoundedButton from "@/app/ui/components/RoundedButton";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
+import { useSession } from "next-auth/react";
+import { redirect, usePathname } from "next/navigation";
 
 interface Props {
   id: string;
   appliedStatus?: string;
 }
 
-export default function ApplyToJobButton({ id, appliedStatus = '' }: Props) {
+export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
   // Initial state based on appliedStatus
   const initialAppliedState =
     appliedStatus == JobStatus.Accepted ||
@@ -33,9 +33,9 @@ export default function ApplyToJobButton({ id, appliedStatus = '' }: Props) {
     if (!session?.data?.user) {
       const base = window.location.origin;
       const currentUrl = new URL(window.location.href);
-      const signInUrl = new URL('/signin', base);
+      const signInUrl = new URL("/signin", base);
       let callbackUrlValue = pathname;
-      signInUrl.searchParams.set('callbackUrl', callbackUrlValue);
+      signInUrl.searchParams.set("callbackUrl", callbackUrlValue);
       redirect(signInUrl.toString());
     }
     try {
@@ -45,18 +45,18 @@ export default function ApplyToJobButton({ id, appliedStatus = '' }: Props) {
         });
 
         const response = await fetch(`/api/joblistings/apply/${id}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
         if (!response.ok) {
-          console.log('error', response);
+          console.log("error", response);
           startTransition(() => {
             updateOptimisticHasApplied(false);
           });
-          throw new Error('Failed to update application status.');
+          throw new Error("Failed to update application status.");
         }
       } else {
         startTransition(() => {
@@ -64,9 +64,9 @@ export default function ApplyToJobButton({ id, appliedStatus = '' }: Props) {
         });
 
         const response = await fetch(`/api/joblistings/withdraw/${id}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
@@ -74,17 +74,17 @@ export default function ApplyToJobButton({ id, appliedStatus = '' }: Props) {
           startTransition(() => {
             updateOptimisticHasApplied(true);
           });
-          throw new Error('Failed to update application status');
+          throw new Error("Failed to update application status");
         }
       }
     } catch (error) {
-      console.error('Error updating application:', error);
+      console.error("Error updating application:", error);
     }
   };
 
   return (
     <RoundedButton
-      content={optimisticHasApplied ? 'Withdraw Application' : 'Apply'}
+      content={optimisticHasApplied ? "Withdraw Application" : "Apply"}
       invertColor
       snug
       newColors

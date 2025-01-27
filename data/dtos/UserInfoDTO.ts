@@ -22,11 +22,11 @@ export type CreateUserDTO = {
 };
 
 export enum Role {
-  ADMIN = 'ADMIN',
-  EDUCATOR = 'EDUCATOR',
-  EMPLOYER = 'EMPLOYER',
-  JOBSEEKER = 'JOBSEEKER',
-  GUEST = 'GUEST', // logged in with oauth but no role selected yet
-  VOLUNTEER = 'VOLUNTEER',
-  CASE_MANAGER = 'CASE_MANAGER',
+  ADMIN = "ADMIN",
+  EDUCATOR = "EDUCATOR",
+  EMPLOYER = "EMPLOYER",
+  JOBSEEKER = "JOBSEEKER",
+  GUEST = "GUEST", // logged in with oauth but no role selected yet
+  VOLUNTEER = "VOLUNTEER",
+  CASE_MANAGER = "CASE_MANAGER",
 }

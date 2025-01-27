@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import {addTrainingPartner, AddTrainingPartnerDTO} from "@/app/lib/admin/eduProviderPartner";
+import {
+  addTrainingPartner,
+  AddTrainingPartnerDTO,
+} from "@/app/lib/admin/eduProviderPartner";
 
 export async function POST(req: Request) {
   try {
@@ -14,6 +17,9 @@ export async function POST(req: Request) {
     return NextResponse.json(serializableResult, { status: 200 });
   } catch (error) {
     console.error("Error in POST handler:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

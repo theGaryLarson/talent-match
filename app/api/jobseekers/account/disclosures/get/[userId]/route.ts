@@ -1,11 +1,14 @@
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { jobseekers_private_data, PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
-import { JsDisclosuresDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { jobseekers_private_data, PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
+import { JsDisclosuresDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, props: { params: Promise<{ userId: string }> }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ userId: string }> },
+) {
   const params = await props.params;
   try {
     const userId = params.userId;
@@ -48,7 +51,7 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
       );
     }
 
-    if (user.role.toLowerCase().trim() !== 'jobseeker') {
+    if (user.role.toLowerCase().trim() !== "jobseeker") {
       return NextResponse.json(
         { success: false, error: `UserId is not related to a jobseeker` },
         { status: 404 },

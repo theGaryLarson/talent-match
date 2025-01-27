@@ -3,5 +3,5 @@ type ResendOptions = {
 };
 
 export const resendOptions: ResendOptions = {
-  from: process.env.EMAIL_SENDER as string
+  from: process.env.EMAIL_SENDER as string,
 };

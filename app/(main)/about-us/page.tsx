@@ -1,12 +1,12 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import RoundedButton from '@/app/ui/components/RoundedButton';
-import TrainingProviderMembers from '@/app/ui/components/TrainingProviderMembers';
+import Image from "next/image";
+import Link from "next/link";
+import RoundedButton from "@/app/ui/components/RoundedButton";
+import TrainingProviderMembers from "@/app/ui/components/TrainingProviderMembers";
 
 export const metadata = {
-  title: 'About Us',
+  title: "About Us",
   description:
-    'A Community Developing a Diverse, highly skilled Technology Workforce in Washington State',
+    "A Community Developing a Diverse, highly skilled Technology Workforce in Washington State",
 };
 export default function page() {
   return (
@@ -37,10 +37,10 @@ export default function page() {
           />
           <div className="space-y-[30.80px]">
             <p>
-              The{' '}
+              The{" "}
               <b className="font-semibold text-blue-text2">
                 Washington Tech Workforce Coalition
-              </b>{' '}
+              </b>{" "}
               is an open collaboration of organizations and individuals
               developing a diverse, highly skilled technology workforce
               throughout Washington state.
@@ -58,7 +58,7 @@ export default function page() {
             <p className="text-[44px] capitalize leading-[61.60px] text-gray-800">
               <b className="text-fluid-xl leading-fluid-xl block font-normal text-blue-text2">
                 1,000 job candidates
-              </b>{' '}
+              </b>{" "}
               in tech roles by 2025
             </p>
           </header>
@@ -72,7 +72,7 @@ export default function page() {
           <div className="space-y-[20px]">
             <header>
               <h2 className="font-semibold uppercase leading-snug">
-                Coalition{' '}
+                Coalition{" "}
                 <b className="text-fluid-lg leading-fluid-lg-snug block pt-[20px] font-normal capitalize text-blue-textdark2">
                   Strategy
                 </b>
@@ -338,8 +338,8 @@ export default function page() {
         </section>
       </section>
       <section className="mx-auto max-w-[1235px] font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-gray-800">
-          <TrainingProviderMembers></TrainingProviderMembers>
-        </section>
+        <TrainingProviderMembers></TrainingProviderMembers>
+      </section>
       <section
         className="box-border space-y-[68px] bg-white px-[1em] pb-[34px] pt-[54px] font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-gray-800"
         id="about-us-industry-committee"
@@ -348,30 +348,30 @@ export default function page() {
           <div className="space-y-[20px]">
             <header>
               <h2 className="font-semibold uppercase leading-snug">
-                Coalition{' '}
+                Coalition{" "}
                 <b className="text-fluid-lg leading-fluid-lg-snug block pt-[20px] font-normal capitalize text-blue-textdark2">
-                  <span className="inline laptop:block">Industry</span>{' '}
+                  <span className="inline laptop:block">Industry</span>{" "}
                   Committee
                 </b>
               </h2>
             </header>
             <p>
-              The Industry Committee, led by{' '}
+              The Industry Committee, led by{" "}
               <Link
                 href="https://www.computingforall.org/"
                 target="_blank"
                 className="underline"
               >
                 Computing for All
-              </Link>{' '}
-              in collaboration with the{' '}
+              </Link>{" "}
+              in collaboration with the{" "}
               <Link
                 href="https://www.washingtontechnology.org/"
                 target="_blank"
                 className="underline"
               >
                 Washington Technology Industry Association
-              </Link>{' '}
+              </Link>{" "}
               (WTIA), facilitates strategies for creating a robust talent
               pipeline and methods for employers to better recruit and
               assimilate new talent into their organization. The committee
@@ -417,9 +417,9 @@ export default function page() {
           <div className="space-y-[20px]">
             <header>
               <h2 className="font-semibold uppercase leading-snug">
-                Coalition{' '}
+                Coalition{" "}
                 <b className="text-fluid-lg leading-fluid-lg-snug block pt-[20px] font-normal capitalize text-blue-textdark2">
-                  <span className="inline laptop:block">Education</span>{' '}
+                  <span className="inline laptop:block">Education</span>{" "}
                   Committee
                 </b>
               </h2>

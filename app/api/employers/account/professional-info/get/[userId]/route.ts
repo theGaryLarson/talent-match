@@ -1,14 +1,17 @@
-import { NextResponse } from 'next/server';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { PrismaClient } from "@prisma/client";
 import {
   CompanyInfoSummaryDTO,
   ReadEmployerWorkDTO,
-} from '@/data/dtos/EmployerProfileCreationDTOs';
+} from "@/data/dtos/EmployerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, props: { params: Promise<{ userId: string }> }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ userId: string }> },
+) {
   const params = await props.params;
   try {
     const userId = params.userId;
@@ -44,7 +47,7 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
                     city: true,
                     state: true,
                     zip: true,
-                  }
+                  },
                 },
               },
             },
@@ -66,7 +69,7 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
           company_address_id: empWorkInfo.work_address_id,
         },
         include: {
-          locationData: true
+          locationData: true,
         },
       });
     }
@@ -81,18 +84,20 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
       companyName: empWorkInfo?.companies?.company_name,
       isVerifiedCompany: empWorkInfo?.companies?.is_approved ?? false,
       isVerifiedEmployee: empWorkInfo.is_verified_employee,
-      companyAddress: employerAddress ?  {
-        addressId: employerAddress.company_address_id,
-        city: employerAddress.locationData.city,
-        state: employerAddress.locationData.state,
-        stateCode: employerAddress.locationData.stateCode,
-        county: employerAddress.locationData.county,
-        zip: employerAddress.locationData.zip,
-      } : undefined,
+      companyAddress: employerAddress
+        ? {
+            addressId: employerAddress.company_address_id,
+            city: employerAddress.locationData.city,
+            state: employerAddress.locationData.state,
+            stateCode: employerAddress.locationData.stateCode,
+            county: employerAddress.locationData.county,
+            zip: employerAddress.locationData.zip,
+          }
+        : undefined,
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
-    console.error('Error upserting job seeker introduction:', e.message);
+    console.error("Error upserting job seeker introduction:", e.message);
     return NextResponse.json(
       {
         error: `Failed to upsert employer personal information.\n${e.message}`,

@@ -1,22 +1,22 @@
-'use client'
-import * as React from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
+"use client";
+import * as React from "react";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import ListItemText from "@mui/material/ListItemText";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
 
 interface Props<ValueType> {
-  id: string,
-  apiAutoloadRoute: string,
-  label: string,
-  value: string,
-  onChange: ((event: SelectChangeEvent<string>) => void),
-  placeholder?: string | undefined,
-  getOptionLabel: ((option: ValueType) => string),
-  [key: string]: any,
+  id: string;
+  apiAutoloadRoute: string;
+  label: string;
+  value: string;
+  onChange: (event: SelectChangeEvent<string>) => void;
+  placeholder?: string | undefined;
+  getOptionLabel: (option: ValueType) => string;
+  [key: string]: any;
 }
 
 export default function SingleSelectFilterAutoload<ValueType>({
@@ -57,9 +57,9 @@ export default function SingleSelectFilterAutoload<ValueType>({
         }
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
-    }
+    };
     autoload();
   }, []);
 
@@ -74,7 +74,9 @@ export default function SingleSelectFilterAutoload<ValueType>({
             top: "8px",
             left: "0px",
           }}
-        >{label}</InputLabel>
+        >
+          {label}
+        </InputLabel>
         <Select
           value={filter}
           onChange={handleChange}
@@ -84,9 +86,6 @@ export default function SingleSelectFilterAutoload<ValueType>({
             borderRadius: "9999px",
             height: "1.75rem",
           }}
-
-          
-
           MenuProps={{ PaperProps: { sx: { maxHeight: 500 } } }}
           {...rest}
         >
@@ -94,7 +93,11 @@ export default function SingleSelectFilterAutoload<ValueType>({
             <ListItemText primary="Any" />
           </MenuItem>
           {options.map((option) => (
-            <MenuItem dense={true} key={getOptionLabel(option)} value={getOptionLabel(option)}>
+            <MenuItem
+              dense={true}
+              key={getOptionLabel(option)}
+              value={getOptionLabel(option)}
+            >
               <ListItemText primary={getOptionLabel(option)} />
             </MenuItem>
           ))}

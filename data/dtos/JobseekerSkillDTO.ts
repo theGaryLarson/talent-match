@@ -1,5 +1,5 @@
-import {SkillDTO} from "@/data/dtos/SkillDTO";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
 
 export type JobseekerSkillDTO = {
-    skills: SkillDTO;
+  skills: SkillDTO;
 };

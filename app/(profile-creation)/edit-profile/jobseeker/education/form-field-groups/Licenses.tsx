@@ -1,18 +1,18 @@
-import React, { memo, useCallback } from 'react';
-import PillButton from '@/app/ui/components/PillButton';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import { v4 as uuidv4 } from 'uuid';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
-import { Close } from '@mui/icons-material';
+import React, { memo, useCallback } from "react";
+import PillButton from "@/app/ui/components/PillButton";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import { v4 as uuidv4 } from "uuid";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import { Close } from "@mui/icons-material";
 
-const classNamePrefix = 'profile-creation-license-group-';
-const classForName = 'name';
-const classIssuingOrg = 'issuingOrg';
-const classCredentialId = 'credentialId';
-const classCredentialUrl = 'credentialUrl';
-const classIssueDate = 'issueDate';
-const classExpirationDate = 'expiryDate';
+const classNamePrefix = "profile-creation-license-group-";
+const classForName = "name";
+const classIssuingOrg = "issuingOrg";
+const classCredentialId = "credentialId";
+const classCredentialUrl = "credentialUrl";
+const classIssueDate = "issueDate";
+const classExpirationDate = "expiryDate";
 
 export interface LicenseData {
   certId: string;
@@ -27,10 +27,10 @@ export interface LicenseData {
 export function defaultLicenseData() {
   return {
     certId: uuidv4(),
-    [classForName]: '',
-    [classIssuingOrg]: '',
-    [classCredentialId]: '',
-    [classCredentialUrl]: '',
+    [classForName]: "",
+    [classIssuingOrg]: "",
+    [classCredentialId]: "",
+    [classCredentialUrl]: "",
     [classIssueDate]: null,
     [classExpirationDate]: null,
   };
@@ -48,13 +48,13 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
       const changedLicenses: LicenseData[] = [...data];
       const updatedLicense = changedLicenses[index];
       updatedLicense[key] = value;
-      onUpdate('licenses', changedLicenses);
+      onUpdate("licenses", changedLicenses);
     },
     [data, onUpdate],
   );
 
   return data.map((license, index) => (
-    <fieldset key={classNamePrefix + license.certId + '-key'}>
+    <fieldset key={classNamePrefix + license.certId + "-key"}>
       <legend className="flex w-full justify-between">
         <h3>License or Certification {index + 1}</h3>
         <PillButton onClick={() => onRemove(license.certId)} variant="outlined">
@@ -63,7 +63,7 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
       </legend>
       <div className="profile-form-grid">
         <InputTextWithLabel
-          id={classNamePrefix + license.certId + '-' + classForName}
+          id={classNamePrefix + license.certId + "-" + classForName}
           className="w-full"
           placeholder="Example: Microsoft certified network associate security"
           onChange={(e) => handleChange(index, classForName, e.target.value)}
@@ -73,7 +73,7 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
           Name: *
         </InputTextWithLabel>
         <InputTextWithLabel
-          id={classNamePrefix + license.certId + '-' + classIssuingOrg}
+          id={classNamePrefix + license.certId + "-" + classIssuingOrg}
           className="w-full"
           placeholder="Example: Microsoft"
           onChange={(e) => handleChange(index, classIssuingOrg, e.target.value)}
@@ -85,7 +85,7 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
       </div>
       <div className="profile-form-grid md:grid-cols-2">
         <InputTextWithLabel
-          id={classNamePrefix + license.certId + '-' + classCredentialId}
+          id={classNamePrefix + license.certId + "-" + classCredentialId}
           onChange={(e) =>
             handleChange(index, classCredentialId, e.target.value)
           }
@@ -94,7 +94,7 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
           Credential ID:
         </InputTextWithLabel>
         <InputTextWithLabel
-          id={classNamePrefix + license.certId + '-' + classCredentialUrl}
+          id={classNamePrefix + license.certId + "-" + classCredentialUrl}
           onChange={(e) =>
             handleChange(index, classCredentialUrl, e.target.value)
           }
@@ -103,8 +103,8 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
           Credential URL:
         </InputTextWithLabel>
         <DatePicker
-          label={'Issue date'}
-          views={['month', 'year']}
+          label={"Issue date"}
+          views={["month", "year"]}
           value={license[classIssueDate] || null}
           onChange={(val) =>
             handleChange(
@@ -116,8 +116,8 @@ export default memo(function Licenses({ data, onRemove, onUpdate }: Props) {
           slotProps={{ textField: { fullWidth: true } }}
         />
         <DatePicker
-          label={'Expiration date'}
-          views={['month', 'year']}
+          label={"Expiration date"}
+          views={["month", "year"]}
           value={license[classExpirationDate] || null}
           onChange={(val) =>
             handleChange(

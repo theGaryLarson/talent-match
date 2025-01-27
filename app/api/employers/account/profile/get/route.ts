@@ -1,4 +1,4 @@
-import {getEmployer, getEmployerWithSession} from "@/app/lib/employer";
+import { getEmployer, getEmployerWithSession } from "@/app/lib/employer";
 import { CompanyEmployerCreationDTO } from "@/data/dtos/CompanyEmployerCreateionDTO";
 import { NextResponse } from "next/server";
 

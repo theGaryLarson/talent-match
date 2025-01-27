@@ -28,7 +28,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.js",
-    "scripts/seed.js"
-, "prisma/seed.js", "data/skills.js", "next-auth.d.ts",],
+    "scripts/seed.js",
+    "prisma/seed.js",
+    "data/skills.js",
+    "next-auth.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

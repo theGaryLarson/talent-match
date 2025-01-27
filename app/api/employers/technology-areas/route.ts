@@ -1,12 +1,9 @@
-import { getTechnologyAreas } from '@/app/lib/prisma';
+import { getTechnologyAreas } from "@/app/lib/prisma";
 
-export async function GET(req:Request) {
+export async function GET(req: Request) {
   const technologyAreas = await getTechnologyAreas();
 
-  return Response.json(
-    technologyAreas,
-    {
-      status: 200
-    }
-  );
+  return Response.json(technologyAreas, {
+    status: 200,
+  });
 }

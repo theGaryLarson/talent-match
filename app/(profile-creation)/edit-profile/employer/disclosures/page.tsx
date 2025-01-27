@@ -1,37 +1,37 @@
-'use client';
+"use client";
 
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import type { RootState } from '@/lib/employerStore';
-import { useSelector, useDispatch } from 'react-redux';
-import { EmployerState } from '@/lib/features/profileCreation/employerSlice';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import type { RootState } from "@/lib/employerStore";
+import { useSelector, useDispatch } from "react-redux";
+import { EmployerState } from "@/lib/features/profileCreation/employerSlice";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import PillButton from '@/app/ui/components/PillButton';
-import { Checkbox, Typography } from '@mui/material';
-import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
-import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
-import { CompanyAddressDropdownDTO } from '@/data/dtos/CompanyAddressDropdownDTO';
-import { useSession } from 'next-auth/react';
-import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
+import PillButton from "@/app/ui/components/PillButton";
+import { Checkbox, Typography } from "@mui/material";
+import SnackbarWithIcon from "@/app/ui/components/SnackbarWithIcon";
+import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
+import { CompanyAddressDropdownDTO } from "@/data/dtos/CompanyAddressDropdownDTO";
+import { useSession } from "next-auth/react";
+import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import {
   PostEmployerWorkDTO,
   ReadAddressDTO,
-} from '@/data/dtos/EmployerProfileCreationDTOs';
+} from "@/data/dtos/EmployerProfileCreationDTOs";
 import {
   setDisclosures,
   initialState,
-} from '@/lib/features/profileCreation/employerSlice';
+} from "@/lib/features/profileCreation/employerSlice";
 import {
   setPageDirty,
   setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import _ from 'lodash';
-import { devLog } from '@/app/lib/utils';
-import CircularProgress from '@mui/material/CircularProgress';
+} from "@/lib/features/profileCreation/saveSlice";
+import _ from "lodash";
+import { devLog } from "@/app/lib/utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const formNamePrefix = 'profile-creation-disclosures-';
+const formNamePrefix = "profile-creation-disclosures-";
 
 export default function CreateEmployerCompanyInfoDisclosurePage() {
   const disclosuresStoreData = useSelector(
@@ -53,15 +53,15 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   // const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
 
-  const [companyName, setCompanyName] = useState<string>('');
+  const [companyName, setCompanyName] = useState<string>("");
   const [workAddress, setWorkAddress] = useState<ReadAddressDTO>(null);
   const pathname = usePathname();
 
   useEffect(() => {
     const initializeFormFields = async () => {
-      console.log('session', session);
+      console.log("session", session);
       if (!session?.user?.companyId) return;
-      if (status === 'authenticated') {
+      if (status === "authenticated") {
         if (_.isEqual(disclosuresStoreData, initialState.disclosures)) {
           const { id, companyId, employerId } = session.user;
 
@@ -69,9 +69,9 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
             const response = await fetch(
               `/api/companies/name/get/${companyStoreData.companyId}`,
               {
-                method: 'GET',
+                method: "GET",
                 headers: {
-                  'Content-Type': 'application/json',
+                  "Content-Type": "application/json",
                 },
               },
             );
@@ -88,19 +88,19 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 ...disclosuresData,
                 userId: id!,
                 // companyId: result.companyId,
-                currentJobTitle: result.currentJobTitle ?? '',
-                linkedInUrl: result.linkedInUrl ?? '',
-                workAddressId: result.workAddressId ?? '',
+                currentJobTitle: result.currentJobTitle ?? "",
+                linkedInUrl: result.linkedInUrl ?? "",
+                workAddressId: result.workAddressId ?? "",
               });
             }
           } catch (error) {}
         } else {
-          console.log('fetching from redux store');
+          console.log("fetching from redux store");
         }
       }
     };
     initializeFormFields();
-    dispatch(setPageSaved('disclosures'));
+    dispatch(setPageSaved("disclosures"));
     devLog(disclosuresData);
   }, [session?.user?.id, pathname]);
 
@@ -109,13 +109,13 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   ) => {
     const { name, value } = e.target;
     devLog(name, value);
-    dispatch(setPageDirty('disclosures'));
+    dispatch(setPageDirty("disclosures"));
     const fieldName = name.substring(formNamePrefix.length);
 
     let updatedValue: any = value; // Declare a flexible type for the updated value
 
     // Check for specific fields to parse or cast values appropriately
-    if (fieldName === 'hasAgreedTerms') {
+    if (fieldName === "hasAgreedTerms") {
       updatedValue = value; // For checkboxes or boolean fields
     }
 
@@ -131,7 +131,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     e.preventDefault();
 
     if (!session || !session.user) {
-      console.error('User session is not available.');
+      console.error("User session is not available.");
       return;
     }
 
@@ -140,7 +140,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     //   hasAgreedTerms: termsAccepted,
     // }));
 
-    devLog('disclosuresData', disclosuresData);
+    devLog("disclosuresData", disclosuresData);
 
     // setOpen(true);
 
@@ -148,9 +148,9 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
       const response = await fetch(
         `/api/employers/account/disclosures/update/${session?.user?.employerId}`,
         {
-          method: 'PATCH',
+          method: "PATCH",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             ...disclosuresData,
@@ -160,9 +160,9 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
 
       if (response.ok) {
         const result = await response.json();
-        dispatch(setPageSaved('disclosures'));
+        dispatch(setPageSaved("disclosures"));
         dispatch(setDisclosures(disclosuresData));
-        router.push('/edit-profile/employer/congratulations');
+        router.push("/edit-profile/employer/congratulations");
       } else {
         const errorData = await response.json();
       }
@@ -173,7 +173,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     event?: React.SyntheticEvent | Event,
     reason?: string,
   ) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setOpen(false);
@@ -227,7 +227,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 Job Title *
               </InputTextWithLabel>
               <div>
-                {status === 'loading' ? (
+                {status === "loading" ? (
                   <CircularProgress /> // Show a loader until the session is loaded
                 ) : (
                   <SelectAutoload
@@ -286,7 +286,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
           <div className="profile-form-progress-btn-group">
             <PillButton
               className="custom-outline-btn"
-              onClick={() => router.push('/edit-profile/employer/company')}
+              onClick={() => router.push("/edit-profile/employer/company")}
             >
               Previous
             </PillButton>

@@ -1,4 +1,11 @@
-import { Card, CardContent, Typography, List, ListItem, ListItemText } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 
 export default function JobDescription({
   description,
@@ -6,10 +13,12 @@ export default function JobDescription({
   description: string;
 }) {
   const bulletPoints = description
-    .split('.')
-    .filter(point => point.trim() !== '')
+    .split(".")
+    .filter((point) => point.trim() !== "")
     .map((point, index) => (
-      <ListItem disableGutters key={index}><ListItemText>{point.trim()}</ListItemText></ListItem>
+      <ListItem disableGutters key={index}>
+        <ListItemText>{point.trim()}</ListItemText>
+      </ListItem>
     ));
 
   return (
@@ -18,9 +27,7 @@ export default function JobDescription({
         <Typography variant="h5" fontWeight="bold">
           Responsibilities
         </Typography>
-        <List disablePadding>
-          {bulletPoints}
-        </List>
+        <List disablePadding>{bulletPoints}</List>
       </CardContent>
     </Card>
   );

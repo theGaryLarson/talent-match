@@ -1,12 +1,12 @@
-import { NextResponse } from 'next/server';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { PrismaClient } from "@prisma/client";
 import {
   PostEmployerPersonalDTO,
   ReadEmployerPersonalDTO,
-} from '@/data/dtos/EmployerProfileCreationDTOs';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { auth } from '@/auth';
+} from "@/data/dtos/EmployerProfileCreationDTOs";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -17,11 +17,7 @@ export async function POST(request: Request) {
     const userId: string = session?.user.id!;
 
     const body: PostEmployerPersonalDTO = await request.json();
-    const {
-      firstName,
-      lastName,
-      photoUrl,
-    } = body;
+    const { firstName, lastName, photoUrl } = body;
 
     // const formattedPhone = formatPhoneE164(phoneCountryCode, phone);
     const upsertedUser = await prisma.user.upsert({
@@ -60,7 +56,7 @@ export async function POST(request: Request) {
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
-    console.error('Error upserting employer:', e.message);
+    console.error("Error upserting employer:", e.message);
     return NextResponse.json(
       {
         error: `Failed to upsert employer personal information.\n${e.message}`,

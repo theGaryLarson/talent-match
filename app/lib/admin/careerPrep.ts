@@ -1,16 +1,16 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from "@prisma/client";
 import {
   EducationLevel,
   HighestCompletedEducationLevel,
   ProgramEnrollmentStatus,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { CareerPrepTrack, PoolCategories } from '@/app/lib/poolAssignment';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { auth } from '@/auth';
-import { devLog } from '@/app/lib/utils';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { CareerPrepTrack, PoolCategories } from "@/app/lib/poolAssignment";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { auth } from "@/auth";
+import { devLog } from "@/app/lib/utils";
 import TransactionClient = Prisma.TransactionClient;
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { JobStatus } from '../jobseekerJobTracking';
+import { Role } from "@/data/dtos/UserInfoDTO";
+import { JobStatus } from "../jobseekerJobTracking";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -25,12 +25,12 @@ const prisma: PrismaClient = getPrismaClient();
  * - TwelvePlusMonths: More than 12 months to completion
  */
 export enum TimeUntilCompletion {
-  NA = 'N/A',
-  ZeroToThreeMonths = '0-3 months',
-  ThreeToSixMonths = '3-6 months',
-  SixToNineMonths = '6-9 months',
-  NineToTwelveMonths = '9-12 months',
-  TwelvePlusMonths = '12+ months',
+  NA = "N/A",
+  ZeroToThreeMonths = "0-3 months",
+  ThreeToSixMonths = "3-6 months",
+  SixToNineMonths = "6-9 months",
+  NineToTwelveMonths = "9-12 months",
+  TwelvePlusMonths = "12+ months",
 }
 
 /**
@@ -40,9 +40,9 @@ export enum TimeUntilCompletion {
  * - Obtained: Certificate has been obtained
  */
 export enum TechCertificateStatus {
-  NA = 'N/A',
-  InProgress = 'In Progress',
-  Obtained = 'Obtained',
+  NA = "N/A",
+  InProgress = "In Progress",
+  Obtained = "Obtained",
 }
 
 /**
@@ -50,15 +50,15 @@ export enum TechCertificateStatus {
  * @enum {string}
  */
 export enum CareerPrepStatus {
-  Applied = 'Applied', // submitting assessment will be Applied
-  CreatingPlan = 'Creating Plan',
-  PlanCreated = 'Plan Created',
-  MeetingScheduled = 'Meeting Scheduled',
-  MetCareerNavigator = 'Met Career Navigator',
-  Enrolled = 'Enrolled',
-  Completed = 'Completed',
-  Rejected = 'Rejected',
-  Withdrawn = 'Withdrawn', // additional option from what was given.
+  Applied = "Applied", // submitting assessment will be Applied
+  CreatingPlan = "Creating Plan",
+  PlanCreated = "Plan Created",
+  MeetingScheduled = "Meeting Scheduled",
+  MetCareerNavigator = "Met Career Navigator",
+  Enrolled = "Enrolled",
+  Completed = "Completed",
+  Rejected = "Rejected",
+  Withdrawn = "Withdrawn", // additional option from what was given.
 }
 
 /**
@@ -134,13 +134,13 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
     const data = await prisma.careerPrepAssessment.findMany({
       select: selectCareerPrepStudentCardView,
     });
-    devLog('career prep card view', data);
+    devLog("career prep card view", data);
     // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
     const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
       (item) => ({
         jobseekerId: item.jobseekerId,
-        firstName: item.Jobseeker?.users?.first_name || '',
-        lastName: item.Jobseeker?.users?.last_name || '',
+        firstName: item.Jobseeker?.users?.first_name || "",
+        lastName: item.Jobseeker?.users?.last_name || "",
         pronouns: item.pronouns,
         assignedCareerPrepTrack: item.CaseMgmt
           ?.AssignedCareerPrepTrack as CareerPrepTrack,
@@ -159,7 +159,7 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
     );
     return transformedData;
   } catch (e) {
-    console.error('Error fetching career prep students card view:', e);
+    console.error("Error fetching career prep students card view:", e);
     return null;
   } finally {
     prisma.$disconnect();
@@ -179,16 +179,18 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
           },
         },
       });
-      devLog('career prep card view', data);
+      devLog("career prep card view", data);
       // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
       const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
         (item) => ({
           jobseekerId: item.jobseekerId,
-          firstName: item.Jobseeker?.users?.first_name || '',
-          lastName: item.Jobseeker?.users?.last_name || '',
+          firstName: item.Jobseeker?.users?.first_name || "",
+          lastName: item.Jobseeker?.users?.last_name || "",
           pronouns: item.pronouns,
-          recommendedCareerPrepTrack: item.Jobseeker?.careerPrepTrackRecommendation as CareerPrepTrack,
-          assignedCareerPrepTrack: item.CaseMgmt?.AssignedCareerPrepTrack as CareerPrepTrack,
+          recommendedCareerPrepTrack: item.Jobseeker
+            ?.careerPrepTrackRecommendation as CareerPrepTrack,
+          assignedCareerPrepTrack: item.CaseMgmt
+            ?.AssignedCareerPrepTrack as CareerPrepTrack,
           careerPrepAssessmentDate: item.assessmentDate,
           careerPrepEnrollmentStatus: item.CaseMgmt
             ?.prepEnrollmentStatus as CareerPrepStatus,
@@ -202,7 +204,7 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
       );
       return transformedData;
     } catch (e) {
-      console.error('Error fetching career prep students card view:', e);
+      console.error("Error fetching career prep students card view:", e);
       return null;
     } finally {
       prisma.$disconnect();
@@ -233,12 +235,13 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
   const transformedData: CareerPrepJobseekerCardViewDTO[] =
     assessmentsWithoutCaseMgmt.map((item) => ({
       jobseekerId: item.jobseekerId,
-      firstName: item.Jobseeker?.users?.first_name || '',
-      lastName: item.Jobseeker?.users?.last_name || '',
+      firstName: item.Jobseeker?.users?.first_name || "",
+      lastName: item.Jobseeker?.users?.last_name || "",
       pronouns: item.pronouns,
       recommendedCareerPrepTrack: item.Jobseeker
         .careerPrepTrackRecommendation as CareerPrepTrack,
-      assignedCareerPrepTrack: item.CaseMgmt?.AssignedCareerPrepTrack as CareerPrepTrack,
+      assignedCareerPrepTrack: item.CaseMgmt
+        ?.AssignedCareerPrepTrack as CareerPrepTrack,
       careerPrepAssessmentDate: item.assessmentDate,
       careerPrepEnrollmentStatus: item.CaseMgmt
         ?.prepEnrollmentStatus as CareerPrepStatus,
@@ -275,26 +278,24 @@ export const selfAssignAsCaseManager = async (
     });
     return { success: true, status: 200 };
   } catch (e) {
-    console.error('failed to assign case manager', e);
+    console.error("failed to assign case manager", e);
     return { success: false, status: 500 };
   }
 };
 
-
-export const getAllCareerNavigators = async ()=>{
+export const getAllCareerNavigators = async () => {
   try {
-    let users = await prisma.user.findMany({select:{
-      email:true,
-      role:true,
-      first_name:true,
-      last_name:true
-    }})
-    return users.filter((user)=>user.role.includes(Role.CASE_MANAGER))
-  } catch (error) {
-    
-  }
-}
-
+    let users = await prisma.user.findMany({
+      select: {
+        email: true,
+        role: true,
+        first_name: true,
+        last_name: true,
+      },
+    });
+    return users.filter((user) => user.role.includes(Role.CASE_MANAGER));
+  } catch (error) {}
+};
 
 export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
   try {
@@ -311,21 +312,22 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
       },
       where: {
         jobseeker_id: jobseekerId,
-      }
+      },
     });
 
     if (!data) {
       return {
         success: false,
-        error: 'Career Prep student not found.',
+        error: "Career Prep student not found.",
         status: 404,
       };
     }
-    devLog('StudentDetailView', data);
+    devLog("StudentDetailView", data);
     const transformedData: CareerPrepJobseekerDetailViewDTO = {
       jobseekerId: data.jobseekerId,
       assessmentDate: data.assessmentDate.toISOString(),
-      recommendedCareerPrepTrack: jobseekerData?.careerPrepTrackRecommendation as CareerPrepTrack,
+      recommendedCareerPrepTrack:
+        jobseekerData?.careerPrepTrackRecommendation as CareerPrepTrack,
       assignedCareerPrepTrack: data.CaseMgmt
         ?.AssignedCareerPrepTrack as CareerPrepTrack,
       prepEnrollmentStatus: data.CaseMgmt
@@ -337,7 +339,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
       lastName: data.Jobseeker?.users?.last_name!,
       pronouns: data.pronouns,
       emailAddress: data.Jobseeker?.users.email!,
-      pathway: data?.interestPathway ?? '',
+      pathway: data?.interestPathway ?? "",
       education: data.Jobseeker
         ?.highest_level_of_study_completed as HighestCompletedEducationLevel,
       eduProviders: data.Jobseeker?.jobseeker_education.map((edData) => ({
@@ -350,18 +352,18 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
       technicalCertificates: data.Jobseeker?.certificates.map((cert) => ({
         name: cert.name,
       })),
-      portfolio: data.Jobseeker?.portfolio_url ?? '',
-      linkedin: data.Jobseeker?.linkedin_url ?? '',
+      portfolio: data.Jobseeker?.portfolio_url ?? "",
+      linkedin: data.Jobseeker?.linkedin_url ?? "",
       applicationExperience: data.experienceWithApplying,
       interviewExperience: data.experienceWithInterview,
       poolAssignment: data.Jobseeker?.assignedPool as PoolCategories,
     };
     return { success: true, data: transformedData };
   } catch (e) {
-    console.error('Unable to retrieve student detail view', e);
+    console.error("Unable to retrieve student detail view", e);
     return {
       success: false,
-      error: 'An unexpected error occurred',
+      error: "An unexpected error occurred",
       status: 500,
     };
   }
@@ -371,7 +373,7 @@ export const updateCareerPrepStudentDetailview = async (
   data: CareerPrepJobseekerDetailViewDTO,
 ) => {
   //TODO
-  console.log('This Needs to be written');
+  console.log("This Needs to be written");
 };
 
 export const updateAssignedTrack = async (
@@ -478,7 +480,7 @@ export const updateCareerPrepStatusCardView = async (
       expectedEndDate: studentStatus.prepExpectedEndDate,
     };
   } catch (e) {
-    console.error('Could not update student card view', e);
+    console.error("Could not update student card view", e);
     return null;
   } finally {
     prisma.$disconnect();
@@ -487,7 +489,7 @@ export const updateCareerPrepStatusCardView = async (
 
 export async function getCareerPrepStatus(jobseeker_id: string) {
   try {
-    if (jobseeker_id == '') return undefined;
+    if (jobseeker_id == "") return undefined;
     let result = await prisma.caseMgmt.findUnique({
       where: { jobseekerId: jobseeker_id },
       include: { CaseManager: true },
@@ -631,13 +633,13 @@ export type CreateNoteDTO = {
   jobseekerId: string;
   noteType: NoteType;
   noteContent: string;
-  updatedDate?:Date;
+  updatedDate?: Date;
 };
 export type UpdateNoteDTO = {
   noteId: string;
   noteType: NoteType;
   noteContent: string;
-  updatedDate?:Date;
+  updatedDate?: Date;
 };
 
 export type CategorizedNotes = {
@@ -676,7 +678,7 @@ export const getCareerPrepStudentNotes = async (
       },
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
   });
 
@@ -691,7 +693,7 @@ export const getCareerPrepStudentNotes = async (
     updatedAt: note.updatedAt.toISOString(),
     date: note.date ? note.date.toISOString() : null,
     authorName:
-      `${note.Author?.first_name || ''} ${note.Author?.last_name || ''}`.trim(),
+      `${note.Author?.first_name || ""} ${note.Author?.last_name || ""}`.trim(),
   }));
 
   const sortedNotes: CategorizedNotes = {
@@ -712,12 +714,12 @@ export const addCareerPrepStudentNotes = async (
   jobseekerId: string,
   noteContent: string,
   noteType: string,
-  updatedDate:Date
+  updatedDate: Date,
 ) => {
   const Session = await auth();
   try {
     if (Session?.user.id == undefined || Session.user.id == null) {
-      throw new Error('id was null or undefinded');
+      throw new Error("id was null or undefinded");
     }
 
     const result = await prisma.caseMgmtNotes.create({
@@ -740,12 +742,12 @@ export async function updateCareerPrepStudentNotes(
   noteId: string,
   noteContent: string,
   noteType: string,
-  updatedDate:Date
+  updatedDate: Date,
 ) {
   const Session = await auth();
   try {
     if (Session?.user.id == undefined || Session.user.id == null) {
-      throw new Error('id was null or undefinded');
+      throw new Error("id was null or undefinded");
     }
     const result = await prisma.caseMgmtNotes.update({
       where: {
@@ -777,9 +779,9 @@ export async function deleteCareerPrepStudentNotes(noteId: string) {
  * @enum {string}
  */
 export enum NoteType {
-  GENERAL = 'General', // for general purpose
-  MEETING = 'Meeting', // associated with meetings
-  FOLLOWUP = 'Follow-up', // communication notes
+  GENERAL = "General", // for general purpose
+  MEETING = "Meeting", // associated with meetings
+  FOLLOWUP = "Follow-up", // communication notes
 }
 
 /**
@@ -887,10 +889,10 @@ export const submitCareerPrepAssessmentWithSession = async (
   const session = await auth();
   const jobseekerId = session?.user.jobseekerId;
   if (!jobseekerId) {
-    console.error('No jobseeker id was provided from session data...');
+    console.error("No jobseeker id was provided from session data...");
     return null;
   }
-  devLog('DTO', data);
+  devLog("DTO", data);
   await submitCareerPrepAssessment(jobseekerId, data);
   return { success: true, status: 200 };
 };
@@ -934,35 +936,36 @@ export const submitCareerPrepAssessment = async (
         timeout: 10000, // Timeout in milliseconds (e.g., 10000 ms = 10 seconds)
       },
     );
-    devLog('result', result);
+    devLog("result", result);
     return { success: true, status: 200 };
   } catch (e: any) {
-    console.error('Failed to submit Career Prep Assessment records', e.message);
+    console.error("Failed to submit Career Prep Assessment records", e.message);
     return { success: false, status: 500 };
   }
 };
 /**
- * 
- * @param jobseekerId 
- * @returns 
+ *
+ * @param jobseekerId
+ * @returns
  */
-export const getCareerPrepAssessment = async (jobseekerId: string) =>{
-//todo: add find on careerprepAssesmert
+export const getCareerPrepAssessment = async (jobseekerId: string) => {
+  //todo: add find on careerprepAssesmert
   try {
-    const result = await prisma.careerPrepAssessment.findUnique({where:{jobseekerId:jobseekerId}, include:{
-      CybersecurityRating:true,
-      DataAnalyticsRating:true,
-      ITCloudRating:true,
-      SoftwareDevRating:true,
-      DurableSkillsRating:true,
-      BrandingRating:true
-    }})
-    console.log("assess:",result)
-    return result
-  } catch (error) {
-    
-  }
-}
+    const result = await prisma.careerPrepAssessment.findUnique({
+      where: { jobseekerId: jobseekerId },
+      include: {
+        CybersecurityRating: true,
+        DataAnalyticsRating: true,
+        ITCloudRating: true,
+        SoftwareDevRating: true,
+        DurableSkillsRating: true,
+        BrandingRating: true,
+      },
+    });
+    console.log("assess:", result);
+    return result;
+  } catch (error) {}
+};
 /**
  * Submits a career preparation skills assessment with session data.
  *
@@ -974,10 +977,10 @@ export const submitCareerPrepEnrollment = async (
   const session = await auth();
   const jobseekerId = session?.user.jobseekerId;
   if (!jobseekerId) {
-    console.error('No jobseeker id was provided from session data...');
+    console.error("No jobseeker id was provided from session data...");
     return null;
   }
-  devLog('DTO', data);
+  devLog("DTO", data);
   try {
     const result = await prisma.$transaction(
       async (prisma) => {
@@ -996,10 +999,10 @@ export const submitCareerPrepEnrollment = async (
         timeout: 10000, // Timeout in milliseconds (e.g., 10000 ms = 10 seconds)
       },
     );
-    devLog('result', result);
+    devLog("result", result);
     return { success: true, status: 200 };
   } catch (e: any) {
-    console.error('Failed to submit Career Prep Enrollment records', e.message);
+    console.error("Failed to submit Career Prep Enrollment records", e.message);
     return { success: false, status: 500 };
   }
 };
@@ -1045,7 +1048,7 @@ const upsertUnassignedCaseMgmtRecord = async (
     });
     return { success: true, status: 200 };
   } catch (e) {
-    console.error('Failed to upsert Case Management record', e);
+    console.error("Failed to upsert Case Management record", e);
     return { success: false, status: 500 };
   }
 };
@@ -1144,7 +1147,7 @@ const upsertBrandRatings = async (
     };
     return { success: true, status: 200 };
   } catch (e) {
-    console.error('Failed to submit Professional Brand Ratings', e);
+    console.error("Failed to submit Professional Brand Ratings", e);
     return { success: false, status: 500 };
   }
 };
@@ -1199,7 +1202,7 @@ const upsertCareerPrepAssessment = async (
 const upsertDurableSkillRatings = async (
   prisma: TransactionClient,
   jobseekerId: string,
-  softSkills: CareerPrepSkillsAssessmentDTO['durableSkills'],
+  softSkills: CareerPrepSkillsAssessmentDTO["durableSkills"],
 ): Promise<{ success: boolean; status: number }> => {
   try {
     const updatedDurableSkills = await prisma.durableSkillsRating.upsert({
@@ -1283,7 +1286,7 @@ const upsertDurableSkillRatings = async (
 
     return { success: true, status: 200 };
   } catch (e) {
-    console.error('Error in upsertDurableSkills:', e);
+    console.error("Error in upsertDurableSkills:", e);
     return { success: false, status: 500 };
   }
 };
@@ -1296,7 +1299,7 @@ const upsertDurableSkillRatings = async (
 const upsertPathwayRatings = async (
   prisma: TransactionClient,
   jobseekerId: string,
-  techAssessment: CareerPrepSkillsAssessmentDTO['technicalSelfAssessment'],
+  techAssessment: CareerPrepSkillsAssessmentDTO["technicalSelfAssessment"],
 ): Promise<{ success: boolean; status: number }> => {
   switch (techAssessment.interestPathway) {
     case CareerPrepPathways.DATA_ANALYTICS:
@@ -1478,7 +1481,7 @@ const updateCareerPrepEnrollment = async (
 
     return { success: true, status: 200 };
   } catch (e) {
-    console.error('Error in upsertDurableSkills:', e);
+    console.error("Error in upsertDurableSkills:", e);
     return { success: false, status: 500 };
   }
 };
@@ -1689,10 +1692,10 @@ export const getBrandingRatings = async (
 
 // Career Prep Pathways are a subset of enum EduProviderPathways
 export enum CareerPrepPathways {
-  SOFTWARE_DEVELOPER = 'Software Developer',
-  IT_CLOUD_SUPPORT = 'IT & Cloud Support',
-  CYBERSECURITY = 'Cybersecurity',
-  DATA_ANALYTICS = 'Data Analytics',
+  SOFTWARE_DEVELOPER = "Software Developer",
+  IT_CLOUD_SUPPORT = "IT & Cloud Support",
+  CYBERSECURITY = "Cybersecurity",
+  DATA_ANALYTICS = "Data Analytics",
 }
 
 // Define specific DTOs for skill categories
@@ -1817,7 +1820,7 @@ export function getLabel<T extends number | string>(
   score: T,
   labels: Record<T, string>,
 ): string {
-  return labels[score] || 'Unknown';
+  return labels[score] || "Unknown";
 }
 
 // Enum for agreement levels
@@ -1830,11 +1833,11 @@ export enum AgreementLevel {
 }
 
 export const AgreementLevelLabels: Record<AgreementLevel, string> = {
-  [AgreementLevel.StronglyDisagree]: 'Strongly Disagree',
-  [AgreementLevel.Disagree]: 'Disagree',
-  [AgreementLevel.Neutral]: 'Neutral',
-  [AgreementLevel.Agree]: 'Agree',
-  [AgreementLevel.StronglyAgree]: 'Strongly Agree',
+  [AgreementLevel.StronglyDisagree]: "Strongly Disagree",
+  [AgreementLevel.Disagree]: "Disagree",
+  [AgreementLevel.Neutral]: "Neutral",
+  [AgreementLevel.Agree]: "Agree",
+  [AgreementLevel.StronglyAgree]: "Strongly Agree",
 };
 
 // Enum for skill proficiency levels
@@ -1847,11 +1850,11 @@ export enum SkillProficiency {
 }
 
 export const SkillProficiencyLabels: Record<SkillProficiency, string> = {
-  [SkillProficiency.NotProficient]: 'Not Proficient',
-  [SkillProficiency.Novice]: 'Novice',
-  [SkillProficiency.Beginner]: 'Beginner',
-  [SkillProficiency.Competent]: 'Competent',
-  [SkillProficiency.Proficient]: 'Proficient',
+  [SkillProficiency.NotProficient]: "Not Proficient",
+  [SkillProficiency.Novice]: "Novice",
+  [SkillProficiency.Beginner]: "Beginner",
+  [SkillProficiency.Competent]: "Competent",
+  [SkillProficiency.Proficient]: "Proficient",
 };
 
 // Enum for durable skill levels
@@ -1865,11 +1868,11 @@ export enum SkillLevel {
 
 // Label mapping for user-friendly display
 export const SkillLevelLabels: Record<SkillLevel, string> = {
-  [SkillLevel.NeedsImprovement]: 'Needs Improvement',
-  [SkillLevel.Developing]: 'Developing',
-  [SkillLevel.Fair]: 'Fair',
-  [SkillLevel.Good]: 'Good',
-  [SkillLevel.Exceptional]: 'Exceptional',
+  [SkillLevel.NeedsImprovement]: "Needs Improvement",
+  [SkillLevel.Developing]: "Developing",
+  [SkillLevel.Fair]: "Fair",
+  [SkillLevel.Good]: "Good",
+  [SkillLevel.Exceptional]: "Exceptional",
 };
 
 export interface CreateMeetingDTO {
@@ -1897,7 +1900,7 @@ export async function addMeeting(params: CreateMeetingDTO) {
 }
 
 export async function getMeetingByJobSeeker(jobseekerId: string) {
-  if (jobseekerId == '') {
+  if (jobseekerId == "") {
     return [];
   }
   try {
@@ -1913,15 +1916,18 @@ export async function getMeetingByJobSeeker(jobseekerId: string) {
   }
 }
 
-
-export async function updateJobStatus(newStatus:JobStatus, joinTableId:string) {
-    try {
-      return await prisma.jobseekerJobPosting.update({where:{
-          id:joinTableId
+export async function updateJobStatus(
+  newStatus: JobStatus,
+  joinTableId: string,
+) {
+  try {
+    return await prisma.jobseekerJobPosting.update({
+      where: {
+        id: joinTableId,
       },
-    data:{
-      jobStatus:newStatus
-    }})
-    } catch (error) {
-    }
+      data: {
+        jobStatus: newStatus,
+      },
+    });
+  } catch (error) {}
 }

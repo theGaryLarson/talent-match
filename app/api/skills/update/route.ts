@@ -1,6 +1,6 @@
-import { adminUpdateSkill } from '@/app/lib/admin/skill';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { NextResponse } from 'next/server';
+import { adminUpdateSkill } from "@/app/lib/admin/skill";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
   const body: SkillDTO = await req.json();

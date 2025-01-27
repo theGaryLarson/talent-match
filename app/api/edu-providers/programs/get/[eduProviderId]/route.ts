@@ -1,13 +1,16 @@
-import { NextResponse } from 'next/server'; // Adjust imports based on your framework
+import { NextResponse } from "next/server"; // Adjust imports based on your framework
 import { getProviderProgramCardView } from "@/app/lib/eduProviders";
-export async function GET(request: Request, props: { params: Promise<{ eduProviderId: string }> }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ eduProviderId: string }> },
+) {
   const params = await props.params;
-  const  eduProviderId = params.eduProviderId;
+  const eduProviderId = params.eduProviderId;
 
   if (!eduProviderId) {
     return NextResponse.json(
-      { error: 'eduProviderId is required' },
-      { status: 400 }
+      { error: "eduProviderId is required" },
+      { status: 400 },
     );
   }
 
@@ -16,17 +19,17 @@ export async function GET(request: Request, props: { params: Promise<{ eduProvid
 
     if (!providerPrograms) {
       return NextResponse.json(
-        { error: 'Training provider programs not found.' },
-        { status: 404 }
+        { error: "Training provider programs not found." },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(providerPrograms, { status: 200 });
   } catch (error) {
-    console.error('Error fetching training provider programs:', error);
+    console.error("Error fetching training provider programs:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }
