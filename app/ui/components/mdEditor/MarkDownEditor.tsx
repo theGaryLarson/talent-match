@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
 import { useQuill } from 'react-quilljs';
 //https://github.com/gtgalone/react-quilljs#readme
@@ -11,6 +11,8 @@ import { CreateNoteDTO, NoteType, UpdateNoteDTO } from '@/app/lib/admin/careerPr
 // or import 'quill/dist/quill.bubble.css'; // Add css for bubble theme
 export default function MarkDownEditor (props:{noteType:NoteType, jobseekerId:string, noteid?:string, starterContent?:string}){
     const { quill, quillRef } = useQuill();
+    const now = new Date()
+    const [updateDate, setUpdateDate] = useState<string>(`${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${(now.getDate()).toString().padStart(2,'0')}`)
     const router = useRouter();
     React.useEffect(() => {
       if (quill) {
@@ -33,7 +35,8 @@ export default function MarkDownEditor (props:{noteType:NoteType, jobseekerId:st
         const req:CreateNoteDTO = {
           jobseekerId: props.jobseekerId,
           noteType: props.noteType,
-          noteContent: content ??''
+          noteContent: content ??'',
+          updatedDate: updateDate?new Date(updateDate):undefined,
         }
         try {
           const response = await fetch('/api/admin/career-prep/add-student-notes', {//still needs backend api
@@ -71,7 +74,8 @@ export default function MarkDownEditor (props:{noteType:NoteType, jobseekerId:st
         const req:UpdateNoteDTO = {
           noteId: props.noteid??'',
           noteType: props.noteType,
-          noteContent: content ??''
+          noteContent: content ??'',
+          updatedDate: new Date(updateDate)
         }
         try {
           // if(props.setEdit == undefined){
@@ -97,9 +101,10 @@ export default function MarkDownEditor (props:{noteType:NoteType, jobseekerId:st
         }
     }
     return (
-        <div className='h-[525px]'>
+        <div className='h-[625px]'>
       <div  className='w-[650px] h-[400px]'>
         <div ref={quillRef} />
+        <input type="date" className='w-full' value={updateDate} onChange={(e)=>{setUpdateDate(e.target.value)}} id='update' name='update'/><br/>
         {props.noteid?
         <>
         <button className='border w-[325px] h-[60px] bg-gray-200' onClick={deleteNote}>Delete Note</button>
@@ -108,7 +113,7 @@ export default function MarkDownEditor (props:{noteType:NoteType, jobseekerId:st
         :
         <>
         <button className='border w-[325px] h-[60px] bg-gray-200' onClick={ClearNote}>Clear Note</button>
-        <button className='border w-[325px] h-[60px] bg-blue-background text-white' onClick={handleSubmit}>Save</button>
+        <button className='border w-[325px] h-[60px] bg-blue-background text-white' onClick={handleSubmit}>Send</button>
         </>}
       </div>
       </div>

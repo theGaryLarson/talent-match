@@ -3,5 +3,5 @@ import { NextResponse } from "next/server";
 //
 export async function POST(req:Request){
     const body:UpdateNoteDTO = await req.json()
-    return NextResponse.json(await updateCareerPrepStudentNotes(body.noteId,body.noteContent,body.noteType,));
+    return NextResponse.json(await updateCareerPrepStudentNotes(body.noteId,body.noteContent,body.noteType,body.updatedDate?body.updatedDate:new Date()));
 }

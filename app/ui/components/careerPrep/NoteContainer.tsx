@@ -27,7 +27,8 @@ export default function NoteContainer(params:{noteType:NoteType, jsId:string, no
             />
     <div className="h-[525px] overflow-auto border">
         <button className='border w-[600px] h-[60px] bg-blue-background text-white' onClick={NewNote}>New Note <AddOutlined/></button>
-        {params.notes.map((n)=><NoteCard UpdateSelectedId={handleNoteSelection} key={n.id} {...n}/>)}
+        {params.notes.sort((a,b)=>new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+        .map((n)=><NoteCard UpdateSelectedId={handleNoteSelection} key={n.id} {...n}/>)}
     </div>
         
 </div>

@@ -6,6 +6,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import ArrowDropUpOutlinedIcon from '@mui/icons-material/ArrowDropUpOutlined';
 import { useState } from "react";
+import { Button } from "@mui/material";
 export default function NoteCard(props:NoteDTO&{UpdateSelectedId:(a:string, b:string)=> void}){
     const router = useRouter();
     const [preview, setPreview] = useState<boolean>(false);
@@ -26,8 +27,8 @@ export default function NoteCard(props:NoteDTO&{UpdateSelectedId:(a:string, b:st
           <span className="flex items-center justify-between">
             <h3 className="text-sm text-gray-600 cursor-pointer hover:text-black" onClick={()=>setPreview(!preview)}>Posted: {props.updatedAt} {preview?<ArrowDropUpOutlinedIcon/>:<ArrowDropDownOutlinedIcon/>}</h3>
             <span className="flex gap-3 px-3">
-            <button onClick={deleteNote}><DeleteForeverOutlinedIcon/>Delete</button>
-            <button onClick={toggleEditMode}><EditOutlinedIcon/>Edit</button>
+              <Button startIcon={<DeleteForeverOutlinedIcon/>} color="error" onClick={deleteNote}>Delete</Button>
+              <Button startIcon={<EditOutlinedIcon/>} onClick={toggleEditMode}>Edit</Button>
             </span>
             </span>
             <hr/>
