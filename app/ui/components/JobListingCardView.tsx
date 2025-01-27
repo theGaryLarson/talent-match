@@ -5,9 +5,8 @@ import Skills from './Skills';
 import { useSession } from 'next-auth/react';
 import { Role } from '@/data/dtos/UserInfoDTO';
 import Bookmark from './Bookmark';
-import { Button } from 'flowbite-react';
-// import { RedirectType, usePathname, useRouter, useSearchParams } from 'next/navigation';
-// import JobListingModalView from './JobListingModalView';
+import PillButton from '@/app/ui/components/PillButton';
+('next/navigation');
 import { SkillDTO } from '@/data/dtos/SkillDTO';
 import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
 import { Chip, Stack } from '@mui/material';
@@ -35,7 +34,11 @@ export default function JobListingCardView({
   const description: string = joblisting?.job_description ?? '';
   const id: string = joblisting?.job_posting_id ?? '';
   const location: string =
-    joblisting?.location + ', ' + joblisting?.company_addresses?.locationData?.city + ', ' + joblisting?.zip;
+    joblisting?.location +
+    ', ' +
+    joblisting?.company_addresses?.locationData?.city +
+    ', ' +
+    joblisting?.zip;
 
   // const [openModal, setOpenModal] = useState(false);
 
@@ -93,14 +96,14 @@ export default function JobListingCardView({
           {/* view and bookmark */}
           <div className="flex flex-col">
             <div className="h-min w-max">
-              <Button
+              <PillButton
                 // onClick={() => handleModalChange(true)}
                 href={`/services/joblistings/${joblisting.job_posting_id}`}
                 target="_blank"
-                className="inline-block w-fit rounded-full border-2 border-cyan-600 bg-white px-2 py-2 text-sm text-cyan-600 hover:bg-gray-200 tablet:px-4 tablet:text-base laptop:px-6 laptop:text-lg"
+                variant="outlined"
               >
                 <strong>View Job</strong>
-              </Button>
+              </PillButton>
             </div>
             <div className="mr-2 mt-2 flex flex-row place-self-end text-cyan-600">
               {isJobseeker ? (
@@ -136,16 +139,28 @@ export default function JobListingCardView({
           </div>
 
           {/* employment type, salary, and job status */}
-          <Stack direction={'row'} sx={{justifyContent: 'space-between'}}>
+          <Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
             <div>
-            <h4 className="mt-2 text-sm italic text-slate-400">
-              {employment_type}
-            </h4>
-            <h4 className="mt-2 text-sm italic text-slate-400">
-            {salary_range}
-            </h4>
+              <h4 className="mt-2 text-sm italic text-slate-400">
+                {employment_type}
+              </h4>
+              <h4 className="mt-2 text-sm italic text-slate-400">
+                {salary_range}
+              </h4>
             </div>
-            {isJobseeker && <Chip variant='outlined' color='primary' sx={{alignSelf: 'end'}} label={(joblisting.jobStatus == undefined || joblisting.jobStatus.toString() == '') ? 'Not Applied' : joblisting.jobStatus} />}
+            {isJobseeker && (
+              <Chip
+                variant="outlined"
+                color="primary"
+                sx={{ alignSelf: 'end' }}
+                label={
+                  joblisting.jobStatus == undefined ||
+                  joblisting.jobStatus.toString() == ''
+                    ? 'Not Applied'
+                    : joblisting.jobStatus
+                }
+              />
+            )}
           </Stack>
         </div>
       </div>

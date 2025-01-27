@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
 import { signIn, auth, providerMap } from '@/auth';
-import { Button } from 'flowbite-react';
+import { Button } from '@mui/material';
 import Image from 'next/image';
 
 export default async function SignInPage({
@@ -42,16 +42,40 @@ export default async function SignInPage({
             >
               <Button
                 type="submit"
-                className="w-full justify-start border border-[#1E2432]/[.23] bg-transparent focus:bg-[#00809E]/[.23] focus:ring-0 active:bg-[#00809E]/[.23] enabled:hover:bg-[#00809E]/[.23]"
+                fullWidth
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  border: '1px solid rgba(30, 36, 50, 0.23)',
+                  textTransform: 'none',
+                  padding: '0.5rem',
+                  backgroundColor: 'transparent',
+                  '&:focus': {
+                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
+                    boxShadow: 'none',
+                  },
+                  '&:active': {
+                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
+                  },
+                  '&:hover:enabled': {
+                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
+                  },
+                }}
               >
                 <Image
                   src={`/images/signup/oauth_logos/${provider.name}-mark.svg`}
                   width={20}
                   height={20}
                   alt="Green checkmark"
-                  className="mr-2 inline"
+                  style={{
+                    marginLeft: '0.5rem',
+                    marginRight: '0.5rem',
+                    display: 'inline',
+                  }}
                 />
-                <span className="text-black">Sign in with {provider.name}</span>
+                <span style={{ color: '#000000' }}>
+                  Sign in with {provider.name}
+                </span>{' '}
               </Button>
             </form>
           ))}

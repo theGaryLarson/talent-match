@@ -9,7 +9,7 @@ import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
 import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
 import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import { Button, Progress } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { useSession } from 'next-auth/react';
 import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
@@ -24,7 +24,7 @@ import {
 } from '@/lib/features/profileCreation/saveSlice';
 import _ from 'lodash';
 import { devLog } from '@/app/lib/utils';
-import {ReadEmployerRecordDTO} from "@/app/lib/employer";
+import { ReadEmployerRecordDTO } from '@/app/lib/employer';
 
 const formNamePrefix = 'profile-creation-company-mission-';
 
@@ -35,8 +35,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
   const [missionData, setMissionData] = useState<PostEmployerMissionDTO>({
     ...missionStoreData,
   });
-  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>()
-
+  const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>();
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -45,14 +44,15 @@ export default function CreateEmployerCompanyInfoMissionPage() {
   const updateSessionProperties = useUpdateSession();
 
   // get employers.is_verified_employee
-  useEffect(()=>{
-    fetch('/api/employers/account/profile/get').then((res)=>{
-      return res.json();
-    }).then((jsonData)=>{
-      setEmployerInfo(jsonData)
-    });
-
-  }, [])
+  useEffect(() => {
+    fetch('/api/employers/account/profile/get')
+      .then((res) => {
+        return res.json();
+      })
+      .then((jsonData) => {
+        setEmployerInfo(jsonData);
+      });
+  }, []);
 
   useEffect(() => {
     const initializeFormFields = async () => {
@@ -60,7 +60,6 @@ export default function CreateEmployerCompanyInfoMissionPage() {
       if (!session?.user.id) return;
       if (status === 'authenticated') {
         if (_.isEqual(missionStoreData, initialState.mission)) {
-
           try {
             const response = await fetch(
               `/api/companies/mission/get/${session.user.companyId}`,
@@ -166,16 +165,13 @@ export default function CreateEmployerCompanyInfoMissionPage() {
             </fieldset>
           </div>
           <div className="profile-form-progress-btn-group">
-            <Button
-              pill
+            <PillButton
               className="custom-outline-btn"
               onClick={() => router.push('/edit-profile/employer/about')}
             >
               Previous
-            </Button>
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            </PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

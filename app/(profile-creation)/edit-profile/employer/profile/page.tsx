@@ -13,7 +13,7 @@ import type { RootState } from '@/lib/employerStore';
 import { useSelector, useDispatch } from 'react-redux';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 
-import { Button, Progress } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import { Typography } from '@mui/material';
 import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
 import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
@@ -60,11 +60,13 @@ export default function CreateEmployerProfilePage() {
   const [companyExists, setCompanyExists] = useState<{
     value: boolean;
   }>({ value: true });
-  const [newCompany, setNewCompany] = useState<CompanyEmployerCreationDTO>({companyName: '', yearFounded: undefined});
+  const [newCompany, setNewCompany] = useState<CompanyEmployerCreationDTO>({
+    companyName: '',
+    yearFounded: undefined,
+  });
   const [yearFounded, setYearFounded] = useState<Dayjs | null>(
-    newCompany.yearFounded ? dayjs(newCompany.yearFounded) : null
+    newCompany.yearFounded ? dayjs(newCompany.yearFounded) : null,
   );
-
 
   const profileStoreData = useSelector(
     (state: RootState) => state.employer.profile,
@@ -76,39 +78,47 @@ export default function CreateEmployerProfilePage() {
 
   const [selectCompanyDropdownData, setSelectCompanyDropdownData] = useState<
     ReadCompanyInfoDTO | string
-  >(profileStoreData.companyId ? ({
-    companyId: profileStoreData.companyId,
-    companyName: profileStoreData.companyName,
-    companyEmail: profileStoreData.companyEmail,
-    yearFounded: profileStoreData.yearFounded,
-    companyAddresses: profileStoreData.companyAddresses as ReadAddressDTO[],
-  }) : (profileStoreData.companyName ?? ''));
+  >(
+    profileStoreData.companyId
+      ? {
+          companyId: profileStoreData.companyId,
+          companyName: profileStoreData.companyName,
+          companyEmail: profileStoreData.companyEmail,
+          yearFounded: profileStoreData.yearFounded,
+          companyAddresses:
+            profileStoreData.companyAddresses as ReadAddressDTO[],
+        }
+      : (profileStoreData.companyName ?? ''),
+  );
 
-  const [isCompanySelected, setIsCompanySelected] = useState<boolean>(Boolean(profileStoreData.companyId));
+  const [isCompanySelected, setIsCompanySelected] = useState<boolean>(
+    Boolean(profileStoreData.companyId),
+  );
 
-  const [workAddress, setWorkAddress] = useState<ReadAddressDTO>(profileStoreData.companyAddresses?.find(address => address.addressId === profileStoreData.workAddressId) as ReadAddressDTO ?? (profileStoreData.workAddressId ? ({
-    addressId: profileStoreData.workAddressId,
-    city: '',
-    state: '',
-    stateCode: '',
-    zip: '',
-    county: ''
-  }) : null));
+  const [workAddress, setWorkAddress] = useState<ReadAddressDTO>(
+    (profileStoreData.companyAddresses?.find(
+      (address) => address.addressId === profileStoreData.workAddressId,
+    ) as ReadAddressDTO) ??
+      (profileStoreData.workAddressId
+        ? {
+            addressId: profileStoreData.workAddressId,
+            city: '',
+            state: '',
+            stateCode: '',
+            zip: '',
+            county: '',
+          }
+        : null),
+  );
 
   useEffect(() => {
     const initializeFormFields = async () => {
       if (!session?.user) return;
       if (status === 'authenticated') {
         if (_.isEqual(profileStoreData, initialState.profile)) {
-
           devLog('fetching fresh from database');
 
-          const {
-            id,
-            firstName,
-            lastName,
-            image,
-          } = session.user;
+          const { id, firstName, lastName, image } = session.user;
 
           try {
             const response = await fetch(
@@ -135,16 +145,22 @@ export default function CreateEmployerProfilePage() {
             } else {
               let { result } = await response.json();
 
-              setSelectCompanyDropdownData(result.companyId ? ({
-                companyId: result.companyId,
-                companyName: result.companyName,
-                companyEmail: result.companyEmail,
-                yearFounded: result.yearFounded,
-              }) : (result.companyName ?? ''));
+              setSelectCompanyDropdownData(
+                result.companyId
+                  ? {
+                      companyId: result.companyId,
+                      companyName: result.companyName,
+                      companyEmail: result.companyEmail,
+                      yearFounded: result.yearFounded,
+                    }
+                  : (result.companyName ?? ''),
+              );
 
               setCompanyExists({ value: result.companyId !== null });
 
-              setWorkAddress(result.companyAddress ? { ...result.companyAddress } : '');
+              setWorkAddress(
+                result.companyAddress ? { ...result.companyAddress } : '',
+              );
 
               setIsCompanySelected(Boolean(result.companyId));
 
@@ -186,19 +202,19 @@ export default function CreateEmployerProfilePage() {
   };
 
   const handleCompanyExistsChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const exists = e.target.value === 'yes';
-      setCompanyExists({value: exists});
+    const exists = e.target.value === 'yes';
+    setCompanyExists({ value: exists });
 
-      setSelectCompanyDropdownData('');
-      setIsCompanySelected(false);
-      setWorkAddress(null);
-      setProfileData(prevState => ({
-        ...prevState,
-        companyId: undefined,
-        companyName: '',
-        workAddressId: undefined
-      }));
-    };
+    setSelectCompanyDropdownData('');
+    setIsCompanySelected(false);
+    setWorkAddress(null);
+    setProfileData((prevState) => ({
+      ...prevState,
+      companyId: undefined,
+      companyName: '',
+      workAddressId: undefined,
+    }));
+  };
 
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -308,9 +324,15 @@ export default function CreateEmployerProfilePage() {
     const updatedProfileData = {
       ...profileData,
       userId: session.user.id ?? '',
-      companyId: typeof selectCompanyDropdownData !== 'string' ? selectCompanyDropdownData.companyId : '',
-      companyName: typeof selectCompanyDropdownData !== 'string' ? selectCompanyDropdownData.companyName : selectCompanyDropdownData,
-      workAddressId: workAddress ? workAddress.addressId : undefined
+      companyId:
+        typeof selectCompanyDropdownData !== 'string'
+          ? selectCompanyDropdownData.companyId
+          : '',
+      companyName:
+        typeof selectCompanyDropdownData !== 'string'
+          ? selectCompanyDropdownData.companyName
+          : selectCompanyDropdownData,
+      workAddressId: workAddress ? workAddress.addressId : undefined,
     };
     setProfileData(updatedProfileData);
 
@@ -332,7 +354,9 @@ export default function CreateEmployerProfilePage() {
         await updateSessionProperties({
           firstName: updatedProfileData.firstName,
           lastName: updatedProfileData.lastName,
-          ...(updatedProfileData.photoUrl && {image: updatedProfileData.photoUrl}),
+          ...(updatedProfileData.photoUrl && {
+            image: updatedProfileData.photoUrl,
+          }),
         });
 
         devLog('profileData submit ok', updatedProfileData);
@@ -358,12 +382,11 @@ export default function CreateEmployerProfilePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-
         {!companyExists && (
-        <>
-          <ProgressBarFlat progress={(1 / 5) * 100} size="sm" />
-          <p>Step 1/5</p>
-        </>
+          <>
+            <ProgressBarFlat progress={(1 / 5) * 100} size="sm" />
+            <p>Step 1/5</p>
+          </>
         )}
 
         <h1>Employer Profile</h1>
@@ -414,7 +437,7 @@ export default function CreateEmployerProfilePage() {
               userId={session?.user.id!}
               onImageUpload={handleAvatarUpload}
               initialImageUrl={session?.user?.image!}
-              apiPath='/api/users/avatar/upload'
+              apiPath="/api/users/avatar/upload"
             />
           </fieldset>
 
@@ -445,13 +468,27 @@ export default function CreateEmployerProfilePage() {
             <div className="profile-form-grid md:grid-cols-2">
               <div>
                 <p>Is the company already a part of the site?</p>
-                <div className="flex space-x-4 items-center">
+                <div className="flex items-center space-x-4">
                   <label className="flex items-center space-x-2">
-                    <input type="radio" name="company_exists" value="yes" onChange={handleCompanyExistsChange} checked={companyExists.value === true} required />
+                    <input
+                      type="radio"
+                      name="company_exists"
+                      value="yes"
+                      onChange={handleCompanyExistsChange}
+                      checked={companyExists.value === true}
+                      required
+                    />
                     <span>Yes</span>
                   </label>
                   <label className="flex items-center space-x-2">
-                    <input type="radio" name="company_exists" value="no" onChange={handleCompanyExistsChange} checked={companyExists.value === false} required />
+                    <input
+                      type="radio"
+                      name="company_exists"
+                      value="no"
+                      onChange={handleCompanyExistsChange}
+                      checked={companyExists.value === false}
+                      required
+                    />
                     <span>No</span>
                   </label>
                 </div>
@@ -472,12 +509,13 @@ export default function CreateEmployerProfilePage() {
                   value={selectCompanyDropdownData ?? ''}
                   onChange={(e, val) => {
                     setWorkAddress(null);
-                    setProfileData(prevState => ({
+                    setProfileData((prevState) => ({
                       ...prevState,
-                      workAddressId: undefined
+                      workAddressId: undefined,
                     }));
 
-                    const newDropdownData = typeof val === 'object' && val !== null ? { ...val } : '';
+                    const newDropdownData =
+                      typeof val === 'object' && val !== null ? { ...val } : '';
                     setSelectCompanyDropdownData(newDropdownData);
 
                     if (
@@ -512,7 +550,7 @@ export default function CreateEmployerProfilePage() {
                       handleFieldChange(e);
                       setNewCompany((prevData) => ({
                         ...prevData,
-                        companyName: e.target.value
+                        companyName: e.target.value,
                       }));
                     }}
                     value={newCompany?.companyName}
@@ -565,9 +603,7 @@ export default function CreateEmployerProfilePage() {
                     getOptionLabel={(option: ReadAddressDTO) =>
                       `${option?.city}, ${option?.stateCode} ${option?.zip}`
                     }
-                    getOptionId={(option: ReadAddressDTO) =>
-                      option?.addressId!
-                    }
+                    getOptionId={(option: ReadAddressDTO) => option?.addressId!}
                     getOptionFromId={(
                       options: ReadAddressDTO[],
                       id: string,
@@ -584,7 +620,7 @@ export default function CreateEmployerProfilePage() {
                 id={`${formNamePrefix}linkedInUrl`}
                 placeholder="www.linkedin.com/username"
                 onChange={handleFieldChange}
-                value={profileData.linkedInUrl??''}
+                value={profileData.linkedInUrl ?? ''}
               >
                 LinkedIn URL
               </InputTextWithLabel>
@@ -592,9 +628,9 @@ export default function CreateEmployerProfilePage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-single-end">
-            <Button pill type="submit">
-              {companyExists ? "Submit" : "Save and Continue"}
-            </Button>
+            <PillButton type="submit">
+              {companyExists ? 'Submit' : 'Save and Continue'}
+            </PillButton>
           </div>
         </form>
       </section>

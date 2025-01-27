@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Button } from 'flowbite-react';
+import { Button } from '@mui/material';
 import Link from 'next/link';
 import DividerWithText from '@/app/ui/components/DividerWithText';
 import Image from 'next/image';
@@ -38,8 +38,8 @@ export default function SignupPage() {
 
   let handleSubmit = async () => {
     if (session) {
-        if (choice === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
-        if (choice === Role.EMPLOYER) router.push(`/signup/employer`);
+      if (choice === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
+      if (choice === Role.EMPLOYER) router.push(`/signup/employer`);
     }
   };
 
@@ -49,7 +49,9 @@ export default function SignupPage() {
       <main className="flex flex-col gap-9 py-8">
         <h1 className="text-center text-4xl">Create account</h1>
         <fieldset className="flex flex-col items-center justify-center gap-8 sm-tablet:flex-row">
-          <legend className="pb-4 w-full text-center">Select your role first</legend>
+          <legend className="w-full pb-4 text-center">
+            Select your role first
+          </legend>
           <div>
             <input
               type="radio"
@@ -102,11 +104,19 @@ export default function SignupPage() {
         <Button
           disabled={choice === Role.GUEST}
           onClick={handleSubmit}
-          className="mx-auto mt-4 w-fit rounded-3xl focus:ring-0"
+          sx={{
+            marginInline: 'auto',
+            marginTop: '1rem',
+            width: 'fit-content',
+            borderRadius: '1.5rem',
+            '&:focus': {
+              outline: 'none',
+              boxShadow: 'none',
+            },
+          }}
         >
           Continue
         </Button>
-
       </main>
       <footer className="mt-auto">
         <Footer />

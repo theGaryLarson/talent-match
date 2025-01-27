@@ -13,7 +13,7 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material';
-import { Button } from 'flowbite-react';
+import PillButton from '@/app/ui/components/PillButton';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
@@ -63,9 +63,7 @@ export default function EmployerCongratsPage() {
         <p className="subtitle-congrats">
           {"Let's kickstart your candidate search journey!"}
         </p>
-        <Button pill onClick={handleClick}>
-          Get Started
-        </Button>
+        <PillButton onClick={handleClick}>Get Started</PillButton>
 
         {/* <form onSubmit={ handleSubmit }>
 
@@ -74,45 +72,41 @@ export default function EmployerCongratsPage() {
               <fieldset>
                 <legend>What are you looking for?</legend>
                 <div className="container">
-                  <Button
-                      pill
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Full-time job')} }
                   >
                     Full-time job
-                  </Button>
-                  <Button
-                      pill
+                  </PillButton>
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Part-time job')} }
                   >
                     Part-time job
-                  </Button>
-                  <Button
-                      pill
+                  </PillButton>
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
                   >
                     Internship
-                  </Button>
-                  <Button
-                      pill
+                  </PillButton>
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('On-campus job')} }
                   >
                     On-campus job
-                  </Button>
-                  <Button
+                  </PillButton>
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Contract')} }
                   >
                     Contract
-                  </Button>
+                  </PillButton>
                 </div>
               </fieldset>
               <FormControl component="fieldset">
@@ -134,8 +128,8 @@ export default function EmployerCongratsPage() {
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">Previous</Button>
-            <Button pill type="submit">Save and continue</Button>
+            <PillButton className="custom-outline-btn">Previous</PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
           
         </form> */}

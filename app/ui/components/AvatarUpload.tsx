@@ -1,8 +1,7 @@
 'use client';
 
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Avatar, AvatarImageProps } from 'flowbite-react';
-
+import { Avatar } from '@mui/material';
 interface Props {
   id: string;
   fileTypeText: string;
@@ -41,7 +40,6 @@ export default function AvatarUpload({
       if (file.name !== '') {
         setFileSelected(file.name);
       }
-
 
       if (filePath) URL.revokeObjectURL(filePath);
       setFilePath(URL.createObjectURL(file));
@@ -106,27 +104,19 @@ export default function AvatarUpload({
   const fileTypeTextPlusSizeLimit =
     fileTypeText + ' (max. ' + maxSizeMB + ' MB)';
 
-  // it was getting late and playing around. Feel free to implement this however you find best :)
-  const imageProps: AvatarImageProps = {
-    className: 'w-20 h-20 rounded-full object-cover', // Ensure the image is a perfect circle
-    'data-testid': 'avatar-image',
-  };
-
   return (
     <div>
       <label className="flex cursor-pointer rounded-full p-4 hover:bg-slate-50">
         <Avatar
-          rounded
-          // img={filePath}
-          img={(props) => (
-            <img
-              src={filePath || initialImageUrl || undefined}
-              alt="Uploaded Avatar"
-              {...props}
-              {...imageProps}
-            />
-          )}
-          className="h-20 w-20 flex-shrink-0"
+          src={filePath || initialImageUrl || undefined}
+          alt="Uploaded Avatar"
+          sx={{
+            width: '5rem',
+            height: '5rem',
+            flexShrink: 0,
+            borderRadius: '50%',
+          }}
+          data-testid="avatar-image"
         />
         <input
           type="file"
@@ -147,12 +137,12 @@ export default function AvatarUpload({
             </p>
           )}
           {fileSelected != '' && !filesizeExceeded && !validFiletype && (
-            <p className="font-medium text-red-500 dark:text-red-400">
+            <p className="font-medium text-red-500">
               Unsupported file type: {fileSelected}
             </p>
           )}
           {fileSelected != '' && filesizeExceeded && (
-            <p className="font-medium text-red-500 dark:text-red-400">
+            <p className="font-medium text-red-500">
               File is too large: {fileSelected}
             </p>
           )}

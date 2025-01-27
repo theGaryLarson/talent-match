@@ -1,7 +1,6 @@
 import React, { memo, useCallback } from 'react';
-import { Button, Label } from 'flowbite-react';
 import { Checkbox } from '@mui/material';
-import { MdClose } from 'react-icons/md';
+import PillButton from '@/app/ui/components/PillButton';
 import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
 import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,6 +9,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
 import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
 import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
+import { Close } from '@mui/icons-material';
 
 const classNamePrefix = 'profile-creation-internship-experience-group-';
 const classCompany = 'company';
@@ -80,15 +80,12 @@ export default memo(function InternshipExperiences({
     <fieldset key={classNamePrefix + internshipExperience.workId + '-key'}>
       <legend className="flex w-full justify-between">
         <h3>Internship Experience {index + 1}</h3>
-        <Button
+        <PillButton
           onClick={() => onRemove(internshipExperience.workId)}
-          size="xs"
-          color="dark"
-          outline
-          pill
+          variant="outlined"
         >
-          <MdClose className="h-5 w-5" />
-        </Button>
+          <Close className="h-5 w-5" />
+        </PillButton>
       </legend>
       <div className="profile-form-grid">
         <InputTextWithLabel
@@ -152,19 +149,15 @@ export default memo(function InternshipExperiences({
           />
         </RequiredTooltip>
       </div>
-      <Label>
-        <Checkbox
-          id={
-            classNamePrefix + internshipExperience.workId + '-' + classCurrent
-          }
-          name={
-            classNamePrefix + internshipExperience.workId + '-' + classCurrent
-          }
-          checked={internshipExperience[classCurrent]}
-          onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
-        />
-        Currently Employed in this Position
-      </Label>
+      <Checkbox
+        id={classNamePrefix + internshipExperience.workId + '-' + classCurrent}
+        name={
+          classNamePrefix + internshipExperience.workId + '-' + classCurrent
+        }
+        checked={internshipExperience[classCurrent]}
+        onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
+      />
+      Currently Employed in this Position
       <div className="profile-form-grid">
         <TextareaWithLabel
           id={
