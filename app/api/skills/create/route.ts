@@ -1,6 +1,6 @@
-import { adminCreateSkills } from '@/app/lib/admin/skill';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { NextResponse } from 'next/server';
+import { adminCreateSkills } from "@/app/lib/admin/skill";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const body: SkillDTO[] = await req.json();

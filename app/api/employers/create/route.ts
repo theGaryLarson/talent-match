@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { createEmployer } from '@/app/lib/employer';
-import { auth } from '@/auth';
-import { sendEmployerOrCompanyNeedsApprovalEmailToGary } from '@/lib/smtp/send-employer-needs-verification-email';
+import { NextResponse } from "next/server";
+import { createEmployer } from "@/app/lib/employer";
+import { auth } from "@/auth";
+import { sendEmployerOrCompanyNeedsApprovalEmailToGary } from "@/lib/smtp/send-employer-needs-verification-email";
 
 export async function POST() {
   try {
@@ -9,17 +9,20 @@ export async function POST() {
     const userId: string = session?.user.id!;
     const employerData = await createEmployer(userId);
     sendEmployerOrCompanyNeedsApprovalEmailToGary({
-      recipient: 'gary.larson@computingforall.org',
-      name: 'Gary Larson'
-    })
+      recipient: "gary.larson@computingforall.org",
+      name: "Gary Larson",
+    });
     return NextResponse.json(
-      { success: true, message: 'Employer created successfully.', employerData },
+      {
+        success: true,
+        message: "Employer created successfully.",
+        employerData,
+      },
       { status: 200 },
     );
-    
   } catch (error: any) {
     return NextResponse.json(
-      { error: 'Failed to create Employer.' },
+      { error: "Failed to create Employer." },
       { status: 500 },
     );
   }

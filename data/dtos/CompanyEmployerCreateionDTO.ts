@@ -1,6 +1,4 @@
 export interface CompanyEmployerCreationDTO {
-    companyName: string;
-    yearFounded?: number;
-  }
-
-
+  companyName: string;
+  yearFounded?: number;
+}

@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { getJobSeekerEmployerView } from '@/app/lib/prisma';
-import { auth } from '@/auth';
-import { Role } from '@/data/dtos/UserInfoDTO';
+import { NextResponse } from "next/server";
+import { getJobSeekerEmployerView } from "@/app/lib/prisma";
+import { auth } from "@/auth";
+import { Role } from "@/data/dtos/UserInfoDTO";
 
 export async function GET(
   request: Request,
@@ -13,7 +13,7 @@ export async function GET(
 
     // Check if the session exists
     if (!session?.user) {
-      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+      return NextResponse.json({ error: "Page not found" }, { status: 404 });
     }
 
     const {
@@ -40,14 +40,14 @@ export async function GET(
 
     if (!jobseekerEmployerView) {
       return NextResponse.json(
-        { error: 'Jobseeker not found' },
+        { error: "Jobseeker not found" },
         { status: 404 },
       );
     }
 
     return NextResponse.json(jobseekerEmployerView);
   } catch (e: any) {
-    console.error('Error retrieving jobseeker employer view:', e.message);
+    console.error("Error retrieving jobseeker employer view:", e.message);
     return NextResponse.json(
       { error: `Failed to retrieve jobseeker employer view.\n${e.message}` },
       { status: 500 },

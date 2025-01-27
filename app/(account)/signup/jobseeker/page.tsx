@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import DividerWithText from '@/app/ui/components/DividerWithText';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import Link from 'next/link';
-import { Button } from '@mui/material';
-import SignupPrompt from '@/app/ui/components/SignupPrompt';
-import Image from 'next/image';
-import Footer from '@/app/ui/Footer';
-import SignupHeader from '@/app/ui/SignupHeader';
-import { FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { useSession } from 'next-auth/react';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { mapToEnumOrThrow } from '@/app/lib/utils';
-import { v4 as uuidv4 } from 'uuid';
+import DividerWithText from "@/app/ui/components/DividerWithText";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import Link from "next/link";
+import { Button } from "@mui/material";
+import SignupPrompt from "@/app/ui/components/SignupPrompt";
+import Image from "next/image";
+import Footer from "@/app/ui/Footer";
+import SignupHeader from "@/app/ui/SignupHeader";
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
+import { useSession } from "next-auth/react";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import { mapToEnumOrThrow } from "@/app/lib/utils";
+import { v4 as uuidv4 } from "uuid";
 
-const vectorImgSrc = '/images/signup/jobseeker-vector.png';
+const vectorImgSrc = "/images/signup/jobseeker-vector.png";
 
 export default function JobseekerSignupFinishPage() {
   let [resident, setResident] = useState(false);
@@ -56,7 +56,7 @@ export default function JobseekerSignupFinishPage() {
                   name="resident"
                   value="yes"
                   onClick={() => setResident(true)}
-                />{' '}
+                />{" "}
                 Yes
               </label>
               <label>
@@ -65,7 +65,7 @@ export default function JobseekerSignupFinishPage() {
                   name="resident"
                   value="no"
                   onClick={() => setResident(false)}
-                />{' '}
+                />{" "}
                 No
               </label>
             </fieldset>
@@ -82,7 +82,7 @@ export default function JobseekerSignupFinishPage() {
                   onChange={handleCheckboxChange}
                 />
                 <label htmlFor="jobNotifications">
-                  {' '}
+                  {" "}
                   Receive new job posting notifications
                 </label>
               </div>
@@ -94,7 +94,7 @@ export default function JobseekerSignupFinishPage() {
                   onChange={handleCheckboxChange}
                 />
                 <label htmlFor="opportunities">
-                  {' '}
+                  {" "}
                   Hear more about career opportunities
                 </label>
               </div>
@@ -106,8 +106,8 @@ export default function JobseekerSignupFinishPage() {
                   onChange={() => setTermsAgree(!termsAgree)}
                 />
                 <label htmlFor="terms">
-                  {' '}
-                  By signing up you agree to our{' '}
+                  {" "}
+                  By signing up you agree to our{" "}
                   <Link
                     target="_blank"
                     className="underline"
@@ -137,10 +137,10 @@ export default function JobseekerSignupFinishPage() {
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
-                let response = await fetch('/api/jobseekers/create', {
-                  method: 'POST',
+                let response = await fetch("/api/jobseekers/create", {
+                  method: "POST",
                   headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                   },
                 });
                 if (response.ok) {
@@ -157,15 +157,15 @@ export default function JobseekerSignupFinishPage() {
                     jobseekerId: data.jobseekerData.jobseeker_id,
                     roles: rolesArray,
                   });
-                  router.push('/edit-profile/jobseeker/introduction');
+                  router.push("/edit-profile/jobseeker/introduction");
                 }
               }}
               sx={{
-                marginX: 'auto',
+                marginX: "auto",
                 marginY: 8,
-                borderRadius: '50%',
-                '&:focus': {
-                  boxShadow: 'none',
+                borderRadius: "50%",
+                "&:focus": {
+                  boxShadow: "none",
                 },
               }}
               disabled={!(resident && termsAgree)}

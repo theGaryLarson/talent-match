@@ -1,84 +1,96 @@
-import { EduProviderPathways, LocationType, PostEduProviderProgramDetailDTO} from "@/app/lib/eduProviders";
-import { Button,TextField, Chip, Box  } from "@mui/material";
+import {
+  EduProviderPathways,
+  LocationType,
+  PostEduProviderProgramDetailDTO,
+} from "@/app/lib/eduProviders";
+import { Button, TextField, Chip, Box } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
-import {programs, provider_programs } from "@prisma/client";
-import {devLog} from "@/app/lib/utils";
+import { programs, provider_programs } from "@prisma/client";
+import { devLog } from "@/app/lib/utils";
 
 export default function AddProviderProgramsForm(props: { providerId: string }) {
-    const blankFormData:PostEduProviderProgramDetailDTO = {
-      programName: "",
-      logoUrl: "",
-      eduProviderId: props.providerId,
-      //eduProviderName: "",
-      description: "",
-      locations: [],
-      programLength: "",
-      targetedJobRoles: [],
-      about: "",
-      tuition: "",
-      fees: "",
-      costSummary: "",
-      locationType: null,
-      getStartedUrl: "",
-      faq: [{ question: "", answer: "" }],
-      pathways: [],
-    }
-  const [formData, setFormData] = useState<PostEduProviderProgramDetailDTO>(blankFormData);
-  const [programList, setProgramList] = useState<(provider_programs&{Program:programs})[]>();
-  const [selectedProgram, setSelectedProgram] = useState<provider_programs&{Program:programs}>()
-  const [entries, setEntries] = useState<Entry[]>([{ question: "", answer: "" }]);
-  const [locations, setLocations] = useState<string[]>([]); 
+  const blankFormData: PostEduProviderProgramDetailDTO = {
+    programName: "",
+    logoUrl: "",
+    eduProviderId: props.providerId,
+    //eduProviderName: "",
+    description: "",
+    locations: [],
+    programLength: "",
+    targetedJobRoles: [],
+    about: "",
+    tuition: "",
+    fees: "",
+    costSummary: "",
+    locationType: null,
+    getStartedUrl: "",
+    faq: [{ question: "", answer: "" }],
+    pathways: [],
+  };
+  const [formData, setFormData] =
+    useState<PostEduProviderProgramDetailDTO>(blankFormData);
+  const [programList, setProgramList] =
+    useState<(provider_programs & { Program: programs })[]>();
+  const [selectedProgram, setSelectedProgram] = useState<
+    provider_programs & { Program: programs }
+  >();
+  const [entries, setEntries] = useState<Entry[]>([
+    { question: "", answer: "" },
+  ]);
+  const [locations, setLocations] = useState<string[]>([]);
   const [targetedJobRoles, setTargetedJobRoles] = useState<string[]>([]);
   // Helper function to validate the FAQ data structure
-   const validateFAQ = (faq: unknown): Entry[] => {
+  const validateFAQ = (faq: unknown): Entry[] => {
     if (Array.isArray(faq)) {
       return faq.every(
-        (item) => typeof item.question === "string" && typeof item.answer === "string"
+        (item) =>
+          typeof item.question === "string" && typeof item.answer === "string",
       )
         ? (faq as Entry[])
         : [{ question: "", answer: "" }];
     }
     return [{ question: "", answer: "" }];
   };
-  const refreshList = ()=>{
-    fetch('/api/admin/edu-providers/'+props.providerId).then((e)=>{
-      return e.json();
-    }).then((res)=>{
-      setProgramList(res)
-    })
-  }
-  useEffect(refreshList,[]);
-  useEffect(()=>{
+  const refreshList = () => {
+    fetch("/api/admin/edu-providers/" + props.providerId)
+      .then((e) => {
+        return e.json();
+      })
+      .then((res) => {
+        setProgramList(res);
+      });
+  };
+  useEffect(refreshList, []);
+  useEffect(() => {
     setFormData({
-      "programName": selectedProgram?.Program.title??'',
-      "logoUrl": formData.logoUrl,
-      "eduProviderId": props.providerId,
-      "description": selectedProgram?.description??'',
-      "programLength": selectedProgram?.programLength??'',
-      "targetedJobRoles": selectedProgram?.targetedJobRoles?.split('~'),
-      "about": selectedProgram?.about??'',
-      "tuition": selectedProgram?.tuition??'',
-      "fees": selectedProgram?.fees??'',
-      "costSummary": selectedProgram?.costSummary??'',
-      "locationType": selectedProgram?.locationType as LocationType,
-      locations:selectedProgram?.locations?.split('~') ?? [],
-      "getStartedUrl":selectedProgram?.getStartedUrl??'',
+      programName: selectedProgram?.Program.title ?? "",
+      logoUrl: formData.logoUrl,
+      eduProviderId: props.providerId,
+      description: selectedProgram?.description ?? "",
+      programLength: selectedProgram?.programLength ?? "",
+      targetedJobRoles: selectedProgram?.targetedJobRoles?.split("~"),
+      about: selectedProgram?.about ?? "",
+      tuition: selectedProgram?.tuition ?? "",
+      fees: selectedProgram?.fees ?? "",
+      costSummary: selectedProgram?.costSummary ?? "",
+      locationType: selectedProgram?.locationType as LocationType,
+      locations: selectedProgram?.locations?.split("~") ?? [],
+      getStartedUrl: selectedProgram?.getStartedUrl ?? "",
       faq: validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")),
-      "pathways": selectedProgram?.pathways?.split('~') as EduProviderPathways[]
-  });
-  setEntries(validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")));
-  setLocations(selectedProgram?.locations?.split('~')??[])
-  setTargetedJobRoles(selectedProgram?.targetedJobRoles?.split('~')??[])
-  },[selectedProgram])
-
+      pathways: selectedProgram?.pathways?.split("~") as EduProviderPathways[],
+    });
+    setEntries(validateFAQ(JSON.parse(selectedProgram?.faq ?? "[]")));
+    setLocations(selectedProgram?.locations?.split("~") ?? []);
+    setTargetedJobRoles(selectedProgram?.targetedJobRoles?.split("~") ?? []);
+  }, [selectedProgram]);
 
   useEffect(() => {
     setFormData((prev) => ({
       ...prev, // Spread existing formData first
       faq: entries, // Override the `faq` property with the `entries` array
-      locations:locations,
-      targetedJobRoles:targetedJobRoles
+      locations: locations,
+      targetedJobRoles: targetedJobRoles,
     }));
   }, [entries, locations, targetedJobRoles]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -88,13 +100,15 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       const response = await fetch("/api/edu-providers/programs/add", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
-      devLog("AddProviderProgramsFrom > final formData", JSON.stringify(formData, null, 2));
-
+      devLog(
+        "AddProviderProgramsFrom > final formData",
+        JSON.stringify(formData, null, 2),
+      );
 
       if (response.ok) {
         alert("Program successfully added!");
@@ -109,49 +123,55 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
   };
   const handleDelete = () => {
     // Show a confirmation dialog
-    const isConfirmed = window.confirm('Are you sure you want to delete this program? This action cannot be undone.');
-  
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this program? This action cannot be undone.",
+    );
+
     if (!isConfirmed) {
       return; // Exit the function if the user cancels
     }
-  
+
     // Proceed with the delete request if confirmed
-    fetch('/api/admin/edu-providers/delete-program', {
-      method: 'DELETE',
+    fetch("/api/admin/edu-providers/delete-program", {
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ provider_program_id:selectedProgram?.training_program_id}),
+      body: JSON.stringify({
+        provider_program_id: selectedProgram?.training_program_id,
+      }),
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to delete the program.');
+          throw new Error("Failed to delete the program.");
         }
         refreshList();
         setFormData(blankFormData);
         setEntries([]);
-        setLocations([])
+        setLocations([]);
         setTargetedJobRoles([]);
         setSelectedProgram(undefined);
         return response.json(); // Parse the response as JSON
       })
       .then((data) => {
-        console.log('Program deleted successfully:', data);
-        alert('Program deleted successfully.');
+        console.log("Program deleted successfully:", data);
+        alert("Program deleted successfully.");
         // Optionally update the UI here, such as removing the program from a list
       })
       .catch((error) => {
-        console.error('Error deleting program:', error);
-        alert('Failed to delete the program. Please try again.');
+        console.error("Error deleting program:", error);
+        alert("Failed to delete the program. Please try again.");
       });
   };
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -161,16 +181,22 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
       <div className="grid grid-cols-1">
         <label htmlFor="company">Select Program</label>
         <select
-          name='company'
-          id='company'
+          name="company"
+          id="company"
           onChange={(e) => {
-            setSelectedProgram(programList?.find((p)=>(p.training_program_id == e.target.value)))
-          }
-        }
+            setSelectedProgram(
+              programList?.find((p) => p.training_program_id == e.target.value),
+            );
+          }}
         >
-          <option value={''}>--Please Select a Program--</option>
+          <option value={""}>--Please Select a Program--</option>
           {programList?.map((comp) => (
-            <option key={comp.training_program_id} value={comp.training_program_id}>{comp.Program.title}</option>
+            <option
+              key={comp.training_program_id}
+              value={comp.training_program_id}
+            >
+              {comp.Program.title}
+            </option>
           ))}
         </select>
       </div>
@@ -213,21 +239,23 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           className="p-2 border rounded"
         />
         <label>Program Location(s)</label>
-        <StringListInputWithChips stringList={locations} setStringList={setLocations}/>
+        <StringListInputWithChips
+          stringList={locations}
+          setStringList={setLocations}
+        />
         <label htmlFor="locationType">Location Type</label>
         <select
-        name="locationType"
-        id="locationType"
-        value={formData.locationType??''}
-        onChange={handleInputChange}
+          name="locationType"
+          id="locationType"
+          value={formData.locationType ?? ""}
+          onChange={handleInputChange}
         >
-          <option value=''>--Please Select a location Type--</option>
-          {
-            Object.values(LocationType).map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>))
-          }
+          <option value="">--Please Select a location Type--</option>
+          {Object.values(LocationType).map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
         </select>
         <label htmlFor="tuition">Tuition</label>
         <input
@@ -240,7 +268,10 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
         />
 
         <label htmlFor="targetedJobRoles">Targeted Job Roles</label>
-        <StringListInputWithChips stringList={targetedJobRoles} setStringList={setTargetedJobRoles}/>
+        <StringListInputWithChips
+          stringList={targetedJobRoles}
+          setStringList={setTargetedJobRoles}
+        />
 
         <label htmlFor="fees">Fees</label>
         <input
@@ -271,7 +302,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           className="p-2 border rounded"
         />
       </div>
-      <DynamicForm entries={entries} setEntries={setEntries}/>
+      <DynamicForm entries={entries} setEntries={setEntries} />
 
       <div className="flex justify-between gap-4">
         {/* <Button
@@ -303,32 +334,35 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           Reset Form
         </Button> */}
         <div>
-        {selectedProgram&&(
-          <Button onClick={handleDelete}>Delete Program</Button>
-        )}</div>
+          {selectedProgram && (
+            <Button onClick={handleDelete}>Delete Program</Button>
+          )}
+        </div>
         <Button
           type="submit"
           endIcon={<ArrowCircleRightOutlined />}
           variant="contained"
-        >{selectedProgram?'Update':'Add'} Program
+        >
+          {selectedProgram ? "Update" : "Add"} Program
         </Button>
       </div>
     </form>
   );
 }
 
-
 interface Entry {
   question: string;
   answer: string;
 }
 
-const DynamicForm = (props:{setEntries:Dispatch<SetStateAction<Entry[]>>, entries:Entry[]}) => {
-
+const DynamicForm = (props: {
+  setEntries: Dispatch<SetStateAction<Entry[]>>;
+  entries: Entry[];
+}) => {
   // Handle changes to the input fields
   const handleChange = (index: number, field: keyof Entry, value: string) => {
     const updatedEntries = props.entries.map((entry, i) =>
-      i === index ? { ...entry, [field]: value } : entry
+      i === index ? { ...entry, [field]: value } : entry,
     );
     props.setEntries(updatedEntries);
   };
@@ -343,7 +377,7 @@ const DynamicForm = (props:{setEntries:Dispatch<SetStateAction<Entry[]>>, entrie
     props.setEntries(props.entries.filter((_, i) => i !== index));
   };
 
-  console.log("eenn", props.entries)
+  console.log("eenn", props.entries);
   return (
     <div className="border">
       <h1>FAQs</h1>
@@ -376,25 +410,23 @@ const DynamicForm = (props:{setEntries:Dispatch<SetStateAction<Entry[]>>, entrie
             disabled={props.entries.length === 1}
             variant="outlined"
             color="error"
-
           >
             Remove
           </Button>
         </div>
       ))}
-      <Button
-        onClick={addEntry}
-      >
-        Add Another FAQ
-      </Button>
+      <Button onClick={addEntry}>Add Another FAQ</Button>
     </div>
   );
 };
 
-
-
-
-const StringListInputWithChips = ({stringList, setStringList}:{stringList:string[], setStringList:Dispatch<SetStateAction<string[]>>}) => {
+const StringListInputWithChips = ({
+  stringList,
+  setStringList,
+}: {
+  stringList: string[];
+  setStringList: Dispatch<SetStateAction<string[]>>;
+}) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -412,7 +444,9 @@ const StringListInputWithChips = ({stringList, setStringList}:{stringList:string
   };
 
   const handleDelete = (chipToDelete: string) => {
-    setStringList((prevList) => prevList.filter((chip) => chip !== chipToDelete));
+    setStringList((prevList) =>
+      prevList.filter((chip) => chip !== chipToDelete),
+    );
   };
 
   return (

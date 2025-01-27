@@ -1,7 +1,7 @@
-import { Grid2, Stack } from '@mui/material';
-import { ReadEduProviderProgramCardDTO } from '@/app/lib/eduProviders';
-import TrainingProgramCard from '@/app/ui/components/career/TrainingProgramCard';
-import PillButton from '../PillButton';
+import { Grid2, Stack } from "@mui/material";
+import { ReadEduProviderProgramCardDTO } from "@/app/lib/eduProviders";
+import TrainingProgramCard from "@/app/ui/components/career/TrainingProgramCard";
+import PillButton from "../PillButton";
 
 export default async function TrainingProviderPrograms({
   programs,
@@ -9,8 +9,8 @@ export default async function TrainingProviderPrograms({
   programs: ReadEduProviderProgramCardDTO[];
 }) {
   return (
-    <Stack direction={'column'} gap={2}>
-      <Grid2 gap={1} container sx={{ justifyContent: 'space-between' }}>
+    <Stack direction={"column"} gap={2}>
+      <Grid2 gap={1} container sx={{ justifyContent: "space-between" }}>
         <p className="self-center text-xl font-medium text-button-secondary-idle-text">
           Coalition Training Provider Programs
         </p>
@@ -18,8 +18,8 @@ export default async function TrainingProviderPrograms({
           href="/services/training-providers"
           disableElevation
           sx={{
-            backgroundColor: '#f6f6f6',
-            color: '#014260',
+            backgroundColor: "#f6f6f6",
+            color: "#014260",
           }}
         >
           See More

@@ -5,50 +5,50 @@ import {
   generateBlobSASQueryParameters,
   SASProtocol,
   StorageSharedKeyCredential,
-} from '@azure/storage-blob';
-import { devLog } from '@/app/lib/utils';
+} from "@azure/storage-blob";
+import { devLog } from "@/app/lib/utils";
 
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING!;
 const blobServiceClient =
   BlobServiceClient.fromConnectionString(connectionString);
 
-const imageContainerName = 'image-storage';
-const pdfContainerName = 'resume-storage';
-const docFileExtensionsAllowed = ['.pdf'];
+const imageContainerName = "image-storage";
+const pdfContainerName = "resume-storage";
+const docFileExtensionsAllowed = [".pdf"];
 const imagFileExtensionsAllowed = [
-  '.svg',
-  '.png',
-  '.jpg',
-  '.jpeg',
-  '.gif',
-  '.webp',
+  ".svg",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".webp",
 ];
 
 // Enum to define possible prefixes for different types of files
 export enum BlobPrefix {
-  Avatar = 'avatar',
-  Resume = 'resume',
-  CoverLetter = 'coverLetter',
-  DevPlan ='careerPrepDevPlan',
-  EduProviderLogo ='eduProviderLogo'
+  Avatar = "avatar",
+  Resume = "resume",
+  CoverLetter = "coverLetter",
+  DevPlan = "careerPrepDevPlan",
+  EduProviderLogo = "eduProviderLogo",
 }
 
 // Needed to map the correct content-type property based on file extension
 const contentTypeMap: { [key: string]: string } = {
   // doc content-types
-  '.pdf': 'application/pdf',
-  '.doc': 'application/msword',
-  '.docx':
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  '.txt': 'text/plain',
-  '.rtf': 'application/rtf',
+  ".pdf": "application/pdf",
+  ".doc": "application/msword",
+  ".docx":
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ".txt": "text/plain",
+  ".rtf": "application/rtf",
   // image content-types
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.gif': 'image/gif',
-  '.webp': 'image/webp',
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
 };
 
 // Upload resume method using the generalized uploadFile function with SAS token
@@ -70,35 +70,35 @@ export async function uploadResume(
 
 // Upload resume method using the generalized uploadFile function with SAS token
 export async function uploadDevPlan(
-    file: Buffer,
-    fileName: string,
-    userId: string,
+  file: Buffer,
+  fileName: string,
+  userId: string,
 ): Promise<string> {
   return await uploadFile(
-      file,
-      fileName,
-      userId,
-      BlobPrefix.DevPlan,
-      docFileExtensionsAllowed,
-      pdfContainerName,
-      true,
+    file,
+    fileName,
+    userId,
+    BlobPrefix.DevPlan,
+    docFileExtensionsAllowed,
+    pdfContainerName,
+    true,
   );
 }
 
 // Upload cover letter method using the generalized uploadFile function with SAS token
 export async function uploadCoverLetter(
-    file: Buffer,
-    fileName: string,
-    userId: string,
+  file: Buffer,
+  fileName: string,
+  userId: string,
 ): Promise<string> {
   return await uploadFile(
-      file,
-      fileName,
-      userId,
-      BlobPrefix.CoverLetter,
-      docFileExtensionsAllowed,
-      pdfContainerName,
-      true,
+    file,
+    fileName,
+    userId,
+    BlobPrefix.CoverLetter,
+    docFileExtensionsAllowed,
+    pdfContainerName,
+    true,
   );
 }
 
@@ -110,7 +110,9 @@ export async function getResumeUrl(userId: string): Promise<string | null> {
 }
 
 // Method to get a link to the cover letter  with a SAS token
-export async function getCoverLetterUrl(userId: string): Promise<string | null> {
+export async function getCoverLetterUrl(
+  userId: string,
+): Promise<string | null> {
   if (userId.length < 1) return null;
   const blobPrefix = `${userId}/${BlobPrefix.CoverLetter}`; // Common prefix for cover letters
   return await getBlobUrlWithSas(pdfContainerName, blobPrefix);
@@ -148,23 +150,25 @@ export async function getAvatarUrl(userId: string): Promise<string | null> {
 
 // Upload training provider logo method using the generalized uploadFile function without SAS token
 export async function uploadEduProviderLogo(
-    file: Buffer,
-    fileName: string,
-    eduProviderId: string,
+  file: Buffer,
+  fileName: string,
+  eduProviderId: string,
 ): Promise<string> {
   return await uploadFile(
-      file,
-      fileName,
-      eduProviderId,
-      BlobPrefix.EduProviderLogo,
-      imagFileExtensionsAllowed,
-      imageContainerName,
-      false,
+    file,
+    fileName,
+    eduProviderId,
+    BlobPrefix.EduProviderLogo,
+    imagFileExtensionsAllowed,
+    imageContainerName,
+    false,
   );
 }
 
 // Method to get a link to the edu provider logo without SAS token
-export async function getEduProviderLogo(trainingProviderId: string): Promise<string | null> {
+export async function getEduProviderLogo(
+  trainingProviderId: string,
+): Promise<string | null> {
   const blobPrefix = `${trainingProviderId}/${BlobPrefix.EduProviderLogo}`; // Common prefix for avatars
   return await getBlobUrl(imageContainerName, blobPrefix);
 }
@@ -191,7 +195,7 @@ async function uploadFile(
   attachSasToken: boolean,
 ): Promise<string> {
   const fileExtension = fileName
-    .substring(fileName.lastIndexOf('.'))
+    .substring(fileName.lastIndexOf("."))
     .toLowerCase();
 
   // Check if the file extension is allowed
@@ -224,8 +228,8 @@ async function uploadFile(
       return blockBlobClient.url; // Return the URL of the uploaded file without SAS token
     }
   } catch (error) {
-    console.error('Error uploading file:', error);
-    throw new Error('Failed to upload file');
+    console.error("Error uploading file:", error);
+    throw new Error("Failed to upload file");
   }
 }
 
@@ -254,15 +258,15 @@ async function getBlobUrlWithSas(
       const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
       const sasToken = generateBlobSasToken(containerName, blob.name);
       // Check if the blockBlobClient.url already contains a '?' and append accordingly
-      const separator = blockBlobClient.url.includes('?') ? '&' : '?';
+      const separator = blockBlobClient.url.includes("?") ? "&" : "?";
       return `${blockBlobClient.url}${separator}${sasToken}`; // Return the full URL of the blob with SAS token
     }
 
     // If no matching blob is found, return null or handle accordingly
     return null;
   } catch (error) {
-    console.error('Error retrieving blob link:', error);
-    throw new Error('Failed to retrieve blob link');
+    console.error("Error retrieving blob link:", error);
+    throw new Error("Failed to retrieve blob link");
   }
 }
 
@@ -285,8 +289,8 @@ async function getBlobUrl(
 
     return null;
   } catch (error) {
-    console.error('Error retrieving blob url:', error);
-    throw new Error('Failed to retrieve blob url');
+    console.error("Error retrieving blob url:", error);
+    throw new Error("Failed to retrieve blob url");
   }
 }
 
@@ -299,21 +303,21 @@ function generateBlobSasToken(containerName: string, blobName: string): string {
   );
 
   const startsOn = new Date(
-    new Date(Date.now() - 15 * 60 * 1000).toISOString().split('.')[0] + 'Z',
+    new Date(Date.now() - 15 * 60 * 1000).toISOString().split(".")[0] + "Z",
   );
   const expiresOn = new Date(
-    new Date(Date.now() + 15 * 60 * 1000).toISOString().split('.')[0] + 'Z',
+    new Date(Date.now() + 15 * 60 * 1000).toISOString().split(".")[0] + "Z",
   );
 
   const sasOptions = {
     containerName,
     blobName,
-    permissions: BlobSASPermissions.parse('r'), // Read-only permissions for a blob
+    permissions: BlobSASPermissions.parse("r"), // Read-only permissions for a blob
     startsOn: startsOn,
     expiresOn: expiresOn,
     protocol: SASProtocol.Https, // HTTPS only
-    resource: 'b',
-    version: '2022-11-02', // Set the service version to match Azure
+    resource: "b",
+    version: "2022-11-02", // Set the service version to match Azure
   };
 
   // Generate SAS token
@@ -322,6 +326,6 @@ function generateBlobSasToken(containerName: string, blobName: string): string {
     sharedKeyCredential,
   ).toString();
 
-  devLog('Generated SAS Token:', sasToken);
+  devLog("Generated SAS Token:", sasToken);
   return sasToken;
 }

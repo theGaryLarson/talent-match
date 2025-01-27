@@ -1,22 +1,22 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import EditIcon from '@mui/icons-material/Edit';
-import Divider from '@mui/material/Divider';
-import Tooltip from '@mui/material/Tooltip';
-import Logout from '@mui/icons-material/Logout';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import { signOut, useSession } from 'next-auth/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import Button from '@mui/material/Button';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import Login from '@mui/icons-material/Login';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import EditIcon from "@mui/icons-material/Edit";
+import Divider from "@mui/material/Divider";
+import Tooltip from "@mui/material/Tooltip";
+import Logout from "@mui/icons-material/Logout";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import { signOut, useSession } from "next-auth/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import Button from "@mui/material/Button";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import Login from "@mui/icons-material/Login";
 
 export default function AccountMenu() {
   const { data: session } = useSession();
@@ -32,41 +32,43 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
 
-  var textColor = 'text-black';
-  if (pathname == '/services/jobseekers' ||
-      pathname == '/services/employers' ||
-      pathname.startsWith('/services/training-programs/')) {
-    textColor = 'text-white';
+  var textColor = "text-black";
+  if (
+    pathname == "/services/jobseekers" ||
+    pathname == "/services/employers" ||
+    pathname.startsWith("/services/training-programs/")
+  ) {
+    textColor = "text-white";
   }
 
   return (
     <React.Fragment>
-      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
         <Tooltip title="Account settings">
           <Button
             onClick={handleClick}
             size="small"
             sx={{ ml: 2 }}
-            aria-controls={open ? 'account-menu' : undefined}
+            aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
+            aria-expanded={open ? "true" : undefined}
           >
             <p
               className={
-                'flex hidden items-center text-sm normal-case sm-tablet:contents ' +
+                "flex hidden items-center text-sm normal-case sm-tablet:contents " +
                 textColor
               }
             >
-              {session?.user?.name || ''}
+              {session?.user?.name || ""}
             </p>
             <ChevronDownIcon
-              className={'h-5 w-5 flex-none ' + textColor}
+              className={"h-5 w-5 flex-none " + textColor}
               aria-hidden="true"
             />
             <Avatar
               sx={{ width: 50, height: 50 }}
-              alt={session?.user?.name || ''}
-              src={session?.user?.image || ''}
+              alt={session?.user?.name || ""}
+              src={session?.user?.image || ""}
             />
           </Button>
         </Tooltip>
@@ -81,32 +83,32 @@ export default function AccountMenu() {
           paper: {
             elevation: 0,
             sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              overflow: "visible",
+              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
               mt: 1.5,
-              '& .MuiAvatar-root': {
+              "& .MuiAvatar-root": {
                 width: 32,
                 height: 32,
                 ml: -0.5,
                 mr: 1,
               },
-              '&::before': {
+              "&::before": {
                 content: '""',
-                display: 'block',
-                position: 'absolute',
+                display: "block",
+                position: "absolute",
                 top: 0,
                 right: 14,
                 width: 10,
                 height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
+                bgcolor: "background.paper",
+                transform: "translateY(-50%) rotate(45deg)",
                 zIndex: 0,
               },
             },
           },
         }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {role?.includes(Role.EMPLOYER) ? (
           <Link href="/services/employers/dashboard">
@@ -118,7 +120,7 @@ export default function AccountMenu() {
             </MenuItem>
           </Link>
         ) : (
-          ''
+          ""
         )}
         {role?.includes(Role.JOBSEEKER) ? (
           <Link href="/services/jobseekers/dashboard">
@@ -130,7 +132,7 @@ export default function AccountMenu() {
             </MenuItem>
           </Link>
         ) : (
-          ''
+          ""
         )}
         {role?.includes(Role.ADMIN) ? (
           <Link href="/admin">
@@ -142,7 +144,7 @@ export default function AccountMenu() {
             </MenuItem>
           </Link>
         ) : (
-          ''
+          ""
         )}
         {role?.includes(Role.CASE_MANAGER) ? (
           <Link href="/career-prep">
@@ -154,11 +156,11 @@ export default function AccountMenu() {
             </MenuItem>
           </Link>
         ) : (
-          ''
+          ""
         )}
 
         {role?.includes(Role.JOBSEEKER) ? (
-          <Link href={'/services/jobseekers/' + session?.user.jobseekerId}>
+          <Link href={"/services/jobseekers/" + session?.user.jobseekerId}>
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <AccountBoxIcon fontSize="small" />
@@ -167,7 +169,7 @@ export default function AccountMenu() {
             </MenuItem>
           </Link>
         ) : (
-          ''
+          ""
         )}
 
         {role?.includes(Role.EMPLOYER) ? (
@@ -180,11 +182,11 @@ export default function AccountMenu() {
             </MenuItem>
           </Link>
         ) : (
-          ''
+          ""
         )}
 
         {role == undefined ? (
-          <Link href={'/signin'}>
+          <Link href={"/signin"}>
             <MenuItem>
               <ListItemIcon>
                 <Login fontSize="small" />
@@ -195,7 +197,7 @@ export default function AccountMenu() {
         ) : (
           <div>
             <Divider />
-            <Link href={'/signout'}>
+            <Link href={"/signout"}>
               <MenuItem>
                 <ListItemIcon>
                   <Logout fontSize="small" />

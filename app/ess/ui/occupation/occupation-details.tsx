@@ -33,7 +33,15 @@ export default function OccupationDetails({
   );
 }
 
-function Section({ title, items, labelKey }: { title: string; items: any[]; labelKey: string }) {
+function Section({
+  title,
+  items,
+  labelKey,
+}: {
+  title: string;
+  items: any[];
+  labelKey: string;
+}) {
   return (
     <Grid2 size={{ xs: 12, md: 6, xl: 3 }}>
       <Card sx={{ height: "100%" }}>
@@ -42,9 +50,16 @@ function Section({ title, items, labelKey }: { title: string; items: any[]; labe
             {title}
           </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-            {items && items.slice(0, 10).map((item, index) => (
-              <Chip label={item[labelKey]} key={index} sx={{ mb: 1, mr: 1 }} />
-            ))}
+            {items &&
+              items
+                .slice(0, 10)
+                .map((item, index) => (
+                  <Chip
+                    label={item[labelKey]}
+                    key={index}
+                    sx={{ mb: 1, mr: 1 }}
+                  />
+                ))}
           </Box>
         </CardContent>
       </Card>

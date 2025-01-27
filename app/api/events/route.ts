@@ -1,5 +1,10 @@
-import { createEvent, deleteEvent, getAllEvents, updateEvent } from '@/app/lib/events';
-import { NextRequest, NextResponse } from 'next/server'; // Import NextRequest and NextResponse
+import {
+  createEvent,
+  deleteEvent,
+  getAllEvents,
+  updateEvent,
+} from "@/app/lib/events";
+import { NextRequest, NextResponse } from "next/server"; // Import NextRequest and NextResponse
 //  // Import your functions
 
 // POST - Create an Event
@@ -15,19 +20,21 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     console.error("Error creating event:", error);
-    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }
 
-// GET - Retrieve All Events 
+// GET - Retrieve All Events
 export async function GET() {
- const result = await getAllEvents()
- if(result.success){
-    return NextResponse.json(result, {status: 200})
- }else{
-    return NextResponse.json(result, {status:404})
- }
- 
+  const result = await getAllEvents();
+  if (result.success) {
+    return NextResponse.json(result, { status: 200 });
+  } else {
+    return NextResponse.json(result, { status: 404 });
+  }
 }
 
 // DELETE - Delete an Event
@@ -35,7 +42,10 @@ export async function DELETE(req: NextRequest) {
   try {
     const { eventId } = await req.json(); // Assuming the client sends the eventId in the body
     if (!eventId) {
-      return NextResponse.json({ success: false, error: "Event ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: "Event ID is required" },
+        { status: 400 },
+      );
     }
 
     const result = await deleteEvent(eventId);
@@ -46,7 +56,10 @@ export async function DELETE(req: NextRequest) {
     }
   } catch (error) {
     console.error("Error deleting event:", error);
-    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }
 
@@ -55,7 +68,10 @@ export async function PUT(req: NextRequest) {
   try {
     const { eventId, updatedData } = await req.json(); // Assuming the client sends eventId and updated fields
     if (!eventId || !updatedData) {
-      return NextResponse.json({ success: false, error: "Event ID and updated data are required" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: "Event ID and updated data are required" },
+        { status: 400 },
+      );
     }
 
     const result = await updateEvent(eventId, updatedData);
@@ -66,6 +82,9 @@ export async function PUT(req: NextRequest) {
     }
   } catch (error) {
     console.error("Error updating event:", error);
-    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

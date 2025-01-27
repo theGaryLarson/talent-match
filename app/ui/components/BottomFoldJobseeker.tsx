@@ -12,8 +12,15 @@ export default async function BottomFoldJobSeeker() {
         <div className="flex flex-col items-start justify-start">
           <div className="relative h-6 w-px" />
         </div>
-        {session == null?
-        <RoundedButton content={"Create Profile"} link={"/signin"} invertColor={false}/>:''}
+        {session == null ? (
+          <RoundedButton
+            content={"Create Profile"}
+            link={"/signin"}
+            invertColor={false}
+          />
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

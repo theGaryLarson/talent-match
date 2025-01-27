@@ -1,23 +1,24 @@
-'use client';
-import { FormEvent, useEffect, useState } from 'react';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { skill_subcategories } from '@prisma/client';
-import { Button, Grid2 } from '@mui/material';
-import { ArrowCircleRightOutlined } from '@mui/icons-material';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
-import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
+"use client";
+import { FormEvent, useEffect, useState } from "react";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { skill_subcategories } from "@prisma/client";
+import { Button, Grid2 } from "@mui/material";
+import { ArrowCircleRightOutlined } from "@mui/icons-material";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import TextFieldWithAutocomplete from "@/app/ui/components/mui/TextFieldWithAutocomplete";
 
 export default function UpdateSkillPage() {
-  const [skillSubcategories, setSkillSubcategories] = useState<skill_subcategories[]>();
+  const [skillSubcategories, setSkillSubcategories] =
+    useState<skill_subcategories[]>();
   const [currentSkill, setCurrentSkill] = useState<SkillDTO | null>(null);
   const [formData, setFormData] = useState({
-    skill_name: '',
-    skill_subcategory_id: '',
-    skill_info_url: '',
+    skill_name: "",
+    skill_subcategory_id: "",
+    skill_info_url: "",
   });
 
   useEffect(() => {
-    fetch('/api/skills/subcategories/get')
+    fetch("/api/skills/subcategories/get")
       .then((res) => res.json())
       .then((jsonData) => {
         setSkillSubcategories(jsonData);
@@ -28,34 +29,34 @@ export default function UpdateSkillPage() {
     if (currentSkill) {
       setFormData({
         skill_name: currentSkill.skill_name,
-        skill_subcategory_id: currentSkill.skill_subcategory_id || '',
-        skill_info_url: currentSkill.skill_info_url || '',
+        skill_subcategory_id: currentSkill.skill_subcategory_id || "",
+        skill_info_url: currentSkill.skill_info_url || "",
       });
     } else {
       setFormData({
-        skill_name: '',
-        skill_subcategory_id: '',
-        skill_info_url: '',
+        skill_name: "",
+        skill_subcategory_id: "",
+        skill_info_url: "",
       });
     }
   }, [currentSkill]);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   async function onUpdateSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const submitButton = event.currentTarget.querySelector(
-      'button[type="submit"]'
+      'button[type="submit"]',
     ) as HTMLButtonElement;
     if (submitButton) submitButton.disabled = true;
 
     if (!currentSkill) {
-      alert('No skill selected');
+      alert("No skill selected");
       if (submitButton) submitButton.disabled = false;
       return;
     }
@@ -68,28 +69,28 @@ export default function UpdateSkillPage() {
     };
 
     try {
-      const response = await fetch('/api/skills/update', {
-        method: 'PUT',
+      const response = await fetch("/api/skills/update", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedSkillData),
       });
 
       if (response.ok) {
-        alert('Skill updated successfully!');
+        alert("Skill updated successfully!");
         setCurrentSkill(null);
         setFormData({
-          skill_name: '',
-          skill_subcategory_id: '',
-          skill_info_url: '',
+          skill_name: "",
+          skill_subcategory_id: "",
+          skill_info_url: "",
         });
       } else {
-        alert('Failed to update skill');
+        alert("Failed to update skill");
       }
     } catch (error) {
-      console.error('Error updating skill:', error);
-      alert('Error updating skill');
+      console.error("Error updating skill:", error);
+      alert("Error updating skill");
     } finally {
       if (submitButton) submitButton.disabled = false;
     }
@@ -98,9 +99,9 @@ export default function UpdateSkillPage() {
   const handleReset = () => {
     setCurrentSkill(null);
     setFormData({
-      skill_name: '',
-      skill_subcategory_id: '',
-      skill_info_url: '',
+      skill_name: "",
+      skill_subcategory_id: "",
+      skill_info_url: "",
     });
   };
 
@@ -113,9 +114,9 @@ export default function UpdateSkillPage() {
           <TextFieldWithAutocomplete<SkillDTO>
             apiSearchRoute="/api/skills/search/"
             fieldLabel="Select Skill to Update"
-            value={currentSkill || ''}
+            value={currentSkill || ""}
             onChange={(_, value) => {
-              if (value && typeof value !== 'string') {
+              if (value && typeof value !== "string") {
                 setCurrentSkill(value);
               } else {
                 setCurrentSkill(null);
@@ -137,7 +138,7 @@ export default function UpdateSkillPage() {
               name="skill_name"
               required
               value={formData.skill_name}
-              onChange={(e) => handleInputChange('skill_name', e.target.value)}
+              onChange={(e) => handleInputChange("skill_name", e.target.value)}
             />
           </div>
 
@@ -148,7 +149,9 @@ export default function UpdateSkillPage() {
               id="subcategory"
               required
               value={formData.skill_subcategory_id}
-              onChange={(e) => handleInputChange('skill_subcategory_id', e.target.value)}
+              onChange={(e) =>
+                handleInputChange("skill_subcategory_id", e.target.value)
+              }
             >
               <option value="">--Please Select a Subcategory--</option>
               {skillSubcategories?.map((subcat) => (
@@ -164,14 +167,17 @@ export default function UpdateSkillPage() {
 
           <div className="grid grid-cols-1">
             <label htmlFor="skill_info_url">
-              Information URL <span className="text-xs">(http:// required)</span>
+              Information URL{" "}
+              <span className="text-xs">(http:// required)</span>
             </label>
             <input
               type="url"
               name="skill_info_url"
               placeholder="http://www.example.com"
               value={formData.skill_info_url}
-              onChange={(e) => handleInputChange('skill_info_url', e.target.value)}
+              onChange={(e) =>
+                handleInputChange("skill_info_url", e.target.value)
+              }
             />
           </div>
 

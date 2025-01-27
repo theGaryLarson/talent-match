@@ -1,8 +1,12 @@
-import { addCareerPrepStudentNotes, CreateNoteDTO, selfAssignAsCaseManager } from "@/app/lib/admin/careerPrep";
+import {
+  addCareerPrepStudentNotes,
+  CreateNoteDTO,
+  selfAssignAsCaseManager,
+} from "@/app/lib/admin/careerPrep";
 import { NextResponse } from "next/server";
 
-export async function POST(req:Request){
-    const body:{jobseekerId:string} = await req.json()
-    const res = await selfAssignAsCaseManager(body.jobseekerId)
-    return NextResponse.json({});
+export async function POST(req: Request) {
+  const body: { jobseekerId: string } = await req.json();
+  const res = await selfAssignAsCaseManager(body.jobseekerId);
+  return NextResponse.json({});
 }

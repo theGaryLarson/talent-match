@@ -174,7 +174,6 @@ export type ReadCompanySocialLinkDTO = {
   platformIconUrl?: string;
 };
 
-
 export type PostEmployerProfileDTO = {
   // Personal Info
   userId: string;

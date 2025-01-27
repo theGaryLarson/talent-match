@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { ChangeEventHandler, useState } from 'react';
+import { ChangeEventHandler, useState } from "react";
 
 interface Props {
   children: React.ReactNode;
@@ -24,17 +24,17 @@ interface DefaultValue {
 export default function InputTextWithLabel({
   children,
   id,
-  disabled=false,
-  className = '',
+  disabled = false,
+  className = "",
   onChange,
   value,
   defaultValue,
   ...rest
 }: Props & (ManagedValue | DefaultValue)) {
-  const [internalValue, setInternalValue] = useState('');
+  const [internalValue, setInternalValue] = useState("");
 
   return (
-    <div className={'relative ' + className}>
+    <div className={"relative " + className}>
       <div>
         <input
           id={id}
@@ -42,12 +42,12 @@ export default function InputTextWithLabel({
           disabled={disabled}
           className="border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
           value={
-            typeof defaultValue === 'undefined'
+            typeof defaultValue === "undefined"
               ? (value ?? internalValue)
               : undefined
           }
           defaultValue={
-            typeof defaultValue !== 'undefined' ? defaultValue : undefined
+            typeof defaultValue !== "undefined" ? defaultValue : undefined
           }
           onChange={onChange ?? ((e) => setInternalValue(e.target.value))}
           {...rest}

@@ -1,7 +1,7 @@
-import React, { memo, useCallback, useState } from 'react';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import PillButton from '@/app/ui/components/PillButton';
+import React, { memo, useCallback, useState } from "react";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
+import PillButton from "@/app/ui/components/PillButton";
 import {
   Radio,
   Checkbox,
@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormControlLabel,
   RadioGroup,
-} from '@mui/material';
+} from "@mui/material";
 import {
   CollegeDegreeType,
   HighSchoolDegreeType,
@@ -17,39 +17,39 @@ import {
   PreAEduSystem,
   JsEducationInfoDTO,
   ProgramEnrollmentStatus,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { edu_providers, educators, provider_programs } from '@prisma/client';
-import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
-import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
-import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
-import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
-import { v4 as uuidv4 } from 'uuid';
-import { Close } from '@mui/icons-material';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { edu_providers, educators, provider_programs } from "@prisma/client";
+import TextFieldWithAutocomplete from "@/app/ui/components/mui/TextFieldWithAutocomplete";
+import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
+import { EducationProviderDTO } from "@/data/dtos/EducationProviderDTO";
+import { GeneralProgramDTO } from "@/data/dtos/GeneralProgramDTO";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import { v4 as uuidv4 } from "uuid";
+import { Close } from "@mui/icons-material";
 
-const classNamePrefix = 'profile-creation-education-group-';
+const classNamePrefix = "profile-creation-education-group-";
 
-const classEdLevel = 'edLevel';
-const classEdProviderObject = 'edProviderObject'; // fixme edProviderObject
-const classEdProviderId = 'edProviderId';
-const classEdProviderName = 'edProviderName';
-const classIsCurrent = 'isEnrolled';
-const classStartDate = 'startDate';
-const classEndDate = 'gradDate';
-const classDegreeType = 'degreeType';
-const classEnrollmentStatus = 'enrollmentStatus';
+const classEdLevel = "edLevel";
+const classEdProviderObject = "edProviderObject"; // fixme edProviderObject
+const classEdProviderId = "edProviderId";
+const classEdProviderName = "edProviderName";
+const classIsCurrent = "isEnrolled";
+const classStartDate = "startDate";
+const classEndDate = "gradDate";
+const classDegreeType = "degreeType";
+const classEnrollmentStatus = "enrollmentStatus";
 // const classGradeLevel = "schoolGradeLevel"; no longer needed as an input
 // const classPreALevel = "preALevel";
-const classProgramObject = 'programObject'; // fixme: rename to programId
-const classProgramName = 'programName';
-const classProgramId = 'programId';
+const classProgramObject = "programObject"; // fixme: rename to programId
+const classProgramName = "programName";
+const classProgramId = "programId";
 // const classMajor = "major";
 // const classMinor = "minor";
-const classPreAppEdSystem = 'preAppEdSystem';
-const classDescription = 'description';
-const classGPA = 'gpa';
-const classIsTechDegree = 'isTechDegree';
+const classPreAppEdSystem = "preAppEdSystem";
+const classDescription = "description";
+const classGPA = "gpa";
+const classIsTechDegree = "isTechDegree";
 
 export interface EducationData {
   id: string;
@@ -80,7 +80,7 @@ export function defaultEducationData() {
     [classEdLevel]: EducationLevel.Unselected,
     [classEdProviderObject]: null,
     [classEdProviderId]: null,
-    [classEdProviderName]: '',
+    [classEdProviderName]: "",
     [classIsCurrent]: false,
     [classStartDate]: null,
     [classEndDate]: null,
@@ -90,11 +90,11 @@ export function defaultEducationData() {
     // [classPreALevel]: null,
     [classProgramObject]: null,
     [classProgramId]: null,
-    [classProgramName]: '',
+    [classProgramName]: "",
     // [classMajor]: "",
     // [classMinor]: "",
     [classPreAppEdSystem]: null,
-    [classDescription]: '',
+    [classDescription]: "",
     [classGPA]: null,
     [classIsTechDegree]: undefined,
   };
@@ -119,35 +119,35 @@ export default memo(function Educations({
       const updatedEducation = changedEducations[index];
       updatedEducation[key] = value;
       if (key === classEdProviderObject) {
-        if (typeof value === 'string') {
+        if (typeof value === "string") {
           updatedEducation[classEdProviderName] = value;
           updatedEducation[classEdProviderId] = uuidv4();
         } else if (value) {
           updatedEducation[classEdProviderName] = value.name;
           updatedEducation[classEdProviderId] = value.id;
         } else {
-          updatedEducation[classEdProviderName] = '';
+          updatedEducation[classEdProviderName] = "";
           updatedEducation[classEdProviderId] = null;
         }
       } else if (key === classProgramObject) {
-        if (typeof value === 'string') {
+        if (typeof value === "string") {
           updatedEducation[classProgramName] = value;
           updatedEducation[classProgramId] = uuidv4();
         } else if (value) {
           updatedEducation[classProgramName] = value.title;
           updatedEducation[classProgramId] = value.id;
         } else {
-          updatedEducation[classProgramName] = '';
+          updatedEducation[classProgramName] = "";
           updatedEducation[classProgramId] = null;
         }
       }
-      onUpdate('educations', changedEducations);
+      onUpdate("educations", changedEducations);
     },
     [data, onUpdate],
   );
 
   return data.map((education, index) => (
-    <fieldset key={classNamePrefix + education.id + '-key'}>
+    <fieldset key={classNamePrefix + education.id + "-key"}>
       <legend className="flex w-full justify-between">
         <h3>Education Detail {index + 1}</h3>
         <PillButton onClick={() => onRemove(education.id)} variant="outlined">
@@ -161,7 +161,7 @@ export default memo(function Educations({
             className="mb-2 mt-5"
             id="profile-creation-education-currently-enrolled-label"
             component="legend"
-            sx={{ color: '#000000ff' }}
+            sx={{ color: "#000000ff" }}
           >
             Type of school or program: *
           </FormLabel>
@@ -176,8 +176,8 @@ export default memo(function Educations({
               control={<Radio required />}
               label="High school"
               sx={{
-                '& .MuiFormControlLabel-asterisk': {
-                  display: 'none',
+                "& .MuiFormControlLabel-asterisk": {
+                  display: "none",
                 },
               }}
             />
@@ -186,8 +186,8 @@ export default memo(function Educations({
               control={<Radio required />}
               label="College"
               sx={{
-                '& .MuiFormControlLabel-asterisk': {
-                  display: 'none',
+                "& .MuiFormControlLabel-asterisk": {
+                  display: "none",
                 },
               }}
             />
@@ -196,8 +196,8 @@ export default memo(function Educations({
               control={<Radio required />}
               label="Training program / Bootcamp"
               sx={{
-                '& .MuiFormControlLabel-asterisk': {
-                  display: 'none',
+                "& .MuiFormControlLabel-asterisk": {
+                  display: "none",
                 },
               }}
             />
@@ -206,8 +206,8 @@ export default memo(function Educations({
               control={<Radio required />}
               label="Pre-apprenticeship"
               sx={{
-                '& .MuiFormControlLabel-asterisk': {
-                  display: 'none',
+                "& .MuiFormControlLabel-asterisk": {
+                  display: "none",
                 },
               }}
             />
@@ -216,8 +216,8 @@ export default memo(function Educations({
               control={<Radio required />}
               label="Other"
               sx={{
-                '& .MuiFormControlLabel-asterisk': {
-                  display: 'none',
+                "& .MuiFormControlLabel-asterisk": {
+                  display: "none",
                 },
               }}
             />
@@ -225,7 +225,7 @@ export default memo(function Educations({
         </FormControl>
       </div>
       {education[classEdLevel] !== EducationLevel.HighSchool ? (
-        ''
+        ""
       ) : (
         <div id="profile-creation-education-high-school-fields">
           <div className="profile-form-grid">
@@ -243,13 +243,13 @@ export default memo(function Educations({
                 id="profile-creation-education-high-school-name"
                 searchingText="Searching..."
                 noResultsText="No education providers found..."
-                value={education[classEdProviderObject] ?? ''}
+                value={education[classEdProviderObject] ?? ""}
                 onChange={(e, val) =>
                   handleChange(index, classEdProviderObject, val)
                 }
                 searchPlaceholder="Example: Chief Sealth High School"
                 getOptionLabel={(option: EducationProviderDTO) =>
-                  option.name ?? ''
+                  option.name ?? ""
                 }
               />
             </RequiredTooltip>
@@ -259,12 +259,12 @@ export default memo(function Educations({
               id="profile-creation-education-high-school-program"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
-              value={education[classProgramObject] ?? ''}
+              value={education[classProgramObject] ?? ""}
               onChange={(e, val) =>
                 handleChange(index, classProgramObject, val)
               }
               searchPlaceholder="Program name"
-              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ""}
             />
             <SelectOptionsWithLabel
               id="profile-creation-education-high-school-degree"
@@ -308,8 +308,8 @@ export default memo(function Educations({
               errorMessage="A starting date is required"
             >
               <DatePicker
-                label={'Starting date *'}
-                views={['month', 'year']}
+                label={"Starting date *"}
+                views={["month", "year"]}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(
@@ -329,8 +329,8 @@ export default memo(function Educations({
               errorMessage="A completion date is required"
             >
               <DatePicker
-                label={'Completion date *'}
-                views={['month', 'year']}
+                label={"Completion date *"}
+                views={["month", "year"]}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(index, classEndDate, val?.isValid() ? val : null)
@@ -350,12 +350,12 @@ export default memo(function Educations({
           {/*  Current*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
-              id={'profile-creation-education-high-school-gpa'}
+              id={"profile-creation-education-high-school-gpa"}
               type="text"
               className="w-full"
               placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              value={education[classGPA] ?? ''}
+              value={education[classGPA] ?? ""}
             >
               Grade Point Average (GPA):
             </InputTextWithLabel>
@@ -363,7 +363,7 @@ export default memo(function Educations({
         </div>
       )}
       {education[classEdLevel] !== EducationLevel.College ? (
-        ''
+        ""
       ) : (
         <div id="profile-creation-education-college-fields">
           <div className="profile-form-grid">
@@ -381,13 +381,13 @@ export default memo(function Educations({
                 id="profile-creation-education-college-name"
                 searchingText="Searching..."
                 noResultsText="No education providers found..."
-                value={education[classEdProviderObject] ?? ''}
+                value={education[classEdProviderObject] ?? ""}
                 onChange={(e, val) =>
                   handleChange(index, classEdProviderObject, val)
                 }
                 searchPlaceholder="Example: University of Washington"
                 getOptionLabel={(option: EducationProviderDTO) =>
-                  option.name ?? ''
+                  option.name ?? ""
                 }
               />
             </RequiredTooltip>
@@ -404,13 +404,13 @@ export default memo(function Educations({
                 id="profile-creation-education-college-program"
                 searchingText="Searching..."
                 noResultsText="No education provider programs found..."
-                value={education[classProgramObject] ?? ''}
+                value={education[classProgramObject] ?? ""}
                 onChange={(e, val) =>
                   handleChange(index, classProgramObject, val)
                 }
                 searchPlaceholder="Example: Computer Science"
                 getOptionLabel={(option: GeneralProgramDTO) =>
-                  option.title ?? ''
+                  option.title ?? ""
                 }
               />
             </RequiredTooltip>
@@ -455,8 +455,8 @@ export default memo(function Educations({
               errorMessage="A starting date is required"
             >
               <DatePicker
-                label={'Starting date *'}
-                views={['month', 'year']}
+                label={"Starting date *"}
+                views={["month", "year"]}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(
@@ -476,8 +476,8 @@ export default memo(function Educations({
               errorMessage="A completion date is required"
             >
               <DatePicker
-                label={'Completion date *'}
-                views={['month', 'year']}
+                label={"Completion date *"}
+                views={["month", "year"]}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(index, classEndDate, val?.isValid() ? val : null)
@@ -497,12 +497,12 @@ export default memo(function Educations({
           {/*  Current*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
-              id={'profile-creation-education-college-gpa'}
+              id={"profile-creation-education-college-gpa"}
               type="text"
               className="w-full"
               placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              value={education[classGPA] ?? ''}
+              value={education[classGPA] ?? ""}
             >
               Grade Point Average (GPA):
             </InputTextWithLabel>
@@ -510,7 +510,7 @@ export default memo(function Educations({
         </div>
       )}
       {education[classEdLevel] !== EducationLevel.TrainingProgram ? (
-        ''
+        ""
       ) : (
         <div id="profile-creation-education-training-program-fields">
           <div className="profile-form-grid">
@@ -528,13 +528,13 @@ export default memo(function Educations({
                 id="profile-creation-education-training-provider-name"
                 searchingText="Searching..."
                 noResultsText="No education providers found..."
-                value={education[classEdProviderObject] ?? ''}
+                value={education[classEdProviderObject] ?? ""}
                 onChange={(e, val) =>
                   handleChange(index, classEdProviderObject, val)
                 }
                 searchPlaceholder="Example: CompTIA"
                 getOptionLabel={(option: EducationProviderDTO) =>
-                  option.name ?? ''
+                  option.name ?? ""
                 }
               />
             </RequiredTooltip>
@@ -544,12 +544,12 @@ export default memo(function Educations({
               id="profile-creation-education-training-provider-program-name"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
-              value={education[classProgramObject] ?? ''}
+              value={education[classProgramObject] ?? ""}
               onChange={(e, val) =>
                 handleChange(index, classProgramObject, val)
               }
               searchPlaceholder="Example: Cybersecurity"
-              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ""}
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
@@ -578,8 +578,8 @@ export default memo(function Educations({
               errorMessage="A starting date is required"
             >
               <DatePicker
-                label={'Starting date *'}
-                views={['month', 'year']}
+                label={"Starting date *"}
+                views={["month", "year"]}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(
@@ -599,8 +599,8 @@ export default memo(function Educations({
               errorMessage="A completion date is required"
             >
               <DatePicker
-                label={'Completion date *'}
-                views={['month', 'year']}
+                label={"Completion date *"}
+                views={["month", "year"]}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(index, classEndDate, val?.isValid() ? val : null)
@@ -620,12 +620,12 @@ export default memo(function Educations({
           {/*  Current*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
-              id={'profile-creation-education-training-program-gpa'}
+              id={"profile-creation-education-training-program-gpa"}
               type="text"
               className="w-full"
               placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              value={education[classGPA] ?? ''}
+              value={education[classGPA] ?? ""}
             >
               Grade Point Average (GPA):
             </InputTextWithLabel>
@@ -633,7 +633,7 @@ export default memo(function Educations({
         </div>
       )}
       {education[classEdLevel] !== EducationLevel.PreApprenticeship ? (
-        ''
+        ""
       ) : (
         <div id="profile-creation-education-preapprenticeship-fields">
           <div className="profile-form-grid">
@@ -651,13 +651,13 @@ export default memo(function Educations({
                 id="profile-creation-education-preapprenticeship-name"
                 searchingText="Searching..."
                 noResultsText="No education providers found..."
-                value={education[classEdProviderObject] ?? ''}
+                value={education[classEdProviderObject] ?? ""}
                 onChange={(e, val) =>
                   handleChange(index, classEdProviderObject, val)
                 }
                 searchPlaceholder="Example: Computing for All"
                 getOptionLabel={(option: EducationProviderDTO) =>
-                  option.name ?? ''
+                  option.name ?? ""
                 }
               />
             </RequiredTooltip>
@@ -671,7 +671,7 @@ export default memo(function Educations({
               onChange={(e) =>
                 handleChange(index, classPreAppEdSystem, e.target.value)
               }
-              value={education[classPreAppEdSystem]?.toString() ?? ''}
+              value={education[classPreAppEdSystem]?.toString() ?? ""}
             >
               Affiliated school system:
             </SelectOptionsWithLabel>
@@ -681,12 +681,12 @@ export default memo(function Educations({
               id="profile-creation-education-preapprenticeship-program"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
-              value={education[classProgramObject] ?? ''}
+              value={education[classProgramObject] ?? ""}
               onChange={(e, val) =>
                 handleChange(index, classProgramObject, val)
               }
               searchPlaceholder="Example: Full stack web development"
-              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ""}
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
@@ -715,8 +715,8 @@ export default memo(function Educations({
               errorMessage="A starting date is required"
             >
               <DatePicker
-                label={'Starting date *'}
-                views={['month', 'year']}
+                label={"Starting date *"}
+                views={["month", "year"]}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(
@@ -736,8 +736,8 @@ export default memo(function Educations({
               errorMessage="A completion date is required"
             >
               <DatePicker
-                label={'Completion date *'}
-                views={['month', 'year']}
+                label={"Completion date *"}
+                views={["month", "year"]}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(index, classEndDate, val?.isValid() ? val : null)
@@ -757,12 +757,12 @@ export default memo(function Educations({
           {/*  Current*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
-              id={'profile-creation-education-preapprenticeship-gpa'}
+              id={"profile-creation-education-preapprenticeship-gpa"}
               type="text"
               className="w-full"
               placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              value={education[classGPA] ?? ''}
+              value={education[classGPA] ?? ""}
             >
               Grade Point Average (GPA):
             </InputTextWithLabel>
@@ -770,7 +770,7 @@ export default memo(function Educations({
         </div>
       )}
       {education[classEdLevel] !== EducationLevel.Other ? (
-        ''
+        ""
       ) : (
         <div id="profile-creation-education-other-fields">
           <div className="profile-form-grid">
@@ -788,13 +788,13 @@ export default memo(function Educations({
                 id="profile-creation-education-other-provider-name"
                 searchingText="Searching..."
                 noResultsText="No education providers found..."
-                value={education[classEdProviderObject] ?? ''}
+                value={education[classEdProviderObject] ?? ""}
                 onChange={(e, val) =>
                   handleChange(index, classEdProviderObject, val)
                 }
                 searchPlaceholder="Example: edX"
                 getOptionLabel={(option: EducationProviderDTO) =>
-                  option.name ?? ''
+                  option.name ?? ""
                 }
               />
             </RequiredTooltip>
@@ -804,12 +804,12 @@ export default memo(function Educations({
               id="profile-creation-education-other-provider-program-name"
               searchingText="Searching..."
               noResultsText="No education provider programs found..."
-              value={education[classProgramObject] ?? ''}
+              value={education[classProgramObject] ?? ""}
               onChange={(e, val) =>
                 handleChange(index, classProgramObject, val)
               }
               searchPlaceholder="Example: Computer Science"
-              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ''}
+              getOptionLabel={(option: GeneralProgramDTO) => option.title ?? ""}
             />
             {/*added for WJI data collection alignment (Please do not modify data).*/}
             <SelectOptionsWithLabel
@@ -838,8 +838,8 @@ export default memo(function Educations({
               errorMessage="A starting date is required"
             >
               <DatePicker
-                label={'Starting date *'}
-                views={['month', 'year']}
+                label={"Starting date *"}
+                views={["month", "year"]}
                 value={education[classStartDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(
@@ -859,8 +859,8 @@ export default memo(function Educations({
               errorMessage="A completion date is required"
             >
               <DatePicker
-                label={'Completion date *'}
-                views={['month', 'year']}
+                label={"Completion date *"}
+                views={["month", "year"]}
                 value={education[classEndDate] || null}
                 onChange={(val: Dayjs | null) =>
                   handleChange(index, classEndDate, val?.isValid() ? val : null)
@@ -880,12 +880,12 @@ export default memo(function Educations({
           {/*  Current*/}
           <div className="profile-form-grid">
             <InputTextWithLabel
-              id={'profile-creation-education-other-gpa'}
+              id={"profile-creation-education-other-gpa"}
               type="text"
               className="w-full"
               placeholder="Example: 4.0"
               onChange={(e) => handleChange(index, classGPA, e.target.value)}
-              value={education[classGPA] ?? ''}
+              value={education[classGPA] ?? ""}
             >
               Grade Point Average (GPA):
             </InputTextWithLabel>

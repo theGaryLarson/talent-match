@@ -1,8 +1,7 @@
-import { render } from '@react-email/render';
+import { render } from "@react-email/render";
 
-
-import { WelcomeEmail, type WelcomeEmailData } from '@/emails/welcome-email';
-import { sendEmail } from '@/lib/smtp/mailer/send-email';
+import { WelcomeEmail, type WelcomeEmailData } from "@/emails/welcome-email";
+import { sendEmail } from "@/lib/smtp/mailer/send-email";
 
 export async function sendWelcomeEmail(data: WelcomeEmailData): Promise<void> {
   const component = WelcomeEmail(data);
@@ -13,6 +12,6 @@ export async function sendWelcomeEmail(data: WelcomeEmailData): Promise<void> {
     recipient: data.recipient,
     subject: `Welcome to Wa Tech`,
     html,
-    text
+    text,
   });
 }

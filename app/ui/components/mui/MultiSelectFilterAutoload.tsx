@@ -1,22 +1,22 @@
-'use client'
-import * as React from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
+"use client";
+import * as React from "react";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import ListItemText from "@mui/material/ListItemText";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
 
 interface Props<ValueType> {
-  id: string,
-  apiAutoloadRoute: string,
-  label: string,
-  value: string[],
-  onChange: ((event: SelectChangeEvent<string[]>) => void),
-  placeholder?: string | undefined,
-  getOptionLabel: ((option: ValueType) => string),
-  [key: string]: any,
+  id: string;
+  apiAutoloadRoute: string;
+  label: string;
+  value: string[];
+  onChange: (event: SelectChangeEvent<string[]>) => void;
+  placeholder?: string | undefined;
+  getOptionLabel: (option: ValueType) => string;
+  [key: string]: any;
 }
 
 export default function MultipleSelectFilterAutoload<ValueType>({
@@ -39,7 +39,7 @@ export default function MultipleSelectFilterAutoload<ValueType>({
       target: { value },
     } = event;
 
-    setFilter(typeof value === 'string' ? value.split(',') : value);
+    setFilter(typeof value === "string" ? value.split(",") : value);
     onChange(event);
   };
 
@@ -58,9 +58,9 @@ export default function MultipleSelectFilterAutoload<ValueType>({
         }
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
-    }
+    };
     autoload();
   }, []);
 
@@ -79,24 +79,31 @@ export default function MultipleSelectFilterAutoload<ValueType>({
             top: "8px",
             left: "0px",
           }}
-        >{formattedLabel}</InputLabel>
+        >
+          {formattedLabel}
+        </InputLabel>
         <Select
           multiple
           value={filter}
           onChange={handleChange}
           input={<OutlinedInput />}
-          renderValue={(selected) => selected.join(', ')}
+          renderValue={(selected) => selected.join(", ")}
           sx={{
             borderRadius: "9999px",
             height: "1.75rem",
           }}
-
           MenuProps={{ PaperProps: { sx: { maxHeight: 500 } } }}
           {...rest}
         >
           {options.map((option) => (
-            <MenuItem dense={true} key={getOptionLabel(option)} value={getOptionLabel(option)}>
-              <Checkbox checked={filter.indexOf(getOptionLabel(option)) !== -1} />
+            <MenuItem
+              dense={true}
+              key={getOptionLabel(option)}
+              value={getOptionLabel(option)}
+            >
+              <Checkbox
+                checked={filter.indexOf(getOptionLabel(option)) !== -1}
+              />
               <ListItemText primary={getOptionLabel(option)} />
             </MenuItem>
           ))}

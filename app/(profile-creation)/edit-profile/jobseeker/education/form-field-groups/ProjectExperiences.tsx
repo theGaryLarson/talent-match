@@ -1,24 +1,24 @@
-import React, { memo, useCallback } from 'react';
-import PillButton from '@/app/ui/components/PillButton';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
-import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { v4 as uuidv4 } from 'uuid';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
-import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
-import { Close } from '@mui/icons-material';
+import React, { memo, useCallback } from "react";
+import PillButton from "@/app/ui/components/PillButton";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import TextareaWithLabel from "@/app/ui/components/TextareaWithLabel";
+import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { v4 as uuidv4 } from "uuid";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
+import { Close } from "@mui/icons-material";
 
-const classNamePrefix = 'profile-creation-project-experience-group-';
-const classTitle = 'projectTitle';
-const classProjectRole = 'projectRole';
-const classStartingDate = 'startDate';
-const classCompletionDate = 'completionDate';
-const classReferenceUrl = 'reference';
-const classDescription = 'problemSolvedDescription';
-const classTeamSize = 'teamSize';
-const classSkillsStack = 'skills';
+const classNamePrefix = "profile-creation-project-experience-group-";
+const classTitle = "projectTitle";
+const classProjectRole = "projectRole";
+const classStartingDate = "startDate";
+const classCompletionDate = "completionDate";
+const classReferenceUrl = "reference";
+const classDescription = "problemSolvedDescription";
+const classTeamSize = "teamSize";
+const classSkillsStack = "skills";
 
 export interface ProjectExperienceData {
   projectId: string;
@@ -36,13 +36,13 @@ export interface ProjectExperienceData {
 export function defaultProjectExperienceData() {
   return {
     projectId: uuidv4(),
-    [classTitle]: '',
-    [classProjectRole]: '',
+    [classTitle]: "",
+    [classProjectRole]: "",
     [classStartingDate]: null,
     [classCompletionDate]: null,
-    [classReferenceUrl]: '',
-    [classDescription]: '',
-    [classTeamSize]: '',
+    [classReferenceUrl]: "",
+    [classDescription]: "",
+    [classTeamSize]: "",
     [classSkillsStack]: [],
     fetchedSkills: [],
   };
@@ -70,13 +70,13 @@ export default memo(function ProjectExperiences({
       const changedProjectExperiences: ProjectExperienceData[] = [...data];
       const updatedProjectExperience = changedProjectExperiences[index];
       updatedProjectExperience[key] = value;
-      onUpdate('projectExperiences', changedProjectExperiences);
+      onUpdate("projectExperiences", changedProjectExperiences);
     },
     [data, onUpdate],
   );
 
   return data.map((projectExperience, index) => (
-    <fieldset key={classNamePrefix + projectExperience.projectId + '-key'}>
+    <fieldset key={classNamePrefix + projectExperience.projectId + "-key"}>
       <legend className="flex w-full justify-between">
         <h3>Project Experience {index + 1}</h3>
         <PillButton
@@ -88,7 +88,7 @@ export default memo(function ProjectExperiences({
       </legend>
       <div className="profile-form-grid">
         <InputTextWithLabel
-          id={classNamePrefix + projectExperience.projectId + '-' + classTitle}
+          id={classNamePrefix + projectExperience.projectId + "-" + classTitle}
           className="w-full"
           placeholder="Example: Non-profit website"
           onChange={(e) => handleChange(index, classTitle, e.target.value)}
@@ -101,7 +101,7 @@ export default memo(function ProjectExperiences({
           id={
             classNamePrefix +
             projectExperience.projectId +
-            '-' +
+            "-" +
             classProjectRole
           }
           className="w-full"
@@ -118,7 +118,7 @@ export default memo(function ProjectExperiences({
           id={
             classNamePrefix +
             projectExperience.projectId +
-            '-' +
+            "-" +
             classReferenceUrl
           }
           onChange={(e) =>
@@ -132,7 +132,7 @@ export default memo(function ProjectExperiences({
           id={
             classNamePrefix +
             projectExperience.projectId +
-            '-' +
+            "-" +
             classDescription
           }
           placeholder="Example: Create online presence"
@@ -148,10 +148,10 @@ export default memo(function ProjectExperiences({
         <InputTextWithLabel
           type="number"
           id={
-            classNamePrefix + projectExperience.projectId + '-' + classTeamSize
+            classNamePrefix + projectExperience.projectId + "-" + classTeamSize
           }
           onChange={(e) => handleChange(index, classTeamSize, e.target.value)}
-          value={projectExperience[classTeamSize] ?? ''}
+          value={projectExperience[classTeamSize] ?? ""}
           required
         >
           Team Size: *
@@ -172,7 +172,7 @@ export default memo(function ProjectExperiences({
             id={
               classNamePrefix +
               projectExperience.projectId +
-              '-' +
+              "-" +
               classSkillsStack
             }
             maxTags={10}
@@ -198,8 +198,8 @@ export default memo(function ProjectExperiences({
           errorMessage="A starting date is required"
         >
           <DatePicker
-            label={'Starting date *'}
-            views={['month', 'year']}
+            label={"Starting date *"}
+            views={["month", "year"]}
             value={projectExperience[classStartingDate] || null}
             onChange={(val) =>
               handleChange(
@@ -220,8 +220,8 @@ export default memo(function ProjectExperiences({
           errorMessage="A completion date is required"
         >
           <DatePicker
-            label={'Completion date *'}
-            views={['month', 'year']}
+            label={"Completion date *"}
+            views={["month", "year"]}
             value={projectExperience[classCompletionDate] || null}
             onChange={(val) =>
               handleChange(

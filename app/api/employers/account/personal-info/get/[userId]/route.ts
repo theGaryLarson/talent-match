@@ -1,11 +1,14 @@
-import { NextResponse } from 'next/server';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { PrismaClient } from '@prisma/client';
-import { ReadEmployerPersonalDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import { NextResponse } from "next/server";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { PrismaClient } from "@prisma/client";
+import { ReadEmployerPersonalDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, props: { params: Promise<{ userId: string }> }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ userId: string }> },
+) {
   const params = await props.params;
   try {
     const userId = params.userId;
@@ -41,7 +44,10 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
-    console.error('Failed to retrieve employer personal information.', e.message);
+    console.error(
+      "Failed to retrieve employer personal information.",
+      e.message,
+    );
     return NextResponse.json(
       {
         error: `Failed to retrieve employer personal information.\n${e.message}`,

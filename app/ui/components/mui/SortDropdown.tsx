@@ -1,14 +1,22 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { ReactNode } from 'react';
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
+import { ReactNode } from "react";
 
 interface Props {
-  id: string,
-  options: {label:string, value:string}[],
-  label?: string | undefined,
-  value?: string | undefined,
-  onChange?: ((event: SelectChangeEvent<string>, child: ReactNode) => void) | undefined
-  placeholder?: string | undefined,
-  [key: string]: any,
+  id: string;
+  options: { label: string; value: string }[];
+  label?: string | undefined;
+  value?: string | undefined;
+  onChange?:
+    | ((event: SelectChangeEvent<string>, child: ReactNode) => void)
+    | undefined;
+  placeholder?: string | undefined;
+  [key: string]: any;
 }
 
 export default function SortDropdown({
@@ -19,7 +27,7 @@ export default function SortDropdown({
   onChange,
   placeholder,
   ...rest
-}:Props) {
+}: Props) {
   return (
     <FormControl size="small" variant="standard">
       <InputLabel id={id + "-label"}>{label}</InputLabel>
@@ -30,20 +38,18 @@ export default function SortDropdown({
         value={value}
         label={label}
         onChange={onChange}
-        sx={{ "&.MuiInput-underline": { '&:before': { borderBottom: "none", }, }, }}
+        sx={{
+          "&.MuiInput-underline": { "&:before": { borderBottom: "none" } },
+        }}
         {...rest}
       >
-        {
-          options.map(
-            item => {
-              return (
-                <MenuItem key={id+"-option-"+item.value} value={item.value}>
-                  {item.label}
-                </MenuItem>
-              )
-            }
-          )
-        }
+        {options.map((item) => {
+          return (
+            <MenuItem key={id + "-option-" + item.value} value={item.value}>
+              {item.label}
+            </MenuItem>
+          );
+        })}
       </Select>
     </FormControl>
   );

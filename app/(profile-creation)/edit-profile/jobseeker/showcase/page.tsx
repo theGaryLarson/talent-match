@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import PillButton from '@/app/ui/components/PillButton';
-import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
-import TextFieldWithSeparatedLabel from '@/app/ui/components/mui/TextFieldWithSeparatedLabel';
-import TextFieldWithNoLabel from '@/app/ui/components/mui/TextFieldWithNoLabel';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { JsShowcaseDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/jobseekerStore';
-import _ from 'lodash';
+import React, { useEffect, useRef, useState } from "react";
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
+import PillButton from "@/app/ui/components/PillButton";
+import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
+import TextFieldWithSeparatedLabel from "@/app/ui/components/mui/TextFieldWithSeparatedLabel";
+import TextFieldWithNoLabel from "@/app/ui/components/mui/TextFieldWithNoLabel";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { JsShowcaseDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/jobseekerStore";
+import _ from "lodash";
 import {
   initialState,
   setShowcase,
-} from '@/lib/features/profileCreation/jobseekerSlice';
+} from "@/lib/features/profileCreation/jobseekerSlice";
 import {
   setPageDirty,
   setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import { devLog } from '@/app/lib/utils';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import InputFileDropzone from '@/app/ui/components/InputFileDropzone';
-import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
-import { BlobPrefix, getResumeUrl } from '@/app/lib/services/azureBlobService';
+} from "@/lib/features/profileCreation/saveSlice";
+import { devLog } from "@/app/lib/utils";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import InputFileDropzone from "@/app/ui/components/InputFileDropzone";
+import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
+import { BlobPrefix, getResumeUrl } from "@/app/lib/services/azureBlobService";
 
 export default function CreateJobseekerProfileShowcasePage() {
   const router = useRouter();
@@ -37,39 +37,41 @@ export default function CreateJobseekerProfileShowcasePage() {
   const showcaseData = { ...showcaseStoreData };
   const [error, setError] = useState<string | null>(null);
 
-  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
+  const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
   const [introduction, setIntroduction] = useState(
-    showcaseData.introduction ?? '',
+    showcaseData.introduction ?? "",
   );
   const [resumeUrl, setResumeUrl] = useState<string | null>(
     showcaseData.resumeUrl,
   );
-  const [currentJobTitle, setCurrentJobTitle] = useState('');
+  const [currentJobTitle, setCurrentJobTitle] = useState("");
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
   const [fetchedTags, setFetchedTags] = useState<SkillDTO[]>(
     showcaseData.skills,
   );
   const [portfolioUrl, setPortfolioUrl] = useState(
-    showcaseData.portfolioUrl ?? '',
+    showcaseData.portfolioUrl ?? "",
   );
   const [portfolioPassword, setPortfolioPassword] = useState(
-    showcaseData.portfolioPassword ?? '',
+    showcaseData.portfolioPassword ?? "",
   );
-  const [videoUrl, setVideoUrl] = useState(showcaseData.video_url ?? '');
-  const [linkedInUrl, setLinkedInUrl] = useState(showcaseData.linkedin_url ?? '');
+  const [videoUrl, setVideoUrl] = useState(showcaseData.video_url ?? "");
+  const [linkedInUrl, setLinkedInUrl] = useState(
+    showcaseData.linkedin_url ?? "",
+  );
 
   useEffect(() => {
-    if (session?.user?.id && status === 'authenticated') {
+    if (session?.user?.id && status === "authenticated") {
       const initializeFormFields = async () => {
         if (_.isEqual(showcaseStoreData, initialState.showcase)) {
           const { id } = session.user;
 
           try {
-            console.log('fetching fresh');
+            console.log("fetching fresh");
             const response = await fetch(
-              '/api/jobseekers/account/showcase/get/' + id,
+              "/api/jobseekers/account/showcase/get/" + id,
             );
 
             if (!response.ok) {
@@ -106,12 +108,12 @@ export default function CreateJobseekerProfileShowcasePage() {
             }
 
             const fetchedResumeData = await fetch(
-              '/api/jobseekers/resume/get/' + id,
+              "/api/jobseekers/resume/get/" + id,
             );
             const fetchedResumeURL = await fetchedResumeData.json();
 
             if (response.ok) {
-              if (typeof fetchedResumeURL === 'string') {
+              if (typeof fetchedResumeURL === "string") {
                 setResumeUrl(fetchedResumeURL);
               }
             }
@@ -119,10 +121,10 @@ export default function CreateJobseekerProfileShowcasePage() {
             console.error(error);
           }
         } else {
-          console.log('fetching from store');
+          console.log("fetching from store");
         }
       };
-      dispatch(setPageSaved('showcase'));
+      dispatch(setPageSaved("showcase"));
       initializeFormFields();
     }
   }, [session?.user?.id]);
@@ -130,25 +132,25 @@ export default function CreateJobseekerProfileShowcasePage() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!session?.user?.id) {
-      console.error('User session is not available.');
+      console.error("User session is not available.");
       return;
     }
 
-    setHasUnmetRequired('');
+    setHasUnmetRequired("");
 
     if (skills.length === 0) {
-      setHasUnmetRequired('showcase-skills');
+      setHasUnmetRequired("showcase-skills");
       return;
     }
 
     if (!Boolean(resumeUrl)) {
-      setHasUnmetRequired('showcase-resume');
+      setHasUnmetRequired("showcase-resume");
       return;
     }
 
     if (!validYouTubeLink(videoUrl)) {
       //TODO replace with stylized toast message
-      alert('Please provide a valid YouTube URL before submitting.');
+      alert("Please provide a valid YouTube URL before submitting.");
       return;
     }
     showcaseData.userId = session.user.id;
@@ -161,10 +163,10 @@ export default function CreateJobseekerProfileShowcasePage() {
     showcaseData.resumeUrl = resumeUrl;
 
     try {
-      const response = await fetch('/api/jobseekers/account/showcase/upsert', {
-        method: 'POST',
+      const response = await fetch("/api/jobseekers/account/showcase/upsert", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(showcaseData),
       });
@@ -173,10 +175,10 @@ export default function CreateJobseekerProfileShowcasePage() {
         const result = await response.json();
         devLog(JSON.stringify(result, null, 2));
 
-        dispatch(setPageSaved('showcase'));
+        dispatch(setPageSaved("showcase"));
         dispatch(setShowcase(showcaseData));
 
-        router.push('/edit-profile/jobseeker/education');
+        router.push("/edit-profile/jobseeker/education");
       } else {
         const errorMessage = `Failed to submit showcase info. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -188,7 +190,7 @@ export default function CreateJobseekerProfileShowcasePage() {
 
   const handleResumeUpload = (url: string) => {
     // Update the local state with the uploaded image URL
-    dispatch(setPageDirty('showcase'));
+    dispatch(setPageDirty("showcase"));
     setResumeUrl(url);
   };
 
@@ -242,7 +244,7 @@ export default function CreateJobseekerProfileShowcasePage() {
             <div className="profile-form-grid">
               <RequiredTooltip
                 open={
-                  hasUnmetRequired === 'showcase-skills' && skills.length === 0
+                  hasUnmetRequired === "showcase-skills" && skills.length === 0
                 }
                 errorMessage="At least one skill is required"
               >
@@ -254,7 +256,7 @@ export default function CreateJobseekerProfileShowcasePage() {
                   searchingText="Searching..."
                   noResultsText="No skills found..."
                   onChange={function (ev, val) {
-                    if (val.every((skill) => typeof skill !== 'string')) {
+                    if (val.every((skill) => typeof skill !== "string")) {
                       setSkills(val as SkillDTO[]);
                     }
                   }}
@@ -356,13 +358,13 @@ export default function CreateJobseekerProfileShowcasePage() {
             <InputFileDropzone
               id="profile-creation-intro-resume"
               fileTypeText="PDF"
-              blobPrefix={'resume' as BlobPrefix}
+              blobPrefix={"resume" as BlobPrefix}
               accept=".pdf"
               maxSizeMB={1}
               userId={session?.user?.id!}
               onDocUpload={handleResumeUpload}
               autoloadedUrl={
-                resumeUrl !== '' ? (resumeUrl ?? undefined) : undefined
+                resumeUrl !== "" ? (resumeUrl ?? undefined) : undefined
               }
             />
           </div>
@@ -370,7 +372,7 @@ export default function CreateJobseekerProfileShowcasePage() {
             <PillButton
               variant="outlined"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/preferences');
+                router.push("/edit-profile/jobseeker/preferences");
               }}
             >
               Previous
@@ -384,13 +386,14 @@ export default function CreateJobseekerProfileShowcasePage() {
 }
 
 function validYouTubeLink(url: string) {
-  if (url == '') return true;
+  if (url == "") return true;
   const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
   return regex.test(url);
 }
 
 function validLinkedInLink(url: string) {
-  if (url == '') return true;
-  const regex = /^(https?:\/\/)?(www\.)?(linkedin\.com)\/in\/[A-Za-z0-9]{3,100}\/?$/;
+  if (url == "") return true;
+  const regex =
+    /^(https?:\/\/)?(www\.)?(linkedin\.com)\/in\/[A-Za-z0-9]{3,100}\/?$/;
   return regex.test(url);
 }

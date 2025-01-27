@@ -18,8 +18,8 @@ npx prisma migrate dev --name "<brief-description-of-change>"
 
 Running `prisma migrate dev` stores the changes in two separate locations:
 
-1) In code in the prisma/migrations directory. Any migrations should be saved and stored to the repository.
-2) In the _prisma_migrations table of the database
+1. In code in the prisma/migrations directory. Any migrations should be saved and stored to the repository.
+2. In the \_prisma_migrations table of the database
 
 This will create a folder in the in prisma/migrations directory containing a migration.sql file. The name of the folder
 is prefixed with the timestamp and appended with the name given when running `prisma migrate dev`. The migration.sql
@@ -28,7 +28,7 @@ Prisma/docs [About migration histories](https://www.prisma.io/docs/orm/prisma-mi
 
 > There are occasions when the migrations do not work correctly and conflicts need resolved. If making changes
 > manually to the database it is important to make sure any modifications to the `migration.sql` file are also applied
-> to the _prisma_migrations table record in the database and vice versa. Learn more in Prisma
+> to the \_prisma_migrations table record in the database and vice versa. Learn more in Prisma
 > docs [Customizing Migrations](https://www.prisma.io/docs/orm/prisma-migrate/workflows/customizing-migrations)
 
 #### 8.3. To ensure prisma migrations are applied correctly you can run the following command.

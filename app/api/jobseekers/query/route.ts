@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import {
   jobSeekerCardViewSelect,
   jobseekerQueryTestSelect,
-} from '@/app/lib/prisma';
-import { educationRank } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { HighestCompletedEducationLevel } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import {devLog} from "@/app/lib/utils";
-import {PoolCategories} from "@/app/lib/poolAssignment";
+} from "@/app/lib/prisma";
+import { educationRank } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { devLog } from "@/app/lib/utils";
+import { PoolCategories } from "@/app/lib/poolAssignment";
 
 const prisma = new PrismaClient();
 
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     yearsWorkExpMin = 0,
     yearsWorkExpMax = undefined,
     zipCode = undefined,
-    sortBy = 'yearsExp',
+    sortBy = "yearsExp",
     maxResults = 50,
     page = 1,
     pool1 = true,
@@ -29,17 +29,17 @@ export async function POST(request: Request) {
   } = await request.json();
 
   const normalizedSkills: string[] = skills.filter(
-    (skill: string) => skill && skill.trim() !== '',
+    (skill: string) => skill && skill.trim() !== "",
   );
 
   const andConditions: any[] = [];
   andConditions.push({
     OR: [
       { assignedPool: PoolCategories.Recommended }, // pool1 is now assignedPool with Recommended category
-      { assignedPool: PoolCategories.JobReady }     // pool2 is now assignedPool with JobReady category
+      { assignedPool: PoolCategories.JobReady }, // pool2 is now assignedPool with JobReady category
     ],
     assignedPool: { not: PoolCategories.NotJobReady }, // Ensure assignedPool is not "pool3"
-    is_marked_deletion: null
+    is_marked_deletion: null,
   });
 
   if (normalizedSkills.length > 0) {
@@ -131,11 +131,13 @@ export async function POST(request: Request) {
 
   // Education Level Filtering
   if (educationLevel) {
-    const minRank: number = educationRank[educationLevel as HighestCompletedEducationLevel];
+    const minRank: number =
+      educationRank[educationLevel as HighestCompletedEducationLevel];
     andConditions.push({
       highest_level_of_study_completed: {
         in: Object.keys(educationRank).filter(
-          (level) => educationRank[level as HighestCompletedEducationLevel] >= minRank,
+          (level) =>
+            educationRank[level as HighestCompletedEducationLevel] >= minRank,
         ),
       },
     });
@@ -145,21 +147,21 @@ export async function POST(request: Request) {
   if (zipCode) {
     andConditions.push({
       users: {
-          some: {
-            zip: {
-              startsWith: zipCode,
-            },
+        some: {
+          zip: {
+            startsWith: zipCode,
           },
+        },
       },
     });
   }
 
   // have to sort by eduLevel after we get the result because Prisma does not support custom comparators. see Line 140.
   const orderBy =
-    sortBy === 'newest'
-      ? [{ createdAt: 'desc' as const }]
-      : sortBy === 'yearsExp'
-        ? [{ years_work_exp: 'desc' as const }]
+    sortBy === "newest"
+      ? [{ createdAt: "desc" as const }]
+      : sortBy === "yearsExp"
+        ? [{ years_work_exp: "desc" as const }]
         : undefined;
 
   // Determine the number of results to skip based on the page number and maxResults
@@ -179,11 +181,15 @@ export async function POST(request: Request) {
   ]);
 
   // Sort by education level if needed
-  if (sortBy === 'highestDegree') {
+  if (sortBy === "highestDegree") {
     filteredJobSeekers.sort(
       (a, b) =>
-        educationRank[b.highest_level_of_study_completed as HighestCompletedEducationLevel] -
-        educationRank[a.highest_level_of_study_completed as HighestCompletedEducationLevel],
+        educationRank[
+          b.highest_level_of_study_completed as HighestCompletedEducationLevel
+        ] -
+        educationRank[
+          a.highest_level_of_study_completed as HighestCompletedEducationLevel
+        ],
     );
   }
   devLog(filteredJobSeekers[0]);

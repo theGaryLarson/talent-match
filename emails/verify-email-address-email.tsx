@@ -11,9 +11,9 @@ import {
   Link,
   Preview,
   Section,
-  Text
-} from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
+  Text,
+} from "@react-email/components";
+import { Tailwind } from "@react-email/tailwind";
 
 export type VerifyEmailAddressEmailData = {
   recipient: string;
@@ -26,7 +26,7 @@ export type VerifyEmailAddressEmailData = {
 export const VerifyEmailAddressEmail = ({
   name,
   otp,
-  verificationLink
+  verificationLink,
 }: VerifyEmailAddressEmailData) => (
   <Html>
     <Head />
@@ -52,7 +52,7 @@ export const VerifyEmailAddressEmail = ({
             </Button>
           </Section>
           <Text className="text-[14px] leading-[24px] text-black">
-            or copy and paste this URL into your browser:{' '}
+            or copy and paste this URL into your browser:{" "}
             <Link
               href={verificationLink}
               className="text-blue-600 no-underline"

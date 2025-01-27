@@ -1,11 +1,11 @@
-'use client';
-import { FormEvent, useEffect, useState } from 'react';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { skill_subcategories } from '@prisma/client';
-import { Button, Grid2 } from '@mui/material';
-import { ArrowCircleRightOutlined } from '@mui/icons-material';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+"use client";
+import { FormEvent, useEffect, useState } from "react";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { skill_subcategories } from "@prisma/client";
+import { Button, Grid2 } from "@mui/material";
+import { ArrowCircleRightOutlined } from "@mui/icons-material";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 export default function Page() {
   const [skillSubcategories, setSkillSubcategories] =
@@ -13,7 +13,7 @@ export default function Page() {
   const [csvFile, setCsvFile] = useState<File | null>(null);
 
   useEffect(() => {
-    fetch('/api/skills/subcategories/get')
+    fetch("/api/skills/subcategories/get")
       .then((res) => {
         return res.json();
       })
@@ -27,21 +27,21 @@ export default function Page() {
   ): Promise<string> => {
     try {
       const newSubcategory = {
-        skill_subcategory_id: '',
+        skill_subcategory_id: "",
         subcategory_name: subcategoryName,
-        subcategory_description: '',
+        subcategory_description: "",
       };
 
-      const response = await fetch('/api/skills/subcategories/create', {
-        method: 'POST',
+      const response = await fetch("/api/skills/subcategories/create", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(newSubcategory),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create subcategory');
+        throw new Error("Failed to create subcategory");
       }
 
       const result = await response.json();
@@ -50,35 +50,35 @@ export default function Page() {
 
       return result.skill_subcategory_id;
     } catch (error) {
-      console.error('Error creating subcategory:', error);
+      console.error("Error creating subcategory:", error);
       throw error;
     }
   };
 
   const validateForm = (formData: FormData): boolean => {
-    const skillName = formData.get('skill_name') as string;
-    const subcategory = formData.get('subcategory') as string;
-    const skillInfoUrl = formData.get('skill_info_url') as string;
+    const skillName = formData.get("skill_name") as string;
+    const subcategory = formData.get("subcategory") as string;
+    const skillInfoUrl = formData.get("skill_info_url") as string;
 
     if (!skillName.trim()) {
-      alert('Please enter a skill name');
+      alert("Please enter a skill name");
       return false;
     }
 
     if (!subcategory) {
-      alert('Please select a subcategory');
+      alert("Please select a subcategory");
       return false;
     }
 
     if (!skillInfoUrl.trim()) {
-      alert('Please enter a valid information URL');
+      alert("Please enter a valid information URL");
       return false;
     }
 
     try {
       new URL(skillInfoUrl);
     } catch {
-      alert('Please enter a valid URL starting with https://');
+      alert("Please enter a valid URL starting with https://");
       return false;
     }
 
@@ -100,30 +100,30 @@ export default function Page() {
 
     const skillData: SkillDTO[] = [
       {
-        skill_id: '',
-        skill_name: formData.get('skill_name') as string,
-        skill_subcategory_id: formData.get('subcategory') as string,
-        skill_info_url: (formData.get('skill_info_url') as string) || '',
+        skill_id: "",
+        skill_name: formData.get("skill_name") as string,
+        skill_subcategory_id: formData.get("subcategory") as string,
+        skill_info_url: (formData.get("skill_info_url") as string) || "",
       },
     ];
 
     try {
-      const response = await fetch('/api/skills/create', {
-        method: 'POST',
+      const response = await fetch("/api/skills/create", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(skillData),
       });
 
       if (response.ok) {
-        alert('Skill created successfully!');
+        alert("Skill created successfully!");
         form.reset();
       } else {
-        alert('Failed to create skill');
+        alert("Failed to create skill");
       }
     } catch (error) {
-      console.error('Error creating skill:', error);
+      console.error("Error creating skill:", error);
     } finally {
       if (submitButton) submitButton.disabled = false;
     }
@@ -137,18 +137,18 @@ export default function Page() {
     reader.onload = async (e) => {
       try {
         const text = e.target?.result as string;
-        const rows = text.split('\n');
-        const headers = rows[0].split(',').map((header) => header.trim());
+        const rows = text.split("\n");
+        const headers = rows[0].split(",").map((header) => header.trim());
 
         // Validate CSV headers
-        const requiredHeaders = ['skill_name', 'subcategory', 'skill_info_url'];
+        const requiredHeaders = ["skill_name", "subcategory", "skill_info_url"];
         const hasRequiredHeaders = requiredHeaders.every((header) =>
           headers.includes(header),
         );
 
         if (!hasRequiredHeaders) {
           alert(
-            'CSV must include columns: skill_name, subcategory, skill_info_url',
+            "CSV must include columns: skill_name, subcategory, skill_info_url",
           );
           return;
         }
@@ -156,10 +156,10 @@ export default function Page() {
         // Parse CSV data
         const skillData: SkillDTO[] = [];
         for (const row of rows.slice(1).filter((row) => row.trim())) {
-          const values = row.split(',').map((value) => value.trim());
+          const values = row.split(",").map((value) => value.trim());
           const rowData: Record<string, string> = {};
           headers.forEach((header, index) => {
-            rowData[header] = values[index] || '';
+            rowData[header] = values[index] || "";
           });
 
           let subcategoryId: string;
@@ -184,35 +184,35 @@ export default function Page() {
           }
 
           skillData.push({
-            skill_id: '',
+            skill_id: "",
             skill_name: rowData.skill_name,
             skill_subcategory_id: subcategoryId,
-            skill_info_url: rowData.skill_info_url || '',
+            skill_info_url: rowData.skill_info_url || "",
           });
           console.log(skillData);
         }
 
-        const response = await fetch('/api/skills/create', {
-          method: 'POST',
+        const response = await fetch("/api/skills/create", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(skillData),
         });
 
         if (response.ok) {
-          alert('Skills imported successfully!');
+          alert("Skills imported successfully!");
           setCsvFile(null);
           const fileInput = document.getElementById(
-            'csvFile',
+            "csvFile",
           ) as HTMLInputElement;
-          if (fileInput) fileInput.value = '';
+          if (fileInput) fileInput.value = "";
         } else {
-          alert('Failed to import skills');
+          alert("Failed to import skills");
         }
       } catch (error) {
-        console.error('Error processing CSV:', error);
-        alert('Error processing CSV file');
+        console.error("Error processing CSV:", error);
+        alert("Error processing CSV file");
       }
     };
 
@@ -259,7 +259,7 @@ export default function Page() {
 
           <div className="grid grid-cols-1">
             <label htmlFor="skill_info_url">
-              Information URL *{' '}
+              Information URL *{" "}
               <span className="text-xs">(https:// required)</span>
             </label>
             <input

@@ -8,9 +8,9 @@ import {
   Html,
   Preview,
   Section,
-  Text
-} from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
+  Text,
+} from "@react-email/components";
+import { Tailwind } from "@react-email/tailwind";
 
 //import { AppInfo } from '@/constants/app-info';
 //import { Routes } from '@/constants/routes';
@@ -53,7 +53,8 @@ export const WelcomeEmail = ({ name }: WelcomeEmailData) => (
           </Text>
           <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
           <Text className="text-[12px] leading-[24px] text-[#666666]">
-            You receive this email because you signed up on https://www.watechcoalition.org/.
+            You receive this email because you signed up on
+            https://www.watechcoalition.org/.
           </Text>
         </Container>
       </Body>

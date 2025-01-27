@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { JobStatus } from '@/app/lib/jobseekerJobTracking';
-import Bookmark from '@/app/ui/components/Bookmark';
-import ApplyToJobButton from '@/app/ui/components/jobPostings/ApplyToJobButton';
-import DeleteJobPostingButton from '@/app/ui/components/jobPostings/DeleteJobPostingButton';
-import Skills from '@/app/ui/components/Skills';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import Avatar from '@/app/ui/components/Avatar';
-import { useState } from 'react';
-import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
-import { useSession } from 'next-auth/react';
-import { calculateDaysAway } from '@/app/lib/utils';
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
+import Bookmark from "@/app/ui/components/Bookmark";
+import ApplyToJobButton from "@/app/ui/components/jobPostings/ApplyToJobButton";
+import DeleteJobPostingButton from "@/app/ui/components/jobPostings/DeleteJobPostingButton";
+import Skills from "@/app/ui/components/Skills";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import Avatar from "@/app/ui/components/Avatar";
+import { useState } from "react";
+import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
+import { useSession } from "next-auth/react";
+import { calculateDaysAway } from "@/app/lib/utils";
 
 function daysAwayToString(date: Date): string {
   const daysAway = calculateDaysAway(date);
   if (daysAway === 0) {
-    return 'today';
+    return "today";
   } else {
-    const plural = Math.abs(daysAway) === 1 ? '' : 's';
+    const plural = Math.abs(daysAway) === 1 ? "" : "s";
     if (daysAway < 0) {
       return `${Math.abs(daysAway)} day${plural} ago`;
     } else {
@@ -35,16 +35,16 @@ interface Props {
 export default function JobPostingPage({ joblisting, params }: Props) {
   const { data: session } = useSession();
 
-  const job_title: string = joblisting?.job_title ?? '';
-  const employment_type: string = joblisting?.employment_type ?? '';
-  const company_name: string = joblisting?.companies.company_name ?? '';
-  const company_image: string = joblisting?.companies.company_logo_url ?? '';
-  const industry: string = joblisting?.industry_sectors?.sector_title ?? '';
+  const job_title: string = joblisting?.job_title ?? "";
+  const employment_type: string = joblisting?.employment_type ?? "";
+  const company_name: string = joblisting?.companies.company_name ?? "";
+  const company_image: string = joblisting?.companies.company_logo_url ?? "";
+  const industry: string = joblisting?.industry_sectors?.sector_title ?? "";
   const skills: SkillDTO[] = joblisting?.skills ?? [];
-  const salary_range: string = joblisting?.salary_range ?? '';
-  const description: string = joblisting?.job_description ?? '';
+  const salary_range: string = joblisting?.salary_range ?? "";
+  const description: string = joblisting?.job_description ?? "";
   const location: string =
-    joblisting?.location + ', ' + joblisting?.county + ', ' + joblisting?.zip;
+    joblisting?.location + ", " + joblisting?.county + ", " + joblisting?.zip;
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   return (
@@ -78,35 +78,35 @@ export default function JobPostingPage({ joblisting, params }: Props) {
                 removeUrl={`/api/joblistings/bookmark/remove/${joblisting?.job_posting_id}`}
               />
             ) : (
-              ''
+              ""
             )}
             {session &&
             joblisting &&
             session.user.companyId === joblisting.company_id ? (
               <DeleteJobPostingButton id={params.id} />
             ) : (
-              ''
+              ""
             )}
           </div>
         </div>
         {joblisting && (
           <div className="mb-8 mr-4 grow self-center text-left text-gray-500 tablet:text-right">
             <p className="text-sm">
-              Posted {daysAwayToString(joblisting.publish_date)} @{' '}
-              {joblisting.publish_date.toLocaleString('en-us', {
-                timeZoneName: 'short',
-                month: 'numeric',
-                day: 'numeric',
-                year: 'numeric' /*hour: 'numeric', minute: 'numeric'*/,
+              Posted {daysAwayToString(joblisting.publish_date)} @{" "}
+              {joblisting.publish_date.toLocaleString("en-us", {
+                timeZoneName: "short",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric" /*hour: 'numeric', minute: 'numeric'*/,
               })}
             </p>
             <p className="text-sm">
-              Closing {daysAwayToString(joblisting.unpublish_date)} @{' '}
-              {joblisting.unpublish_date.toLocaleString('en-us', {
-                timeZoneName: 'short',
-                month: 'numeric',
-                day: 'numeric',
-                year: 'numeric' /*hour: 'numeric', minute: 'numeric'*/,
+              Closing {daysAwayToString(joblisting.unpublish_date)} @{" "}
+              {joblisting.unpublish_date.toLocaleString("en-us", {
+                timeZoneName: "short",
+                month: "numeric",
+                day: "numeric",
+                year: "numeric" /*hour: 'numeric', minute: 'numeric'*/,
               })}
             </p>
           </div>
@@ -116,36 +116,22 @@ export default function JobPostingPage({ joblisting, params }: Props) {
       {/* Job Details */}
       <div className="grid grid-cols-1 gap-4 sm-tablet:grid-cols-3">
         <div>
-          <p className="font-semibold text-gray-700">
-            Employment Type:
-          </p>
-          <p className="capitalize text-gray-500">
-            {employment_type}
-          </p>
+          <p className="font-semibold text-gray-700">Employment Type:</p>
+          <p className="capitalize text-gray-500">{employment_type}</p>
         </div>
         <div>
-          <p className="font-semibold text-gray-700">
-            Salary:
-          </p>
-          <p className="capitalize text-gray-500">
-            {salary_range}
-          </p>
+          <p className="font-semibold text-gray-700">Salary:</p>
+          <p className="capitalize text-gray-500">{salary_range}</p>
         </div>
         <div>
-          <p className="font-semibold text-gray-700">
-            Industry:
-          </p>
-          <p className="capitalize text-gray-500">
-            {industry}
-          </p>
+          <p className="font-semibold text-gray-700">Industry:</p>
+          <p className="capitalize text-gray-500">{industry}</p>
         </div>
       </div>
 
       {/* Job Description */}
       <div>
-        <p className="font-semibold text-gray-700">
-          Description:
-        </p>
+        <p className="font-semibold text-gray-700">Description:</p>
         <p className="break-words text-base leading-relaxed text-gray-500">
           {description}
         </p>
@@ -154,9 +140,7 @@ export default function JobPostingPage({ joblisting, params }: Props) {
       {/* Skills */}
       {skills.length > 0 && (
         <div>
-          <p className="font-semibold text-gray-700">
-            Skills:
-          </p>
+          <p className="font-semibold text-gray-700">Skills:</p>
           <div className="mt-2 flex grow text-sm tablet:text-base">
             <Skills
               skillsList={skills}
@@ -170,25 +154,19 @@ export default function JobPostingPage({ joblisting, params }: Props) {
       {/* Company Information */}
       <div className="space-y-4 rounded-md bg-gray-bg p-2">
         <div>
-          <p className="font-semibold text-gray-700">
-            About {company_name}:
-          </p>
+          <p className="font-semibold text-gray-700">About {company_name}:</p>
           <p className="text-base leading-relaxed text-gray-500">
             {joblisting?.companies.about_us}
           </p>
         </div>
         <div>
-          <p className="font-semibold text-gray-700">
-            Our Mission:
-          </p>
+          <p className="font-semibold text-gray-700">Our Mission:</p>
           <p className="text-base leading-relaxed text-gray-500">
             {joblisting?.companies.company_mission}
           </p>
         </div>
         <div>
-          <p className="font-semibold text-gray-700">
-            Our Vision:
-          </p>
+          <p className="font-semibold text-gray-700">Our Vision:</p>
           <p className="text-base leading-relaxed text-gray-500">
             {joblisting?.companies.company_vision}
           </p>

@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import SelectWithLabel from '@/app/ui/components/mui/SelectWithLabel';
+import React, { useEffect, useState } from "react";
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
+import SelectWithLabel from "@/app/ui/components/mui/SelectWithLabel";
 import {
   JsDisclosuresDTO,
   JsDisclosuresPostDTO,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { useRouter } from 'next/navigation';
-import PillButton from '@/app/ui/components/PillButton';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { useRouter } from "next/navigation";
+import PillButton from "@/app/ui/components/PillButton";
 
 import {
   FormControl,
@@ -23,20 +23,20 @@ import {
   SnackbarContent,
   Typography,
   IconButton,
-} from '@mui/material';
-import { useSession } from 'next-auth/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/jobseekerStore';
+} from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/jobseekerStore";
 import {
   initialState,
   setDisclosures,
-} from '@/lib/features/profileCreation/jobseekerSlice';
+} from "@/lib/features/profileCreation/jobseekerSlice";
 import {
   setPageDirty,
   setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import _ from 'lodash';
-import { devLog } from '@/app/lib/utils';
+} from "@/lib/features/profileCreation/saveSlice";
+import _ from "lodash";
+import { devLog } from "@/app/lib/utils";
 
 export default function CreateJobseekerProfileDisclosuresPage() {
   const router = useRouter();
@@ -60,15 +60,15 @@ export default function CreateJobseekerProfileDisclosuresPage() {
   const [ethnicity, setEthnicity] = useState(disclosuresData.ethnicity);
 
   useEffect(() => {
-    if (session?.user?.id && status === 'authenticated') {
+    if (session?.user?.id && status === "authenticated") {
       const initializeFormFields = async () => {
         if (_.isEqual(disclosuresStoreData, initialState.disclosures)) {
           const { id } = session.user;
 
           try {
-            devLog('fetching fresh');
+            devLog("fetching fresh");
             const response = await fetch(
-              '/api/jobseekers/account/disclosures/get/' + id,
+              "/api/jobseekers/account/disclosures/get/" + id,
             );
 
             if (!response.ok) {
@@ -106,11 +106,11 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             console.error(error);
           }
         } else {
-          devLog('fetching from store');
+          devLog("fetching from store");
         }
       };
 
-      dispatch(setPageSaved('disclosures'));
+      dispatch(setPageSaved("disclosures"));
       initializeFormFields();
     }
   }, [session?.user?.id]);
@@ -118,7 +118,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!session?.user?.id) {
-      console.error('User session is not available.');
+      console.error("User session is not available.");
       return;
     }
 
@@ -132,23 +132,23 @@ export default function CreateJobseekerProfileDisclosuresPage() {
 
     try {
       const response = await fetch(
-        '/api/jobseekers/account/disclosures/upsert',
+        "/api/jobseekers/account/disclosures/upsert",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(disclosuresData),
         },
       );
       if (response.ok) {
-        dispatch(setPageSaved('disclosures'));
+        dispatch(setPageSaved("disclosures"));
         dispatch(setDisclosures(disclosuresData));
       } else {
         const errorMessage = `Failed to submit disclosure info. Status: ${response.status} - ${response.statusText}`;
         setError({ error: errorMessage });
       }
-      router.push('/edit-profile/jobseeker/congratulations');
+      router.push("/edit-profile/jobseeker/congratulations");
     } catch (e: any) {
       setError({ error: `An unexpected error occurred: ${e.message}` });
     }
@@ -180,17 +180,17 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 label="Gender *"
                 value={gender}
                 onChange={(event) => {
-                  dispatch(setPageDirty('disclosures'));
+                  dispatch(setPageDirty("disclosures"));
                   setGender(event.target.value);
                 }}
                 options={[
-                  { label: 'Male', value: 'male' },
-                  { label: 'Female', value: 'female' },
+                  { label: "Male", value: "male" },
+                  { label: "Female", value: "female" },
                   {
-                    label: 'Do not identify as male or female',
-                    value: 'Do not identify as male or female',
+                    label: "Do not identify as male or female",
+                    value: "Do not identify as male or female",
                   },
-                  { label: 'I prefer not to say', value: 'undisclosed' },
+                  { label: "I prefer not to say", value: "undisclosed" },
                 ]}
                 placeholder="Please select"
                 required
@@ -201,13 +201,13 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 label="Veterans *"
                 value={veteranStatus}
                 onChange={(event) => {
-                  dispatch(setPageDirty('disclosures'));
+                  dispatch(setPageDirty("disclosures"));
                   setVeteranStatus(event.target.value);
                 }}
                 options={[
-                  { label: 'Yes', value: 'yes' },
-                  { label: 'No', value: 'no' },
-                  { label: 'I prefer not to say', value: 'undisclosed' },
+                  { label: "Yes", value: "yes" },
+                  { label: "No", value: "no" },
+                  { label: "I prefer not to say", value: "undisclosed" },
                 ]}
                 placeholder="Please select"
                 required
@@ -218,16 +218,16 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 label="Ethnicity *"
                 value={ethnicity}
                 onChange={(event) => {
-                  dispatch(setPageDirty('disclosures'));
+                  dispatch(setPageDirty("disclosures"));
                   setEthnicity(event.target.value);
                 }}
                 options={[
                   {
-                    label: 'I am a person of Hispanic origin',
-                    value: 'hispanic origin',
+                    label: "I am a person of Hispanic origin",
+                    value: "hispanic origin",
                   },
-                  { label: 'I am NOT Hispanic', value: 'not hispanic' },
-                  { label: 'I prefer not to say', value: 'undisclosed' },
+                  { label: "I am NOT Hispanic", value: "not hispanic" },
+                  { label: "I prefer not to say", value: "undisclosed" },
                 ]}
                 placeholder="Please select"
                 required
@@ -238,33 +238,33 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 label="Race *"
                 value={race}
                 onChange={(event) => {
-                  dispatch(setPageDirty('disclosures'));
+                  dispatch(setPageDirty("disclosures"));
                   setRace(event.target.value);
                 }}
                 options={[
-                  { label: 'Asian', value: 'Asian' },
+                  { label: "Asian", value: "Asian" },
                   {
-                    label: 'Black or African American',
-                    value: 'Black or African American',
+                    label: "Black or African American",
+                    value: "Black or African American",
                   },
-                  { label: 'White / Caucasian', value: 'White / Caucasian' },
+                  { label: "White / Caucasian", value: "White / Caucasian" },
                   {
-                    label: 'Native Hawaiian or Pacific Islander',
-                    value: 'Native Hawaiian or Pacific Islander',
+                    label: "Native Hawaiian or Pacific Islander",
+                    value: "Native Hawaiian or Pacific Islander",
                   },
-                  { label: 'Hispanic', value: 'Hispanic' },
+                  { label: "Hispanic", value: "Hispanic" },
                   {
-                    label: 'American Indian or Alaska Native',
-                    value: 'American Indian or Alaska Native',
+                    label: "American Indian or Alaska Native",
+                    value: "American Indian or Alaska Native",
                   },
-                  { label: 'Multi-race', value: 'Multi-race' },
+                  { label: "Multi-race", value: "Multi-race" },
                   {
-                    label: 'Not Elsewhere Classified / Other',
-                    value: 'Not Elsewhere Classified / Other',
+                    label: "Not Elsewhere Classified / Other",
+                    value: "Not Elsewhere Classified / Other",
                   },
                   {
-                    label: 'Not Specified / Unknown',
-                    value: 'Not Specified / Unknown',
+                    label: "Not Specified / Unknown",
+                    value: "Not Specified / Unknown",
                   },
                 ]}
                 placeholder="Please select"
@@ -286,8 +286,8 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             <ul
               className="list-inside list-disc"
               style={{
-                paddingBottom: '1em',
-                paddingLeft: '1em',
+                paddingBottom: "1em",
+                paddingLeft: "1em",
               }}
             >
               <li>
@@ -346,7 +346,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 className="mb-2 mt-5"
                 id="profile-creation-disclosures-require-disability-label"
                 component="legend"
-                sx={{ color: '#000000ff' }}
+                sx={{ color: "#000000ff" }}
               >
                 Please select one of the options below: *
               </FormLabel>
@@ -355,9 +355,9 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 value={disabilityStatus}
                 onChange={(event) => {
                   setDisabilityStatus(event.target.value);
-                  if (event.target.value !== 'yes') {
-                    dispatch(setPageDirty('disclosures'));
-                    setDisabilityType('');
+                  if (event.target.value !== "yes") {
+                    dispatch(setPageDirty("disclosures"));
+                    setDisabilityType("");
                   }
                 }}
                 name="profile-creation-disclosures-require-disability"
@@ -367,8 +367,8 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   control={<Radio required />}
                   label="Yes, I have a disability, or have had one in the past"
                   sx={{
-                    '& .MuiFormControlLabel-asterisk': {
-                      display: 'none',
+                    "& .MuiFormControlLabel-asterisk": {
+                      display: "none",
                     },
                   }}
                 />
@@ -377,8 +377,8 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   control={<Radio required />}
                   label="No, I do not have a disability and have not had one in the past"
                   sx={{
-                    '& .MuiFormControlLabel-asterisk': {
-                      display: 'none',
+                    "& .MuiFormControlLabel-asterisk": {
+                      display: "none",
                     },
                   }}
                 />
@@ -387,14 +387,14 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   control={<Radio required />}
                   label="I do not want to answer"
                   sx={{
-                    '& .MuiFormControlLabel-asterisk': {
-                      display: 'none',
+                    "& .MuiFormControlLabel-asterisk": {
+                      display: "none",
                     },
                   }}
                 />
               </RadioGroup>
             </FormControl>
-            {disabilityStatus === 'yes' && (
+            {disabilityStatus === "yes" && (
               <div className="mb-2 mt-5">
                 <SelectWithLabel
                   id="profile-creation-disclosures-require-disability-label"
@@ -402,18 +402,18 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                   label="Please specify: *"
                   value={disabilityType}
                   onChange={(event) => {
-                    dispatch(setPageDirty('disclosures'));
+                    dispatch(setPageDirty("disclosures"));
                     setDisabilityType(event.target.value);
                   }}
                   options={[
-                    { label: 'I prefer not to say', value: 'undisclosed' },
-                    { label: 'Cognitive', value: 'cognitive' },
-                    { label: 'Emotional', value: 'emotional' },
-                    { label: 'Hearing', value: 'hearing' },
-                    { label: 'Mental', value: 'mental' },
-                    { label: 'Physical', value: 'physical' },
-                    { label: 'Visual', value: 'visual' },
-                    { label: 'Other', value: 'other' },
+                    { label: "I prefer not to say", value: "undisclosed" },
+                    { label: "Cognitive", value: "cognitive" },
+                    { label: "Emotional", value: "emotional" },
+                    { label: "Hearing", value: "hearing" },
+                    { label: "Mental", value: "mental" },
+                    { label: "Physical", value: "physical" },
+                    { label: "Visual", value: "visual" },
+                    { label: "Other", value: "other" },
                   ]}
                   placeholder="Please select"
                   required
@@ -425,7 +425,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             <PillButton
               variant="outlined"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/work-experience');
+                router.push("/edit-profile/jobseeker/work-experience");
               }}
             >
               Previous

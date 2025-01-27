@@ -1,6 +1,6 @@
-'use client';
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../jobseekerStore';
+"use client";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../../jobseekerStore";
 import {
   PostEmployerProfileDTO,
   PostEmployerPersonalDTO,
@@ -9,7 +9,7 @@ import {
   PostEmployerVideoDTO,
   PostEmployerMissionDTO,
   PostEmployerWorkDTO,
-} from '@/data/dtos/EmployerProfileCreationDTOs';
+} from "@/data/dtos/EmployerProfileCreationDTOs";
 
 // Define a type for the slice state
 export interface EmployerState {
@@ -26,99 +26,99 @@ export interface EmployerState {
 export const initialState: EmployerState = {
   profile: {
     // Personal Info
-    userId: '',
-    firstName: '',
-    lastName: '',
-    birthDate: '',
-    email: '',
+    userId: "",
+    firstName: "",
+    lastName: "",
+    birthDate: "",
+    email: "",
     phone: null,
     photoUrl: null,
 
     // Work Info
-    currentJobTitle: '',
-    linkedInUrl: '',
-    workAddressId: '',
+    currentJobTitle: "",
+    linkedInUrl: "",
+    workAddressId: "",
     hasAgreedTerms: false,
 
     // Company Info
-    companyId: '',
+    companyId: "",
     industrySectorId: null,
     industrySectorTitle: null,
-    companyName: '',
+    companyName: "",
     companyAddresses: null,
     logoUrl: null,
-    aboutUs: '',
-    companyEmail: '',
-    yearFounded: '',
+    aboutUs: "",
+    companyEmail: "",
+    yearFounded: "",
     websiteUrl: null,
     videoUrl: null,
     phoneCountryCode: null,
     companyPhone: null,
     mission: null,
     vision: null,
-    companySize: '',
-    estimatedAnnualHires: '',
+    companySize: "",
+    estimatedAnnualHires: "",
 
     // Additional Details
-    aboutUsDetails: '',
-    missionStatement: '',
-    companyVideoUrl: '',
+    aboutUsDetails: "",
+    missionStatement: "",
+    companyVideoUrl: "",
   },
 
   personal: {
-    userId: '',
-    firstName: '',
-    lastName: '',
-    birthDate: '',
-    email: '',
+    userId: "",
+    firstName: "",
+    lastName: "",
+    birthDate: "",
+    email: "",
     phoneCountryCode: null,
     phone: null,
     photoUrl: null,
   },
   company: {
-    userId: '',
-    employerId: '',
-    companyId: '',
+    userId: "",
+    employerId: "",
+    companyId: "",
     industrySectorId: null,
     industrySectorTitle: null,
-    companyName: '',
+    companyName: "",
     companyAddresses: null,
     logoUrl: null,
     aboutUs: null, //ABOUT
-    companyEmail: '',
-    yearFounded: '',
+    companyEmail: "",
+    yearFounded: "",
     websiteUrl: null,
     videoUrl: null, //VIDEO
     phoneCountryCode: null,
     companyPhone: null,
     mission: null, //MISSION
     vision: null,
-    companySize: '',
-    estimatedAnnualHires: '',
+    companySize: "",
+    estimatedAnnualHires: "",
   },
   about: {
-    companyId: '',
-    aboutUs: '',
+    companyId: "",
+    aboutUs: "",
   },
   mission: {
     // companyId: '',
-    mission: '',
+    mission: "",
   },
   disclosures: {
-    userId: '',
-    currentJobTitle: '',
-    linkedInUrl: '',
-    workAddressId: '',
+    userId: "",
+    currentJobTitle: "",
+    linkedInUrl: "",
+    workAddressId: "",
   },
   video: {
-    companyId: '',
-    videoUrl: '',
+    companyId: "",
+    videoUrl: "",
   },
 };
 
 // Actions
 export const employerSlice = createSlice({
-  name: 'employer',
+  name: "employer",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
 

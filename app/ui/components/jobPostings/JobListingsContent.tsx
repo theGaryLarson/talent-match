@@ -1,16 +1,16 @@
-'use client';
-import JobListingCardView from '@/app/ui/components/JobListingCardView';
-import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import Pagination from '@mui/material/Pagination';
-import CircularProgress from '@mui/material/CircularProgress';
-import TagsWithAutocomplete from '@/app/ui/components/mui/TagsWithAutocomplete';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import SortDropdown from '@/app/ui/components/mui/SortDropdown';
-import { TextField } from '@mui/material';
-import MultipleSelectFilterAutoload from '@/app/ui/components/mui/MultiSelectFilterAutoload';
-import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
-import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
+"use client";
+import JobListingCardView from "@/app/ui/components/JobListingCardView";
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import Pagination from "@mui/material/Pagination";
+import CircularProgress from "@mui/material/CircularProgress";
+import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import SortDropdown from "@/app/ui/components/mui/SortDropdown";
+import { TextField } from "@mui/material";
+import MultipleSelectFilterAutoload from "@/app/ui/components/mui/MultiSelectFilterAutoload";
+import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
+import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 
 const resultsPerPage = 50;
 
@@ -20,18 +20,18 @@ interface JobListingQueryResult {
 }
 
 async function fetchJobPosts(
-  jobTitle: string = '',
+  jobTitle: string = "",
   skills: string[] = [],
   industrySector: string[] = [],
-  zipCode: string = '',
-  sortBy: string = 'publish_date',
+  zipCode: string = "",
+  sortBy: string = "publish_date",
   maxResults: number = resultsPerPage,
   page: number = 1,
 ): Promise<JobListingQueryResult> {
-  const response = await fetch('/api/joblistings/query', {
-    method: 'POST',
+  const response = await fetch("/api/joblistings/query", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       jobTitle,
@@ -44,7 +44,7 @@ async function fetchJobPosts(
     }),
   });
   if (!response.ok) {
-    throw new Error('Failed to fetch data');
+    throw new Error("Failed to fetch data");
   }
   return response.json();
 }
@@ -74,9 +74,9 @@ export default function JobListingsContent() {
     (name: string, value: string) => {
       const params = new URLSearchParams(queryParams.toString());
       if (params.get(name) != value) {
-        if (value == '') params.delete(name);
+        if (value == "") params.delete(name);
         else params.set(name, value);
-        router.push(pathname + '?' + params.toString());
+        router.push(pathname + "?" + params.toString());
       }
       return;
     },
@@ -87,13 +87,13 @@ export default function JobListingsContent() {
     event: React.ChangeEvent<unknown>,
     value: number,
   ) => {
-    setQueryParam('page', encodeURIComponent(value.toString()));
+    setQueryParam("page", encodeURIComponent(value.toString()));
     setPage(value);
   };
 
   function getParam(param: string) {
     const retrievedParam: string | null = queryParams.get(param);
-    var result: string = '';
+    var result: string = "";
     if (retrievedParam != null) result = decodeURIComponent(retrievedParam);
     return result;
   }
@@ -102,7 +102,7 @@ export default function JobListingsContent() {
     const retrievedParam: string | null = queryParams.get(param);
     var result: string[] = [];
     if (retrievedParam != null && retrievedParam.length > 0)
-      result = decodeURIComponent(retrievedParam).split(',');
+      result = decodeURIComponent(retrievedParam).split(",");
     return result;
   }
 
@@ -123,7 +123,7 @@ export default function JobListingsContent() {
       setTotalResults(data.totalCount);
     } catch (error) {
       setError(true);
-      console.error('Error fetching job listings:', error);
+      console.error("Error fetching job listings:", error);
     } finally {
       setLoading(false);
     }
@@ -132,12 +132,12 @@ export default function JobListingsContent() {
   useEffect(() => {
     // 1. Initial Load: Set state from URL params (only once)
     const initializeStateFromParams = () => {
-      setJobTitle(getParam('jobTitle'));
-      setSkillsList(getArrayParam('skills'));
-      setIndustry(getArrayParam('industry'));
-      setZipCode(getParam('zipcode'));
-      setSortBy(getParam('sort') != '' ? getParam('sort') : 'publish_date');
-      setPage(+getParam('page') == 0 ? 1 : +getParam('page'));
+      setJobTitle(getParam("jobTitle"));
+      setSkillsList(getArrayParam("skills"));
+      setIndustry(getArrayParam("industry"));
+      setZipCode(getParam("zipcode"));
+      setSortBy(getParam("sort") != "" ? getParam("sort") : "publish_date");
+      setPage(+getParam("page") == 0 ? 1 : +getParam("page"));
     };
 
     // Check if state has already been initialized from params
@@ -180,9 +180,9 @@ export default function JobListingsContent() {
         autoComplete="off"
         label="Full/Partial Job Title"
         fullWidth
-        defaultValue={getParam('jobTitle')}
+        defaultValue={getParam("jobTitle")}
         onChange={(event) => {
-          setQueryParam('jobTitle', event.target.value);
+          setQueryParam("jobTitle", event.target.value);
           setJobTitle(event.target.value);
         }}
         sx={{ mb: 3 }}
@@ -198,13 +198,13 @@ export default function JobListingsContent() {
         noResultsText="No skills found..."
         onChange={function (ev, val) {
           const newVal = (val as SkillDTO[]).map((skill) => skill.skill_name);
-          setQueryParam('skills', encodeURIComponent(newVal.toString()));
+          setQueryParam("skills", encodeURIComponent(newVal.toString()));
           setSkillsList(newVal);
         }}
         searchPlaceholder="Skill (ex: Java)"
         getTagLabel={(option: SkillDTO) => option.skill_name}
         getTagLink={(option: SkillDTO) => option.skill_info_url}
-        initialTags={getArrayParam('skills')}
+        initialTags={getArrayParam("skills")}
       />
 
       {/* Filters */}
@@ -215,13 +215,13 @@ export default function JobListingsContent() {
             id="jobseeker-listview-industry"
             label="Industry"
             apiAutoloadRoute="/api/employers/industry-sectors" // TODO: two requests are happening?
-            value={getArrayParam('industry')}
+            value={getArrayParam("industry")}
             onChange={(event) => {
               setQueryParam(
-                'industry',
+                "industry",
                 encodeURIComponent(event.target.value.toString()),
               );
-              if (typeof event.target.value === 'string')
+              if (typeof event.target.value === "string")
                 setIndustry([event.target.value]);
               else setIndustry(event.target.value);
             }}
@@ -237,14 +237,14 @@ export default function JobListingsContent() {
           <TextField
             autoComplete="off"
             label="Full/Partial Zip Code"
-            defaultValue={getParam('zipcode')}
+            defaultValue={getParam("zipcode")}
             size="small"
             onChange={(event) => {
               if (!isNaN(Number(event.target.value))) {
                 // is it purely numeric chars?
                 if (event.target.value.length <= 5) {
                   // and not longer than 5 chars?
-                  setQueryParam('zipcode', event.target.value);
+                  setQueryParam("zipcode", event.target.value);
                   setZipCode(event.target.value);
                 } else {
                   // truncate
@@ -256,49 +256,51 @@ export default function JobListingsContent() {
                 // erase non-numeric chars
                 const closestInt = Number.parseInt(event.target.value);
                 event.target.value = isNaN(closestInt)
-                  ? ''
+                  ? ""
                   : closestInt.toString();
               }
             }}
             sx={{
-              padding: '0px 2px',
-              width: '100%',
-              '& .MuiInputBase-root': {
-                borderRadius: '9999px',
-                height: '1.75rem',
+              padding: "0px 2px",
+              width: "100%",
+              "& .MuiInputBase-root": {
+                borderRadius: "9999px",
+                height: "1.75rem",
               },
-              '& .MuiInputBase-input': {
-                boxShadow: 'none',
-                '&:focus': { boxShadow: 'none' },
+              "& .MuiInputBase-input": {
+                boxShadow: "none",
+                "&:focus": { boxShadow: "none" },
               },
-              '& .MuiInputLabel-root': {
-                fontSize: '0.875rem',
-                lineHeight: '1.25rem',
-                top: '15px',
-                left: '2px',
-                position: 'relative',
+              "& .MuiInputLabel-root": {
+                fontSize: "0.875rem",
+                lineHeight: "1.25rem",
+                top: "15px",
+                left: "2px",
+                position: "relative",
               },
             }}
           />
         </div>
         <div className="float-left w-1/2 items-center px-4 tablet:w-1/3">
           <div className="w-full flow-root pb-4 mt-2">
-          {/* Sorting */}
-          <div className="float-right mt-6">
-            <SortDropdown
-              id="jobseeker-listview-sort"
-              label="Sort by:"
-              value={getParam('sort') == '' ? 'publish_date' : getParam('sort')}
-              onChange={(event) => {
-                setQueryParam('sort', event.target.value);
-                setSortBy(event.target.value);
-              }}
-              options={[
-                // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
-                { label: 'Newest', value: 'publish_date' },
-              ]}
-            />
-          </div>
+            {/* Sorting */}
+            <div className="float-right mt-6">
+              <SortDropdown
+                id="jobseeker-listview-sort"
+                label="Sort by:"
+                value={
+                  getParam("sort") == "" ? "publish_date" : getParam("sort")
+                }
+                onChange={(event) => {
+                  setQueryParam("sort", event.target.value);
+                  setSortBy(event.target.value);
+                }}
+                options={[
+                  // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
+                  { label: "Newest", value: "publish_date" },
+                ]}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -309,7 +311,7 @@ export default function JobListingsContent() {
           <CircularProgress />
         </div>
       ) : (
-        ''
+        ""
       )}
 
       {/* Error */}
@@ -318,7 +320,7 @@ export default function JobListingsContent() {
           Error: Invalid Query
         </div>
       ) : (
-        ''
+        ""
       )}
 
       {/* else, Display Results */}
@@ -332,22 +334,22 @@ export default function JobListingsContent() {
           ))}
         </div>
       ) : (
-        ''
+        ""
       )}
 
       {/* Pagination */}
       <div className="mt-6 flex justify-center">
         {!loading && !error ? (
           <div>
-            Showing{' '}
+            Showing{" "}
             {totalResults == 0
               ? 0
-              : resultsPerPage * (page ?? 1) - resultsPerPage + 1}{' '}
-            - {Math.min(resultsPerPage * (page ?? 1), totalResults ?? 1)} of{' '}
+              : resultsPerPage * (page ?? 1) - resultsPerPage + 1}{" "}
+            - {Math.min(resultsPerPage * (page ?? 1), totalResults ?? 1)} of{" "}
             {totalResults} total results
           </div>
         ) : (
-          ''
+          ""
         )}
       </div>
       <div className="mb-4 mt-2 flex justify-center phone:mb-0">
@@ -356,11 +358,11 @@ export default function JobListingsContent() {
             variant="outlined"
             shape="rounded"
             count={Math.ceil((totalResults ?? 1) / resultsPerPage)}
-            page={getParam('page') != '' ? +getParam('page') : 1}
+            page={getParam("page") != "" ? +getParam("page") : 1}
             onChange={handlePageChange}
           />
         ) : (
-          ''
+          ""
         )}
       </div>
     </main>

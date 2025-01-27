@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import {
   CertDTO,
   HighestCompletedEducationLevel,
@@ -11,20 +11,23 @@ import {
   HighSchoolDegreeType,
   PreAEduSystem,
   ProgramEnrollmentStatus,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { mapToEnum, mapToEnumOrThrow } from '@/app/lib/utils';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { mapToEnum, mapToEnumOrThrow } from "@/app/lib/utils";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, props: { params: Promise<{ userId: string }> }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ userId: string }> },
+) {
   const params = await props.params;
   try {
     const userId = params.userId;
     if (!userId) {
       return NextResponse.json(
-        { error: 'User ID is required' },
+        { error: "User ID is required" },
         { status: 400 },
       );
     }
@@ -107,7 +110,7 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
     console.log(JSON.stringify(jobseeker, null, 2));
     if (!jobseeker) {
       return NextResponse.json(
-        { error: 'Jobseeker not found' },
+        { error: "Jobseeker not found" },
         { status: 404 },
       );
     }

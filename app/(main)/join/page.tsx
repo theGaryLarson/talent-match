@@ -1,5 +1,5 @@
-'use client';
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+"use client";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import {
   Typography,
   TextField,
@@ -14,9 +14,9 @@ import {
   Snackbar,
   Alert,
   AlertColor,
-} from '@mui/material';
-import PillButton from '@/app/ui/components/PillButton';
-import { JSX } from 'react/jsx-runtime';
+} from "@mui/material";
+import PillButton from "@/app/ui/components/PillButton";
+import { JSX } from "react/jsx-runtime";
 
 interface FormData {
   memberRoles: string[];
@@ -35,52 +35,52 @@ interface SubmitStatus {
 }
 
 interface PayloadData {
-  'Member role': string;
+  "Member role": string;
   Firstname: string;
   Lastname: string;
   JobTitle: string;
   Organization: string;
   Email: string;
-  'Area of Interest': string;
-  'Form Name': string;
+  "Area of Interest": string;
+  "Form Name": string;
   Notification: string;
 }
 
 export default function Page(): JSX.Element {
   const [formData, setFormData] = useState<FormData>({
     memberRoles: [],
-    firstName: '',
-    lastName: '',
-    jobTitle: '',
-    organization: '',
-    email: '',
+    firstName: "",
+    lastName: "",
+    jobTitle: "",
+    organization: "",
+    email: "",
     interests: [],
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({
     open: false,
-    severity: 'success',
-    message: '',
+    severity: "success",
+    message: "",
   });
 
   const memberRoles: string[] = [
-    'Employers or Tech Industry Professionals',
-    'Educators',
-    'Community Organization/Nonprofit Professionals',
-    'Workforce or Government Professionals',
+    "Employers or Tech Industry Professionals",
+    "Educators",
+    "Community Organization/Nonprofit Professionals",
+    "Workforce or Government Professionals",
   ];
 
   const interestOptions: string[] = [
-    'Recruiting',
-    'Employee skill development',
-    'Tech curriculum improvement',
-    'Internship programs',
-    'Apprenticeship programs',
-    'Career Launch programs',
-    'Student job placement assistance',
-    'Educational program support',
-    'Other',
+    "Recruiting",
+    "Employee skill development",
+    "Tech curriculum improvement",
+    "Internship programs",
+    "Apprenticeship programs",
+    "Career Launch programs",
+    "Student job placement assistance",
+    "Educational program support",
+    "Other",
   ];
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -89,8 +89,8 @@ export default function Page(): JSX.Element {
     if (formData.memberRoles.length === 0) {
       setSubmitStatus({
         open: true,
-        severity: 'error',
-        message: 'Please select at least one member type',
+        severity: "error",
+        message: "Please select at least one member type",
       });
       return;
     }
@@ -98,55 +98,55 @@ export default function Page(): JSX.Element {
     setIsSubmitting(true);
 
     const payload: PayloadData = {
-      'Member role': formData.memberRoles.join(', '),
+      "Member role": formData.memberRoles.join(", "),
       Firstname: formData.firstName,
       Lastname: formData.lastName,
       JobTitle: formData.jobTitle,
       Organization: formData.organization,
       Email: formData.email,
-      'Area of Interest': formData.interests.join(', '),
-      'Form Name': 'Membership Form (universal) V3',
+      "Area of Interest": formData.interests.join(", "),
+      "Form Name": "Membership Form (universal) V3",
       Notification:
-        'This is a notification that a contact form was submitted on your website (Washington Tech Workforce Coalition)',
+        "This is a notification that a contact form was submitted on your website (Washington Tech Workforce Coalition)",
     };
 
     try {
       const response = await fetch(
-        'https://prod-25.westus.logic.azure.com:443/workflows/b1c10acdf2324ab097420749954854e9/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=X297QuDQs7HctPalrTQIJ9Nh7-5TDUHhdnS51R1eb54',
+        "https://prod-25.westus.logic.azure.com:443/workflows/b1c10acdf2324ab097420749954854e9/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=X297QuDQs7HctPalrTQIJ9Nh7-5TDUHhdnS51R1eb54",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         },
       );
 
       if (!response.ok) {
-        throw new Error('Submission failed');
+        throw new Error("Submission failed");
       }
 
       setSubmitStatus({
         open: true,
-        severity: 'success',
-        message: 'Form submitted successfully!',
+        severity: "success",
+        message: "Form submitted successfully!",
       });
 
       setFormData({
         memberRoles: [],
-        firstName: '',
-        lastName: '',
-        jobTitle: '',
-        organization: '',
-        email: '',
+        firstName: "",
+        lastName: "",
+        jobTitle: "",
+        organization: "",
+        email: "",
         interests: [],
       });
     } catch (error) {
-      console.error('Submission error:', error);
+      console.error("Submission error:", error);
       setSubmitStatus({
         open: true,
-        severity: 'error',
-        message: 'Failed to submit form. Please try again.',
+        severity: "error",
+        message: "Failed to submit form. Please try again.",
       });
     }
 
@@ -283,7 +283,7 @@ export default function Page(): JSX.Element {
           </FormControl>
 
           <PillButton type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Submitting...' : 'Submit'}
+            {isSubmitting ? "Submitting..." : "Submit"}
           </PillButton>
         </Box>
 
@@ -291,12 +291,12 @@ export default function Page(): JSX.Element {
           open={submitStatus.open}
           autoHideDuration={6000}
           onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert
             onClose={handleCloseSnackbar}
             severity={submitStatus.severity}
-            sx={{ width: '100%' }}
+            sx={{ width: "100%" }}
           >
             {submitStatus.message}
           </Alert>

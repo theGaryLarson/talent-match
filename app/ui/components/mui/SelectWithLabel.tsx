@@ -1,14 +1,22 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { ReactNode } from 'react';
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
+import { ReactNode } from "react";
 
 interface Props {
-  id: string,
-  options: {label:string, value:string}[],
-  label?: string | undefined,
-  value?: string | undefined,
-  onChange?: ((event: SelectChangeEvent<string>, child: ReactNode) => void) | undefined
-  placeholder?: string | undefined,
-  [key: string]: any,
+  id: string;
+  options: { label: string; value: string }[];
+  label?: string | undefined;
+  value?: string | undefined;
+  onChange?:
+    | ((event: SelectChangeEvent<string>, child: ReactNode) => void)
+    | undefined;
+  placeholder?: string | undefined;
+  [key: string]: any;
 }
 
 export default function SelectWithLabel({
@@ -19,7 +27,7 @@ export default function SelectWithLabel({
   onChange,
   placeholder,
   ...rest
-}:Props) {
+}: Props) {
   return (
     <FormControl fullWidth>
       <InputLabel id={id + "-label"}>{label}</InputLabel>
@@ -31,17 +39,13 @@ export default function SelectWithLabel({
         onChange={onChange}
         {...rest}
       >
-        {
-          options.map(
-            item => {
-              return (
-                <MenuItem key={id+"-option-"+item.value} value={item.value}>
-                  {item.label}
-                </MenuItem>
-              )
-            }
-          )
-        }
+        {options.map((item) => {
+          return (
+            <MenuItem key={id + "-option-" + item.value} value={item.value}>
+              {item.label}
+            </MenuItem>
+          );
+        })}
       </Select>
     </FormControl>
   );

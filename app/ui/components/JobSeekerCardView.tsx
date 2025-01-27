@@ -1,16 +1,16 @@
-'use client';
-import Avatar from './Avatar';
-import Skills from './Skills';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
-import { JobSeekerCardViewDTO } from '@/data/dtos/JobSeekerCardViewDTO';
-import ShareButton from './ShareButton';
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { ProgramEnrollmentStatus } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import Bookmark from './Bookmark';
-import { ShareIcon } from '@heroicons/react/24/outline';
+"use client";
+import Avatar from "./Avatar";
+import Skills from "./Skills";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
+import { JobSeekerCardViewDTO } from "@/data/dtos/JobSeekerCardViewDTO";
+import ShareButton from "./ShareButton";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { ProgramEnrollmentStatus } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import Bookmark from "./Bookmark";
+import { ShareIcon } from "@heroicons/react/24/outline";
 
 export default function JobSeekerCardView({
   jobseeker,
@@ -23,10 +23,10 @@ export default function JobSeekerCardView({
   const sessionJobseekerId = session?.user?.jobseekerId;
 
   const name: string =
-    jobseeker?.users?.first_name + ' ' + jobseeker?.users?.last_name;
+    jobseeker?.users?.first_name + " " + jobseeker?.users?.last_name;
   // const pathway: string = jobseeker?.pathways?.pathway_title ?? '';
-  const pfpPicSrc: string = jobseeker?.users?.photo_url ?? '';
-  const aboutMe: string = jobseeker?.intro_headline ?? '';
+  const pfpPicSrc: string = jobseeker?.users?.photo_url ?? "";
+  const aboutMe: string = jobseeker?.intro_headline ?? "";
   const id: string = jobseeker?.jobseeker_id;
   const industry: string =
     [
@@ -37,16 +37,16 @@ export default function JobSeekerCardView({
       ),
     ]
       .toString()
-      .replaceAll(',', ', ') ?? '';
+      .replaceAll(",", ", ") ?? "";
   const location: string =
     jobseeker?.users?.locationData?.city +
-    ', ' +
+    ", " +
     jobseeker?.users?.locationData?.state +
-    ' ' +
+    " " +
     jobseeker?.users?.locationData?.zip;
-  const yearsExp: string = jobseeker.years_work_exp + ' years work exp';
+  const yearsExp: string = jobseeker.years_work_exp + " years work exp";
   const highestDegree: string =
-    jobseeker.highest_level_of_study_completed ?? '';
+    jobseeker.highest_level_of_study_completed ?? "";
   const skills: SkillDTO[] = jobseeker?.jobseeker_has_skills
     ? jobseeker?.jobseeker_has_skills.map(
         (item: JobseekerSkillDTO) => item.skills,
@@ -54,7 +54,7 @@ export default function JobSeekerCardView({
     : [];
 
   // Decide what school to show
-  let school = '';
+  let school = "";
   if (
     jobseeker?.jobseeker_education &&
     jobseeker.jobseeker_education.length > 0
@@ -67,22 +67,22 @@ export default function JobSeekerCardView({
     if (enrolledEducation) {
       // If there is an enrolled program, prioritize that
       school =
-        (enrolledEducation.eduProviders?.name || '') +
-        ' | ' +
-        (enrolledEducation?.degreeType || '') +
+        (enrolledEducation.eduProviders?.name || "") +
+        " | " +
+        (enrolledEducation?.degreeType || "") +
         (enrolledEducation.program?.title
-          ? ' | ' + enrolledEducation?.program?.title
-          : '');
+          ? " | " + enrolledEducation?.program?.title
+          : "");
     } else {
       // If no enrolled program is found, show the first available education
       const firstEducation = jobseeker.jobseeker_education[0];
       school =
-        (firstEducation.eduProviders?.name || '') +
-        ' | ' +
-        (firstEducation?.degreeType || '') +
+        (firstEducation.eduProviders?.name || "") +
+        " | " +
+        (firstEducation?.degreeType || "") +
         (firstEducation?.program?.title
-          ? ' | ' + firstEducation.program.title
-          : '');
+          ? " | " + firstEducation.program.title
+          : "");
     }
   }
 
@@ -122,7 +122,7 @@ export default function JobSeekerCardView({
           {/* {showViewProfile ? // only show View Profile if it's your Jobseeker profile */}
           <div className="h-min w-max">
             <Link // view profile should redirect to login and then continue to candidate after account create
-              href={'/services/jobseekers/' + id}
+              href={"/services/jobseekers/" + id}
               className="inline-block w-fit rounded-full border border-2 border-cyan-600 bg-white px-2 py-2 text-sm text-cyan-600 hover:bg-gray-200 tablet:px-4 tablet:text-base laptop:px-6 laptop:text-lg"
             >
               <strong>View Profile</strong>
@@ -134,18 +134,18 @@ export default function JobSeekerCardView({
               <Bookmark
                 bookmarked={isBookmarked}
                 addUrl={
-                  '/api/companies/bookmark/addJobseeker/' +
+                  "/api/companies/bookmark/addJobseeker/" +
                   jobseeker.jobseeker_id
                 }
                 removeUrl={
-                  '/api/companies/bookmark/removeJobseeker/' +
+                  "/api/companies/bookmark/removeJobseeker/" +
                   jobseeker.jobseeker_id
                 }
               />
             ) : (
-              ''
+              ""
             )}
-            <ShareButton href={'/services/jobseekers/' + id}>
+            <ShareButton href={"/services/jobseekers/" + id}>
               <ShareIcon className="h-10 w-10 stroke-2" />
             </ShareButton>
           </div>

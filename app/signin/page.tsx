@@ -1,14 +1,13 @@
-/* eslint-disable react/jsx-key */
-import { signIn, auth, providerMap } from '@/auth';
-import { Button } from '@mui/material';
-import Image from 'next/image';
+import { signIn, auth, providerMap } from "@/auth";
+import { Button } from "@mui/material";
+import Image from "next/image";
 
 export default async function SignInPage({
   searchParams,
 }: {
   searchParams: Promise<{ callbackUrl?: string }>;
 }) {
-  const callbackUrl = (await searchParams).callbackUrl || '/';
+  const callbackUrl = (await searchParams).callbackUrl || "/";
 
   console.log(providerMap);
   return (
@@ -20,7 +19,7 @@ export default async function SignInPage({
           {Object.values(providerMap).map((provider) => (
             <form
               action={async () => {
-                'use server';
+                "use server";
                 try {
                   await signIn(provider.id, { redirectTo: callbackUrl });
                 } catch (error) {
@@ -44,21 +43,21 @@ export default async function SignInPage({
                 type="submit"
                 fullWidth
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  border: '1px solid rgba(30, 36, 50, 0.23)',
-                  textTransform: 'none',
-                  padding: '0.5rem',
-                  backgroundColor: 'transparent',
-                  '&:focus': {
-                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
-                    boxShadow: 'none',
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  border: "1px solid rgba(30, 36, 50, 0.23)",
+                  textTransform: "none",
+                  padding: "0.5rem",
+                  backgroundColor: "transparent",
+                  "&:focus": {
+                    backgroundColor: "rgba(0, 128, 158, 0.23)",
+                    boxShadow: "none",
                   },
-                  '&:active': {
-                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
+                  "&:active": {
+                    backgroundColor: "rgba(0, 128, 158, 0.23)",
                   },
-                  '&:hover:enabled': {
-                    backgroundColor: 'rgba(0, 128, 158, 0.23)',
+                  "&:hover:enabled": {
+                    backgroundColor: "rgba(0, 128, 158, 0.23)",
                   },
                 }}
               >
@@ -68,14 +67,14 @@ export default async function SignInPage({
                   height={20}
                   alt="Green checkmark"
                   style={{
-                    marginLeft: '0.5rem',
-                    marginRight: '0.5rem',
-                    display: 'inline',
+                    marginLeft: "0.5rem",
+                    marginRight: "0.5rem",
+                    display: "inline",
                   }}
                 />
-                <span style={{ color: '#000000' }}>
+                <span style={{ color: "#000000" }}>
                   Sign in with {provider.name}
-                </span>{' '}
+                </span>{" "}
               </Button>
             </form>
           ))}

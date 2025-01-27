@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 /**
  * Salts and hashes a given password.
@@ -18,6 +18,9 @@ export async function saltAndHashPassword(password: string): Promise<string> {
  * @param hash - hashed password.
  * @returns true if the passwords match, false otherwise.
  */
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+export async function verifyPassword(
+  password: string,
+  hash: string,
+): Promise<boolean> {
   return await bcrypt.compare(password, hash);
 }

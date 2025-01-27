@@ -5,9 +5,9 @@ import {
   OutlinedInput,
   Select,
   SelectChangeEvent,
-} from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import React from 'react';
+} from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import React from "react";
 
 interface Props<ValueType> {
   id: string;
@@ -27,14 +27,14 @@ interface Props<ValueType> {
 
 export default function SelectAutoload<ValueType>({
   id,
-  className = '',
+  className = "",
   apiAutoloadRoute,
   disabled = false,
   label,
   value,
   onChange,
   placeholder,
-  loadingText = 'Loading dropdown...',
+  loadingText = "Loading dropdown...",
   getOptionLabel,
   getOptionId,
   getOptionFromId,
@@ -43,7 +43,7 @@ export default function SelectAutoload<ValueType>({
   const [options, setOptions] = React.useState<ValueType[]>([]);
   const [loading, setLoading] = React.useState(true);
 
-  const selectValue = value ? getOptionId(value) : '';
+  const selectValue = value ? getOptionId(value) : "";
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const selectedValue = event.target.value;
@@ -63,7 +63,7 @@ export default function SelectAutoload<ValueType>({
 
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -108,7 +108,7 @@ export default function SelectAutoload<ValueType>({
           <span className="text-gray-500">{placeholder}</span>
         );
       }}
-      inputProps={{ 'aria-label': label }}
+      inputProps={{ "aria-label": label }}
       {...rest}
     >
       <MenuItem disabled value="">

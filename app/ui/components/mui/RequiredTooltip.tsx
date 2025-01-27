@@ -1,24 +1,24 @@
-import { useEffect, useRef } from 'react';
-import { Tooltip } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { useEffect, useRef } from "react";
+import { Tooltip } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 interface Props {
   open: boolean;
   errorMessage: string;
   children: React.ReactElement<unknown, any>;
   placement?:
-    | 'bottom-start'
-    | 'bottom-end'
-    | 'bottom'
-    | 'left-end'
-    | 'left-start'
-    | 'left'
-    | 'right-end'
-    | 'right-start'
-    | 'right'
-    | 'top-end'
-    | 'top-start'
-    | 'top'
+    | "bottom-start"
+    | "bottom-end"
+    | "bottom"
+    | "left-end"
+    | "left-start"
+    | "left"
+    | "right-end"
+    | "right-start"
+    | "right"
+    | "top-end"
+    | "top-start"
+    | "top"
     | undefined;
 }
 
@@ -26,7 +26,7 @@ export default function RequiredTooltip({
   open,
   errorMessage,
   children,
-  placement = 'top-start',
+  placement = "top-start",
   ...rest
 }: Props) {
   const theme = useTheme();
@@ -39,7 +39,7 @@ export default function RequiredTooltip({
           window.scrollY + ref.current.getBoundingClientRect().top - 45;
         window.scrollTo({
           top: topOffset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
       }
     }
