@@ -52,7 +52,6 @@ export default auth((req) => {
       '/career-prep',
       '/services/jobseekers',
       '/api/admin/career-prep/self-assign-case',
-      '/api/joblistings/',
       '/api/jobseekers/career-prep/meeting',
       '/api/admin/career-prep/update-recomended-track/',
       // Add any other routes accessible by case managers
@@ -148,7 +147,7 @@ export default auth((req) => {
 
   // Allow public routes
   if (publicRoutes.includes(pathname) || // training providers/programs needs wildcard for id, but all other public routes are explicit
-      pathname.startsWith('/services/training-programs/') || pathname.startsWith('/services/training-providers/')) {
+      pathname.startsWith('/services/training-programs/') || pathname.startsWith('/services/training-providers/') || pathname.startsWith('/services/joblistings')) {
     return NextResponse.next();
   }
 
