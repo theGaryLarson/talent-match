@@ -25,7 +25,9 @@ export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
   let session = useSession();
   let pathname = usePathname();
 
-  const handleApplicationClick = async (e) => {
+  const handleApplicationClick = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     if (!session?.data?.user) {
       const base = window.location.origin;
       const currentUrl = new URL(window.location.href);
