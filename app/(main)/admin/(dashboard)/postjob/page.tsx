@@ -8,14 +8,18 @@ import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 import { Button } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
 
 export default function Page() {
   const router = useRouter();
+  const { quill, quillRef } = useQuill();
   const [skills, setSkills] = useState<SkillDTO[]>();
   const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
   const [companies, setCompanies] = useState<companies[]>();
   const [techAres, setTechAreas] = useState<technology_areas[]>();
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
+  const [jobDescription, setJobDescription] = useState("");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -26,7 +30,7 @@ export default function Page() {
     if (submitButton) submitButton.disabled = true;
     const jobListingData: JobPostCreationDTO = {
       job_title: formData.get("job_title") as string,
-      job_description: formData.get("job_description") as string,
+      job_description: jobDescription,
       is_internship: formData.get("is_internship") === "yes",
       is_paid: formData.get("is_paid") === "yes",
       is_apprenticeship: formData.get("is_apprenticeship") === "yes",
@@ -94,6 +98,15 @@ export default function Page() {
         setTechAreas(jsonData);
       });
   }, []);
+
+  useEffect(() => {
+    if (quill) {
+      quill.on("text-change", () => {
+        setJobDescription(quill.root.innerHTML);
+      });
+    }
+  }, [quill]);
+
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       {/* Company (For use on admin page, would need to be added to api and the fetch request) */}
@@ -120,7 +133,7 @@ export default function Page() {
       {/* Job Description */}
       <div className="grid grid-cols-1">
         <label htmlFor="job_description">Job Description</label>
-        <textarea name="job_description" required />
+        <div ref={quillRef} style={{ minHeight: "200px" }} />
       </div>
 
       {/*tech Sector*/}

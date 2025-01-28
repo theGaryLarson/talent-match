@@ -5,7 +5,6 @@ const theme = createTheme({
   cssVariables: true,
   colorSchemes: {
     light: {
-      // Palette colors are represented by four tokens: main, light, dark, contrastTest. Light, dark, and contrastText will be automatically calculated from main if not manually set
       palette: {
         primary: {
           main: "#047F9C",
@@ -29,9 +28,9 @@ const theme = createTheme({
           text: "#FFFFFF",
         },
         accent: {
-          main: "#8F8F8F", //gray
-          light: "#FFFFFF", //white
-          dark: "#000000", //black
+          main: "#8F8F8F",
+          light: "#FFFFFF",
+          dark: "#000000",
         },
       },
     },

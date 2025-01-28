@@ -1,5 +1,5 @@
 import { getJobSeekerAppliedJobs } from "@/app/lib/joblistings";
-import JobListingCardView from "@/app/ui/components/JobListingCardView";
+import JobListingCardView from "@/app/ui/components/jobPostings/JobListingCardView";
 import Link from "next/link";
 
 export default async function page() {

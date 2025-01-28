@@ -1,5 +1,5 @@
 "use client";
-import JobListingCardView from "@/app/ui/components/JobListingCardView";
+import JobListingCardView from "@/app/ui/components/jobPostings/JobListingCardView";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Pagination from "@mui/material/Pagination";

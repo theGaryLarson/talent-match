@@ -1,5 +1,5 @@
 import { getJobSeekerBookmarkedJobs } from "@/app/lib/joblistings";
-import JobListingCardView from "@/app/ui/components/JobListingCardView";
+import JobListingCardView from "@/app/ui/components/jobPostings/JobListingCardView";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import Link from "next/link";
 
