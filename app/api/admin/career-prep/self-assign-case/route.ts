@@ -1,6 +1,4 @@
 import {
-  addCareerPrepStudentNotes,
-  CreateNoteDTO,
   selfAssignAsCaseManager,
 } from "@/app/lib/admin/careerPrep";
 import { NextResponse } from "next/server";

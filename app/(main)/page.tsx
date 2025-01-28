@@ -1,6 +1,5 @@
 import RoundedButton from "../ui/components/RoundedButton";
 import Image from "next/image";
-import Link from "next/link";
 import TrainingProviderMembers from "../ui/components/TrainingProviderMembers";
 
 //entire TWC landing page

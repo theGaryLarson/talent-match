@@ -1,5 +1,4 @@
 "use client";
-import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import { CareerPrepTrack } from "@/app/lib/poolAssignment";
 import { useRouter } from "next/navigation";
 

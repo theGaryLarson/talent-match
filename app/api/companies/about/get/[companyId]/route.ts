@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { ReadEmployerAboutDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
-import parsePhoneNumberFromString from "libphonenumber-js";
 const prisma: PrismaClient = getPrismaClient();
 
 export async function GET(

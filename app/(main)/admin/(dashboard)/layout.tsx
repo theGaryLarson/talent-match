@@ -1,9 +1,8 @@
 import Link from "next/link";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import { auth } from "@/auth";
-import { BookmarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import {PencilSquareIcon } from "@heroicons/react/24/outline";
 import ApprovalOutlinedIcon from "@mui/icons-material/ApprovalOutlined";
 import { AddBusinessOutlined, PsychologyOutlined } from "@mui/icons-material";
 export default async function layout({

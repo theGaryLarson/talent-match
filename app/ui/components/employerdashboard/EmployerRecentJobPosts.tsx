@@ -1,6 +1,4 @@
 "use client";
-import { getMyJobListings } from "@/app/lib/joblistings";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import DeleteJobPostingButton from "../jobPostings/DeleteJobPostingButton";
 import { useEffect, useState } from "react";

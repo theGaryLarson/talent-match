@@ -1,5 +1,4 @@
 "use client";
-import SingleSelectFilterAutoload from "@/app/ui/components/mui/SingleSelectFilterAutoload";
 import { Button } from "@mui/material";
 import { companies, industry_sectors } from "@prisma/client";
 import { useEffect, useState } from "react";

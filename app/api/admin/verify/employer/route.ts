@@ -1,6 +1,5 @@
 import {
   adminEmployerApproval,
-  adminUpdateCompanyApproval,
 } from "@/app/lib/admin/companyManagement";
 import { NextResponse } from "next/server";
 

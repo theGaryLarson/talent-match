@@ -1,8 +1,6 @@
 import {
   CareerPrepJobseekerCardViewDTO,
-  CareerPrepStatus,
 } from "@/app/lib/admin/careerPrep";
-import { ProgramEnrollmentStatus } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import Link from "next/link";
 import EnrollmentStatusDropDown from "./EnrollmentStatusDropDown";
 import SelfAssignCaseButton from "./SelfAsignCaseButton";

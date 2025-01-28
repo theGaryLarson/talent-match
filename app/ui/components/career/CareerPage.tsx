@@ -5,7 +5,6 @@ import {
 } from "@/app/lib/eduProviders";
 import TrainingProgramCard from "./TrainingProgramCard";
 import Image from "next/image";
-import Link from "next/link";
 
 export default async function CareerPage({
   title,
