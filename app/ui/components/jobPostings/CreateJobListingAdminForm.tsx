@@ -328,10 +328,6 @@ export default function CreateJobListingAdminForm() {
         />
         <p>Select your top 5 skills from your skills list</p>
       </div>
-      {/* Submit Button */}
-      <div>
-        <button type="submit">Create Job Listing</button>
-      </div>
       <div className="grid grid-cols-2 gap-2">
         <Button
           type="reset"
