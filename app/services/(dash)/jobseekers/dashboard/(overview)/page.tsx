@@ -78,15 +78,15 @@ export default async function Page() {
           href={"/services/jobseekers/" + session?.user.jobseekerId}
           sx={{
             backgroundColor: "#f6f6f6",
-            color: "#014260",
+            color: "secondary.main",
           }}
         >
           Showcase
         </PillButton>
       </Stack>
-      <h1 className="text-[32px] text-button-secondary-idle-text">
+      <Typography variant={"h4"} sx={{ color: "secondary.main" }}>
         Welcome back, {session?.user.firstName}
-      </h1>
+      </Typography>
       <CareerPrep
         enrollmentStatus={carrerPrepEnrollment?.enrollment}
         track={carrerPrepEnrollment?.AssignedTrack}

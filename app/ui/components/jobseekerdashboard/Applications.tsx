@@ -92,15 +92,21 @@ export default async function Applications({
         size={1}
         sx={{ justifyContent: "space-between" }}
       >
-        <p className="self-center text-xl font-medium text-button-secondary-idle-text">
+        <Typography
+          variant="h6"
+          sx={{
+            color: "secondary.main",
+            alignSelf: "center",
+          }}
+        >
           Application Status
-        </p>
+        </Typography>
         <PillButton
           href="/services/joblistings"
           disableElevation
           sx={{
             backgroundColor: "#f6f6f6",
-            color: "#014260",
+            color: "secondary.main",
           }}
         >
           Search Jobs
@@ -112,16 +118,24 @@ export default async function Applications({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ color: "#014260", fontWeight: "600" }}>
+                  <TableCell
+                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                  >
                     Job Title
                   </TableCell>
-                  <TableCell sx={{ color: "#014260", fontWeight: "600" }}>
+                  <TableCell
+                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                  >
                     Company Name
                   </TableCell>
-                  <TableCell sx={{ color: "#014260", fontWeight: "600" }}>
+                  <TableCell
+                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                  >
                     Deadline
                   </TableCell>
-                  <TableCell sx={{ color: "#014260", fontWeight: "600" }}>
+                  <TableCell
+                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                  >
                     Status
                   </TableCell>
                 </TableRow>
@@ -136,10 +150,12 @@ export default async function Applications({
                       },
                     }}
                   >
-                    <TableCell sx={{ color: "#014260", fontWeight: "600" }}>
+                    <TableCell
+                      sx={{ color: "secondary.main", fontWeight: "600" }}
+                    >
                       {job.job_title}
                     </TableCell>
-                    <TableCell sx={{ color: "#014260" }}>
+                    <TableCell sx={{ color: "secondary.main" }}>
                       {job.companies.company_name}
                     </TableCell>
                     <TableCell>

@@ -92,7 +92,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             href={"/services/jobseekers/dashboard"}
             sx={{
               backgroundColor: "#f6f6f6",
-              color: "#014260",
+              color: "secondary.main",
             }}
           >
             Dashboard

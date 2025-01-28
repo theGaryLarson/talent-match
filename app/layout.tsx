@@ -3,6 +3,7 @@ import { inter } from "@/app/ui/fonts";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "@/mui.theme";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 export default function RootLayout({
   children,
@@ -12,12 +13,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <SessionProvider>
+        <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            {children}
+            <SessionProvider>{children}</SessionProvider>
           </ThemeProvider>
-        </SessionProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

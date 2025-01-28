@@ -1,6 +1,4 @@
 "use client";
-
-import { JobStatus } from "@/app/lib/jobseekerJobTracking";
 import Bookmark from "@/app/ui/components/Bookmark";
 import ApplyToJobButton from "@/app/ui/components/jobPostings/ApplyToJobButton";
 import DeleteJobPostingButton from "@/app/ui/components/jobPostings/DeleteJobPostingButton";
@@ -9,9 +7,9 @@ import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import Avatar from "@/app/ui/components/Avatar";
 import { useState } from "react";
-import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import { useSession } from "next-auth/react";
 import { calculateDaysAway } from "@/app/lib/utils";
+import "quill/dist/quill.snow.css";
 
 function daysAwayToString(date: Date): string {
   const daysAway = calculateDaysAway(date);
@@ -132,9 +130,10 @@ export default function JobPostingPage({ joblisting, params }: Props) {
       {/* Job Description */}
       <div>
         <p className="font-semibold text-gray-700">Description:</p>
-        <p className="break-words text-base leading-relaxed text-gray-500">
-          {description}
-        </p>
+        <div
+          dangerouslySetInnerHTML={{ __html: description }}
+          className="ql-editor"
+        />
       </div>
 
       {/* Skills */}

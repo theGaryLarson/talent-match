@@ -1,4 +1,4 @@
-import { Grid2 } from "@mui/material";
+import { Grid2, Typography } from "@mui/material";
 import RoundedButton from "../RoundedButton";
 import PillButton from "../PillButton";
 
@@ -11,15 +11,21 @@ export default async function Events() {
         size={1}
         sx={{ justifyContent: "space-between" }}
       >
-        <p className="self-center text-xl font-medium text-button-secondary-idle-text">
+        <Typography
+          variant="h6"
+          sx={{
+            color: "secondary.main",
+            alignSelf: "center",
+          }}
+        >
           Registered Events
-        </p>
+        </Typography>
         <PillButton
           href="/underconstruction"
           disableElevation
           sx={{
             backgroundColor: "#f6f6f6",
-            color: "#014260",
+            color: "secondary.main",
           }}
         >
           Event Calendar

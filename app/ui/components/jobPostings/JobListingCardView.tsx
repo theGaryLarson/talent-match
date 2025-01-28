@@ -1,16 +1,35 @@
 "use client";
-import { useState, useEffect } from "react";
-import Avatar from "./Avatar";
-import Skills from "./Skills";
+import Avatar from "../Avatar";
+import Skills from "../Skills";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import Bookmark from "./Bookmark";
+import Bookmark from "../Bookmark";
 import PillButton from "@/app/ui/components/PillButton";
-("next/navigation");
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import { Chip, Stack } from "@mui/material";
-import Link from "next/link";
+import "quill/dist/quill.snow.css";
+
+function extractTextFromHTML(htmlString: string) {
+  const tempElement = document.createElement("div");
+  tempElement.innerHTML = htmlString;
+
+  // Add spaces between block-level elements
+  const blockElements = tempElement.querySelectorAll(
+    "p, div, h1, h2, h3, h4, h5, h6, li",
+  );
+  blockElements.forEach((element) => {
+    element.insertAdjacentText("afterend", " ");
+  });
+
+  // Get the text content and normalize spaces
+  let text = tempElement.textContent || tempElement.innerText || "";
+
+  // Replace multiple spaces, newlines, and tabs with a single space
+  text = text.replace(/\s+/g, " ").trim();
+
+  return text;
+}
 
 export default function JobListingCardView({
   joblisting,
@@ -18,10 +37,6 @@ export default function JobListingCardView({
   joblisting: JobListingCardViewDTO;
 }) {
   const { data: session } = useSession();
-
-  // const router = useRouter();
-  // const pathname = usePathname();
-  // const searchParams = useSearchParams();
 
   const job_title: string = joblisting?.job_title;
   const employment_type: string = joblisting.employment_type ?? "";
@@ -31,7 +46,9 @@ export default function JobListingCardView({
   const is_paid: boolean = joblisting.is_paid ?? true;
   const skills: SkillDTO[] = joblisting.skills ?? [];
   const salary_range: string = joblisting?.salary_range ?? "";
-  const description: string = joblisting?.job_description ?? "";
+  const description: string = extractTextFromHTML(
+    joblisting?.job_description ?? "",
+  );
   const id: string = joblisting?.job_posting_id ?? "";
   const location: string =
     joblisting?.location +
@@ -39,41 +56,10 @@ export default function JobListingCardView({
     joblisting?.company_addresses?.locationData?.city +
     ", " +
     joblisting?.zip;
-
-  // const [openModal, setOpenModal] = useState(false);
-
   const isBookmarked = joblisting?.isBookmarked ?? false;
-
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
-  // const updateQueryParam = (jobId: string | null) => {
-  //   const newSearchParams = new URLSearchParams(searchParams);
-  //   if (jobId) {
-  //     newSearchParams.set('job', jobId);
-  //   } else {
-  //     newSearchParams.delete('job');
-  //   }
-  //   router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
-  // };
-
-  // useEffect(() => {
-  //   const jobIdFromQuery = searchParams.get('job');
-  //   if (jobIdFromQuery === id) {
-  //     setOpenModal(true);
-  //   } else {
-  //     setOpenModal(false);
-  //   }
-  // }, [searchParams, id]);
-
-  // const handleModalChange = (open: boolean) => {
-  //   setOpenModal(open);
-  //   if (open) {
-  //     updateQueryParam(id);
-  //   } else {
-  //     updateQueryParam(null);
-  //   }
-  // };
-
+  console.log(joblisting?.job_description);
   return (
     <>
       <div className="w-full rounded-lg border-2 border-cyan-600 p-2 phone:p-4">
@@ -127,7 +113,8 @@ export default function JobListingCardView({
         {/* bottom row */}
         <div className="mt-2">
           {/* job description */}
-          <p className="line-clamp-3 break-words">{description}</p>
+
+          <p className="ql-editor line-clamp-3 break-words">{description}</p>
 
           {/* skills */}
           <div className="mt-2 flex grow text-sm tablet:text-base">
