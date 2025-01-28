@@ -15,7 +15,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   const Session = await auth();
   let company_id = Session?.user.companyId;
-  if (Session?.user.roles.includes(Role.ADMIN)) {
+  if (Session?.user.roles.includes(Role.ADMIN) || Session?.user.roles.includes(Role.CASE_MANAGER)) {
     company_id = jobData.company_id;
   }
 
