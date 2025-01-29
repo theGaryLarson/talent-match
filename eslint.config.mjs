@@ -26,7 +26,6 @@ const eslintConfig = [
       "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "prefer-const": "off",
-      "no-var": "off",
     },
   },
 ];

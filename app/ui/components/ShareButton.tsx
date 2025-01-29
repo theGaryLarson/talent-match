@@ -26,7 +26,7 @@ export default function ShareMenu({
     setAnchorEl(null);
   };
 
-  var url = "";
+  let url = "";
   if (typeof window !== "undefined") {
     url = window.location.protocol + "//" + window.location.hostname;
     if (window.location.port != "") url += ":" + window.location.port;

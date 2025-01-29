@@ -32,7 +32,7 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
 
-  var textColor = "text-black";
+  let textColor = "text-black";
   if (
     pathname == "/services/jobseekers" ||
     pathname == "/services/employers" ||

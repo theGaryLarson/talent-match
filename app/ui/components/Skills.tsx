@@ -13,7 +13,7 @@ export default function Skills({
 }) {
   if (skillsList == null || skillsList.length == 0) return;
 
-  var leftoverSkillsCount = 0;
+  let leftoverSkillsCount = 0;
   if (
     maxNumSkills != 0 && // 0 indicates show all skills
     skillsList.length > maxNumSkills
