@@ -1,4 +1,7 @@
-import { getUsersCreatedByQuarter } from "@/app/lib/admin/stats";
+import {
+  getGenderBreakDownOfJobseekers,
+  getUsersCreatedByQuarter,
+} from "@/app/lib/admin/stats";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { BarChart } from "@mui/x-charts/BarChart";
 //employer dashboard
