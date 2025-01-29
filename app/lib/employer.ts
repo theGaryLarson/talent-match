@@ -16,7 +16,7 @@ const prisma: PrismaClient = getPrismaClient();
  */
 export async function createEmployer(
   userId: string,
-): Promise<Prisma.employersGetPayload<{}>> {
+): Promise<Prisma.employersGetPayload<object>> {
   try {
     // Use a transaction to ensure both operations succeed or fail together
     const result = await prisma.$transaction(async (prisma) => {

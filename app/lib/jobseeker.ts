@@ -226,7 +226,7 @@ export async function getCareerPrepAssementStatus() {
  */
 export async function createJobseeker(
   userId: string,
-): Promise<Prisma.jobseekersGetPayload<{}>> {
+): Promise<Prisma.jobseekersGetPayload<object>> {
   try {
     // Use a transaction to ensure both operations succeed or fail together
     const result = await prisma.$transaction(async (prisma) => {
