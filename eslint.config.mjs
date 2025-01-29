@@ -28,7 +28,6 @@ const eslintConfig = [
       "prefer-const": "off",
       "no-var": "off",
       "@typescript-eslint/no-wrapper-object-types": "off",
-      "@next/next/no-img-element": "off",
     },
   },
 ];
