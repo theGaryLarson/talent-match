@@ -140,7 +140,9 @@ export default function TagsWithAutocomplete<ValueType>({
         // Propagate the event if it's valid
         else {
           setSelectedTags(val as ValueType[]);
-          onChange && onChange(ev, val as ValueType[], reason, details);
+          if (onChange) {
+            onChange(ev, val as ValueType[], reason, details);
+          }
         }
       }}
       onInputChange={handleInputChange}

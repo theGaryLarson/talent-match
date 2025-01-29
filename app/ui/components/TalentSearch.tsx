@@ -231,7 +231,9 @@ export default function TalentSearch() {
       );
       setZipCode(getParam("zipcode"));
       setSortBy(getParam("sort") != "" ? getParam("sort") : "yearsExp");
-      +getParam("page") == 0 ? setPage(1) : setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
+      const pageParam = getParam("page");
+      const pageNumber = pageParam ? +pageParam : 0;
+      setPage(pageNumber || 1);
     } else {
       // any other change after initial load should execute a new query
       const timeoutId = setTimeout(() => {
