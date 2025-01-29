@@ -27,7 +27,6 @@ const eslintConfig = [
       "@typescript-eslint/no-empty-object-type": "off",
       "prefer-const": "off",
       "no-var": "off",
-      "@typescript-eslint/no-wrapper-object-types": "off",
     },
   },
 ];

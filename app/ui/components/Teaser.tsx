@@ -3,7 +3,7 @@ export default function Teaser({
   title,
   text,
 }: {
-  isLarge: Boolean;
+  isLarge: boolean;
   title: string;
   text: string;
 }) {
