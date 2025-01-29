@@ -16,10 +16,10 @@ export type CreateEventData = {
   registrationLink: string;
   duration: number;
   joinMeetingLink: string; 
-  linkTitle: string;
+  // linkTitle: string;
   blurb: string;
   eventType: EventTypeEnum; // Consider using a union type for stricter control, e.g., "Webinar" | "Workshop" | "Seminar"
-  //createdById: string;
+  createdById: string;
 };
 
 export type EventUpdateData = Partial<CreateEventData>; // For updating only specific fields
@@ -40,9 +40,9 @@ export async function createEvent(data: CreateEventData): Promise<{
       }
       const newEvent = await prisma.events.create({
         data: {
-          name: data.name,
+          name: data.name ?? '',
           description: data.description,
-          location: data.location,
+          location: data.location ?? '',
           date: data.date,
           registrationLink: data.registrationLink,
           joinMeetingLink: data.joinMeetingLink,
@@ -59,7 +59,6 @@ export async function createEvent(data: CreateEventData): Promise<{
     }
   }
 
-//todo setup to use session
   export async function signUpForEvent(
     eventId: string
   ): Promise<{
@@ -85,29 +84,38 @@ export async function createEvent(data: CreateEventData): Promise<{
     }
   }
   
-export async function getAllEvents(){
+// Returns all events, sorted by date
+export async function getAllEvents(excludePast:boolean){
     try {
-        const res = await prisma.events.findMany()
+        let res = (await prisma.events.findMany()).sort((a,b)=>a.date.getTime()-b.date.getTime());
+        if (excludePast){
+          res = res.filter((event)=>event.date.getTime() > Date.now() - (1000 * 60 * 60 * 48));
+        }
         return { success: true, message: "Events fetched successfully.", events: res };
       } catch (error) {
         console.error("Error deleting event:", error);
         return { success: false, error: (error as Error).message };
       }
 }
-export async function getRegisteredEvents(includeEvent:boolean){
+
+// Returns all events that the user has registered for, sorted by date
+export async function getRegisteredEvents(excludePast:boolean){
   try{
     const session = await auth();
     if(!session?.user.id) {
       return [];
     }
-    const res = prisma.eventsOnUsers.findMany({
-      where:{
+    let res = (await prisma.eventsOnUsers.findMany({
+      where: {
         userId: session.user.id
       },
-      include:{
-        event:includeEvent
+      include: {
+        event: true
       }
-    })
+    })).sort((a,b)=>a.event.date.getTime()-b.event.date.getTime());
+    if (excludePast){
+      res = res.filter((event)=>event.event.date.getTime() > Date.now() - (1000 * 60 * 60 * 48));
+    }
     return res;
   }catch(error){
     console.error(error);
@@ -115,7 +123,6 @@ export async function getRegisteredEvents(includeEvent:boolean){
   }
 }
 
-//todo add protections 
   export async function deleteEvent(eventId: string): Promise<{
     success: boolean;
     message?: string;
@@ -140,8 +147,6 @@ export async function getRegisteredEvents(includeEvent:boolean){
   }
 
 
-
-//todo add protections
   export async function updateEvent(
     eventId: string,
     updatedData: EventUpdateData
