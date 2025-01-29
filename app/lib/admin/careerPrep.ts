@@ -59,6 +59,7 @@ export enum CareerPrepStatus {
   Completed = "Completed",
   Rejected = "Rejected",
   Withdrawn = "Withdrawn", // additional option from what was given.
+  Placed = "Placed",
 }
 
 /**
