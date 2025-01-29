@@ -64,7 +64,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
       label: 'Applications',
     },
     {
-      href: '/underconstruction',
+      href: '/services/jobseekers/dashboard/events',
       icon: <CalendarTodayRounded />,
       label: 'Events',
     },

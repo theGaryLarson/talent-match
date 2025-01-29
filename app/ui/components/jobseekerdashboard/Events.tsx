@@ -1,8 +1,12 @@
 import { Grid2 } from '@mui/material';
-import RoundedButton from '../RoundedButton';
 import PillButton from '../PillButton';
+import { EventTypeEnum, getAllEvents, getRegisteredEvents, signUpForEvent } from '@/app/lib/events';
+import Event from '@/app/ui/components/Event';
 
 export default async function Events() {
+
+  const response = await getRegisteredEvents(true);
+
   return (
     <Grid2 container rowSpacing={2} columns={1}>
       <Grid2
@@ -15,7 +19,7 @@ export default async function Events() {
           Registered Events
         </p>
         <PillButton
-          href="/underconstruction"
+          href="/services/jobseekers/dashboard/events"
           disableElevation
           sx={{
             backgroundColor: '#f6f6f6',
@@ -26,10 +30,14 @@ export default async function Events() {
         </PillButton>
       </Grid2>
       <Grid2 container gap={2} sx={{ width: '100%' }}>
-        <div className="mb-2 flex w-full grow items-center rounded-lg border p-4 text-lg shadow">
-          <h3>Coming Soon...</h3>
+        <div className="w-full p-2 items-center rounded-lg border text-lg shadow">
+          {(await response)?.map((item, i) => (
+            <Event key={i} showLink={true} registered={true} event={{ ...item.event, eventType: item.event.eventType as EventTypeEnum }} />
+          ))}
+          {(await response)?.length === 0 && <div className="text-lg text-center my-4">Not registered for any events</div>}
         </div>
       </Grid2>
     </Grid2>
   );
 }
+
