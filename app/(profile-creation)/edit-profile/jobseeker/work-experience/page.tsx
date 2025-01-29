@@ -195,7 +195,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             if (!response.ok) {
               workExperienceData.userId = id!;
             } else {
-              let fetchedData: JsWorkExpDTO = (await response.json()).result;
+              const fetchedData: JsWorkExpDTO = (await response.json()).result;
               workExperienceData = {
                 ...fetchedData,
               };

@@ -8,7 +8,7 @@ import { auth } from "@/auth";
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
 
     const body = await request.json();

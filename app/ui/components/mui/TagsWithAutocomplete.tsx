@@ -83,7 +83,7 @@ export default function TagsWithAutocomplete<ValueType>({
   }, [apiSearchRoute, setLoading, setOptions]);
 
   async function initTags() {
-    let initTagsToSelect: ValueType[] = [];
+    const initTagsToSelect: ValueType[] = [];
     if (initialTags != null) {
       for (let i = 0; i < initialTags.length; i++) {
         const response = await fetch(`${apiSearchRoute}${initialTags[i]}`);

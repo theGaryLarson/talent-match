@@ -84,7 +84,7 @@ export default function CreateJobseekerProfileIntroPage() {
               });
               setAvatarUrl(session.user?.image ?? null);
             } else {
-              let fetchedData: JsIntroDTO = (await response.json()).result
+              const fetchedData: JsIntroDTO = (await response.json()).result
                 .loadIntroPage;
               setIntroData({
                 ...introData,

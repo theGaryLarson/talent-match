@@ -36,7 +36,7 @@ export default function SignupPage() {
     router.prefetch("/signup/employer");
   }, [router]);
 
-  let handleSubmit = async () => {
+  const handleSubmit = async () => {
     if (session) {
       if (choice === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
       if (choice === Role.EMPLOYER) router.push(`/signup/employer`);

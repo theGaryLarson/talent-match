@@ -11,7 +11,7 @@ export default async function layout({
 }: {
   children: React.ReactNode;
 }) {
-  let session = await auth();
+  const session = await auth();
   console.log(session);
 
   return (

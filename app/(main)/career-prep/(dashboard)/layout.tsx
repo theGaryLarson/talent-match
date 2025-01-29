@@ -11,7 +11,7 @@ export default async function layout({
 }: {
   children: React.ReactNode;
 }) {
-  let session = await auth();
+  const session = await auth();
   console.log(session);
 
   return (
@@ -54,7 +54,7 @@ export default async function layout({
           Events
         </Link>
 
-        {/* 
+        {/*
         <Link
           href="/career-prep"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"

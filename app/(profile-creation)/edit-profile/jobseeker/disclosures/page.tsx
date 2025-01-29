@@ -74,7 +74,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             if (!response.ok) {
               disclosuresData.userId = id!;
             } else {
-              let fetchedData: JsDisclosuresDTO = (await response.json())
+              const fetchedData: JsDisclosuresDTO = (await response.json())
                 .result;
               disclosuresData.userId = id!;
               if (fetchedData.gender) {

@@ -42,7 +42,7 @@ export default async function CareerPage({
   tableJobGrowth: string;
   trainingPrograms: EduProviderPathways;
 }) {
-  let programs: ReadEduProviderProgramCardDTO[] =
+  const programs: ReadEduProviderProgramCardDTO[] =
     await getProviderProgramCardView(trainingPrograms);
 
   return (

@@ -77,7 +77,7 @@ export default function CreateJobseekerProfileShowcasePage() {
             if (!response.ok) {
               showcaseData.userId = id!;
             } else {
-              let fetchedData: JsShowcaseDTO = (await response.json()).result;
+              const fetchedData: JsShowcaseDTO = (await response.json()).result;
               showcaseData.userId = id!;
               if (fetchedData.skills.length !== 0) {
                 showcaseData.skills = fetchedData.skills;

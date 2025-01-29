@@ -275,7 +275,7 @@ export default function Page() {
 
     setFormData((prevData) => {
       const keys = name.split("."); // Split the name by dot notation
-      let updatedData = { ...prevData };
+      const updatedData = { ...prevData };
 
       // Recursively update nested properties
       keys.reduce((acc: any, key, index) => {
@@ -297,7 +297,7 @@ export default function Page() {
 
     setFormData((prevData) => {
       const keys = name.split(".");
-      let updatedData = { ...prevData };
+      const updatedData = { ...prevData };
 
       keys.reduce((acc: any, key, index) => {
         if (index === keys.length - 1) {

@@ -72,7 +72,7 @@ export default function CreateJobseekerProfileIntroPage() {
             if (!response.ok) {
               const errorData = await response.json();
             } else {
-              let { result } = await response.json();
+              const { result } = await response.json();
 
               setVideoData({
                 ...videoData,

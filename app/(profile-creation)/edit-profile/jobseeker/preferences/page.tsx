@@ -60,7 +60,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
             if (!response.ok) {
               preferencesData.userId = id!;
             } else {
-              let fetchedData: JsPreferencesDTO = (await response.json())
+              const fetchedData: JsPreferencesDTO = (await response.json())
                 .result;
               preferencesData.userId = id!;
               if (fetchedData.preferredEmploymentType) {

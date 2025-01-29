@@ -17,7 +17,7 @@ export async function DELETE(
   const params = await props.params;
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const companyId: string | null | undefined = session?.user.companyId;
 
     const socialId = params.socialId;

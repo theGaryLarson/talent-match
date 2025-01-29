@@ -14,9 +14,10 @@ export default function DeletionFlag({ className, deletionDate }: props) {
   let formattedDate;
   let timeLeftMessage;
   if (deletionDate) {
-    let currTime = Date.now();
+    const currTime = Date.now();
     console.log(currTime);
-    let timeLeft = (deletionDate.getTime() - currTime) / (1000 * 60 * 60 * 24);
+    const timeLeft =
+      (deletionDate.getTime() - currTime) / (1000 * 60 * 60 * 24);
     timeLeftMessage =
       timeLeft < 1
         ? `${Math.floor(timeLeft * 24)} hours and ${Math.floor(((timeLeft * 24) % 1) * 60)} minutes left`

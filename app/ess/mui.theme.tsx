@@ -23,7 +23,7 @@ declare module "@mui/material/styles" {
   }
 }
 
-let theme = createTheme({
+const theme = createTheme({
   cssVariables: true,
   colorSchemes: {
     light: {

@@ -13,7 +13,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const companyId: string | null | undefined = session?.user.companyId;
 
     const body: PostCompanySocialLinkDTO = await request.json();

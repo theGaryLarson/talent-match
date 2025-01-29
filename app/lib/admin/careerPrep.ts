@@ -285,7 +285,7 @@ export const selfAssignAsCaseManager = async (
 
 export const getAllCareerNavigators = async () => {
   try {
-    let users = await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       select: {
         email: true,
         role: true,
@@ -381,7 +381,7 @@ export const updateAssignedTrack = async (
   track: CareerPrepTrack,
 ) => {
   try {
-    let results = await prisma.caseMgmt.update({
+    const results = await prisma.caseMgmt.update({
       where: {
         jobseekerId: jobseekerId,
       },
@@ -490,12 +490,12 @@ export const updateCareerPrepStatusCardView = async (
 export async function getCareerPrepStatus(jobseeker_id: string) {
   try {
     if (jobseeker_id == "") return undefined;
-    let result = await prisma.caseMgmt.findUnique({
+    const result = await prisma.caseMgmt.findUnique({
       where: { jobseekerId: jobseeker_id },
       include: { CaseManager: true },
     });
 
-    let jobseekerResult = await prisma.jobseekers.findUnique({
+    const jobseekerResult = await prisma.jobseekers.findUnique({
       where: { jobseeker_id: jobseeker_id },
       select: {
         careerPrepTrackRecommendation: true,
@@ -766,7 +766,7 @@ export async function updateCareerPrepStudentNotes(
 }
 
 export async function deleteCareerPrepStudentNotes(noteId: string) {
-  let result = await prisma.caseMgmtNotes.delete({
+  const result = await prisma.caseMgmtNotes.delete({
     where: {
       id: noteId,
     },
@@ -1884,7 +1884,7 @@ export interface CreateMeetingDTO {
 
 export async function addMeeting(params: CreateMeetingDTO) {
   try {
-    let result = await prisma.meeting.create({
+    const result = await prisma.meeting.create({
       data: {
         jobseekerId: params.jobseekerId,
         title: params.meetingTitle,
@@ -1904,7 +1904,7 @@ export async function getMeetingByJobSeeker(jobseekerId: string) {
     return [];
   }
   try {
-    let result = await prisma.meeting.findMany({
+    const result = await prisma.meeting.findMany({
       where: {
         jobseekerId: jobseekerId,
       },

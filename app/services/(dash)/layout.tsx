@@ -163,7 +163,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  let { data: session, status } = useSession();
+  const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = useCallback(() => {

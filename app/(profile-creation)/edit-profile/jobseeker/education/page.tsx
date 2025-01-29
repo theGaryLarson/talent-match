@@ -224,7 +224,7 @@ export default function CreateJobseekerProfileEducationPage() {
               educationData.userId = id!;
               educationData.jobseekerId = jobseekerId!;
             } else {
-              let fetchedData: JsEducationPageDTO = (await response.json())
+              const fetchedData: JsEducationPageDTO = (await response.json())
                 .result;
               educationData.userId = id!;
               educationData.jobseekerId = jobseekerId!;

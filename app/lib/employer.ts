@@ -147,7 +147,7 @@ export async function createCompany(companyData: CompanyEmployerCreationDTO) {
     throw new Error("Must Be a user");
   }
   try {
-    let result = await prisma.companies.create({
+    const result = await prisma.companies.create({
       data: {
         company_name: companyData.companyName,
         company_email: session.user.email ?? "",

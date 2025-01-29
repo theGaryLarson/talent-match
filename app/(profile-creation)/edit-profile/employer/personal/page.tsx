@@ -73,7 +73,7 @@ export default function CreateEmployerPersonalPage() {
                 phoneCountryCode: "United States +1",
               }));
             } else {
-              let { result } = await response.json();
+              const { result } = await response.json();
               setPersonalData((prevPersonalData) => ({
                 ...prevPersonalData,
                 userId: result.userId,

@@ -87,7 +87,7 @@ export default function Page() {
 
   async function onSingleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    let form = event.currentTarget;
+    const form = event.currentTarget;
     const formData = new FormData(event.currentTarget);
     if (!validateForm(formData)) {
       return;

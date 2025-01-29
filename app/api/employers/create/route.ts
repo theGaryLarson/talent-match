@@ -5,7 +5,7 @@ import { sendEmployerOrCompanyNeedsApprovalEmailToGary } from "@/lib/smtp/send-e
 
 export async function POST() {
   try {
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
     const employerData = await createEmployer(userId);
     sendEmployerOrCompanyNeedsApprovalEmailToGary({

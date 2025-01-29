@@ -176,7 +176,7 @@ export async function getPoolWithSession() {
     if (session?.user.jobseekerId == null) {
       return;
     }
-    let res = await prisma.jobseekers.findUnique({
+    const res = await prisma.jobseekers.findUnique({
       where: {
         jobseeker_id: session?.user.jobseekerId,
       },
@@ -196,7 +196,7 @@ export async function getCareerPrepAssementStatus() {
     if (session?.user.jobseekerId == null) {
       return;
     }
-    let res = await prisma.jobseekers.findUnique({
+    const res = await prisma.jobseekers.findUnique({
       where: {
         jobseeker_id: session?.user.jobseekerId,
       },

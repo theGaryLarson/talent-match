@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 
 export async function POST() {
   try {
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
     const jobseekerData = await createJobseeker(userId);
     return NextResponse.json(

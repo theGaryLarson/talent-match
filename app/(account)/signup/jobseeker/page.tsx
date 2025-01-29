@@ -19,8 +19,8 @@ import { v4 as uuidv4 } from "uuid";
 const vectorImgSrc = "/images/signup/jobseeker-vector.png";
 
 export default function JobseekerSignupFinishPage() {
-  let [resident, setResident] = useState(false);
-  let [termsAgree, setTermsAgree] = useState(false);
+  const [resident, setResident] = useState(false);
+  const [termsAgree, setTermsAgree] = useState(false);
   const [checkboxState, setCheckboxState] = useState({
     jobNotifications: false,
     opportunities: false,
@@ -137,14 +137,14 @@ export default function JobseekerSignupFinishPage() {
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
-                let response = await fetch("/api/jobseekers/create", {
+                const response = await fetch("/api/jobseekers/create", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                 });
                 if (response.ok) {
-                  let data = await response.json();
+                  const data = await response.json();
                   let rolesArray = session?.user.roles || [];
                   rolesArray = rolesArray.filter(
                     (role: Role) => role !== Role.GUEST,

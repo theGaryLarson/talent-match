@@ -143,7 +143,7 @@ export default function CreateEmployerProfilePage() {
                 `Error: ${response.status} ${response.statusText}`,
               );
             } else {
-              let { result } = await response.json();
+              const { result } = await response.json();
 
               setSelectCompanyDropdownData(
                 result.companyId
@@ -276,7 +276,7 @@ export default function CreateEmployerProfilePage() {
         devLog("newCompany submit error", newCompany);
         return;
       }
-      let companyDetails = await response.json();
+      const companyDetails = await response.json();
 
       const updatedProfileData = {
         ...profileData,

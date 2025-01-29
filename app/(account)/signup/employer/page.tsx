@@ -17,8 +17,8 @@ import { Role } from "@/data/dtos/UserInfoDTO";
 import { v4 as uuidv4 } from "uuid";
 
 export default function EmployerSignUpFinish() {
-  let [termsAgree, setTermsAgree] = useState(false);
-  let vectorImgSrc = "/images/signup/employer-vector.png";
+  const [termsAgree, setTermsAgree] = useState(false);
+  const vectorImgSrc = "/images/signup/employer-vector.png";
   const { data: session, status, update } = useSession();
   const updateSessionProperties = useUpdateSession();
   const router = useRouter();
@@ -73,13 +73,13 @@ export default function EmployerSignUpFinish() {
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
-                let response = await fetch("/api/employers/create", {
+                const response = await fetch("/api/employers/create", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                 });
-                let data = await response.json();
+                const data = await response.json();
                 if (response.ok) {
                   let rolesArray = session?.user.roles || [];
                   rolesArray = rolesArray.filter(

@@ -81,7 +81,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 `Error: ${response.status} ${response.statusText}`,
               );
             } else {
-              let { result } = await response.json();
+              const { result } = await response.json();
               setCompanyName(result.company_name);
               // REVIEW: @Gary this section might not align correctly with the above /api/companies/name/get
               setDisclosuresData({
