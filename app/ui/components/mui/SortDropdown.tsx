@@ -15,7 +15,6 @@ interface Props {
   onChange?:
     | ((event: SelectChangeEvent<string>, child: ReactNode) => void)
     | undefined;
-  placeholder?: string | undefined;
   [key: string]: any;
 }
 
@@ -25,7 +24,6 @@ export default function SortDropdown({
   label,
   value,
   onChange,
-  placeholder,
   ...rest
 }: Props) {
   return (

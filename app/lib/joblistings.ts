@@ -4,7 +4,6 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/auth";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
-import Skills from "../ui/components/Skills";
 import { NextResponse } from "next/server";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { JobStatus } from "./jobseekerJobTracking";
@@ -431,7 +430,7 @@ export async function getJobListingsFiltered(request: Request) {
     skills = [],
     industrySector = [],
     zipCode = "",
-    sortBy = "publish_date",
+    sortBy = "publish_date", // eslint-disable-line @typescript-eslint/no-unused-vars
     page = 1,
     maxResults = 50,
   } = await request.json();

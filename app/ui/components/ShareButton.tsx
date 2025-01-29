@@ -4,7 +4,6 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 import TextField from "@mui/material/TextField";
-import { ShareIcon } from "@heroicons/react/24/outline";
 
 export default function ShareMenu({
   href,

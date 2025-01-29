@@ -2,8 +2,6 @@
 
 import AlertTitle from "@mui/material/AlertTitle";
 import Alert from "@mui/material/Alert";
-import { devLog } from "@/app/lib/utils";
-import { useEffect, useState } from "react";
 
 interface props {
   className?: string;

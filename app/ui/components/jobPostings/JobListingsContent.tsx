@@ -59,7 +59,6 @@ export default function JobListingsContent() {
   const [jobTitle, setJobTitle] = useState<string>();
   const [skillsList, setSkillsList] = useState<string[]>();
   const [industry, setIndustry] = useState<string[]>();
-  const [paid, setPaid] = useState<boolean>();
   const [zipCode, setZipCode] = useState<string>();
 
   // Sorting and pagination

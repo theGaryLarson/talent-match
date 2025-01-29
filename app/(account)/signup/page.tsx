@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
-import Link from "next/link";
-import DividerWithText from "@/app/ui/components/DividerWithText";
 import Image from "next/image";
 import Footer from "@/app/ui/Footer";
 import SignupHeader from "@/app/ui/SignupHeader";
@@ -18,7 +16,7 @@ import { Role } from "@/data/dtos/UserInfoDTO";
 
 export default function SignupPage() {
   const [choice, setChoice] = useState<Role>(Role.GUEST);
-  const { data: session, status, update } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const checkIcon = (
     <Image

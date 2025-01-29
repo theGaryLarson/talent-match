@@ -9,8 +9,6 @@ export async function POST(request: Request) {
   const body: CareerPrepSkillsAssessmentDTO = await request.json();
 
   const result = await submitCareerPrepAssessmentWithSession(body);
-  const email = await sendCareerPrepApplicantEmailNotificationEmail(
-    body.jobseekerId,
-  );
+  await sendCareerPrepApplicantEmailNotificationEmail(body.jobseekerId);
   return NextResponse.json(result);
 }

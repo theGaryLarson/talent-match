@@ -5,7 +5,6 @@ import {
 } from "@/app/lib/eduProviders";
 import TrainingProgramCard from "./TrainingProgramCard";
 import Image from "next/image";
-import Link from "next/link";
 
 export default async function CareerPage({
   title,
@@ -19,10 +18,6 @@ export default async function CareerPage({
   whatYoullDo,
   skillsYoullNeed,
   whyItMatters,
-  tableAvgSalary,
-  tableEduLevel,
-  tableExpReq,
-  tableJobGrowth,
   trainingPrograms,
 }: {
   title: string;
@@ -36,10 +31,6 @@ export default async function CareerPage({
   whatYoullDo: string;
   skillsYoullNeed: string;
   whyItMatters: string;
-  tableAvgSalary: string;
-  tableEduLevel: string;
-  tableExpReq: string;
-  tableJobGrowth: string;
   trainingPrograms: EduProviderPathways;
 }) {
   const programs: ReadEduProviderProgramCardDTO[] =

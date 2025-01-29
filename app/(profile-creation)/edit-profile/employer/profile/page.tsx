@@ -1,13 +1,6 @@
 "use client";
 
-import React, {
-  ChangeEvent,
-  FormEvent,
-  SyntheticEvent,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import type { RootState } from "@/lib/employerStore";
 import { useSelector, useDispatch } from "react-redux";
@@ -20,7 +13,6 @@ import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
 import { useSession } from "next-auth/react";
 import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import {
-  PostAddressDTO,
   ReadAddressDTO,
   ReadCompanyInfoDTO,
   PostEmployerProfileDTO,
@@ -35,11 +27,9 @@ import {
 } from "@/lib/features/profileCreation/saveSlice";
 import _ from "lodash";
 import { devLog } from "@/app/lib/utils";
-import CircularProgress from "@mui/material/CircularProgress";
 
 import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import TextFieldWithAutocomplete from "@/app/ui/components/mui/TextFieldWithAutocomplete";
-import { SelectAllRounded } from "@mui/icons-material";
 import { CompanyEmployerCreationDTO } from "@/data/dtos/CompanyEmployerCreateionDTO";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
@@ -51,7 +41,7 @@ export default function CreateEmployerProfilePage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { data: session, update, status } = useSession();
+  const { data: session, status } = useSession();
   const updateSessionProperties = useUpdateSession();
   const pathname = usePathname();
 
@@ -186,7 +176,7 @@ export default function CreateEmployerProfilePage() {
                 workAddressId: result.companyAddress?.addressId ?? undefined,
               });
             }
-          } catch (error) {}
+          } catch {}
         } else {
           devLog("fetching from redux store");
         }
@@ -272,7 +262,7 @@ export default function CreateEmployerProfilePage() {
         body: JSON.stringify(newCompany),
       });
       if (!response.ok) {
-        const errorData = await response.json();
+        await response.json();
         devLog("newCompany submit error", newCompany);
         return;
       }
@@ -297,7 +287,7 @@ export default function CreateEmployerProfilePage() {
         });
 
         if (response.ok) {
-          const result = await response.json();
+          await response.json();
           dispatch(setProfile(updatedProfileData));
 
           // Update session properties using the custom hook
@@ -314,10 +304,10 @@ export default function CreateEmployerProfilePage() {
           devLog("profileData submit ok", updatedProfileData);
           router.push("/edit-profile/employer/company");
         } else {
-          const errorData = await response.json();
+          await response.json();
           devLog("profileData submit error", updatedProfileData);
         }
-      } catch (error) {}
+      } catch {}
       return;
     }
 
@@ -346,7 +336,7 @@ export default function CreateEmployerProfilePage() {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         dispatch(setPageSaved("employer-profile"));
         dispatch(setProfile(updatedProfileData));
 
@@ -362,10 +352,10 @@ export default function CreateEmployerProfilePage() {
         devLog("profileData submit ok", updatedProfileData);
         router.push("/edit-profile/employer/congratulations");
       } else {
-        const errorData = await response.json();
+        await response.json();
         devLog("profileData submit error", updatedProfileData);
       }
-    } catch (error) {}
+    } catch {}
   };
 
   const handleClose = (
@@ -384,7 +374,7 @@ export default function CreateEmployerProfilePage() {
       <section className="profile-form-section">
         {!companyExists && (
           <>
-            <ProgressBarFlat progress={(1 / 5) * 100} size="sm" />
+            <ProgressBarFlat progress={(1 / 5) * 100} />
             <p>Step 1/5</p>
           </>
         )}

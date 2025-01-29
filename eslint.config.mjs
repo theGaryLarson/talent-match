@@ -20,7 +20,6 @@ const eslintConfig = [
   { ignores: [".next/*", "types/next-auth.d.ts"] },
   {
     rules: {
-      "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
     },

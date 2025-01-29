@@ -177,7 +177,7 @@ export default function Page() {
               subcategoryId = await createAndAppendSubcategory(
                 rowData.subcategory,
               );
-            } catch (error) {
+            } catch {
               alert(`Failed to create subcategory: ${rowData.subcategory}`);
               continue;
             }

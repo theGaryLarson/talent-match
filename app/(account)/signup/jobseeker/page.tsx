@@ -1,7 +1,5 @@
 "use client";
 
-import DividerWithText from "@/app/ui/components/DividerWithText";
-import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 import Link from "next/link";
 import { Button } from "@mui/material";
 import SignupPrompt from "@/app/ui/components/SignupPrompt";
@@ -13,8 +11,6 @@ import { useRouter } from "next/navigation";
 import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import { mapToEnumOrThrow } from "@/app/lib/utils";
-import { v4 as uuidv4 } from "uuid";
 
 const vectorImgSrc = "/images/signup/jobseeker-vector.png";
 
@@ -25,7 +21,7 @@ export default function JobseekerSignupFinishPage() {
     jobNotifications: false,
     opportunities: false,
   });
-  const { data: session, status, update } = useSession();
+  const { data: session } = useSession();
   const updateSessionProperties = useUpdateSession();
   const router = useRouter();
 

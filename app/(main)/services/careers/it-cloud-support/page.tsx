@@ -1,6 +1,5 @@
 import { EduProviderPathways } from "@/app/lib/eduProviders";
 import CareerPage from "@/app/ui/components/career/CareerPage";
-import Link from "next/link";
 
 export default function Page() {
   return (

@@ -12,7 +12,6 @@ import {
   ProgramEnrollmentStatus,
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { devLog } from "@/app/lib/utils";
-import { NextResponse } from "next/server";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { v4 as uuidv4 } from "uuid";
 
@@ -214,7 +213,9 @@ export async function getCareerPrepAssementStatus() {
       };
     }
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**
@@ -347,7 +348,7 @@ export const deleteJobseeker = async (userId: string) => {
       });
       return true;
     } catch (error) {
-      console.error("Error deleting jobseeker:");
+      console.error("Error deleting jobseeker: ", error);
       return false;
     } finally {
       await prisma.$disconnect();

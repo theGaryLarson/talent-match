@@ -1,6 +1,4 @@
 "use client";
-import { getMyJobListings } from "@/app/lib/joblistings";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import DeleteJobPostingButton from "../jobPostings/DeleteJobPostingButton";
 import { useEffect, useState } from "react";
@@ -74,8 +72,6 @@ function SingleJobPost({
   job: JobListingCardViewDTO;
   days: number;
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   let dayPostedText: string;
   switch (days) {
     case 0:

@@ -14,7 +14,6 @@ export async function adminCreateCompany(companyData: CompanyAdminCreationDTO) {
   if (!Session?.user.id) {
     throw new Error("Must Be a user to complete this task");
   }
-  const t = Session?.user.roles.includes(Role.ADMIN);
   try {
     const result = await prisma.companies.create({
       data: {
@@ -113,7 +112,9 @@ export async function adminEmployerApproval(
       },
     });
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function getAllCompaniesWithAllEmployers() {
@@ -129,6 +130,7 @@ export async function getAllCompaniesWithAllEmployers() {
     });
     return res;
   } catch (error) {
+    console.error(error);
     return [];
   }
 }

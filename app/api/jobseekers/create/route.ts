@@ -15,7 +15,7 @@ export async function POST() {
       },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to create jobseeker." },
       { status: 500 },

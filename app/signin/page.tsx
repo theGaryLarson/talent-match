@@ -1,4 +1,4 @@
-import { signIn, auth, providerMap } from "@/auth";
+import { signIn, providerMap } from "@/auth";
 import { Button } from "@mui/material";
 import Image from "next/image";
 

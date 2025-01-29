@@ -35,7 +35,6 @@ import {
   CareerPrepPathways,
   TimeUntilCompletion,
 } from "@/app/lib/admin/careerPrep";
-import { useRouter } from "next/navigation";
 import "@/app/ui/profile-creation.css";
 import Confetti from "@/app/ui/components/Confetti";
 import PillButton from "@/app/ui/components/PillButton";
@@ -142,8 +141,7 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({
 };
 
 export default function Page() {
-  const { data: session, update, status } = useSession();
-  const router = useRouter();
+  const { data: session, status } = useSession();
   const [successfullySubmitted, setSuccessfullySubmitted] = useState<boolean>();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [formData, setFormData] = useState<CareerPrepSkillsAssessmentDTO>({
@@ -246,7 +244,9 @@ export default function Page() {
             });
           }
           setFormData({ ...formData, jobseekerId: jobseekerId });
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
     initializeFormFields();
@@ -948,7 +948,6 @@ export default function Page() {
       setSuccessfullySubmitted(true);
       window.scrollTo({ top: 0, behavior: "instant" });
     } else {
-      const errorData = await response.json();
       setSuccessfullySubmitted(false);
     }
   };

@@ -7,7 +7,6 @@ import {
   ReadAddressDTO,
   ReadEmployerWorkDTO,
 } from "@/data/dtos/EmployerProfileCreationDTOs";
-import { v4 as uuidv4 } from "uuid";
 import { devLog } from "@/app/lib/utils";
 import { auth } from "@/auth";
 

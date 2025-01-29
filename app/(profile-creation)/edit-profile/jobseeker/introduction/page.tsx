@@ -10,8 +10,7 @@ import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import PillButton from "@/app/ui/components/PillButton";
 
-import { devLog, formatPhoneE164 } from "@/app/lib/utils";
-import parsePhoneNumberFromString from "libphonenumber-js";
+import { devLog } from "@/app/lib/utils";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
@@ -36,12 +35,12 @@ const formNamePrefix = "profile-creation-intro-";
 export default function CreateJobseekerProfileIntroPage() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
+  const { data: session, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession();
   const introStoreData = useSelector(
     (state: RootState) => state.jobseeker.introduction,
   );
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
@@ -64,7 +63,7 @@ export default function CreateJobseekerProfileIntroPage() {
     if (status === "authenticated") {
       const initializeFormFields = async () => {
         if (_.isEqual(introStoreData, initialState.introduction)) {
-          const { id, firstName, lastName, email, image } = session.user;
+          const { id, firstName, lastName, email } = session.user;
 
           try {
             devLog("fetching fresh");
@@ -197,7 +196,7 @@ export default function CreateJobseekerProfileIntroPage() {
       );
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
 
         // Update the redux state
         dispatch(setPageSaved("introduction"));
@@ -225,7 +224,7 @@ export default function CreateJobseekerProfileIntroPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(1 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(1 / 6) * 100} />
         <p>Step 1/6</p>
         <h1>Profile Settings</h1>
         <p className="subtitle">* Indicates a required field</p>

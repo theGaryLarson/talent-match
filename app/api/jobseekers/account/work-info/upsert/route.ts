@@ -73,7 +73,7 @@ export async function POST(request: Request) {
               ) === -1,
           );
 
-          const deletedExperiences = await prisma.workExperience.deleteMany({
+          await prisma.workExperience.deleteMany({
             where: {
               OR: removableExperiences.map((removableExperience) => ({
                 workId: { equals: removableExperience.workId },

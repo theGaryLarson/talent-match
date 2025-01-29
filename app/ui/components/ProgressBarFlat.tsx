@@ -1,10 +1,9 @@
 import { LinearProgress } from "@mui/material";
 interface Props {
   progress: number;
-  [key: string]: any;
 }
 
-export default function ProgressBarFlat({ progress, ...rest }: Props) {
+export default function ProgressBarFlat({ progress }: Props) {
   return (
     <>
       <LinearProgress

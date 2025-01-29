@@ -25,12 +25,9 @@ export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
   const session = useSession();
   const pathname = usePathname();
 
-  const handleApplicationClick = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleApplicationClick = async () => {
     if (!session?.data?.user) {
       const base = window.location.origin;
-      const currentUrl = new URL(window.location.href);
       const signInUrl = new URL("/signin", base);
       const callbackUrlValue = pathname;
       signInUrl.searchParams.set("callbackUrl", callbackUrlValue);

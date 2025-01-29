@@ -4,11 +4,9 @@ import {
 } from "@/app/lib/eduProviders";
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "@/auth";
 
 export default async function page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const session = await auth();
   const trainingProgramDetails: ReadEduProviderProgramDetailDTO =
     await getProviderProgramDetailView(params.id);
 

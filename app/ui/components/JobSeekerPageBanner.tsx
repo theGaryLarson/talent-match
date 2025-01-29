@@ -1,4 +1,3 @@
-import Link from "next/link";
 import RoundedButton from "./RoundedButton";
 import { auth } from "@/auth";
 

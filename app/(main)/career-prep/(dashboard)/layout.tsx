@@ -5,7 +5,6 @@ import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutl
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import { auth } from "@/auth";
-import { BookmarkIcon } from "@heroicons/react/24/outline";
 export default async function layout({
   children,
 }: {

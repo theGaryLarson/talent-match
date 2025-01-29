@@ -5,7 +5,6 @@ import {
   ReadAddressDTO,
   ReadCompanyInfoDTO,
 } from "@/data/dtos/EmployerProfileCreationDTOs";
-import { devLog } from "@/app/lib/utils";
 const prisma: PrismaClient = getPrismaClient();
 
 export async function GET(

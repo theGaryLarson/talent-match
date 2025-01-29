@@ -18,7 +18,6 @@ import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import Link from "next/link";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import { JobStatus } from "@/app/lib/jobseekerJobTracking";
-import RoundedButton from "../RoundedButton";
 import PillButton from "../PillButton";
 
 type StatusConfigType = {

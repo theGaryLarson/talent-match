@@ -5,14 +5,10 @@ import { useRouter } from "next/navigation";
 import type { RootState } from "@/lib/employerStore";
 import { useSelector, useDispatch } from "react-redux";
 // import { addField, updateField, submitForm, submitFormSuccess, submitFormFailure, FormState } from '@/lib/features/profileCreation/formSlice';
-import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
-import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
-import SelectWithLabel from "@/app/ui/components/mui/SelectWithLabel";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import PillButton from "@/app/ui/components/PillButton";
 import TextareaWithLabel from "@/app/ui/components/TextareaWithLabel";
 import { useSession } from "next-auth/react";
-import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import { PostEmployerMissionDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {
   setMission,
@@ -40,8 +36,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { data: session, update, status } = useSession();
-  const updateSessionProperties = useUpdateSession();
+  const { data: session, status } = useSession();
 
   // get employers.is_verified_employee
   useEffect(() => {
@@ -72,7 +67,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
             );
 
             if (!response.ok) {
-              const errorData = await response.json();
+              await response.json();
             } else {
               const { result } = await response.json();
 
@@ -83,7 +78,7 @@ export default function CreateEmployerCompanyInfoMissionPage() {
                 mission: result.mission ?? "",
               });
             }
-          } catch (error) {}
+          } catch {}
         } else {
           console.log("fetching from redux store");
         }
@@ -127,23 +122,23 @@ export default function CreateEmployerCompanyInfoMissionPage() {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         dispatch(setPageSaved("mission"));
         dispatch(setMission(missionData));
         router.push("/edit-profile/employer/video");
       } else {
-        const errorData = await response.json();
+        await response.json();
         if (!session?.user?.employeeIsApproved)
           router.push("/edit-profile/employer/video");
       }
-    } catch (error) {}
+    } catch {}
   };
 
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(4 / 5) * 100} size="sm" />
+        <ProgressBarFlat progress={(4 / 5) * 100} />
         <p>Step 4/5</p>
         <h1>Company Info</h1>
         <p className="subtitle">* Indicates a required field</p>

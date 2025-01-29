@@ -264,7 +264,7 @@ export const selfAssignAsCaseManager = async (
 ): Promise<{ success: boolean; status: number }> => {
   const session = await auth();
   try {
-    const jobseekerAssessmentRecord = await prisma.caseMgmt.update({
+    await prisma.caseMgmt.update({
       where: {
         jobseekerId: jobseekerId,
       },
@@ -294,7 +294,9 @@ export const getAllCareerNavigators = async () => {
       },
     });
     return users.filter((user) => user.role.includes(Role.CASE_MANAGER));
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
@@ -369,8 +371,8 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
   }
 };
 export const updateCareerPrepStudentDetailview = async (
-  jobseekerId: string,
-  data: CareerPrepJobseekerDetailViewDTO,
+  jobseekerId: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+  data: CareerPrepJobseekerDetailViewDTO, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) => {
   //TODO
   console.log("This Needs to be written");
@@ -443,7 +445,6 @@ export const updateCareerPrepStatusCardView = async (
   status: CareerPrepStatus;
   expectedEndDate: Date | null;
 } | null> => {
-  const session = await auth();
   try {
     const data = await prisma.careerPrepAssessment.findUnique({
       where: {
@@ -903,25 +904,21 @@ export const submitCareerPrepAssessment = async (
   try {
     const result = await prisma.$transaction(
       async (prisma) => {
-        const careerPrepAssessment = await upsertCareerPrepAssessment(
-          prisma,
-          jobseekerId,
-          data,
-        );
+        await upsertCareerPrepAssessment(prisma, jobseekerId, data);
 
-        const durableResponse = await upsertDurableSkillRatings(
+        await upsertDurableSkillRatings(
           prisma,
           jobseekerId,
           data.durableSkills,
         );
 
-        const brandResponse = await upsertBrandRatings(
+        await upsertBrandRatings(
           prisma,
           jobseekerId,
           data.professionalBrandingAndJobMarketReadiness,
         );
 
-        const assessmentResponse = await upsertPathwayRatings(
+        await upsertPathwayRatings(
           prisma,
           jobseekerId,
           data.technicalSelfAssessment,
@@ -964,7 +961,9 @@ export const getCareerPrepAssessment = async (jobseekerId: string) => {
     });
     console.log("assess:", result);
     return result;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 };
 /**
  * Submits a career preparation skills assessment with session data.
@@ -984,11 +983,7 @@ export const submitCareerPrepEnrollment = async (
   try {
     const result = await prisma.$transaction(
       async (prisma) => {
-        const careerPrepEnrollment = await updateCareerPrepEnrollment(
-          prisma,
-          jobseekerId,
-          data,
-        );
+        await updateCareerPrepEnrollment(prisma, jobseekerId, data);
         await updateCareerPrepStatusCardView(
           jobseekerId,
           CareerPrepStatus.Enrolled,
@@ -1025,7 +1020,7 @@ const upsertUnassignedCaseMgmtRecord = async (
       },
     });
 
-    const caseMgmtEntry = await prisma.caseMgmt.upsert({
+    await prisma.caseMgmt.upsert({
       where: {
         jobseekerId,
       },
@@ -1068,7 +1063,7 @@ const upsertBrandRatings = async (
   status: number;
 }> => {
   try {
-    const updatedBrandRatings = await prisma.brandingRating.upsert({
+    await prisma.brandingRating.upsert({
       where: {
         jobseekerId,
       },
@@ -1116,35 +1111,6 @@ const upsertBrandRatings = async (
         },
       },
     });
-    const transformedData: ProfessionalBrandingRatings = {
-      personalBrand: updatedBrandRatings.personalBrand as AgreementLevel,
-      onlinePresence: updatedBrandRatings.onlinePresence as AgreementLevel,
-      elevatorPitch: updatedBrandRatings.elevatorPitch as AgreementLevel,
-      resumeEffectiveness:
-        updatedBrandRatings.resumeEffectiveness as AgreementLevel,
-      coverLetterEffectiveness:
-        updatedBrandRatings.coverLetterEffectiveness as AgreementLevel,
-      interviewExperience:
-        updatedBrandRatings.interviewExperience as AgreementLevel,
-      responseTechnique:
-        updatedBrandRatings.responseTechnique as AgreementLevel,
-      followUpImportance:
-        updatedBrandRatings.followUpImportance as AgreementLevel,
-      onlineNetworking: updatedBrandRatings.onlineNetworking as AgreementLevel,
-      eventNetworking: updatedBrandRatings.eventNetworking as AgreementLevel,
-      relationshipManagement:
-        updatedBrandRatings.relationshipManagement as AgreementLevel,
-      jobSearchStrategy:
-        updatedBrandRatings.jobSearchStrategy as AgreementLevel,
-      materialDistribution:
-        updatedBrandRatings.materialDistribution as AgreementLevel,
-      networkingTechniques:
-        updatedBrandRatings.networkingTechniques as AgreementLevel,
-      onboardingBestPractices:
-        updatedBrandRatings.onboardingBestPractices as AgreementLevel,
-      developmentPlan: updatedBrandRatings.developmentPlan as AgreementLevel,
-      mentorship: updatedBrandRatings.mentorship as AgreementLevel,
-    };
     return { success: true, status: 200 };
   } catch (e) {
     console.error("Failed to submit Professional Brand Ratings", e);
@@ -1157,7 +1123,7 @@ const upsertCareerPrepAssessment = async (
   jobseekerId: string,
   data: CareerPrepSkillsAssessmentDTO,
 ): Promise<{ success: boolean; status: number }> => {
-  const assessmentData = await prisma.careerPrepAssessment.upsert({
+  await prisma.careerPrepAssessment.upsert({
     where: {
       jobseekerId: data.jobseekerId,
     },
@@ -1205,7 +1171,7 @@ const upsertDurableSkillRatings = async (
   softSkills: CareerPrepSkillsAssessmentDTO["durableSkills"],
 ): Promise<{ success: boolean; status: number }> => {
   try {
-    const updatedDurableSkills = await prisma.durableSkillsRating.upsert({
+    await prisma.durableSkillsRating.upsert({
       where: {
         jobseekerId,
       },
@@ -1257,33 +1223,6 @@ const upsertDurableSkillRatings = async (
         },
       },
     });
-
-    // Transforming data directly from the updatedDurableSkills object
-    const transformedDurableSkills: DurableSkillsRatings = {
-      emotionManagement: updatedDurableSkills.emotionManagement as SkillLevel,
-      empathy: updatedDurableSkills.empathy as SkillLevel,
-      goalSetting: updatedDurableSkills.goalSetting as SkillLevel,
-      timeManagement: updatedDurableSkills.timeManagement as SkillLevel,
-      adaptability: updatedDurableSkills.adaptability as SkillLevel,
-      criticalThinking: updatedDurableSkills.criticalThinking as SkillLevel,
-      creativity: updatedDurableSkills.creativity as SkillLevel,
-      resilience: updatedDurableSkills.resilience as SkillLevel,
-      communication: updatedDurableSkills.communication as SkillLevel,
-      activeListening: updatedDurableSkills.activeListening as SkillLevel,
-      conflictResolution: updatedDurableSkills.conflictResolution as SkillLevel,
-      nonverbalCommunication:
-        updatedDurableSkills.nonverbalCommunication as SkillLevel,
-      teamwork: updatedDurableSkills.teamwork as SkillLevel,
-      trustBuilding: updatedDurableSkills.trustBuilding as SkillLevel,
-      leadership: updatedDurableSkills.leadership as SkillLevel,
-      perspectiveTaking: updatedDurableSkills.perspectiveTaking as SkillLevel,
-      culturalAwareness: updatedDurableSkills.culturalAwareness as SkillLevel,
-      relationshipBuilding:
-        updatedDurableSkills.relationshipBuilding as SkillLevel,
-      documentationSkills:
-        updatedDurableSkills.documentationSkills as SkillLevel,
-    };
-
     return { success: true, status: 200 };
   } catch (e) {
     console.error("Error in upsertDurableSkills:", e);
@@ -1469,7 +1408,7 @@ const updateCareerPrepEnrollment = async (
   enrollment: CareerPrepEnrollmentDTO,
 ): Promise<{ success: boolean; status: number }> => {
   try {
-    const updatedEnrollment = await prisma.careerPrepAssessment.update({
+    prisma.careerPrepAssessment.update({
       where: {
         jobseekerId,
       },
@@ -1929,5 +1868,7 @@ export async function updateJobStatus(
         jobStatus: newStatus,
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }

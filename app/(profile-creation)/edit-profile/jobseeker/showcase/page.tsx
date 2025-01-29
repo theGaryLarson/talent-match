@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import PillButton from "@/app/ui/components/PillButton";
 import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
 import TextFieldWithSeparatedLabel from "@/app/ui/components/mui/TextFieldWithSeparatedLabel";
-import TextFieldWithNoLabel from "@/app/ui/components/mui/TextFieldWithNoLabel";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JsShowcaseDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { useRouter } from "next/navigation";
@@ -25,7 +24,7 @@ import { devLog } from "@/app/lib/utils";
 import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 import InputFileDropzone from "@/app/ui/components/InputFileDropzone";
 import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
-import { BlobPrefix, getResumeUrl } from "@/app/lib/services/azureBlobService";
+import { BlobPrefix } from "@/app/lib/services/azureBlobService";
 
 export default function CreateJobseekerProfileShowcasePage() {
   const router = useRouter();
@@ -35,7 +34,6 @@ export default function CreateJobseekerProfileShowcasePage() {
     (state: RootState) => state.jobseeker.showcase,
   );
   const showcaseData = { ...showcaseStoreData };
-  const [error, setError] = useState<string | null>(null);
 
   const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
@@ -45,7 +43,6 @@ export default function CreateJobseekerProfileShowcasePage() {
   const [resumeUrl, setResumeUrl] = useState<string | null>(
     showcaseData.resumeUrl,
   );
-  const [currentJobTitle, setCurrentJobTitle] = useState("");
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
   const [fetchedTags, setFetchedTags] = useState<SkillDTO[]>(
@@ -180,11 +177,12 @@ export default function CreateJobseekerProfileShowcasePage() {
 
         router.push("/edit-profile/jobseeker/education");
       } else {
-        const errorMessage = `Failed to submit showcase info. Status: ${response.status} - ${response.statusText}`;
-        setError(errorMessage);
+        console.log(
+          `Failed to submit showcase info. Status: ${response.status} - ${response.statusText}`,
+        );
       }
     } catch (e: any) {
-      setError(`An unexpected error occurred: ${e.message}`);
+      console.log(`An unexpected error occurred: ${e.message}`);
     }
   }
 

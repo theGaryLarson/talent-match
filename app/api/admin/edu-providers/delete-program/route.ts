@@ -10,7 +10,7 @@ export async function DELETE(req: Request) {
     } else {
       return NextResponse.json({ res }, { status: 500 });
     }
-  } catch (error) {
+  } catch {
     return NextResponse.json({}, { status: 500 });
   }
 }

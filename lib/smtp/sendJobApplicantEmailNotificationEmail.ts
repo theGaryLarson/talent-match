@@ -1,8 +1,4 @@
 "use server";
-import {
-  CareerNewPrepApplicantEmailNotification,
-  CareerPrepNotificationData,
-} from "@/emails/career-prep-applicant-email-notification";
 import { render } from "@react-email/render";
 import { sendEmail } from "@/lib/smtp/mailer/send-email";
 import { getAllCareerNavigators } from "@/app/lib/admin/careerPrep";

@@ -1,6 +1,4 @@
 import { unflagDeletion } from "@/app/lib/user";
-import { deleteJobseeker, setPool } from "@/app/lib/jobseeker";
-import { NextResponse } from "next/server";
 
 export async function PATCH() {
   const response = await unflagDeletion(); // keep this

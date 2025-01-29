@@ -1,4 +1,4 @@
-import { companies, Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { auth } from "@/auth";

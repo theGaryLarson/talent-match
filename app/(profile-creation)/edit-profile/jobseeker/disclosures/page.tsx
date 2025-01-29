@@ -2,13 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
-import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
-import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
 import SelectWithLabel from "@/app/ui/components/mui/SelectWithLabel";
-import {
-  JsDisclosuresDTO,
-  JsDisclosuresPostDTO,
-} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { JsDisclosuresDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { useRouter } from "next/navigation";
 import PillButton from "@/app/ui/components/PillButton";
 
@@ -18,11 +13,6 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  Checkbox,
-  Snackbar,
-  SnackbarContent,
-  Typography,
-  IconButton,
 } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,7 +36,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
     (state: RootState) => state.jobseeker.disclosures,
   );
   const disclosuresData = { ...disclosuresStoreData };
-  const [error, setError] = useState<{ error: string | null }>({ error: null });
+  const [error, setError] = useState<{ error: string | null }>({ error: null }); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const [veteranStatus, setVeteranStatus] = useState(disclosuresData.isVeteran);
   const [disabilityStatus, setDisabilityStatus] = useState(
@@ -158,7 +148,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(6 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(6 / 6) * 100} />
         <p>Step 6/6</p>
 
         <h1>Voluntary Disclosures</h1>

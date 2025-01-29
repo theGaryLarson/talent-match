@@ -1,6 +1,6 @@
 import { getIndustrySectors } from "@/app/lib/prisma";
 
-export async function GET(req: Request) {
+export async function GET() {
   const industrySectors = await getIndustrySectors();
 
   return Response.json(industrySectors, {

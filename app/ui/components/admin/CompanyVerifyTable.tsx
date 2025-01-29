@@ -24,7 +24,7 @@ import CompanyDeleteButton from "./CompayDeleteButton";
 
 function EmployeeRow({ employee }: { employee: employers & { users: User } }) {
   const [loadingEmployee, setLoadingEmployee] = useState(false);
-  const [failedEmployee, setFailedEmployee] = useState(false);
+  const [failedEmployee, setFailedEmployee] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [verifedEmployee, setVerifedEmployee] = useState(
     employee.is_verified_employee,
   );
@@ -82,7 +82,7 @@ function Row({
   const [open, setOpen] = React.useState(false);
   const [isApproved, setIsApproved] = useState(company.is_approved);
   const [loading, setLoading] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
   const handleCompanyApprove = async () => {
     try {
       setLoading(true);

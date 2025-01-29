@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { ReadCompanySocialLinkDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
-import { v4 as uuidv4 } from "uuid";
 
 const prisma: PrismaClient = getPrismaClient();
 

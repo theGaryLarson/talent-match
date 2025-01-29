@@ -62,7 +62,7 @@ function AssessmentModal({
       {
         <div className="h-[650px] w-fit flex flex-col flex-wrap">
           {Object.entries(list[0] || {}) // Use first item in array
-            .filter(([key, value]) => typeof value === "number") // Filter only numeric values
+            .filter(([key, value]) => typeof value === "number") // eslint-disable-line @typescript-eslint/no-unused-vars
             .map(([key, value]) => (
               <div key={key} className="m-2.5">
                 <label htmlFor={key} className="capitalize">

@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/auth";
@@ -31,7 +31,6 @@ export async function POST(request: Request) {
       yearFounded,
       websiteUrl,
       videoUrl,
-      phoneCountryCode,
       companyPhone,
       mission,
       vision,

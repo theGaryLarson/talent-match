@@ -1,5 +1,4 @@
 import {
-  getCareerPrepAssessment,
   getCareerPrepStatus,
   getCareerPrepStudentDetailView,
   getCareerPrepStudentNotes,
@@ -7,12 +6,10 @@ import {
   NoteType,
 } from "@/app/lib/admin/careerPrep";
 import AddMeetingModal from "@/app/ui/components/careerPrep/AddMeetingModal";
-import BasicModal from "@/app/ui/components/careerPrep/BasicModal";
 import EnrollmentStatusDropDown from "@/app/ui/components/careerPrep/EnrollmentStatusDropDown";
 import NoteContainer from "@/app/ui/components/careerPrep/NoteContainer";
 import Tabs from "@/app/ui/components/Tabs";
 import RecommendedTrackDropDown from "../../../../ui/components/careerPrep/RecommendedTrackDropDown";
-import LikertRating from "@/app/ui/components/careerPrep/LikertRating";
 import SelfAssementReadOnly from "@/app/ui/components/careerPrep/SelfAssementReadOnly";
 import Link from "next/link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
