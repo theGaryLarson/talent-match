@@ -7,6 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 interface Props {
+  id?: string;
   options: { label: string; value: string }[];
   label: string;
   value: string[];
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function SingleSelectCheckmarks({
+  id,
   options,
   label,
   value,
@@ -51,6 +53,7 @@ export default function SingleSelectCheckmarks({
           {label}
         </InputLabel>
         <Select
+          id={id}
           className=""
           value={filter}
           onChange={handleChange}

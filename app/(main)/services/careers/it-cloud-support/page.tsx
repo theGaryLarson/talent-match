@@ -26,10 +26,6 @@ export default function Page() {
         whyItMatters={
           "You’ll ensure seamless operations, empowering teams to work efficiently and securely"
         }
-        tableAvgSalary={"$X,000 per year (national average)"}
-        tableEduLevel={"Bachelor’s Degree or relevant experience"}
-        tableExpReq={"0–2 years entry-level, 3–5 years mid-level"}
-        tableJobGrowth={"Projected X% growth (next 5 years)"}
         trainingPrograms={EduProviderPathways.ITCloudSupport}
       />
       {/* Commented out Lightcast data link. It's not ready for public view */}

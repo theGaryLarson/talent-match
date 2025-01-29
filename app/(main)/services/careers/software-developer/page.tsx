@@ -25,10 +25,6 @@ export default function Page() {
       whyItMatters={
         "Your solutions will fuel the digital experiences people rely on every day"
       }
-      tableAvgSalary={"$X,000 per year (national average)"}
-      tableEduLevel={"Bachelor’s Degree or relevant experience"}
-      tableExpReq={"0–2 years entry-level, 3–5 years mid-level"}
-      tableJobGrowth={"Projected X% growth (next 5 years)"}
       trainingPrograms={EduProviderPathways.SoftwareDeveloper}
     />
   );
