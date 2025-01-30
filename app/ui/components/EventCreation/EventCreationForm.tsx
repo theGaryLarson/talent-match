@@ -54,7 +54,7 @@ export default function EventCreationForm() {
         const data = await response.json();
         console.log("Creation sucsess: ", data);
         if (submitButton) submitButton.disabled = false;
-        alert("Provider updated successfully!");
+        alert("Event created successfully!");
       }
     } catch (error) {
       console.error("Error:", error);
