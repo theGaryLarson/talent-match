@@ -4,7 +4,6 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/auth";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
-import Skills from "../ui/components/Skills";
 import { NextResponse } from "next/server";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { JobStatus } from "./jobseekerJobTracking";
@@ -44,7 +43,7 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
       });
     }
 
-    let postalGeoData = await prisma.postalGeoData.findFirst({
+    const postalGeoData = await prisma.postalGeoData.findFirst({
       where: { zip: jobData.zip },
     });
 
@@ -133,14 +132,14 @@ export async function getJobListingById(joblistingId: string) {
   }
 }
 export async function getMyJobListings() {
-  let Session = await auth();
+  const Session = await auth();
   if (!Session?.user.employerId) {
     throw new Error(
       "Failed to create job listing employer id not found in session",
     );
   }
   try {
-    let results = prisma.job_postings.findMany({
+    const results = prisma.job_postings.findMany({
       where: {
         employer_id: Session?.user.employerId,
       },
@@ -157,7 +156,7 @@ export async function getMyJobListings() {
   }
 }
 export async function deleteJobListing(jobPostingId: string) {
-  let Session = await auth();
+  const Session = await auth();
   if (!Session?.user.employerId && !Session?.user.roles.includes(Role.ADMIN)) {
     throw new Error(
       "Failed to delete job listing: employer ID not found in session",
@@ -170,7 +169,7 @@ export async function deleteJobListing(jobPostingId: string) {
   }
 
   try {
-    let job = await prisma.job_postings.findUnique({
+    const job = await prisma.job_postings.findUnique({
       where: {
         job_posting_id: jobPostingId,
       },
@@ -181,7 +180,7 @@ export async function deleteJobListing(jobPostingId: string) {
     ) {
       throw new Error("not an employer of this company");
     }
-    let result = await prisma.job_postings.delete({
+    const result = await prisma.job_postings.delete({
       where: {
         job_posting_id: jobPostingId,
       },
@@ -193,7 +192,7 @@ export async function deleteJobListing(jobPostingId: string) {
 }
 
 export async function ApplyToJob(jobPostingId: string) {
-  let Session = await auth();
+  const Session = await auth();
   try {
     if (!Session?.user.jobseekerId) {
       throw new Error(
@@ -266,7 +265,7 @@ export async function ApplyToJob(jobPostingId: string) {
 }
 
 export async function WithdrawFromJob(jobPostingId: string) {
-  let Session = await auth();
+  const Session = await auth();
   try {
     if (!Session?.user.jobseekerId) {
       throw new Error(
@@ -405,7 +404,7 @@ export async function unbookmarkJobPosting(jobPostId: string) {
 
 export async function getAllJobPosts() {
   try {
-    let results = prisma.job_postings.findMany({
+    const results = prisma.job_postings.findMany({
       include: {
         jobApplications: {
           include: {
@@ -434,7 +433,7 @@ export async function getJobListingsFiltered(request: Request) {
     skills = [],
     industrySector = [],
     zipCode = "",
-    sortBy = "publish_date",
+    sortBy = "publish_date", // eslint-disable-line @typescript-eslint/no-unused-vars
     page = 1,
     maxResults = 50,
   } = await request.json();

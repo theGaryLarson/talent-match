@@ -1,5 +1,4 @@
 import { Grid2, Typography } from "@mui/material";
-import RoundedButton from "../RoundedButton";
 import PillButton from "../PillButton";
 
 export default async function Events() {

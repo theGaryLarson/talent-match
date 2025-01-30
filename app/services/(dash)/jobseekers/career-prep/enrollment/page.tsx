@@ -22,7 +22,6 @@ import PillButton from "@/app/ui/components/PillButton";
 import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import NextLink from "next/link";
-import { CareerPrepEnrollmentDTO } from "@/app/lib/admin/careerPrep";
 import Confetti from "@/app/ui/components/Confetti";
 import "@/app/ui/profile-creation.css";
 
@@ -32,7 +31,7 @@ interface FormData {
 }
 
 export default function Page() {
-  const { data: session, update, status } = useSession();
+  const { data: session, status } = useSession();
   const [formData, setFormData] = useState<FormData>({
     streetAddress: "",
     priorityPopulations: [],
@@ -64,10 +63,12 @@ export default function Page() {
     const initializeFormFields = async () => {
       if (!session?.user.id) return;
       if (status === "authenticated") {
-        const { id, jobseekerId } = session.user;
+        const { jobseekerId } = session.user;
         try {
           if (!jobseekerId) return;
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
     initializeFormFields();

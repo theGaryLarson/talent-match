@@ -20,7 +20,6 @@ export default function JobSeekerCardView({
   isBookmarked: boolean;
 }) {
   const { data: session } = useSession();
-  const sessionJobseekerId = session?.user?.jobseekerId;
 
   const name: string =
     jobseeker?.users?.first_name + " " + jobseeker?.users?.last_name;
@@ -44,9 +43,6 @@ export default function JobSeekerCardView({
     jobseeker?.users?.locationData?.state +
     " " +
     jobseeker?.users?.locationData?.zip;
-  const yearsExp: string = jobseeker.years_work_exp + " years work exp";
-  const highestDegree: string =
-    jobseeker.highest_level_of_study_completed ?? "";
   const skills: SkillDTO[] = jobseeker?.jobseeker_has_skills
     ? jobseeker?.jobseeker_has_skills.map(
         (item: JobseekerSkillDTO) => item.skills,
@@ -85,13 +81,6 @@ export default function JobSeekerCardView({
           : "");
     }
   }
-
-  const showViewProfile =
-    session?.user.roles.includes(Role.EMPLOYER) || // check role for permissions
-    session?.user.roles.includes(Role.ADMIN) ||
-    session?.user.roles.includes(Role.EDUCATOR) ||
-    session?.user.roles.includes(Role.CASE_MANAGER) ||
-    (sessionJobseekerId != undefined && sessionJobseekerId == id); // or it's our own profile
 
   const showBookmarks =
     session?.user.roles.includes(Role.EMPLOYER) && // check role for permissions

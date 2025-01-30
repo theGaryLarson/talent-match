@@ -83,7 +83,7 @@ export default function EditUsersTable(params: { users: userDataTable[] }) {
                 }
               });
             } catch (error) {
-              console.error("Falied to upate roles");
+              console.error("Falied to upate roles: ", error);
             }
           }}
         />

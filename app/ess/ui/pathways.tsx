@@ -94,7 +94,7 @@ export default function Pathways() {
         {(!selectedCardId || !isSmallScreen) && (
           <List disablePadding sx={{ width: isSmallScreen ? "auto" : 300 }}>
             {pathwaysData &&
-              pathwaysData.map((item, index) => (
+              pathwaysData.map((item) => (
                 <ListItem disablePadding divider key={item.cfa_pathwayid}>
                   <ListItemButton
                     onClick={() => handlePathwayClick(item.cfa_pathwayid)}

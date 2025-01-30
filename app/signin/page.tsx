@@ -1,4 +1,4 @@
-import { signIn, auth, providerMap } from "@/auth";
+import { signIn, providerMap } from "@/auth";
 import { Button } from "@mui/material";
 import Image from "next/image";
 
@@ -18,6 +18,7 @@ export default async function SignInPage({
         <div className="flex flex-col gap-2 text-center">
           {Object.values(providerMap).map((provider) => (
             <form
+              key={provider.id}
               action={async () => {
                 "use server";
                 try {

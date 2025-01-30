@@ -1,9 +1,6 @@
 "use client";
 
-import DividerWithText from "@/app/ui/components/DividerWithText";
-import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 import Link from "next/link";
-import { Button } from "@mui/material";
 import SignupPrompt from "@/app/ui/components/SignupPrompt";
 import Image from "next/image";
 import Footer from "@/app/ui/Footer";
@@ -12,14 +9,13 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
-import { mapToEnumOrThrow } from "@/app/lib/utils";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import { v4 as uuidv4 } from "uuid";
+import PillButton from "@/app/ui/components/PillButton";
 
 export default function EmployerSignUpFinish() {
-  let [termsAgree, setTermsAgree] = useState(false);
-  let vectorImgSrc = "/images/signup/employer-vector.png";
-  const { data: session, status, update } = useSession();
+  const [termsAgree, setTermsAgree] = useState(false);
+  const vectorImgSrc = "/images/signup/employer-vector.png";
+  const { data: session } = useSession();
   const updateSessionProperties = useUpdateSession();
   const router = useRouter();
   return (
@@ -69,17 +65,17 @@ export default function EmployerSignUpFinish() {
                 </label>
               </div>
             </fieldset>
-            <Button
+            <PillButton
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
-                let response = await fetch("/api/employers/create", {
+                const response = await fetch("/api/employers/create", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                 });
-                let data = await response.json();
+                const data = await response.json();
                 if (response.ok) {
                   let rolesArray = session?.user.roles || [];
                   rolesArray = rolesArray.filter(
@@ -98,16 +94,20 @@ export default function EmployerSignUpFinish() {
               }}
               sx={{
                 marginX: "auto",
-                marginY: 8,
-                borderRadius: "50%",
+                marginY: 4,
                 "&:focus": {
                   boxShadow: "none",
+                },
+                "&:disabled": {
+                  color: "#fff",
+                  bgcolor: "primary.main",
+                  opacity: 0.5,
                 },
               }}
               disabled={!termsAgree}
             >
               Create account
-            </Button>
+            </PillButton>
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
               <p>Already have a TWC account?</p>

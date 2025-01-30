@@ -52,7 +52,7 @@ export async function adminDeleteUser(userId: string) {
           },
         });
         res = true;
-      } catch (error) {
+      } catch {
         res = false;
       }
     }
@@ -60,5 +60,5 @@ export async function adminDeleteUser(userId: string) {
       return { status: 500 };
     }
     return { status: 200 };
-  } catch (error) {}
+  } catch {}
 }

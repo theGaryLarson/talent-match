@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Grid2, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 
 interface ProgressItem {
   label: string;

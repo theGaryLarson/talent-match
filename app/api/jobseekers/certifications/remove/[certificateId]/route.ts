@@ -13,7 +13,7 @@ export async function DELETE(
   let certificateId = null;
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const jobseekerId: string = session?.user.jobseekerId!;
 
     certificateId = params.certificateId;

@@ -2,8 +2,8 @@
 import { NoteType, NoteDTO } from "@/app/lib/admin/careerPrep";
 import MarkDownEditor from "../mdEditor/MarkDownEditor";
 import NoteCard from "./NoteCard";
-import { useEffect, useState } from "react";
-import { AddBoxOutlined, AddOutlined } from "@mui/icons-material";
+import { useState } from "react";
+import { AddOutlined } from "@mui/icons-material";
 
 export default function NoteContainer(params: {
   noteType: NoteType;

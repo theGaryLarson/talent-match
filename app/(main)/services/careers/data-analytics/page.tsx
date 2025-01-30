@@ -25,10 +25,6 @@ export default function Page() {
       whyItMatters={
         "Your insights will drive strategic decisions, shaping business success and innovation"
       }
-      tableAvgSalary={"$X,000 per year (national average)"}
-      tableEduLevel={"Bachelor’s Degree or relevant experience"}
-      tableExpReq={"0–2 years entry-level, 3–5 years mid-level"}
-      tableJobGrowth={"Projected X% growth (next 5 years)"}
       trainingPrograms={EduProviderPathways.DataAnalytics}
     />
   );

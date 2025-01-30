@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import { employers, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { auth } from "@/auth";
 import { PostEmployerWorkDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function PATCH(request: Request, { params }: { params: any }) {
+export async function PATCH(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const employerId: string = session?.user.employerId!;
 
     if (!employerId) {

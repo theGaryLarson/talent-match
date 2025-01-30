@@ -3,7 +3,7 @@ import JobSeekerCardView from "@/app/ui/components/JobSeekerCardView";
 import Link from "next/link";
 
 export default async function Page() {
-  let bookmarkedJobseekers = await getJobseekerBookmarkByCompany();
+  const bookmarkedJobseekers = await getJobseekerBookmarkByCompany();
 
   return (
     <main className="m-2 mb-0 w-full space-y-4 pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">

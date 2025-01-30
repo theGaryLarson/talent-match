@@ -7,7 +7,6 @@ import {
   ReadAddressDTO,
   ReadEmployerWorkDTO,
 } from "@/data/dtos/EmployerProfileCreationDTOs";
-import { v4 as uuidv4 } from "uuid";
 import { devLog } from "@/app/lib/utils";
 import { auth } from "@/auth";
 
@@ -16,7 +15,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
     const employerId: string = session?.user.employerId!;
 

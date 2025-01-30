@@ -8,7 +8,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function PATCH(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     //fixme: this is showing up null but should be set on the previous page
     const companyId: string | null | undefined = session?.user.companyId;
 

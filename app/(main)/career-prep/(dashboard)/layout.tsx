@@ -6,13 +6,12 @@ import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import { auth } from "@/auth";
-import { BookmarkIcon } from "@heroicons/react/24/outline";
 export default async function layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  let session = await auth();
+  const session = await auth();
   console.log(session);
 
   return (
@@ -61,6 +60,15 @@ export default async function layout({
           <EditCalendarIcon />
           Events
         </Link>
+
+        {/*
+        <Link
+          href="/career-prep"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <BookmarkIcon width={24}/>
+          Unassigned Cases
+        </Link> */}
       </div>
       {children}
     </div>

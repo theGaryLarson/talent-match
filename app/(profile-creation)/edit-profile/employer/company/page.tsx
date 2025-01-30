@@ -29,7 +29,6 @@ import {
   setPageSaved,
 } from "@/lib/features/profileCreation/saveSlice";
 import dayjs, { Dayjs } from "dayjs";
-import { devLog } from "@/app/lib/utils";
 import _ from "lodash";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import { ReadEmployerRecordDTO } from "@/app/lib/employer";
@@ -131,7 +130,7 @@ export default function CreateEmployerCompanyInfoPage() {
           industry_sector_id: fetchedData.industrySectorId ?? "",
           sector_title: fetchedData.industrySectorTitle || "",
         });
-      } catch (error) {
+      } catch {
         console.warn("Error fetching company data. Using initialized fields.");
       }
     };
@@ -255,7 +254,7 @@ export default function CreateEmployerCompanyInfoPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(2 / 5) * 100} size="sm" />
+        <ProgressBarFlat progress={(2 / 5) * 100} />
         <p className="mb-6">Step 2/5</p>
         <form onSubmit={handleSubmit}>
           <div className="profile-form-grid md:grid-cols-2">

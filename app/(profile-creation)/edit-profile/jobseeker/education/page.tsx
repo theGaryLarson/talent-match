@@ -11,12 +11,9 @@ import {
   JsEducationInfoDTO,
   JsEducationPageDTO,
   ProjectExpDTO,
-  PreAEduSystem,
   CollegeDegreeType,
   HighSchoolDegreeType,
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
-import { v4 as uuidv4 } from "uuid";
-import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { useRouter } from "next/navigation";
 
 import Educations, {
@@ -32,8 +29,7 @@ import ProjectExperiences, {
   ProjectExperienceData,
 } from "./form-field-groups/ProjectExperiences";
 import { devLog, mapToEnum, mapToEnumOrThrow } from "@/app/lib/utils";
-import { getSession, useSession } from "next-auth/react";
-import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
+import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/jobseekerStore";
 import {
@@ -44,7 +40,7 @@ import {
   setPageDirty,
   setPageSaved,
 } from "@/lib/features/profileCreation/saveSlice";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import _ from "lodash";
 import { Add } from "@mui/icons-material";
 
@@ -56,14 +52,13 @@ interface Data {
 
 export default function CreateJobseekerProfileEducationPage() {
   const router = useRouter();
-  const { data: session, update, status } = useSession(); // Use useSession hook and destructure update
-  const updateSessionProperties = useUpdateSession();
+  const { data: session, status } = useSession(); // Use useSession hook and destructure update
   const dispatch = useDispatch();
   const educationStoreData = useSelector(
     (state: RootState) => state.jobseeker.education,
   );
   let educationData = { ...educationStoreData };
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
   const [highestLevelOfStudy, setHighestLevelOfStudy] = useState(
@@ -224,7 +219,7 @@ export default function CreateJobseekerProfileEducationPage() {
               educationData.userId = id!;
               educationData.jobseekerId = jobseekerId!;
             } else {
-              let fetchedData: JsEducationPageDTO = (await response.json())
+              const fetchedData: JsEducationPageDTO = (await response.json())
                 .result;
               educationData.userId = id!;
               educationData.jobseekerId = jobseekerId!;
@@ -350,7 +345,6 @@ export default function CreateJobseekerProfileEducationPage() {
     setHasUnmetRequired("");
 
     const userId = session.user.id;
-    const form = event.currentTarget as HTMLFormElement;
 
     const educations: JsEducationInfoDTO[] = data.educations.map(
       (ed: EducationData) => ({
@@ -494,7 +488,7 @@ export default function CreateJobseekerProfileEducationPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(4 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(4 / 6) * 100} />
         <p>Step 4/6</p>
         <h1>Education</h1>
         <p className="subtitle">* Indicates a required field</p>

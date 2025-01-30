@@ -1,7 +1,4 @@
-import {
-  searchEduProviderPreApprenticeshipPrograms,
-  searchEduProviderTrainingProviderPrograms,
-} from "@/app/lib/prisma";
+import { searchEduProviderTrainingProviderPrograms } from "@/app/lib/prisma";
 
 export async function GET(
   req: Request,

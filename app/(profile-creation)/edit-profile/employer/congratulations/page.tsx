@@ -1,18 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Confetti from "@/app/ui/components/Confetti";
 // REVIEW: testing redux
 // import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-} from "@mui/material";
 import PillButton from "@/app/ui/components/PillButton";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -20,9 +13,6 @@ import { useSession } from "next-auth/react";
 export default function EmployerCongratsPage() {
   // const { fields } = useSelector((state: RootState) => state.form);
   // const dispatch = useDispatch();
-  const [employmentType, setEmploymentType] = useState("");
-  const [pathway, setPathway] = useState("");
-  const [error, setError] = useState("");
 
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -131,7 +121,7 @@ export default function EmployerCongratsPage() {
             <PillButton className="custom-outline-btn">Previous</PillButton>
             <PillButton type="submit">Save and continue</PillButton>
           </div>
-          
+
         </form> */}
       </section>
     </main>

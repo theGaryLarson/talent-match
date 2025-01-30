@@ -7,7 +7,7 @@ import {
 import RoundedButton from "./RoundedButton";
 
 export default async function TrainingProviderMembers() {
-  let trainingProviders: ReadEduProviderDTO[] | null =
+  const trainingProviders: ReadEduProviderDTO[] | null =
     await getAllEduProvidersDetail();
 
   return (

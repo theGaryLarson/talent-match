@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { JsIntroDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import parsePhoneNumberFromString from "libphonenumber-js";
 
 const prisma: PrismaClient = getPrismaClient();
 

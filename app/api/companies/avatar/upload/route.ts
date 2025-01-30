@@ -5,7 +5,7 @@ import { Role } from "@/data/dtos/UserInfoDTO";
 
 export async function POST(request: Request) {
   try {
-    let session = await auth();
+    const session = await auth();
     const employeeIsApproved: boolean =
       session?.user.employeeIsApproved || false;
 

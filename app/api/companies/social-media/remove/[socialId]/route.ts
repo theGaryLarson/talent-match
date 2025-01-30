@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
-import {
-  PostCompanySocialLinkDTO,
-  ReadCompanySocialLinkDTO,
-} from "@/data/dtos/EmployerProfileCreationDTOs";
-import { v4 as uuidv4 } from "uuid";
+import { ReadCompanySocialLinkDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
@@ -17,7 +13,7 @@ export async function DELETE(
   const params = await props.params;
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const companyId: string | null | undefined = session?.user.companyId;
 
     const socialId = params.socialId;

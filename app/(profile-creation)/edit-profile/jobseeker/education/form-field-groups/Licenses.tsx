@@ -3,7 +3,7 @@ import PillButton from "@/app/ui/components/PillButton";
 import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 import { v4 as uuidv4 } from "uuid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { Close } from "@mui/icons-material";
 
 const classNamePrefix = "profile-creation-license-group-";

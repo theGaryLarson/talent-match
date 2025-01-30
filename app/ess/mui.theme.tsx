@@ -1,5 +1,5 @@
 "use client";
-import { createStyles, createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -23,7 +23,7 @@ declare module "@mui/material/styles" {
   }
 }
 
-let theme = createTheme({
+const theme = createTheme({
   cssVariables: true,
   colorSchemes: {
     light: {
