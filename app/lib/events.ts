@@ -18,7 +18,7 @@ export type CreateEventData = {
   duration: number;
   joinMeetingLink: string;
   // linkTitle: string;
-  blurb: string;
+  // blurb: string;
   eventType: EventTypeEnum; // Consider using a union type for stricter control, e.g., "Webinar" | "Workshop" | "Seminar"
   createdById: string;
 };
@@ -51,7 +51,7 @@ export async function createEvent(data: CreateEventData): Promise<{
         date: data.date,
         registrationLink: data.registrationLink,
         joinMeetingLink: data.joinMeetingLink,
-        blurb: data.blurb,
+        // blurb: data.blurb,
         eventType: data.eventType,
         createdById: session.user.id,
         duration: data.duration,

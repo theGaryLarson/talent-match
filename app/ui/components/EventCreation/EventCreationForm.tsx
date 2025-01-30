@@ -8,10 +8,11 @@ export default function EventCreationForm() {
   const [eventDescription, setEventDescription] = useState<string>("");
   const [eventLocation, setEventLocation] = useState<string>("");
   const [eventDate, setEventDate] = useState<string>("");
+  const [isRegisterLink, setIsRegisterLink] = useState<boolean>(true);
   const [registerLink, setRegisterLink] = useState<string>("");
   const [joinMeetingLink, setJoinMeetingLink] = useState("");
   const [duration, setDuration] = useState<number>(90);
-  const [eventBlurb, setEventBlurb] = useState<string>("");
+  // const [eventBlurb, setEventBlurb] = useState<string>("");
   const [eventType, setEventType] = useState<EventTypeEnum>(
     EventTypeEnum.General,
   ); // Consider using a union type for stricter control
@@ -30,7 +31,7 @@ export default function EventCreationForm() {
       date: new Date(eventDate), // Ensure date is correctly formatted
       registrationLink: registerLink,
       joinMeetingLink: joinMeetingLink,
-      blurb: eventBlurb,
+      // blurb: eventBlurb,
       eventType: eventType,
       duration: duration,
     };
@@ -69,7 +70,7 @@ export default function EventCreationForm() {
     setEventDate("");
     setRegisterLink("");
     setJoinMeetingLink("");
-    setEventBlurb("");
+    // setEventBlurb("");
     setEventDescription("");
     setEventLocation("");
     setEventType(EventTypeEnum.General);
@@ -97,7 +98,7 @@ export default function EventCreationForm() {
       </div>
       <div>
         <label htmlFor="eventLocation" className="block text-sm font-medium">
-          Event Location (Remote or Physical Adress)
+          Event Location (Remote or Physical Address)
         </label>
         <input
           type="text"
@@ -136,9 +137,46 @@ export default function EventCreationForm() {
           className="mt-2 p-2 border rounded w-full"
         />
       </div>
-      <div>
-        <label htmlFor="zoomLink" className="block text-sm font-medium">
+      <div className="flex flex-row gap-2">
+        <label htmlFor="linkType" className="block text-sm font-medium">
+          What link will attendees use for this event?
+        </label>
+        <input
+          type="radio"
+          id="registerLink"
+          value={"Register Link"}
+          name={"linkType"}
+          onChange={(e) => {
+            setIsRegisterLink(true);
+            setJoinMeetingLink("");
+          }}
+          checked={isRegisterLink}
+          required
+          className="p-2"
+        />
+        <label htmlFor="registerLink" className="block text-sm font-medium">
           Register Link
+        </label>
+        <input
+          type="radio"
+          id="joinLink"
+          value={"Public Join Link"}
+          name={"linkType"}
+          onChange={(e) => {
+            setIsRegisterLink(false);
+            setRegisterLink("");
+          }}
+          checked={!isRegisterLink}
+          required
+          className="p-2"
+        />
+        <label htmlFor="joinLink" className="block text-sm font-medium">
+          Public Join Link
+        </label>
+      </div>
+      {isRegisterLink && <div>
+        <label htmlFor="zoomLink" className="block text-sm font-medium">
+          Registration Link (join meeting via email confirmation)
         </label>
         <input
           type="url"
@@ -148,10 +186,10 @@ export default function EventCreationForm() {
           required
           className="mt-2 p-2 border rounded w-full"
         />
-      </div>
-      <div>
+      </div>}
+      {!isRegisterLink && <div>
         <label htmlFor="joinLink" className="block text-sm font-medium">
-          Join Link
+          Public Join Link (no Zoom registration required)
         </label>
         <input
           type="url"
@@ -161,8 +199,8 @@ export default function EventCreationForm() {
           required
           className="mt-2 p-2 border rounded w-full"
         />
-      </div>
-      <div>
+      </div>}
+      {/* <div>
         <label htmlFor="eventBlurb" className="block text-sm font-medium">
           Event Blurb
         </label>
@@ -173,7 +211,7 @@ export default function EventCreationForm() {
           required
           className="mt-2 p-2 border rounded w-full"
         />
-      </div>
+      </div> */}
       <div>
         <label htmlFor="eventDescription" className="block text-sm font-medium">
           Event Description

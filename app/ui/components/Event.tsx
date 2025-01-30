@@ -179,7 +179,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
             >
                 {showLink && event.joinMeetingLink && (
                     <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
-                        <Link href={event.joinMeetingLink!}>Meeting Link</Link>
+                        <Link href={event.joinMeetingLink!} target="_blank">Meeting Link</Link>
                     </div>
                 )}
                 {showLink && event.registrationLink && (
