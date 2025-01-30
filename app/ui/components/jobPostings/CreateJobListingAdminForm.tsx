@@ -15,7 +15,6 @@ export default function CreateJobListingAdminForm() {
   const router = useRouter();
   const { quill, quillRef } = useQuill();
   const [skills, setSkills] = useState<SkillDTO[]>();
-  const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
   const [companies, setCompanies] = useState<companies[]>();
   const [techAres, setTechAreas] = useState<technology_areas[]>();
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
@@ -322,7 +321,6 @@ export default function CreateJobListingAdminForm() {
             }
           }}
           searchPlaceholder="Skill (ex: Java)"
-          addNewTags={fetchLoadedTags}
           getTagLabel={(option: SkillDTO) => option.skill_name}
           getTagLink={(option: SkillDTO) => option.skill_info_url}
         />
