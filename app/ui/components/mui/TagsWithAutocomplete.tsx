@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import { debounce } from "@mui/material/utils";
 import { Chip } from "@mui/material";
 import clsx from "clsx";
-import { inter } from "@/app/ui/fonts";
+import { roboto } from "@/app/ui/fonts";
 
 interface CachedFetches<ValueType> {
   [searchTerms: string]: ValueType[];
@@ -185,7 +185,7 @@ export default function TagsWithAutocomplete<ValueType>({
                   href={link}
                   target={target}
                   className={clsx(
-                    `${inter.className} antialiased`,
+                    `${roboto.className} antialiased`,
                     "text-white",
                     "text-base",
                   )}
