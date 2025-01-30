@@ -1,8 +1,8 @@
-import Avatar from '@/app/ui/components/Avatar';
-import Skills from '@/app/ui/components/Skills';
-import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
-import DeletionFlag from '@/app/ui/components/DeletionFlag';
-import EditIcon from '@mui/icons-material/Edit';
+import Avatar from "@/app/ui/components/Avatar";
+import Skills from "@/app/ui/components/Skills";
+import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
+import DeletionFlag from "@/app/ui/components/DeletionFlag";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   Card,
@@ -12,32 +12,32 @@ import {
   Link,
   Stack,
   Typography,
-} from '@mui/material';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import PillButton from '@/app/ui/components/PillButton';
-import { getJobSeekerEmployerView } from '@/app/lib/prisma';
-import { getResumeUrl } from '@/app/lib/services/azureBlobService';
-import { auth } from '@/auth';
+} from "@mui/material";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import PillButton from "@/app/ui/components/PillButton";
+import { getJobSeekerEmployerView } from "@/app/lib/prisma";
+import { getResumeUrl } from "@/app/lib/services/azureBlobService";
+import { auth } from "@/auth";
 
 const monthNames = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 function formatUrl(url: string) {
-  if (!url) return '';
-  if (url == '') return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) {
+  if (!url) return "";
+  if (url == "") return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) {
     return url;
   }
   return `https://${url}`;
@@ -53,13 +53,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
   if (jobseeker?.video_url) {
     const parsedUrl = new URL(jobseeker?.video_url);
-    if (parsedUrl.hostname === 'youtu.be') {
+    if (parsedUrl.hostname === "youtu.be") {
       videoID = parsedUrl.pathname.slice(1);
     } else if (
-      parsedUrl.hostname === 'www.youtube.com' ||
-      parsedUrl.hostname === 'youtube.com'
+      parsedUrl.hostname === "www.youtube.com" ||
+      parsedUrl.hostname === "youtube.com"
     ) {
-      videoID = new URLSearchParams(parsedUrl.search).get('v') ?? '';
+      videoID = new URLSearchParams(parsedUrl.search).get("v") ?? "";
     }
   }
 
@@ -77,29 +77,29 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       <DeletionFlag deletionDate={undefined} />
       {isOwnProfile && (
         <Stack
-          direction={'row'}
+          direction={"row"}
           gap={2}
           sx={{
             mb: 2,
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'stretch',
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "stretch",
           }}
         >
           <PillButton
             disableElevation
-            href={'/services/jobseekers/dashboard'}
+            href={"/services/jobseekers/dashboard"}
             sx={{
-              backgroundColor: '#f6f6f6',
-              color: '#014260',
+              backgroundColor: "#f6f6f6",
+              color: "secondary.main",
             }}
           >
             Dashboard
           </PillButton>
           <Typography
             variant="h4"
-            sx={{ fontSize: '24px', textAlign: 'center', fontWeight: 400 }}
+            sx={{ fontSize: "24px", textAlign: "center", fontWeight: 400 }}
           >
             |
           </Typography>
@@ -107,23 +107,23 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         </Stack>
       )}
 
-      <Grid2 container gap={2} sx={{ mb: 2, justifyContent: 'center' }}>
+      <Grid2 container gap={2} sx={{ mb: 2, justifyContent: "center" }}>
         <Grid2>
           <Card variant="outlined">
             <Stack
               gap={2}
-              direction={'row'}
-              sx={{ padding: 2, alignItems: 'center' }}
+              direction={"row"}
+              sx={{ padding: 2, alignItems: "center" }}
             >
               <Avatar
                 imgsrc={jobseeker?.users.photo_url ?? undefined}
                 scale={1.5}
               ></Avatar>
-              <Stack direction={'column'}>
+              <Stack direction={"column"}>
                 {jobseeker?.users.first_name && (
                   <h1 className="text-2xl font-bold">
                     {jobseeker?.users.first_name +
-                      ' ' +
+                      " " +
                       jobseeker?.users.last_name}
                   </h1>
                 )}
@@ -131,13 +131,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <h2>
                   {jobseeker?.jobseeker_education[0]
                     ? jobseeker.jobseeker_education[0].eduProviders?.name +
-                      ' | ' +
+                      " | " +
                       jobseeker.jobseeker_education[0].degreeType +
-                      ' | ' +
+                      " | " +
                       (jobseeker?.jobseeker_education[0]?.program?.title
                         ? jobseeker.jobseeker_education[0].program.title
-                        : '')
-                    : ''}
+                        : "")
+                    : ""}
                 </h2>
                 <h2>{jobseeker?.current_grade_level}</h2>
               </Stack>
@@ -145,11 +145,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/introduction'}
+                  href={"/edit-profile/jobseeker/introduction"}
                 >
                   <EditIcon />
                 </Link>
@@ -166,7 +166,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
               allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
-              style={{ width: '100%', maxWidth: '600px' }}
+              style={{ width: "100%", maxWidth: "600px" }}
             ></iframe>
           )}
         </Grid2>
@@ -174,19 +174,19 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       <Container>
         <Stack gap={2} divider={<Divider orientation="horizontal" flexItem />}>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Introduction
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/introduction'}
+                  href={"/edit-profile/jobseeker/introduction"}
                 >
                   <EditIcon />
                 </Link>
@@ -195,19 +195,19 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             <Typography sx={{ pl: 2 }}>{jobseeker?.intro_headline}</Typography>
           </Box>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Preferences
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/preferences'}
+                  href={"/edit-profile/jobseeker/preferences"}
                 >
                   <EditIcon />
                 </Link>
@@ -220,19 +220,19 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             </Typography>
           </Box>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Skills
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/showcase'}
+                  href={"/edit-profile/jobseeker/showcase"}
                 >
                   <EditIcon />
                 </Link>
@@ -248,22 +248,22 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             </Box>
           </Box>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                Work Experience{' '}
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                Work Experience{" "}
                 {jobseeker?.years_work_exp
-                  ? '(' + jobseeker?.years_work_exp + 'Y)'
-                  : ''}
+                  ? "(" + jobseeker?.years_work_exp + "Y)"
+                  : ""}
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/work-experience'}
+                  href={"/edit-profile/jobseeker/work-experience"}
                 >
                   <EditIcon />
                 </Link>
@@ -274,7 +274,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <Box key={experience.workId}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                    sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
                   >
                     {experience.company} | {experience.jobTitle}
                   </Typography>
@@ -294,13 +294,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       />
                     </svg>
                     <Typography className="text-xs">
-                      {monthNames[new Date(experience.startDate).getMonth()]}{' '}
-                      {new Date(experience.startDate).getFullYear()} -{' '}
+                      {monthNames[new Date(experience.startDate).getMonth()]}{" "}
+                      {new Date(experience.startDate).getFullYear()} -{" "}
                       {experience.endDate
                         ? monthNames[new Date(experience.endDate).getMonth()] +
-                          ' ' +
+                          " " +
                           new Date(experience.endDate).getFullYear()
-                        : 'Present'}
+                        : "Present"}
                     </Typography>
                   </Stack>
                   <p>{experience.responsibilities}</p>
@@ -309,19 +309,19 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             </Stack>
           </Box>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Education
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/education'}
+                  href={"/edit-profile/jobseeker/education"}
                 >
                   <EditIcon />
                 </Link>
@@ -335,7 +335,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <Box key={education.id}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                    sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
                   >
                     {education.eduProviders.name}
                   </Typography>
@@ -358,9 +358,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       />
                     </svg>
                     <Typography className="text-xs">
-                      {monthNames[new Date(education.startDate).getMonth()]}{' '}
-                      {new Date(education.startDate).getFullYear()} -{' '}
-                      {monthNames[new Date(education.gradDate).getMonth()]}{' '}
+                      {monthNames[new Date(education.startDate).getMonth()]}{" "}
+                      {new Date(education.startDate).getFullYear()} -{" "}
+                      {monthNames[new Date(education.gradDate).getMonth()]}{" "}
                       {new Date(education.gradDate).getFullYear()}
                     </Typography>
                   </Stack>
@@ -369,19 +369,19 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             </Stack>
           </Box>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Projects
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/education'}
+                  href={"/edit-profile/jobseeker/education"}
                 >
                   <EditIcon />
                 </Link>
@@ -392,7 +392,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <Box key={experience.projectId}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                    sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
                   >
                     {experience.projTitle}
                   </Typography>
@@ -412,27 +412,27 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       />
                     </svg>
                     <Typography className="text-xs">
-                      {monthNames[new Date(experience.startDate).getMonth()]}{' '}
-                      {new Date(experience.startDate).getFullYear()} -{' '}
+                      {monthNames[new Date(experience.startDate).getMonth()]}{" "}
+                      {new Date(experience.startDate).getFullYear()} -{" "}
                       {experience.completionDate
                         ? monthNames[
                             new Date(experience.completionDate).getMonth()
                           ] +
-                          ' ' +
+                          " " +
                           new Date(experience.completionDate).getFullYear()
-                        : 'Present'}
+                        : "Present"}
                     </Typography>
                   </Stack>
                   {experience.repoUrl ? (
                     <Link
-                      sx={{ wordBreak: 'break-all' }}
+                      sx={{ wordBreak: "break-all" }}
                       target="_blank"
                       href={experience.repoUrl}
                     >
                       {experience.repoUrl}
                     </Link>
                   ) : (
-                    ''
+                    ""
                   )}
                   <p>{experience.problemSolvedDescription}</p>
                   <Skills
@@ -440,26 +440,26 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       (item: JobseekerSkillDTO) => item.skills,
                     )}
                     maxNumSkills={0}
-                    key={experience.projectId + 'skills'}
+                    key={experience.projectId + "skills"}
                   />
                 </Box>
               ))}
             </Stack>
           </Box>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Licenses &amp; Certifications
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/education'}
+                  href={"/edit-profile/jobseeker/education"}
                 >
                   <EditIcon />
                 </Link>
@@ -470,7 +470,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <Box key={certificate.certId}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                    sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
                   >
                     {certificate.name}
                   </Typography>
@@ -489,28 +489,28 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                         fill="#047089"
                       />
                     </svg>
-                    { certificate.issueDate && <Typography className="text-xs">
-                      {monthNames[certificate.issueDate.getMonth()]}{' '}
-                      {certificate.issueDate.getFullYear()} -{' '}
-                      {certificate.expiryDate
-                        ? monthNames[
-                        certificate.expiryDate.getMonth()
-                        ] +
-                        ' ' +
-                        certificate.expiryDate.getFullYear()
-                        : 'Present'}
-                    </Typography>}
+                    {certificate.issueDate && (
+                      <Typography className="text-xs">
+                        {monthNames[certificate.issueDate.getMonth()]}{" "}
+                        {certificate.issueDate.getFullYear()} -{" "}
+                        {certificate.expiryDate
+                          ? monthNames[certificate.expiryDate.getMonth()] +
+                            " " +
+                            certificate.expiryDate.getFullYear()
+                          : "Present"}
+                      </Typography>
+                    )}
                   </Stack>
                   {certificate.credentialUrl ? (
                     <Link
-                      sx={{ wordBreak: 'break-all' }}
+                      sx={{ wordBreak: "break-all" }}
                       target="_blank"
                       href={certificate.credentialUrl}
                     >
                       {certificate.credentialUrl}
                     </Link>
                   ) : (
-                    ''
+                    ""
                   )}
                   <p>{certificate.description}</p>
                 </Box>
@@ -518,19 +518,19 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             </Stack>
           </Box>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Resume
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/showcase'}
+                  href={"/edit-profile/jobseeker/showcase"}
                 >
                   <EditIcon />
                 </Link>
@@ -541,23 +541,23 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 View Resume
               </Link>
             ) : (
-              ''
+              ""
             )}
           </Box>
           <Box>
-            <Stack gap={2} direction={'row'}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Stack gap={2} direction={"row"}>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Portfolio
               </Typography>
               {isOwnProfile && (
                 <Link
                   sx={{
                     opacity: 0.65,
-                    '&:hover': {
+                    "&:hover": {
                       opacity: 1,
                     },
                   }}
-                  href={'/edit-profile/jobseeker/showcase'}
+                  href={"/edit-profile/jobseeker/showcase"}
                 >
                   <EditIcon />
                 </Link>
@@ -572,24 +572,24 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 {jobseeker?.portfolio_url}
               </Link>
             ) : (
-              ''
+              ""
             )}
           </Box>
           {(jobseeker?.linkedin_url || isOwnProfile) && (
             <Box>
-              <Stack gap={2} direction={'row'}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+              <Stack gap={2} direction={"row"}>
+                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                   LinkedIn
                 </Typography>
                 {isOwnProfile && (
                   <Link
                     sx={{
                       opacity: 0.65,
-                      '&:hover': {
+                      "&:hover": {
                         opacity: 1,
                       },
                     }}
-                    href={'/edit-profile/jobseeker/showcase'}
+                    href={"/edit-profile/jobseeker/showcase"}
                   >
                     <EditIcon />
                   </Link>
@@ -599,17 +599,17 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <Link
                   sx={{ pl: 2 }}
                   href={
-                    'https://www.linkedin.com' +
+                    "https://www.linkedin.com" +
                     jobseeker.linkedin_url
                       .toLowerCase()
-                      .split('linkedin.com')[1]
+                      .split("linkedin.com")[1]
                   }
                   target="_blank"
                 >
-                  {'https://www.linkedin.com' +
+                  {"https://www.linkedin.com" +
                     jobseeker.linkedin_url
                       .toLowerCase()
-                      .split('linkedin.com')[1]}
+                      .split("linkedin.com")[1]}
                 </Link>
               )}
             </Box>

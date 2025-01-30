@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 function SkipButton() {
   const currentPath = usePathname(); //returns full path ie: /edit-profile/jobseeker/introduction
@@ -10,29 +10,29 @@ function SkipButton() {
     return null;
   }
   let pageSequence: string[] = [];
-  let userPrefix: string = '';
-  if (currentPath.includes('/edit-profile/jobseeker')) {
+  let userPrefix: string = "";
+  if (currentPath.includes("/edit-profile/jobseeker")) {
     pageSequence = [
-      'introduction',
-      'preferences',
-      'showcase',
-      'education',
-      'work-experience',
-      'disclosures',
+      "introduction",
+      "preferences",
+      "showcase",
+      "education",
+      "work-experience",
+      "disclosures",
     ];
-    userPrefix = 'jobseeker';
-  } else if (currentPath.includes('/edit-profile/employer')) {
+    userPrefix = "jobseeker";
+  } else if (currentPath.includes("/edit-profile/employer")) {
     pageSequence = [
-      'personal',
+      "personal",
       // 'company',
       // 'about',
       // 'mission',
       // 'video',
-      'disclosures',
+      "disclosures",
     ];
-    userPrefix = 'employer';
+    userPrefix = "employer";
   }
-  const lastSegment = currentPath.split('/').pop() || ''; //returns last segment ie: introduction
+  const lastSegment = currentPath.split("/").pop() || ""; //returns last segment ie: introduction
   const currentIndex = pageSequence.indexOf(lastSegment);
 
   const nextPage =

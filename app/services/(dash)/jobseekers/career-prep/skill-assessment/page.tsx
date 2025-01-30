@@ -1,5 +1,5 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -23,8 +23,8 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-} from '@mui/material';
-import { useSession } from 'next-auth/react';
+} from "@mui/material";
+import { useSession } from "next-auth/react";
 import {
   AgreementLevel,
   AgreementLevelLabels,
@@ -34,12 +34,11 @@ import {
   SkillProficiencyLabels,
   CareerPrepPathways,
   TimeUntilCompletion,
-} from '@/app/lib/admin/careerPrep';
-import { useRouter } from 'next/navigation';
-import '@/app/ui/profile-creation.css';
-import Confetti from '@/app/ui/components/Confetti';
-import PillButton from '@/app/ui/components/PillButton';
-import { JSX } from 'react/jsx-runtime';
+} from "@/app/lib/admin/careerPrep";
+import "@/app/ui/profile-creation.css";
+import Confetti from "@/app/ui/components/Confetti";
+import PillButton from "@/app/ui/components/PillButton";
+import { JSX } from "react/jsx-runtime";
 
 interface EvaluationTableProps {
   questions: {
@@ -68,7 +67,7 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({
     questions.forEach((question) => {
       const currentValue = getCurrentValue(question.id);
       if (!currentValue) {
-        handleResponseChange(question.id, '3');
+        handleResponseChange(question.id, "3");
       }
     });
   }, []);
@@ -85,13 +84,13 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({
   };
 
   const getCurrentValue = (questionId: string): string => {
-    const keys = section.split('.');
+    const keys = section.split(".");
     let current: any = formData;
     for (const key of keys) {
-      if (current[key] === undefined) return '';
+      if (current[key] === undefined) return "";
       current = current[key];
     }
-    return String(current[questionId] || '');
+    return String(current[questionId] || "");
   };
 
   return (
@@ -99,7 +98,7 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({
       <Table aria-label="evaluation table">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ width: '30%' }}></TableCell>
+            <TableCell sx={{ width: "30%" }}></TableCell>
             {levels.map((level) => (
               <TableCell key={level.value} align="center">
                 {level.label}
@@ -142,14 +141,13 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({
 };
 
 export default function Page() {
-  const { data: session, update, status } = useSession();
-  const router = useRouter();
+  const { data: session, status } = useSession();
   const [successfullySubmitted, setSuccessfullySubmitted] = useState<boolean>();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [formData, setFormData] = useState<CareerPrepSkillsAssessmentDTO>({
-    jobseekerId: '',
+    jobseekerId: "",
     basicInformation: {
-      pronouns: '',
+      pronouns: "",
       expectedEduCompletion: TimeUntilCompletion.NA,
     },
     workExperienceAndMaterials: {
@@ -208,17 +206,17 @@ export default function Page() {
   });
 
   const steps: string[] = [
-    'Basic Information',
-    'Work Experience',
-    'Technical Skills',
-    'Durable Skills',
-    'Professional Branding and Job Market Readiness',
+    "Basic Information",
+    "Work Experience",
+    "Technical Skills",
+    "Durable Skills",
+    "Professional Branding and Job Market Readiness",
   ];
 
   useEffect(() => {
     const initializeFormFields = async () => {
       if (!session?.user.id) return;
-      if (status === 'authenticated') {
+      if (status === "authenticated") {
         const { id, jobseekerId } = session.user;
         try {
           if (!jobseekerId) return;
@@ -246,7 +244,9 @@ export default function Page() {
             });
           }
           setFormData({ ...formData, jobseekerId: jobseekerId });
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
     initializeFormFields();
@@ -254,12 +254,12 @@ export default function Page() {
 
   const handleNext = (): void => {
     setActiveStep((prevStep) => prevStep + 1);
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const handleBack = (): void => {
     setActiveStep((prevStep) => prevStep - 1);
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const handleInputChange = (
@@ -269,13 +269,13 @@ export default function Page() {
   ) => {
     const { name, value } = event.target;
     const parsedValue =
-      event.target instanceof HTMLInputElement && event.target.type === 'radio'
-        ? value === 'true'
+      event.target instanceof HTMLInputElement && event.target.type === "radio"
+        ? value === "true"
         : value;
 
     setFormData((prevData) => {
-      const keys = name.split('.'); // Split the name by dot notation
-      let updatedData = { ...prevData };
+      const keys = name.split("."); // Split the name by dot notation
+      const updatedData = { ...prevData };
 
       // Recursively update nested properties
       keys.reduce((acc: any, key, index) => {
@@ -296,8 +296,8 @@ export default function Page() {
     const parsedValue = Number(value);
 
     setFormData((prevData) => {
-      const keys = name.split('.');
-      let updatedData = { ...prevData };
+      const keys = name.split(".");
+      const updatedData = { ...prevData };
 
       keys.reduce((acc: any, key, index) => {
         if (index === keys.length - 1) {
@@ -456,52 +456,52 @@ export default function Page() {
           <EvaluationTable
             questions={[
               {
-                id: 'networking',
-                text: 'Networking: Understanding of network protocols (TCP/IP, HTTP, DNS), network topologies, and network security concepts (firewalls, intrusion detection systems, VPNs).',
+                id: "networking",
+                text: "Networking: Understanding of network protocols (TCP/IP, HTTP, DNS), network topologies, and network security concepts (firewalls, intrusion detection systems, VPNs).",
               },
               {
-                id: 'projectManagement',
-                text: 'Project Management: Planning, organizing, and executing cybersecurity projects',
+                id: "projectManagement",
+                text: "Project Management: Planning, organizing, and executing cybersecurity projects",
               },
               {
-                id: 'securityTools',
-                text: 'Security Tools and Technologies: Familiarity with various security tools (e.g., SIEM, EDR, vulnerability scanners, malware analysis tools).',
+                id: "securityTools",
+                text: "Security Tools and Technologies: Familiarity with various security tools (e.g., SIEM, EDR, vulnerability scanners, malware analysis tools).",
               },
               {
-                id: 'operatingSystems',
-                text: 'Operating Systems: Proficiency in Windows, Linux, and macOS, including system administration, security hardening, and troubleshooting.',
+                id: "operatingSystems",
+                text: "Operating Systems: Proficiency in Windows, Linux, and macOS, including system administration, security hardening, and troubleshooting.",
               },
               {
-                id: 'programming',
-                text: 'Programming: Knowledge of programming languages like Python, C++, or Java, as well as scripting languages like PowerShell or Bash.',
+                id: "programming",
+                text: "Programming: Knowledge of programming languages like Python, C++, or Java, as well as scripting languages like PowerShell or Bash.",
               },
               {
-                id: 'cryptography',
-                text: 'Cryptography: Understanding of encryption algorithms (AES, RSA, etc.), hashing functions (SHA, MD5), and key management.',
+                id: "cryptography",
+                text: "Cryptography: Understanding of encryption algorithms (AES, RSA, etc.), hashing functions (SHA, MD5), and key management.",
               },
               {
-                id: 'cloudSecurity',
-                text: 'Cloud Security: Familiarity with cloud security best practices, cloud access security brokers (CASBs), and cloud infrastructure security.',
+                id: "cloudSecurity",
+                text: "Cloud Security: Familiarity with cloud security best practices, cloud access security brokers (CASBs), and cloud infrastructure security.",
               },
               {
-                id: 'incidentResponse',
-                text: 'Incident Response: Ability to handle security incidents, including identifying threats, containing damage, and implementing corrective measures.',
+                id: "incidentResponse",
+                text: "Incident Response: Ability to handle security incidents, including identifying threats, containing damage, and implementing corrective measures.",
               },
               {
-                id: 'dataSecurity',
-                text: 'Data Security: Understanding of data protection regulations (e.g., GDPR, CCPA), data loss prevention (DLP) measures, and data encryption.',
+                id: "dataSecurity",
+                text: "Data Security: Understanding of data protection regulations (e.g., GDPR, CCPA), data loss prevention (DLP) measures, and data encryption.",
               },
               {
-                id: 'technicalSupport',
-                text: 'Technical Support: Providing assistance to users with cybersecurity-related issues',
+                id: "technicalSupport",
+                text: "Technical Support: Providing assistance to users with cybersecurity-related issues",
               },
               {
-                id: 'computationalThinking',
-                text: 'Computational Thinking: Demonstrate computational thinking to break down a problem in smaller components as part of solution design or debugging.',
+                id: "computationalThinking",
+                text: "Computational Thinking: Demonstrate computational thinking to break down a problem in smaller components as part of solution design or debugging.",
               },
               {
-                id: 'apiUsage',
-                text: 'GET/POST requests: Use a RESTful API to consume and edit data via GET/POST requests.',
+                id: "apiUsage",
+                text: "GET/POST requests: Use a RESTful API to consume and edit data via GET/POST requests.",
               },
             ]}
             section="technicalSelfAssessment.skillRatings.cybersecurity"
@@ -515,64 +515,64 @@ export default function Page() {
           <EvaluationTable
             questions={[
               {
-                id: 'dataAnalysis',
-                text: 'Data Analysis: Extracting insights and information from data',
+                id: "dataAnalysis",
+                text: "Data Analysis: Extracting insights and information from data",
               },
               {
-                id: 'sqlProgramming',
-                text: 'SQL (Programming Language): Writing SQL queries to interact with databases',
+                id: "sqlProgramming",
+                text: "SQL (Programming Language): Writing SQL queries to interact with databases",
               },
               {
-                id: 'pythonPackages',
-                text: 'Python Packages: Utilizing Python packages like Plotly, Seaborn, Pandas, NumPy, and Scikit-learn for data analysis, visualization, and machine learning.',
+                id: "pythonPackages",
+                text: "Python Packages: Utilizing Python packages like Plotly, Seaborn, Pandas, NumPy, and Scikit-learn for data analysis, visualization, and machine learning.",
               },
               {
-                id: 'dataScience',
-                text: 'Data Science: Applying statistical and machine learning techniques to data',
+                id: "dataScience",
+                text: "Data Science: Applying statistical and machine learning techniques to data",
               },
               {
-                id: 'dataEngineering',
-                text: 'Data Engineering: Designing and building data pipelines and infrastructure',
+                id: "dataEngineering",
+                text: "Data Engineering: Designing and building data pipelines and infrastructure",
               },
               {
-                id: 'tableau',
-                text: 'Tableau (Business Intelligence Software): Creating interactive data visualizations',
+                id: "tableau",
+                text: "Tableau (Business Intelligence Software): Creating interactive data visualizations",
               },
               {
-                id: 'machineLearning',
-                text: 'Machine Learning: Developing and implementing machine learning models',
+                id: "machineLearning",
+                text: "Machine Learning: Developing and implementing machine learning models",
               },
               {
-                id: 'rProgramming',
-                text: 'R (Programming Language): Using R for statistical analysis and data visualization',
+                id: "rProgramming",
+                text: "R (Programming Language): Using R for statistical analysis and data visualization",
               },
               {
-                id: 'projectManagement',
-                text: 'Project Management: Planning, organizing, and executing data analytics projects',
+                id: "projectManagement",
+                text: "Project Management: Planning, organizing, and executing data analytics projects",
               },
               {
-                id: 'dataVisualization',
-                text: 'Visualizing Data: Creating interactive dashboards to tell a story for data-driven decision-making. ',
+                id: "dataVisualization",
+                text: "Visualizing Data: Creating interactive dashboards to tell a story for data-driven decision-making. ",
               },
               {
-                id: 'dataStructures',
-                text: 'Data Structures: Implement data structures including arrays, stacks, queues, linked lists, trees, graphs, and hash tables. ',
+                id: "dataStructures",
+                text: "Data Structures: Implement data structures including arrays, stacks, queues, linked lists, trees, graphs, and hash tables. ",
               },
               {
-                id: 'bigOComplexity',
-                text: 'Big O: Calculate space and time complexity (big O) for a given program. ',
+                id: "bigOComplexity",
+                text: "Big O: Calculate space and time complexity (big O) for a given program. ",
               },
               {
-                id: 'sortingAlgorithms',
-                text: 'Sorting Algorithms: Implement sorting algorithms including selection, bubble, insertion, merge, and shell.',
+                id: "sortingAlgorithms",
+                text: "Sorting Algorithms: Implement sorting algorithms including selection, bubble, insertion, merge, and shell.",
               },
               {
-                id: 'databases',
-                text: 'Relational and Non-relational Databases: Compare usecases between/for a relational and non-relational database.',
+                id: "databases",
+                text: "Relational and Non-relational Databases: Compare usecases between/for a relational and non-relational database.",
               },
               {
-                id: 'computationalThinking',
-                text: 'Computational Thinking: Demonstrate computational thinking to break down a problem in smaller components as part of solution design or debugging.',
+                id: "computationalThinking",
+                text: "Computational Thinking: Demonstrate computational thinking to break down a problem in smaller components as part of solution design or debugging.",
               },
             ]}
             section="technicalSelfAssessment.skillRatings.dataAnalytics"
@@ -586,64 +586,64 @@ export default function Page() {
           <EvaluationTable
             questions={[
               {
-                id: 'techSupport',
-                text: 'Technical Support: Providing assistance to users with hardware, software, and network issues',
+                id: "techSupport",
+                text: "Technical Support: Providing assistance to users with hardware, software, and network issues",
               },
               {
-                id: 'activeDirectory',
-                text: 'Active Directory: Managing user accounts, groups, and permissions in a Windows domain environment',
+                id: "activeDirectory",
+                text: "Active Directory: Managing user accounts, groups, and permissions in a Windows domain environment",
               },
               {
-                id: 'projectManagement',
-                text: 'Project Management: Planning, organizing, and executing IT projects',
+                id: "projectManagement",
+                text: "Project Management: Planning, organizing, and executing IT projects",
               },
               {
-                id: 'helpDeskSupport',
-                text: 'Help Desk Support: Providing first-line technical support to users',
+                id: "helpDeskSupport",
+                text: "Help Desk Support: Providing first-line technical support to users",
               },
               {
-                id: 'windowsServers',
-                text: 'Windows Servers: Administering Windows Server operating systems',
+                id: "windowsServers",
+                text: "Windows Servers: Administering Windows Server operating systems",
               },
               {
-                id: 'sqlProgramming',
-                text: 'SQL (Programming Language): Writing SQL queries to interact with databases',
+                id: "sqlProgramming",
+                text: "SQL (Programming Language): Writing SQL queries to interact with databases",
               },
               {
-                id: 'computerHardware',
-                text: 'Computer Hardware: Understanding and troubleshooting computer hardware components',
+                id: "computerHardware",
+                text: "Computer Hardware: Understanding and troubleshooting computer hardware components",
               },
               {
-                id: 'operatingSystems',
-                text: 'Operating Systems: Understanding and troubleshooting various operating systems (e.g., Windows, macOS, Linux)',
+                id: "operatingSystems",
+                text: "Operating Systems: Understanding and troubleshooting various operating systems (e.g., Windows, macOS, Linux)",
               },
               {
-                id: 'systemAdmin',
-                text: 'System Administration: Managing and maintaining IT systems and infrastructure',
+                id: "systemAdmin",
+                text: "System Administration: Managing and maintaining IT systems and infrastructure",
               },
               {
-                id: 'networkAdmin',
-                text: 'Network Administration: Networking skills (e.g., configuring routers, switches, and firewalls)',
+                id: "networkAdmin",
+                text: "Network Administration: Networking skills (e.g., configuring routers, switches, and firewalls)",
               },
               {
-                id: 'virtualization',
-                text: 'Virtualization/Cloud Technologies: Managing and deploying virtual environments (e.g., VMware, Hyper-V) and cloud platforms (e.g., AWS, Azure).',
+                id: "virtualization",
+                text: "Virtualization/Cloud Technologies: Managing and deploying virtual environments (e.g., VMware, Hyper-V) and cloud platforms (e.g., AWS, Azure).",
               },
               {
-                id: 'coreCloudServices',
-                text: 'Core Cloud Services: Compare different core cloud services and explain how they are used, specifically relating to compute, storage, networking, database, security (IAM).',
+                id: "coreCloudServices",
+                text: "Core Cloud Services: Compare different core cloud services and explain how they are used, specifically relating to compute, storage, networking, database, security (IAM).",
               },
               {
-                id: 'apiUsage',
-                text: 'GET/POST Requests: Use a RESTful API to consume and edit data via GET/POST requests.',
+                id: "apiUsage",
+                text: "GET/POST Requests: Use a RESTful API to consume and edit data via GET/POST requests.",
               },
               {
-                id: 'httpResponseCodes',
-                text: 'HTTP Response: Explain the different HTTP response status codes.',
+                id: "httpResponseCodes",
+                text: "HTTP Response: Explain the different HTTP response status codes.",
               },
               {
-                id: 'computationalThinking',
-                text: 'Computational Thinking: Demonstrate computational thinking to break down a problem in smaller components as part of solution design or debugging.',
+                id: "computationalThinking",
+                text: "Computational Thinking: Demonstrate computational thinking to break down a problem in smaller components as part of solution design or debugging.",
               },
             ]}
             section="technicalSelfAssessment.skillRatings.itAndCloudComputing"
@@ -657,64 +657,64 @@ export default function Page() {
           <EvaluationTable
             questions={[
               {
-                id: 'softwareEngineering',
-                text: 'Software Engineering: Applying engineering principles to software development',
+                id: "softwareEngineering",
+                text: "Software Engineering: Applying engineering principles to software development",
               },
               {
-                id: 'softwareDevelopmentLifecycle',
-                text: 'Software Development Lifecycle: Understanding of the software development lifecycle, including design, development, testing, and maintenance.',
+                id: "softwareDevelopmentLifecycle",
+                text: "Software Development Lifecycle: Understanding of the software development lifecycle, including design, development, testing, and maintenance.",
               },
               {
-                id: 'programmingLanguages',
-                text: 'Programming Languages: Using programming languages like Python, Java, C++, JavaScript, and C#',
+                id: "programmingLanguages",
+                text: "Programming Languages: Using programming languages like Python, Java, C++, JavaScript, and C#",
               },
               {
-                id: 'dataStructuresAndAlgorithms',
-                text: 'Data Structures and Algorithms: Understanding of fundamental data structures (arrays, linked lists, stacks, queues, trees, graphs) and algorithms (sorting, searching, dynamic programming).  ',
+                id: "dataStructuresAndAlgorithms",
+                text: "Data Structures and Algorithms: Understanding of fundamental data structures (arrays, linked lists, stacks, queues, trees, graphs) and algorithms (sorting, searching, dynamic programming).  ",
               },
               {
-                id: 'softwareArchitecture',
-                text: 'Software Architecture: Knowledge of design principles and patterns (e.g., MVC, Factory, Singleton) to create scalable, maintainable, and efficient systems.',
+                id: "softwareArchitecture",
+                text: "Software Architecture: Knowledge of design principles and patterns (e.g., MVC, Factory, Singleton) to create scalable, maintainable, and efficient systems.",
               },
               {
-                id: 'versionControl',
-                text: 'Version Control: Collaborate with a team using advanced git commands including branch, fetch, rebase, stash, revert, config.',
+                id: "versionControl",
+                text: "Version Control: Collaborate with a team using advanced git commands including branch, fetch, rebase, stash, revert, config.",
               },
               {
-                id: 'databaseManagement',
-                text: 'Database Management: Understanding of relational databases (SQL) and NoSQL databases.',
+                id: "databaseManagement",
+                text: "Database Management: Understanding of relational databases (SQL) and NoSQL databases.",
               },
               {
-                id: 'devOps',
-                text: 'DevOps: Knowledge of DevOps practices for automating software development, testing, and deployment.',
+                id: "devOps",
+                text: "DevOps: Knowledge of DevOps practices for automating software development, testing, and deployment.",
               },
               {
-                id: 'cloudComputing',
-                text: 'Cloud Computing: Familiarity with cloud platforms (AWS, Azure, GCP) and their services for software development.',
+                id: "cloudComputing",
+                text: "Cloud Computing: Familiarity with cloud platforms (AWS, Azure, GCP) and their services for software development.",
               },
               {
-                id: 'conceptualSystemsThinking',
-                text: 'Conceptual Systems Thinking: Grasping how different components of a system interact and contribute to the overall functionality, enabling effective design and troubleshooting. ',
+                id: "conceptualSystemsThinking",
+                text: "Conceptual Systems Thinking: Grasping how different components of a system interact and contribute to the overall functionality, enabling effective design and troubleshooting. ",
               },
               {
-                id: 'problemSolving',
-                text: 'Problem Solving: Identifying, analyzing, and resolving complex issues in software development, ensuring robust and effective solutions. ',
+                id: "problemSolving",
+                text: "Problem Solving: Identifying, analyzing, and resolving complex issues in software development, ensuring robust and effective solutions. ",
               },
               {
-                id: 'fundamentalCodingConcepts',
-                text: 'Fundamental coding concepts: Data structures, conditionals, loops, variables, functions, and/or object oriented principles.',
+                id: "fundamentalCodingConcepts",
+                text: "Fundamental coding concepts: Data structures, conditionals, loops, variables, functions, and/or object oriented principles.",
               },
               {
-                id: 'debugging',
-                text: 'Debugging: Utilize debugger and IDE tools to automate issue resolution and help triangulate root cause. ',
+                id: "debugging",
+                text: "Debugging: Utilize debugger and IDE tools to automate issue resolution and help triangulate root cause. ",
               },
               {
-                id: 'computationalThinking',
-                text: 'Computational Thinking: Demonstrate computational thinking to break down a problem in smaller components as part of solution design or debugging.',
+                id: "computationalThinking",
+                text: "Computational Thinking: Demonstrate computational thinking to break down a problem in smaller components as part of solution design or debugging.",
               },
               {
-                id: 'softwareOptimization',
-                text: 'Software Optimization: Ability to optimize software for performance, speed, and scalability.',
+                id: "softwareOptimization",
+                text: "Software Optimization: Ability to optimize software for performance, speed, and scalability.",
               },
             ]}
             section="technicalSelfAssessment.skillRatings.softwareDevelopment"
@@ -750,80 +750,80 @@ export default function Page() {
           <EvaluationTable
             questions={[
               {
-                id: 'emotionManagement',
-                text: 'Understanding and managing my own emotions.',
+                id: "emotionManagement",
+                text: "Understanding and managing my own emotions.",
               },
               {
-                id: 'empathy',
-                text: 'Empathizing with and understanding the emotions of others.',
+                id: "empathy",
+                text: "Empathizing with and understanding the emotions of others.",
               },
               {
-                id: 'goalSetting',
-                text: 'Setting and achieving goals effectively.',
+                id: "goalSetting",
+                text: "Setting and achieving goals effectively.",
               },
               {
-                id: 'timeManagement',
-                text: 'Managing my time efficiently and prioritizing tasks.',
+                id: "timeManagement",
+                text: "Managing my time efficiently and prioritizing tasks.",
               },
               {
-                id: 'adaptability',
-                text: 'Learning from my mistakes and adapting to new situations.',
+                id: "adaptability",
+                text: "Learning from my mistakes and adapting to new situations.",
               },
               {
-                id: 'criticalThinking',
-                text: 'Thinking critically and solving problems effectively.',
+                id: "criticalThinking",
+                text: "Thinking critically and solving problems effectively.",
               },
               {
-                id: 'creativity',
-                text: 'Generating new and innovative ideas.',
+                id: "creativity",
+                text: "Generating new and innovative ideas.",
               },
               {
-                id: 'resilience',
-                text: 'Persisting through challenges and setbacks.',
+                id: "resilience",
+                text: "Persisting through challenges and setbacks.",
               },
               {
-                id: 'communication',
-                text: 'Communicating clearly and effectively, both verbally and in writing.',
+                id: "communication",
+                text: "Communicating clearly and effectively, both verbally and in writing.",
               },
               {
-                id: 'activeListening',
-                text: 'Actively listening to others and understanding their perspectives.',
+                id: "activeListening",
+                text: "Actively listening to others and understanding their perspectives.",
               },
               {
-                id: 'conflictResolution',
-                text: 'Resolving conflicts peacefully and constructively.',
+                id: "conflictResolution",
+                text: "Resolving conflicts peacefully and constructively.",
               },
               {
-                id: 'nonverbalCommunication',
-                text: 'Using nonverbal communication effectively to convey my message.',
+                id: "nonverbalCommunication",
+                text: "Using nonverbal communication effectively to convey my message.",
               },
               {
-                id: 'teamwork',
-                text: 'Working effectively as part of a team and collaborating with others.',
+                id: "teamwork",
+                text: "Working effectively as part of a team and collaborating with others.",
               },
               {
-                id: 'trustBuilding',
-                text: 'Building trust and rapport with others.',
+                id: "trustBuilding",
+                text: "Building trust and rapport with others.",
               },
               {
-                id: 'leadership',
-                text: 'Taking on leadership roles when appropriate and following the lead of others when necessary.',
+                id: "leadership",
+                text: "Taking on leadership roles when appropriate and following the lead of others when necessary.",
               },
               {
-                id: 'perspectiveTaking',
-                text: 'Understanding and appreciating the perspectives of others, even when they differ from my own.',
+                id: "perspectiveTaking",
+                text: "Understanding and appreciating the perspectives of others, even when they differ from my own.",
               },
               {
-                id: 'culturalAwareness',
-                text: 'Being aware of cultural differences and adapting my communication style accordingly.',
+                id: "culturalAwareness",
+                text: "Being aware of cultural differences and adapting my communication style accordingly.",
               },
               {
-                id: 'relationshipBuilding',
-                text: 'Building and maintaining strong relationships with others.',
+                id: "relationshipBuilding",
+                text: "Building and maintaining strong relationships with others.",
               },
               {
-                id: 'documentationSkills',
-                text: 'Creating clear and meaningful documentation or presentations to clearly communicate an idea.',
+                id: "documentationSkills",
+                text: "Creating clear and meaningful documentation or presentations to clearly communicate an idea.",
               },
             ]}
             section="durableSkills"
@@ -852,72 +852,72 @@ export default function Page() {
           <EvaluationTable
             questions={[
               {
-                id: 'personalBrand',
-                text: 'I have a clear and consistent personal brand that reflects my skills, values, and career goals.',
+                id: "personalBrand",
+                text: "I have a clear and consistent personal brand that reflects my skills, values, and career goals.",
               },
               {
-                id: 'onlinePresence',
-                text: 'I manage my online presence effectively, including my social media an networking profiles.',
+                id: "onlinePresence",
+                text: "I manage my online presence effectively, including my social media an networking profiles.",
               },
               {
-                id: 'elevatorPitch',
-                text: 'I can deliver a concise and compelling elevator pitch that highlights my skills and career goals.',
+                id: "elevatorPitch",
+                text: "I can deliver a concise and compelling elevator pitch that highlights my skills and career goals.",
               },
               {
-                id: 'resumeEffectiveness',
-                text: 'I have a resume that effectively showcases my skills, experiences, and achievements.',
+                id: "resumeEffectiveness",
+                text: "I have a resume that effectively showcases my skills, experiences, and achievements.",
               },
               {
-                id: 'coverLetterEffectiveness',
-                text: 'I have a cover letter template and am successful at tailoring it to each job application to highlight my relevant qualifications.',
+                id: "coverLetterEffectiveness",
+                text: "I have a cover letter template and am successful at tailoring it to each job application to highlight my relevant qualifications.",
               },
               {
-                id: 'interviewExperience',
-                text: 'I have experience with different types of interviews, including technical, behavioral, virtual, and in-person interviews.',
+                id: "interviewExperience",
+                text: "I have experience with different types of interviews, including technical, behavioral, virtual, and in-person interviews.",
               },
               {
-                id: 'responseTechnique',
-                text: 'I am familiar with and confident in my ability to use effective response techniques to answer interview questions.',
+                id: "responseTechnique",
+                text: "I am familiar with and confident in my ability to use effective response techniques to answer interview questions.",
               },
               {
-                id: 'followUpImportance',
-                text: 'I understand the importance of following up after an interview and can effectively do so.',
+                id: "followUpImportance",
+                text: "I understand the importance of following up after an interview and can effectively do so.",
               },
               {
-                id: 'onlineNetworking',
-                text: 'I am familiar with best practices for using online platforms to connect with potential employers and industry professionals.',
+                id: "onlineNetworking",
+                text: "I am familiar with best practices for using online platforms to connect with potential employers and industry professionals.",
               },
               {
-                id: 'eventNetworking',
-                text: 'I am confident attending industry events and career fairs to expand my professional network.',
+                id: "eventNetworking",
+                text: "I am confident attending industry events and career fairs to expand my professional network.",
               },
               {
-                id: 'relationshipManagement',
-                text: 'I can successfully maintain and nurture professional relationships over time.',
+                id: "relationshipManagement",
+                text: "I can successfully maintain and nurture professional relationships over time.",
               },
               {
-                id: 'jobSearchStrategy',
-                text: 'I am able to effectively search for job opportunities and tailor my job search strategy to my career goals.',
+                id: "jobSearchStrategy",
+                text: "I am able to effectively search for job opportunities and tailor my job search strategy to my career goals.",
               },
               {
-                id: 'materialDistribution',
-                text: 'I am familiar with best practices for distributing professional materials to potential employers.',
+                id: "materialDistribution",
+                text: "I am familiar with best practices for distributing professional materials to potential employers.",
               },
               {
-                id: 'networkingTechniques',
-                text: 'I am able to use effective networking techniques, such as informational interviewing and active listening. ',
+                id: "networkingTechniques",
+                text: "I am able to use effective networking techniques, such as informational interviewing and active listening. ",
               },
               {
-                id: 'onboardingBestPractices',
-                text: 'I am familiar with best practices for onboarding and can effectively adapt to a new role.',
+                id: "onboardingBestPractices",
+                text: "I am familiar with best practices for onboarding and can effectively adapt to a new role.",
               },
               {
-                id: 'developmentPlan',
-                text: 'I have experience with creating and implementing a personal development plan in a new role to enhance my skills and career prospects.',
+                id: "developmentPlan",
+                text: "I have experience with creating and implementing a personal development plan in a new role to enhance my skills and career prospects.",
               },
               {
-                id: 'mentorship',
-                text: 'I can confidently seek mentorship and coaching within my networks to support my career development.',
+                id: "mentorship",
+                text: "I can confidently seek mentorship and coaching within my networks to support my career development.",
               },
             ]}
             section="professionalBrandingAndJobMarketReadiness"
@@ -935,20 +935,19 @@ export default function Page() {
   ): Promise<void> => {
     e.preventDefault();
     const response = await fetch(
-      '/api/jobseekers/career-prep/skill-assessment/submit/',
+      "/api/jobseekers/career-prep/skill-assessment/submit/",
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       },
     );
     if (response.ok) {
       setSuccessfullySubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.scrollTo({ top: 0, behavior: "instant" });
     } else {
-      const errorData = await response.json();
       setSuccessfullySubmitted(false);
     }
   };
@@ -966,25 +965,25 @@ export default function Page() {
       case 4:
         return renderProfessionalBrandingAndJobMarketReadiness();
       default:
-        throw new Error('Unknown step');
+        throw new Error("Unknown step");
     }
   };
 
   return (
     <>
-      {' '}
+      {" "}
       {successfullySubmitted ? (
         <>
           <Box className="flex justify-center">
             <Box
-              style={{ height: '100vh' }}
+              style={{ height: "100vh" }}
               className="profile-form-section main-content"
             >
               <Confetti />
               <h1>Next Steps</h1>
               <Typography sx={{ pt: 3, mb: 3 }}>
                 {
-                  'Thank you for completing the skills assessment! A dedicated Career Navigator will review your results and create a personalized Professional Development Plan tailored to your needs. You’ll receive an email notification when your plan is ready.'
+                  "Thank you for completing the skills assessment! A dedicated Career Navigator will review your results and create a personalized Professional Development Plan tailored to your needs. You’ll receive an email notification when your plan is ready."
                 }
               </Typography>
               {/*<p className="subtitle-congrats">{`Thank you again for your participation!`}</p>*/}
@@ -997,7 +996,7 @@ export default function Page() {
           </Box>
         </>
       ) : (
-        <Paper elevation={0} sx={{ p: 3, maxWidth: '75%', mx: 'auto', my: 4 }}>
+        <Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: "auto", my: 4 }}>
           <Typography variant="h4" align="center" sx={{ mb: 4 }}>
             Career Prep Skills Assessment
           </Typography>
@@ -1020,7 +1019,7 @@ export default function Page() {
             {getStepContent(activeStep)}
 
             <Box
-              sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}
+              sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}
             >
               <PillButton disabled={activeStep === 0} onClick={handleBack}>
                 Back

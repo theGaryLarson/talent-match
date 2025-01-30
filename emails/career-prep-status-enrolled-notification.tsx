@@ -9,8 +9,8 @@ import {
   Preview,
   Section,
   Text,
-} from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
+} from "@react-email/components";
+import { Tailwind } from "@react-email/tailwind";
 
 //import { AppInfo } from '@/constants/app-info';
 //import { Routes } from '@/constants/routes';
@@ -21,9 +21,7 @@ export type NotificationData = {
   name: string;
 };
 
-export const CPStatusEnrolledNotification = ({
-  name,
-}: NotificationData) => (
+export const CPStatusEnrolledNotification = ({ name }: NotificationData) => (
   <Html>
     <Head />
     <Preview>You’re Officially Enrolled!</Preview>

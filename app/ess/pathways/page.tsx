@@ -17,13 +17,11 @@ export default async function Page() {
           Discover Pathways
         </Typography>
         <Typography variant="body1" maxWidth="sm">
-          A pathway may have several occupations associated with it. To start, you can select a pathway that sounds interesting to you.
+          A pathway may have several occupations associated with it. To start,
+          you can select a pathway that sounds interesting to you.
         </Typography>
       </Box>
-      <Grid2
-        container
-        spacing={4}
-      >
+      <Grid2 container spacing={4}>
         <Suspense fallback={<CategoryCardSkeleton />}>
           <Pathways />
         </Suspense>

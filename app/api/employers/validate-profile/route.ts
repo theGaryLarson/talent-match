@@ -1,7 +1,6 @@
-import { unflagDeletion } from '@/app/lib/user';
+import { unflagDeletion } from "@/app/lib/user";
 // NOTE: Pool not needed for employer? deletion pool for employer?
 // import {deleteJobseeker, setPool} from "@/app/lib/jobseeker";
-import { NextResponse } from 'next/server';
 
 export async function PATCH() {
   const response = await unflagDeletion(); // keep this

@@ -1,13 +1,11 @@
-'use client';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Divider from '@mui/material/Divider';
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import Divider from "@mui/material/Divider";
 
 export default function SignupHeader({ className }: { className?: string }) {
   return (
-    <header className={'mx-8 bg-white ' + className}>
+    <header className={"mx-8 bg-white " + className}>
       <nav
         className="max-w-screen-lg mx-auto flex items-center justify-between py-6 laptop:px-8"
         aria-label="Global"

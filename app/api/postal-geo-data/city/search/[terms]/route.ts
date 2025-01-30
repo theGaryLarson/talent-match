@@ -1,14 +1,14 @@
-import { searchLocations } from '@/app/lib/prisma';
+import { searchLocations } from "@/app/lib/prisma";
 
-export async function GET(req: Request, props: { params: Promise<{ terms: string }> }) {
-    const params = await props.params;
-    const terms = decodeURIComponent(params.terms);
-    const searchResults = await searchLocations(terms, 'city');
+export async function GET(
+  req: Request,
+  props: { params: Promise<{ terms: string }> },
+) {
+  const params = await props.params;
+  const terms = decodeURIComponent(params.terms);
+  const searchResults = await searchLocations(terms, "city");
 
-    return Response.json(
-        searchResults,
-        {
-            status: 200
-        }
-    );
+  return Response.json(searchResults, {
+    status: 200,
+  });
 }

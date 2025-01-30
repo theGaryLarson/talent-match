@@ -1,16 +1,35 @@
-'use client';
-import { useState, useEffect } from 'react';
-import Avatar from './Avatar';
-import Skills from './Skills';
-import { useSession } from 'next-auth/react';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import Bookmark from './Bookmark';
-import PillButton from '@/app/ui/components/PillButton';
-('next/navigation');
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
-import { Chip, Stack } from '@mui/material';
-import Link from 'next/link';
+"use client";
+import Avatar from "../Avatar";
+import Skills from "../Skills";
+import { useSession } from "next-auth/react";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import Bookmark from "../Bookmark";
+import PillButton from "@/app/ui/components/PillButton";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
+import { Chip, Stack } from "@mui/material";
+import "quill/dist/quill.snow.css";
+
+function extractTextFromHTML(htmlString: string) {
+  const tempElement = document.createElement("div");
+  tempElement.innerHTML = htmlString;
+
+  // Add spaces between block-level elements
+  const blockElements = tempElement.querySelectorAll(
+    "p, div, h1, h2, h3, h4, h5, h6, li",
+  );
+  blockElements.forEach((element) => {
+    element.insertAdjacentText("afterend", " ");
+  });
+
+  // Get the text content and normalize spaces
+  let text = tempElement.textContent || tempElement.innerText || "";
+
+  // Replace multiple spaces, newlines, and tabs with a single space
+  text = text.replace(/\s+/g, " ").trim();
+
+  return text;
+}
 
 export default function JobListingCardView({
   joblisting,
@@ -19,61 +38,25 @@ export default function JobListingCardView({
 }) {
   const { data: session } = useSession();
 
-  // const router = useRouter();
-  // const pathname = usePathname();
-  // const searchParams = useSearchParams();
-
   const job_title: string = joblisting?.job_title;
-  const employment_type: string = joblisting.employment_type ?? '';
+  const employment_type: string = joblisting.employment_type ?? "";
   const company_name: string = joblisting.companies.company_name;
-  const company_image: string = joblisting.companies.company_logo_url ?? '';
-  const industry: string = joblisting.industry_sectors?.sector_title ?? '';
-  const is_paid: boolean = joblisting.is_paid ?? true;
+  const company_image: string = joblisting.companies.company_logo_url ?? "";
   const skills: SkillDTO[] = joblisting.skills ?? [];
-  const salary_range: string = joblisting?.salary_range ?? '';
-  const description: string = joblisting?.job_description ?? '';
-  const id: string = joblisting?.job_posting_id ?? '';
+  const salary_range: string = joblisting?.salary_range ?? "";
+  const description: string = extractTextFromHTML(
+    joblisting?.job_description ?? "",
+  );
   const location: string =
     joblisting?.location +
-    ', ' +
+    ", " +
     joblisting?.company_addresses?.locationData?.city +
-    ', ' +
+    ", " +
     joblisting?.zip;
-
-  // const [openModal, setOpenModal] = useState(false);
-
   const isBookmarked = joblisting?.isBookmarked ?? false;
-
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
-  // const updateQueryParam = (jobId: string | null) => {
-  //   const newSearchParams = new URLSearchParams(searchParams);
-  //   if (jobId) {
-  //     newSearchParams.set('job', jobId);
-  //   } else {
-  //     newSearchParams.delete('job');
-  //   }
-  //   router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
-  // };
-
-  // useEffect(() => {
-  //   const jobIdFromQuery = searchParams.get('job');
-  //   if (jobIdFromQuery === id) {
-  //     setOpenModal(true);
-  //   } else {
-  //     setOpenModal(false);
-  //   }
-  // }, [searchParams, id]);
-
-  // const handleModalChange = (open: boolean) => {
-  //   setOpenModal(open);
-  //   if (open) {
-  //     updateQueryParam(id);
-  //   } else {
-  //     updateQueryParam(null);
-  //   }
-  // };
-
+  console.log(joblisting?.job_description);
   return (
     <>
       <div className="w-full rounded-lg border-2 border-cyan-600 p-2 phone:p-4">
@@ -110,15 +93,15 @@ export default function JobListingCardView({
                 <Bookmark
                   bookmarked={isBookmarked}
                   addUrl={
-                    '/api/joblistings/bookmark/add/' + joblisting.job_posting_id
+                    "/api/joblistings/bookmark/add/" + joblisting.job_posting_id
                   }
                   removeUrl={
-                    '/api/joblistings/bookmark/remove/' +
+                    "/api/joblistings/bookmark/remove/" +
                     joblisting.job_posting_id
                   }
                 />
               ) : (
-                ''
+                ""
               )}
             </div>
           </div>
@@ -127,7 +110,8 @@ export default function JobListingCardView({
         {/* bottom row */}
         <div className="mt-2">
           {/* job description */}
-          <p className="line-clamp-3 break-words">{description}</p>
+
+          <p className="ql-editor line-clamp-3 break-words">{description}</p>
 
           {/* skills */}
           <div className="mt-2 flex grow text-sm tablet:text-base">
@@ -139,7 +123,7 @@ export default function JobListingCardView({
           </div>
 
           {/* employment type, salary, and job status */}
-          <Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
+          <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
             <div>
               <h4 className="mt-2 text-sm italic text-slate-400">
                 {employment_type}
@@ -152,11 +136,11 @@ export default function JobListingCardView({
               <Chip
                 variant="outlined"
                 color="primary"
-                sx={{ alignSelf: 'end' }}
+                sx={{ alignSelf: "end" }}
                 label={
                   joblisting.jobStatus == undefined ||
-                  joblisting.jobStatus.toString() == ''
-                    ? 'Not Applied'
+                  joblisting.jobStatus.toString() == ""
+                    ? "Not Applied"
                     : joblisting.jobStatus
                 }
               />

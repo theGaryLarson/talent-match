@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import {
   Alert,
   Box,
@@ -17,14 +17,13 @@ import {
   Snackbar,
   TextField,
   Typography,
-} from '@mui/material';
-import PillButton from '@/app/ui/components/PillButton';
-import { useSession } from 'next-auth/react';
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import NextLink from 'next/link';
-import { CareerPrepEnrollmentDTO } from '@/app/lib/admin/careerPrep';
-import Confetti from '@/app/ui/components/Confetti';
-import '@/app/ui/profile-creation.css';
+} from "@mui/material";
+import PillButton from "@/app/ui/components/PillButton";
+import { useSession } from "next-auth/react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import NextLink from "next/link";
+import Confetti from "@/app/ui/components/Confetti";
+import "@/app/ui/profile-creation.css";
 
 interface FormData {
   streetAddress: string;
@@ -32,42 +31,44 @@ interface FormData {
 }
 
 export default function Page() {
-  const { data: session, update, status } = useSession();
+  const { data: session, status } = useSession();
   const [formData, setFormData] = useState<FormData>({
-    streetAddress: '',
+    streetAddress: "",
     priorityPopulations: [],
   });
   const [successfullySubmitted, setSuccessfullySubmitted] = useState<boolean>();
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
-    severity: 'success' | 'error';
-  }>({ open: false, message: '', severity: 'success' });
+    severity: "success" | "error";
+  }>({ open: false, message: "", severity: "success" });
 
   const priorityPopulations: string[] = [
-    'COVID-impacted workers',
-    'Underemployed individuals',
-    'Long-term unemployed individuals',
-    'Short-term unemployed individuals',
-    'Incumbent workers',
-    'People living in rural communities',
-    'People living in coal communities',
-    'Military spouses',
-    'Disconnected youth',
-    'Individuals in substance abuse recovery',
-    'Individuals participating in TANF, SNAP, WIC',
-    'Individuals with past criminal records (e.g., justice impacted, reentry participants)',
-    'Prefer not to answer',
+    "COVID-impacted workers",
+    "Underemployed individuals",
+    "Long-term unemployed individuals",
+    "Short-term unemployed individuals",
+    "Incumbent workers",
+    "People living in rural communities",
+    "People living in coal communities",
+    "Military spouses",
+    "Disconnected youth",
+    "Individuals in substance abuse recovery",
+    "Individuals participating in TANF, SNAP, WIC",
+    "Individuals with past criminal records (e.g., justice impacted, reentry participants)",
+    "Prefer not to answer",
   ];
 
   useEffect(() => {
     const initializeFormFields = async () => {
       if (!session?.user.id) return;
-      if (status === 'authenticated') {
-        const { id, jobseekerId } = session.user;
+      if (status === "authenticated") {
+        const { jobseekerId } = session.user;
         try {
           if (!jobseekerId) return;
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
     initializeFormFields();
@@ -87,37 +88,37 @@ export default function Page() {
   ): Promise<void> => {
     e.preventDefault();
     if (!formData.streetAddress) {
-      alert('Street Address is required.');
+      alert("Street Address is required.");
       return;
     }
     if (formData.priorityPopulations.length === 0) {
-      alert('Please select at least one priority population.');
+      alert("Please select at least one priority population.");
       return;
     }
 
     const payload = {
       streetAddress: formData.streetAddress,
-      priorityPopulations: formData.priorityPopulations.join('~'),
+      priorityPopulations: formData.priorityPopulations.join("~"),
     };
     const response = await fetch(
-      '/api/jobseekers/career-prep/enrollment/submit/',
+      "/api/jobseekers/career-prep/enrollment/submit/",
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       },
     );
     if (response.ok) {
       setSuccessfullySubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.scrollTo({ top: 0, behavior: "instant" });
     } else {
       setSuccessfullySubmitted(false);
       setSnackbar({
         open: true,
-        message: 'Submission failed. Please try again.',
-        severity: 'error',
+        message: "Submission failed. Please try again.",
+        severity: "error",
       });
     }
   };
@@ -132,7 +133,7 @@ export default function Page() {
         <>
           <Box className="flex justify-center">
             <Box
-              style={{ height: '100vh' }}
+              style={{ height: "100vh" }}
               className="profile-form-section main-content"
             >
               <Confetti />
@@ -152,7 +153,7 @@ export default function Page() {
           </Box>
         </>
       ) : (
-        <Paper elevation={0} sx={{ p: 3, maxWidth: '75%', mx: 'auto', my: 4 }}>
+        <Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: "auto", my: 4 }}>
           <Typography variant="h4" align="center" sx={{ mb: 4 }}>
             Career Prep Enrollment Form
           </Typography>
@@ -165,8 +166,8 @@ export default function Page() {
           </Typography>
           <List
             sx={{
-              listStyleType: 'disc',
-              '& .MuiListItem-root': { display: 'list-item', marginLeft: 3 },
+              listStyleType: "disc",
+              "& .MuiListItem-root": { display: "list-item", marginLeft: 3 },
             }}
           >
             <ListItem disablePadding>
@@ -207,7 +208,7 @@ export default function Page() {
             component={NextLink}
             target="_blank"
             href={
-              'https://wsac.wa.gov/sites/default/files/Washington-Student-Achievement-Project-Narrative.pdf'
+              "https://wsac.wa.gov/sites/default/files/Washington-Student-Achievement-Project-Narrative.pdf"
             }
           >
             https://wsac.wa.gov/sites/default/files/Washington-Student-Achievement-Project-Narrative.pdf
@@ -217,7 +218,7 @@ export default function Page() {
             <Box sx={{ py: 2 }}>
               <Grid2 container>
                 <Grid2 size={12}>
-                  <Box sx={{ maxWidth: '720px' }}>
+                  <Box sx={{ maxWidth: "720px" }}>
                     <FormControl
                       fullWidth
                       required
@@ -270,7 +271,7 @@ export default function Page() {
               </Grid2>
             </Box>
             <Box
-              sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}
+              sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}
             >
               <Box></Box>
               <PillButton type="submit">Submit</PillButton>
@@ -282,7 +283,7 @@ export default function Page() {
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
           {snackbar.message}

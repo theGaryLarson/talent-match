@@ -1,7 +1,6 @@
-import { getJobSeekerBookmarkedJobs } from '@/app/lib/joblistings';
-import JobListingCardView from '@/app/ui/components/JobListingCardView';
-import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
-import Link from 'next/link';
+import { getJobSeekerBookmarkedJobs } from "@/app/lib/joblistings";
+import JobListingCardView from "@/app/ui/components/jobPostings/JobListingCardView";
+import Link from "next/link";
 
 export default async function page() {
   const myBookMarkedJobs = await getJobSeekerBookmarkedJobs();
@@ -9,11 +8,8 @@ export default async function page() {
     return (
       <div>
         <p>
-          No Saved Job Posts Found:{' '}
-          <Link
-            href={'/services/joblistings'}
-            className="LINK"
-          >
+          No Saved Job Posts Found:{" "}
+          <Link href={"/services/joblistings"} className="LINK">
             Find Job Listings here
           </Link>
         </p>
@@ -26,9 +22,7 @@ export default async function page() {
       <div className="space-y-4">
         {myBookMarkedJobs.map((job) => (
           <div key={job.job_posting_id}>
-            <JobListingCardView
-            joblisting={{ ...job }}
-            />
+            <JobListingCardView joblisting={{ ...job }} />
           </div>
         ))}
       </div>

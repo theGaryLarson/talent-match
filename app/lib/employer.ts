@@ -1,13 +1,11 @@
-import { companies, Prisma, PrismaClient } from '@prisma/client';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { Role } from '@/data/dtos/UserInfoDTO';
+import { Prisma, PrismaClient } from "@prisma/client";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { Role } from "@/data/dtos/UserInfoDTO";
 import { auth } from "@/auth";
-import { v4 as uuidv4 } from 'uuid';
-import { CompanyEmployerCreationDTO } from '@/data/dtos/CompanyEmployerCreateionDTO';
+import { v4 as uuidv4 } from "uuid";
+import { CompanyEmployerCreationDTO } from "@/data/dtos/CompanyEmployerCreateionDTO";
 
 const prisma: PrismaClient = getPrismaClient();
-
-
 
 /**
  * Create an employer (for an existing user) and associated data from the database.
@@ -16,7 +14,9 @@ const prisma: PrismaClient = getPrismaClient();
  * @returns {Promise<employers>}
  * @throws {Error} If user creation fails
  */
- export async function createEmployer(userId: string): Promise<Prisma.employersGetPayload<{}>> {
+export async function createEmployer(
+  userId: string,
+): Promise<Prisma.employersGetPayload<object>> {
   try {
     // Use a transaction to ensure both operations succeed or fail together
     const result = await prisma.$transaction(async (prisma) => {
@@ -25,15 +25,15 @@ const prisma: PrismaClient = getPrismaClient();
         data: {
           role: Role.EMPLOYER,
           has_agreed_terms: true,
-          updatedAt: new Date()
-        }
+          updatedAt: new Date(),
+        },
       });
 
       const employer = await prisma.employers.create({
         data: {
           employer_id: uuidv4(),
           user_id: userId,
-        }
+        },
       });
 
       return employer;
@@ -43,8 +43,8 @@ const prisma: PrismaClient = getPrismaClient();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       // Handle known Prisma errors (e.g., unique constraint violations)
-      if (error.code === 'P2002') {
-        throw new Error('The Employer data/role already exists for this user');
+      if (error.code === "P2002") {
+        throw new Error("The Employer data/role already exists for this user");
       }
     }
     throw error;
@@ -64,51 +64,52 @@ const prisma: PrismaClient = getPrismaClient();
  * @returns {Promise<void>} - A Promise that resolves when the employer is successfully deleted.
  */
 export const deleteEmployer = async (userId: string) => {
-    try {
-        // Start a transaction
-        await prisma.$transaction(async (prisma) => {
+  try {
+    // Start a transaction
+    await prisma.$transaction(async (prisma) => {
+      // Delete the employer record directly using user_id
+      await prisma.employers.delete({ where: { user_id: userId } });
 
-            // Delete the employer record directly using user_id
-            await prisma.employers.delete({ where: { user_id: userId } });
+      // Fetch the user's roles
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          role: true, // Returns string -> comma-separated list of roles
+        },
+      });
 
-            // Fetch the user's roles
-            const user = await prisma.user.findUnique({
-                where: { id: userId },
-                select: {
-                    role: true, // Returns string -> comma-separated list of roles
-                },
-            });
+      if (!user) {
+        throw new Error("User not found");
+      }
 
-            if (!user) {
-                throw new Error('User not found');
-            }
+      // Split the roles into an array
+      const userRolesArray: Role[] = user.role
+        .split(",")
+        .map((role) => role.trim() as Role);
 
-            // Split the roles into an array
-            const userRolesArray: Role[] = user.role
-                .split(',')
-                .map((role) => role.trim() as Role);
+      // Remove the EMPLOYER role
+      const filteredRolesArray = userRolesArray.filter(
+        (role) => role !== Role.EMPLOYER,
+      );
 
-            // Remove the EMPLOYER role
-            const filteredRolesArray = userRolesArray.filter((role) => role !== Role.EMPLOYER);
-
-            if (filteredRolesArray.length === 0) {
-                // Delete the user if no roles are left
-                await prisma.user.delete({ where: { id: userId } });
-            } else {
-                // Update the user's roles
-                await prisma.user.update({
-                    where: { id: userId },
-                    data: { role: filteredRolesArray.join(',') },
-                });
-            }
+      if (filteredRolesArray.length === 0) {
+        // Delete the user if no roles are left
+        await prisma.user.delete({ where: { id: userId } });
+      } else {
+        // Update the user's roles
+        await prisma.user.update({
+          where: { id: userId },
+          data: { role: filteredRolesArray.join(",") },
         });
-        return true;
-    } catch (error: any) {
-        console.error('Error deleting employer:', error);
-        return false;
-    } finally {
-        await prisma.$disconnect();
-    }
+      }
+    });
+    return true;
+  } catch (error: any) {
+    console.error("Error deleting employer:", error);
+    return false;
+  } finally {
+    await prisma.$disconnect();
+  }
 };
 
 /**
@@ -126,58 +127,55 @@ export const deleteEmployerWithSession = async (): Promise<void> => {
   const userId = session?.user.id;
 
   if (!userId) {
-    console.error('No user id found in session. Could not delete employer');
-    throw Error('No userId found in session. Could not delete employer');
+    console.error("No user id found in session. Could not delete employer");
+    throw Error("No userId found in session. Could not delete employer");
   }
   try {
     await deleteEmployer(userId);
   } catch (error: any) {
-    console.error('Error deleting employer with session:', error);
+    console.error("Error deleting employer with session:", error);
     throw error;
   }
 };
 
 export async function createCompany(companyData: CompanyEmployerCreationDTO) {
   const session = await auth();
-  if(!session?.user.roles.includes(Role.EMPLOYER)){
-      throw new Error("Must Be Employer to complete this task")
+  if (!session?.user.roles.includes(Role.EMPLOYER)) {
+    throw new Error("Must Be Employer to complete this task");
   }
-  if(!session?.user.id){
-      throw new Error("Must Be a user")
+  if (!session?.user.id) {
+    throw new Error("Must Be a user");
   }
-  try{
-    let result = await prisma.companies.create(
-      {
-        data:{
-          company_name: companyData.companyName,
-          company_email: session.user.email ?? '',
-          company_id: uuidv4(),
-          about_us: '',
-          year_founded: companyData.yearFounded ?? 2024,
-          createdBy: session.user.id,
-          company_mission: ''
-        }
-      }
-    )
+  try {
+    const result = await prisma.companies.create({
+      data: {
+        company_name: companyData.companyName,
+        company_email: session.user.email ?? "",
+        company_id: uuidv4(),
+        about_us: "",
+        year_founded: companyData.yearFounded ?? 2024,
+        createdBy: session.user.id,
+        company_mission: "",
+      },
+    });
     return result;
-  } catch(e) {
-    console.error(e)
+  } catch (e) {
+    console.error(e);
   }
 }
 
-
-
-
-export async function updateCompany(companyData: Partial<Prisma.companiesUncheckedCreateInput>) {
+export async function updateCompany(
+  companyData: Partial<Prisma.companiesUncheckedCreateInput>,
+) {
   try {
     if (!companyData.company_id) {
-      throw new Error('company_id is required to update a company');
+      throw new Error("company_id is required to update a company");
     }
 
     // Remove company_id from data to avoid updating the primary key
     const { company_id, ...data } = companyData;
 
-    console.log('Prisma update input:', { where: { company_id }, data });
+    console.log("Prisma update input:", { where: { company_id }, data });
 
     const result = await prisma.companies.update({
       where: { company_id },
@@ -186,32 +184,30 @@ export async function updateCompany(companyData: Partial<Prisma.companiesUncheck
 
     return result;
   } catch (error) {
-    console.error('Error updating company:', error);
-    throw new Error('Failed to update company');
+    console.error("Error updating company:", error);
+    throw new Error("Failed to update company");
   }
 }
 
-
-
 export async function getAllCompanies() {
-    const res = await prisma.companies.findMany();
-    return res;
+  const res = await prisma.companies.findMany();
+  return res;
 }
-export async function getAllEmployers(){
+export async function getAllEmployers() {
   return await prisma.employers.findMany({
-    include:{
-      users:true
-    }
-  })
+    include: {
+      users: true,
+    },
+  });
 }
-export async function getAllTechAreas(){
-    const res = await prisma.technology_areas.findMany();
-    return res;
+export async function getAllTechAreas() {
+  const res = await prisma.technology_areas.findMany();
+  return res;
 }
 
 export async function getAllIndustrySectors() {
-    const res = await prisma.industry_sectors.findMany();
-    return res;
+  const res = await prisma.industry_sectors.findMany();
+  return res;
 }
 
 export type ReadEmployerRecordDTO = {
@@ -224,22 +220,23 @@ export type ReadEmployerRecordDTO = {
   is_verified_employee: boolean;
 } | null;
 
-
-export async function getEmployer(userId: string): Promise<ReadEmployerRecordDTO> {
+export async function getEmployer(
+  userId: string,
+): Promise<ReadEmployerRecordDTO> {
   const res: ReadEmployerRecordDTO = await prisma.employers.findUnique({
     where: {
       user_id: userId,
-    }
+    },
   });
-  return res
+  return res;
 }
 
 export async function getEmployerWithSession() {
   const session = await auth();
   const userId = session?.user.id;
   if (!userId) {
-    return
+    return;
   }
   const res: ReadEmployerRecordDTO = await getEmployer(userId);
-  return res
+  return res;
 }

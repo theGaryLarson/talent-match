@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export enum EventTypeEnum {
   Workshop = "Workshop",
   General = "General",
-  Event = "Event"
+  Event = "Event",
 }
 export type CreateEventData = {
   name: string;
@@ -83,7 +83,7 @@ export async function createEvent(data: CreateEventData): Promise<{
       return { success: false, error: (error as Error).message };
     }
   }
-  
+
 // Returns all events, sorted by date
 export async function getAllEvents(excludePast:boolean){
     try {

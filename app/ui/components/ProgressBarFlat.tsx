@@ -1,10 +1,9 @@
-import { LinearProgress, Box, Typography } from '@mui/material';
+import { LinearProgress } from "@mui/material";
 interface Props {
   progress: number;
-  [key: string]: any;
 }
 
-export default function ProgressBarFlat({ progress, ...rest }: Props) {
+export default function ProgressBarFlat({ progress }: Props) {
   return (
     <>
       <LinearProgress
@@ -12,12 +11,12 @@ export default function ProgressBarFlat({ progress, ...rest }: Props) {
         value={progress}
         sx={{
           height: 8,
-          bgcolor: '#EEEEEE',
-          '& .MuiLinearProgress-bar': {
-            backgroundColor: '#0891B2',
+          bgcolor: "#EEEEEE",
+          "& .MuiLinearProgress-bar": {
+            backgroundColor: "#0891B2",
           },
         }}
-      />{' '}
+      />{" "}
     </>
   );
 }

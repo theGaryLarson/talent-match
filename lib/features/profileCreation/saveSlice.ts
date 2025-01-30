@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface SaveState {
   savedPages: {
@@ -8,13 +8,12 @@ export interface SaveState {
 }
 
 const initialState: SaveState = {
-  savedPages: {
-  },
-  isSaved: true
+  savedPages: {},
+  isSaved: true,
 };
 
 const saveSlice = createSlice({
-  name: 'save',
+  name: "save",
   initialState,
   reducers: {
     setPageDirty: (state, action: PayloadAction<string>) => {
@@ -23,15 +22,15 @@ const saveSlice = createSlice({
     },
     setPageSaved: (state, action: PayloadAction<string>) => {
       state.savedPages[action.payload] = true;
-      state.isSaved = Object.values(state.savedPages).some(value => value);
+      state.isSaved = Object.values(state.savedPages).some((value) => value);
     },
     resetTracking: (state) => {
-      Object.keys(state.savedPages).forEach(key => {
+      Object.keys(state.savedPages).forEach((key) => {
         state.savedPages[key] = true;
       });
       state.isSaved = true;
-    }
-  }
+    },
+  },
 });
 
 export const { setPageDirty, setPageSaved, resetTracking } = saveSlice.actions;

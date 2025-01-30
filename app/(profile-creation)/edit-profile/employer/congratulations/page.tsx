@@ -1,48 +1,38 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import Confetti from '@/app/ui/components/Confetti';
+import React, { useEffect } from "react";
+import Confetti from "@/app/ui/components/Confetti";
 // REVIEW: testing redux
 // import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-} from '@mui/material';
-import PillButton from '@/app/ui/components/PillButton';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import PillButton from "@/app/ui/components/PillButton";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function EmployerCongratsPage() {
   // const { fields } = useSelector((state: RootState) => state.form);
   // const dispatch = useDispatch();
-  const [employmentType, setEmploymentType] = useState('');
-  const [pathway, setPathway] = useState('');
-  const [error, setError] = useState('');
 
   const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    console.log('useEffect: status, session', status, session);
-    if (status === 'authenticated' && session?.user?.employerId) {
+    console.log("useEffect: status, session", status, session);
+    if (status === "authenticated" && session?.user?.employerId) {
       const fetchData = async () => {
         try {
           const response = await fetch(`/api/employers/validate-profile`, {
-            method: 'PATCH', // Specify the PATCH method
+            method: "PATCH", // Specify the PATCH method
             headers: {
-              'Content-Type': 'application/json', // Set the content type
+              "Content-Type": "application/json", // Set the content type
             },
           });
           if (!response.ok) {
-            throw new Error('Failed to validate employer profile.');
+            throw new Error("Failed to validate employer profile.");
           }
         } catch (error) {
-          console.error('Error fetching employer preferences:', error);
+          console.error("Error fetching employer preferences:", error);
         }
       };
       fetchData();
@@ -50,7 +40,7 @@ export default function EmployerCongratsPage() {
   }, [status, session]);
 
   function handleClick() {
-    router.push('/services/employers/dashboard');
+    router.push("/services/employers/dashboard");
   }
 
   return (
@@ -131,7 +121,7 @@ export default function EmployerCongratsPage() {
             <PillButton className="custom-outline-btn">Previous</PillButton>
             <PillButton type="submit">Save and continue</PillButton>
           </div>
-          
+
         </form> */}
       </section>
     </main>

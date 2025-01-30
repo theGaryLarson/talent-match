@@ -1,8 +1,7 @@
-import { adminGetSkills } from '@/app/lib/admin/skill';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { NextResponse } from 'next/server';
+import { adminGetSkills } from "@/app/lib/admin/skill";
+import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
-  let result = await adminGetSkills();
+export async function GET() {
+  const result = await adminGetSkills();
   return NextResponse.json(result);
 }

@@ -1,26 +1,26 @@
-import React, { memo, MouseEventHandler, useCallback } from 'react';
-import PillButton from '@/app/ui/components/PillButton';
-import { Checkbox } from '@mui/material';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
-import { v4 as uuidv4 } from 'uuid';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
-import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
-import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
-import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
-import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
-import { Close } from '@mui/icons-material';
+import React, { memo, useCallback } from "react";
+import PillButton from "@/app/ui/components/PillButton";
+import { Checkbox } from "@mui/material";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import TextareaWithLabel from "@/app/ui/components/TextareaWithLabel";
+import { v4 as uuidv4 } from "uuid";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Dayjs } from "dayjs";
+import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
+import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
+import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO";
+import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
+import { Close } from "@mui/icons-material";
 
-const classNamePrefix = 'profile-creation-work-experience-group-';
-const classCompany = 'company';
-const classCompanyIndustry = 'sectorObject';
-const classCompanyTechArea = 'techAreaObject';
-const classTitle = 'jobTitle';
-const classStarts = 'startDate';
-const classEnds = 'endDate';
-const classCurrent = 'isCurrentJob';
-const classExperience = 'responsibilities';
+const classNamePrefix = "profile-creation-work-experience-group-";
+const classCompany = "company";
+const classCompanyIndustry = "sectorObject";
+const classCompanyTechArea = "techAreaObject";
+const classTitle = "jobTitle";
+const classStarts = "startDate";
+const classEnds = "endDate";
+const classCurrent = "isCurrentJob";
+const classExperience = "responsibilities";
 
 export interface WorkExperienceData {
   workId: string;
@@ -37,14 +37,14 @@ export interface WorkExperienceData {
 export function defaultWorkExperienceData(): WorkExperienceData {
   return {
     workId: uuidv4(),
-    [classCompany]: '',
-    [classCompanyIndustry]: { industry_sector_id: '', sector_title: '' },
-    [classCompanyTechArea]: { id: '', title: '' },
-    [classTitle]: '',
+    [classCompany]: "",
+    [classCompanyIndustry]: { industry_sector_id: "", sector_title: "" },
+    [classCompanyTechArea]: { id: "", title: "" },
+    [classTitle]: "",
     [classStarts]: null,
     [classEnds]: null,
     [classCurrent]: false,
-    [classExperience]: '',
+    [classExperience]: "",
   };
 }
 
@@ -66,13 +66,13 @@ export default memo(function WorkExperiences({
       const changedWorkExperiences: WorkExperienceData[] = [...data];
       const updatedWorkExperience = changedWorkExperiences[index];
       updatedWorkExperience[key] = value;
-      onUpdate('workExperiences', changedWorkExperiences);
+      onUpdate("workExperiences", changedWorkExperiences);
     },
     [data, onUpdate],
   );
 
   return data.map((workExperience, index) => (
-    <fieldset key={classNamePrefix + workExperience.workId + '-key'}>
+    <fieldset key={classNamePrefix + workExperience.workId + "-key"}>
       <legend className="flex w-full justify-between">
         <h3>Work Experience {index + 1}</h3>
         <PillButton
@@ -84,7 +84,7 @@ export default memo(function WorkExperiences({
       </legend>
       <div className="profile-form-grid">
         <InputTextWithLabel
-          id={classNamePrefix + workExperience.workId + '-' + classCompany}
+          id={classNamePrefix + workExperience.workId + "-" + classCompany}
           className="w-full"
           placeholder="Example: Microsoft"
           onChange={(e) => handleChange(index, classCompany, e.target.value)}
@@ -95,7 +95,7 @@ export default memo(function WorkExperiences({
         </InputTextWithLabel>
         <SelectAutoload
           id={
-            classNamePrefix + workExperience.workId + '-' + classCompanyIndustry
+            classNamePrefix + workExperience.workId + "-" + classCompanyIndustry
           }
           apiAutoloadRoute="/api/employers/industry-sectors"
           label="Industry Sector:"
@@ -115,7 +115,7 @@ export default memo(function WorkExperiences({
         />
         <SelectAutoload
           id={
-            classNamePrefix + workExperience.workId + '-' + classCompanyTechArea
+            classNamePrefix + workExperience.workId + "-" + classCompanyTechArea
           }
           apiAutoloadRoute="/api/employers/technology-areas"
           label="Job Role or Department:"
@@ -130,7 +130,7 @@ export default memo(function WorkExperiences({
           loadingText="Retrieving technology areas..."
         />
         <InputTextWithLabel
-          id={classNamePrefix + workExperience.workId + '-' + classTitle}
+          id={classNamePrefix + workExperience.workId + "-" + classTitle}
           className="w-full"
           placeholder="Example: Frontend Developer"
           onChange={(e) => handleChange(index, classTitle, e.target.value)}
@@ -149,8 +149,8 @@ export default memo(function WorkExperiences({
           errorMessage="A start date is required"
         >
           <DatePicker
-            label={'Start Date *'}
-            views={['month', 'year']}
+            label={"Start Date *"}
+            views={["month", "year"]}
             value={
               workExperience[classStarts]?.isValid()
                 ? workExperience[classStarts]
@@ -171,8 +171,8 @@ export default memo(function WorkExperiences({
           errorMessage="An end date is required if you're no longer working here"
         >
           <DatePicker
-            label={'End Date'}
-            views={['month', 'year']}
+            label={"End Date"}
+            views={["month", "year"]}
             value={
               workExperience[classEnds]?.isValid()
                 ? workExperience[classEnds]
@@ -186,15 +186,15 @@ export default memo(function WorkExperiences({
         </RequiredTooltip>
       </div>
       <Checkbox
-        id={classNamePrefix + workExperience.workId + '-' + classCurrent}
-        name={classNamePrefix + workExperience.workId + '-' + classCurrent}
+        id={classNamePrefix + workExperience.workId + "-" + classCurrent}
+        name={classNamePrefix + workExperience.workId + "-" + classCurrent}
         checked={workExperience[classCurrent]}
         onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
       />
       Currently Employed in this Position
       <div className="profile-form-grid">
         <TextareaWithLabel
-          id={classNamePrefix + workExperience.workId + '-' + classExperience}
+          id={classNamePrefix + workExperience.workId + "-" + classExperience}
           placeholder="Example: Write CSS for design changes"
           onChange={(e: { target: { value: any } }) =>
             handleChange(index, classExperience, e.target.value)

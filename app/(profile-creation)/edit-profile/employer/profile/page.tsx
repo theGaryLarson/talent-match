@@ -1,57 +1,47 @@
-'use client';
+"use client";
 
-import React, {
-  ChangeEvent,
-  FormEvent,
-  SyntheticEvent,
-  useEffect,
-  useState,
-  useRef,
-} from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import type { RootState } from '@/lib/employerStore';
-import { useSelector, useDispatch } from 'react-redux';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import type { RootState } from "@/lib/employerStore";
+import { useSelector, useDispatch } from "react-redux";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 
-import PillButton from '@/app/ui/components/PillButton';
-import { Typography } from '@mui/material';
-import SnackbarWithIcon from '@/app/ui/components/SnackbarWithIcon';
-import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
-import { useSession } from 'next-auth/react';
-import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import PillButton from "@/app/ui/components/PillButton";
+import { Typography } from "@mui/material";
+import SnackbarWithIcon from "@/app/ui/components/SnackbarWithIcon";
+import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
+import { useSession } from "next-auth/react";
+import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import {
-  PostAddressDTO,
   ReadAddressDTO,
   ReadCompanyInfoDTO,
   PostEmployerProfileDTO,
-} from '@/data/dtos/EmployerProfileCreationDTOs';
+} from "@/data/dtos/EmployerProfileCreationDTOs";
 import {
   setProfile,
   initialState,
-} from '@/lib/features/profileCreation/employerSlice';
+} from "@/lib/features/profileCreation/employerSlice";
 import {
   setPageDirty,
   setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import _ from 'lodash';
-import { devLog } from '@/app/lib/utils';
-import CircularProgress from '@mui/material/CircularProgress';
+} from "@/lib/features/profileCreation/saveSlice";
+import _ from "lodash";
+import { devLog } from "@/app/lib/utils";
 
-import AvatarUpload from '@/app/ui/components/AvatarUpload';
-import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
-import { SelectAllRounded } from '@mui/icons-material';
-import { CompanyEmployerCreationDTO } from '@/data/dtos/CompanyEmployerCreateionDTO';
-import { DatePicker } from '@mui/x-date-pickers';
-import dayjs, { Dayjs } from 'dayjs';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
+import AvatarUpload from "@/app/ui/components/AvatarUpload";
+import TextFieldWithAutocomplete from "@/app/ui/components/mui/TextFieldWithAutocomplete";
+import { CompanyEmployerCreationDTO } from "@/data/dtos/CompanyEmployerCreateionDTO";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 
-const formNamePrefix = 'profile-creation-profile-';
+const formNamePrefix = "profile-creation-profile-";
 
 export default function CreateEmployerProfilePage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { data: session, update, status } = useSession();
+  const { data: session, status } = useSession();
   const updateSessionProperties = useUpdateSession();
   const pathname = usePathname();
 
@@ -61,7 +51,7 @@ export default function CreateEmployerProfilePage() {
     value: boolean;
   }>({ value: true });
   const [newCompany, setNewCompany] = useState<CompanyEmployerCreationDTO>({
-    companyName: '',
+    companyName: "",
     yearFounded: undefined,
   });
   const [yearFounded, setYearFounded] = useState<Dayjs | null>(
@@ -88,7 +78,7 @@ export default function CreateEmployerProfilePage() {
           companyAddresses:
             profileStoreData.companyAddresses as ReadAddressDTO[],
         }
-      : (profileStoreData.companyName ?? ''),
+      : (profileStoreData.companyName ?? ""),
   );
 
   const [isCompanySelected, setIsCompanySelected] = useState<boolean>(
@@ -102,11 +92,11 @@ export default function CreateEmployerProfilePage() {
       (profileStoreData.workAddressId
         ? {
             addressId: profileStoreData.workAddressId,
-            city: '',
-            state: '',
-            stateCode: '',
-            zip: '',
-            county: '',
+            city: "",
+            state: "",
+            stateCode: "",
+            zip: "",
+            county: "",
           }
         : null),
   );
@@ -114,9 +104,9 @@ export default function CreateEmployerProfilePage() {
   useEffect(() => {
     const initializeFormFields = async () => {
       if (!session?.user) return;
-      if (status === 'authenticated') {
+      if (status === "authenticated") {
         if (_.isEqual(profileStoreData, initialState.profile)) {
-          devLog('fetching fresh from database');
+          devLog("fetching fresh from database");
 
           const { id, firstName, lastName, image } = session.user;
 
@@ -124,9 +114,9 @@ export default function CreateEmployerProfilePage() {
             const response = await fetch(
               `/api/employers/account/professional-info/get/${id}`,
               {
-                method: 'GET',
+                method: "GET",
                 headers: {
-                  'Content-Type': 'application/json',
+                  "Content-Type": "application/json",
                 },
               },
             );
@@ -134,16 +124,16 @@ export default function CreateEmployerProfilePage() {
             if (!response.ok) {
               setProfileData((prevState) => ({
                 ...prevState,
-                userId: id ?? '',
-                firstName: firstName ?? '',
-                lastName: lastName ?? '',
+                userId: id ?? "",
+                firstName: firstName ?? "",
+                lastName: lastName ?? "",
                 photoUrl: image,
               }));
               throw new Error(
                 `Error: ${response.status} ${response.statusText}`,
               );
             } else {
-              let { result } = await response.json();
+              const { result } = await response.json();
 
               setSelectCompanyDropdownData(
                 result.companyId
@@ -153,13 +143,13 @@ export default function CreateEmployerProfilePage() {
                       companyEmail: result.companyEmail,
                       yearFounded: result.yearFounded,
                     }
-                  : (result.companyName ?? ''),
+                  : (result.companyName ?? ""),
               );
 
               setCompanyExists({ value: result.companyId !== null });
 
               setWorkAddress(
-                result.companyAddress ? { ...result.companyAddress } : '',
+                result.companyAddress ? { ...result.companyAddress } : "",
               );
 
               setIsCompanySelected(Boolean(result.companyId));
@@ -171,8 +161,8 @@ export default function CreateEmployerProfilePage() {
                 //PERSONAL Section
                 // birthDate: result.birthDate ?? '',
                 // email: email!,
-                firstName: firstName ?? '',
-                lastName: lastName ?? '',
+                firstName: firstName ?? "",
+                lastName: lastName ?? "",
                 // phone: result.phone,
                 // phoneCountryCode: result.phoneCountryCode,
                 photoUrl: image,
@@ -181,19 +171,19 @@ export default function CreateEmployerProfilePage() {
 
                 companyId: result.companyId ?? undefined,
                 companyName: result.companyName,
-                currentJobTitle: result.currentJobTitle ?? '',
-                linkedInUrl: result.linkedInUrl ?? '',
+                currentJobTitle: result.currentJobTitle ?? "",
+                linkedInUrl: result.linkedInUrl ?? "",
                 workAddressId: result.companyAddress?.addressId ?? undefined,
               });
             }
-          } catch (error) {}
+          } catch {}
         } else {
-          devLog('fetching from redux store');
+          devLog("fetching from redux store");
         }
       }
     };
     initializeFormFields();
-    dispatch(setPageSaved('employer-profile'));
+    dispatch(setPageSaved("employer-profile"));
     devLog(profileData);
   }, [session?.user?.id, pathname]);
 
@@ -202,16 +192,16 @@ export default function CreateEmployerProfilePage() {
   };
 
   const handleCompanyExistsChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const exists = e.target.value === 'yes';
+    const exists = e.target.value === "yes";
     setCompanyExists({ value: exists });
 
-    setSelectCompanyDropdownData('');
+    setSelectCompanyDropdownData("");
     setIsCompanySelected(false);
     setWorkAddress(null);
     setProfileData((prevState) => ({
       ...prevState,
       companyId: undefined,
-      companyName: '',
+      companyName: "",
       workAddressId: undefined,
     }));
   };
@@ -221,13 +211,13 @@ export default function CreateEmployerProfilePage() {
   ) => {
     const { name, value } = e.target;
     devLog(name, value);
-    dispatch(setPageDirty('employer-profile')); //FIXME: Review with Gage disclosures change to profile
+    dispatch(setPageDirty("employer-profile")); //FIXME: Review with Gage disclosures change to profile
     const fieldName = name.substring(formNamePrefix.length);
 
     let updatedValue: any = value; // Declare a flexible type for the updated value
 
     // Check for specific fields to parse or cast values appropriately
-    if (fieldName === 'hasAgreedTerms') {
+    if (fieldName === "hasAgreedTerms") {
       updatedValue = value; // For checkboxes or boolean fields
     }
 
@@ -244,14 +234,14 @@ export default function CreateEmployerProfilePage() {
       image: url,
     })
       .then(() => {
-        dispatch(setPageDirty('employer-profile')); //FIXME: Check with Gage if anything needed here to change personal to profile
+        dispatch(setPageDirty("employer-profile")); //FIXME: Check with Gage if anything needed here to change personal to profile
         setProfileData((prevPersonalData) => ({
           ...prevPersonalData,
           photoUrl: url,
         }));
       })
       .catch((error) =>
-        console.error('Failed to update session image:', error),
+        console.error("Failed to update session image:", error),
       );
   };
 
@@ -259,28 +249,28 @@ export default function CreateEmployerProfilePage() {
     e.preventDefault();
 
     if (!session || !session.user) {
-      console.error('User session is not available.');
+      console.error("User session is not available.");
       return;
     }
 
     if (companyExists.value === false) {
       const response = await fetch(`/api/employers/account/company/create`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(newCompany),
       });
       if (!response.ok) {
-        const errorData = await response.json();
-        devLog('newCompany submit error', newCompany);
+        await response.json();
+        devLog("newCompany submit error", newCompany);
         return;
       }
-      let companyDetails = await response.json();
+      const companyDetails = await response.json();
 
       const updatedProfileData = {
         ...profileData,
-        userId: session.user.id ?? '',
+        userId: session.user.id ?? "",
         companyId: companyDetails.company_id,
         companyName: companyDetails.company_name,
         isApprovedEmployee: companyExists.value === false,
@@ -289,15 +279,15 @@ export default function CreateEmployerProfilePage() {
 
       try {
         const response = await fetch(`/api/employers/account/profile/upsert`, {
-          method: 'PATCH',
+          method: "PATCH",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedProfileData),
         });
 
         if (response.ok) {
-          const result = await response.json();
+          await response.json();
           dispatch(setProfile(updatedProfileData));
 
           // Update session properties using the custom hook
@@ -311,25 +301,25 @@ export default function CreateEmployerProfilePage() {
             image: updatedProfileData.photoUrl,
           });
 
-          devLog('profileData submit ok', updatedProfileData);
-          router.push('/edit-profile/employer/company');
+          devLog("profileData submit ok", updatedProfileData);
+          router.push("/edit-profile/employer/company");
         } else {
-          const errorData = await response.json();
-          devLog('profileData submit error', updatedProfileData);
+          await response.json();
+          devLog("profileData submit error", updatedProfileData);
         }
-      } catch (error) {}
+      } catch {}
       return;
     }
 
     const updatedProfileData = {
       ...profileData,
-      userId: session.user.id ?? '',
+      userId: session.user.id ?? "",
       companyId:
-        typeof selectCompanyDropdownData !== 'string'
+        typeof selectCompanyDropdownData !== "string"
           ? selectCompanyDropdownData.companyId
-          : '',
+          : "",
       companyName:
-        typeof selectCompanyDropdownData !== 'string'
+        typeof selectCompanyDropdownData !== "string"
           ? selectCompanyDropdownData.companyName
           : selectCompanyDropdownData,
       workAddressId: workAddress ? workAddress.addressId : undefined,
@@ -338,16 +328,16 @@ export default function CreateEmployerProfilePage() {
 
     try {
       const response = await fetch(`/api/employers/account/profile/upsert`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedProfileData),
       });
 
       if (response.ok) {
-        const result = await response.json();
-        dispatch(setPageSaved('employer-profile'));
+        await response.json();
+        dispatch(setPageSaved("employer-profile"));
         dispatch(setProfile(updatedProfileData));
 
         // Update session properties using the custom hook
@@ -359,20 +349,20 @@ export default function CreateEmployerProfilePage() {
           }),
         });
 
-        devLog('profileData submit ok', updatedProfileData);
-        router.push('/edit-profile/employer/congratulations');
+        devLog("profileData submit ok", updatedProfileData);
+        router.push("/edit-profile/employer/congratulations");
       } else {
-        const errorData = await response.json();
-        devLog('profileData submit error', updatedProfileData);
+        await response.json();
+        devLog("profileData submit error", updatedProfileData);
       }
-    } catch (error) {}
+    } catch {}
   };
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string,
   ) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setOpen(false);
@@ -384,7 +374,7 @@ export default function CreateEmployerProfilePage() {
       <section className="profile-form-section">
         {!companyExists && (
           <>
-            <ProgressBarFlat progress={(1 / 5) * 100} size="sm" />
+            <ProgressBarFlat progress={(1 / 5) * 100} />
             <p>Step 1/5</p>
           </>
         )}
@@ -506,7 +496,7 @@ export default function CreateEmployerProfilePage() {
                   searchingText="Searching..."
                   noResultsText="No company found, existing company required. Please create a new one."
                   allowNewOption={false}
-                  value={selectCompanyDropdownData ?? ''}
+                  value={selectCompanyDropdownData ?? ""}
                   onChange={(e, val) => {
                     setWorkAddress(null);
                     setProfileData((prevState) => ({
@@ -515,12 +505,12 @@ export default function CreateEmployerProfilePage() {
                     }));
 
                     const newDropdownData =
-                      typeof val === 'object' && val !== null ? { ...val } : '';
+                      typeof val === "object" && val !== null ? { ...val } : "";
                     setSelectCompanyDropdownData(newDropdownData);
 
                     if (
                       newDropdownData &&
-                      typeof newDropdownData === 'object' &&
+                      typeof newDropdownData === "object" &&
                       newDropdownData.companyId
                     ) {
                       openSnackbar();
@@ -538,7 +528,7 @@ export default function CreateEmployerProfilePage() {
                   }}
                   searchPlaceholder="Company name"
                   getOptionLabel={(option: ReadCompanyInfoDTO) =>
-                    option.companyName ?? ''
+                    option.companyName ?? ""
                   }
                 />
               ) : companyExists.value === false ? (
@@ -559,8 +549,8 @@ export default function CreateEmployerProfilePage() {
                     Company Name
                   </InputTextWithLabel>
                   <DatePicker
-                    label={'Year Founded *'}
-                    views={['year']}
+                    label={"Year Founded *"}
+                    views={["year"]}
                     value={yearFounded}
                     onChange={(newValue) => {
                       setYearFounded(newValue);
@@ -620,7 +610,7 @@ export default function CreateEmployerProfilePage() {
                 id={`${formNamePrefix}linkedInUrl`}
                 placeholder="www.linkedin.com/username"
                 onChange={handleFieldChange}
-                value={profileData.linkedInUrl ?? ''}
+                value={profileData.linkedInUrl ?? ""}
               >
                 LinkedIn URL
               </InputTextWithLabel>
@@ -629,7 +619,7 @@ export default function CreateEmployerProfilePage() {
 
           <div className="profile-form-progress-btn-single-end">
             <PillButton type="submit">
-              {companyExists ? 'Submit' : 'Save and Continue'}
+              {companyExists ? "Submit" : "Save and Continue"}
             </PillButton>
           </div>
         </form>

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
+import React, { useEffect, useState } from "react";
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 
 import {
   FormControl,
@@ -9,24 +9,21 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-} from '@mui/material';
-import PillButton from '@/app/ui/components/PillButton';
-import { useRouter } from 'next/navigation';
-import { JsPreferencesDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { useSession } from 'next-auth/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/jobseekerStore';
+} from "@mui/material";
+import PillButton from "@/app/ui/components/PillButton";
+import { useRouter } from "next/navigation";
+import { JsPreferencesDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/jobseekerStore";
 import {
   initialState,
   setPreferences,
-} from '@/lib/features/profileCreation/jobseekerSlice';
-import {
-  setPageDirty,
-  setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import _ from 'lodash';
-import { devLog } from '@/app/lib/utils';
-import { CareerPrepPathways } from '@/app/lib/admin/careerPrep';
+} from "@/lib/features/profileCreation/jobseekerSlice";
+import { setPageSaved } from "@/lib/features/profileCreation/saveSlice";
+import _ from "lodash";
+import { devLog } from "@/app/lib/utils";
+import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -35,32 +32,32 @@ export default function CreateJobseekerProfilePreferencesPage() {
     (state: RootState) => state.jobseeker.preferences,
   );
   const preferencesData = { ...preferencesStoreData };
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const [employmentType, setEmploymentType] = useState(
-    preferencesData.preferredEmploymentType ?? '',
+    preferencesData.preferredEmploymentType ?? "",
   );
-  const [pathway, setPathway] = useState(preferencesData.targetedPathway ?? '');
+  const [pathway, setPathway] = useState(preferencesData.targetedPathway ?? "");
   const [pathwayId, setPathwayId] = useState(
-    preferencesData.targetedPathwayId ?? '',
+    preferencesData.targetedPathwayId ?? "",
   );
 
   useEffect(() => {
-    if (session?.user?.id && status === 'authenticated') {
+    if (session?.user?.id && status === "authenticated") {
       const initializeFormFields = async () => {
         if (_.isEqual(preferencesStoreData, initialState.preferences)) {
           const { id } = session.user;
 
           try {
-            devLog('fetching fresh');
+            devLog("fetching fresh");
             const response = await fetch(
-              '/api/jobseekers/account/preferences/get/' + id,
+              "/api/jobseekers/account/preferences/get/" + id,
             );
 
             if (!response.ok) {
               preferencesData.userId = id!;
             } else {
-              let fetchedData: JsPreferencesDTO = (await response.json())
+              const fetchedData: JsPreferencesDTO = (await response.json())
                 .result;
               preferencesData.userId = id!;
               if (fetchedData.preferredEmploymentType) {
@@ -82,10 +79,10 @@ export default function CreateJobseekerProfilePreferencesPage() {
             console.error(error);
           }
         } else {
-          devLog('fetching from store');
+          devLog("fetching from store");
         }
       };
-      dispatch(setPageSaved('preferences'));
+      dispatch(setPageSaved("preferences"));
       initializeFormFields();
     }
   }, [session?.user?.id]);
@@ -93,7 +90,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!session?.user?.id) {
-      console.error('User session is not available.');
+      console.error("User session is not available.");
       return;
     }
 
@@ -105,11 +102,11 @@ export default function CreateJobseekerProfilePreferencesPage() {
 
     try {
       const response = await fetch(
-        '/api/jobseekers/account/preferences/upsert',
+        "/api/jobseekers/account/preferences/upsert",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(preferencesData),
         },
@@ -119,10 +116,10 @@ export default function CreateJobseekerProfilePreferencesPage() {
         const result = await response.json();
         devLog(JSON.stringify(result, null, 2));
 
-        dispatch(setPageSaved('preferences'));
+        dispatch(setPageSaved("preferences"));
         dispatch(setPreferences(preferencesData));
 
-        router.push('/edit-profile/jobseeker/showcase');
+        router.push("/edit-profile/jobseeker/showcase");
       } else {
         const errorMessage = `Failed to submit preferences. Status: ${response.status} - ${response.statusText}`;
         setError(errorMessage);
@@ -139,7 +136,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={(2 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(2 / 6) * 100} />
         <p>Step 2/6</p>
         <h1>Your preferences</h1>
 
@@ -154,15 +151,15 @@ export default function CreateJobseekerProfilePreferencesPage() {
                     sx={{
                       m: 2, // Margin all sides equivalent to 'm-2'
                       backgroundColor:
-                        employmentType === 'Full-time'
-                          ? '#047F9C'
-                          : 'transparent',
+                        employmentType === "Full-time"
+                          ? "#047F9C"
+                          : "transparent",
                       color:
-                        employmentType === 'Full-time' ? '#ffffff' : '#047F9C',
+                        employmentType === "Full-time" ? "#ffffff" : "#047F9C",
                     }}
                     variant="outlined"
                     onClick={() => {
-                      setEmploymentType('Full-time');
+                      setEmploymentType("Full-time");
                     }}
                   >
                     Full-time job
@@ -171,15 +168,15 @@ export default function CreateJobseekerProfilePreferencesPage() {
                     sx={{
                       m: 2,
                       backgroundColor:
-                        employmentType === 'Part-time'
-                          ? '#047F9C'
-                          : 'transparent',
+                        employmentType === "Part-time"
+                          ? "#047F9C"
+                          : "transparent",
                       color:
-                        employmentType === 'Part-time' ? '#ffffff' : '#047F9C',
+                        employmentType === "Part-time" ? "#ffffff" : "#047F9C",
                     }}
                     variant="outlined"
                     onClick={() => {
-                      setEmploymentType('Part-time');
+                      setEmploymentType("Part-time");
                     }}
                   >
                     Part-time job
@@ -188,15 +185,15 @@ export default function CreateJobseekerProfilePreferencesPage() {
                     sx={{
                       m: 2,
                       backgroundColor:
-                        employmentType === 'Internship'
-                          ? '#047F9C'
-                          : 'transparent',
+                        employmentType === "Internship"
+                          ? "#047F9C"
+                          : "transparent",
                       color:
-                        employmentType === 'Internship' ? '#ffffff' : '#047F9C',
+                        employmentType === "Internship" ? "#ffffff" : "#047F9C",
                     }}
                     variant="outlined"
                     onClick={() => {
-                      setEmploymentType('Internship');
+                      setEmploymentType("Internship");
                     }}
                   >
                     Internship
@@ -205,15 +202,15 @@ export default function CreateJobseekerProfilePreferencesPage() {
                     sx={{
                       m: 2,
                       backgroundColor:
-                        employmentType === 'On-campus'
-                          ? '#047F9C'
-                          : 'transparent',
+                        employmentType === "On-campus"
+                          ? "#047F9C"
+                          : "transparent",
                       color:
-                        employmentType === 'On-campus' ? '#ffffff' : '#047F9C',
+                        employmentType === "On-campus" ? "#ffffff" : "#047F9C",
                     }}
                     variant="outlined"
                     onClick={() => {
-                      setEmploymentType('On-campus');
+                      setEmploymentType("On-campus");
                     }}
                   >
                     On-campus job
@@ -225,7 +222,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   id="profile-creation-preferences-require-role"
                   className="mt-7"
                   component="legend"
-                  sx={{ color: '#000000ff' }}
+                  sx={{ color: "#000000ff" }}
                 >
                   What technology path most interests you?
                 </FormLabel>
@@ -266,7 +263,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
             <PillButton
               variant="outlined"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/introduction');
+                router.push("/edit-profile/jobseeker/introduction");
               }}
             >
               Previous

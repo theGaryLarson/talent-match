@@ -1,96 +1,80 @@
-'use client';
+"use client";
 
-import React, { MouseEvent, useOptimistic, startTransition } from 'react';
-import RoundedButton from '@/app/ui/components/RoundedButton';
-import { JobStatus } from '@/app/lib/jobseekerJobTracking';
-import { useSession } from 'next-auth/react';
-import { redirect, usePathname } from 'next/navigation';
+import React, { useState } from "react";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
+import { useSession } from "next-auth/react";
+import { redirect, usePathname } from "next/navigation";
+import PillButton from "../PillButton";
 
 interface Props {
   id: string;
   appliedStatus?: string;
 }
 
-export default function ApplyToJobButton({ id, appliedStatus = '' }: Props) {
+export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
   // Initial state based on appliedStatus
-  const initialAppliedState =
+  const [hasApplied, setHasApplied] = useState<boolean>(
     appliedStatus == JobStatus.Accepted ||
-    appliedStatus == JobStatus.Applied ||
-    appliedStatus == JobStatus.Interviewing ||
-    appliedStatus == JobStatus.Negotiating ||
-    appliedStatus == JobStatus.NoResponse ||
-    appliedStatus == JobStatus.NotSelected;
-
-  let session = useSession();
-  let pathname = usePathname();
-
-  const [optimisticHasApplied, updateOptimisticHasApplied] = useOptimistic(
-    initialAppliedState,
-    (state, newValue: boolean) => newValue,
+      appliedStatus == JobStatus.Applied ||
+      appliedStatus == JobStatus.Interviewing ||
+      appliedStatus == JobStatus.Negotiating ||
+      appliedStatus == JobStatus.NoResponse ||
+      appliedStatus == JobStatus.NotSelected,
   );
 
-  const handleApplicationClick = async (e: MouseEvent<HTMLAnchorElement>) => {
+  const session = useSession();
+  const pathname = usePathname();
+
+  const handleApplicationClick = async () => {
     if (!session?.data?.user) {
       const base = window.location.origin;
-      const currentUrl = new URL(window.location.href);
-      const signInUrl = new URL('/signin', base);
-      let callbackUrlValue = pathname;
-      signInUrl.searchParams.set('callbackUrl', callbackUrlValue);
+      const signInUrl = new URL("/signin", base);
+      const callbackUrlValue = pathname;
+      signInUrl.searchParams.set("callbackUrl", callbackUrlValue);
       redirect(signInUrl.toString());
     }
     try {
-      if (!optimisticHasApplied) {
-        startTransition(() => {
-          updateOptimisticHasApplied(true);
-        });
-
+      if (!hasApplied) {
+        setHasApplied(true);
         const response = await fetch(`/api/joblistings/apply/${id}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
         if (!response.ok) {
-          console.log('error', response);
-          startTransition(() => {
-            updateOptimisticHasApplied(false);
-          });
-          throw new Error('Failed to update application status.');
+          setHasApplied(false);
+          throw new Error("Failed to update application status.");
         }
       } else {
-        startTransition(() => {
-          updateOptimisticHasApplied(false);
-        });
-
+        setHasApplied(false);
         const response = await fetch(`/api/joblistings/withdraw/${id}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
-
         if (!response.ok) {
-          startTransition(() => {
-            updateOptimisticHasApplied(true);
-          });
-          throw new Error('Failed to update application status');
+          setHasApplied(true);
+          throw new Error("Failed to update application status");
         }
       }
     } catch (error) {
-      console.error('Error updating application:', error);
+      console.error("Error updating application:", error);
     }
   };
 
   return (
-    <RoundedButton
-      content={optimisticHasApplied ? 'Withdraw Application' : 'Apply'}
-      invertColor
-      snug
-      newColors
-      bold={false}
-      className="capitalize"
+    <PillButton
+      disabled={
+        appliedStatus == JobStatus.Accepted ||
+        appliedStatus == JobStatus.NoResponse ||
+        appliedStatus == JobStatus.NotSelected
+      }
       onClick={handleApplicationClick}
-    />
+    >
+      {hasApplied ? "Withdraw Application" : "Apply"}
+    </PillButton>
   );
 }

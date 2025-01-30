@@ -1,30 +1,30 @@
 // NOTE: Request instance Store per Nextjs Redux starter here: https://redux.js.org/usage/nextjs#folder-structure
-import { Middleware } from '@reduxjs/toolkit';
-import { useMemo } from 'react';
-import { configureStore } from '@reduxjs/toolkit'
-import jobseekerReducer, { JobseekerState } from './features/profileCreation/jobseekerSlice'
-import saveReducer, { SaveState } from './features/profileCreation/saveSlice'
-
+import { configureStore } from "@reduxjs/toolkit";
+import jobseekerReducer, {
+  JobseekerState,
+} from "./features/profileCreation/jobseekerSlice";
+import saveReducer from "./features/profileCreation/saveSlice";
 
 interface PreloadedState {
-    jobseeker: JobseekerState,
+  jobseeker: JobseekerState;
 }
 
 // WARNING: preloadedState MUST utilize the interface which MUST match the same slices used for the reducers
 // WARNING: The ConfigureStoreOptions MUST be passed directly into configureStore without having its type specified
-export const makeStore = (preloadedState?:PreloadedState) => configureStore({
+export const makeStore = (preloadedState?: PreloadedState) =>
+  configureStore({
     reducer: {
-        jobseeker: jobseekerReducer,
-        save: saveReducer,
+      jobseeker: jobseekerReducer,
+      save: saveReducer,
     },
     preloadedState,
-    devTools: process.env.NODE_ENV !== 'production',
+    devTools: process.env.NODE_ENV !== "production",
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(loggerMiddleware),
-});
+  });
 
 // Infer the type of makeStore
-export type AppStore = ReturnType<typeof makeStore>
+export type AppStore = ReturnType<typeof makeStore>;
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore['getState']>
-export type AppDispatch = AppStore['dispatch']
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];

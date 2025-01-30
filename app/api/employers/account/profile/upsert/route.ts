@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { PrismaClient } from '@prisma/client';
-import { auth } from '@/auth';
-import { v4 as uuidv4 } from 'uuid';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { PostEmployerProfileDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
+import { NextResponse } from "next/server";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { PrismaClient } from "@prisma/client";
+import { auth } from "@/auth";
+import { v4 as uuidv4 } from "uuid";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import { PostEmployerProfileDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -68,7 +68,9 @@ export async function PATCH(request: Request) {
         update: {
           job_title: currentJobTitle,
           ...(linkedInUrl && { linkedin_url: linkedInUrl }),
-          ...(isApprovedEmployee && {is_verified_employee: isApprovedEmployee}),
+          ...(isApprovedEmployee && {
+            is_verified_employee: isApprovedEmployee,
+          }),
           ...(workAddressId && {
             company_addresses: {
               connect: {
@@ -94,7 +96,9 @@ export async function PATCH(request: Request) {
               id: session?.user.id!,
             },
           },
-          ...(isApprovedEmployee && {is_verified_employee: isApprovedEmployee}),
+          ...(isApprovedEmployee && {
+            is_verified_employee: isApprovedEmployee,
+          }),
           ...(workAddressId && {
             company_addresses: {
               connect: {
@@ -115,7 +119,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (e: any) {
-    console.error('Error creating employer profile:', e.message);
+    console.error("Error creating employer profile:", e.message);
     return NextResponse.json(
       { error: `Failed to create employer profile.\n${e.message}` },
       { status: 500 },

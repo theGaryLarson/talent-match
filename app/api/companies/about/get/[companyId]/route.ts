@@ -1,11 +1,13 @@
-import { NextResponse } from 'next/server';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { PrismaClient } from '@prisma/client';
-import { ReadEmployerAboutDTO } from '@/data/dtos/EmployerProfileCreationDTOs';
-import parsePhoneNumberFromString from 'libphonenumber-js';
+import { NextResponse } from "next/server";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { PrismaClient } from "@prisma/client";
+import { ReadEmployerAboutDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, props: { params: Promise<{ companyId: string }> }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ companyId: string }> },
+) {
   const params = await props.params;
   try {
     const companyId = params.companyId;
@@ -65,7 +67,7 @@ export async function GET(request: Request, props: { params: Promise<{ companyId
     };
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (e: any) {
-    console.error('Error retrieving company record.', e.message);
+    console.error("Error retrieving company record.", e.message);
     return NextResponse.json(
       { error: `Error retrieving company record.\n${e.message}` },
       { status: 500 },

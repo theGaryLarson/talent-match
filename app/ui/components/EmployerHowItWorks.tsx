@@ -1,6 +1,6 @@
-import { ArrowRightIcon, ArrowUpRightIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
-import Link from 'next/link';
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function EmployerHowItWorks() {
   return (
@@ -18,14 +18,14 @@ export default function EmployerHowItWorks() {
           link={'/underconstruction'}
         /> */}
         <Step
-          buttonText={'Search Local Candidates'}
-          title={'Discover Local Talent'}
-          img={'/images/employers/candidate-search.png'}
-          alt={'Candidate search'}
+          buttonText={"Search Local Candidates"}
+          title={"Discover Local Talent"}
+          img={"/images/employers/candidate-search.png"}
+          alt={"Candidate search"}
           article={
             "Connect with top tech talent right in your area. Simply define your desired search radius, and we'll present you with a curated list of local candidates. Through our advanced filters, you can search for the exact skills and experience you need, ensuring a perfect match for your needs."
           }
-          link={'/services/talent-search'}
+          link={"/services/talent-search"}
         />
         {/*<Step*/}
         {/*  buttonText={'Start Hiring'}*/}
@@ -42,8 +42,8 @@ export default function EmployerHowItWorks() {
             Discover diverse, qualified talent in your community
           </div>
           <Image
-            src={'/images/employerBottomPic.png'}
-            alt={'Discover diverse, qualified talent in your community'}
+            src={"/images/employerBottomPic.png"}
+            alt={"Discover diverse, qualified talent in your community"}
             width={3480}
             height={1791}
           />
@@ -71,12 +71,13 @@ function Step(props: {
           {props.article}
         </div>
       </div>
-      <Image className="laptop:row-span-2"
-            src={props.img}
-            alt={props.alt}
-            width={680}
-            height={440}
-          />
+      <Image
+        className="laptop:row-span-2"
+        src={props.img}
+        alt={props.alt}
+        width={680}
+        height={440}
+      />
       <Link
         href={props.link}
         className="inline-flex h-10 w-max items-center justify-center gap-2 rounded-[100px] border border-[#014260] px-6 py-2.5 hover:bg-gray-100"

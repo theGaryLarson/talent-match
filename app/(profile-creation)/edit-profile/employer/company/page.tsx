@@ -1,40 +1,39 @@
-'use client';
+"use client";
 
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '@/lib/employerStore';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import SelectOptionsWithLabel from '@/app/ui/components/SelectOptionsWithLabel';
-import AvatarUpload from '@/app/ui/components/AvatarUpload';
-import PillButton from '@/app/ui/components/PillButton';
-import { DatePicker } from '@mui/x-date-pickers';
-import SelectAutoload from '@/app/ui/components/mui/SelectAutoload';
-import TextFieldWithAutocomplete from '@/app/ui/components/mui/TextFieldWithAutocomplete';
-import { useSession } from 'next-auth/react';
-import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "@/lib/employerStore";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
+import AvatarUpload from "@/app/ui/components/AvatarUpload";
+import PillButton from "@/app/ui/components/PillButton";
+import { DatePicker } from "@mui/x-date-pickers";
+import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
+import TextFieldWithAutocomplete from "@/app/ui/components/mui/TextFieldWithAutocomplete";
+import { useSession } from "next-auth/react";
+import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import {
   PostAddressDTO,
   PostCompanyInfoDTO,
   ReadAddressDTO,
   ReadCompanyInfoDTO,
-} from '@/data/dtos/EmployerProfileCreationDTOs';
-import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
+} from "@/data/dtos/EmployerProfileCreationDTOs";
+import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
 import {
   setCompany,
   initialState,
-} from '@/lib/features/profileCreation/employerSlice';
+} from "@/lib/features/profileCreation/employerSlice";
 import {
   setPageDirty,
   setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import dayjs, { Dayjs } from 'dayjs';
-import { devLog } from '@/app/lib/utils';
-import _ from 'lodash';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import { ReadEmployerRecordDTO } from '@/app/lib/employer';
+} from "@/lib/features/profileCreation/saveSlice";
+import dayjs, { Dayjs } from "dayjs";
+import _ from "lodash";
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
+import { ReadEmployerRecordDTO } from "@/app/lib/employer";
 
-const formNamePrefix = 'profile-creation-company-';
+const formNamePrefix = "profile-creation-company-";
 
 export default function CreateEmployerCompanyInfoPage() {
   const companyStoreData = useSelector(
@@ -51,11 +50,11 @@ export default function CreateEmployerCompanyInfoPage() {
   );
   const [selectedWorkLocation, setSelectedWorkLocation] =
     useState<PostAddressDTO>({
-      city: '',
-      state: '',
-      stateCode: '',
-      zip: '',
-      county: '',
+      city: "",
+      state: "",
+      stateCode: "",
+      zip: "",
+      county: "",
     });
   const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>();
 
@@ -67,7 +66,7 @@ export default function CreateEmployerCompanyInfoPage() {
 
   // get employers.is_verified_employee
   useEffect(() => {
-    fetch('/api/employers/account/profile/get')
+    fetch("/api/employers/account/profile/get")
       .then((res) => {
         return res.json();
       })
@@ -85,7 +84,7 @@ export default function CreateEmployerCompanyInfoPage() {
           `/api/employers/account/company-info/get/${companyId}`,
         );
         if (!response.ok) {
-          console.warn('Data fetching failed. Using initialized fields.');
+          console.warn("Data fetching failed. Using initialized fields.");
           return;
         }
 
@@ -109,16 +108,16 @@ export default function CreateEmployerCompanyInfoPage() {
           companyAddresses: companyZips,
           logoUrl: fetchedData.logoUrl || undefined,
           aboutUs: fetchedData.aboutUs || undefined,
-          companyEmail: fetchedData.companyEmail || '',
-          yearFounded: fetchedData.yearFounded || '',
+          companyEmail: fetchedData.companyEmail || "",
+          yearFounded: fetchedData.yearFounded || "",
           websiteUrl: fetchedData.websiteUrl || undefined,
           videoUrl: fetchedData.videoUrl || undefined,
           phoneCountryCode: fetchedData.phoneCountryCode || undefined,
           companyPhone: fetchedData.companyPhone || undefined,
           mission: fetchedData.mission || undefined,
           vision: fetchedData.vision || undefined,
-          companySize: fetchedData.companySize || '',
-          estimatedAnnualHires: fetchedData.estimatedAnnualHires || '',
+          companySize: fetchedData.companySize || "",
+          estimatedAnnualHires: fetchedData.estimatedAnnualHires || "",
         };
         setCompanyData(updatedCompanyData);
         setYearFounded(
@@ -128,11 +127,11 @@ export default function CreateEmployerCompanyInfoPage() {
         );
 
         setIndustry({
-          industry_sector_id: fetchedData.industrySectorId ?? '',
-          sector_title: fetchedData.industrySectorTitle || '',
+          industry_sector_id: fetchedData.industrySectorId ?? "",
+          sector_title: fetchedData.industrySectorTitle || "",
         });
-      } catch (error) {
-        console.warn('Error fetching company data. Using initialized fields.');
+      } catch {
+        console.warn("Error fetching company data. Using initialized fields.");
       }
     };
     // console.log('isEqual', _.isEqual(companyStoreData, initialState.company))
@@ -141,15 +140,15 @@ export default function CreateEmployerCompanyInfoPage() {
       _.isEqual(companyStoreData, initialState.company) &&
       session.user.companyId
     ) {
-      fetchCompanyData(session.user.companyId ?? '');
-      console.log('fetchedCompanyData');
+      fetchCompanyData(session.user.companyId ?? "");
+      console.log("fetchedCompanyData");
     } else {
       setCompanyData(companyStoreData);
       setYearFounded(
         companyData.yearFounded ? dayjs(companyData.yearFounded) : null,
       );
     }
-    dispatch(setPageSaved('company'));
+    dispatch(setPageSaved("company"));
   }, [session?.user.id, pathname]);
 
   const handleFieldChange = (
@@ -157,7 +156,7 @@ export default function CreateEmployerCompanyInfoPage() {
   ) => {
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
-    dispatch(setPageDirty('company'));
+    dispatch(setPageDirty("company"));
     // console.log('companyData', companyData)
 
     if (companyData.hasOwnProperty(fieldName)) {
@@ -172,8 +171,8 @@ export default function CreateEmployerCompanyInfoPage() {
     e: React.SyntheticEvent<Element, Event>,
     val: string | ReadAddressDTO | null,
   ) => {
-    dispatch(setPageDirty('company'));
-    if (val && typeof val === 'object' && 'zip' in val) {
+    dispatch(setPageDirty("company"));
+    if (val && typeof val === "object" && "zip" in val) {
       setSelectedWorkLocation((prevState) => ({
         ...prevState,
         zip: val.zip!,
@@ -199,7 +198,7 @@ export default function CreateEmployerCompanyInfoPage() {
   };
 
   const handleImageUpload = (url: string) => {
-    dispatch(setPageDirty('company'));
+    dispatch(setPageDirty("company"));
     setCompanyData((prevState) => ({
       ...prevState,
       logoUrl: url,
@@ -210,7 +209,7 @@ export default function CreateEmployerCompanyInfoPage() {
     e.preventDefault();
 
     if (!session?.user?.id || !session?.user?.employerId) {
-      console.error('User session or required fields are not available.');
+      console.error("User session or required fields are not available.");
       return;
     }
     // console.log('employerInfo', employerInfo)
@@ -222,11 +221,11 @@ export default function CreateEmployerCompanyInfoPage() {
     };
     try {
       const response = await fetch(
-        '/api/employers/account/company-info/upsert',
+        "/api/employers/account/company-info/upsert",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(finalCompanyData),
         },
@@ -238,16 +237,16 @@ export default function CreateEmployerCompanyInfoPage() {
           companyId: finalCompanyData.companyId,
         });
 
-        router.push('/edit-profile/employer/about');
-        dispatch(setPageSaved('company'));
+        router.push("/edit-profile/employer/about");
+        dispatch(setPageSaved("company"));
       } else {
         if (!employerInfo?.is_verified_employee)
-          router.push('/edit-profile/employer/about');
+          router.push("/edit-profile/employer/about");
         const errorData = await response.json();
-        console.error('Failed to update company info:', errorData);
+        console.error("Failed to update company info:", errorData);
       }
     } catch (error) {
-      console.error('Error updating company info:', error);
+      console.error("Error updating company info:", error);
     }
   };
 
@@ -255,7 +254,7 @@ export default function CreateEmployerCompanyInfoPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(2 / 5) * 100} size="sm" />
+        <ProgressBarFlat progress={(2 / 5) * 100} />
         <p className="mb-6">Step 2/5</p>
         <form onSubmit={handleSubmit}>
           <div className="profile-form-grid md:grid-cols-2">
@@ -280,7 +279,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 option.sector_title
               }
               getOptionId={(option: IndustrySectorDropdownDTO) =>
-                option.industry_sector_id ?? ''
+                option.industry_sector_id ?? ""
               }
               getOptionFromId={(
                 options: IndustrySectorDropdownDTO[],
@@ -305,7 +304,7 @@ export default function CreateEmployerCompanyInfoPage() {
               maxSizeMB={1}
               userId={companyData.companyId!}
               onImageUpload={handleImageUpload}
-              initialImageUrl={companyData.logoUrl || ''}
+              initialImageUrl={companyData.logoUrl || ""}
               disabled={!employerInfo?.is_verified_employee}
               apiPath="/api/companies/avatar/upload"
             />
@@ -318,7 +317,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-websiteUrl"
                 placeholder="www.company.com"
                 onChange={handleFieldChange}
-                value={companyData.websiteUrl ?? ''}
+                value={companyData.websiteUrl ?? ""}
                 disabled={!employerInfo?.is_verified_employee}
                 required
               >
@@ -330,7 +329,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-companyEmail"
                 placeholder="hello@company.com"
                 onChange={handleFieldChange}
-                value={companyData.companyEmail ?? ''}
+                value={companyData.companyEmail ?? ""}
                 disabled={!employerInfo?.is_verified_employee}
                 required
               >
@@ -342,7 +341,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-companyPhone"
                 onChange={handleFieldChange}
                 placeholder="(555) 123-4567"
-                value={companyData.companyPhone ?? ''}
+                value={companyData.companyPhone ?? ""}
                 disabled={!employerInfo?.is_verified_employee}
                 required
               >
@@ -350,14 +349,14 @@ export default function CreateEmployerCompanyInfoPage() {
               </InputTextWithLabel>
 
               <DatePicker
-                label={'Year Founded *'}
-                views={['year']}
+                label={"Year Founded *"}
+                views={["year"]}
                 value={yearFounded}
                 onChange={(newValue) => {
                   setYearFounded(newValue);
                   setCompanyData({
                     ...companyData,
-                    yearFounded: newValue?.year().toString() || '',
+                    yearFounded: newValue?.year().toString() || "",
                   });
                 }}
                 className="year-picker"
@@ -368,16 +367,16 @@ export default function CreateEmployerCompanyInfoPage() {
                 id="profile-creation-company-companySize"
                 onChange={handleFieldChange}
                 options={[
-                  { label: '1-10', value: '1-10' },
-                  { label: '11-50', value: '11-50' },
-                  { label: '51-200', value: '51-200' },
-                  { label: '201-500', value: '201-500' },
-                  { label: '501-1000', value: '501-1000' },
-                  { label: '1001-5000', value: '1001-5000' },
-                  { label: '5000+', value: '5000+' },
+                  { label: "1-10", value: "1-10" },
+                  { label: "11-50", value: "11-50" },
+                  { label: "51-200", value: "51-200" },
+                  { label: "201-500", value: "201-500" },
+                  { label: "501-1000", value: "501-1000" },
+                  { label: "1001-5000", value: "1001-5000" },
+                  { label: "5000+", value: "5000+" },
                 ]}
                 placeholder="Please select"
-                value={companyData.companySize ?? ''}
+                value={companyData.companySize ?? ""}
                 disabled={!employerInfo?.is_verified_employee}
               >
                 Company Size *
@@ -388,7 +387,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 name="profile-creation-company-estimatedAnnualHires"
                 placeholder="100"
                 onChange={handleFieldChange}
-                value={companyData.estimatedAnnualHires || ''}
+                value={companyData.estimatedAnnualHires || ""}
                 disabled={!employerInfo?.is_verified_employee}
                 required
               >
@@ -402,7 +401,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 className="text-field-autocomplete"
                 searchingText="Searching..."
                 noResultsText="No postal code found..."
-                value={selectedWorkLocation?.zip ?? ''}
+                value={selectedWorkLocation?.zip ?? ""}
                 disabled={!employerInfo?.is_verified_employee}
                 onChange={handleAddressSelection}
                 searchPlaceholder="Company Location Postal Code"
@@ -424,7 +423,7 @@ export default function CreateEmployerCompanyInfoPage() {
           <div className="profile-form-progress-btn-group">
             <PillButton
               className="custom-outline-btn"
-              onClick={() => router.push('/edit-profile/employer/profile')}
+              onClick={() => router.push("/edit-profile/employer/profile")}
             >
               Previous
             </PillButton>

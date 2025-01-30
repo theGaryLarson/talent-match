@@ -1,7 +1,7 @@
-export default function page(){
-    return(
-        <main>
-        <p>FAQ Page</p>
-        </main>
-    );
+export default function page() {
+  return (
+    <main>
+      <p>FAQ Page</p>
+    </main>
+  );
 }

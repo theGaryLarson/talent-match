@@ -1,19 +1,21 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient, WorkExperience } from '@prisma/client';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { JsWorkExpDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { StayCurrentLandscapeTwoTone } from '@mui/icons-material';
+import { NextResponse } from "next/server";
+import { PrismaClient, WorkExperience } from "@prisma/client";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { JsWorkExpDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const prisma: PrismaClient = getPrismaClient();
 
-export async function GET(request: Request, props: { params: Promise<{ userId: string }> }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ userId: string }> },
+) {
   const params = await props.params;
   try {
     const userId = params.userId;
 
     if (!userId) {
       return NextResponse.json(
-        { error: 'User ID is required' },
+        { error: "User ID is required" },
         { status: 400 },
       );
     }
@@ -70,9 +72,9 @@ export async function GET(request: Request, props: { params: Promise<{ userId: s
 
       const result: JsWorkExpDTO = {
         userId: user.id,
-        yearsWorkExperience: jobseeker.years_work_exp?.toString() ?? '',
+        yearsWorkExperience: jobseeker.years_work_exp?.toString() ?? "",
         monthsInternshipExperience:
-          jobseeker.months_internship_exp?.toString() ?? '',
+          jobseeker.months_internship_exp?.toString() ?? "",
         ...(privateData?.is_authorized_to_work_in_usa !== undefined && {
           isAuthorizedToWorkUsa: privateData.is_authorized_to_work_in_usa,
         }),

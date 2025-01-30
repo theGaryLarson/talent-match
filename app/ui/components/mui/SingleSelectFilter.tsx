@@ -1,20 +1,17 @@
-import * as React from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
+import * as React from "react";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import ListItemText from "@mui/material/ListItemText";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 interface Props {
-  id: string,
-  options: { label: string, value: string }[],
-  label: string,
-  value: string[],
-  onChange: ((event: SelectChangeEvent<string[]>) => void),
-  placeholder?: string | undefined,
-  [key: string]: any,
+  id?: string;
+  options: { label: string; value: string }[];
+  label: string;
+  value: string[];
+  onChange: (event: SelectChangeEvent<string[]>) => void;
 }
 
 export default function SingleSelectCheckmarks({
@@ -23,8 +20,6 @@ export default function SingleSelectCheckmarks({
   label,
   value,
   onChange,
-  placeholder,
-  ...rest
 }: Props) {
   const [filter, setFilter] = React.useState<string[]>([]);
   // const [formattedLabel, setFormattedLabel] = React.useState<string>(label);
@@ -34,7 +29,7 @@ export default function SingleSelectCheckmarks({
       target: { value },
     } = event;
 
-    setFilter(typeof value === 'string' ? value.split(',') : value);
+    setFilter(typeof value === "string" ? value.split(",") : value);
     onChange(event);
   };
 
@@ -54,8 +49,11 @@ export default function SingleSelectCheckmarks({
             top: "8px",
             left: "0px",
           }}
-        >{label}</InputLabel>
+        >
+          {label}
+        </InputLabel>
         <Select
+          id={id}
           className=""
           value={filter}
           onChange={handleChange}

@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
-const TWO_PI = Math.PI * 2;
 const HALF_PI = Math.PI * 0.5;
 
 const timeStep = 1 / 120;
@@ -41,7 +40,7 @@ class Particle {
 
     this.time = 0;
     this.duration = 3 + Math.random() * 2;
-    this.color = '#' + Math.floor(Math.random() * 0xffffff).toString(16);
+    this.color = "#" + Math.floor(Math.random() * 0xffffff).toString(16);
 
     this.w = 8;
     this.h = 6;
@@ -104,12 +103,26 @@ const Ease = {
   },
 };
 
-function cubeBezier(p0: Point, c0: Point, c1: Point, p1: Point, t: number): Point {
+function cubeBezier(
+  p0: Point,
+  c0: Point,
+  c1: Point,
+  p1: Point,
+  t: number,
+): Point {
   const p = new Point();
   const nt = 1 - t;
 
-  p.x = nt * nt * nt * p0.x + 3 * nt * nt * t * c0.x + 3 * nt * t * t * c1.x + t * t * t * p1.x;
-  p.y = nt * nt * nt * p0.y + 3 * nt * nt * t * c0.y + 3 * nt * t * t * c1.y + t * t * t * p1.y;
+  p.x =
+    nt * nt * nt * p0.x +
+    3 * nt * nt * t * c0.x +
+    3 * nt * t * t * c1.x +
+    t * t * t * p1.x;
+  p.y =
+    nt * nt * nt * p0.y +
+    3 * nt * nt * t * c0.y +
+    3 * nt * t * t * c1.y +
+    t * t * t * p1.y;
 
   return p;
 }
@@ -122,7 +135,7 @@ const Confetti: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d')!;
+    const ctx = canvas.getContext("2d")!;
     initDrawingCanvas(ctx, canvas.clientWidth, canvas.clientHeight);
 
     const loop = () => {
@@ -139,11 +152,15 @@ const Confetti: React.FC = () => {
 
     loop();
 
-    function initDrawingCanvas(ctx: CanvasRenderingContext2D, viewWidth: number, viewHeight: number) {
+    function initDrawingCanvas(
+      ctx: CanvasRenderingContext2D,
+      viewWidth: number,
+      viewHeight: number,
+    ) {
       const canvas = canvasRef.current!;
       canvas.width = viewWidth;
       canvas.height = viewHeight;
-  
+
       createParticles(viewWidth, viewHeight);
     }
   }, []);
@@ -152,8 +169,14 @@ const Confetti: React.FC = () => {
     particles.current = [];
     for (let i = 0; i < 128; i++) {
       const p0 = new Point(viewWidth * 0.5, viewHeight * 0.5);
-      const p1 = new Point(Math.random() * viewWidth, Math.random() * viewHeight);
-      const p2 = new Point(Math.random() * viewWidth, Math.random() * viewHeight);
+      const p1 = new Point(
+        Math.random() * viewWidth,
+        Math.random() * viewHeight,
+      );
+      const p2 = new Point(
+        Math.random() * viewWidth,
+        Math.random() * viewHeight,
+      );
       const p3 = new Point(Math.random() * viewWidth, viewHeight + 64);
 
       particles.current.push(new Particle(p0, p1, p2, p3));
@@ -164,7 +187,11 @@ const Confetti: React.FC = () => {
     particles.current.forEach((p) => p.update());
   };
 
-  const draw = (ctx: CanvasRenderingContext2D, viewWidth: number, viewHeight: number) => {
+  const draw = (
+    ctx: CanvasRenderingContext2D,
+    viewWidth: number,
+    viewHeight: number,
+  ) => {
     ctx.clearRect(0, 0, viewWidth, viewHeight);
     particles.current.forEach((p) => p.draw(ctx));
   };
@@ -173,14 +200,19 @@ const Confetti: React.FC = () => {
     return particles.current.every((p) => p.complete);
   };
 
-  return <canvas ref={canvasRef} style={{
-    position: 'fixed',
-    height: '150vh',
-    width: '100vw',
-    top: '-50vh',
-    left: 0,
-    pointerEvents: 'none'
-  }} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        height: "150vh",
+        width: "100vw",
+        top: "-50vh",
+        left: 0,
+        pointerEvents: "none",
+      }}
+    />
+  );
 };
 
 export default Confetti;

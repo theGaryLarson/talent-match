@@ -1,6 +1,6 @@
-'use client';
-import Link from 'next/link';
-import Avatar from '../Avatar'
+"use client";
+import Link from "next/link";
+import Avatar from "../Avatar";
 export default function EmployerNameTitleTag(props: {
   name: string | null | undefined;
   title: string;
@@ -8,7 +8,7 @@ export default function EmployerNameTitleTag(props: {
   pfp: string | undefined;
 }) {
   return (
-    <div className="flex h-[76px] p-[16px] w-full items-center rounded-lg border p-4 bg-white rounded-[10px] shadow grow" >
+    <div className="flex h-[76px] p-[16px] w-full items-center rounded-lg border p-4 bg-white rounded-[10px] shadow grow">
       <Avatar imgsrc={props.pfp} scale={0.69} />
       <div className="flex w-full flex-wrap items-center justify-between p-4">
         <h2 className="font-bold">
@@ -21,7 +21,7 @@ export default function EmployerNameTitleTag(props: {
             href="/edit-profile/employer/profile"
           >
             Edit My Profile
-          </Link>{' '}
+          </Link>{" "}
           {/* |{' '}
           <Link
             className="text-red-600"

@@ -33,18 +33,26 @@ export default function OccupationCard({
     const fetchOccupationsFromApi = async () => {
       try {
         if (isAuthenticated && accounts.length > 0) {
-          const result = await fetchOccupationRelatedData(occupation.cfa_occupationid);
+          const result = await fetchOccupationRelatedData(
+            occupation.cfa_occupationid,
+          );
           console.log(result);
           setData(result);
         } else if (inProgress === InteractionStatus.None) {
           await instance.loginRedirect();
         }
       } catch (error) {
-        console.error('Error fetching data', error);
+        console.error("Error fetching data", error);
       }
     };
     fetchOccupationsFromApi();
-  }, [accounts, instance, inProgress, isAuthenticated, occupation.cfa_occupationid]);
+  }, [
+    accounts,
+    instance,
+    inProgress,
+    isAuthenticated,
+    occupation.cfa_occupationid,
+  ]);
 
   return (
     <Grid2 size={{ md: 6 }}>
@@ -52,11 +60,17 @@ export default function OccupationCard({
         sx={{
           border: "2px solid #00bcd4",
           borderRadius: 2,
-          height: '100%',
+          height: "100%",
         }}
       >
-        <CardContent sx={{ height: '100%' }}>
-          <Grid2 container spacing={2} direction="row" alignItems="center" sx={{ height: '100%' }}>
+        <CardContent sx={{ height: "100%" }}>
+          <Grid2
+            container
+            spacing={2}
+            direction="row"
+            alignItems="center"
+            sx={{ height: "100%" }}
+          >
             {/* Picture and Name */}
             <Grid2>
               <Avatar sx={{ width: 75, height: 75 }}>
@@ -75,7 +89,10 @@ export default function OccupationCard({
             {/* Description */}
             <Grid2>
               <Typography variant="body2" color="text.secondary">
-                {(data && data.cfa_whattheydo && truncateText(data.cfa_whattheydo, 250) || "")}
+                {(data &&
+                  data.cfa_whattheydo &&
+                  truncateText(data.cfa_whattheydo, 250)) ||
+                  ""}
               </Typography>
             </Grid2>
             {/* Skills */}
@@ -86,23 +103,31 @@ export default function OccupationCard({
                     Top Skills
                   </Typography>
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                    {data.cfa_toplightcastskill_Occupation.slice(0, 5).map((skill, index) => (
-                      <Chip label={skill.cfa_skill} key={index} />
-                    ))}
+                    {data.cfa_toplightcastskill_Occupation
+                      .slice(0, 5)
+                      .map((skill, index) => (
+                        <Chip label={skill.cfa_skill} key={index} />
+                      ))}
                   </Box>
                 </>
-              ) : <>
-                <Typography variant="h6" component="div" gutterBottom>
-                </Typography>
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                </Box>
-              </>}
+              ) : (
+                <>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    gutterBottom
+                  ></Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}></Box>
+                </>
+              )}
             </Grid2>
             {/* View Occupation */}
             <Grid2>
               <Button
                 variant="outlined"
-                onClick={(() => router.push(`/occupation/${occupation.cfa_occupationid}`))}
+                onClick={() =>
+                  router.push(`/occupation/${occupation.cfa_occupationid}`)
+                }
                 LinkComponent={NextLink}
                 sx={{ borderColor: "#00bcd4", color: "#00bcd4" }}
               >

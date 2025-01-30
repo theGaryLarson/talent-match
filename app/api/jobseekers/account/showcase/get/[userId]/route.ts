@@ -1,12 +1,15 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { JsShowcaseDTO } from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { JsShowcaseDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
 
 const prisma: PrismaClient = getPrismaClient();
-export async function GET(request: Request, props: { params: Promise<{ userId: string }> }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ userId: string }> },
+) {
   const params = await props.params;
   try {
     const userId = params.userId;

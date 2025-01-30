@@ -1,14 +1,17 @@
-import { JobseekerSkillDTO } from '@/data/dtos/JobseekerSkillDTO';
-import { ProgramEnrollmentStatus } from './JobSeekerProfileCreationDTOs';
+import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
+import { ProgramEnrollmentStatus } from "./JobSeekerProfileCreationDTOs";
 
 export type JobSeekerCardViewDTO = {
   jobseeker_id: string;
   user_id: string;
-  BookmarkedJobseeker: { // bookmarked by current user's company?
-    jobseekerId: string;
-    companyId: string;
-    employerId: string|null;
-  }[] | null;
+  BookmarkedJobseeker:
+    | {
+        // bookmarked by current user's company?
+        jobseekerId: string;
+        companyId: string;
+        employerId: string | null;
+      }[]
+    | null;
   intro_headline: string | null;
   years_work_exp: number | null;
   highest_level_of_study_completed: string | null;
@@ -38,12 +41,12 @@ export type JobSeekerCardViewDTO = {
   jobseeker_education:
     | {
         eduProviders: {
-          name: string|null;
+          name: string | null;
         } | null;
         edLevel: string | null;
-        enrollmentStatus?: ProgramEnrollmentStatus|string;
-        startDate: string | null| Date;
-        gradDate: string | null| Date;
+        enrollmentStatus?: ProgramEnrollmentStatus | string;
+        startDate: string | null | Date;
+        gradDate: string | null | Date;
         degreeType: string | null;
         program: {
           id: string;

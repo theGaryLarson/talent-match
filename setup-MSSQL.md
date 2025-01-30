@@ -17,6 +17,7 @@ DATABASE_URL="sqlserver://localhost:1433;database=CoreDB;user=SA;password=YourCo
 # Generate this secret by running the following command: openssl rand -base64 32
 AUTH_SECRET=<your generated base64 auth secret>
 ```
+
 Don't forget to generate your Base64 Auth Secret and save!
 
 ### 4. Setting Up MSSQL Server

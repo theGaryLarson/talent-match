@@ -13,56 +13,55 @@ import {
   Typography,
   Stack,
   Divider,
-} from '@mui/material';
-import { ArrowCircleRightOutlined } from '@mui/icons-material';
-import Link from 'next/link';
-import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
-import { JobStatus } from '@/app/lib/jobseekerJobTracking';
-import RoundedButton from '../RoundedButton';
-import PillButton from '../PillButton';
+} from "@mui/material";
+import { ArrowCircleRightOutlined } from "@mui/icons-material";
+import Link from "next/link";
+import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
+import PillButton from "../PillButton";
 
 type StatusConfigType = {
   [K in JobStatus]: {
-    color: ChipProps['color'];
-    variant: ChipProps['variant'];
+    color: ChipProps["color"];
+    variant: ChipProps["variant"];
   };
 };
 
 const statusConfig: StatusConfigType = {
   [JobStatus.Applied]: {
-    color: 'success',
-    variant: 'outlined',
+    color: "success",
+    variant: "outlined",
   },
   [JobStatus.Interviewing]: {
-    color: 'primary',
-    variant: 'outlined',
+    color: "primary",
+    variant: "outlined",
   },
   [JobStatus.Negotiating]: {
-    color: 'secondary',
-    variant: 'filled',
+    color: "secondary",
+    variant: "filled",
   },
   [JobStatus.Accepted]: {
-    color: 'success',
-    variant: 'filled',
+    color: "success",
+    variant: "filled",
   },
   [JobStatus.IWithdrew]: {
-    color: 'error',
-    variant: 'outlined',
+    color: "error",
+    variant: "outlined",
   },
   [JobStatus.NotSelected]: {
-    color: 'error',
-    variant: 'outlined',
+    color: "error",
+    variant: "outlined",
   },
   [JobStatus.NoResponse]: {
-    color: 'default',
-    variant: 'outlined',
+    color: "default",
+    variant: "outlined",
   },
 };
 
 const getStatusStyle = (status: string) => {
   const defaultStyle = {
-    color: 'default' as ChipProps['color'],
-    variant: 'outlined' as ChipProps['variant'],
+    color: "default" as ChipProps["color"],
+    variant: "outlined" as ChipProps["variant"],
   };
 
   return statusConfig[status as JobStatus] || defaultStyle;
@@ -90,35 +89,54 @@ export default async function Applications({
         container
         spacing={1}
         size={1}
-        sx={{ justifyContent: 'space-between' }}
+        sx={{ justifyContent: "space-between" }}
       >
-        <p className="self-center text-xl font-medium text-button-secondary-idle-text">
+        <Typography
+          variant="h6"
+          sx={{
+            color: "secondary.main",
+            alignSelf: "center",
+          }}
+        >
           Application Status
-        </p>
+        </Typography>
         <PillButton
           href="/services/joblistings"
           disableElevation
           sx={{
-            backgroundColor: '#f6f6f6',
-            color: '#014260',
+            backgroundColor: "#f6f6f6",
+            color: "secondary.main",
           }}
         >
           Search Jobs
         </PillButton>
       </Grid2>
       <Grid2 size={1}>
-        <Card
-          variant="outlined"
-          sx={{ display: { xs: 'none', sm: 'block' } }}
-        >
+        <Card variant="outlined" sx={{ display: { xs: "none", sm: "block" } }}>
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{color: '#014260', fontWeight: '600'}}>Job Title</TableCell>
-                  <TableCell sx={{color: '#014260', fontWeight: '600'}}>Company Name</TableCell>
-                  <TableCell sx={{color: '#014260', fontWeight: '600'}}>Deadline</TableCell>
-                  <TableCell sx={{color: '#014260', fontWeight: '600'}}>Status</TableCell>
+                  <TableCell
+                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                  >
+                    Job Title
+                  </TableCell>
+                  <TableCell
+                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                  >
+                    Company Name
+                  </TableCell>
+                  <TableCell
+                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                  >
+                    Deadline
+                  </TableCell>
+                  <TableCell
+                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                  >
+                    Status
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -126,25 +144,31 @@ export default async function Applications({
                   <TableRow
                     key={job.job_posting_id}
                     sx={{
-                      '&:last-child td': {
+                      "&:last-child td": {
                         borderBottom: 0,
                       },
                     }}
                   >
-                    <TableCell sx={{color: '#014260', fontWeight: '600'}}>{job.job_title}</TableCell>
-                    <TableCell sx={{color: '#014260'}}>{job.companies.company_name}</TableCell>
+                    <TableCell
+                      sx={{ color: "secondary.main", fontWeight: "600" }}
+                    >
+                      {job.job_title}
+                    </TableCell>
+                    <TableCell sx={{ color: "secondary.main" }}>
+                      {job.companies.company_name}
+                    </TableCell>
                     <TableCell>
                       {job.unpublish_date?.toLocaleString(undefined, {
-                        weekday: 'long',
-                        month: 'short',
-                        day: 'numeric',
+                        weekday: "long",
+                        month: "short",
+                        day: "numeric",
                       })}
                     </TableCell>
                     <TableCell
                       sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
                       <Chip
@@ -155,7 +179,7 @@ export default async function Applications({
                       />
                       <Link
                         target="_blank"
-                        href={'/services/joblistings/' + job.job_posting_id}
+                        href={"/services/joblistings/" + job.job_posting_id}
                       >
                         <ArrowCircleRightOutlined />
                       </Link>
@@ -166,17 +190,17 @@ export default async function Applications({
             </Table>
           </TableContainer>
         </Card>
-        <Card variant="outlined" sx={{ display: { xs: 'block', sm: 'none' } }}>
-          <Stack spacing={1} direction={'column'} sx={{ pt: 1 }}>
+        <Card variant="outlined" sx={{ display: { xs: "block", sm: "none" } }}>
+          <Stack spacing={1} direction={"column"} sx={{ pt: 1 }}>
             {jobs.map((job, index) => (
-              <Box key={job.job_posting_id + 'sm'} sx={{ px: 2 }}>
+              <Box key={job.job_posting_id + "sm"} sx={{ px: 2 }}>
                 <Typography>{job.job_title}</Typography>
                 <Typography>{job.companies.company_name}</Typography>
                 <Typography>
                   {job.unpublish_date?.toLocaleString(undefined, {
-                    weekday: 'long',
-                    month: 'short',
-                    day: 'numeric',
+                    weekday: "long",
+                    month: "short",
+                    day: "numeric",
                   })}
                 </Typography>
                 <Chip
@@ -188,9 +212,9 @@ export default async function Applications({
 
                 <Link
                   target="_blank"
-                  href={'/services/joblistings/' + job.job_posting_id}
+                  href={"/services/joblistings/" + job.job_posting_id}
                 >
-                  <Typography sx={{ textAlign: 'end', mb: 1 }}>
+                  <Typography sx={{ textAlign: "end", mb: 1 }}>
                     <ArrowCircleRightOutlined />
                   </Typography>
                 </Link>

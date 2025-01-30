@@ -1,34 +1,32 @@
-'use client';
-import { getMyJobListings } from '@/app/lib/joblistings';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
-import DeleteJobPostingButton from '../jobPostings/DeleteJobPostingButton';
-import { useEffect, useState } from 'react';
-import { JobListingCardViewDTO } from '@/data/dtos/JobListingCardViewDTO';
+"use client";
+import Link from "next/link";
+import DeleteJobPostingButton from "../jobPostings/DeleteJobPostingButton";
+import { useEffect, useState } from "react";
+import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 
 const getDaysSince = (dateStr: string | Date): number => {
   try {
-    const d = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
+    const d = typeof dateStr === "string" ? new Date(dateStr) : dateStr;
     if (isNaN(d.getTime())) {
-      console.error('Invalid date:', dateStr);
+      console.error("Invalid date:", dateStr);
       return 0;
     }
     return Math.floor((Date.now() - d.getTime()) / 86400000);
   } catch (error) {
-    console.error('Error calculating days since:', error);
+    console.error("Error calculating days since:", error);
     return 0;
   }
 };
 
 async function fetchMyJobListings(): Promise<any> {
-  const response = await fetch('/api/joblistings/getmyjoblistings', {
-    method: 'GET',
+  const response = await fetch("/api/joblistings/getmyjoblistings", {
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
   if (!response.ok) {
-    throw new Error('Failed to fetch data');
+    throw new Error("Failed to fetch data");
   }
   return response.json();
 }
@@ -42,7 +40,7 @@ export default function EmployerRecentJobPosts() {
         const myJobListings = await fetchMyJobListings();
         setJobListings(myJobListings);
       } catch (error) {
-        console.error('Error fetching bookmarked jobs:', error);
+        console.error("Error fetching bookmarked jobs:", error);
       }
     };
     fetchJobListings();
@@ -74,15 +72,13 @@ function SingleJobPost({
   job: JobListingCardViewDTO;
   days: number;
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   let dayPostedText: string;
   switch (days) {
     case 0:
-      dayPostedText = 'Posted Today';
+      dayPostedText = "Posted Today";
       break;
     case 1:
-      dayPostedText = 'Posted Yesterday';
+      dayPostedText = "Posted Yesterday";
       break;
     default:
       dayPostedText = `Posted ${days} Days Ago`;

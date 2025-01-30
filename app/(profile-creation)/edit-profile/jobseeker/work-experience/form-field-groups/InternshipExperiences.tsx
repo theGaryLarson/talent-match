@@ -1,25 +1,25 @@
-import React, { memo, useCallback } from 'react';
-import { Checkbox } from '@mui/material';
-import PillButton from '@/app/ui/components/PillButton';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import TextareaWithLabel from '@/app/ui/components/TextareaWithLabel';
-import { v4 as uuidv4 } from 'uuid';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
-import { IndustrySectorDropdownDTO } from '@/data/dtos/IndustrySectorDropdownDTO';
-import { TechnologyAreaDropdownDTO } from '@/data/dtos/TechnologyAreaDropdownDTO';
-import RequiredTooltip from '@/app/ui/components/mui/RequiredTooltip';
-import { Close } from '@mui/icons-material';
+import React, { memo, useCallback } from "react";
+import { Checkbox } from "@mui/material";
+import PillButton from "@/app/ui/components/PillButton";
+import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
+import TextareaWithLabel from "@/app/ui/components/TextareaWithLabel";
+import { v4 as uuidv4 } from "uuid";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Dayjs } from "dayjs";
+import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
+import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO";
+import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
+import { Close } from "@mui/icons-material";
 
-const classNamePrefix = 'profile-creation-internship-experience-group-';
-const classCompany = 'company';
-const classCompanyIndustry = 'sectorObject';
-const classCompanyTechArea = 'techAreaObject';
-const classTitle = 'jobTitle';
-const classStarts = 'startDate';
-const classEnds = 'endDate';
-const classCurrent = 'isCurrentJob';
-const classExperience = 'responsibilities';
+const classNamePrefix = "profile-creation-internship-experience-group-";
+const classCompany = "company";
+const classCompanyIndustry = "sectorObject";
+const classCompanyTechArea = "techAreaObject";
+const classTitle = "jobTitle";
+const classStarts = "startDate";
+const classEnds = "endDate";
+const classCurrent = "isCurrentJob";
+const classExperience = "responsibilities";
 
 export interface InternshipExperienceData {
   workId: string;
@@ -36,14 +36,14 @@ export interface InternshipExperienceData {
 export function defaultInternshipExperienceData(): InternshipExperienceData {
   return {
     workId: uuidv4(),
-    [classCompany]: '',
-    [classCompanyIndustry]: { industry_sector_id: '', sector_title: '' },
-    [classCompanyTechArea]: { id: '', title: '' },
-    [classTitle]: '',
+    [classCompany]: "",
+    [classCompanyIndustry]: { industry_sector_id: "", sector_title: "" },
+    [classCompanyTechArea]: { id: "", title: "" },
+    [classTitle]: "",
     [classStarts]: null,
     [classEnds]: null,
     [classCurrent]: false,
-    [classExperience]: '',
+    [classExperience]: "",
   };
 }
 
@@ -71,13 +71,13 @@ export default memo(function InternshipExperiences({
       ];
       const updatedInternshipExperience = changedInternshipExperiences[index];
       updatedInternshipExperience[key] = value;
-      onUpdate('internshipExperiences', changedInternshipExperiences);
+      onUpdate("internshipExperiences", changedInternshipExperiences);
     },
     [data, onUpdate],
   );
 
   return data.map((internshipExperience, index) => (
-    <fieldset key={classNamePrefix + internshipExperience.workId + '-key'}>
+    <fieldset key={classNamePrefix + internshipExperience.workId + "-key"}>
       <legend className="flex w-full justify-between">
         <h3>Internship Experience {index + 1}</h3>
         <PillButton
@@ -90,7 +90,7 @@ export default memo(function InternshipExperiences({
       <div className="profile-form-grid">
         <InputTextWithLabel
           id={
-            classNamePrefix + internshipExperience.workId + '-' + classCompany
+            classNamePrefix + internshipExperience.workId + "-" + classCompany
           }
           className="w-full"
           placeholder="Example: Bank of America"
@@ -101,7 +101,7 @@ export default memo(function InternshipExperiences({
           Company Name: *
         </InputTextWithLabel>
         <InputTextWithLabel
-          id={classNamePrefix + internshipExperience.workId + '-' + classTitle}
+          id={classNamePrefix + internshipExperience.workId + "-" + classTitle}
           className="w-full"
           placeholder="Example: Quality Assurance Tester"
           onChange={(e) => handleChange(index, classTitle, e.target.value)}
@@ -121,8 +121,8 @@ export default memo(function InternshipExperiences({
           errorMessage="A start date is required"
         >
           <DatePicker
-            label={'Start Date *'}
-            views={['month', 'year']}
+            label={"Start Date *"}
+            views={["month", "year"]}
             value={internshipExperience[classStarts] || null}
             onChange={(val) =>
               handleChange(index, classStarts, val?.isValid() ? val : null)
@@ -139,8 +139,8 @@ export default memo(function InternshipExperiences({
           errorMessage="An end date is required"
         >
           <DatePicker
-            label={'End Date *'}
-            views={['month', 'year']}
+            label={"End Date *"}
+            views={["month", "year"]}
             value={internshipExperience[classEnds] || null}
             onChange={(val) =>
               handleChange(index, classEnds, val?.isValid() ? val : null)
@@ -150,9 +150,9 @@ export default memo(function InternshipExperiences({
         </RequiredTooltip>
       </div>
       <Checkbox
-        id={classNamePrefix + internshipExperience.workId + '-' + classCurrent}
+        id={classNamePrefix + internshipExperience.workId + "-" + classCurrent}
         name={
-          classNamePrefix + internshipExperience.workId + '-' + classCurrent
+          classNamePrefix + internshipExperience.workId + "-" + classCurrent
         }
         checked={internshipExperience[classCurrent]}
         onChange={(e) => handleChange(index, classCurrent, e.target.checked)}
@@ -163,7 +163,7 @@ export default memo(function InternshipExperiences({
           id={
             classNamePrefix +
             internshipExperience.workId +
-            '-' +
+            "-" +
             classExperience
           }
           placeholder="Example: Create bug reports"

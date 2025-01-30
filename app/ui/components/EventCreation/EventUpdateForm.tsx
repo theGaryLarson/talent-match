@@ -1,13 +1,13 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
-import { Button } from '@mui/material';
+import { Button } from "@mui/material";
 import { EventTypeEnum, EventUpdateData } from "@/app/lib/events";
 import { Events } from "@prisma/client";
 
 export default function EventUpdateForm() {
   // State to manage form input values
-  const [selectedEventId, setSelectedEventId] = useState<string>()
-  const [existingEvents, setExistingEvents] = useState<Events[]>()
+  const [selectedEventId, setSelectedEventId] = useState<string>();
+  const [existingEvents, setExistingEvents] = useState<Events[]>();
 
   const [eventName, setEventName] = useState<string>("");
   const [eventDescription, setEventDescription] = useState<string>("");
@@ -15,16 +15,18 @@ export default function EventUpdateForm() {
   const [eventDate, setEventDate] = useState<string>("");
   const [registerLink, setRegisterLink] = useState<string>("");
   const [duration, setDuration] = useState<number>(90);
-  const [joinMeetingLink, setJoinMeetingLink] = useState("")
+  const [joinMeetingLink, setJoinMeetingLink] = useState("");
   const [eventBlurb, setEventBlurb] = useState<string>("");
-  const [eventType, setEventType] = useState<EventTypeEnum>(EventTypeEnum.General); // Consider using a union type for stricter control
+  const [eventType, setEventType] = useState<EventTypeEnum>(
+    EventTypeEnum.General,
+  ); // Consider using a union type for stricter control
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const submitButton = event.currentTarget.querySelector(
-        'button[type="submit"]',
-      ) as HTMLButtonElement;
-      if (submitButton) submitButton.disabled = true;
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+    if (submitButton) submitButton.disabled = true;
     // Form data to send to backend (example)
     const formData: EventUpdateData = {
       name: eventName,
@@ -32,7 +34,7 @@ export default function EventUpdateForm() {
       location: eventLocation,
       date: new Date(eventDate), // Ensure date is correctly formatted
       registrationLink: registerLink,
-      joinMeetingLink:joinMeetingLink,
+      joinMeetingLink: joinMeetingLink,
       blurb: eventBlurb,
       eventType: eventType,
       duration: duration,
@@ -40,71 +42,74 @@ export default function EventUpdateForm() {
 
     // You can call an API function here to create the event in the database
     try {
-        console.log("Event Data Submitted: ", formData);
-        const response = await fetch(`/api/events`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({eventId:selectedEventId,updatedData:formData}),
-        });
-  
-        if (!response.ok) {
-          console.error('Failed');
-          if (submitButton) submitButton.disabled = false;
-          return;
-        } else {
-          const data = await response.json();
-          console.log('Update sucsess: ', data);
-          if (submitButton) submitButton.disabled = false;
-          alert('Event updated successfully!');
-          getExistingEvents();
-          setSelectedEventId(undefined);
+      console.log("Event Data Submitted: ", formData);
+      const response = await fetch(`/api/events`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventId: selectedEventId,
+          updatedData: formData,
+        }),
+      });
 
-        }
-      } catch (error) {
-        console.error('Error:', error);
+      if (!response.ok) {
+        console.error("Failed");
         if (submitButton) submitButton.disabled = false;
+        return;
+      } else {
+        const data = await response.json();
+        console.log("Update sucsess: ", data);
+        if (submitButton) submitButton.disabled = false;
+        alert("Event updated successfully!");
+        getExistingEvents();
+        setSelectedEventId(undefined);
       }
-  };
-  const handleDelete = async () =>{
-    try {
-        const response = await fetch(`/api/events`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({eventId: selectedEventId}),
-          });
-          if (!response.ok) {
-            console.error('Failed');
-            alert('Delete Failed')
-          }else{
-            alert('Delete Success')
-            setExistingEvents((prev)=>prev?.filter((e)=>e.id!=selectedEventId))
-            resetForm();
-        }
-        
     } catch (error) {
-        alert('Delete Failed: '+error)
+      console.error("Error:", error);
+      if (submitButton) submitButton.disabled = false;
     }
-  }
-  const resetForm = ()=>{
+  };
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/events`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ eventId: selectedEventId }),
+      });
+      if (!response.ok) {
+        console.error("Failed");
+        alert("Delete Failed");
+      } else {
+        alert("Delete Success");
+        setExistingEvents((prev) =>
+          prev?.filter((e) => e.id != selectedEventId),
+        );
+        resetForm();
+      }
+    } catch (error) {
+      alert("Delete Failed: " + error);
+    }
+  };
+  const resetForm = () => {
     setEventName("");
     setEventDate("");
     setRegisterLink("");
     setJoinMeetingLink("");
     setEventBlurb("");
-    setEventLocation("")
+    setEventLocation("");
     setEventDescription("");
     setEventType(EventTypeEnum.General);
-    setSelectedEventId('');
-  }
+    setSelectedEventId("");
+  };
   const getExistingEvents = () => {
-    fetch('/api/events')
+    fetch("/api/events")
       .then((res) => {
         if (!res.ok) {
-          throw new Error('Failed to fetch events');
+          throw new Error("Failed to fetch events");
         }
         return res.json();
       })
@@ -112,140 +117,174 @@ export default function EventUpdateForm() {
         setExistingEvents(data.events);
       })
       .catch((error) => {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
         // Optionally, update UI to show an error message to users
       });
   };
-  
+
   useEffect(getExistingEvents, []);
-  useEffect(()=>{
-    const selectedEvent = existingEvents?.find((ev)=>ev.id == selectedEventId)
-    if(selectedEvent != undefined){
-        const eventDate = new Date(selectedEvent.date);
-    // Convert to local time format required for datetime-local input
-    const localDateTime = new Date(
-      eventDate.getTime() - eventDate.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .slice(0, 16); // Trim to YYYY-MM-DDTHH:mm
-        setEventName(selectedEvent.name);
-        setEventDate(localDateTime);
-        setRegisterLink(selectedEvent.registrationLink??'');
-        setJoinMeetingLink(selectedEvent.joinMeetingLink??'');
-        setDuration(selectedEvent.duration)
+  useEffect(() => {
+    const selectedEvent = existingEvents?.find(
+      (ev) => ev.id == selectedEventId,
+    );
+    if (selectedEvent != undefined) {
+      const eventDate = new Date(selectedEvent.date);
+      // Convert to local time format required for datetime-local input
+      const localDateTime = new Date(
+        eventDate.getTime() - eventDate.getTimezoneOffset() * 60000,
+      )
+        .toISOString()
+        .slice(0, 16); // Trim to YYYY-MM-DDTHH:mm
+      setEventName(selectedEvent.name);
+      setEventDate(localDateTime);
+      setRegisterLink(selectedEvent.registrationLink ?? "");
+      setJoinMeetingLink(selectedEvent.joinMeetingLink ?? "");
+      setDuration(selectedEvent.duration);
 
-        setEventBlurb(selectedEvent.blurb??"");
-        setEventLocation(selectedEvent.location)
-        setEventDescription(selectedEvent.description??'')
-        setEventType(selectedEvent.eventType as EventTypeEnum);
+      setEventBlurb(selectedEvent.blurb ?? "");
+      setEventLocation(selectedEvent.location);
+      setEventDescription(selectedEvent.description ?? "");
+      setEventType(selectedEvent.eventType as EventTypeEnum);
     }
-  },[selectedEventId])
+  }, [selectedEventId]);
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold">Update an Event</h2>
-    <select
-        value={selectedEventId || ''}
-        onChange={(e)=>{setSelectedEventId(e.target.value)}}
-        className="mt-2 p-2 border rounded w-full"
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 p-4 border rounded-lg shadow-md"
     >
-        <option value=''>--Please Select An Event--</option>
-        {
-            existingEvents?.map((ev)=><option key={ev.id} value={ev.id}>{ev.name} - {(new Date(ev.date)).toLocaleDateString()}</option>)
-        }
-    </select>
-      {selectedEventId&&<>
-      <div>
-        <label htmlFor="eventTitle" className="block text-sm font-medium">Event Title</label>
-        <input
-          type="text"
-          id="eventTitle"
-          value={eventName}
-          onChange={(e) => setEventName(e.target.value)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
-      </div>
-      <div>
-        <label htmlFor="eventLocation" className="block text-sm font-medium">Event Location (Remote or Physical Adress)</label>
-        <input
-          type="text"
-          id="eventLocation"
-          value={eventLocation}
-          onChange={(e) => setEventLocation(e.target.value)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
-      </div>
+      <h2 className="text-2xl font-semibold">Update an Event</h2>
+      <select
+        value={selectedEventId || ""}
+        onChange={(e) => {
+          setSelectedEventId(e.target.value);
+        }}
+        className="mt-2 p-2 border rounded w-full"
+      >
+        <option value="">--Please Select An Event--</option>
+        {existingEvents?.map((ev) => (
+          <option key={ev.id} value={ev.id}>
+            {ev.name} - {new Date(ev.date).toLocaleDateString()}
+          </option>
+        ))}
+      </select>
+      {selectedEventId && (
+        <>
+          <div>
+            <label htmlFor="eventTitle" className="block text-sm font-medium">
+              Event Title
+            </label>
+            <input
+              type="text"
+              id="eventTitle"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              required
+              className="mt-2 p-2 border rounded w-full"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="eventLocation"
+              className="block text-sm font-medium"
+            >
+              Event Location (Remote or Physical Adress)
+            </label>
+            <input
+              type="text"
+              id="eventLocation"
+              value={eventLocation}
+              onChange={(e) => setEventLocation(e.target.value)}
+              required
+              className="mt-2 p-2 border rounded w-full"
+            />
+          </div>
 
-      <div>
-        <label htmlFor="eventDate" className="block text-sm font-medium">Event Date</label>
-        <input
-          type="datetime-local"
-          id="eventDate"
-          value={eventDate}
-          onChange={(e) => setEventDate(e.target.value)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
-      </div>
-      <div>
-        <label htmlFor="duration" className="block text-sm font-medium">Event Duration(in minutes)</label>
-        <input
-          id="duration"
-          type="number"
-          value={duration}
-          onChange={(e) => setDuration(e.target.value as unknown as number)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
-      </div>
+          <div>
+            <label htmlFor="eventDate" className="block text-sm font-medium">
+              Event Date
+            </label>
+            <input
+              type="datetime-local"
+              id="eventDate"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              required
+              className="mt-2 p-2 border rounded w-full"
+            />
+          </div>
+          <div>
+            <label htmlFor="duration" className="block text-sm font-medium">
+              Event Duration(in minutes)
+            </label>
+            <input
+              id="duration"
+              type="number"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value as unknown as number)}
+              required
+              className="mt-2 p-2 border rounded w-full"
+            />
+          </div>
 
-      <div>
-        <label htmlFor="zoomLink" className="block text-sm font-medium">Register Link</label>
-        <input
-          type="url"
-          id="zoomLink"
-          value={registerLink}
-          onChange={(e) => setRegisterLink(e.target.value)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
-      </div>
-      <div>
-        <label htmlFor="joinLink" className="block text-sm font-medium">Join Link</label>
-        <input
-          type="url"
-          id="joinLink"
-          value={joinMeetingLink}
-          onChange={(e)=>setJoinMeetingLink(e.target.value)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
-      </div>
+          <div>
+            <label htmlFor="zoomLink" className="block text-sm font-medium">
+              Register Link
+            </label>
+            <input
+              type="url"
+              id="zoomLink"
+              value={registerLink}
+              onChange={(e) => setRegisterLink(e.target.value)}
+              required
+              className="mt-2 p-2 border rounded w-full"
+            />
+          </div>
+          <div>
+            <label htmlFor="joinLink" className="block text-sm font-medium">
+              Join Link
+            </label>
+            <input
+              type="url"
+              id="joinLink"
+              value={joinMeetingLink}
+              onChange={(e) => setJoinMeetingLink(e.target.value)}
+              required
+              className="mt-2 p-2 border rounded w-full"
+            />
+          </div>
 
-      <div>
-        <label htmlFor="eventBlurb" className="block text-sm font-medium">Event Blurb</label>
-        <input
-          id="eventBlurb"
-          value={eventBlurb}
-          onChange={(e) => setEventBlurb(e.target.value)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
-      </div>
-      <div>
-        <label htmlFor="eventDescription" className="block text-sm font-medium">Event Description</label>
-        <textarea
-          id="eventDescription"
-          value={eventDescription}
-          onChange={(e) => setEventDescription(e.target.value)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
-      </div>
-      <div>
-        <label htmlFor="eventType" className="block text-sm font-medium">Event Type</label>
-        <select
+          <div>
+            <label htmlFor="eventBlurb" className="block text-sm font-medium">
+              Event Blurb
+            </label>
+            <input
+              id="eventBlurb"
+              value={eventBlurb}
+              onChange={(e) => setEventBlurb(e.target.value)}
+              required
+              className="mt-2 p-2 border rounded w-full"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="eventDescription"
+              className="block text-sm font-medium"
+            >
+              Event Description
+            </label>
+            <textarea
+              id="eventDescription"
+              value={eventDescription}
+              onChange={(e) => setEventDescription(e.target.value)}
+              required
+              className="mt-2 p-2 border rounded w-full"
+            />
+          </div>
+          <div>
+            <label htmlFor="eventType" className="block text-sm font-medium">
+              Event Type
+            </label>
+            <select
               id="eventType"
               value={eventType}
               onChange={(e) => setEventType(e.target.value as EventTypeEnum)} // Cast to EventType
@@ -257,15 +296,14 @@ export default function EventUpdateForm() {
                 </option>
               ))}
             </select>
-      </div>
+          </div>
 
-      <div className="mt-4">
-        <Button onClick={handleDelete}>Delete Event</Button>
-        <Button type="submit">Update Event</Button>
-      </div>
-
-      
-      </>}
+          <div className="mt-4">
+            <Button onClick={handleDelete}>Delete Event</Button>
+            <Button type="submit">Update Event</Button>
+          </div>
+        </>
+      )}
     </form>
   );
 }

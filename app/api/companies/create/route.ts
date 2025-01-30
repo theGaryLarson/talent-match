@@ -3,8 +3,8 @@ import { CompanyAdminCreationDTO } from "@/data/dtos/CompanyAdminCreationDTO";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-    const body: CompanyAdminCreationDTO= await req.json();
-    console.log('Request body:', body);
-    let result = await adminCreateCompany(body)
+  const body: CompanyAdminCreationDTO = await req.json();
+  console.log("Request body:", body);
+  const result = await adminCreateCompany(body);
   return NextResponse.json(result);
 }

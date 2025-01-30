@@ -1,15 +1,13 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Button } from '@mui/material';
-import Link from 'next/link';
-import DividerWithText from '@/app/ui/components/DividerWithText';
-import Image from 'next/image';
-import Footer from '@/app/ui/Footer';
-import SignupHeader from '@/app/ui/SignupHeader';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { Role } from '@/data/dtos/UserInfoDTO';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import Footer from "@/app/ui/Footer";
+import SignupHeader from "@/app/ui/SignupHeader";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import PillButton from "@/app/ui/components/PillButton";
 
 // interface Data {
 //   userId: string;
@@ -18,7 +16,7 @@ import { Role } from '@/data/dtos/UserInfoDTO';
 
 export default function SignupPage() {
   const [choice, setChoice] = useState<Role>(Role.GUEST);
-  const { data: session, status, update } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const checkIcon = (
     <Image
@@ -32,11 +30,11 @@ export default function SignupPage() {
 
   useEffect(() => {
     // Prefetch the potential pages when the component mounts
-    router.prefetch('/signup/jobseeker');
-    router.prefetch('/signup/employer');
+    router.prefetch("/signup/jobseeker");
+    router.prefetch("/signup/employer");
   }, [router]);
 
-  let handleSubmit = async () => {
+  const handleSubmit = async () => {
     if (session) {
       if (choice === Role.JOBSEEKER) router.push(`/signup/jobseeker`);
       if (choice === Role.EMPLOYER) router.push(`/signup/employer`);
@@ -101,22 +99,23 @@ export default function SignupPage() {
             </label>
           </div>
         </fieldset>
-        <Button
+        <PillButton
           disabled={choice === Role.GUEST}
           onClick={handleSubmit}
+          variant="contained"
           sx={{
-            marginInline: 'auto',
-            marginTop: '1rem',
-            width: 'fit-content',
-            borderRadius: '1.5rem',
-            '&:focus': {
-              outline: 'none',
-              boxShadow: 'none',
+            marginInline: "auto",
+            marginTop: "1rem",
+            width: "fit-content",
+            "&:disabled": {
+              color: "#fff",
+              bgcolor: "primary.main",
+              opacity: 0.5,
             },
           }}
         >
           Continue
-        </Button>
+        </PillButton>
       </main>
       <footer className="mt-auto">
         <Footer />
