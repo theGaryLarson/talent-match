@@ -1,12 +1,9 @@
 import {
   getGenderBreakDownOfJobseekers,
-  getNumOfIndividualEmployers,
-  getNumOfJobseekers,
   getUsersCreatedByQuarter,
 } from "@/app/lib/admin/stats";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { BarChart } from "@mui/x-charts/BarChart";
-import Typography from "@mui/material/Typography";
 //employer dashboard
 export const metadata = {
   title: "My Dashboard",

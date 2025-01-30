@@ -20,15 +20,8 @@ const eslintConfig = [
   { ignores: [".next/*", "types/next-auth.d.ts"] },
   {
     rules: {
-      "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-expressions": "off",
       "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
-      "prefer-const": "off",
-      "no-var": "off",
-      "@typescript-eslint/no-wrapper-object-types": "off",
-      "@next/next/no-img-element": "off",
     },
   },
 ];

@@ -58,7 +58,7 @@ export async function GET(
       );
     }
 
-    let result: JsDisclosuresDTO = {
+    const result: JsDisclosuresDTO = {
       jobseekerId: null, // users.jobseekers[0].jobseeker_id
       isVeteran: null, // jobseekers[0].jobseekers_private_data[0].is_veteran
       disability: null, // jobseekers[0].jobseekers_private_data[0].has_disability

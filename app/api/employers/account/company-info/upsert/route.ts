@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/auth";
@@ -15,7 +15,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
     const employerId: string = session?.user.employerId!;
 
@@ -31,7 +31,6 @@ export async function POST(request: Request) {
       yearFounded,
       websiteUrl,
       videoUrl,
-      phoneCountryCode,
       companyPhone,
       mission,
       vision,

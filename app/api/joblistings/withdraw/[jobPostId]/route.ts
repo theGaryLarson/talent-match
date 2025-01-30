@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { WithdrawFromJob } from "@/app/lib/joblistings";
-import { sendJobApplicantEmailNotificationEmail } from "@/lib/smtp/sendJobApplicantEmailNotificationEmail";
 
 export async function POST(
   request: Request,

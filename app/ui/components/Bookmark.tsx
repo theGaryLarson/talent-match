@@ -19,7 +19,7 @@ export default function Bookmark({
     setIsBookmarked(!isBookmarked); // optimistic
 
     const url = isBookmarked ? removeUrl : addUrl;
-    let response = await fetch(url, {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,4 +1,4 @@
-import { companies, Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { auth } from "@/auth";
@@ -16,7 +16,7 @@ const prisma: PrismaClient = getPrismaClient();
  */
 export async function createEmployer(
   userId: string,
-): Promise<Prisma.employersGetPayload<{}>> {
+): Promise<Prisma.employersGetPayload<object>> {
   try {
     // Use a transaction to ensure both operations succeed or fail together
     const result = await prisma.$transaction(async (prisma) => {
@@ -147,7 +147,7 @@ export async function createCompany(companyData: CompanyEmployerCreationDTO) {
     throw new Error("Must Be a user");
   }
   try {
-    let result = await prisma.companies.create({
+    const result = await prisma.companies.create({
       data: {
         company_name: companyData.companyName,
         company_email: session.user.email ?? "",

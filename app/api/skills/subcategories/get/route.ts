@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    let result = await adminGetSkillSubcategories();
+    const result = await adminGetSkillSubcategories();
     return NextResponse.json(result);
   } catch (e) {
     console.error("Error fetching skill subcategories:", e);

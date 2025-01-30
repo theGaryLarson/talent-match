@@ -11,7 +11,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
 
     const body: JsWorkExpDTO = await request.json();
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
               ) === -1,
           );
 
-          const deletedExperiences = await prisma.workExperience.deleteMany({
+          await prisma.workExperience.deleteMany({
             where: {
               OR: removableExperiences.map((removableExperience) => ({
                 workId: { equals: removableExperience.workId },

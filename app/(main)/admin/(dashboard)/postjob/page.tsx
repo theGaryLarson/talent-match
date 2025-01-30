@@ -15,7 +15,7 @@ export default function Page() {
   const router = useRouter();
   const { quill, quillRef } = useQuill();
   const [skills, setSkills] = useState<SkillDTO[]>();
-  const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]);
+  const [fetchLoadedTags, setFetchLoadedTags] = useState<SkillDTO[]>([]); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [companies, setCompanies] = useState<companies[]>();
   const [techAres, setTechAreas] = useState<technology_areas[]>();
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();

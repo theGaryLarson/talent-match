@@ -11,14 +11,14 @@ import Link from "next/link";
 
 export default async function page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  let provider: ReadEduProviderDTO | null = await getEduProviderDetail(
+  const provider: ReadEduProviderDTO | null = await getEduProviderDetail(
     params.id,
   );
-  let programs: ReadEduProviderProgramCardDTO[] =
+  const programs: ReadEduProviderProgramCardDTO[] =
     await getProviderProgramCardView(params.id);
 
   // Create a list of unique pathways this provider offers
-  let careerPrograms: EduProviderPathways[] = [];
+  const careerPrograms: EduProviderPathways[] = [];
   programs.forEach((program) => {
     program.pathway.forEach((pathway) => {
       if (!careerPrograms.includes(pathway)) {

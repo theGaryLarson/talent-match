@@ -20,7 +20,7 @@ export default function Page() {
   }, []);
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    let form = event.currentTarget;
+    const form = event.currentTarget;
     const formData = new FormData(event.currentTarget);
     const submitButton = event.currentTarget.querySelector(
       'button[type="submit"]',

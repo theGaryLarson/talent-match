@@ -1,8 +1,7 @@
-import { getEmployer, getEmployerWithSession } from "@/app/lib/employer";
-import { CompanyEmployerCreationDTO } from "@/data/dtos/CompanyEmployerCreateionDTO";
+import { getEmployerWithSession } from "@/app/lib/employer";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET() {
   const result = await getEmployerWithSession();
   return NextResponse.json(result);
 }

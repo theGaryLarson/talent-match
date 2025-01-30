@@ -5,13 +5,12 @@ import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutl
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import { auth } from "@/auth";
-import { BookmarkIcon } from "@heroicons/react/24/outline";
 export default async function layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  let session = await auth();
+  const session = await auth();
   console.log(session);
 
   return (
@@ -54,7 +53,7 @@ export default async function layout({
           Events
         </Link>
 
-        {/* 
+        {/*
         <Link
           href="/career-prep"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"

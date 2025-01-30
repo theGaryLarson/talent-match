@@ -87,7 +87,7 @@ export default function Page() {
 
   async function onSingleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    let form = event.currentTarget;
+    const form = event.currentTarget;
     const formData = new FormData(event.currentTarget);
     if (!validateForm(formData)) {
       return;
@@ -177,7 +177,7 @@ export default function Page() {
               subcategoryId = await createAndAppendSubcategory(
                 rowData.subcategory,
               );
-            } catch (error) {
+            } catch {
               alert(`Failed to create subcategory: ${rowData.subcategory}`);
               continue;
             }

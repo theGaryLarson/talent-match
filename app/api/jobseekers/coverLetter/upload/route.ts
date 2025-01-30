@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import {
-  uploadCoverLetter,
-  uploadResume,
-} from "@/app/lib/services/azureBlobService";
+import { uploadCoverLetter } from "@/app/lib/services/azureBlobService";
 import { auth } from "@/auth";
 
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
 
     const body = await request.json();

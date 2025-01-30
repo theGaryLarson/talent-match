@@ -10,7 +10,7 @@ export async function DELETE() {
       { success: true, message: "Employer deleted successfully." },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch {
     // If an error occurs, return an error response with a 500 status code
     return NextResponse.json(
       { error: "Failed to delete jobseeker." },

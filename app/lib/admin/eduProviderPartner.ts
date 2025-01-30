@@ -1,8 +1,5 @@
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import {
-  EducationLevel,
-  ProgramEnrollmentStatus,
-} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { EducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { GeneralProgramDTO } from "@/data/dtos/GeneralProgramDTO";
 import { devLog } from "@/app/lib/utils";
 import { PrismaClient } from "@prisma/client";
@@ -10,19 +7,6 @@ import { auth } from "@/auth";
 import { Role } from "@/data/dtos/UserInfoDTO";
 
 const prisma: PrismaClient = getPrismaClient();
-
-type TPStudentDetailDTO = {
-  firstName: string;
-  lastName: string;
-  trainingProvider: string;
-  trainingProgram: string;
-  trainingStartDate: string; // ISO Date string format
-  trainingExitDate?: string; // ISO Date string format
-  currentProgramStatus: ProgramEnrollmentStatus;
-  nonCompletionReason?: NoncompletionReason;
-  otherPriorityPopulationsList?: PriorityPopulationList;
-  verified: boolean; // Verification status
-};
 
 type AdminTrainingPartnerViewDTO = {
   eduProviderId: string;
@@ -201,7 +185,9 @@ export async function deleteProviderProgram(trainingProgramId: string) {
       where: { training_program_id: trainingProgramId },
     });
     return result;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function getProviderProgramByProvider(providerId: string) {
@@ -215,7 +201,9 @@ export async function getProviderProgramByProvider(providerId: string) {
       },
     });
     return result;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export const getTrainingPartners = async (): Promise<{
@@ -262,8 +250,7 @@ export const getTrainingPartners = async (): Promise<{
   return { success: true, result: transformedData };
 };
 
-export const getJobseekersByTrainingPartner = async (providerId: string) => {
-  //TODO: Sort by is_verified
-};
+/*TODO: Sort by is_verified */
+export const getJobseekersByTrainingPartner = async (providerId: string) => {}; // eslint-disable-line @typescript-eslint/no-unused-vars
 
-export const updateJobseekerTrainingProgram = async (jobseekerId: string) => {};
+export const updateJobseekerTrainingProgram = async (jobseekerId: string) => {}; // eslint-disable-line @typescript-eslint/no-unused-vars

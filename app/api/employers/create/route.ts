@@ -5,7 +5,7 @@ import { sendEmployerOrCompanyNeedsApprovalEmailToGary } from "@/lib/smtp/send-e
 
 export async function POST() {
   try {
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
     const employerData = await createEmployer(userId);
     sendEmployerOrCompanyNeedsApprovalEmailToGary({
@@ -20,7 +20,7 @@ export async function POST() {
       },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to create Employer." },
       { status: 500 },

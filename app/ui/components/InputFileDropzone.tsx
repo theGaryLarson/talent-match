@@ -27,7 +27,6 @@ export default function InputFileDropzone({
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
   const [fileSelected, setFileSelected] = useState(autoloadedUrl ?? "");
-  const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
     if (autoloadedUrl) {
@@ -72,11 +71,10 @@ export default function InputFileDropzone({
           onDocUpload(result.imageUrl); // Return the image URL to the parent component
         } else {
           const errorData = await response.json();
-          setUploadError(errorData.error || "Failed to upload image");
+          console.error(errorData.error || "Failed to upload image");
         }
       } catch (error) {
         console.error("Error uploading image:", error);
-        setUploadError("Failed to upload image. Please try again.");
       }
     } else setFileSelected(""); // no file selected
   };

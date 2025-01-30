@@ -8,7 +8,6 @@ import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import PillButton from "@/app/ui/components/PillButton";
 import { useSession } from "next-auth/react";
-import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import { PostEmployerVideoDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {
   setVideo,
@@ -35,10 +34,8 @@ export default function CreateJobseekerProfileIntroPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { data: session, update, status } = useSession();
+  const { data: session, status } = useSession();
   const [employerInfo, setEmployerInfo] = useState<ReadEmployerRecordDTO>();
-
-  const updateSessionProperties = useUpdateSession();
 
   // get employers.is_verified_employee
   useEffect(() => {
@@ -56,8 +53,6 @@ export default function CreateJobseekerProfileIntroPage() {
       if (!session?.user.id) return;
       if (status === "authenticated") {
         if (_.isEqual(videoStoreData, initialState.video)) {
-          const { id, companyId, employerId } = session.user;
-
           try {
             const response = await fetch(
               `/api/companies/video/get/${session.user.companyId}`,
@@ -70,9 +65,8 @@ export default function CreateJobseekerProfileIntroPage() {
             );
 
             if (!response.ok) {
-              const errorData = await response.json();
             } else {
-              let { result } = await response.json();
+              const { result } = await response.json();
 
               setVideoData({
                 ...videoData,
@@ -80,7 +74,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 videoUrl: result.videoUrl ?? "",
               });
             }
-          } catch (error) {}
+          } catch {}
         } else {
           console.log("fetching from redux store");
         }
@@ -122,23 +116,22 @@ export default function CreateJobseekerProfileIntroPage() {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         dispatch(setPageSaved("video"));
         dispatch(setVideo(videoData));
         router.push("/edit-profile/employer/congratulations");
       } else {
-        const errorData = await response.json();
         if (!session?.user?.employeeIsApproved)
           router.push("/edit-profile/employer/congratulations");
       }
-    } catch (error) {}
+    } catch {}
   };
 
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 5) * 100} size="sm" />
+        <ProgressBarFlat progress={(5 / 5) * 100} />
 
         <p>Step 5/5</p>
         <h1>Company Video</h1>

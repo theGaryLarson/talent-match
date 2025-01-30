@@ -14,7 +14,7 @@ export async function GET(
         { status: 400 },
       );
     }
-    let result = await getCompanyById(companyId);
+    const result = await getCompanyById(companyId);
     console.log(result);
     if (result == undefined) {
       return NextResponse.json(

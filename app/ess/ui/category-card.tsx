@@ -1,4 +1,3 @@
-import Image from "next/image";
 import NextLink from "next/link";
 import {
   Card,
@@ -7,8 +6,6 @@ import {
   CardMedia,
   Grid2,
   Typography,
-  Link,
-  Box,
 } from "@mui/material";
 
 export default function CategoryCard(props: {

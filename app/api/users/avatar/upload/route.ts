@@ -5,7 +5,7 @@ import { Role } from "@/data/dtos/UserInfoDTO";
 
 export async function POST(request: Request) {
   try {
-    let session = await auth();
+    const session = await auth();
     const sessionUserId: string = session?.user.id!;
 
     const body = await request.json();

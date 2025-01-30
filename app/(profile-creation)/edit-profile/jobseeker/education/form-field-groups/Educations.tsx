@@ -1,10 +1,9 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback } from "react";
 import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
 import PillButton from "@/app/ui/components/PillButton";
 import {
   Radio,
-  Checkbox,
   FormControl,
   FormLabel,
   FormControlLabel,
@@ -15,16 +14,14 @@ import {
   HighSchoolDegreeType,
   EducationLevel,
   PreAEduSystem,
-  JsEducationInfoDTO,
   ProgramEnrollmentStatus,
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
-import { edu_providers, educators, provider_programs } from "@prisma/client";
 import TextFieldWithAutocomplete from "@/app/ui/components/mui/TextFieldWithAutocomplete";
 import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
 import { EducationProviderDTO } from "@/data/dtos/EducationProviderDTO";
 import { GeneralProgramDTO } from "@/data/dtos/GeneralProgramDTO";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { v4 as uuidv4 } from "uuid";
 import { Close } from "@mui/icons-material";
 

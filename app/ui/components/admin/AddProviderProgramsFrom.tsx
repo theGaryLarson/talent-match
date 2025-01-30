@@ -95,7 +95,6 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
   }, [entries, locations, targetedJobRoles]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let form = e.currentTarget;
     try {
       const response = await fetch("/api/edu-providers/programs/add", {
         method: "POST",

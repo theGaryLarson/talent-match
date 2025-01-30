@@ -4,13 +4,12 @@ import { AddTrainingPartnerDTO } from "@/app/lib/admin/eduProviderPartner";
 import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
 import { v4 as uuidv4 } from "uuid";
-import { auth } from "@/auth";
 import { EducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 export default function Page() {
-  const [eduProviderId, setEduProviderId] = useState(uuidv4());
-  const [logoUrl, setLogoUrl] = useState("");
-  const [initialImageUrl, setInitialImageUrl] = useState("");
+  const [eduProviderId, setEduProviderId] = useState(uuidv4()); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [logoUrl, setLogoUrl] = useState(""); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [initialImageUrl, setInitialImageUrl] = useState(""); // eslint-disable-line @typescript-eslint/no-unused-vars
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
