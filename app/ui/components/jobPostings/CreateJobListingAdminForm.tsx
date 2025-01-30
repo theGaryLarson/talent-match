@@ -154,7 +154,7 @@ export default function CreateJobListingAdminForm() {
       </div>
       {/*Tech Area*/}
       <div className="grid grid-cols-1">
-        <label htmlFor="area">What Tech Area Best Discribes This Job?</label>
+        <label htmlFor="area">What Tech Area Best Describes This Job?</label>
         <select name="area" id="area" required>
           <option value={""}>--Please Select an Area--</option>
           {techAres?.map((area) => (
