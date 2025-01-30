@@ -59,7 +59,6 @@ export default function JobListingsContent() {
   const [jobTitle, setJobTitle] = useState<string>();
   const [skillsList, setSkillsList] = useState<string[]>();
   const [industry, setIndustry] = useState<string[]>();
-  const [paid, setPaid] = useState<boolean>();
   const [zipCode, setZipCode] = useState<string>();
 
   // Sorting and pagination
@@ -93,14 +92,14 @@ export default function JobListingsContent() {
 
   function getParam(param: string) {
     const retrievedParam: string | null = queryParams.get(param);
-    var result: string = "";
+    let result: string = "";
     if (retrievedParam != null) result = decodeURIComponent(retrievedParam);
     return result;
   }
 
   function getArrayParam(param: string) {
     const retrievedParam: string | null = queryParams.get(param);
-    var result: string[] = [];
+    let result: string[] = [];
     if (retrievedParam != null && retrievedParam.length > 0)
       result = decodeURIComponent(retrievedParam).split(",");
     return result;

@@ -10,13 +10,9 @@ import WorkExperiences, {
   WorkExperienceData,
 } from "./form-field-groups/WorkExperiences";
 import InternshipExperiences, {
-  defaultInternshipExperienceData,
   InternshipExperienceData,
 } from "./form-field-groups/InternshipExperiences";
-import {
-  JsWorkDTO,
-  JsWorkExpDTO,
-} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { JsWorkExpDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +25,7 @@ import {
   setPageDirty,
   setPageSaved,
 } from "@/lib/features/profileCreation/saveSlice";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import _ from "lodash";
 import { devLog } from "@/app/lib/utils";
 import { Add } from "@mui/icons-material";
@@ -66,7 +62,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     [originalWorkExperienceStoreData],
   );
   let workExperienceData: JsWorkExpDTO = { ...workExperienceStoreData };
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
@@ -195,7 +191,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             if (!response.ok) {
               workExperienceData.userId = id!;
             } else {
-              let fetchedData: JsWorkExpDTO = (await response.json()).result;
+              const fetchedData: JsWorkExpDTO = (await response.json()).result;
               workExperienceData = {
                 ...fetchedData,
               };
@@ -379,7 +375,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         setError(errorMessage);
       }
 
-      const result = await response.json();
+      await response.json();
       router.push("/edit-profile/jobseeker/disclosures");
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
@@ -390,7 +386,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(5 / 6) * 100} />
         <p>Step 5/6</p>
         <h1>Work experience</h1>
         <p className="subtitle">* Indicates a required field</p>

@@ -1,7 +1,3 @@
-import { occupations } from "../lib/mock-data";
-import { occupationSelected } from "../lib/mock-data";
-import { regions } from "../lib/mock-data";
-
 export interface IPathway {
   cfa_pathwayid: string;
   cfa_name: string;

@@ -22,7 +22,7 @@ export default function UpdateTrainingProviderPage() {
   // State variables for form fields
   const [formData, setFormData] = useState<Partial<AddTrainingPartnerDTO>>({});
   const [logoUrl, setLogoUrl] = useState<string>("");
-  const [initialImageUrl, setInitialImageUrl] = useState<string>("");
+  const [initialImageUrl, setInitialImageUrl] = useState<string>(""); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [eduProviderId, setEduProviderId] = useState<string>("");
 
   // Fetch provider options on mount

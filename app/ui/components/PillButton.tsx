@@ -2,7 +2,6 @@ import React from "react";
 import { Button, ButtonProps } from "@mui/material";
 
 interface PillButtonProps extends ButtonProps {
-  selected?: boolean;
   target?: string;
   href?: string;
 }
@@ -10,9 +9,8 @@ interface PillButtonProps extends ButtonProps {
 const PillButton: React.FC<PillButtonProps> = ({
   target,
   href,
-  selected = false,
   sx,
-  variant = "contained", // Default variant is contained
+  variant = "contained",
   ...props
 }) => {
   return (

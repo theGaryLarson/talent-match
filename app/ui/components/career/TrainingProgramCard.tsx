@@ -6,7 +6,7 @@ export default async function TrainingProgramCard(
   program: ReadEduProviderProgramCardDTO,
 ) {
   // default to TWC if missing edu provider logo
-  let logoURL = program.logoUrl || "/images/TWC_75x50_2024.svg";
+  const logoURL = program.logoUrl || "/images/TWC_75x50_2024.svg";
 
   return (
     <div className="flex-col justify-start items-start inline-flex">

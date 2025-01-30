@@ -1,9 +1,6 @@
 "use client";
 
-import DividerWithText from "@/app/ui/components/DividerWithText";
-import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 import Link from "next/link";
-import { Button } from "@mui/material";
 import SignupPrompt from "@/app/ui/components/SignupPrompt";
 import Image from "next/image";
 import Footer from "@/app/ui/Footer";
@@ -13,19 +10,18 @@ import { useRouter } from "next/navigation";
 import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import { mapToEnumOrThrow } from "@/app/lib/utils";
-import { v4 as uuidv4 } from "uuid";
+import PillButton from "@/app/ui/components/PillButton";
 
 const vectorImgSrc = "/images/signup/jobseeker-vector.png";
 
 export default function JobseekerSignupFinishPage() {
-  let [resident, setResident] = useState(false);
-  let [termsAgree, setTermsAgree] = useState(false);
+  const [resident, setResident] = useState(false);
+  const [termsAgree, setTermsAgree] = useState(false);
   const [checkboxState, setCheckboxState] = useState({
     jobNotifications: false,
     opportunities: false,
   });
-  const { data: session, status, update } = useSession();
+  const { data: session } = useSession();
   const updateSessionProperties = useUpdateSession();
   const router = useRouter();
 
@@ -133,18 +129,18 @@ export default function JobseekerSignupFinishPage() {
                 </label>
               </div>
             </fieldset>
-            <Button
+            <PillButton
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
-                let response = await fetch("/api/jobseekers/create", {
+                const response = await fetch("/api/jobseekers/create", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                 });
                 if (response.ok) {
-                  let data = await response.json();
+                  const data = await response.json();
                   let rolesArray = session?.user.roles || [];
                   rolesArray = rolesArray.filter(
                     (role: Role) => role !== Role.GUEST,
@@ -162,16 +158,20 @@ export default function JobseekerSignupFinishPage() {
               }}
               sx={{
                 marginX: "auto",
-                marginY: 8,
-                borderRadius: "50%",
+                marginY: 4,
                 "&:focus": {
                   boxShadow: "none",
+                },
+                "&:disabled": {
+                  color: "#fff",
+                  bgcolor: "primary.main",
+                  opacity: 0.5,
                 },
               }}
               disabled={!(resident && termsAgree)}
             >
               Create account
-            </Button>
+            </PillButton>
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
               <p>Already have a TWC account?</p>

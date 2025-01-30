@@ -4,7 +4,6 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 import TextField from "@mui/material/TextField";
-import { ShareIcon } from "@heroicons/react/24/outline";
 
 export default function ShareMenu({
   href,
@@ -26,7 +25,7 @@ export default function ShareMenu({
     setAnchorEl(null);
   };
 
-  var url = "";
+  let url = "";
   if (typeof window !== "undefined") {
     url = window.location.protocol + "//" + window.location.hostname;
     if (window.location.port != "") url += ":" + window.location.port;

@@ -1,11 +1,9 @@
 // NOTE: Request instance Store per Nextjs Redux starter here: https://redux.js.org/usage/nextjs#folder-structure
-import { Middleware } from "@reduxjs/toolkit";
-import { useMemo } from "react";
 import { configureStore } from "@reduxjs/toolkit";
 import jobseekerReducer, {
   JobseekerState,
 } from "./features/profileCreation/jobseekerSlice";
-import saveReducer, { SaveState } from "./features/profileCreation/saveSlice";
+import saveReducer from "./features/profileCreation/saveSlice";
 
 interface PreloadedState {
   jobseeker: JobseekerState;

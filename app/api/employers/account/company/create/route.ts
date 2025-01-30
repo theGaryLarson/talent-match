@@ -5,6 +5,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const body: CompanyEmployerCreationDTO = await req.json();
   console.log("Request body:", body);
-  let result = await createCompany(body);
+  const result = await createCompany(body);
   return NextResponse.json(result);
 }

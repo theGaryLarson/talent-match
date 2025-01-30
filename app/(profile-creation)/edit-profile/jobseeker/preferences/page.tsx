@@ -20,10 +20,7 @@ import {
   initialState,
   setPreferences,
 } from "@/lib/features/profileCreation/jobseekerSlice";
-import {
-  setPageDirty,
-  setPageSaved,
-} from "@/lib/features/profileCreation/saveSlice";
+import { setPageSaved } from "@/lib/features/profileCreation/saveSlice";
 import _ from "lodash";
 import { devLog } from "@/app/lib/utils";
 import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
@@ -35,7 +32,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
     (state: RootState) => state.jobseeker.preferences,
   );
   const preferencesData = { ...preferencesStoreData };
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const [employmentType, setEmploymentType] = useState(
     preferencesData.preferredEmploymentType ?? "",
@@ -60,7 +57,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
             if (!response.ok) {
               preferencesData.userId = id!;
             } else {
-              let fetchedData: JsPreferencesDTO = (await response.json())
+              const fetchedData: JsPreferencesDTO = (await response.json())
                 .result;
               preferencesData.userId = id!;
               if (fetchedData.preferredEmploymentType) {
@@ -139,7 +136,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={(2 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(2 / 6) * 100} />
         <p>Step 2/6</p>
         <h1>Your preferences</h1>
 

@@ -5,6 +5,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const body: SkillDTO[] = await req.json();
   console.log(body);
-  let result = await adminCreateSkills(body);
+  const result = await adminCreateSkills(body);
   return NextResponse.json(result);
 }

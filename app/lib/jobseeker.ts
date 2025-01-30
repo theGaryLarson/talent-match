@@ -12,7 +12,6 @@ import {
   ProgramEnrollmentStatus,
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { devLog } from "@/app/lib/utils";
-import { NextResponse } from "next/server";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { v4 as uuidv4 } from "uuid";
 
@@ -176,7 +175,7 @@ export async function getPoolWithSession() {
     if (session?.user.jobseekerId == null) {
       return;
     }
-    let res = await prisma.jobseekers.findUnique({
+    const res = await prisma.jobseekers.findUnique({
       where: {
         jobseeker_id: session?.user.jobseekerId,
       },
@@ -196,7 +195,7 @@ export async function getCareerPrepAssementStatus() {
     if (session?.user.jobseekerId == null) {
       return;
     }
-    let res = await prisma.jobseekers.findUnique({
+    const res = await prisma.jobseekers.findUnique({
       where: {
         jobseeker_id: session?.user.jobseekerId,
       },
@@ -214,7 +213,9 @@ export async function getCareerPrepAssementStatus() {
       };
     }
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**
@@ -226,7 +227,7 @@ export async function getCareerPrepAssementStatus() {
  */
 export async function createJobseeker(
   userId: string,
-): Promise<Prisma.jobseekersGetPayload<{}>> {
+): Promise<Prisma.jobseekersGetPayload<object>> {
   try {
     // Use a transaction to ensure both operations succeed or fail together
     const result = await prisma.$transaction(async (prisma) => {
@@ -347,7 +348,7 @@ export const deleteJobseeker = async (userId: string) => {
       });
       return true;
     } catch (error) {
-      console.error("Error deleting jobseeker:");
+      console.error("Error deleting jobseeker: ", error);
       return false;
     } finally {
       await prisma.$disconnect();

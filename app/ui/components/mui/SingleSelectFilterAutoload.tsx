@@ -6,26 +6,21 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
 
 interface Props<ValueType> {
-  id: string;
   apiAutoloadRoute: string;
   label: string;
   value: string;
   onChange: (event: SelectChangeEvent<string>) => void;
-  placeholder?: string | undefined;
   getOptionLabel: (option: ValueType) => string;
   [key: string]: any;
 }
 
 export default function SingleSelectFilterAutoload<ValueType>({
-  id,
   apiAutoloadRoute,
   label,
   value,
   onChange,
-  placeholder,
   getOptionLabel,
   ...rest
 }: Props<ValueType>) {
@@ -79,6 +74,7 @@ export default function SingleSelectFilterAutoload<ValueType>({
         </InputLabel>
         <Select
           value={filter}
+          disabled={loading}
           onChange={handleChange}
           input={<OutlinedInput />}
           renderValue={(selected) => selected}

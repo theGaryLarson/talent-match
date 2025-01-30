@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import {
   PrismaClient,
   ProjectExperiences,
-  jobseekers,
   certificates,
   jobseekers_education,
 } from "@prisma/client";
@@ -30,7 +29,7 @@ const prisma: PrismaClient = getPrismaClient();
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
     const jobseekerId: string = session?.user.jobseekerId!;
 
@@ -42,7 +41,6 @@ export async function POST(request: Request) {
       const createdCerts: certificates[] = [];
       const upsertedProjects: ProjectExperiences[] = [];
       const upsertedSchools: jobseekers_education[] = [];
-      let upsertedJobseeker: jobseekers | null;
       // Find the jobseeker_id or generate a new one
       const jobseeker = await prisma.jobseekers.findUnique({
         where: { user_id: userId },
@@ -55,7 +53,7 @@ export async function POST(request: Request) {
 
       const isEnrolledEdProgram = jobseeker?.is_enrolled_ed_program || false;
 
-      upsertedJobseeker = await prisma.jobseekers.upsert({
+      const upsertedJobseeker = await prisma.jobseekers.upsert({
         where: { user_id: userId },
         update: {
           highest_level_of_study_completed: highestLevelOfStudy || null,
@@ -172,14 +170,13 @@ export async function POST(request: Request) {
               ) === -1,
           );
 
-          const deletedEducations =
-            await prisma.jobseekers_education.deleteMany({
-              where: {
-                OR: removableEducations.map((removableEducation) => ({
-                  id: { equals: removableEducation.id },
-                })),
-              },
-            });
+          await prisma.jobseekers_education.deleteMany({
+            where: {
+              OR: removableEducations.map((removableEducation) => ({
+                id: { equals: removableEducation.id },
+              })),
+            },
+          });
         }
       }
 
@@ -193,20 +190,6 @@ export async function POST(request: Request) {
             });
 
           if (existingJobseekerEducation) {
-            // Build update object and filter undefined values
-            const eduUpdateData: Partial<JsEducationInfoDTO> = {
-              id: edEntry.id,
-              edLevel: edEntry.edLevel,
-              preAppEdSystem: edEntry.preAppEdSystem || undefined,
-              isEnrolled: edEntry.isEnrolled,
-              enrollmentStatus: edEntry.enrollmentStatus,
-              startDate: new Date(edEntry.startDate).toISOString(),
-              gradDate: new Date(edEntry.gradDate).toISOString(),
-              degreeType: edEntry.degreeType,
-              gpa: edEntry.gpa,
-              description: edEntry.description,
-            };
-
             const updatedEducation = await prisma.jobseekers_education.update({
               where: { id: existingJobseekerEducation.id },
               data: {
@@ -545,7 +528,7 @@ async function ensureEduProvidersExist(educations: JsEducationInfoDTO[]) {
     if (processedProviders.has(edProviderId)) continue;
 
     // Check if the edu_provider exists
-    let eduProvider = await prisma.edu_providers.findUnique({
+    const eduProvider = await prisma.edu_providers.findUnique({
       where: { id: edProviderId },
     });
 
@@ -579,7 +562,7 @@ async function ensureProgramsExist(educations: JsEducationInfoDTO[]) {
     if (processedPrograms.has(programId) || !programId) continue;
 
     // Check if the program exists
-    let program = await prisma.programs.findUnique({
+    const program = await prisma.programs.findUnique({
       where: { id: programId },
     });
 

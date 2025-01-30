@@ -5,7 +5,7 @@ import { Role } from "@/data/dtos/UserInfoDTO";
 
 export async function POST(request: Request) {
   try {
-    let session = await auth();
+    const session = await auth();
     const trainerIsApproved: boolean = false; // TODO: read whether the trainer is approved once this info exists
 
     const body = await request.json();

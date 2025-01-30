@@ -1,6 +1,4 @@
 import {
-  addCareerPrepStudentNotes,
-  CreateNoteDTO,
   updateCareerPrepStudentNotes,
   UpdateNoteDTO,
 } from "@/app/lib/admin/careerPrep";

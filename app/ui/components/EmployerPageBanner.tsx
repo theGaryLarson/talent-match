@@ -1,10 +1,8 @@
-import Link from "next/link";
 import RoundedButton from "./RoundedButton";
-import Image from "next/image";
 import { auth } from "@/auth";
 
 export default async function EmployerPageBanner() {
-  let session = await auth();
+  const session = await auth();
   console.log("session is ", session);
   //h-[615px] content-center bg-jobseeker-hero-1 bg-cover bg-center p-4 text-white bg-blend-darken tablet:p-10 laptop:h-[854px] laptop:p-20 bg-gradient-to-r from-purple-500 to-blue-500
   return (

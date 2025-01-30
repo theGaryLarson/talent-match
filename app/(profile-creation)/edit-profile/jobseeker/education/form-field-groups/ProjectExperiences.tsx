@@ -6,7 +6,7 @@ import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { v4 as uuidv4 } from "uuid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
 import { Close } from "@mui/icons-material";
 

@@ -12,7 +12,6 @@ import CareerPrep from "@/app/ui/components/jobseekerdashboard/CareerPrep";
 import Applications from "@/app/ui/components/jobseekerdashboard/Applications";
 import Events from "@/app/ui/components/jobseekerdashboard/Events";
 import TrainingProviderPrograms from "@/app/ui/components/jobseekerdashboard/TrainingProviderPrograms";
-import CallToActionBanner from "@/app/ui/components/jobseekerdashboard/CallToActionBanner";
 import PillButton from "@/app/ui/components/PillButton";
 
 export const metadata = {
@@ -21,7 +20,7 @@ export const metadata = {
 
 export default async function Page() {
   const session = await auth();
-  const pool = await getPoolWithSession();
+  const pool = await getPoolWithSession(); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const [AssementInfo, jobseekerData, appliedJobs, carrerPrepEnrollment] =
     await Promise.all([
@@ -41,7 +40,7 @@ export default async function Page() {
   }
   const slicedAppliedJobs = appliedJobs?.slice(0, 3);
 
-  const hasTakenTest =
+  const hasTakenTest = // eslint-disable-line @typescript-eslint/no-unused-vars
     AssementInfo != undefined && AssementInfo.CareerPrepAssessment.length > 0;
 
   return (
