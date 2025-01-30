@@ -14,18 +14,15 @@ interface Props<ValueType> {
   label: string;
   value: string[];
   onChange: (event: SelectChangeEvent<string[]>) => void;
-  placeholder?: string | undefined;
   getOptionLabel: (option: ValueType) => string;
   [key: string]: any;
 }
 
 export default function MultipleSelectFilterAutoload<ValueType>({
-  id,
   apiAutoloadRoute,
   label,
   value,
   onChange,
-  placeholder,
   getOptionLabel,
   ...rest
 }: Props<ValueType>) {
@@ -87,6 +84,7 @@ export default function MultipleSelectFilterAutoload<ValueType>({
           value={filter}
           onChange={handleChange}
           input={<OutlinedInput />}
+          disabled={loading}
           renderValue={(selected) => selected.join(", ")}
           sx={{
             borderRadius: "9999px",

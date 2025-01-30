@@ -4,13 +4,14 @@ import CasesOutlinedIcon from "@mui/icons-material/CasesOutlined";
 import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import { auth } from "@/auth";
 export default async function layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  let session = await auth();
+  const session = await auth();
   console.log(session);
 
   return (
@@ -46,6 +47,13 @@ export default async function layout({
           Application Status
         </Link>
         <Link
+          href="/career-prep/postajob"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <PostAddOutlinedIcon />
+          Post a Job
+        </Link>
+        <Link
           href="/career-prep/event-creation"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
@@ -53,7 +61,7 @@ export default async function layout({
           Events
         </Link>
 
-        {/* 
+        {/*
         <Link
           href="/career-prep"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"

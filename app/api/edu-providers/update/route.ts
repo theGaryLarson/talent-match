@@ -9,7 +9,7 @@ export async function PATCH(req: Request) {
     const body: AddTrainingPartnerDTO = await req.json();
     console.log("Request body:", body);
 
-    let result = await addTrainingPartner(body);
+    const result = await addTrainingPartner(body);
 
     // Clean up the result to ensure JSON serialization
     const serializableResult = JSON.parse(JSON.stringify(result));

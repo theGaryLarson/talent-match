@@ -8,7 +8,6 @@ import {
   Chip,
   Grid2,
   IconButton,
-  Link,
   Stack,
   Typography,
 } from "@mui/material";
@@ -17,7 +16,7 @@ import Image from "next/image";
 import { IOccupation } from "../lib/data";
 import pfpPicSrc from "../../../public/placeholder.jpg";
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { InteractionStatus } from "@azure/msal-browser";
 import { useRouter } from "next/navigation";
 import NextLink from "next/link";

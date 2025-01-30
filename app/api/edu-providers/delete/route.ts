@@ -12,6 +12,6 @@ export async function DELETE(req: Request) {
   if (!session?.user.roles.includes(Role.ADMIN)) {
     return NextResponse.json({}, { status: 401 });
   }
-  let result = await deleteEduProvider(body.providerId);
+  const result = await deleteEduProvider(body.providerId);
   return NextResponse.json(result);
 }

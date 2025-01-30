@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 
 export async function POST() {
   try {
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
     const jobseekerData = await createJobseeker(userId);
     return NextResponse.json(
@@ -15,7 +15,7 @@ export async function POST() {
       },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to create jobseeker." },
       { status: 500 },

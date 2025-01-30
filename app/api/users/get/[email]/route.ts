@@ -1,5 +1,3 @@
-import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { getUserByEmail } from "@/app/lib/user";
 

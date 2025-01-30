@@ -6,7 +6,6 @@ import Skills from "@/app/ui/components/Skills";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import Avatar from "@/app/ui/components/Avatar";
-import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { calculateDaysAway } from "@/app/lib/utils";
 import "quill/dist/quill.snow.css";

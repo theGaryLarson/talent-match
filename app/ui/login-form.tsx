@@ -13,7 +13,7 @@ import { SignIn } from "@/app/ui/components/GithubSignIn";
 export default function LoginForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const result = SignIn();
+    SignIn();
   };
 
   return (

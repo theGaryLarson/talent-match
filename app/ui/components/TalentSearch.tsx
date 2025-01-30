@@ -134,14 +134,14 @@ export default function TalentSearch() {
 
   function getParam(param: string) {
     const retrievedParam: string | null = queryParams.get(param);
-    var result: string = "";
+    let result: string = "";
     if (retrievedParam != null) result = decodeURIComponent(retrievedParam);
     return result;
   }
 
   function getArrayParam(param: string) {
     const retrievedParam: string | null = queryParams.get(param);
-    var result: string[] = [];
+    let result: string[] = [];
     if (retrievedParam != null && retrievedParam.length > 0)
       result = decodeURIComponent(retrievedParam).split(",");
     return result;
@@ -231,7 +231,9 @@ export default function TalentSearch() {
       );
       setZipCode(getParam("zipcode"));
       setSortBy(getParam("sort") != "" ? getParam("sort") : "yearsExp");
-      +getParam("page") == 0 ? setPage(1) : setPage(+getParam("page")); // parseInt(null) returns NaN but +null returns 0!
+      const pageParam = getParam("page");
+      const pageNumber = pageParam ? +pageParam : 0;
+      setPage(pageNumber || 1);
     } else {
       // any other change after initial load should execute a new query
       const timeoutId = setTimeout(() => {

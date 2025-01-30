@@ -4,17 +4,14 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import type { RootState } from "@/lib/employerStore";
 import { useSelector, useDispatch } from "react-redux";
-import { EmployerState } from "@/lib/features/profileCreation/employerSlice";
 import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import PillButton from "@/app/ui/components/PillButton";
-import { Checkbox, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import SnackbarWithIcon from "@/app/ui/components/SnackbarWithIcon";
 import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
-import { CompanyAddressDropdownDTO } from "@/data/dtos/CompanyAddressDropdownDTO";
 import { useSession } from "next-auth/react";
-import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import {
   PostEmployerWorkDTO,
   ReadAddressDTO,
@@ -48,12 +45,12 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { data: session, update, status } = useSession();
+  const { data: session, status } = useSession();
 
   // const [termsAccepted, setTermsAccepted] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
 
-  const [companyName, setCompanyName] = useState<string>("");
+  const [companyName, setCompanyName] = useState<string>(""); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [workAddress, setWorkAddress] = useState<ReadAddressDTO>(null);
   const pathname = usePathname();
 
@@ -63,7 +60,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
       if (!session?.user?.companyId) return;
       if (status === "authenticated") {
         if (_.isEqual(disclosuresStoreData, initialState.disclosures)) {
-          const { id, companyId, employerId } = session.user;
+          const { id } = session.user;
 
           try {
             const response = await fetch(
@@ -81,7 +78,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 `Error: ${response.status} ${response.statusText}`,
               );
             } else {
-              let { result } = await response.json();
+              const { result } = await response.json();
               setCompanyName(result.company_name);
               // REVIEW: @Gary this section might not align correctly with the above /api/companies/name/get
               setDisclosuresData({
@@ -93,7 +90,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
                 workAddressId: result.workAddressId ?? "",
               });
             }
-          } catch (error) {}
+          } catch {}
         } else {
           console.log("fetching from redux store");
         }
@@ -159,14 +156,14 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
       );
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         dispatch(setPageSaved("disclosures"));
         dispatch(setDisclosures(disclosuresData));
         router.push("/edit-profile/employer/congratulations");
       } else {
-        const errorData = await response.json();
+        await response.json();
       }
-    } catch (error) {}
+    } catch {}
   };
 
   const handleClose = (
@@ -183,7 +180,7 @@ export default function CreateEmployerCompanyInfoDisclosurePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(3 / 3) * 100} size="sm" />
+        <ProgressBarFlat progress={(3 / 3) * 100} />
 
         <p>Step 3/3</p>
         <h1>Professional Info and Disclosures</h1>

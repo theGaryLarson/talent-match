@@ -83,9 +83,9 @@ export default function TagsWithAutocomplete<ValueType>({
   }, [apiSearchRoute, setLoading, setOptions]);
 
   async function initTags() {
-    var initTagsToSelect: ValueType[] = [];
+    const initTagsToSelect: ValueType[] = [];
     if (initialTags != null) {
-      for (var i = 0; i < initialTags.length; i++) {
+      for (let i = 0; i < initialTags.length; i++) {
         const response = await fetch(`${apiSearchRoute}${initialTags[i]}`);
         const data: ValueType[] = await response.json();
         if (data.length > 0) initTagsToSelect.push(data[0]);
@@ -140,7 +140,9 @@ export default function TagsWithAutocomplete<ValueType>({
         // Propagate the event if it's valid
         else {
           setSelectedTags(val as ValueType[]);
-          onChange && onChange(ev, val as ValueType[], reason, details);
+          if (onChange) {
+            onChange(ev, val as ValueType[], reason, details);
+          }
         }
       }}
       onInputChange={handleInputChange}
@@ -169,13 +171,13 @@ export default function TagsWithAutocomplete<ValueType>({
       renderTags={(value: readonly (string | ValueType)[], getTagProps) =>
         value.map((option: string | ValueType, index: number) => {
           const { key, ...tagProps } = getTagProps({ index });
-          var link =
+          const link =
             (getTagLink && getTagLink(option as ValueType)) ?? "javascript:;";
           const label =
             typeof option === "string"
               ? option
               : getTagLabel && getTagLabel(option);
-          var target = link == "javascript:;" ? "_self" : "_blank";
+          const target = link == "javascript:;" ? "_self" : "_blank";
           return (
             <Chip
               label={

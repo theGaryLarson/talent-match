@@ -4,16 +4,15 @@ import {
 } from "@/app/lib/eduProviders";
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "@/auth";
 
 export default async function page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const session = await auth();
-  let trainingProgramDetails: ReadEduProviderProgramDetailDTO =
+  const trainingProgramDetails: ReadEduProviderProgramDetailDTO =
     await getProviderProgramDetailView(params.id);
 
   // default to TWC if missing edu provider logo
-  let logoURL = trainingProgramDetails.logoUrl || "/images/TWC logo_White.svg";
+  const logoURL =
+    trainingProgramDetails.logoUrl || "/images/TWC logo_White.svg";
 
   return (
     <div className="w-full bg-white flex-col justify-start items-start inline-flex">

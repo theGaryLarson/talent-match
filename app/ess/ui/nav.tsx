@@ -1,28 +1,16 @@
 "use client";
-import {
-  Box,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
-  ListItemButton,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, IconButton, Drawer, List, useMediaQuery } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
-import NextLink from "next/link";
 import NavLinks from "./nav-links";
 
 export default function Nav() {
   const isSmallScreen = useMediaQuery("(max-width:600px)");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      setDrawerOpen(open);
-    };
+  const toggleDrawer = (open: boolean) => () => {
+    setDrawerOpen(open);
+  };
 
   return (
     <Box display={"flex"} flexGrow={1} flexDirection={"row"}>

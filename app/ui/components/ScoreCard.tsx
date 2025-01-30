@@ -1,4 +1,3 @@
-import { HeartIcon, UserIcon } from "@heroicons/react/20/solid";
 //draft
 interface Props {
   title: string;

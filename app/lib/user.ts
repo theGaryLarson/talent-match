@@ -6,7 +6,6 @@ import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { setPoolWithSession } from "@/app/lib/jobseeker";
-import { type } from "os";
 
 const prisma: PrismaClient = getPrismaClient();
 

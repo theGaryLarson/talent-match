@@ -1,32 +1,16 @@
 "use client";
 
-import placeholder_image from "../../../public/placeholder.jpg";
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
 import { useEffect, useState } from "react";
 import { fetchPathways } from "../../api/api";
 import { IPathway } from "../../lib/data";
-import {
-  Grid2,
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  List,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
+import { Grid2, Typography } from "@mui/material";
 
 export default function Pathways() {
   const { instance, accounts, inProgress } = useMsal();
   const isAuthenticated = useIsAuthenticated();
   const [pathwaysData, setpathwaysData] = useState<IPathway[]>([]);
-  const router = useRouter();
-  const theme = useTheme();
 
   useEffect(() => {
     const fetchPathwaysFromApi = async () => {

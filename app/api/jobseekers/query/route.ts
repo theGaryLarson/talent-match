@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import {
-  jobSeekerCardViewSelect,
-  jobseekerQueryTestSelect,
-} from "@/app/lib/prisma";
+import { jobSeekerCardViewSelect } from "@/app/lib/prisma";
 import { educationRank } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { devLog } from "@/app/lib/utils";
@@ -23,9 +20,6 @@ export async function POST(request: Request) {
     sortBy = "yearsExp",
     maxResults = 50,
     page = 1,
-    pool1 = true,
-    pool2 = true,
-    pool3 = false,
   } = await request.json();
 
   const normalizedSkills: string[] = skills.filter(

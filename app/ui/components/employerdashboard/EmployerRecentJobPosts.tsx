@@ -72,8 +72,6 @@ function SingleJobPost({
   job: JobListingCardViewDTO;
   days: number;
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   let dayPostedText: string;
   switch (days) {
     case 0:

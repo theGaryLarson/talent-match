@@ -28,7 +28,7 @@ export default function MarkDownEditor(props: {
   React.useEffect(() => {
     if (quill) {
       quill.clipboard.dangerouslyPasteHTML(props.starterContent ?? "");
-      quill.on("text-change", (delta, oldDelta, source) => {
+      quill.on("text-change", () => {
         console.log("Text change!");
         console.log(quill.getText()); // Get text only
         console.log(quill.getContents()); // Get delta contents

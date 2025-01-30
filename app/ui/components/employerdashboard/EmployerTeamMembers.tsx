@@ -7,8 +7,8 @@ import ShareMenu from "../ShareButton";
 export default async function EmployerTeamMembers(props: {
   companyid: string;
 }) {
-  let session = await auth();
-  let teamates = await getEmployersByCompanyId(props.companyid);
+  const session = await auth();
+  const teamates = await getEmployersByCompanyId(props.companyid);
   return (
     <div>
       <div className="text-xl font-medium leading-relaxed text-black/90">

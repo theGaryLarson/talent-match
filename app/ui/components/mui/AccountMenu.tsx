@@ -10,7 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Button from "@mui/material/Button";
 import { Role } from "@/data/dtos/UserInfoDTO";
@@ -32,7 +32,7 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
 
-  var textColor = "text-black";
+  let textColor = "text-black";
   if (
     pathname == "/services/jobseekers" ||
     pathname == "/services/employers" ||

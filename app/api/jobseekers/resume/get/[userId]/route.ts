@@ -14,7 +14,7 @@ export async function GET(
   const params = await props.params;
   const userId = params.userId;
   try {
-    let session = await auth();
+    const session = await auth();
 
     // Check if the session exists
     if (!session?.user) {

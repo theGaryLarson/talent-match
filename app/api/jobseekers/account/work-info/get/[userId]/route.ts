@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { PrismaClient, WorkExperience } from "@prisma/client";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { JsWorkExpDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
-import { StayCurrentLandscapeTwoTone } from "@mui/icons-material";
 
 const prisma: PrismaClient = getPrismaClient();
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
-import Nav from "./ui/nav";
 import MyMsalProvider from "./my-msal-provider";
 import { Box, ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./mui.theme";

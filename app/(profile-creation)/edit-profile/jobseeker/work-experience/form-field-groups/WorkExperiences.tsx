@@ -1,11 +1,11 @@
-import React, { memo, MouseEventHandler, useCallback } from "react";
+import React, { memo, useCallback } from "react";
 import PillButton from "@/app/ui/components/PillButton";
 import { Checkbox } from "@mui/material";
 import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
 import TextareaWithLabel from "@/app/ui/components/TextareaWithLabel";
 import { v4 as uuidv4 } from "uuid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import SelectAutoload from "@/app/ui/components/mui/SelectAutoload";
 import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
 import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO";

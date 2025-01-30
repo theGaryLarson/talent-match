@@ -18,10 +18,6 @@ export default async function CareerPage({
   whatYoullDo,
   skillsYoullNeed,
   whyItMatters,
-  tableAvgSalary,
-  tableEduLevel,
-  tableExpReq,
-  tableJobGrowth,
   trainingPrograms,
 }: {
   title: string;
@@ -35,13 +31,9 @@ export default async function CareerPage({
   whatYoullDo: string;
   skillsYoullNeed: string;
   whyItMatters: string;
-  tableAvgSalary: string;
-  tableEduLevel: string;
-  tableExpReq: string;
-  tableJobGrowth: string;
   trainingPrograms: EduProviderPathways;
 }) {
-  let programs: ReadEduProviderProgramCardDTO[] =
+  const programs: ReadEduProviderProgramCardDTO[] =
     await getProviderProgramCardView(trainingPrograms);
 
   return (

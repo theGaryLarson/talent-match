@@ -1,6 +1,5 @@
 "use client";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../jobseekerStore";
 import {
   HighestCompletedEducationLevel,
   JsDisclosuresPostDTO,

@@ -31,7 +31,7 @@ import {
 import Image from "next/image";
 import Avatar from "@/app/ui/components/Avatar";
 import { useSession } from "next-auth/react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { usePathname } from "next/navigation";
 import PillButton from "@/app/ui/components/PillButton";
 import Header from "@/app/ui/Header";
@@ -163,7 +163,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  let { data: session, status } = useSession();
+  const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = useCallback(() => {

@@ -5,19 +5,12 @@ import { useRouter, usePathname } from "next/navigation";
 import type { RootState } from "@/lib/employerStore";
 import { useSelector, useDispatch } from "react-redux";
 import InputTextWithLabel from "@/app/ui/components/InputTextWithLabel";
-import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import PillButton from "@/app/ui/components/PillButton";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import TextField from "@mui/material/TextField";
-import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
 import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
-import {
-  PostEmployerPersonalDTO,
-  ReadEmployerPersonalDTO,
-} from "@/data/dtos/EmployerProfileCreationDTOs";
+import { PostEmployerPersonalDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 import {
   setPersonal,
   initialState,
@@ -28,7 +21,6 @@ import {
 } from "@/lib/features/profileCreation/saveSlice";
 import _ from "lodash";
 import { devLog } from "@/app/lib/utils";
-import { JsIntroDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const formNamePrefix = "profile-creation-personal-";
 
@@ -44,7 +36,7 @@ export default function CreateEmployerPersonalPage() {
   // );
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
-  const { data: session, update, status } = useSession(); // Use useSession hook to get session and status
+  const { data: session, status } = useSession(); // Use useSession hook to get session and status
   const updateSessionProperties = useUpdateSession();
   const pathname = usePathname();
 
@@ -62,7 +54,7 @@ export default function CreateEmployerPersonalPage() {
             );
 
             if (!response.ok) {
-              const errorData = await response.json();
+              await response.json();
               setPersonalData((prevState) => ({
                 ...prevState,
                 userId: id ?? "",
@@ -73,7 +65,7 @@ export default function CreateEmployerPersonalPage() {
                 phoneCountryCode: "United States +1",
               }));
             } else {
-              let { result } = await response.json();
+              const { result } = await response.json();
               setPersonalData((prevPersonalData) => ({
                 ...prevPersonalData,
                 userId: result.userId,
@@ -87,7 +79,7 @@ export default function CreateEmployerPersonalPage() {
               }));
               // setBirthdate(dayjs(result.birthDate));
             }
-          } catch (error) {
+          } catch {
             // dispatch(submitFormFailure('Failed to submit the form'));
           }
         } else {
@@ -190,7 +182,7 @@ export default function CreateEmployerPersonalPage() {
       );
       devLog("personalData\n", personalData);
       if (response.ok) {
-        const { result } = await response.json();
+        await response.json();
 
         dispatch(
           setPersonal({
@@ -212,16 +204,16 @@ export default function CreateEmployerPersonalPage() {
 
         router.push("/edit-profile/employer/company");
       } else {
-        const errorData = await response.json();
+        await response.json();
       }
-    } catch (error) {}
+    } catch {}
   };
 
   return (
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(1 / 3) * 100} size="sm" />
+        <ProgressBarFlat progress={(1 / 3) * 100} />
         <p>Step 1/3</p>
         <h1>Your Personal Info</h1>
         <p className="subtitle">* Indicates a required field</p>

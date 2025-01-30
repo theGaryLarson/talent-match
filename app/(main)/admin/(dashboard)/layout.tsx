@@ -2,7 +2,7 @@ import Link from "next/link";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import { auth } from "@/auth";
-import {PencilSquareIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import ApprovalOutlinedIcon from "@mui/icons-material/ApprovalOutlined";
 import { AddBusinessOutlined, PsychologyOutlined } from "@mui/icons-material";
 export default async function layout({
@@ -10,7 +10,7 @@ export default async function layout({
 }: {
   children: React.ReactNode;
 }) {
-  let session = await auth();
+  const session = await auth();
   console.log(session);
 
   return (

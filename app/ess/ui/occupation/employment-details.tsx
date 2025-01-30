@@ -8,9 +8,10 @@ export default function EmploymentDetails({
   occupation: IRelatedData;
   regionId: string;
 }) {
-  let index = occupation.cfa_jobpostingsregionalbreakdown_Occupation.findIndex(
-    (item: any) => item.cfa_jobpostingsregionalbreakdownid == regionId,
-  );
+  const index =
+    occupation.cfa_jobpostingsregionalbreakdown_Occupation.findIndex(
+      (item: any) => item.cfa_jobpostingsregionalbreakdownid == regionId,
+    );
   return (
     <Grid2 container spacing={2}>
       <Grid2 size={{ xs: 12, md: 6 }}>
