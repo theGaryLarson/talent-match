@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
 import Image from "next/image";
 import Footer from "@/app/ui/Footer";
 import SignupHeader from "@/app/ui/SignupHeader";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Role } from "@/data/dtos/UserInfoDTO";
+import PillButton from "@/app/ui/components/PillButton";
 
 // interface Data {
 //   userId: string;
@@ -99,22 +99,23 @@ export default function SignupPage() {
             </label>
           </div>
         </fieldset>
-        <Button
+        <PillButton
           disabled={choice === Role.GUEST}
           onClick={handleSubmit}
+          variant="contained"
           sx={{
             marginInline: "auto",
             marginTop: "1rem",
             width: "fit-content",
-            borderRadius: "1.5rem",
-            "&:focus": {
-              outline: "none",
-              boxShadow: "none",
+            "&:disabled": {
+              color: "#fff",
+              bgcolor: "primary.main",
+              opacity: 0.5,
             },
           }}
         >
           Continue
-        </Button>
+        </PillButton>
       </main>
       <footer className="mt-auto">
         <Footer />
