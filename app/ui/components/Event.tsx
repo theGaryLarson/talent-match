@@ -27,7 +27,8 @@ interface EventProps {
 }
 
 export default function Event({ event, registered, showLink }: EventProps) {
-  const [open, setOpen] = React.useState(false);
+    const [reg, setReg] = React.useState(registered);
+    const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -40,8 +41,10 @@ export default function Event({ event, registered, showLink }: EventProps) {
       body: JSON.stringify({ eventId: event.id }),
     });
     if (response.ok) {
-      if (event.registrationLink)
+      if (event.registrationLink) {
         window.open(event.registrationLink!, "_blank");
+      }
+      setReg(true);
     }
   }
 
@@ -98,7 +101,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
                     <div className="w-4 h-2 left-0 top-0 absolute" />
                   </div>
                 </div>
-                {registered ? (
+                {reg ? (
                   <PillButton disabled>Registered</PillButton>
                 ) : (
                   <PillButton onClick={register}>Register</PillButton>
@@ -186,7 +189,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
         )}
         {!showLink && (
           <div className="flex-col justify-start items-start flex">
-            {registered ? (
+            {reg ? (
               "Registered"
             ) : (
               <PillButton onClick={handleOpen}>Register</PillButton>
