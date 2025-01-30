@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { PrismaClient } from "@prisma/client";
+import { unstable_rethrow } from "next/navigation";
 
 const prisma = new PrismaClient();
 export enum EventTypeEnum {
@@ -103,6 +104,7 @@ export async function getAllEvents(excludePast: boolean) {
       events: res,
     };
   } catch (error) {
+    unstable_rethrow(error); // Re-throw Next.js errors
     console.error("Error deleting event:", error);
     return { success: false, error: (error as Error).message };
   }
@@ -133,6 +135,7 @@ export async function getRegisteredEvents(excludePast: boolean) {
     }
     return res;
   } catch (error) {
+    unstable_rethrow(error); // Re-throw Next.js errors
     console.error(error);
     return [];
   }
