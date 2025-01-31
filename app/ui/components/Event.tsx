@@ -4,6 +4,7 @@ import { Modal } from "@mui/material";
 import React from "react";
 import PillButton from "./PillButton";
 import Link from "next/link";
+import Image from "next/image";
 import { EventTypeEnum } from "@/app/lib/events";
 
 export type EventData = {
@@ -66,7 +67,13 @@ export default function Event({ event, registered, showLink }: EventProps) {
                                         {event.name}
                                     </div>
                                     <div className="w-full justify-start items-start gap-2 flex flex-col">
-                                        <div className="flex-col justify-start items-start gap-2 inline-flex">
+                                        <div className="flex-row gap-2 justify-start items-start gap-2 inline-flex">
+                                        <Image
+                                                src="/images/events/calendar.svg"
+                                                width={20}
+                                                height={20}
+                                                alt="Calendar icon"
+                                            />
                                             <div className="text-black/90 text-base font-normal leading-normal tracking-tight">
                                                 {event.date.toDateString()}{" "}
                                                 {event.date.toLocaleTimeString([], {
@@ -80,7 +87,13 @@ export default function Event({ event, registered, showLink }: EventProps) {
                                                     })}
                                             </div>
                                         </div>
-                                        <div className="flex-col justify-start items-start inline-flex">
+                                        <div className="flex flex-row gap-2 justify-start items-start inline-flex">
+                                            <Image
+                                                src="/images/events/location-pin.svg"
+                                                width={20}
+                                                height={20}
+                                                alt="Pin icon"
+                                            />
                                             <div className="text-black/90 text-base font-normal leading-normal tracking-tight">
                                                 {event.location}
                                             </div>
