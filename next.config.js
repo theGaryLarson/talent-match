@@ -6,35 +6,35 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com'
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
       },
       {
-        protocol: 'https',
-        hostname: 'careerservicesstorage.blob.core.windows.net'
+        protocol: "https",
+        hostname: "careerservicesstorage.blob.core.windows.net",
       },
       {
-        protocol: 'https',
-        hostname: 'randomuser.me'
+        protocol: "https",
+        hostname: "randomuser.me",
       },
       {
-        protocol: 'https',
-        hostname: 'logo.clearbit.com'
+        protocol: "https",
+        hostname: "logo.clearbit.com",
       },
       {
-        protocol: 'http',
-        hostname: 'example.com'
+        protocol: "http",
+        hostname: "example.com",
       },
       {
-        protocol: 'https',
-        hostname: 'i.pinimg.com'
+        protocol: "https",
+        hostname: "i.pinimg.com",
       },
       {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com'
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
       },
     ],
-  }
+  },
 };
 
 export default nextConfig;

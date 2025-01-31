@@ -1,7 +1,7 @@
-import CircleBlurb from '@/app/ui/components/CircleBlurb';
-import TimeLine from '@/app/ui/components/TimeLine';
-import BottomFoldJobSeeker from '@/app/ui/components/BottomFoldJobseeker';
-import JobSeekerPageBanner from '@/app/ui/components/JobSeekerPageBanner';
+import CircleBlurb from "@/app/ui/components/CircleBlurb";
+import TimeLine from "@/app/ui/components/TimeLine";
+import BottomFoldJobSeeker from "@/app/ui/components/BottomFoldJobseeker";
+import JobSeekerPageBanner from "@/app/ui/components/JobSeekerPageBanner";
 
 /**
  * @returns Job seeker landing page
@@ -15,7 +15,7 @@ export default function Page() {
           <span className="font-['Roboto'] text-6xl font-normal leading-[66px] text-[#014260]">
             It&apos;s Not a Job Board—
             <br />
-            It&apos;s a{' '}
+            It&apos;s a{" "}
           </span>
           <span className="font-['Roboto'] text-6xl font-medium leading-[66px] text-[#047f9c]">
             Launchpad
@@ -26,14 +26,23 @@ export default function Page() {
           job candidate in today&apos;s digital world
         </div>
         <br />
-        <CircleBlurb/>
-        <div className="text-center"><span className="text-[#014260] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">Talent </span><span className="text-[#047f9c] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">Portal</span></div>
-        <div className="text-center text-[#0f1728] text-2xl font-normal font-['Roboto'] leading-relaxed">Our Talent Portal is designed to help you position yourself as a top job candidate in today&apos;s digital world</div>
-        <br/>
-        <TimeLine/>
-        
+        <CircleBlurb />
+        <div className="text-center">
+          <span className="text-[#014260] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
+            Talent{" "}
+          </span>
+          <span className="text-[#047f9c] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
+            Portal
+          </span>
+        </div>
+        <div className="text-center text-[#0f1728] text-2xl font-normal font-['Roboto'] leading-relaxed">
+          Our Talent Portal is designed to help you position yourself as a top
+          job candidate in today&apos;s digital world
+        </div>
+        <br />
+        <TimeLine />
       </div>
-      <BottomFoldJobSeeker/>
+      <BottomFoldJobSeeker />
     </div>
   );
 }

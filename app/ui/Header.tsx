@@ -1,7 +1,7 @@
-'use client';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Fragment, SVGProps, useEffect, useState } from 'react';
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Fragment, useEffect, useState } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -13,7 +13,7 @@ import {
   PopoverGroup,
   PopoverPanel,
   Transition,
-} from '@headlessui/react';
+} from "@headlessui/react";
 import {
   Bars3Icon,
   BuildingOffice2Icon,
@@ -24,11 +24,10 @@ import {
   QuestionMarkCircleIcon,
   UsersIcon,
   XMarkIcon,
-} from '@heroicons/react/24/outline';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import Image from 'next/image';
-import AccountMenu from './components/mui/AccountMenu';
-
+} from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import Image from "next/image";
+import AccountMenu from "./components/mui/AccountMenu";
 
 type LinkItem = {
   name: string;
@@ -43,10 +42,10 @@ type DropDownItem = {
   description: string;
   href: string;
   icon: React.ForwardRefExoticComponent<
-  React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
-    title?: string;
-    titleId?: string;
-  } & React.RefAttributes<SVGSVGElement>
+    React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
+      title?: string;
+      titleId?: string;
+    } & React.RefAttributes<SVGSVGElement>
   >;
   target?: string;
   rel?: string;
@@ -87,93 +86,93 @@ const TopLevelLinks: LinkItem[] = [
   //   target: '_blank',
   //   rel: 'noopener noreferrer',
   {
-    name: 'For Employers',
-    href: '',
+    name: "For Employers",
+    href: "",
     dropDowns: [
       {
-        name: 'Landing Page',
-        description: 'Informational page for employers',
-        href: '/services/employers',
+        name: "Landing Page",
+        description: "Informational page for employers",
+        href: "/services/employers",
         icon: BuildingOffice2Icon,
       },
       {
-        name: 'Talent Showcase',
-        description: 'Find talent',
-        href: '/services/talent-search',
+        name: "Talent Showcase",
+        description: "Find talent",
+        href: "/services/talent-search",
         icon: SparklesIcon,
       },
     ],
   },
   {
-    name: 'For Jobseekers',
-    href: '',
+    name: "For Jobseekers",
+    href: "",
     dropDowns: [
       {
-        name: 'Landing Page',
-        description: 'Informational page for job seekers',
-        href: '/services/jobseekers',
+        name: "Landing Page",
+        description: "Informational page for job seekers",
+        href: "/services/jobseekers",
         icon: BriefcaseIcon,
       },
       {
-        name: 'Job Listings',
-        description: 'Find jobs',
-        href: '/services/joblistings',
+        name: "Job Listings",
+        description: "Find jobs",
+        href: "/services/joblistings",
         icon: NewspaperIcon,
       },
     ],
   },
   {
-    name: 'Our Community',
-    href: '',
+    name: "Our Community",
+    href: "",
     dropDowns: [
       {
-        name: 'Join Our Community',
-        description: 'Connect with others on our community forum',
-        href: 'https://forum.watechwfcoalition.org/',
-        target: '_blank',
-        rel: 'noopener noreferrer',
+        name: "Join Our Community",
+        description: "Connect with others on our community forum",
+        href: "https://forum.watechwfcoalition.org/",
+        target: "_blank",
+        rel: "noopener noreferrer",
         icon: UsersIcon,
       },
       {
-        name: 'Careers',
-        description: 'Learn about different careers in tech',
-        href: '/services/careers',
+        name: "Careers",
+        description: "Learn about different careers in tech",
+        href: "/services/careers",
         icon: QuestionMarkCircleIcon,
       },
     ],
   },
-  // { name: 'Events', href: '/services/events' },
   {
-    name: 'Coalition',
-    href: '',
+    name: "Coalition",
+    href: "",
     dropDowns: [
       {
-        name: 'Training Providers',
-        description: 'Learn about the training providers in our coalition',
-        href: '/services/training-providers',
+        name: "Training Providers",
+        description: "Learn about the training providers in our coalition",
+        href: "/services/training-providers",
         icon: UserGroupIcon,
       },
     ],
   },
-  { name: 'About Us', href: '/about-us' },
+  { name: "Events", href: "/services/events" },
+  { name: "About Us", href: "/about-us" },
 ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [headerTW, setHeaderTW] = useState('');
+  const [headerTW, setHeaderTW] = useState("");
   const pathname = usePathname();
   useEffect(() => {
     // Do something here...
     setMobileMenuOpen(false);
     if (
-      pathname == '/services/jobseekers' ||
-      pathname == '/services/employers'
+      pathname == "/services/jobseekers" ||
+      pathname == "/services/employers"
     ) {
-      setHeaderTW('w-full z-10 absolute text-white');
-    } else if (pathname.startsWith('/services/training-programs/')) {
-      setHeaderTW('bg-[#003350] text-white');
+      setHeaderTW("w-full z-10 absolute text-white");
+    } else if (pathname.startsWith("/services/training-programs/")) {
+      setHeaderTW("bg-[#003350] text-white");
     } else {
-      setHeaderTW('bg-white');
+      setHeaderTW("bg-white");
     }
   }, [pathname]);
 
@@ -188,9 +187,9 @@ export default function Header() {
         aria-label="Global"
       >
         <div className="flex shrink">
-          {pathname == '/services/jobseekers' ||
-          pathname == '/services/employers' ||
-          pathname.startsWith('/services/training-programs/') ? (
+          {pathname == "/services/jobseekers" ||
+          pathname == "/services/employers" ||
+          pathname.startsWith("/services/training-programs/") ? (
             <Link href="/">
               <span className="sr-only">Tech Workforce Coalition</span>
               <Image
@@ -249,8 +248,8 @@ export default function Header() {
                                 key={item.name}
                                 href={item.href}
                                 className="block font-semibold  text-black"
-                                target={item.target || '_self'}
-                                rel={item.rel || ''}
+                                target={item.target || "_self"}
+                                rel={item.rel || ""}
                                 onClick={() => {
                                   close();
                                 }}
@@ -279,8 +278,8 @@ export default function Header() {
                 key={link.name}
                 href={link.href}
                 className="text-sm font-semibold leading-6  "
-                target={link.target || '_self'}
-                rel={link.rel || ''}
+                target={link.target || "_self"}
+                rel={link.rel || ""}
               >
                 {link.name}
               </Link>
@@ -335,38 +334,47 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                
                 {TopLevelLinks.map((link) => {
-                  if(link.dropDowns != undefined){
-                    return(
-                      <Disclosure as="div" className="-mx-3" key={"m"+link.name}>
-                  {({ open }) => (
-                    <>
-                      <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7   hover:bg-gray-50">
-                        {link.name}
-                        <ChevronDownIcon
-                          className={open ? 'rotate-180 h-5 w-5 flex-none' : 'h-5 w-5 flex-none'}
-                          aria-hidden="true"
-                        />
-                      </DisclosureButton>
-                      <DisclosurePanel className="mt-2 space-y-2">
-                        {link.dropDowns?.map((item) => (
-                          <DisclosureButton
-                            key={'mm'+item.name}
-                            as={Link}
-                            href={item.href}
-                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7   hover:bg-gray-50"
-                            target={item.target || '_self'}
-                            rel={item.rel || ''}
-                            onClick={() => { setMobileMenuOpen(false) }}
-                          >
-                            {item.name}
-                          </DisclosureButton>
-                        ))}
-                      </DisclosurePanel>
-                    </>
-                  )}
-                </Disclosure>
+                  if (link.dropDowns != undefined) {
+                    return (
+                      <Disclosure
+                        as="div"
+                        className="-mx-3"
+                        key={"m" + link.name}
+                      >
+                        {({ open }) => (
+                          <>
+                            <DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7   hover:bg-gray-50">
+                              {link.name}
+                              <ChevronDownIcon
+                                className={
+                                  open
+                                    ? "rotate-180 h-5 w-5 flex-none"
+                                    : "h-5 w-5 flex-none"
+                                }
+                                aria-hidden="true"
+                              />
+                            </DisclosureButton>
+                            <DisclosurePanel className="mt-2 space-y-2">
+                              {link.dropDowns?.map((item) => (
+                                <DisclosureButton
+                                  key={"mm" + item.name}
+                                  as={Link}
+                                  href={item.href}
+                                  className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7   hover:bg-gray-50"
+                                  target={item.target || "_self"}
+                                  rel={item.rel || ""}
+                                  onClick={() => {
+                                    setMobileMenuOpen(false);
+                                  }}
+                                >
+                                  {item.name}
+                                </DisclosureButton>
+                              ))}
+                            </DisclosurePanel>
+                          </>
+                        )}
+                      </Disclosure>
                     );
                   }
                   return (
@@ -374,8 +382,8 @@ export default function Header() {
                       key={link.name}
                       href={link.href}
                       className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7   hover:bg-gray-50"
-                      target={link.target || '_self'}
-                      rel={link.rel || ''}
+                      target={link.target || "_self"}
+                      rel={link.rel || ""}
                     >
                       {link.name}
                     </Link>

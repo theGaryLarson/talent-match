@@ -1,8 +1,7 @@
-'use client';
+"use client";
 
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Avatar, AvatarImageProps } from 'flowbite-react';
-
+import { ChangeEvent, useEffect, useState } from "react";
+import { Avatar } from "@mui/material";
 interface Props {
   id: string;
   fileTypeText: string;
@@ -27,9 +26,8 @@ export default function AvatarUpload({
   apiPath,
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
-  const [fileSelected, setFileSelected] = useState('');
-  const [filePath, setFilePath] = useState('');
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [fileSelected, setFileSelected] = useState("");
+  const [filePath, setFilePath] = useState("");
 
   useEffect(() => {
     setFilePath(initialImageUrl); // Update filePath when initialImageUrl changes
@@ -38,10 +36,9 @@ export default function AvatarUpload({
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null) {
       const file = event.target.files[0];
-      if (file.name !== '') {
+      if (file.name !== "") {
         setFileSelected(file.name);
       }
-
 
       if (filePath) URL.revokeObjectURL(filePath);
       setFilePath(URL.createObjectURL(file));
@@ -50,7 +47,7 @@ export default function AvatarUpload({
       if (file.size > maxSize) {
         // file is too large
         setFilesizeExceeded(true);
-        setUploadError('File size exceeded. Please use file less than 5MB.');
+        console.error("File size exceeded. Please use file less than 5MB.");
         return;
       } else setFilesizeExceeded(false); // file juuuust right
 
@@ -68,9 +65,9 @@ export default function AvatarUpload({
 
         // Make a POST request to the API route
         const response = await fetch(apiPath, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         });
@@ -82,51 +79,42 @@ export default function AvatarUpload({
           onImageUpload(result.imageUrl); // Return the image URL to the parent component
         } else {
           const errorData = await response.json();
-          setUploadError(errorData.error || 'Failed to upload image');
+          console.error(errorData.error || "Failed to upload image");
         }
       } catch (error) {
-        console.error('Error uploading image:', error);
-        setUploadError('Failed to upload image. Please try again.');
+        console.error("Error uploading image:", error);
       }
     } else {
-      setFileSelected(''); // no file selected
-      if (filePath !== '') URL.revokeObjectURL(filePath);
+      setFileSelected(""); // no file selected
+      if (filePath !== "") URL.revokeObjectURL(filePath);
     }
   };
 
   let validFiletype = true;
-  if (fileSelected != '') {
+  if (fileSelected != "") {
     const fileType = fileSelected.substring(
-      fileSelected.lastIndexOf('.'),
+      fileSelected.lastIndexOf("."),
       fileSelected.length,
     );
-    validFiletype = accept.split(',').includes(fileType.toLowerCase());
+    validFiletype = accept.split(",").includes(fileType.toLowerCase());
   }
 
   const fileTypeTextPlusSizeLimit =
-    fileTypeText + ' (max. ' + maxSizeMB + ' MB)';
-
-  // it was getting late and playing around. Feel free to implement this however you find best :)
-  const imageProps: AvatarImageProps = {
-    className: 'w-20 h-20 rounded-full object-cover', // Ensure the image is a perfect circle
-    'data-testid': 'avatar-image',
-  };
+    fileTypeText + " (max. " + maxSizeMB + " MB)";
 
   return (
     <div>
       <label className="flex cursor-pointer rounded-full p-4 hover:bg-slate-50">
         <Avatar
-          rounded
-          // img={filePath}
-          img={(props) => (
-            <img
-              src={filePath || initialImageUrl || undefined}
-              alt="Uploaded Avatar"
-              {...props}
-              {...imageProps}
-            />
-          )}
-          className="h-20 w-20 flex-shrink-0"
+          src={filePath || initialImageUrl || undefined}
+          alt="Uploaded Avatar"
+          sx={{
+            width: "5rem",
+            height: "5rem",
+            flexShrink: 0,
+            borderRadius: "50%",
+          }}
+          data-testid="avatar-image"
         />
         <input
           type="file"
@@ -138,21 +126,21 @@ export default function AvatarUpload({
           disabled={disabled}
         />
         <div className="px-6">
-          {fileSelected == '' && (
+          {fileSelected == "" && (
             <p className="font-medium uppercase text-sky-400">Upload Image</p>
           )}
-          {fileSelected != '' && !filesizeExceeded && validFiletype && (
+          {fileSelected != "" && !filesizeExceeded && validFiletype && (
             <p className="font-medium uppercase text-gray-400">
               {fileSelected}
             </p>
           )}
-          {fileSelected != '' && !filesizeExceeded && !validFiletype && (
-            <p className="font-medium text-red-500 dark:text-red-400">
+          {fileSelected != "" && !filesizeExceeded && !validFiletype && (
+            <p className="font-medium text-red-500">
               Unsupported file type: {fileSelected}
             </p>
           )}
-          {fileSelected != '' && filesizeExceeded && (
-            <p className="font-medium text-red-500 dark:text-red-400">
+          {fileSelected != "" && filesizeExceeded && (
+            <p className="font-medium text-red-500">
               File is too large: {fileSelected}
             </p>
           )}

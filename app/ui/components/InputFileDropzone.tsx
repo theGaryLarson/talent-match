@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Label } from 'flowbite-react';
-import { BlobPrefix } from '@/app/lib/services/azureBlobService';
+import { ChangeEvent, useEffect, useState } from "react";
+import { FormLabel, SxProps } from "@mui/material";
+import { BlobPrefix } from "@/app/lib/services/azureBlobService";
 
 interface Props {
   id: string;
@@ -26,8 +26,7 @@ export default function InputFileDropzone({
   autoloadedUrl,
 }: Props) {
   const [filesizeExceeded, setFilesizeExceeded] = useState(false);
-  const [fileSelected, setFileSelected] = useState(autoloadedUrl ?? '');
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [fileSelected, setFileSelected] = useState(autoloadedUrl ?? "");
 
   useEffect(() => {
     if (autoloadedUrl) {
@@ -59,9 +58,9 @@ export default function InputFileDropzone({
 
         // Make a POST request to the API route
         const response = await fetch(`/api/jobseekers/${blobPrefix}/upload`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         });
@@ -72,50 +71,68 @@ export default function InputFileDropzone({
           onDocUpload(result.imageUrl); // Return the image URL to the parent component
         } else {
           const errorData = await response.json();
-          setUploadError(errorData.error || 'Failed to upload image');
+          console.error(errorData.error || "Failed to upload image");
         }
       } catch (error) {
-        console.error('Error uploading image:', error);
-        setUploadError('Failed to upload image. Please try again.');
+        console.error("Error uploading image:", error);
       }
-    } else setFileSelected(''); // no file selected
+    } else setFileSelected(""); // no file selected
   };
 
   let validFiletype = true;
-  if (fileSelected != '') {
+  if (fileSelected != "") {
     const fileType = fileSelected.substring(
-      fileSelected.lastIndexOf('.'),
+      fileSelected.lastIndexOf("."),
       fileSelected.length,
     );
-    validFiletype = accept.split(',').includes(fileType);
+    validFiletype = accept.split(",").includes(fileType);
   }
 
   const fileTypeTextPlusSizeLimit =
-    fileTypeText + ' (max. ' + maxSizeMB + ' MB)';
+    fileTypeText + " (max. " + maxSizeMB + " MB)";
 
-  let backgroundCSS =
-    'border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600';
-  let svgCSS = 'text-sky-500 dark:text-sky-400';
+  let backgroundCSS: SxProps = {
+    borderColor: "rgb(209, 213, 219)",
+    backgroundColor: "rgb(249, 250, 251)",
+    "&:hover": {
+      backgroundColor: "rgb(243, 244, 246)",
+    },
+  };
+  let svgCSS = "text-sky-500 dark:text-sky-400";
 
   if (
     (!validFiletype || filesizeExceeded) &&
-    !fileSelected.startsWith('http')
+    !fileSelected.startsWith("http")
   ) {
-    backgroundCSS =
-      'border-red-300 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:bg-red-700 dark:hover:border-red-500 dark:hover:bg-red-600';
-    svgCSS = 'text-red-500 dark:text-red-400';
-  } else if (fileSelected != '') {
-    svgCSS = 'text-gray-500 dark:text-gray-400';
+    backgroundCSS = {
+      borderColor: "rgb(252, 165, 165)",
+      backgroundColor: "rgb(254, 242, 242)",
+      "&:hover": {
+        backgroundColor: "rgb(254, 226, 226)",
+      },
+    };
+
+    svgCSS = "text-red-500";
+  } else if (fileSelected != "") {
+    svgCSS = "text-gray-500";
   }
 
-  backgroundCSS = backgroundCSS.concat(
-    'flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed',
-  );
-  svgCSS = svgCSS.concat('h-8 w-8 mr-2');
+  backgroundCSS = {
+    ...backgroundCSS,
+    display: "flex",
+    width: "100%",
+    cursor: "pointer",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "0.5rem",
+    border: "2px dashed",
+  };
+  svgCSS = svgCSS.concat("h-8 w-8 mr-2");
 
   return (
     <div className="relative flex w-full items-center justify-center">
-      <Label htmlFor={id} className={backgroundCSS}>
+      <FormLabel htmlFor={id} sx={backgroundCSS}>
         <div className="flex flex-col items-center justify-center pb-6 pt-5">
           <div className="flex flex-row items-center">
             <svg
@@ -133,44 +150,42 @@ export default function InputFileDropzone({
                 d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
               />
             </svg>
-            {fileSelected == '' && (
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                <span className="text-sky-400 underline">Click to upload</span>{' '}
+            {fileSelected == "" && (
+              <p className="mb-2 text-sm text-gray-500">
+                <span className="text-sky-400 underline">Click to upload</span>{" "}
                 or drag and drop
               </p>
             )}
-            {fileSelected != '' && !filesizeExceeded && validFiletype && (
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                {fileSelected}
-              </p>
+            {fileSelected != "" && !filesizeExceeded && validFiletype && (
+              <p className="mb-2 text-sm text-gray-500">{fileSelected}</p>
             )}
-            {fileSelected != '' &&
+            {fileSelected != "" &&
               !filesizeExceeded &&
               !validFiletype &&
-              !fileSelected.startsWith('http') && (
-                <p className="mb-2 text-sm text-red-500 dark:text-red-400">
+              !fileSelected.startsWith("http") && (
+                <p className="mb-2 text-sm text-red-500">
                   Unsupported file type: {fileSelected}
                 </p>
               )}
-            {fileSelected != '' &&
+            {fileSelected != "" &&
               !filesizeExceeded &&
               !validFiletype &&
-              fileSelected.startsWith('http') && (
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              fileSelected.startsWith("http") && (
+                <p className="mb-2 text-sm text-gray-500">
                   {(() => {
-                    const filePath = fileSelected.split('?')[0];
-                    const lastSlash = filePath.lastIndexOf('/');
+                    const filePath = fileSelected.split("?")[0];
+                    const lastSlash = filePath.lastIndexOf("/");
                     return filePath.substring(lastSlash + 1);
                   })()}
                 </p>
               )}
-            {fileSelected != '' && filesizeExceeded && (
-              <p className="mb-2 text-sm text-red-500 dark:text-red-400">
+            {fileSelected != "" && filesizeExceeded && (
+              <p className="mb-2 text-sm text-red-500">
                 File is too large! {/*{fileSelected}*/}
               </p>
             )}
           </div>
-          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-4 text-xs text-gray-500">
             {fileTypeTextPlusSizeLimit}
           </p>
         </div>
@@ -182,7 +197,7 @@ export default function InputFileDropzone({
           accept={accept}
           onChange={handleChange}
         />
-      </Label>
+      </FormLabel>
     </div>
   );
 }

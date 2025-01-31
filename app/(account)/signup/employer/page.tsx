@@ -1,25 +1,21 @@
-'use client';
+"use client";
 
-import DividerWithText from '@/app/ui/components/DividerWithText';
-import InputTextWithLabel from '@/app/ui/components/InputTextWithLabel';
-import Link from 'next/link';
-import { Button } from 'flowbite-react';
-import SignupPrompt from '@/app/ui/components/SignupPrompt';
-import Image from 'next/image';
-import Footer from '@/app/ui/Footer';
-import SignupHeader from '@/app/ui/SignupHeader';
-import { FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useUpdateSession } from '@/app/lib/auth/useUpdateSession';
-import { mapToEnumOrThrow } from '@/app/lib/utils';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { v4 as uuidv4 } from 'uuid';
+import Link from "next/link";
+import SignupPrompt from "@/app/ui/components/SignupPrompt";
+import Image from "next/image";
+import Footer from "@/app/ui/Footer";
+import SignupHeader from "@/app/ui/SignupHeader";
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import PillButton from "@/app/ui/components/PillButton";
 
 export default function EmployerSignUpFinish() {
-  let [termsAgree, setTermsAgree] = useState(false);
-  let vectorImgSrc = '/images/signup/employer-vector.png';
-  const { data: session, status, update } = useSession();
+  const [termsAgree, setTermsAgree] = useState(false);
+  const vectorImgSrc = "/images/signup/employer-vector.png";
+  const { data: session } = useSession();
   const updateSessionProperties = useUpdateSession();
   const router = useRouter();
   return (
@@ -31,7 +27,7 @@ export default function EmployerSignUpFinish() {
           vectorImgSrc={vectorImgSrc}
           prompt="It's free to set up your company with TWC. We work for YOU - providing customized solutions built within your budget to match your unique business needs. (placeholder)"
         />
-        <section className="mx-auto w-full px-8 laptop:pt-24 ">
+        <section className="mx-auto w-full px-8 laptop:pt-24">
           <form className="mx-auto flex flex-col gap-6 laptop:max-w-screen-sm-tablet">
             <fieldset className="flex flex-col gap-3 disabled:text-gray-400">
               <div>
@@ -42,11 +38,11 @@ export default function EmployerSignUpFinish() {
                   onChange={() => setTermsAgree(!termsAgree)}
                 />
                 <label htmlFor="terms">
-                  {' '}
-                  By signing up you agree to our{' '}
+                  {" "}
+                  By signing up you agree to our{" "}
                   <Link
-                    target='_blank'
-                    className='underline'
+                    target="_blank"
+                    className="underline"
                     href="/policies/terms-of-service"
                   >
                     terms of use
@@ -69,19 +65,22 @@ export default function EmployerSignUpFinish() {
                 </label>
               </div>
             </fieldset>
-            <Button
+            <PillButton
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
-                let response = await fetch('/api/employers/create', {
-                  method: 'POST',
+                const response = await fetch("/api/employers/create", {
+                  method: "POST",
                   headers: {
-                    'Content-Type': 'application/json',
-                  }});
-                let data = await response.json();
+                    "Content-Type": "application/json",
+                  },
+                });
+                const data = await response.json();
                 if (response.ok) {
-                  let rolesArray = session?.user.roles || []
-                  rolesArray = rolesArray.filter((role: Role) => role !== Role.GUEST)
+                  let rolesArray = session?.user.roles || [];
+                  rolesArray = rolesArray.filter(
+                    (role: Role) => role !== Role.GUEST,
+                  );
                   // Add the new role if it's not already in the roles array
                   if (!rolesArray.includes(Role.EMPLOYER)) {
                     rolesArray.push(Role.EMPLOYER);
@@ -90,14 +89,25 @@ export default function EmployerSignUpFinish() {
                     employerId: data.employerData.employer_id,
                     roles: rolesArray,
                   });
-                  router.push('/edit-profile/employer/profile');
-              }
-            }}
-              className="mx-auto my-8 rounded-full focus:ring-0"
+                  router.push("/edit-profile/employer/profile");
+                }
+              }}
+              sx={{
+                marginX: "auto",
+                marginY: 4,
+                "&:focus": {
+                  boxShadow: "none",
+                },
+                "&:disabled": {
+                  color: "#fff",
+                  bgcolor: "primary.main",
+                  opacity: 0.5,
+                },
+              }}
               disabled={!termsAgree}
             >
               Create account
-            </Button>
+            </PillButton>
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
               <p>Already have a TWC account?</p>

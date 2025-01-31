@@ -1,6 +1,6 @@
-'use client';
-import Link from 'next/link';
-import Image from 'next/image';
+"use client";
+import Link from "next/link";
+import Image from "next/image";
 
 interface Props {
   className?: string;
@@ -9,14 +9,14 @@ interface Props {
 }
 
 export default function SignupPrompt({
-  className = '',
+  className = "",
   vectorImgSrc,
   prompt,
 }: Props) {
   return (
     <section
       className={
-        'flex h-full w-full flex-col justify-between px-8 laptop:bg-gray-50 laptop:pt-28 laptop:text-center' +
+        "flex h-full w-full flex-col justify-between px-8 laptop:bg-gray-50 laptop:pt-28 laptop:text-center" +
         className
       }
     >
@@ -28,7 +28,7 @@ export default function SignupPrompt({
         <div className="hidden py-4 laptop:block">
           <p>Not ready to log in?</p>
           <p>
-            <Link target='_blank' href="/about-us"  className="underline">
+            <Link target="_blank" href="/about-us" className="underline">
               Learn how TWC works
             </Link>
           </p>

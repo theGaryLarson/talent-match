@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import Confetti from '@/app/ui/components/Confetti';
+import React, { useEffect } from "react";
+import Confetti from "@/app/ui/components/Confetti";
 
-import { Button } from 'flowbite-react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import PillButton from "@/app/ui/components/PillButton";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user?.jobseekerId) {
+    if (status === "authenticated" && session?.user?.jobseekerId) {
       const fetchData = async () => {
         try {
           const response = await fetch(`/api/jobseekers/validate-profile`, {
-            method: 'PATCH', // Specify the PATCH method
+            method: "PATCH", // Specify the PATCH method
             headers: {
-              'Content-Type': 'application/json', // Set the content type
+              "Content-Type": "application/json", // Set the content type
             },
           });
           if (!response.ok) {
-            throw new Error('Failed to validate jobseeker profile.');
+            throw new Error("Failed to validate jobseeker profile.");
           }
         } catch (error) {
-          console.error('Error fetching jobseeker preferences:', error);
+          console.error("Error fetching jobseeker preferences:", error);
         }
       };
       fetchData();
@@ -43,9 +43,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
         <h1>Congrats on completing your profile, {firstName}!</h1>
 
         <p className="subtitle-congrats">{`Let's kickstart your career journey!`}</p>
-        <Button pill onClick={handleClick}>
-          Get Started
-        </Button>
+        <PillButton onClick={handleClick}>Get Started</PillButton>
       </section>
     </main>
   );

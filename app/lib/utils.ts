@@ -1,6 +1,4 @@
-import parsePhoneNumberFromString from 'libphonenumber-js';
-
-
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 //unused probably left over from next tutorial
 // export const generatePagination = (currentPage: number, totalPages: number) => {
@@ -76,12 +74,11 @@ export const mapToEnum = (value: string | null, enumType: any): any => {
   const enumValues = Object.values(enumType);
 
   if (!enumValues.includes(value)) {
-    return null;  // Return null instead of throwing an error
+    return null; // Return null instead of throwing an error
   }
 
   return value;
 };
-
 
 /**
  * Normalizes a date string to the ISO 8601 format.
@@ -94,6 +91,22 @@ export const normalizeDate = (date: string): string => {
   d.setUTCDate(1);
   d.setUTCHours(0, 0, 0, 0);
   return d.toISOString();
+};
+
+export const calculateDaysAway = (date: Date): number => {
+  const now = new Date();
+
+  // Normalize the dates to account for local midnight
+  const d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+  // Calculate the difference in milliseconds
+  const diffInMs = d2.getTime() - d1.getTime();
+
+  // Convert milliseconds to days
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  return diffInDays;
 };
 
 /**
@@ -114,11 +127,11 @@ export const formatPhoneE164 = (
         `${extractedCountryCode}${phone}`,
       );
       if (phoneNumber && phoneNumber.isValid()) {
-        return phoneNumber.format('E.164');
+        return phoneNumber.format("E.164");
       }
       return null;
     } catch (e: any) {
-      console.error('Error formatting phone number:', e.message);
+      console.error("Error formatting phone number:", e.message);
     }
   }
 };
@@ -135,16 +148,16 @@ export const devLog = (
   labelOrObject: string | Record<string, any> | null | undefined,
   objOrMessage?: any,
 ): void => {
-  if (process.env.NODE_ENV === 'development') {
-    if (typeof labelOrObject === 'string') {
+  if (process.env.NODE_ENV === "development") {
+    if (typeof labelOrObject === "string") {
       // Case 2: `devLog('label', object)` or `devLog('label', string)`
       if (objOrMessage === null) {
         // Log label with 'null'
-        console.log(labelOrObject, 'null');
+        console.log(labelOrObject, "null");
       } else if (objOrMessage === undefined) {
         // Log label with 'undefined'
-        console.log(labelOrObject, 'undefined');
-      } else if (typeof objOrMessage === 'object') {
+        console.log(labelOrObject, "undefined");
+      } else if (typeof objOrMessage === "object") {
         // Logging an object with a label
         console.log(
           labelOrObject,
@@ -156,11 +169,11 @@ export const devLog = (
       }
     } else if (labelOrObject === null) {
       // Case 4: Log 'null' directly
-      console.log('null');
+      console.log("null");
     } else if (labelOrObject === undefined) {
       // Case 5: Log 'undefined' directly
-      console.log('undefined');
-    } else if (typeof labelOrObject === 'object') {
+      console.log("undefined");
+    } else if (typeof labelOrObject === "object") {
       // Case 1: `devLog(object)`
       console.log(JSON.stringify(labelOrObject, getCircularReplacer(), 2));
     } else {
@@ -174,9 +187,9 @@ export const devLog = (
 const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (key: string, value: any) => {
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === "object" && value !== null) {
       if (seen.has(value)) {
-        return '[Circular]';
+        return "[Circular]";
       }
       seen.add(value);
     }

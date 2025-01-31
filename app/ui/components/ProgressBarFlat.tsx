@@ -1,21 +1,22 @@
-import type { CustomFlowbiteTheme } from "flowbite-react";
-import { Progress } from "flowbite-react";
-
+import { LinearProgress } from "@mui/material";
 interface Props {
-  progress: number,
-  [key: string]: any,
+  progress: number;
 }
 
-const customTheme: CustomFlowbiteTheme["progress"] = {
-  base: "bg-gray-200 rounded-none",
-  bar: "rounded-none",
-};
-
-export default function ProgressBarFlat({
-  progress,
-  ...rest
-}: Props){
+export default function ProgressBarFlat({ progress }: Props) {
   return (
-    <Progress theme={customTheme} progress={progress} {...rest} />
+    <>
+      <LinearProgress
+        variant="determinate"
+        value={progress}
+        sx={{
+          height: 8,
+          bgcolor: "#EEEEEE",
+          "& .MuiLinearProgress-bar": {
+            backgroundColor: "#0891B2",
+          },
+        }}
+      />{" "}
+    </>
   );
 }

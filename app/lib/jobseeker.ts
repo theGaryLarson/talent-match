@@ -1,20 +1,19 @@
-import { auth } from '@/auth';
+import { auth } from "@/auth";
 import {
   JobseekerPoolVars,
   selectJobseekerPoolCategory,
   SelectJobseekerPoolCatResult,
-} from '@/app/lib/poolAssignment';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { Prisma, PrismaClient } from '@prisma/client';
+} from "@/app/lib/poolAssignment";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { Prisma, PrismaClient } from "@prisma/client";
 import {
   educationRank,
   HighestCompletedEducationLevel,
   ProgramEnrollmentStatus,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { devLog } from '@/app/lib/utils';
-import { NextResponse } from 'next/server';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { v4 as uuidv4 } from 'uuid';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { devLog } from "@/app/lib/utils";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import { v4 as uuidv4 } from "uuid";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -67,7 +66,7 @@ export const aggregateJobseekerPoolVars = async (
     },
   });
 
-  devLog('aggregated data:', { education, workExperience });
+  devLog("aggregated data:", { education, workExperience });
 
   // Evaluate the JobseekerPoolVars values based on the fetched data
   const jobseekerPoolVars: JobseekerPoolVars = {
@@ -86,7 +85,7 @@ export const aggregateJobseekerPoolVars = async (
       (exp) =>
         exp.techArea &&
         exp.techArea.title &&
-        exp.techArea.title !== 'N/A Not an IT role',
+        exp.techArea.title !== "N/A Not an IT role",
     ),
     hasDegreeOrTechProgram: education.some(
       (edu) =>
@@ -99,7 +98,7 @@ export const aggregateJobseekerPoolVars = async (
     ),
   };
 
-  devLog('Calculated Pool Vars\n', jobseekerPoolVars);
+  devLog("Calculated Pool Vars\n", jobseekerPoolVars);
 
   return jobseekerPoolVars;
 };
@@ -135,12 +134,12 @@ export const setPoolWithSession = async (): Promise<void> => {
   const session = await auth();
   try {
     if (!session?.user?.jobseekerId) {
-      throw new Error('No jobseeker id found in session');
+      throw new Error("No jobseeker id found in session");
     }
     const jobseekerId = session.user.jobseekerId;
     await setPool(jobseekerId);
   } catch (error: any) {
-    console.error('Error setting jobseeker pool:', error);
+    console.error("Error setting jobseeker pool:", error);
     throw error;
   }
 };
@@ -162,62 +161,60 @@ export const setPool = async (jobseekerId: string): Promise<void> => {
     });
   } catch (e: any) {
     // Log the error for debugging
-    console.error('Error setting jobseeker pool:', e);
-    throw new Error('Failed to set jobseeker pool. Please try again later.', e);
+    console.error("Error setting jobseeker pool:", e);
+    throw new Error("Failed to set jobseeker pool. Please try again later.", e);
   } finally {
     prisma.$disconnect();
   }
 };
 
-export async function getPoolWithSession(){
+export async function getPoolWithSession() {
   const session = await auth();
 
   try {
-    if(session?.user.jobseekerId == null){
-      return
+    if (session?.user.jobseekerId == null) {
+      return;
     }
-    let res = await prisma.jobseekers.findUnique(
-      {
-        where:{
-          jobseeker_id: session?.user.jobseekerId
-        },
-        select:{
-          assignedPool:true
-        }
-      }
-    )
+    const res = await prisma.jobseekers.findUnique({
+      where: {
+        jobseeker_id: session?.user.jobseekerId,
+      },
+      select: {
+        assignedPool: true,
+      },
+    });
     return res;
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 }
 
-export async function getCareerPrepAssementStatus(){
+export async function getCareerPrepAssementStatus() {
   try {
     const session = await auth();
-    if(session?.user.jobseekerId == null){
-      return
+    if (session?.user.jobseekerId == null) {
+      return;
     }
-    let res = await prisma.jobseekers.findUnique(
-      {where:{
-        jobseeker_id: session?.user.jobseekerId
+    const res = await prisma.jobseekers.findUnique({
+      where: {
+        jobseeker_id: session?.user.jobseekerId,
       },
-    select:{
-      CareerPrepAssessment:{
-        select:{
-          assessmentDate:true
-        }
-      }
-    }}
-    )
-    if(res == undefined){
+      select: {
+        CareerPrepAssessment: {
+          select: {
+            assessmentDate: true,
+          },
+        },
+      },
+    });
+    if (res == undefined) {
       return {
-        CareerPrepAssessment: []
-      }
+        CareerPrepAssessment: [],
+      };
     }
-    return res
+    return res;
   } catch (error) {
-
+    console.error(error);
   }
 }
 
@@ -228,45 +225,47 @@ export async function getCareerPrepAssementStatus(){
  * @returns {Promise<jobseekers>}
  * @throws {Error} If user creation fails
  */
- export async function createJobseeker(userId: string): Promise<Prisma.jobseekersGetPayload<{}>> {
-   try {
-     // Use a transaction to ensure both operations succeed or fail together
-     const result = await prisma.$transaction(async (prisma) => {
-       await prisma.user.update({
-         where: { id: userId },
-         data: {
-           role: Role.JOBSEEKER,
-           has_agreed_terms: true,
-           updatedAt: new Date()
-         }
-       });
+export async function createJobseeker(
+  userId: string,
+): Promise<Prisma.jobseekersGetPayload<object>> {
+  try {
+    // Use a transaction to ensure both operations succeed or fail together
+    const result = await prisma.$transaction(async (prisma) => {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          role: Role.JOBSEEKER,
+          has_agreed_terms: true,
+          updatedAt: new Date(),
+        },
+      });
 
-       const jobseeker = await prisma.jobseekers.create({
-         data: {
-           jobseeker_id: uuidv4(),
-           user_id: userId,
-           is_enrolled_ed_program: false,
-           intern_hours_required: 0,
-           careerPrepComplete: false,
-           createdAt: new Date(),
-           updatedAt: new Date()
-         }
-       });
+      const jobseeker = await prisma.jobseekers.create({
+        data: {
+          jobseeker_id: uuidv4(),
+          user_id: userId,
+          is_enrolled_ed_program: false,
+          intern_hours_required: 0,
+          careerPrepComplete: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
 
-       return jobseeker;
-     });
+      return jobseeker;
+    });
 
-     return result;
-   } catch (error) {
-     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-       // Handle known Prisma errors (e.g., unique constraint violations)
-       if (error.code === 'P2002') {
-         throw new Error('A jobseeker profile already exists for this user');
-       }
-     }
-     throw error;
-   }
- }
+    return result;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Handle known Prisma errors (e.g., unique constraint violations)
+      if (error.code === "P2002") {
+        throw new Error("A jobseeker profile already exists for this user");
+      }
+    }
+    throw error;
+  }
+}
 
 /**
  * Delete a jobseeker and associated data from the database.
@@ -278,14 +277,14 @@ export async function getCareerPrepAssementStatus(){
  * @param {string} userId - The ID of the user associated with the jobseeker to be deleted.
  * @returns {Promise<void>}
  */
-export const deleteJobseeker = async (userId: string): Promise<void> => {
+export const deleteJobseeker = async (userId: string) => {
   // Find the jobseeker by userId
   const jobseeker = await prisma.jobseekers.findUnique({
     where: { user_id: userId },
   });
 
   if (!jobseeker) {
-    throw new Error('User associated with jobseeker id not found');
+    throw new Error("User associated with jobseeker id not found");
   }
 
   const jobseeker_id = jobseeker.jobseeker_id;
@@ -306,6 +305,7 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
       where: { jobseeker_id: jobseeker_id },
       data: { is_marked_deletion: new Date() },
     });
+    return true;
   } else {
     try {
       // Start a transaction
@@ -322,12 +322,12 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
         });
 
         if (!user) {
-          throw new Error('User not found');
+          throw new Error("User not found");
         }
 
         // Split the comma-separated list of roles and check for specific roles
         const userRolesArray: Role[] = user.role
-          .split(',')
+          .split(",")
           .map((role: string) => role.trim() as Role);
 
         // Remove the JOBSEEKER role
@@ -342,13 +342,14 @@ export const deleteJobseeker = async (userId: string): Promise<void> => {
           // Update the user's roles
           await prisma.user.update({
             where: { id: userId },
-            data: { role: filteredRolesArray.join(',') },
+            data: { role: filteredRolesArray.join(",") },
           });
         }
       });
+      return true;
     } catch (error) {
-      console.error('Error deleting jobseeker:', error);
-      throw error;
+      console.error("Error deleting jobseeker: ", error);
+      return false;
     } finally {
       await prisma.$disconnect();
     }
@@ -360,11 +361,11 @@ export const deleteJobseekerWithSession = async (): Promise<void> => {
   try {
     const userId = session?.user.id;
     if (!userId) {
-      throw new Error('User id not found in session. ');
+      throw new Error("User id not found in session. ");
     }
     await deleteJobseeker(userId);
   } catch (error: any) {
-    console.error('Error deleting jobseeker with session:', error);
+    console.error("Error deleting jobseeker with session:", error);
     throw error;
   } finally {
     prisma.$disconnect();

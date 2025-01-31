@@ -1,11 +1,11 @@
-import React, { SyntheticEvent, useMemo, useState } from 'react';
+import React, { SyntheticEvent, useMemo, useState } from "react";
 import Autocomplete, {
   AutocompleteChangeDetails,
   AutocompleteChangeReason,
   createFilterOptions,
-} from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import { debounce } from '@mui/material/utils';
+} from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import { debounce } from "@mui/material/utils";
 
 interface CachedFetches<ValueType> {
   [searchTerms: string]: ValueType[];
@@ -36,10 +36,10 @@ export default function TextFieldWithAutocomplete<ValueType>({
   apiSearchRoute,
   fieldLabel,
   id,
-  className = '',
+  className = "",
   noResultsText,
   allowNewOption = true,
-  value = '',
+  value = "",
   disabled,
   onChange,
   searchingText,
@@ -53,7 +53,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
 
   const handleInputChange = useMemo(() => {
     const cachedFetches: CachedFetches<ValueType> = {
-      '': [], // Shows nothing when there is no search terms in the input box
+      "": [], // Shows nothing when there is no search terms in the input box
     };
 
     return debounce(
@@ -71,7 +71,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
             setOptions(data); // Update the options with fetched data
           }
         } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error("Error fetching data:", error);
         }
         setLoading(false);
       },
@@ -81,7 +81,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
 
   return (
     <Autocomplete
-      className={'flex flex-1 ' + className}
+      className={"flex flex-1 " + className}
       autoComplete
       clearOnBlur
       filterSelectedOptions
@@ -101,13 +101,13 @@ export default function TextFieldWithAutocomplete<ValueType>({
         if (allowNewOption) {
           // Suggest the creation of a new option
           if (
-            typeof params.inputValue === 'string' &&
-            params.inputValue !== ''
+            typeof params.inputValue === "string" &&
+            params.inputValue !== ""
           ) {
             const optionExists =
               options.findIndex(
                 (option) =>
-                  typeof option !== 'string' &&
+                  typeof option !== "string" &&
                   getOptionLabel(option).trim().toLowerCase() ===
                     params.inputValue.trim().toLowerCase(),
               ) !== -1;
@@ -120,23 +120,23 @@ export default function TextFieldWithAutocomplete<ValueType>({
         return filtered;
       }}
       onChange={(ev, val, reason, details) => {
-        if (reason === 'selectOption') {
-          if (!allowNewOption || typeof val !== 'string') {
+        if (reason === "selectOption") {
+          if (!allowNewOption || typeof val !== "string") {
             onChange(ev, val, reason, details);
           } else {
             onChange(
               ev,
               val.substring('Add "'.length, val.length - 1),
-              'createOption',
+              "createOption",
               details,
             );
           }
-        } else if (reason === 'clear') {
+        } else if (reason === "clear") {
           onChange(ev, null, reason, details);
         }
       }}
       onInputChange={(event, newValue) => {
-        if (newValue !== '') {
+        if (newValue !== "") {
           setLoading(true);
         }
         handleInputChange(event, newValue);
@@ -147,20 +147,20 @@ export default function TextFieldWithAutocomplete<ValueType>({
           label={fieldLabel}
           placeholder={searchPlaceholder}
           value={
-            typeof value === 'string'
+            typeof value === "string"
               ? value
-              : ((value && getOptionLabel(value)) ?? '')
+              : ((value && getOptionLabel(value)) ?? "")
           }
         />
       )}
       options={loading ? [] : options}
       getOptionLabel={(option: string | ValueType) => {
-        if (typeof option === 'string') {
+        if (typeof option === "string") {
           return option;
         } else if (getOptionLabel) {
           return getOptionLabel(option);
         }
-        return '';
+        return "";
       }}
     />
   );

@@ -44,6 +44,8 @@ model User {
   companies               companies[]
   CaseMgmt                CaseMgmt[]
   CaseMgmtNotes           CaseMgmtNotes[]
+  events                  EventsOnUsers[] // Many-to-many relationship with Events
+  createdEvents           Events[] // One-to-many relationship with Events
 
   @@map("users")
 }
@@ -110,6 +112,42 @@ model Authenticator {
 /////////////////////////////////////////////////////
 ////////////// End Auth.js models ///////////////////
 /////////////////////////////////////////////////////
+
+///////////// Event models//////////////////////////
+
+model Events {
+  id               String          @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  name             String          @db.VarChar(255) // Name of the event
+  description      String?         @db.Text // Longer description of the event
+  location         String          @default("Remote") @db.VarChar(255) // Physical location, if applicable
+  date             DateTime        @db.DateTime // Date of the event
+  registrationLink String?         @db.VarChar(2083) // Zoom sign-up link (URL)
+  joinMeetingLink  String?         @db.VarChar(2083)
+  duration         Int             @default(90) @db.Int // duration in minutes
+  blurb            String?         @db.VarChar(255) // One-sentence blurb about the event
+  eventType        String          @db.VarChar(50) // Type of the event
+  createdAt        DateTime        @default(now()) @db.DateTime
+  updatedAt        DateTime?       @updatedAt @db.DateTime
+  attendees        EventsOnUsers[] // Many-to-many relationship with Users
+  createdById      String?         @db.UniqueIdentifier
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@map("events")
+}
+
+model EventsOnUsers {
+  id      String @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  eventId String @db.UniqueIdentifier
+  userId  String @db.UniqueIdentifier
+  event   Events @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([eventId, userId])
+  @@map("events_on_users")
+}
+
+///////////////end event models///////////////////
 
 model certificates {
   certId        String     @id(clustered: false, map: "certificates_PRIMARY") @map("certification_id") @db.UniqueIdentifier
@@ -314,7 +352,7 @@ model CareerPrepAssessment {
   streetAddress           String?               @db.VarChar(255)
   priorityPopulations     String?               @db.Text
   updatedAt               DateTime              @updatedAt @db.DateTime
-  Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1")
+  Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1", onDelete: Cascade)
   CaseMgmt                CaseMgmt?
   CaseMgmtNotes           CaseMgmtNotes[]
   CybersecurityRating     CybersecurityRating[]
@@ -340,7 +378,7 @@ model CybersecurityRating {
   computationalThinking Int                  @db.TinyInt
   apiUsage              Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1")
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -363,7 +401,7 @@ model DataAnalyticsRating {
   databases             Int                  @db.TinyInt
   computationalThinking Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1")
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -386,7 +424,7 @@ model ITCloudRating {
   httpResponseCodes     Int                  @db.TinyInt
   computationalThinking Int                  @db.TinyInt
   updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1")
+  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -409,7 +447,7 @@ model SoftwareDevRating {
   computationalThinking        Int                  @db.TinyInt
   softwareOptimization         Int                  @db.TinyInt
   updatedAt                    DateTime             @updatedAt @db.DateTime
-  PrepAssessment               CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1")
+  PrepAssessment               CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -436,7 +474,7 @@ model DurableSkillsRating {
   relationshipBuilding   Int                  @db.TinyInt
   documentationSkills    Int                  @db.TinyInt
   updatedAt              DateTime             @updatedAt @db.DateTime
-  PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1")
+  PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -461,7 +499,7 @@ model BrandingRating {
   developmentPlan          Int                  @db.TinyInt
   mentorship               Int                  @db.TinyInt
   updatedAt                DateTime             @updatedAt @db.DateTime
-  PrepAssessment           CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1")
+  PrepAssessment           CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -477,7 +515,7 @@ model CaseMgmt {
   prepActualEndDate       DateTime?            @db.DateTime
   createdAt               DateTime             @default(now()) @db.DateTime
   updatedAt               DateTime             @updatedAt @db.DateTime
-  PrepAssessment          CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId])
+  PrepAssessment          CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onDelete: Cascade)
   CaseManager             User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
   Meeting                 Meeting[]
 
@@ -494,7 +532,7 @@ model CaseMgmtNotes {
   createdBy      String               @db.UniqueIdentifier
   createdAt      DateTime             @default(now()) @db.DateTime
   updatedAt      DateTime             @updatedAt @db.DateTime
-  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1")
+  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1", onDelete: Cascade)
   Author         User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
 }
 
@@ -505,7 +543,7 @@ model Meeting {
   meetingAgenda String?  @db.NText
   meetingDate   DateTime @db.DateTime
   updatedAt     DateTime @updatedAt @db.DateTime
-  caseMgmt      CaseMgmt @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1")
+  caseMgmt      CaseMgmt @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1", onDelete: Cascade)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -540,31 +578,34 @@ model industry_sectors {
 }
 
 model job_postings {
-  job_posting_id    String            @id(clustered: false, map: "job_postings_PRIMARY") @unique(map: "job_postings_job_listing_id_UNIQUE") @db.UniqueIdentifier
-  company_id        String            @db.UniqueIdentifier
-  location_id       String            @db.UniqueIdentifier
-  employer_id       String?           @db.UniqueIdentifier
-  tech_area_id      String?           @db.UniqueIdentifier
-  sector_id         String?           @db.UniqueIdentifier
-  job_title         String            @db.VarChar(255)
-  job_description   String            @db.Text
-  is_internship     Boolean           @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
-  is_paid           Boolean           @default(true, map: "DF__job_posti__is_pa__5812160E") @db.Bit
-  employment_type   String            @default("N'full-time'", map: "DF__job_posti__emplo__59063A47") @db.NVarChar(255)
-  location          String            @db.NVarChar(255)
-  salary_range      String            @db.VarChar(45)
-  county            String            @db.VarChar(255)
-  zip               String            @db.VarChar(45)
-  publish_date      DateTime          @db.DateTime
-  unpublish_date    DateTime          @db.DateTime
-  job_post_url      String?           @db.VarChar(255)
-  assessment_url    String?           @db.VarChar(255)
-  skills            skills[]          @relation("JobPostingSkills") // Direct One-directional reference to skills to skills
-  companies         companies         @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_job_postings_companies1")
-  employers         employers?        @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, onDelete: SetNull, map: "fk_job_postings_employers1")
-  techArea          technology_areas? @relation(fields: [tech_area_id], references: [id], onUpdate: NoAction, map: "fk_job_postings_technology_areas1")
-  company_addresses company_addresses @relation(fields: location_id, references: [company_address_id], onUpdate: NoAction, map: "fk_job_postings_company_addresses1")
-  industry_sectors  industry_sectors? @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, onDelete: NoAction, map: "fk_job_postings_industry_sectors1")
+  job_posting_id                String            @id(clustered: false, map: "job_postings_PRIMARY") @unique(map: "job_postings_job_listing_id_UNIQUE") @db.UniqueIdentifier
+  company_id                    String            @db.UniqueIdentifier
+  location_id                   String            @db.UniqueIdentifier
+  employer_id                   String?           @db.UniqueIdentifier
+  tech_area_id                  String?           @db.UniqueIdentifier
+  sector_id                     String?           @db.UniqueIdentifier
+  job_title                     String            @db.VarChar(255)
+  job_description               String            @db.Text
+  is_internship                 Boolean           @default(false, map: "DF__job_posti__is_in__571DF1D5") @db.Bit
+  is_paid                       Boolean           @default(true, map: "DF__job_posti__is_pa__5812160E") @db.Bit
+  is_apprenticeship             Boolean           @default(false)
+  employment_type               String            @default("N'full-time'", map: "DF__job_posti__emplo__59063A47") @db.NVarChar(255)
+  location                      String            @db.NVarChar(255)
+  salary_range                  String            @db.VarChar(45)
+  county                        String            @db.VarChar(255)
+  zip                           String            @db.VarChar(45)
+  publish_date                  DateTime          @db.DateTime
+  unpublish_date                DateTime          @db.DateTime
+  job_post_url                  String?           @db.VarChar(255)
+  assessment_url                String?           @db.VarChar(255)
+  relocation_services_available Boolean           @default(false)
+  offer_visa_sponsorship        Boolean           @default(false)
+  skills                        skills[]          @relation("JobPostingSkills") // Direct One-directional reference to skills to skills
+  companies                     companies         @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_job_postings_companies1")
+  employers                     employers?        @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, onDelete: SetNull, map: "fk_job_postings_employers1")
+  techArea                      technology_areas? @relation(fields: [tech_area_id], references: [id], onUpdate: NoAction, map: "fk_job_postings_technology_areas1")
+  company_addresses             company_addresses @relation(fields: location_id, references: [company_address_id], onUpdate: NoAction, map: "fk_job_postings_company_addresses1")
+  industry_sectors              industry_sectors? @relation(fields: sector_id, references: [industry_sector_id], onUpdate: NoAction, onDelete: NoAction, map: "fk_job_postings_industry_sectors1")
 
   jobApplications JobseekerJobPosting[]
 
@@ -849,7 +890,7 @@ model provider_program_has_skills {
   training_program_id String            @db.UniqueIdentifier
   skill_id            String            @db.UniqueIdentifier
   skills              skills            @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_training_program_has_skills_skills1")
-  provider_programs   provider_programs @relation(fields: [training_program_id], references: [training_program_id], onUpdate: NoAction, map: "fk_training_program_has_skills_training_program1")
+  provider_programs   provider_programs @relation(fields: [training_program_id], references: [training_program_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_training_program_has_skills_training_program1")
 
   @@id([training_program_id, skill_id], map: "training_program_has_skills_PRIMARY", clustered: false)
   @@index([skill_id], map: "fk_training_program_has_skills_skills1_idx")
@@ -881,7 +922,7 @@ model provider_programs {
   programLength       String? @db.Text
 
   provider_program_has_skills provider_program_has_skills[]
-  edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_training_program_training_provider1")
+  edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, onDelete: Cascade, map: "fk_training_program_training_provider1")
   Program                     programs                      @relation(fields: [program_id], references: [id], onUpdate: NoAction, map: "fk_provider_programs_programs1")
 
   @@index([edu_provider_id], map: "training_programs_fk_training_program_training_provider1_idx")

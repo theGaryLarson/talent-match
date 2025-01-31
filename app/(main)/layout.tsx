@@ -1,9 +1,5 @@
-import '@/app/ui/global.css';
-import { inter } from '@/app/ui/fonts';
-import Header from '@/app/ui/Header';
-import Footer from '@/app/ui/Footer';
-import { SessionProvider } from 'next-auth/react';
-
+import Header from "@/app/ui/Header";
+import Footer from "@/app/ui/Footer";
 
 export default function RootLayout({
   children,
@@ -11,23 +7,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>
-        <SessionProvider>
-
-          {/* adding this flex stuff so the footer is always at the bottom of the screen */}
-          <div className="flex flex-col h-screen">          
-            <Header />
-            
-            <div className="flex-grow">
-              {children}
-            </div>
-
-            <Footer />
-          </div>
-
-        </SessionProvider>
-      </body>
-    </html >
+    <div className="flex h-screen flex-col">
+      <Header />
+      <div className="flex-grow">{children}</div>
+      <Footer />
+    </div>
   );
 }

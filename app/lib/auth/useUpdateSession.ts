@@ -1,6 +1,6 @@
-import { getSession, useSession } from 'next-auth/react';
-import { devLog } from '@/app/lib/utils';
-import { Role } from '@/data/dtos/UserInfoDTO';
+import { getSession, useSession } from "next-auth/react";
+import { devLog } from "@/app/lib/utils";
+import { Role } from "@/data/dtos/UserInfoDTO";
 
 export const useUpdateSession = (): ((
   properties: Record<string, any>,
@@ -10,7 +10,7 @@ export const useUpdateSession = (): ((
   const updateSessionProperties = async (
     properties: Record<string, any>,
   ): Promise<void> => {
-    if (typeof update !== 'function') {
+    if (typeof update !== "function") {
       console.error('The "update" function is not available.');
       return;
     }
@@ -18,8 +18,8 @@ export const useUpdateSession = (): ((
     // Validate each property
     for (const [key, value] of Object.entries(properties)) {
       const isValid =
-        typeof value === 'string' ||
-        typeof value === 'boolean' ||
+        typeof value === "string" ||
+        typeof value === "boolean" ||
         (Array.isArray(value) &&
           value.every((v) => Object.values(Role).includes(v)));
 
@@ -31,11 +31,11 @@ export const useUpdateSession = (): ((
 
     // Proceed with the update if validation passes
     try {
-      devLog('Properties to update:', properties); // Debug log for properties
+      devLog("Properties to update:", properties); // Debug log for properties
       await update(properties); // Call the update function with the validated properties
       const updatedSession = await getSession(); // Fetch the latest session state and log it
-      devLog('Updated session:', updatedSession);
-      devLog(`Session properties updated successfully.`, '');
+      devLog("Updated session:", updatedSession);
+      devLog(`Session properties updated successfully.`, "");
     } catch (error) {
       console.error(`Failed to update session properties:`, error);
     }

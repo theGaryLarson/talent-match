@@ -1,19 +1,19 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import {
   JsIntroDTO,
   JsIntroPostDTO,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { auth } from '@/auth';
-import { Role } from '@/data/dtos/UserInfoDTO';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { auth } from "@/auth";
+import { Role } from "@/data/dtos/UserInfoDTO";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
     const jobseekerId: string = session?.user.jobseekerId!;
 
@@ -130,7 +130,7 @@ export async function POST(request: Request) {
         lastName: user.last_name,
         birthDate: user.birthdate,
         phoneCountryCode: user.phoneCountryCode,
-        phone: user.phone ?? '',
+        phone: user.phone ?? "",
         zipCode: user.locationData?.zip,
         state: user.locationData?.stateCode,
         city: user.locationData?.city,
@@ -151,9 +151,9 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ success: true, result }, { status: 200 });
   } catch (error) {
-    console.error('Error creating job seeker intro:', error);
+    console.error("Error creating job seeker intro:", error);
     return NextResponse.json(
-      { error: 'Failed to create job seeker intro' },
+      { error: "Failed to create job seeker intro" },
       { status: 500 },
     );
   } finally {

@@ -1,10 +1,10 @@
 // src/app/services/userService.ts
-import {Prisma, PrismaClient} from '@prisma/client';
-import { CreateUserDTO, ReadUserInfoDTO, Role } from '@/data/dtos/UserInfoDTO';
-import { v4 as uuidv4 } from 'uuid';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import {auth} from "@/auth";
-import {NextResponse} from "next/server";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { CreateUserDTO, ReadUserInfoDTO, Role } from "@/data/dtos/UserInfoDTO";
+import { v4 as uuidv4 } from "uuid";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { auth } from "@/auth";
+import { NextResponse } from "next/server";
 import { setPoolWithSession } from "@/app/lib/jobseeker";
 
 const prisma: PrismaClient = getPrismaClient();
@@ -22,7 +22,7 @@ export async function createUser(
         last_name: lastName,
         email: email,
         photo_url: image,
-        role: roles.map(role => role.toUpperCase().trim()).join(', '), // concatenate roles with a comma,
+        role: roles.map((role) => role.toUpperCase().trim()).join(", "), // concatenate roles with a comma,
         createdAt: new Date(),
         is_marked_deletion: new Date(
           new Date().setDate(new Date().getDate() + 30),
@@ -126,9 +126,11 @@ export async function getUserByEmail(
     }
 
     // Split the concatenated role string by comma, map to format each role correctly, and add to roles array
-    const roles: Role[] = []
+    const roles: Role[] = [];
     roles.push(
-    ...data.role.split(',').map((role: string) => role.toUpperCase().trim() as Role)
+      ...data.role
+        .split(",")
+        .map((role: string) => role.toUpperCase().trim() as Role),
     );
 
     const result: ReadUserInfoDTO = {
@@ -154,10 +156,45 @@ export async function getUserByEmail(
   }
 }
 
+export type userDataTable = {
+  id: string;
+  role: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  phone: string | null;
+  zip: string | null;
+  is_marked_deletion: Date | null;
+};
+
+export async function getAllUsers() {
+  try {
+    const res = await prisma.user.findMany({
+      select: {
+        id: true,
+        is_marked_deletion: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        phone: true,
+        zip: true,
+        role: true,
+      },
+    });
+    return res;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
 export async function unflagDeletion() {
   const session = await auth();
-  if (!session?.user?.id){
-    return NextResponse.json({ error: 'Unable to retrieve user id from session' }, { status: 409 })
+  if (!session?.user?.id) {
+    return NextResponse.json(
+      { error: "Unable to retrieve user id from session" },
+      { status: 409 },
+    );
   }
   try {
     await prisma.user.update({
@@ -168,20 +205,28 @@ export async function unflagDeletion() {
         is_marked_deletion: null,
       },
     });
-    return NextResponse.json(`Successfully validated jobseeker profile.` , {status: 200});
+    return NextResponse.json(`Successfully validated jobseeker profile.`, {
+      status: 200,
+    });
   } catch (e: any) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === 'P2025') {
+      if (e.code === "P2025") {
         // Record not found
-        console.error('Record not found:', e);
-        return NextResponse.json({error: 'The user was not found.'}, {status: 404});
+        console.error("Record not found:", e);
+        return NextResponse.json(
+          { error: "The user was not found." },
+          { status: 404 },
+        );
       }
       // Add specific Prisma errors as needed
-      console.error('Unexpected error:', e);
-      return NextResponse.json({error: `Failed to validate jobseeker profile.\n${e.message} `}, {status: 500});
+      console.error("Unexpected error:", e);
+      return NextResponse.json(
+        { error: `Failed to validate jobseeker profile.\n${e.message} ` },
+        { status: 500 },
+      );
     }
   } finally {
-    prisma.$disconnect()
+    prisma.$disconnect();
   }
 }
 
@@ -190,36 +235,12 @@ export async function validateUserProfile() {
   if (session?.user.roles.includes(Role.JOBSEEKER)) {
     await setPoolWithSession();
     return Response.json(
-        { success: true},
-        {
-          status: 200,
-        },
+      { success: true },
+      {
+        status: 200,
+      },
     );
   } else {
     return await unflagDeletion();
   }
 }
-
-export async function removeRoleFromUser(userId: string, roleToRemove: Role): Promise<void> {
-  // Fetch the user by ID
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  // Split and map roles from the user, ensuring formatting consistency
-  const roles = user.role.split(',').map((r: string) => r.trim().toUpperCase() as Role);
-
-  // Filter out the role to remove
-  const newRoles = roles
-      .filter((r: Role) => r !== roleToRemove)
-      .join(',');
-
-  // Update the user's roles in the database
-  await prisma.user.update({
-    where: { id: userId },
-    data: { role: newRoles },
-  });
-}
-

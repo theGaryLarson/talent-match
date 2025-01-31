@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button, Typography } from "@mui/material";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,10 +25,20 @@ export default function NavLinks({ onLinkClick }: NavLinksProps) {
             component={NextLink}
             key={link.name}
             href={link.href}
-            sx={{ backgroundColor: isActive ? 'accent.main' : '', display: "flex", alignItems: "center", justifyContent: "center", padding: 3, fontWeight: 500 }}
+            sx={{
+              backgroundColor: isActive ? "accent.main" : "",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 3,
+              fontWeight: 500,
+            }}
             onClick={onLinkClick}
           >
-            <Typography m={0} sx={{ color: isActive ? 'text.primary' : 'primary.main', }}>
+            <Typography
+              m={0}
+              sx={{ color: isActive ? "text.primary" : "primary.main" }}
+            >
               {link.name}
             </Typography>
           </Button>

@@ -8,21 +8,36 @@ export default function EmploymentDetails({
   occupation: IRelatedData;
   regionId: string;
 }) {
-  let index = occupation.cfa_jobpostingsregionalbreakdown_Occupation.findIndex((item: any) => item.cfa_jobpostingsregionalbreakdownid == regionId);
+  const index =
+    occupation.cfa_jobpostingsregionalbreakdown_Occupation.findIndex(
+      (item: any) => item.cfa_jobpostingsregionalbreakdownid == regionId,
+    );
   return (
     <Grid2 container spacing={2}>
       <Grid2 size={{ xs: 12, md: 6 }}>
-        <Box sx={{ color: 'primary.main' }}>
+        <Box sx={{ color: "primary.main" }}>
           <Typography variant="h6">Average Monthly Job Postings</Typography>
           <LinearProgress
             variant="determinate"
             value={
-              (Number(occupation.cfa_jobpostingsregionalbreakdown_Occupation[index].cfa_aug2023july2024) /
-                (Number(occupation.cfa_jobpostingsregionalbreakdown_Occupation[index].cfa_aug2023july2024) + 100)) *
+              (Number(
+                occupation.cfa_jobpostingsregionalbreakdown_Occupation[index]
+                  .cfa_aug2023july2024,
+              ) /
+                (Number(
+                  occupation.cfa_jobpostingsregionalbreakdown_Occupation[index]
+                    .cfa_aug2023july2024,
+                ) +
+                  100)) *
               100
             }
           />
-          <Typography>{occupation.cfa_jobpostingsregionalbreakdown_Occupation[index].cfa_aug2023july2024}</Typography>
+          <Typography>
+            {
+              occupation.cfa_jobpostingsregionalbreakdown_Occupation[index]
+                .cfa_aug2023july2024
+            }
+          </Typography>
           {/*<Typography variant="h6">Entry Level Salary</Typography>
           <LinearProgress
             variant="determinate"

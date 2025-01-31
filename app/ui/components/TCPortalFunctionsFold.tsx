@@ -1,26 +1,26 @@
-'use client';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
+"use client";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 export default function TCPortalFunctionsFold() {
   const [index, setIndex] = useState<number>(0);
   const tabs = [
-    { src: '/images/SearchableDB.svg', text: 'Searchable Database', index: 0 },
+    { src: "/images/SearchableDB.svg", text: "Searchable Database", index: 0 },
     {
-      src: '/images/SkillGapAnalysis.svg',
-      text: 'Skills Gap Analysis',
+      src: "/images/SkillGapAnalysis.svg",
+      text: "Skills Gap Analysis",
       index: 1,
     },
-    { src: '/images/DLTicon.svg', text: 'Diverse Local Talent', index: 2 }
+    { src: "/images/DLTicon.svg", text: "Diverse Local Talent", index: 2 },
   ];
   const Subtitle = [
-    'Our searchable database quickly connects you with qualified candidates who match your specific needs.',
-    'Uncover hidden tech talent, assess their fit, and quickly find the perfect match for your team—all in one place.',
-    'Discover a diverse pool of talented candidates from various backgrounds and experiences, ready to contribute unique perspectives to your team',
+    "Our searchable database quickly connects you with qualified candidates who match your specific needs.",
+    "Uncover hidden tech talent, assess their fit, and quickly find the perfect match for your team—all in one place.",
+    "Discover a diverse pool of talented candidates from various backgrounds and experiences, ready to contribute unique perspectives to your team",
   ];
   const Content = [
-    '/images/CandidateSearchTabContent.png',
-    '/images/SkillsGapContent.png',
-    '/images/DiverseLocalContent.png',
+    "/images/CandidateSearchTabContent.png",
+    "/images/SkillsGapContent.png",
+    "/images/DiverseLocalContent.png",
   ];
   // Automatically switch tabs every 4 seconds
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function TCPortalFunctionsFold() {
     <div className="flex flex-col items-center gap-[42px]">
       <div className="text-center">
         <span className="text-[88px] font-normal capitalize leading-[123.20px] text-[#014260]">
-          Talent & Career{' '}
+          Talent & Career{" "}
         </span>
         <span className="text-[88px] font-normal capitalize leading-[123.20px] text-[#047f9c]">
           Portal
@@ -45,7 +45,7 @@ export default function TCPortalFunctionsFold() {
       </div>
 
       <div className="text-center font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-[#0f1728]">
-      {Subtitle[index]}
+        {Subtitle[index]}
       </div>
       <div className="items center flex gap-4">
         {tabs.map((tab, i) => (
@@ -59,15 +59,15 @@ export default function TCPortalFunctionsFold() {
         ))}
       </div>
       {Content.map((content, i) => (
-          <Image
-            key={i}
-            className={i === index ? '' : 'hidden'}
-            src={content}
-            width={588}
-            height={432}
-            alt=''
-          />
-        ))}
+        <Image
+          key={i}
+          className={i === index ? "" : "hidden"}
+          src={content}
+          width={588}
+          height={432}
+          alt=""
+        />
+      ))}
     </div>
   );
 }
@@ -92,9 +92,9 @@ function TabButton(props: {
 function TabImage(props: { src: string; isSelected: boolean }) {
   return (
     <Image
-      className={props.isSelected ? '' : 'grayscale'}
+      className={props.isSelected ? "" : "grayscale"}
       src={props.src}
-      alt={''}
+      alt={""}
       width={48}
       height={48}
     />

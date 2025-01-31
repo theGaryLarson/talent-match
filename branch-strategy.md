@@ -59,9 +59,9 @@ structured development workflow.
    git push -u origin feature/[feature-name]
    ```
 5. Once complete, open a PR to merge into `develop`:
-	- Code review by at least one person is required.
-	- Code review can be completed by the submitter for simple changes.
-	- It is encouraged to request review by another developer.
+   - Code review by at least one person is required.
+   - Code review can be completed by the submitter for simple changes.
+   - It is encouraged to request review by another developer.
 6. Once the feature branch is merged into `develop`. Delete the feature branch:
    ```bash
    git branch -d feature/[feature-name]
@@ -76,25 +76,27 @@ structured development workflow.
    git checkout -b release/[release-version]
    ```
 2. Push release branch upstream.
-    ```bash
+
+   ```bash
    git push -u origin release/[release-version]
    ```
 
 3. Applying fixes to the release branch should be done as follows:
-	- Ensure you are on the correct release branch.
-	   ```bash
-	   git checkout release/[release-version]
-	  git checkout -b fix/[release-version]/[fix-description]
-	  ```
-	- Commit your fix and push upstream.
-	  ```bash
-	  git add .
-	  git commit -m "Description of fix"
-	  git push -u origin fix/[release-version]/[fix-description]
-	   ```
-	- Open a pull request to merge fix into `release/[release-version]` branch.
-	- Once successfully merged into `release/[release-version]` update your local `release/[release-version]` branch.
-	- Delete your fix branch.
+
+   - Ensure you are on the correct release branch.
+     ```bash
+     git checkout release/[release-version]
+     git checkout -b fix/[release-version]/[fix-description]
+     ```
+   - Commit your fix and push upstream.
+     ```bash
+     git add .
+     git commit -m "Description of fix"
+     git push -u origin fix/[release-version]/[fix-description]
+     ```
+   - Open a pull request to merge fix into `release/[release-version]` branch.
+   - Once successfully merged into `release/[release-version]` update your local `release/[release-version]` branch.
+   - Delete your fix branch.
 
 4. Create a pull request to merge into `develop`.
 5. After successful merge into `develop` update your local `develop` branch.
@@ -105,12 +107,12 @@ structured development workflow.
    navigation should be signed off by marketing team.
 2. Open PR to merge `release/[release-version]` into `main`.
 3. After successful merge into `main`:
-    - Tag the release:
-      ```bash
-      git checkout main
-      git tag -a [release-version] -m "Release [release-version]"
-      git push --tags
-      ```
+   - Tag the release:
+     ```bash
+     git checkout main
+     git tag -a [release-version] -m "Release [release-version]"
+     git push --tags
+     ```
 4. Open a PR to merge the release branch back into `develop`:
 
 5. Once the release branch has been successfully merged into `develop`. Delete the release branch:
@@ -134,16 +136,17 @@ structured development workflow.
    ```
 3. Create pull requests to merge the hotfix into both `main` and `develop`.
 4. After successful merge into `main`:
-	- Tag the hotfix release. This can be done either through Azure or by checking out `main` locally and using the CLI
-	  commands:
-	  ```bash
-	  git tag -a [hotfix-version] -m "Hotfix [hotfix-version]"
-	  git push --tags
-	  ```
+   - Tag the hotfix release. This can be done either through Azure or by checking out `main` locally and using the CLI
+     commands:
+     ```bash
+     git tag -a [hotfix-version] -m "Hotfix [hotfix-version]"
+     git push --tags
+     ```
 5. After successful merge into `develop`, delete the hotfix branch:
    ```bash
    git branch -d hotfix/[hotfix-description]
    git push origin --delete hotfix/[hotfix-description]
+   ```
 
 ---
 
@@ -167,14 +170,12 @@ To align with this workflow, Azure permissions will be set up to enforce branchi
 - [x] Require passing CI/CD checks before merging.
 
 | Action                       | Branch        | Group          | Permission             |
-|------------------------------|---------------|----------------|------------------------|
+| ---------------------------- | ------------- | -------------- | ---------------------- |
 | Push direct                  | main, develop | Contributors   | Deny                   |
 | Create pull request          | main, develop | Contributors   | Allow                  |
 | Merge via PR                 | main, develop | Contributors   | Allow (after approval) |
-| Push feature branches        | feature/*     | Contributors   | Allow                  |
+| Push feature branches        | feature/\*    | Contributors   | Allow                  |
 | Push tags                    | All branches  | Contributors   | Allow                  |
 | Check for comment resolution | main          | Contributors   | Required               |
 | Check for comment resolution | develop       | Contributors   | Optional               |
 | Override policies            | All branches  | Project Admins | Deny                   |
-
-

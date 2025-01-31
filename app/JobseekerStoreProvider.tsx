@@ -1,7 +1,7 @@
-'use client';
-import React, { useRef } from 'react';
-import { Provider } from 'react-redux';
-import { makeStore, AppStore } from '@/lib/jobseekerStore';
+"use client";
+import React, { useRef } from "react";
+import { Provider } from "react-redux";
+import { makeStore, AppStore } from "@/lib/jobseekerStore";
 import {
   JobseekerState,
   setDisclosures,
@@ -10,7 +10,7 @@ import {
   setPreferences,
   setShowcase,
   setWorkExperience,
-} from '@/lib/features/profileCreation/jobseekerSlice';
+} from "@/lib/features/profileCreation/jobseekerSlice";
 
 interface Props {
   jobseeker?: JobseekerState | null;

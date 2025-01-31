@@ -1,42 +1,59 @@
-'use client';
+"use client";
 
-import React, {useState} from 'react';
-import Confetti from '@/app/ui/components/Confetti';
+import React, { useEffect } from "react";
+import Confetti from "@/app/ui/components/Confetti";
 // REVIEW: testing redux
 // import type { RootState } from '@/lib/store';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { addField, updateField } from '@/lib/features/profileCreation/formSlice';
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
-import { Button } from "flowbite-react";
-import { useRouter } from 'next/navigation';
-import {useSession} from "next-auth/react";
+import PillButton from "@/app/ui/components/PillButton";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-
-
-export default function EmployerCongratsPage(){
+export default function EmployerCongratsPage() {
   // const { fields } = useSelector((state: RootState) => state.form);
   // const dispatch = useDispatch();
-  const [employmentType, setEmploymentType] = useState('');
-  const [pathway, setPathway] = useState('');
-  const [error, setError] = useState('');
+
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  useEffect(() => {
+    console.log("useEffect: status, session", status, session);
+    if (status === "authenticated" && session?.user?.employerId) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`/api/employers/validate-profile`, {
+            method: "PATCH", // Specify the PATCH method
+            headers: {
+              "Content-Type": "application/json", // Set the content type
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Failed to validate employer profile.");
+          }
+        } catch (error) {
+          console.error("Error fetching employer preferences:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [status, session]);
+
   function handleClick() {
-    router.push('/services/employers/dashboard');
+    router.push("/services/employers/dashboard");
   }
 
-
-  return(
+  return (
     <main className="flex justify-center">
-      <aside className="profile-form-aside">
-      </aside>
+      <aside className="profile-form-aside"></aside>
       <section className="profile-form-section main-content">
         <Confetti />
         <h1>{`Congrats on completing your profile, ${session?.user?.firstName}!`}</h1>
 
-        <p className='subtitle-congrats'>{"Let's kickstart your candidate search journey!"}</p>
-        <Button pill onClick={handleClick}>Get Started</Button>
+        <p className="subtitle-congrats">
+          {"Let's kickstart your candidate search journey!"}
+        </p>
+        <PillButton onClick={handleClick}>Get Started</PillButton>
 
         {/* <form onSubmit={ handleSubmit }>
 
@@ -45,45 +62,41 @@ export default function EmployerCongratsPage(){
               <fieldset>
                 <legend>What are you looking for?</legend>
                 <div className="container">
-                  <Button
-                      pill
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Full-time job')} }
                   >
                     Full-time job
-                  </Button>
-                  <Button
-                      pill
+                  </PillButton>
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Part-time job')} }
                   >
                     Part-time job
-                  </Button>
-                  <Button
-                      pill
+                  </PillButton>
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Internship')} }
                   >
                     Internship
-                  </Button>
-                  <Button
-                      pill
+                  </PillButton>
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('On-campus job')} }
                   >
                     On-campus job
-                  </Button>
-                  <Button
+                  </PillButton>
+                  <PillButton
                       className="custom-outline-btn inline-block m-2"
                       // variant="outlined"
                       onClick={ () => { setEmploymentType('Contract')} }
                   >
                     Contract
-                  </Button>
+                  </PillButton>
                 </div>
               </fieldset>
               <FormControl component="fieldset">
@@ -105,10 +118,10 @@ export default function EmployerCongratsPage(){
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
-            <Button pill className="custom-outline-btn">Previous</Button>
-            <Button pill type="submit">Save and continue</Button>
+            <PillButton className="custom-outline-btn">Previous</PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
-          
+
         </form> */}
       </section>
     </main>

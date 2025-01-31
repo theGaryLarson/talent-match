@@ -1,13 +1,11 @@
-import React, { SyntheticEvent, useEffect, useMemo, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useMemo, useState } from "react";
 import Autocomplete, {
   AutocompleteChangeDetails,
   AutocompleteChangeReason,
-} from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import { debounce } from '@mui/material/utils';
-import { Chip } from '@mui/material';
-import clsx from 'clsx';
-import { inter } from '@/app/ui/fonts';
+} from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import { debounce } from "@mui/material/utils";
+import { Chip } from "@mui/material";
 
 interface CachedFetches<ValueType> {
   [searchTerms: string]: ValueType[];
@@ -55,7 +53,7 @@ export default function TagsWithAutocomplete<ValueType>({
 
   const handleInputChange = useMemo(() => {
     const cachedFetches: CachedFetches<ValueType> = {
-      '': [], // Shows nothing when there is no search terms in the input box
+      "": [], // Shows nothing when there is no search terms in the input box
     };
 
     return debounce(
@@ -75,7 +73,7 @@ export default function TagsWithAutocomplete<ValueType>({
             setLoading(false);
           }
         } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error("Error fetching data:", error);
         }
       },
       500,
@@ -83,9 +81,9 @@ export default function TagsWithAutocomplete<ValueType>({
   }, [apiSearchRoute, setLoading, setOptions]);
 
   async function initTags() {
-    var initTagsToSelect: ValueType[] = [];
+    const initTagsToSelect: ValueType[] = [];
     if (initialTags != null) {
-      for (var i = 0; i < initialTags.length; i++) {
+      for (let i = 0; i < initialTags.length; i++) {
         const response = await fetch(`${apiSearchRoute}${initialTags[i]}`);
         const data: ValueType[] = await response.json();
         if (data.length > 0) initTagsToSelect.push(data[0]);
@@ -133,14 +131,16 @@ export default function TagsWithAutocomplete<ValueType>({
         //   or if an item not in the options was entered
         if (
           (maxTags !== -1 && val.length > maxTags) ||
-          !val.every((item) => typeof item !== 'string')
+          !val.every((item) => typeof item !== "string")
         ) {
           ev.stopPropagation();
         }
         // Propagate the event if it's valid
         else {
           setSelectedTags(val as ValueType[]);
-          onChange && onChange(ev, val as ValueType[], reason, details);
+          if (onChange) {
+            onChange(ev, val as ValueType[], reason, details);
+          }
         }
       }}
       onInputChange={handleInputChange}
@@ -154,8 +154,8 @@ export default function TagsWithAutocomplete<ValueType>({
               // Prevent a repeated backspace from deleting tags while allowing a fresh backspace to do it
               if (
                 ev.repeat &&
-                ev.key === 'Backspace' &&
-                (ev.target as HTMLInputElement).value === ''
+                ev.key === "Backspace" &&
+                (ev.target as HTMLInputElement).value === ""
               ) {
                 ev.stopPropagation();
               }
@@ -169,24 +169,20 @@ export default function TagsWithAutocomplete<ValueType>({
       renderTags={(value: readonly (string | ValueType)[], getTagProps) =>
         value.map((option: string | ValueType, index: number) => {
           const { key, ...tagProps } = getTagProps({ index });
-          var link =
-            (getTagLink && getTagLink(option as ValueType)) ?? 'javascript:;';
+          const link =
+            (getTagLink && getTagLink(option as ValueType)) ?? "javascript:;";
           const label =
-            typeof option === 'string'
+            typeof option === "string"
               ? option
               : getTagLabel && getTagLabel(option);
-          var target = link == 'javascript:;' ? '_self' : '_blank';
+          const target = link == "javascript:;" ? "_self" : "_blank";
           return (
             <Chip
               label={
                 <a
                   href={link}
                   target={target}
-                  className={clsx(
-                    `${inter.className} antialiased`,
-                    'text-white',
-                    'text-base',
-                  )}
+                  className={"text-white text-base"}
                 >
                   {label}
                 </a>
@@ -210,21 +206,21 @@ export default function TagsWithAutocomplete<ValueType>({
         })
       }
       getOptionLabel={(option: string | ValueType) => {
-        if (typeof option === 'string') {
+        if (typeof option === "string") {
           return option;
         } else if (getTagLabel) {
           return getTagLabel(option as ValueType);
         }
-        return '';
+        return "";
       }}
       value={selectedTags}
       sx={{
         // Couldn't find a better way to change the background color ¯\_ (ツ)_/¯
-        '& .MuiChip-filled': {
-          backgroundColor: 'rgb(8, 145, 178)',
-          height: 'auto',
-          '&:hover': {
-            backgroundColor: 'rgb(14, 116, 144)',
+        "& .MuiChip-filled": {
+          backgroundColor: "rgb(8, 145, 178)",
+          height: "auto",
+          "&:hover": {
+            backgroundColor: "rgb(14, 116, 144)",
           },
         },
       }}

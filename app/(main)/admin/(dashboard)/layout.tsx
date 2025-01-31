@@ -1,15 +1,17 @@
-import Link from 'next/link';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import AddBusinessIcon from '@mui/icons-material/AddBusiness';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import { auth } from '@/auth';
-import { BookmarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
-import { AddBusinessOutlined } from '@mui/icons-material';
-export default async function layout({ children }: { children: React.ReactNode }) {
-  let session = await auth()
-  console.log(session)
+import Link from "next/link";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import { auth } from "@/auth";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import ApprovalOutlinedIcon from "@mui/icons-material/ApprovalOutlined";
+import { AddBusinessOutlined, PsychologyOutlined } from "@mui/icons-material";
+export default async function layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth();
+  console.log(session);
 
   return (
     <div className="flex capitalize">
@@ -22,38 +24,66 @@ export default async function layout({ children }: { children: React.ReactNode }
           Home
         </Link>
         <Link
-            href="/admin/add-edu-provider"
-            className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+          href="/admin/add-edu-provider"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
-          <AddBusinessOutlined/>
+          <AddBusinessOutlined />
           Add Training Provider
         </Link>
         <Link
           href="/admin/update-edu-provider"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
-          <AddBusinessOutlined/>
+          <AddBusinessOutlined />
           Update Training Provider
         </Link>
         <Link
           href="/admin/add-company"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
-          <AddBusinessOutlined/>
+          <AddBusinessOutlined />
           Add a Company
         </Link>
-        {/* <Link
-          href="/admin"
-          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200 REPLACE-BEFORE-RELEASE"
+        <Link
+          href="/admin/update-company"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
-          <EmailOutlinedIcon />
-          Inbox
-        </Link> */}
+          <AddBusinessOutlined />
+          Update Company
+        </Link>
+        <Link
+          href="/admin/add-skill"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <PsychologyOutlined />
+          Add Skill
+        </Link>
+        <Link
+          href="/admin/update-skill"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <PsychologyOutlined />
+          Update Skill
+        </Link>
+        <Link
+          href="/admin/verify"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <ApprovalOutlinedIcon />
+          Verify
+        </Link>
+        <Link
+          href="/admin/user-management"
+          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
+        >
+          <ManageAccountsOutlinedIcon />
+          User Management
+        </Link>
         <Link
           href="/admin/postjob"
           className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
         >
-          <PencilSquareIcon width={24}/>
+          <PencilSquareIcon width={24} />
           Post a job
         </Link>
       </div>

@@ -1,12 +1,14 @@
-import { TextField } from '@mui/material';
-import { ChangeEventHandler } from 'react';
+import { TextField } from "@mui/material";
+import { ChangeEventHandler } from "react";
 
 interface Props {
-  id: string,
-  label: string,
-  onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined
-  placeholder?: string | undefined,
-  [key: string]: any,
+  id: string;
+  label: string;
+  onChange?:
+    | ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+    | undefined;
+  placeholder?: string | undefined;
+  [key: string]: any;
 }
 
 export default function TextFieldWithSeparatedLabel({
@@ -15,7 +17,7 @@ export default function TextFieldWithSeparatedLabel({
   onChange,
   placeholder,
   ...rest
-}:Props) {
+}: Props) {
   return (
     <TextField
       {...rest}
@@ -31,22 +33,23 @@ export default function TextFieldWithSeparatedLabel({
           color: "black",
           marginTop: -4,
           pointerEvents: "auto",
-          transform: "scale(1.0)"
-        }
+          transform: "scale(1.0)",
+        },
       }}
       InputProps={{
         notched: false,
       }}
       sx={{
         marginTop: 4,
-        '& .MuiOutlinedInput-root input:focus': {
-          boxShadow: 'none',
+        "& .MuiOutlinedInput-root input:focus": {
+          boxShadow: "none",
         },
-        '& .MuiInputBase-root.MuiOutlinedInput-root .MuiInputBase-input.MuiOutlinedInput-input::placeholder': {
-          opacity: '0.42!important',
-        },
-        '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline legend': {
-          display: 'none',
+        "& .MuiInputBase-root.MuiOutlinedInput-root .MuiInputBase-input.MuiOutlinedInput-input::placeholder":
+          {
+            opacity: "0.42!important",
+          },
+        "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline legend": {
+          display: "none",
         },
       }}
     />

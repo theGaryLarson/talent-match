@@ -1,29 +1,23 @@
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 import {
   JsDisclosuresDTO,
   JsDisclosuresPostDTO,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { auth } from '@/auth';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request
-    let session = await auth();
+    const session = await auth();
     const userId: string = session?.user.id!;
 
     const body: JsDisclosuresPostDTO = await request.json();
-    const {
-      isVeteran,
-      disabilityStatus,
-      disability,
-      gender,
-      race,
-      ethnicity,
-    } = body;
+    const { isVeteran, disabilityStatus, disability, gender, race, ethnicity } =
+      body;
 
     if (!userId) {
       return NextResponse.json({

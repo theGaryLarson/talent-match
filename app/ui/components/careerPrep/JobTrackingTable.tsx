@@ -1,24 +1,29 @@
-'use client';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import Radio from '@mui/material/Radio';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Button, FormControlLabel, FormLabel, RadioGroup, TextField } from '@mui/material';
-import Router from 'next/router';
-import JobStatusDropDown from './JobStatusDropDown';
-import { JobStatus } from '@/app/lib/jobseekerJobTracking';
+"use client";
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import Radio from "@mui/material/Radio";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import React, { useState } from "react";
+import Link from "next/link";
+import {
+  FormControlLabel,
+  FormLabel,
+  RadioGroup,
+  TextField,
+} from "@mui/material";
+import JobStatusDropDown from "./JobStatusDropDown";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
+import ViewResume from "./ViewResume";
 
 interface JobApplication {
   id: string;
@@ -32,12 +37,14 @@ interface JobApplication {
   Jobseekers: {
     jobseeker_id: string;
     assignedPool: string | null;
+    highest_level_of_study_completed: string | null;
     user_id: string;
     intro_headline: string | null;
     years_work_exp: number | null;
     users: {
       first_name: string | null;
       last_name: string | null;
+      email: string;
     };
   };
 }
@@ -74,10 +81,9 @@ interface RowProps {
 
 function Row({ row }: RowProps) {
   const [open, setOpen] = React.useState(false);
-
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -91,13 +97,14 @@ function Row({ row }: RowProps) {
           {row.job_title}
         </TableCell>
         <TableCell>{row.companies.company_name}</TableCell>
-        <TableCell>{row.location}</TableCell>
+        {/* <TableCell>{row.location}</TableCell>
         <TableCell>{row.employment_type}</TableCell>
-        <TableCell>{row.salary_range}</TableCell>
+        <TableCell>{row.salary_range}</TableCell> */}
+        <TableCell>{row.unpublish_date.toDateString()}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={open} timeout="auto">
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
                 Job Applications
@@ -106,26 +113,56 @@ function Row({ row }: RowProps) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Years Of Exp</TableCell>
+                    <TableCell>Highest Level of Education</TableCell>
+                    <TableCell>Resume</TableCell>
                     <TableCell>Job Status</TableCell>
                     <TableCell>Assigned Pool</TableCell>
                     <TableCell>Applied Date</TableCell>
                     <TableCell>Follow-Up Date</TableCell>
-                    <TableCell>Jobseeker Intro</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {row.jobApplications.map((app) => (
                     <TableRow key={app.id}>
                       <TableCell>
-                        <Link href={'/services/jobseekers/' + app.jobseekerId} className='LINK' target='_blank'>
-                          {app.Jobseekers.users.first_name} {app.Jobseekers.users.last_name}
+                        <Link
+                          href={"/services/jobseekers/" + app.jobseekerId}
+                          className="LINK"
+                          target="_blank"
+                        >
+                          {app.Jobseekers.users.first_name}{" "}
+                          {app.Jobseekers.users.last_name}
                         </Link>
                       </TableCell>
-                      <TableCell><JobStatusDropDown currentJobStatus={app.jobStatus as JobStatus} jobAppId={app.id}/></TableCell>
+                      <TableCell>{app.Jobseekers.users.email}</TableCell>
+                      <TableCell>{app.Jobseekers.years_work_exp}</TableCell>
+                      <TableCell>
+                        {app.Jobseekers.highest_level_of_study_completed}
+                      </TableCell>
+                      <TableCell>
+                        <ViewResume
+                          userId={app.Jobseekers.user_id}
+                        ></ViewResume>
+                      </TableCell>
+                      <TableCell>
+                        <JobStatusDropDown
+                          currentJobStatus={app.jobStatus as JobStatus}
+                          jobAppId={app.id}
+                        />
+                      </TableCell>
                       <TableCell>{app.Jobseekers.assignedPool}</TableCell>
-                      <TableCell>{app.appliedDate ? new Date(app.appliedDate).toLocaleDateString() : ''}</TableCell>
-                      <TableCell>{app.followUpDate ? new Date(app.followUpDate).toLocaleDateString() : 'N/A'}</TableCell>
-                      <TableCell>{app.Jobseekers.intro_headline}</TableCell>
+                      <TableCell>
+                        {app.appliedDate
+                          ? new Date(app.appliedDate).toLocaleDateString()
+                          : ""}
+                      </TableCell>
+                      <TableCell>
+                        {app.followUpDate
+                          ? new Date(app.followUpDate).toLocaleDateString()
+                          : "N/A"}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -143,16 +180,19 @@ interface JobTrackingTableProps {
 }
 
 export default function JobTrackingTable({ data }: JobTrackingTableProps) {
-  const [filter, setFilter] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
+  const [filter, setFilter] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
   // Filter the job postings based on job title, company name, or location
-  const filteredData = data.filter(item => 
-    item.job_title.toLowerCase().includes(filter.toLowerCase()) ||
-    item.companies.company_name.toLowerCase().includes(filter.toLowerCase()) ||
-    item.location.toLowerCase().includes(filter.toLowerCase())
-  ).filter(item =>
-    item.location.toLowerCase().includes(location)
-  );
+  const filteredData = data
+    .filter(
+      (item) =>
+        item.job_title.toLowerCase().includes(filter.toLowerCase()) ||
+        item.companies.company_name
+          .toLowerCase()
+          .includes(filter.toLowerCase()) ||
+        item.location.toLowerCase().includes(filter.toLowerCase()),
+    )
+    .filter((item) => item.location.toLowerCase().includes(location));
 
   return (
     <Box sx={{ padding: 2 }}>
@@ -166,19 +206,25 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
         sx={{ marginBottom: 2 }}
       />
       <div>
-       <RadioGroup
-    aria-labelledby="demo-controlled-radio-buttons-group"
-    name="controlled-radio-buttons-group"
-    value={location}
-    onChange={(e)=>setLocation(e.target.value)}
-  >
-    <FormLabel id="demo-radio-buttons-group-label">Location Type</FormLabel>
-    <FormControlLabel value="remote" control={<Radio />} label="Remote" />
-    <FormControlLabel value="hybrid" control={<Radio />} label="Hybrid" />
-    <FormControlLabel value="on-site" control={<Radio />} label="On-Site" />
-    <FormControlLabel value="" control={<Radio />} label="Any" />
-  </RadioGroup>
-  </div>
+        <RadioGroup
+          aria-labelledby="demo-controlled-radio-buttons-group"
+          name="controlled-radio-buttons-group"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        >
+          <FormLabel id="demo-radio-buttons-group-label">
+            Location Type
+          </FormLabel>
+          <FormControlLabel value="remote" control={<Radio />} label="Remote" />
+          <FormControlLabel value="hybrid" control={<Radio />} label="Hybrid" />
+          <FormControlLabel
+            value="on-site"
+            control={<Radio />}
+            label="On-Site"
+          />
+          <FormControlLabel value="" control={<Radio />} label="Any" />
+        </RadioGroup>
+      </div>
 
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
@@ -187,9 +233,10 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
               <TableCell />
               <TableCell>Job Title</TableCell>
               <TableCell>Company</TableCell>
-              <TableCell>Location</TableCell>
+              {/* <TableCell>Location</TableCell>
               <TableCell>Employment Type</TableCell>
-              <TableCell>Salary Range</TableCell>
+              <TableCell>Salary Range</TableCell> */}
+              <TableCell>Application Deadline</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

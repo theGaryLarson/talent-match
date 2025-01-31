@@ -1,28 +1,80 @@
-'use client'
+"use client";
 
-import { useState } from "react";
-import React, { MouseEvent } from 'react';
-export default function ApplyToJobButton(params: {id:string}){
-  const [hasApplied, setHasApplied] = useState<boolean>(false)
-    const save = async (e: MouseEvent<HTMLButtonElement>) => {
-        try {
-            setHasApplied(true)
-            const response = await fetch(`/api/joblistings/apply/${params.id}`, {
-              method: 'POST', // or 'PUT', depending on the behavior of your API
-              headers: {
-                'Content-Type': 'application/json'
-              },
-            });
-        
-            if (!response.ok) {
-              throw new Error(`Error: ${response.status}`);
-            }
-            const data = await response.json();
-            console.log('Job post saved successfully:', data);
-            return data;
-          } catch (error) {
-            console.error('Error saving job post:', error);
-          }
+import React, { useState } from "react";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
+import { useSession } from "next-auth/react";
+import { redirect, usePathname } from "next/navigation";
+import PillButton from "../PillButton";
+
+interface Props {
+  id: string;
+  appliedStatus?: string;
+}
+
+export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
+  // Initial state based on appliedStatus
+  const [hasApplied, setHasApplied] = useState<boolean>(
+    appliedStatus == JobStatus.Accepted ||
+      appliedStatus == JobStatus.Applied ||
+      appliedStatus == JobStatus.Interviewing ||
+      appliedStatus == JobStatus.Negotiating ||
+      appliedStatus == JobStatus.NoResponse ||
+      appliedStatus == JobStatus.NotSelected,
+  );
+
+  const session = useSession();
+  const pathname = usePathname();
+
+  const handleApplicationClick = async () => {
+    if (!session?.data?.user) {
+      const base = window.location.origin;
+      const signInUrl = new URL("/signin", base);
+      const callbackUrlValue = pathname;
+      signInUrl.searchParams.set("callbackUrl", callbackUrlValue);
+      redirect(signInUrl.toString());
     }
-return <button className="box-border w-fit rounded-full bg-blue-background px-10 py-3 text-white hover:bg-blue-400" disabled={hasApplied} onClick={save}>{hasApplied?'Applied':'Apply'}</button>
+    try {
+      if (!hasApplied) {
+        setHasApplied(true);
+        const response = await fetch(`/api/joblistings/apply/${id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          setHasApplied(false);
+          throw new Error("Failed to update application status.");
+        }
+      } else {
+        setHasApplied(false);
+        const response = await fetch(`/api/joblistings/withdraw/${id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          setHasApplied(true);
+          throw new Error("Failed to update application status");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating application:", error);
+    }
+  };
+
+  return (
+    <PillButton
+      disabled={
+        appliedStatus == JobStatus.Accepted ||
+        appliedStatus == JobStatus.NoResponse ||
+        appliedStatus == JobStatus.NotSelected
+      }
+      onClick={handleApplicationClick}
+    >
+      {hasApplied ? "Withdraw Application" : "Apply"}
+    </PillButton>
+  );
 }

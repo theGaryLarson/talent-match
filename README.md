@@ -53,7 +53,7 @@ NEXT_PUBLIC_TOKEN_SCOPE="https://cfahelpdesksandbox.crm.dynamics.com/.default"
 AUTH_GITHUB_ID=Ov23li9hwTQuo1iWqrNH
 AUTH_GITHUB_SECRET=3be8d9d590b4b30df7df1d9513eb4280e605f6fa
 GOOGLE_CLIENT_ID="896719689092-a8qllfgn2nir2uk1t3p4jf6d1tb5bsnn.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET=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 
+GOOGLE_CLIENT_SECRET=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
 
 # Personal Auth Secret - generate by running the following command: openssl rand -base64 32
 AUTH_SECRET=<your generated base64 auth secret>

@@ -126,8 +126,6 @@ creates or updates all the data in entire introduction page._
   "currentJobTitle": "Junior Developer",
   "resumeUrl": "https://example.com/resume.pdf"
 }
-
-
 ```
 
 ##### Sample Response
@@ -657,7 +655,6 @@ data._
     }
   ]
 }
-
 ```
 
 ##### Sample Response
@@ -1971,7 +1968,7 @@ _This is for an APPROVED employer to add additional social media links to appear
 }
 ```
 
-___
+---
 
 #### Delete Company Social Media Entry
 
@@ -1982,18 +1979,20 @@ _This is for an APPROVED employer to remove company social media links._
 **Method**: `DELETE`
 
 ##### Sample Response
+
 **DTO**: ``
+
 ```json
 {
-    "success": true,
-    "result": {
-        "companySocialId": "055d4805-0ff7-4049-b685-89554004462c",
-        "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
-        "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
-        "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
-        "socialUrl": "https:linkedin/in/testCompany",
-        "platform": "LinkedIn",
-        "platformIconUrl": "https://imaginative-praise.name"
-    }
+  "success": true,
+  "result": {
+    "companySocialId": "055d4805-0ff7-4049-b685-89554004462c",
+    "companyId": "84ca30af-36e7-418f-93bf-409c272b36a1",
+    "employerId": "57d46b6e-ace6-45c5-969c-79fb71beef24",
+    "socialPlatformId": "20eeacc3-fe03-4168-beaf-1bfc128fc453",
+    "socialUrl": "https:linkedin/in/testCompany",
+    "platform": "LinkedIn",
+    "platformIconUrl": "https://imaginative-praise.name"
+  }
 }
 ```

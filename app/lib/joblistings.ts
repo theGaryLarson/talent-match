@@ -1,26 +1,29 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
+import { Prisma, PrismaClient } from "@prisma/client";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
 
-import { v4 as uuidv4 } from 'uuid';
-import { auth } from '@/auth';
-import { JobPostCreationDTO } from '@/data/dtos/JobListingDTO';
-import Skills from '../ui/components/Skills';
-import { NextResponse } from 'next/server';
-import { Role } from '@/data/dtos/UserInfoDTO';
-import { JobStatus } from './jobseekerJobTracking';
+import { v4 as uuidv4 } from "uuid";
+import { auth } from "@/auth";
+import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
+import { NextResponse } from "next/server";
+import { Role } from "@/data/dtos/UserInfoDTO";
+import { JobStatus } from "./jobseekerJobTracking";
+import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
 //TODO: fix zip code and location, add in sector and skills
 export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   const Session = await auth();
   let company_id = Session?.user.companyId;
-  if (Session?.user.roles.includes(Role.ADMIN)) {
+  if (
+    Session?.user.roles.includes(Role.ADMIN) ||
+    Session?.user.roles.includes(Role.CASE_MANAGER)
+  ) {
     company_id = jobData.company_id;
   }
 
   try {
     if (!company_id) {
-      throw new Error('Failed to create job listing Company id not found');
+      throw new Error("Failed to create job listing Company id not found");
     }
     let companyAddress = await prisma.company_addresses.findFirst({
       where: {
@@ -40,7 +43,7 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
       });
     }
 
-    let postalGeoData = await prisma.postalGeoData.findFirst({
+    const postalGeoData = await prisma.postalGeoData.findFirst({
       where: { zip: jobData.zip },
     });
 
@@ -60,11 +63,14 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
+        relocation_services_available: jobData.relocation_services,
+        offer_visa_sponsorship: jobData.visa_sponsership,
         zip: jobData.zip,
-        employment_type: jobData.employment_type || 'full-time',
+        employment_type: jobData.employment_type || "full-time",
+        is_apprenticeship: jobData.is_apprenticeship,
         location: jobData.location,
         salary_range: jobData.salary_range,
-        county: postalGeoData?.county ?? '',
+        county: postalGeoData?.county ?? "",
         publish_date: now,
         unpublish_date:
           jobData.unpublish_date ??
@@ -81,7 +87,7 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
 
     return newJobListing;
   } catch (error) {
-    console.error('Error creating job listing with skills:', error);
+    console.error("Error creating job listing with skills:", error);
     // throw new Error('Failed to create job listing with associated skills');
   }
 }
@@ -99,6 +105,11 @@ export async function getJobListingById(joblistingId: string) {
             sector_title: true,
           },
         },
+        company_addresses: {
+          include: {
+            locationData: true,
+          },
+        },
         companies: true,
         techArea: {
           select: {
@@ -107,7 +118,10 @@ export async function getJobListingById(joblistingId: string) {
         },
         jobApplications: {
           select: {
+            isBookmarked: true,
+            jobPostId: true,
             jobseekerId: true,
+            jobStatus: true,
           },
         },
       },
@@ -118,22 +132,23 @@ export async function getJobListingById(joblistingId: string) {
   }
 }
 export async function getMyJobListings() {
-  let Session = await auth();
+  const Session = await auth();
   if (!Session?.user.employerId) {
     throw new Error(
-      'Failed to create job listing employer id not found in session',
+      "Failed to create job listing employer id not found in session",
     );
   }
   try {
-    let results = prisma.job_postings.findMany({
-      where:{
-        employer_id: Session?.user.employerId
-      }, include:{
-        industry_sectors:true,
+    const results = prisma.job_postings.findMany({
+      where: {
+        employer_id: Session?.user.employerId,
+      },
+      include: {
+        industry_sectors: true,
         companies: true,
         skills: true,
-      }
-    })
+      },
+    });
     return results;
   } catch (e) {
     console.error(e);
@@ -141,24 +156,33 @@ export async function getMyJobListings() {
   }
 }
 export async function deleteJobListing(jobPostingId: string) {
-  let Session = await auth();
-  if (!Session?.user.employerId) {
+  const Session = await auth();
+  if (!Session?.user.employerId && !Session?.user.roles.includes(Role.ADMIN)) {
     throw new Error(
-      'Failed to delete job listing: employer ID not found in session',
+      "Failed to delete job listing: employer ID not found in session",
     );
   }
-  if (!Session.user.companyId) {
+  if (!Session.user.companyId && !Session?.user.roles.includes(Role.ADMIN)) {
     throw new Error(
-      'Failed to delete job listing: company ID not found in session',
+      "Failed to delete job listing: company ID not found in session",
     );
   }
 
   try {
-    let result = await prisma.job_postings.delete({
+    const job = await prisma.job_postings.findUnique({
       where: {
         job_posting_id: jobPostingId,
-        employer_id: Session.user.employerId,
-        company_id: Session.user.companyId,
+      },
+    });
+    if (
+      job?.employer_id != Session.user.companyId &&
+      !Session?.user.roles.includes(Role.ADMIN)
+    ) {
+      throw new Error("not an employer of this company");
+    }
+    const result = await prisma.job_postings.delete({
+      where: {
+        job_posting_id: jobPostingId,
       },
     });
     return result;
@@ -168,11 +192,11 @@ export async function deleteJobListing(jobPostingId: string) {
 }
 
 export async function ApplyToJob(jobPostingId: string) {
-  let Session = await auth();
+  const Session = await auth();
   try {
     if (!Session?.user.jobseekerId) {
       throw new Error(
-        'Failed to apply to job: jobseeker ID not found in session',
+        "Failed to apply to job: jobseeker ID not found in session",
       );
     }
 
@@ -192,18 +216,18 @@ export async function ApplyToJob(jobPostingId: string) {
           jobStatus: JobStatus.Applied,
           appliedDate: new Date(),
         },
-        include:{
-          job_posting:{
-            include:{
-              companies:true
-            }
+        include: {
+          job_posting: {
+            include: {
+              companies: true,
+            },
           },
-          Jobseekers:{
-            include:{
-              users:true
-            }
-          }
-        }
+          Jobseekers: {
+            include: {
+              users: true,
+            },
+          },
+        },
       });
     } else {
       return await prisma.jobseekerJobPosting.create({
@@ -215,37 +239,37 @@ export async function ApplyToJob(jobPostingId: string) {
           appliedDate: new Date(),
           isBookmarked: false,
         },
-        include:{
-          job_posting:{
-            include:{
-              companies:true
-            }
+        include: {
+          job_posting: {
+            include: {
+              companies: true,
+            },
           },
-          Jobseekers:{
-            include:{
-              users:{
-                select:{
-                  first_name:true,
-                  last_name:true
-                }
-              }
-            }
-          }
-        }
+          Jobseekers: {
+            include: {
+              users: {
+                select: {
+                  first_name: true,
+                  last_name: true,
+                },
+              },
+            },
+          },
+        },
       });
     }
   } catch (error) {
-    console.error('Error in ApplyToJob:', error);
+    console.error("Error in ApplyToJob:", error);
     throw error;
   }
 }
 
 export async function WithdrawFromJob(jobPostingId: string) {
-  let Session = await auth();
+  const Session = await auth();
   try {
     if (!Session?.user.jobseekerId) {
       throw new Error(
-        'Failed to Withdraw from job: jobseeker ID not found in session',
+        "Failed to Withdraw from job: jobseeker ID not found in session",
       );
     }
 
@@ -279,7 +303,7 @@ export async function WithdrawFromJob(jobPostingId: string) {
       });
     }
   } catch (error) {
-    console.error('Error in WithdrawFromJob:', error);
+    console.error("Error in WithdrawFromJob:", error);
     throw error;
   }
 }
@@ -288,7 +312,7 @@ export async function bookmarkJobPosting(jobPostId: string) {
   const Session = await auth();
   try {
     if (!Session?.user.jobseekerId) {
-      throw new Error('Failed to bookmark: jobseeker ID not found in session');
+      throw new Error("Failed to bookmark: jobseeker ID not found in session");
     }
     const existingRecord = await prisma.jobseekerJobPosting.findFirst({
       where: {
@@ -314,17 +338,17 @@ export async function bookmarkJobPosting(jobPostId: string) {
           jobPostId: jobPostId,
           jobseekerId: Session.user.jobseekerId,
           isBookmarked: true,
-          jobStatus: '',
+          jobStatus: "",
           savedAt: new Date(),
         },
       });
     }
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.error('Prisma error:', error);
-      if (error.code === 'P2002') {
+      console.error("Prisma error:", error);
+      if (error.code === "P2002") {
         return NextResponse.json(
-          { error: 'Unique constraint violation. This data already exists.' },
+          { error: "Unique constraint violation. This data already exists." },
           { status: 409 },
         );
       }
@@ -341,7 +365,7 @@ export async function unbookmarkJobPosting(jobPostId: string) {
   try {
     if (!Session?.user.jobseekerId) {
       throw new Error(
-        'Failed to unbookmark: jobseeker ID not found in session',
+        "Failed to unbookmark: jobseeker ID not found in session",
       );
     }
 
@@ -353,10 +377,10 @@ export async function unbookmarkJobPosting(jobPostId: string) {
     });
 
     if (!existingRecord) {
-      return NextResponse.json({ error: 'Record not found' }, { status: 404 });
+      return NextResponse.json({ error: "Record not found" }, { status: 404 });
     }
 
-    if (existingRecord.jobStatus !== '') {
+    if (existingRecord.jobStatus !== "") {
       return await prisma.jobseekerJobPosting.update({
         where: {
           id: existingRecord.id,
@@ -373,25 +397,27 @@ export async function unbookmarkJobPosting(jobPostId: string) {
       });
     }
   } catch (error) {
-    console.error('Error in unbookmarkJobPosting:', error);
+    console.error("Error in unbookmarkJobPosting:", error);
     throw error;
   }
 }
 
 export async function getAllJobPosts() {
   try {
-    let results = prisma.job_postings.findMany({include:{
-      jobApplications:{
-        include:{
-          Jobseekers:{
-            include:{
-              users:true
-            }
-          }
+    const results = prisma.job_postings.findMany({
+      include: {
+        jobApplications: {
+          include: {
+            Jobseekers: {
+              include: {
+                users: true,
+              },
+            },
+          },
         },
+        companies: true,
       },
-      companies:true
-    }});
+    });
     return results;
   } catch (error) {
     console.error(error);
@@ -403,22 +429,22 @@ export async function getJobListingsFiltered(request: Request) {
   const jobseekerId = session?.user?.jobseekerId;
 
   const {
-    jobTitle = '',
+    jobTitle = "",
     skills = [],
     industrySector = [],
-    zipCode = '',
-    sortBy = 'publish_date',
+    zipCode = "",
+    sortBy = "publish_date", // eslint-disable-line @typescript-eslint/no-unused-vars
     page = 1,
     maxResults = 50,
   } = await request.json();
 
   const andConditions: any[] = [];
-  const orderBy = [{ publish_date: 'desc' as const }];
+  const orderBy = [{ publish_date: "desc" as const }];
   // Determine the number of results to skip based on the page number and maxResults
   const skip = (page - 1) * maxResults;
 
   const normalizedSkills: string[] = skills.filter(
-    (skill: string) => skill && skill.trim() !== '',
+    (skill: string) => skill && skill.trim() !== "",
   );
 
   if (jobTitle) {
@@ -478,6 +504,11 @@ export async function getJobListingsFiltered(request: Request) {
             title: true,
           },
         },
+        company_addresses: {
+          include: {
+            locationData: true,
+          },
+        },
         jobApplications: jobseekerId
           ? {
               where: {
@@ -527,7 +558,7 @@ export async function getJobSeekerBookmarkedJobs() {
   }
   try {
     const result = await prisma.jobseekerJobPosting.findMany({
-      include:{
+      include: {
         job_posting: {
           include: {
             companies: true,
@@ -537,12 +568,14 @@ export async function getJobSeekerBookmarkedJobs() {
                 sector_title: true,
               },
             },
-          }
+          },
         },
-     }, where:{
-          jobseekerId: session.user.jobseekerId,
-          isBookmarked: true
-    }});
+      },
+      where: {
+        jobseekerId: session.user.jobseekerId,
+        isBookmarked: true,
+      },
+    });
 
     const transformedJobPostings = result.map((posting) => {
       const jobStatus = posting.jobStatus;
@@ -571,11 +604,8 @@ export async function getJobSeekerAppliedJobs() {
     const result = await prisma.jobseekerJobPosting.findMany({
       where: {
         jobseekerId: session.user.jobseekerId,
-        NOT: {
-          jobStatus: JobStatus.IWithdrew
-        }
       },
-      include:{
+      include: {
         job_posting: {
           include: {
             companies: true,
@@ -585,21 +615,19 @@ export async function getJobSeekerAppliedJobs() {
                 sector_title: true,
               },
             },
-          }
+          },
         },
-     },
+      },
     });
 
-    const transformedJobPostings = result.map((posting) => {
-      const jobStatus = posting.jobStatus;
-      const isBookmarked = posting.isBookmarked || false;
-      return {
+    const transformedJobPostings = result
+      .filter((posting) => posting.jobStatus !== "")
+      .map((posting) => ({
         ...posting.job_posting,
-        jobStatus: jobStatus,
-        isBookmarked: isBookmarked,
+        jobStatus: posting.jobStatus,
+        isBookmarked: posting.isBookmarked || false,
         jobApplications: undefined,
-      };
-    });
+      })) as JobListingCardViewDTO[];
 
     return transformedJobPostings;
   } catch (error) {

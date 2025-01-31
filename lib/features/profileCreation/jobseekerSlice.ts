@@ -1,6 +1,5 @@
-'use client';
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../jobseekerStore';
+"use client";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import {
   HighestCompletedEducationLevel,
   JsDisclosuresPostDTO,
@@ -10,18 +9,18 @@ import {
   JsShowcaseDTO,
   JsWorkExpDTO,
   JsWorkDTO,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
+} from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 interface JsEducationPageBlankHighestLevelDTO
-  extends Omit<JsEducationPageDTO, 'highestLevelOfStudy'> {
-  highestLevelOfStudy: HighestCompletedEducationLevel | '';
+  extends Omit<JsEducationPageDTO, "highestLevelOfStudy"> {
+  highestLevelOfStudy: HighestCompletedEducationLevel | "";
 }
 
-interface JsWorkExpStringDateDTO extends Omit<JsWorkExpDTO, 'workExperiences'> {
+interface JsWorkExpStringDateDTO extends Omit<JsWorkExpDTO, "workExperiences"> {
   workExperiences?: JsWorkStringDateDTO[];
 }
 
-interface JsWorkStringDateDTO extends Omit<JsWorkDTO, 'startDate' | 'endDate'> {
+interface JsWorkStringDateDTO extends Omit<JsWorkDTO, "startDate" | "endDate"> {
   startDate: string;
   endDate: string | null;
 }
@@ -43,39 +42,39 @@ export interface JobseekerState {
 // Define the initial state using that type
 export const initialState: JobseekerState = {
   introduction: {
-    userId: '',
+    userId: "",
     photoUrl: null,
-    firstName: '',
-    lastName: '',
+    firstName: "",
+    lastName: "",
     birthDate: null,
     phoneCountryCode: null,
     phone: null,
-    zipCode: '',
+    zipCode: "",
     state: null,
     city: null,
     county: null,
-    email: '',
+    email: "",
     introHeadline: null,
     currentJobTitle: null,
   },
   education: {
-    userId: '',
-    jobseekerId: '',
-    highestLevelOfStudy: '',
+    userId: "",
+    jobseekerId: "",
+    highestLevelOfStudy: "",
     educations: [],
     certifications: [],
     projects: [],
   },
   workExperience: {
-    userId: '',
-    yearsWorkExperience: '',
+    userId: "",
+    yearsWorkExperience: "",
     monthsInternshipExperience: null,
     isAuthorizedToWorkUsa: undefined,
     requiresSponsorship: undefined,
     workExperiences: [],
   },
   showcase: {
-    userId: '',
+    userId: "",
     skills: [],
     introduction: null,
     portfolioUrl: null,
@@ -84,25 +83,25 @@ export const initialState: JobseekerState = {
     resumeUrl: null,
   },
   preferences: {
-    userId: '',
+    userId: "",
     targetedPathwayId: null,
     targetedPathway: null,
     preferredEmploymentType: null,
   },
   disclosures: {
-    userId: '',
-    isVeteran: '',
-    disabilityStatus: '',
-    disability: '',
-    gender: '',
-    race: '',
-    ethnicity: '',
+    userId: "",
+    isVeteran: "",
+    disabilityStatus: "",
+    disability: "",
+    gender: "",
+    race: "",
+    ethnicity: "",
   },
 };
 
 // Actions
 export const jobseekerSlice = createSlice({
-  name: 'jobseeker',
+  name: "jobseeker",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
 

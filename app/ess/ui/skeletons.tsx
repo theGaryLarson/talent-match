@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import Image from "next/image";
-import placeholder from "../../../public/placeholder.jpg"
+import placeholder from "../../../public/placeholder.jpg";
 
 export function CategoryCardSkeleton() {
   return (

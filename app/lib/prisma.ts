@@ -1,24 +1,23 @@
 import {
   companies,
   edu_providers,
-  PostalGeoData, Prisma,
+  PostalGeoData,
+  Prisma,
   PrismaClient,
   programs,
-} from '@prisma/client';
-import getPrismaClient from '@/app/lib/prismaClient.mjs';
-import { SkillDTO } from '@/data/dtos/SkillDTO';
-import { EducationProviderDTO } from '@/data/dtos/EducationProviderDTO';
+} from "@prisma/client";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { SkillDTO } from "@/data/dtos/SkillDTO";
+import { EducationProviderDTO } from "@/data/dtos/EducationProviderDTO";
 
-import { GeneralProgramDTO } from '@/data/dtos/GeneralProgramDTO';
-import { v4 as uuidv4 } from 'uuid';
-import { Role } from "@/data/dtos/UserInfoDTO";
+import { GeneralProgramDTO } from "@/data/dtos/GeneralProgramDTO";
+import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import {ReadCompanyInfoDTO} from "@/data/dtos/EmployerProfileCreationDTOs";
+import { ReadCompanyInfoDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
-
 
 type SearchOptions<T> = {
   searchTerm: string;
@@ -83,20 +82,20 @@ async function genericSearch<T>({
   const containsResults =
     exactResults.length + startsWithResults.length < maxResults
       ? sortResults(
-        await model.findMany({
-          where: {
-            AND: [
-              ...fields.map((field) => ({
-                [field]: { contains: searchTerm },
-              })),
-              ...fields.map((field) => ({
-                [field]: { not: { startsWith: searchTerm } },
-              })),
-            ],
-          },
-          take: maxResults - exactResults.length - startsWithResults.length,
-        }),
-      )
+          await model.findMany({
+            where: {
+              AND: [
+                ...fields.map((field) => ({
+                  [field]: { contains: searchTerm },
+                })),
+                ...fields.map((field) => ({
+                  [field]: { not: { startsWith: searchTerm } },
+                })),
+              ],
+            },
+            take: maxResults - exactResults.length - startsWithResults.length,
+          }),
+        )
       : [];
 
   return [...exactResults, ...startsWithResults, ...containsResults];
@@ -108,36 +107,37 @@ export async function searchEduProviders(
 ): Promise<EducationProviderDTO[]> {
   return genericSearch<edu_providers>({
     searchTerm,
-    entity: 'edu_providers',
-    fields: ['name'],
+    entity: "edu_providers",
+    fields: ["name"],
     maxResults: 10,
-    sortField: 'name', // Sort by name
+    sortField: "name", // Sort by name
   }).then((results) =>
     results.map((provider) => ({ id: provider.id, name: provider.name })),
   );
 }
 
-export async function searchCompanies(searchTerm: string): Promise< ReadCompanyInfoDTO[] |
-  {
-    companyId: string;
-    companyEmail: string;
-    logoUrl: string | null;
-    companyPhone: string | null;
-    industrySectorId: string | null;
-    companyName: string;
-    predictedHires: number | null;
-    websiteUrl: string | null;
-    yearFounded: number;
-    companySize: string;
-    approvedCompany: boolean;
-  }[]
+export async function searchCompanies(searchTerm: string): Promise<
+  | ReadCompanyInfoDTO[]
+  | {
+      companyId: string;
+      companyEmail: string;
+      logoUrl: string | null;
+      companyPhone: string | null;
+      industrySectorId: string | null;
+      companyName: string;
+      predictedHires: number | null;
+      websiteUrl: string | null;
+      yearFounded: number;
+      companySize: string;
+      approvedCompany: boolean;
+    }[]
 > {
   return genericSearch<companies>({
     searchTerm,
-    entity: 'companies',
-    fields: ['company_name'],
+    entity: "companies",
+    fields: ["company_name"],
     maxResults: 10,
-    sortField: 'company_name', // Sort by name
+    sortField: "company_name", // Sort by name
   }).then((results) =>
     results.map((company) => ({
       companyId: company.company_id,
@@ -192,23 +192,23 @@ export async function searchPrograms(
 ): Promise<GeneralProgramDTO[]> {
   return genericSearch<programs>({
     searchTerm,
-    entity: 'programs',
-    fields: ['title'],
+    entity: "programs",
+    fields: ["title"],
     maxResults: 10,
-    sortField: 'title', // Sort by title
+    sortField: "title", // Sort by title
   });
 }
 
 export async function searchLocations(
   postalCode: string,
-  field: keyof PostalGeoData = 'zip',
+  field: keyof PostalGeoData = "zip",
 ): Promise<PostalGeoData[]> {
   return genericSearch<PostalGeoData>({
     searchTerm: postalCode,
-    entity: 'postalGeoData',
+    entity: "postalGeoData",
     fields: [field],
     maxResults: 10,
-    sortField: field == 'county' || field == 'city' ? 'city' : field,
+    sortField: field == "county" || field == "city" ? "city" : field,
   });
 }
 
@@ -229,12 +229,12 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
             },
             {
               skill_name: {
-                startsWith: searchTerm + ' (',
+                startsWith: searchTerm + " (",
               },
             },
             {
               skill_name: {
-                contains: '(' + searchTerm + ')',
+                contains: "(" + searchTerm + ")",
               },
             },
           ],
@@ -270,14 +270,14 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
             {
               NOT: {
                 skill_name: {
-                  startsWith: searchTerm + ' (',
+                  startsWith: searchTerm + " (",
                 },
               },
             },
             {
               NOT: {
                 skill_name: {
-                  contains: '(' + searchTerm + ')',
+                  contains: "(" + searchTerm + ")",
                 },
               },
             },
@@ -298,42 +298,42 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
     const containsResults =
       exactResults.length + startsWithResults.length < MAX_RESULTS
         ? (
-          await prisma.skills.findMany({
-            where: {
-              AND: [
-                {
-                  skill_name: {
-                    contains: searchTerm,
-                  },
-                },
-                {
-                  NOT: {
+            await prisma.skills.findMany({
+              where: {
+                AND: [
+                  {
                     skill_name: {
-                      startsWith: searchTerm,
+                      contains: searchTerm,
                     },
                   },
-                },
-                {
-                  NOT: {
-                    skill_name: {
-                      contains: '(' + searchTerm + ')',
+                  {
+                    NOT: {
+                      skill_name: {
+                        startsWith: searchTerm,
+                      },
                     },
                   },
-                },
-              ],
-            },
-            take:
-              MAX_RESULTS - exactResults.length - startsWithResults.length,
+                  {
+                    NOT: {
+                      skill_name: {
+                        contains: "(" + searchTerm + ")",
+                      },
+                    },
+                  },
+                ],
+              },
+              take:
+                MAX_RESULTS - exactResults.length - startsWithResults.length,
+            })
+          ).sort((itemA: SkillDTO, itemB: SkillDTO) => {
+            if (itemA.skill_name > itemB.skill_name) {
+              return 1;
+            }
+            if (itemA.skill_name < itemB.skill_name) {
+              return -1;
+            }
+            return 0;
           })
-        ).sort((itemA: SkillDTO, itemB: SkillDTO) => {
-          if (itemA.skill_name > itemB.skill_name) {
-            return 1;
-          }
-          if (itemA.skill_name < itemB.skill_name) {
-            return -1;
-          }
-          return 0;
-        })
         : [];
     // Had to query them separately to guarantee Exact and StartsWith
     //   matches were found since I'm limiting the results, and OR
@@ -342,21 +342,21 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
   }
 }
 
-export async function getSkillsFromList(skillNames: string[]): Promise<SkillDTO[]> {
+export async function getSkillsFromList(
+  skillNames: string[],
+): Promise<SkillDTO[]> {
   if (skillNames.length === 0) {
     return [];
   } else {
-    const skillList = (
-      await prisma.skills.findMany({
-        where: {
-          OR: skillNames.map(skillName => ({
-            skill_name: {
-              equals: skillName,
-            },
-          }))
-        }
-      })
-    );
+    const skillList = await prisma.skills.findMany({
+      where: {
+        OR: skillNames.map((skillName) => ({
+          skill_name: {
+            equals: skillName,
+          },
+        })),
+      },
+    });
     return skillList;
   }
 }
@@ -396,9 +396,9 @@ export const jobSeekerCardViewSelect = {
           state: true,
           stateCode: true,
           county: true,
-          city: true
-        }
-      }
+          city: true,
+        },
+      },
     },
   },
   jobseeker_education: {
@@ -485,6 +485,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
       employment_type_sought: true,
       targeted_pathway: true,
       portfolio_url: true,
+      linkedin_url: true,
       users: {
         select: {
           id: true,
@@ -556,6 +557,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
           },
         },
       },
+      certificates: true,
       pathways: {
         select: {
           pathway_title: true,
@@ -578,7 +580,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 }
 
 // returns those jobseekers with at least yearsExp in a profession
-export async function getJobSeekerCardViewByWorkExperience() { }
+export async function getJobSeekerCardViewByWorkExperience() {}
 
 export async function getIndustrySectors() {
   const industrySectors = await prisma.industry_sectors.findMany({
@@ -598,10 +600,7 @@ export async function getTrainingProviders() {
       id: true,
       name: true,
     },
-    orderBy: [
-      { isCoalitionMember: 'desc' },
-      { name: 'asc' },
-    ]
+    orderBy: [{ isCoalitionMember: "desc" }, { name: "asc" }],
   });
   return trainingProviders;
 }
@@ -617,57 +616,16 @@ export async function getTechnologyAreas() {
   return technologyAreas;
 }
 
-export async function deleteUser(role: Role, userId: string) {
-  try {
-    if (role === Role.JOBSEEKER) {
-      await deleteJobseeker(userId);
-    }
-
-    if (role === Role.EMPLOYER) {
-      await deleteEmployer(userId);
-    }
-  } catch (e) {
-
-  }
-
-}
-
-async function deleteJobseeker(userId: string) {
-  // TODO: cannot be hard deleted if they have participated in a WJI Training Partner program.
-  //  check training_provider.iscoalitionmember prior to deleting. If jobseeker is a coalition member perform soft delete.
-  const jobseekerRecord = await prisma.user.findUnique({
-    where: {
-      id: userId
-    },
-    include: {
-      jobseekers: {
-        select: {
-          jobseeker_id: true,
-        },
-        include: {
-          jobseeker_education: {
-            include: {
-              eduProviders: {
-                select: {
-                  isCoalitionMember: true,
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  })
-}
-
-async function deleteEmployer(userId: string) {
-
-}
-
 export async function bookmarkJobseeker(jobseekerId: string) {
   const session = await auth();
   if (!session?.user?.employeeIsApproved) {
-    return NextResponse.json({ error: 'Access denied. Please check that you have been given approval by your coworkers or CFA Admin.' }, { status: 409 })
+    return NextResponse.json(
+      {
+        error:
+          "Access denied. Please check that you have been given approval by your coworkers or CFA Admin.",
+      },
+      { status: 409 },
+    );
   }
   try {
     const savedJobseeker = await prisma.bookmarkedJobseeker.create({
@@ -676,29 +634,48 @@ export async function bookmarkJobseeker(jobseekerId: string) {
         jobseekerId: jobseekerId,
         employerId: session.user.employerId!,
         companyId: session.user.companyId!,
-      }
+      },
     });
-    return NextResponse.json({ success: true, savedJobseeker }, { status: 200 })
+    return NextResponse.json(
+      { success: true, savedJobseeker },
+      { status: 200 },
+    );
   } catch (e: any) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code == 'P2002') {
-        console.error(e)
-        console.log(jobseekerId, session.user.employerId, session.user.companyId )
-        return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
+      if (e.code == "P2002") {
+        console.error(e);
+        console.log(
+          jobseekerId,
+          session.user.employerId,
+          session.user.companyId,
+        );
+        return NextResponse.json(
+          { error: "Unique constraint violation. This data already exists." },
+          { status: 409 },
+        );
       }
       // Add specific Prisma errors as needed
-      console.error('Unexpected error:', e);
-      return NextResponse.json({ error: `Failed to bookmark jobseeker.\n${e.message} ` }, { status: 500 });
+      console.error("Unexpected error:", e);
+      return NextResponse.json(
+        { error: `Failed to bookmark jobseeker.\n${e.message} ` },
+        { status: 500 },
+      );
     }
   } finally {
-    prisma.$disconnect()
+    prisma.$disconnect();
   }
 }
 
 export async function removeJobseekerBookmark(jobseekerId: string) {
   const session = await auth();
   if (!session?.user?.employeeIsApproved) {
-    return NextResponse.json({ error: 'Access denied. Please check that you have been given approval by your coworkers or CFA Admin.' }, { status: 409 })
+    return NextResponse.json(
+      {
+        error:
+          "Access denied. Please check that you have been given approval by your coworkers or CFA Admin.",
+      },
+      { status: 409 },
+    );
   }
   try {
     const removedJobseeker = await prisma.bookmarkedJobseeker.deleteMany({
@@ -706,91 +683,101 @@ export async function removeJobseekerBookmark(jobseekerId: string) {
         jobseekerId: jobseekerId,
         employerId: session.user.employerId!,
         companyId: session.user.companyId!,
-      }
+      },
     });
-    return NextResponse.json({ success: true, removedJobseeker }, { status: 200 })
+    return NextResponse.json(
+      { success: true, removedJobseeker },
+      { status: 200 },
+    );
   } catch (e: any) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code == 'P2002') {
-        console.error(e)
-        return NextResponse.json({ error: 'Unique constraint violation. This data already exists.' }, { status: 409 });
+      if (e.code == "P2002") {
+        console.error(e);
+        return NextResponse.json(
+          { error: "Unique constraint violation. This data already exists." },
+          { status: 409 },
+        );
       }
       // Add specific Prisma errors as needed
-      console.error('Unexpected error:', e);
-      return NextResponse.json({ error: `Failed to unbookmark jobseeker.\n${e.message} ` }, { status: 500 });
+      console.error("Unexpected error:", e);
+      return NextResponse.json(
+        { error: `Failed to unbookmark jobseeker.\n${e.message} ` },
+        { status: 500 },
+      );
     }
   } finally {
-    prisma.$disconnect()
+    prisma.$disconnect();
   }
 }
 
 export async function getJobseekerBookmarkByCompany() {
   const session = await auth();
-try {
-  if(!session?.user.companyId){
-    throw new Error('Failed to get joseeker bookmarks, company id is not in session');
-  }
-  if(!session.user.employerId){
-    throw new Error('Failed to get joseeker bookmarks, employer id is not in session');
-  }
-  const results = await prisma.bookmarkedJobseeker.findMany({
-    where: {
-      companyId: session.user.companyId
-    },
-    include: {
-      jobseeker: {
-        include: {
-          users: {
-            include: {
-              locationData: true
-            }
-          },
-          BookmarkedJobseeker: true,
-          pathways: true,
-          jobseeker_education: {
-            select: {
-              eduProviders: {
-                select: {
-                  name: true
-                }
-              },
-              program: {
-                select: {
-                  id: true,
-                  title: true
-                }
-              },
-              edLevel: true,
-              enrollmentStatus: true,
-              startDate: true,
-              gradDate: true,
-              degreeType: true
-            }
-          },
-          work_experiences: {
-            include: {
-              industrySector: true
-            }
-          },
-          jobseeker_has_skills: {
-            include: {
-              skills: true
-            }
-          }
-        }
-      }
+  try {
+    if (!session?.user.companyId) {
+      throw new Error(
+        "Failed to get joseeker bookmarks, company id is not in session",
+      );
     }
-  });
-  return results;
-} catch (error) {
-  console.error(error)
-}finally{
-  prisma.$disconnect()
+    if (!session.user.employerId) {
+      throw new Error(
+        "Failed to get joseeker bookmarks, employer id is not in session",
+      );
+    }
+    const results = await prisma.bookmarkedJobseeker.findMany({
+      where: {
+        companyId: session.user.companyId,
+      },
+      include: {
+        jobseeker: {
+          include: {
+            users: {
+              include: {
+                locationData: true,
+              },
+            },
+            BookmarkedJobseeker: true,
+            pathways: true,
+            jobseeker_education: {
+              select: {
+                eduProviders: {
+                  select: {
+                    name: true,
+                  },
+                },
+                program: {
+                  select: {
+                    id: true,
+                    title: true,
+                  },
+                },
+                edLevel: true,
+                enrollmentStatus: true,
+                startDate: true,
+                gradDate: true,
+                degreeType: true,
+              },
+            },
+            work_experiences: {
+              include: {
+                industrySector: true,
+              },
+            },
+            jobseeker_has_skills: {
+              include: {
+                skills: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return results;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    prisma.$disconnect();
+  }
 }
-}
-
-
-
 
 /**
  * @author Damien Cruz
@@ -798,7 +785,7 @@ try {
  * @returns a list of all employer users that work for a company
  */
 export async function getEmployersByCompanyId(companyId: string) {
-  if(companyId == ''){
+  if (companyId == "") {
     return [];
   }
   try {
@@ -825,8 +812,8 @@ export async function getEmployersByCompanyId(companyId: string) {
 
     return employers;
   } catch (error) {
-    console.error('Error fetching employers and user information:', error);
-    throw new Error('Could not retrieve employers for the given company.');
+    console.error("Error fetching employers and user information:", error);
+    throw new Error("Could not retrieve employers for the given company.");
   }
 }
 /**
@@ -836,19 +823,17 @@ export async function getEmployersByCompanyId(companyId: string) {
  */
 export async function getCompanyById(companyId: string) {
   try {
-    if(companyId == ''){
-      return
+    if (companyId == "") {
+      return;
     }
-    const company = await prisma.companies.findUnique(
-      {
-        where: {
-          company_id: companyId
-        }
-      }
-    )
+    const company = await prisma.companies.findUnique({
+      where: {
+        company_id: companyId,
+      },
+    });
     return company ?? undefined;
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 }
 /**
@@ -864,7 +849,7 @@ export async function getEmployerById(employerId: string) {
       },
       select: {
         employer_id: true,
-        company_id:true,
+        company_id: true,
         job_title: true,
         is_verified_employee: true,
         users: {
@@ -877,25 +862,25 @@ export async function getEmployerById(employerId: string) {
             photo_url: true,
           },
         },
-        BookmarkedJobseeker:{select:{
-          jobseekerId:true
-        }},
-        job_postings:{
-          select:{
-            job_posting_id:true
-          }
-        }
+        BookmarkedJobseeker: {
+          select: {
+            jobseekerId: true,
+          },
+        },
+        job_postings: {
+          select: {
+            job_posting_id: true,
+          },
+        },
       },
     });
 
     if (!employer) {
-      throw new Error('Employer not found');
+      throw new Error("Employer not found");
     }
 
     return employer;
   } catch (error) {
-    console.error('Error fetching employer:', error);
+    console.error("Error fetching employer:", error);
   }
 }
-
-

@@ -1,13 +1,13 @@
-import { render } from '@react-email/render';
+import { render } from "@react-email/render";
 
 import {
   InvitationEmail,
-  type InvitationEmailData
-} from '@/emails/invitation-email';
-import { sendEmail } from '@/lib/smtp/mailer/send-email';
+  type InvitationEmailData,
+} from "@/emails/invitation-email";
+import { sendEmail } from "@/lib/smtp/mailer/send-email";
 
 export async function sendInvitationEmail(
-  data: InvitationEmailData
+  data: InvitationEmailData,
 ): Promise<void> {
   const component = InvitationEmail(data);
   const html = await render(component);
@@ -15,8 +15,8 @@ export async function sendInvitationEmail(
 
   await sendEmail({
     recipient: data.recipient,
-    subject: 'Organization invitation',
+    subject: "Organization invitation",
     html,
-    text
+    text,
   });
 }

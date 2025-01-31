@@ -1,38 +1,34 @@
-'use client';
+"use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import ProgressBarFlat from '@/app/ui/components/ProgressBarFlat';
-import { MdAdd } from 'react-icons/md';
-import { Button, Label } from 'flowbite-react';
-import { Radio, RadioGroup } from '@mui/material';
-import InputTextWithLabel from '../../../../ui/components/InputTextWithLabel';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
+import { Radio, RadioGroup } from "@mui/material";
+import PillButton from "@/app/ui/components/PillButton";
+import InputTextWithLabel from "../../../../ui/components/InputTextWithLabel";
 import WorkExperiences, {
   defaultWorkExperienceData,
   WorkExperienceData,
-} from './form-field-groups/WorkExperiences';
+} from "./form-field-groups/WorkExperiences";
 import InternshipExperiences, {
-  defaultInternshipExperienceData,
   InternshipExperienceData,
-} from './form-field-groups/InternshipExperiences';
-import {
-  JsWorkDTO,
-  JsWorkExpDTO,
-} from '@/data/dtos/JobSeekerProfileCreationDTOs';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/lib/jobseekerStore';
+} from "./form-field-groups/InternshipExperiences";
+import { JsWorkExpDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/jobseekerStore";
 import {
   initialState,
   setWorkExperience,
-} from '@/lib/features/profileCreation/jobseekerSlice';
+} from "@/lib/features/profileCreation/jobseekerSlice";
 import {
   setPageDirty,
   setPageSaved,
-} from '@/lib/features/profileCreation/saveSlice';
-import dayjs, { Dayjs } from 'dayjs';
-import _ from 'lodash';
-import { devLog } from '@/app/lib/utils';
+} from "@/lib/features/profileCreation/saveSlice";
+import dayjs from "dayjs";
+import _ from "lodash";
+import { devLog } from "@/app/lib/utils";
+import { Add } from "@mui/icons-material";
 
 interface Data {
   yearsWorkExperience: string;
@@ -66,14 +62,14 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     [originalWorkExperienceStoreData],
   );
   let workExperienceData: JsWorkExpDTO = { ...workExperienceStoreData };
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
 
-  const [hasUnmetRequired, setHasUnmetRequired] = useState('');
+  const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
   const [data, setData] = useState<Data>({
     yearsWorkExperience: workExperienceData.yearsWorkExperience,
     monthsInternshipExperience:
-      workExperienceData.monthsInternshipExperience ?? '',
+      workExperienceData.monthsInternshipExperience ?? "",
     workExperiences:
       workExperienceData.workExperiences
         ?.filter((exp) => !exp.isInternship)
@@ -82,10 +78,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             workId: exp.workId,
             company: exp.company,
             sectorObject: {
-              industry_sector_id: exp.sectorId ?? '',
-              sector_title: '',
+              industry_sector_id: exp.sectorId ?? "",
+              sector_title: "",
             },
-            techAreaObject: { id: exp.techAreaId ?? '', title: '' },
+            techAreaObject: { id: exp.techAreaId ?? "", title: "" },
             jobTitle: exp.jobTitle,
             startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
             endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
@@ -101,10 +97,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             workId: exp.workId,
             company: exp.company,
             sectorObject: {
-              industry_sector_id: exp.sectorId ?? '',
-              sector_title: '',
+              industry_sector_id: exp.sectorId ?? "",
+              sector_title: "",
             },
-            techAreaObject: { id: exp.techAreaId ?? '', title: '' },
+            techAreaObject: { id: exp.techAreaId ?? "", title: "" },
             jobTitle: exp.jobTitle,
             startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
             endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
@@ -122,7 +118,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       ...data,
       workExperiences: [...data.workExperiences, newWorkExperienceData],
     });
-    dispatch(setPageDirty('work-experience'));
+    dispatch(setPageDirty("work-experience"));
   }
 
   function removeWorkExperience(byUid: string) {
@@ -132,7 +128,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         ({ workId: uid }) => uid !== byUid,
       ),
     });
-    dispatch(setPageDirty('work-experience'));
+    dispatch(setPageDirty("work-experience"));
   }
 
   function addNewInternshipExperience() {
@@ -144,7 +140,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         newInternshipExperienceData,
       ],
     });
-    dispatch(setPageDirty('work-experience'));
+    dispatch(setPageDirty("work-experience"));
   }
 
   function removeInternshipExperience(byUid: string) {
@@ -154,7 +150,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         ({ workId: uid }) => uid !== byUid,
       ),
     });
-    dispatch(setPageDirty('work-experience'));
+    dispatch(setPageDirty("work-experience"));
   }
 
   const handleUpdate = useCallback(
@@ -163,7 +159,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         ...prevData,
         [key]: value,
       }));
-      dispatch(setPageDirty('work-experience'));
+      dispatch(setPageDirty("work-experience"));
     },
     [dispatch],
   );
@@ -173,29 +169,29 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       const { name, value, type } = event.target;
       setData((prevData) => ({
         ...prevData,
-        [name]: type === 'radio' ? value === 'yes' : value, // setting boolean values for radio type
+        [name]: type === "radio" ? value === "yes" : value, // setting boolean values for radio type
       }));
-      dispatch(setPageDirty('work-experience'));
+      dispatch(setPageDirty("work-experience"));
     },
     [dispatch],
   );
 
   useEffect(() => {
-    if (session?.user?.id && status === 'authenticated') {
+    if (session?.user?.id && status === "authenticated") {
       const initializeFormFields = async () => {
         if (_.isEqual(workExperienceStoreData, initialState.workExperience)) {
           const { id } = session.user;
 
           try {
-            devLog('fetching fresh');
+            devLog("fetching fresh");
             const response = await fetch(
-              '/api/jobseekers/account/work-info/get/' + id,
+              "/api/jobseekers/account/work-info/get/" + id,
             );
 
             if (!response.ok) {
               workExperienceData.userId = id!;
             } else {
-              let fetchedData: JsWorkExpDTO = (await response.json()).result;
+              const fetchedData: JsWorkExpDTO = (await response.json()).result;
               workExperienceData = {
                 ...fetchedData,
               };
@@ -204,7 +200,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             setData({
               yearsWorkExperience: workExperienceData.yearsWorkExperience,
               monthsInternshipExperience:
-                workExperienceData.monthsInternshipExperience ?? '',
+                workExperienceData.monthsInternshipExperience ?? "",
               workExperiences:
                 workExperienceData.workExperiences
                   ?.filter((exp) => !exp.isInternship)
@@ -213,10 +209,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                       workId: exp.workId,
                       company: exp.company,
                       sectorObject: {
-                        industry_sector_id: exp.sectorId ?? '',
-                        sector_title: '',
+                        industry_sector_id: exp.sectorId ?? "",
+                        sector_title: "",
                       },
-                      techAreaObject: { id: exp.techAreaId ?? '', title: '' },
+                      techAreaObject: { id: exp.techAreaId ?? "", title: "" },
                       jobTitle: exp.jobTitle,
                       startDate: dayjs(exp.startDate),
                       endDate: exp.endDate ? dayjs(exp.endDate) : null,
@@ -232,10 +228,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                       workId: exp.workId,
                       company: exp.company,
                       sectorObject: {
-                        industry_sector_id: exp.sectorId ?? '',
-                        sector_title: '',
+                        industry_sector_id: exp.sectorId ?? "",
+                        sector_title: "",
                       },
-                      techAreaObject: { id: exp.techAreaId ?? '', title: '' },
+                      techAreaObject: { id: exp.techAreaId ?? "", title: "" },
                       jobTitle: exp.jobTitle,
                       startDate: dayjs(exp.startDate),
                       endDate: exp.endDate ? dayjs(exp.endDate) : null,
@@ -250,18 +246,18 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             console.error(error);
           }
         } else {
-          devLog('fetching from store');
+          devLog("fetching from store");
         }
       };
       initializeFormFields();
-      dispatch(setPageSaved('work-experience'));
+      dispatch(setPageSaved("work-experience"));
     }
   }, [session?.user?.id]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!session?.user?.id) {
-      console.error('User session is not available.');
+      console.error("User session is not available.");
       return;
     }
 
@@ -352,16 +348,16 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     }));
 
     try {
-      const response = await fetch('/api/jobseekers/account/work-info/upsert', {
-        method: 'POST',
+      const response = await fetch("/api/jobseekers/account/work-info/upsert", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(workExperienceData),
       });
 
       if (response.ok) {
-        dispatch(setPageSaved('work-experience'));
+        dispatch(setPageSaved("work-experience"));
         dispatch(
           setWorkExperience({
             ...workExperienceData,
@@ -379,8 +375,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         setError(errorMessage);
       }
 
-      const result = await response.json();
-      router.push('/edit-profile/jobseeker/disclosures');
+      await response.json();
+      router.push("/edit-profile/jobseeker/disclosures");
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
@@ -390,7 +386,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 6) * 100} size="sm" />
+        <ProgressBarFlat progress={(5 / 6) * 100} />
         <p>Step 5/6</p>
         <h1>Work experience</h1>
         <p className="subtitle">* Indicates a required field</p>
@@ -404,7 +400,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 type="number"
                 id="profile-creation-experience-work-fulltime-years"
                 name="yearsWorkExperience"
-                value={data.yearsWorkExperience + ''}
+                value={data.yearsWorkExperience + ""}
                 onChange={handleInputUpdate}
               >
                 How many years of full-time work experience do you have (not
@@ -417,14 +413,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               onUpdate={handleUpdate}
               onRemove={removeWorkExperience}
             />
-            <Button
-              pill
-              className="custom-outline-btn"
-              onClick={addNewWorkExperience}
-            >
-              <MdAdd className="mr-2 h-5 w-5" />
+            <PillButton variant="outlined" onClick={addNewWorkExperience}>
+              <Add className="mr-2 h-5 w-5" />
               Add work experience
-            </Button>
+            </PillButton>
           </fieldset>
           <fieldset className="internship-experience-groups">
             <legend>
@@ -436,7 +428,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 id="profile-creation-experience-internship-months"
                 name="monthsInternshipExperience"
                 onChange={handleInputUpdate}
-                value={data.monthsInternshipExperience + ''}
+                value={data.monthsInternshipExperience + ""}
               >
                 How many months of internship work experience do you have?
               </InputTextWithLabel>
@@ -447,14 +439,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               onUpdate={handleUpdate}
               onRemove={removeInternshipExperience}
             />
-            <Button
-              pill
-              className="custom-outline-btn"
-              onClick={addNewInternshipExperience}
-            >
-              <MdAdd className="mr-2 h-5 w-5" />
+            <PillButton variant="outlined" onClick={addNewInternshipExperience}>
+              <Add className="mr-2 h-5 w-5" />
               Add internship experience
-            </Button>
+            </PillButton>
           </fieldset>
           <fieldset>
             <legend>
@@ -471,34 +459,34 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 Are you authorized to work in the United States? *
               </div>
               <RadioGroup>
-                <Label className="block">
+                <div className="block">
                   <Radio
                     name="isAuthorizedToWorkUsa"
                     value="yes"
                     onChange={handleInputUpdate}
                     checked={
-                      typeof data.isAuthorizedToWorkUsa === 'boolean'
+                      typeof data.isAuthorizedToWorkUsa === "boolean"
                         ? data.isAuthorizedToWorkUsa
                         : false
                     }
                     required
-                  />{' '}
+                  />{" "}
                   Yes
-                </Label>
-                <Label className="block">
+                </div>
+                <div className="block">
                   <Radio
                     name="isAuthorizedToWorkUsa"
                     value="no"
                     onChange={handleInputUpdate}
                     checked={
-                      typeof data.isAuthorizedToWorkUsa === 'boolean'
+                      typeof data.isAuthorizedToWorkUsa === "boolean"
                         ? !data.isAuthorizedToWorkUsa
                         : false
                     }
                     required
-                  />{' '}
+                  />{" "}
                   No
-                </Label>
+                </div>
               </RadioGroup>
             </div>
             <div>
@@ -508,50 +496,47 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 employment visa status? *
               </p>
               <RadioGroup>
-                <Label className="block">
+                <div className="block">
                   <Radio
                     name="requiresSponsorship"
                     value="yes"
                     onChange={handleInputUpdate}
                     checked={
-                      typeof data.requiresSponsorship === 'boolean'
+                      typeof data.requiresSponsorship === "boolean"
                         ? data.requiresSponsorship
                         : false
                     }
                     required
-                  />{' '}
+                  />{" "}
                   Yes
-                </Label>
-                <Label className="block">
+                </div>
+                <div className="block">
                   <Radio
                     name="requiresSponsorship"
                     value="no"
                     onChange={handleInputUpdate}
                     checked={
-                      typeof data.requiresSponsorship === 'boolean'
+                      typeof data.requiresSponsorship === "boolean"
                         ? !data.requiresSponsorship
                         : false
                     }
                     required
-                  />{' '}
+                  />{" "}
                   No
-                </Label>
+                </div>
               </RadioGroup>
             </div>
           </fieldset>
           <div className="profile-form-progress-btn-group">
-            <Button
-              pill
-              className="custom-outline-btn"
+            <PillButton
+              variant="outlined"
               onClick={() => {
-                router.push('/edit-profile/jobseeker/education');
+                router.push("/edit-profile/jobseeker/education");
               }}
             >
               Previous
-            </Button>
-            <Button pill type="submit">
-              Save and continue
-            </Button>
+            </PillButton>
+            <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
       </section>

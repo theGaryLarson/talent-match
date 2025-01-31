@@ -22,6 +22,11 @@ export type JobListingCardViewDTO = {
   job_post_url?: string | null;
   assessment_url?: string | null;
   skills?: SkillDTO[];
+  company_addresses?: {
+    locationData: {
+      city?: string;
+    };
+  };
   companies: {
     company_name: string;
     company_logo_url: string | null;
