@@ -50,22 +50,22 @@ export default function Event({ event, registered, showLink }: EventProps) {
 
     function EventModal() {
         return (
-            <div className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] p-6 bg-white rounded-lg flex-col justify-start items-start inline-flex overflow-hidden">
+            <div className="w-3/4 tablet:w-1/2 absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] p-6 bg-white rounded-lg flex-col justify-start items-start inline-flex overflow-hidden">
                 {/* Top */}
                 <div className="self-stretch bg-white flex-col justify-start items-center flex">
                     <div className="self-stretch flex-col justify-start items-start flex">
                         <div className="self-stretch py-4 flex-col justify-start items-start flex">
+                            <div className="w-full block tablet:hidden flex justify-end items-end">
+                                <PillButton variant="outlined" onClick={handleClose}>
+                                    Close
+                                </PillButton>
+                            </div>
                             <div className="self-stretch justify-start items-start inline-flex">
                                 <div className="grow shrink basis-0 flex-col justify-start items-start gap-2 inline-flex">
                                     <div className="self-stretch text-black/90 text-4xl font-normal leading-10 tracking-tight">
                                         {event.name}
                                     </div>
-                                    <div className="justify-start items-start gap-4 inline-flex">
-                                        <div className="justify-start items-start gap-2 flex">
-                                            <div className="w-6 h-6 relative">
-                                                <div className="w-6 h-6 left-0 top-0 absolute  overflow-hidden" />
-                                            </div>
-                                        </div>
+                                    <div className="w-full justify-start items-start gap-2 flex flex-col">
                                         <div className="flex-col justify-start items-start gap-2 inline-flex">
                                             <div className="text-black/90 text-base font-normal leading-normal tracking-tight">
                                                 {event.date.toDateString()}{" "}
@@ -80,11 +80,6 @@ export default function Event({ event, registered, showLink }: EventProps) {
                                                     })}
                                             </div>
                                         </div>
-                                        <div className="justify-start items-start gap-2 flex">
-                                            <div className="w-6 h-6 relative">
-                                                <div className="w-6 h-6 left-0 top-0 absolute  overflow-hidden" />
-                                            </div>
-                                        </div>
                                         <div className="flex-col justify-start items-start inline-flex">
                                             <div className="text-black/90 text-base font-normal leading-normal tracking-tight">
                                                 {event.location}
@@ -93,14 +88,25 @@ export default function Event({ event, registered, showLink }: EventProps) {
                                     </div>
                                 </div>
                                 <div />
-                                <PillButton variant="outlined" onClick={handleClose}>
-                                    Close
-                                </PillButton>
+                                <div className="hidden tablet:block">
+                                    <PillButton variant="outlined" onClick={handleClose}>
+                                        Close
+                                    </PillButton>
+                                </div>
                                 <div className="h-2 flex-col justify-start items-start inline-flex">
                                     <div className="w-4 h-2 relative">
                                         <div className="w-4 h-2 left-0 top-0 absolute" />
                                     </div>
                                 </div>
+                                <div className="hidden tablet:block">
+                                    {reg ? (
+                                        <PillButton disabled>Registered</PillButton>
+                                    ) : (
+                                        <PillButton onClick={register}>Register</PillButton>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="block tablet:hidden">
                                 {reg ? (
                                     <PillButton disabled>Registered</PillButton>
                                 ) : (
