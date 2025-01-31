@@ -1,7 +1,8 @@
-import { Grid2 } from "@mui/material";
+import { Card, Divider, Grid2 } from "@mui/material";
 import PillButton from "../PillButton";
 import { EventTypeEnum, getRegisteredEvents } from "@/app/lib/events";
 import Event from "@/app/ui/components/Event";
+import React from "react";
 
 export default async function Events() {
   const response = await getRegisteredEvents(true);
@@ -28,25 +29,30 @@ export default async function Events() {
           Event Calendar
         </PillButton>
       </Grid2>
-      <Grid2 container gap={2} sx={{ width: "100%" }}>
-        <div className="w-full p-2 items-center rounded-lg border text-lg shadow">
-          {response?.map((item, i) => (
-            <Event
-              key={i}
-              showLink={true}
-              registered={true}
-              event={{
-                ...item.event,
-                eventType: item.event.eventType as EventTypeEnum,
-              }}
-            />
+      <Grid2 container sx={{ width: "100%" }}>
+        <Card
+          variant="outlined"
+          sx={{
+            width: "100%",
+            pt: 1,
+            px: 1,
+            alignItems: "center",
+          }}
+        >
+          {response?.map((item, i, arr) => (
+            <React.Fragment key={i}>
+              <Event
+                showLink={true}
+                registered={true}
+                event={{
+                  ...item.event,
+                  eventType: item.event.eventType as EventTypeEnum,
+                }}
+              />
+              {i < arr.length - 1 && <Divider sx={{ my: 1 }} />}
+            </React.Fragment>
           ))}
-          {(await response)?.length === 0 && (
-            <div className="text-lg text-center my-4">
-              Not registered for any events
-            </div>
-          )}
-        </div>
+        </Card>
       </Grid2>
     </Grid2>
   );

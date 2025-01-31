@@ -1,9 +1,5 @@
 import { Card, Divider, Grid2 } from "@mui/material";
-import {
-  EventTypeEnum,
-  getAllEvents,
-  getRegisteredEvents,
-} from "@/app/lib/events";
+import { EventTypeEnum, getAllEvents, getRegisteredEvents } from "@/app/lib/events";
 import Event from "@/app/ui/components/Event";
 import React from "react";
 
