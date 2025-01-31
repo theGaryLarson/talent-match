@@ -71,6 +71,7 @@ export default auth((req) => {
     "/signin",
     "/signout",
     "/services",
+    "/services/events",
     "/services/employers",
     "/services/employers/faq",
     "/services/talent-search",
