@@ -141,7 +141,6 @@ const TopLevelLinks: LinkItem[] = [
       },
     ],
   },
-  { name: 'Events', href: '/services/events' },
   {
     name: "Coalition",
     href: "",
@@ -154,6 +153,7 @@ const TopLevelLinks: LinkItem[] = [
       },
     ],
   },
+  { name: 'Events', href: '/services/events' },
   { name: "About Us", href: "/about-us" },
 ];
 
