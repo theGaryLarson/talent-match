@@ -184,11 +184,7 @@ export default function TagsWithAutocomplete<ValueType>({
                 <a
                   href={link}
                   target={target}
-                  className={clsx(
-                    `${roboto.className} antialiased`,
-                    "text-white",
-                    "text-base",
-                  )}
+                  className={"text-white text-base"}
                 >
                   {label}
                 </a>
