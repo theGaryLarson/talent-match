@@ -170,7 +170,7 @@ export default function JobPostingPage({ joblisting, params }: Props) {
           </p>
         </div>
       </div>
-      {isJobseeker && (
+      {(!session?.user || isJobseeker) && (
         <div>
           <ApplyToJobButton
             id={params.id}
