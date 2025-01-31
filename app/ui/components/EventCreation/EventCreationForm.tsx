@@ -1,8 +1,13 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { EventTypeEnum, EventUpdateData } from "@/app/lib/events";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
+
 export default function EventCreationForm() {
+  const { quill, quillRef } = useQuill();
   // State to manage form input values
   const [eventName, setEventName] = useState<string>("");
   const [eventDescription, setEventDescription] = useState<string>("");
@@ -53,7 +58,7 @@ export default function EventCreationForm() {
         return;
       } else {
         const data = await response.json();
-        console.log("Creation sucsess: ", data);
+        console.log("Creation success: ", data);
         if (submitButton) submitButton.disabled = false;
         alert("Event created successfully!");
       }
@@ -75,6 +80,14 @@ export default function EventCreationForm() {
     setEventLocation("");
     setEventType(EventTypeEnum.General);
   };
+
+  useEffect(() => {
+      if (quill) {
+        quill.on("text-change", () => {
+          setEventDescription(quill.root.innerHTML);
+        });
+      }
+    }, [quill]);
 
   return (
     <form
@@ -220,13 +233,7 @@ export default function EventCreationForm() {
         <label htmlFor="eventDescription" className="block text-sm font-medium">
           Event Description
         </label>
-        <textarea
-          id="eventDescription"
-          value={eventDescription}
-          onChange={(e) => setEventDescription(e.target.value)}
-          required
-          className="mt-2 p-2 border rounded w-full"
-        />
+        <div ref={quillRef} style={{ minHeight: "200px" }} />
       </div>
       <div>
         <label htmlFor="eventType" className="block text-sm font-medium">

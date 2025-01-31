@@ -6,6 +6,7 @@ import PillButton from "./PillButton";
 import Link from "next/link";
 import Image from "next/image";
 import { EventTypeEnum } from "@/app/lib/events";
+import "quill/dist/quill.snow.css";
 
 export type EventData = {
   id: string;
@@ -137,7 +138,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
         <div className="self-stretch h-96 pt-6 flex-col justify-start items-start flex">
           <div className="self-stretch justify-start items-start gap-6 inline-flex">
             <div className="grow shrink basis-0 text-zinc-900 text-base font-normal leading-normal tracking-tight">
-              {event.description}
+              <div dangerouslySetInnerHTML={{ __html: event.description! }} className="ql-editor"/>
             </div>
           </div>
         </div>

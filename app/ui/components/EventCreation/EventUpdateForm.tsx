@@ -1,10 +1,15 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { EventTypeEnum, EventUpdateData } from "@/app/lib/events";
 import { Events } from "@prisma/client";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
+import { Delta } from "quill";
 
 export default function EventUpdateForm() {
+  const { quill, quillRef } = useQuill();
   // State to manage form input values
   const [selectedEventId, setSelectedEventId] = useState<string>();
   const [existingEvents, setExistingEvents] = useState<Events[]>();
@@ -152,6 +157,16 @@ export default function EventUpdateForm() {
       setEventType(selectedEvent.eventType as EventTypeEnum);
     }
   }, [selectedEventId]);
+
+  useEffect(() => {
+    if (quill) {
+      quill.clipboard.dangerouslyPasteHTML(eventDescription);
+      quill.on("text-change", () => {
+        setEventDescription(quill.root.innerHTML);
+      });
+    }
+  }, [quill]);
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -319,13 +334,7 @@ export default function EventUpdateForm() {
             >
               Event Description
             </label>
-            <textarea
-              id="eventDescription"
-              value={eventDescription}
-              onChange={(e) => setEventDescription(e.target.value)}
-              required
-              className="mt-2 p-2 border rounded w-full"
-            />
+            <div ref={quillRef} style={{ minHeight: "200px" }} />
           </div>
           <div>
             <label htmlFor="eventType" className="block text-sm font-medium">
