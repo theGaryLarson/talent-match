@@ -32,8 +32,8 @@ const PillButton: React.FC<PillButtonProps> = ({
           color: "primary.main", // Per Figma, text matches border
           backgroundColor: "transparent",
           "&:hover": {
-            backgroundColor: "primary.light",
-            color: "neutral.white",
+            backgroundColor: "blue.100",
+            color: "secondary.main",
           },
           "&:focus": {
             backgroundColor: "primary.main",
@@ -56,11 +56,11 @@ const PillButton: React.FC<PillButtonProps> = ({
           backgroundColor: "primary.main",
           color: "neutral.white",
           "&:hover": {
-            backgroundColor: "secondary.light",
+            backgroundColor: "blue.400",
             color: "neutral.white",
           },
           "&:focus": {
-            backgroundColor: "secondary.light",
+            backgroundColor: "blue.500",
             color: "neutral.white",
             boxShadow: "0 0 0 4px rgba(59, 130, 246, 0.5)",
           },
