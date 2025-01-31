@@ -22,7 +22,7 @@ export default async function Events() {
           disableElevation
           sx={{
             backgroundColor: "#f6f6f6",
-            color: "#014260",
+            color: "secondary.main",
           }}
         >
           Event Calendar
