@@ -6,8 +6,6 @@ import Autocomplete, {
 import TextField from "@mui/material/TextField";
 import { debounce } from "@mui/material/utils";
 import { Chip } from "@mui/material";
-import clsx from "clsx";
-import { roboto } from "@/app/ui/fonts";
 
 interface CachedFetches<ValueType> {
   [searchTerms: string]: ValueType[];

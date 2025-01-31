@@ -138,7 +138,10 @@ export default function Event({ event, registered, showLink }: EventProps) {
         <div className="self-stretch h-96 pt-6 flex-col justify-start items-start flex">
           <div className="self-stretch justify-start items-start gap-6 inline-flex">
             <div className="grow shrink basis-0 text-zinc-900 text-base font-normal leading-normal tracking-tight">
-              <div dangerouslySetInnerHTML={{ __html: event.description! }} className="ql-editor"/>
+              <div
+                dangerouslySetInnerHTML={{ __html: event.description! }}
+                className="ql-editor"
+              />
             </div>
           </div>
         </div>
@@ -149,7 +152,11 @@ export default function Event({ event, registered, showLink }: EventProps) {
   const endTime = new Date(event.date.getTime() + event.duration * 60000);
 
   return (
-    <div role="button" tabIndex={0} className="w-full rounded-md p-4 hover:bg-slate-200 grid grid-cols-4 justify-start items-center mb-4 cursor-pointer">
+    <div
+      role="button"
+      tabIndex={0}
+      className="w-full rounded-md p-4 hover:bg-slate-200 grid grid-cols-4 justify-start items-center mb-4 cursor-pointer"
+    >
       <Modal
         open={open}
         onClose={handleClose}

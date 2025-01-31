@@ -82,12 +82,12 @@ export default function EventCreationForm() {
   };
 
   useEffect(() => {
-      if (quill) {
-        quill.on("text-change", () => {
-          setEventDescription(quill.root.innerHTML);
-        });
-      }
-    }, [quill]);
+    if (quill) {
+      quill.on("text-change", () => {
+        setEventDescription(quill.root.innerHTML);
+      });
+    }
+  }, [quill]);
 
   return (
     <form

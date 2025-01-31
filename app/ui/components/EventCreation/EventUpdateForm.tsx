@@ -6,7 +6,6 @@ import { EventTypeEnum, EventUpdateData } from "@/app/lib/events";
 import { Events } from "@prisma/client";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
-import { Delta } from "quill";
 
 export default function EventUpdateForm() {
   const { quill, quillRef } = useQuill();
