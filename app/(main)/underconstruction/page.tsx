@@ -5,13 +5,13 @@ export const metadata = {
 export default function page() {
   return (
     <div className="container h-[700px] mx-auto flex flex-col items-center justify-center space-y-8 px-8 py-16 md:px-12 lg:px-16">
-      <h1 className="text-6xl REPLACE-BEFORE-RELEASE">
+      <h1 className="text-6xl">
         Sorry, this page is currently under construction
       </h1>
       <h2>
         Please{" "}
         <a
-          className="REPLACE-BEFORE-RELEASE"
+          className="underline"
           href="https://github.com/Computing-For-All/nextjs-issue-tracker/issues/new/choose"
         >
           file a bug

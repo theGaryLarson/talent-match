@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
@@ -23,10 +24,8 @@ import {
   Drawer,
   Grid2,
   IconButton,
-  Link,
   Stack,
   Toolbar,
-  Typography,
 } from "@mui/material";
 import Image from "next/image";
 import Avatar from "@/app/ui/components/Avatar";
@@ -65,7 +64,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
       label: "Applications",
     },
     {
-      href: "/underconstruction",
+      href: "/services/jobseekers/dashboard/events",
       icon: <CalendarTodayRounded />,
       label: "Events",
     },
@@ -85,7 +84,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
   return (
     <>
       <Toolbar sx={{ height: "76px" }} />
-      <div className="flex flex-col">
+      <div className="flex flex-col text-button-secondary-idle-text">
         <Stack
           direction={"row"}
           gap={1}
@@ -93,23 +92,10 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
         >
           <Avatar scale={0.66} imgsrc={session?.user.image || ""} />
           <div>
-            <Typography
-              sx={{
-                color: "secondary.main",
-                fontWeight: 700,
-                textWrap: "wrap",
-              }}
-            >
-              {session?.user.name}
-            </Typography>
+            <p className="text-wrap font-bold">{session?.user.name}</p>
             <Link
-              underline="none"
-              sx={{
-                textWrap: "wrap",
-                fontSize: "0.875rem",
-                lineHeight: "1.25rem",
-              }}
               href={"/edit-profile/jobseeker/introduction"}
+              className="text-wrap text-sm text-primary-600 sm-tablet:text-base"
             >
               Edit Profile
             </Link>
@@ -119,21 +105,11 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
           <Link
             key={link.label + link.href}
             href={link.href}
-            underline="none"
-            sx={{
-              ...(pathname === link.href
-                ? {
-                    backgroundColor: "secondary.main",
-                    color: "#f6f6f6",
-                  }
-                : {
-                    color: "secondary.main",
-                    "&:hover": {
-                      backgroundColor: "#f6f6f6",
-                    },
-                  }),
-            }}
-            className={`inline-flex items-center justify-start rounded-l-[20px] p-2`}
+            className={`inline-flex items-center justify-start rounded-l-[20px] p-2 ${
+              pathname === link.href
+                ? "bg-button-secondary-idle-text text-button-secondary-idle-bg"
+                : "hover:bg-gray-200"
+            }`}
             target={link.external ? "_blank" : undefined}
           >
             <div className="ml-10 space-x-1">
@@ -152,7 +128,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
             mb: 3,
             width: "123px",
             backgroundColor: "#f6f6f6",
-            color: "secondary.main",
+            color: "#014260",
           }}
         >
           Log Out
@@ -350,13 +326,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           }}
         >
           <Stack direction={{ xs: "column", sm: "row" }} gap={2}>
-            <Link
-              sx={{ color: "#000" }}
-              underline="none"
-              href={"/policies/terms-of-service"}
-            >
-              Terms of Service
-            </Link>
+            <Link href={"/policies/terms-of-service"}>Terms of Service</Link>
             {/*<Link href={'/underconstruction'}>Privacy Policy</Link>
             <Link href={'/underconstruction'}>Cookie Settings</Link>*/}
           </Stack>

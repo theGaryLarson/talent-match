@@ -1,10 +1,14 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { EventTypeEnum, EventUpdateData } from "@/app/lib/events";
 import { Events } from "@prisma/client";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
 
 export default function EventUpdateForm() {
+  const { quill, quillRef } = useQuill();
   // State to manage form input values
   const [selectedEventId, setSelectedEventId] = useState<string>();
   const [existingEvents, setExistingEvents] = useState<Events[]>();
@@ -13,10 +17,11 @@ export default function EventUpdateForm() {
   const [eventDescription, setEventDescription] = useState<string>("");
   const [eventLocation, setEventLocation] = useState<string>("");
   const [eventDate, setEventDate] = useState<string>("");
+  const [isRegisterLink, setIsRegisterLink] = useState<boolean>(true);
   const [registerLink, setRegisterLink] = useState<string>("");
   const [duration, setDuration] = useState<number>(90);
   const [joinMeetingLink, setJoinMeetingLink] = useState("");
-  const [eventBlurb, setEventBlurb] = useState<string>("");
+  // const [eventBlurb, setEventBlurb] = useState<string>("");
   const [eventType, setEventType] = useState<EventTypeEnum>(
     EventTypeEnum.General,
   ); // Consider using a union type for stricter control
@@ -35,7 +40,7 @@ export default function EventUpdateForm() {
       date: new Date(eventDate), // Ensure date is correctly formatted
       registrationLink: registerLink,
       joinMeetingLink: joinMeetingLink,
-      blurb: eventBlurb,
+      // blurb: eventBlurb,
       eventType: eventType,
       duration: duration,
     };
@@ -99,7 +104,7 @@ export default function EventUpdateForm() {
     setEventDate("");
     setRegisterLink("");
     setJoinMeetingLink("");
-    setEventBlurb("");
+    // setEventBlurb("");
     setEventLocation("");
     setEventDescription("");
     setEventType(EventTypeEnum.General);
@@ -137,16 +142,30 @@ export default function EventUpdateForm() {
         .slice(0, 16); // Trim to YYYY-MM-DDTHH:mm
       setEventName(selectedEvent.name);
       setEventDate(localDateTime);
+      setIsRegisterLink(
+        selectedEvent.registrationLink != null &&
+          selectedEvent.registrationLink != "",
+      );
       setRegisterLink(selectedEvent.registrationLink ?? "");
       setJoinMeetingLink(selectedEvent.joinMeetingLink ?? "");
       setDuration(selectedEvent.duration);
 
-      setEventBlurb(selectedEvent.blurb ?? "");
+      // setEventBlurb(selectedEvent.blurb ?? "");
       setEventLocation(selectedEvent.location);
       setEventDescription(selectedEvent.description ?? "");
       setEventType(selectedEvent.eventType as EventTypeEnum);
     }
   }, [selectedEventId]);
+
+  useEffect(() => {
+    if (quill) {
+      quill.clipboard.dangerouslyPasteHTML(eventDescription);
+      quill.on("text-change", () => {
+        setEventDescription(quill.root.innerHTML);
+      });
+    }
+  }, [quill]);
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -226,34 +245,76 @@ export default function EventUpdateForm() {
             />
           </div>
 
-          <div>
-            <label htmlFor="zoomLink" className="block text-sm font-medium">
+          <div className="flex flex-row gap-2">
+            <label htmlFor="linkType" className="block text-sm font-medium">
+              What link will attendees use for this event?
+            </label>
+            <input
+              type="radio"
+              id="registerLink"
+              value={"Register Link"}
+              name={"linkType"}
+              onChange={() => {
+                setIsRegisterLink(true);
+                setJoinMeetingLink("");
+              }}
+              checked={isRegisterLink}
+              required
+              className="p-2"
+            />
+            <label htmlFor="registerLink" className="block text-sm font-medium">
               Register Link
             </label>
             <input
-              type="url"
-              id="zoomLink"
-              value={registerLink}
-              onChange={(e) => setRegisterLink(e.target.value)}
-              required
-              className="mt-2 p-2 border rounded w-full"
-            />
-          </div>
-          <div>
-            <label htmlFor="joinLink" className="block text-sm font-medium">
-              Join Link
-            </label>
-            <input
-              type="url"
+              type="radio"
               id="joinLink"
-              value={joinMeetingLink}
-              onChange={(e) => setJoinMeetingLink(e.target.value)}
+              value={"Public Join Link"}
+              name={"linkType"}
+              onChange={() => {
+                setIsRegisterLink(false);
+                setRegisterLink("");
+              }}
+              checked={!isRegisterLink}
               required
-              className="mt-2 p-2 border rounded w-full"
+              className="p-2"
             />
+            <label htmlFor="joinLink" className="block text-sm font-medium">
+              Public Join Link
+            </label>
           </div>
 
-          <div>
+          {isRegisterLink && (
+            <div>
+              <label htmlFor="zoomLink" className="block text-sm font-medium">
+                Registration Link (join meeting via email confirmation)
+              </label>
+              <input
+                type="url"
+                id="zoomLink"
+                value={registerLink}
+                onChange={(e) => setRegisterLink(e.target.value)}
+                required
+                className="mt-2 p-2 border rounded w-full"
+              />
+            </div>
+          )}
+          {!isRegisterLink && (
+            <div>
+              <label htmlFor="joinLink" className="block text-sm font-medium">
+                Public Join Link (no Zoom registration required)
+              </label>
+              <input
+                type="url"
+                id="joinLink"
+                value={joinMeetingLink}
+                onChange={(e) => setJoinMeetingLink(e.target.value)}
+                required
+                className="mt-2 p-2 border rounded w-full"
+              />
+            </div>
+          )}
+
+          {/* <div>
             <label htmlFor="eventBlurb" className="block text-sm font-medium">
               Event Blurb
             </label>
@@ -264,7 +325,7 @@ export default function EventUpdateForm() {
               required
               className="mt-2 p-2 border rounded w-full"
             />
-          </div>
+          </div> */}
           <div>
             <label
               htmlFor="eventDescription"
@@ -272,13 +333,7 @@ export default function EventUpdateForm() {
             >
               Event Description
             </label>
-            <textarea
-              id="eventDescription"
-              value={eventDescription}
-              onChange={(e) => setEventDescription(e.target.value)}
-              required
-              className="mt-2 p-2 border rounded w-full"
-            />
+            <div ref={quillRef} style={{ minHeight: "200px" }} />
           </div>
           <div>
             <label htmlFor="eventType" className="block text-sm font-medium">
