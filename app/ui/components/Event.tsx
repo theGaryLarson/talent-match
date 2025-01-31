@@ -6,6 +6,8 @@ import PillButton from "./PillButton";
 import Link from "next/link";
 import Image from "next/image";
 import { EventTypeEnum } from "@/app/lib/events";
+import { useSession } from "next-auth/react";
+import { redirect, usePathname } from "next/navigation";
 import "quill/dist/quill.snow.css";
 
 export type EventData = {
@@ -29,12 +31,21 @@ interface EventProps {
 }
 
 export default function Event({ event, registered, showLink }: EventProps) {
+  const session = useSession();
+  const pathname = usePathname();
   const [reg, setReg] = React.useState(registered);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   async function register() {
+    if (!session?.data?.user) {
+      const base = window.location.origin;
+      const signInUrl = new URL("/signin", base);
+      const callbackUrlValue = pathname;
+      signInUrl.searchParams.set("callbackUrl", callbackUrlValue);
+      redirect(signInUrl.toString());
+    }
     const response = await fetch("/api/events/sign-up", {
       method: "POST",
       headers: {
