@@ -141,7 +141,7 @@ const TopLevelLinks: LinkItem[] = [
       },
     ],
   },
-  // { name: 'Events', href: '/services/events' },
+  { name: 'Events', href: '/services/events' },
   {
     name: "Coalition",
     href: "",
@@ -188,8 +188,8 @@ export default function Header() {
       >
         <div className="flex shrink">
           {pathname == "/services/jobseekers" ||
-          pathname == "/services/employers" ||
-          pathname.startsWith("/services/training-programs/") ? (
+            pathname == "/services/employers" ||
+            pathname.startsWith("/services/training-programs/") ? (
             <Link href="/">
               <span className="sr-only">Tech Workforce Coalition</span>
               <Image
