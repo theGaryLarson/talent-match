@@ -8,8 +8,7 @@ export default function Page() {
         headerText={"Registered Events"}
         showOnlyRegisteredEvents={true}
         showMeetingLinks={true}
-      >
-      </EventsList>
+      ></EventsList>
     </div>
   );
 }

@@ -1,6 +1,10 @@
 import { Card, Divider, Grid2 } from "@mui/material";
 import PillButton from "./PillButton";
-import { EventTypeEnum, getAllEvents, getRegisteredEvents } from "@/app/lib/events";
+import {
+  EventTypeEnum,
+  getAllEvents,
+  getRegisteredEvents,
+} from "@/app/lib/events";
 import Event from "@/app/ui/components/Event";
 import React from "react";
 
@@ -10,7 +14,11 @@ interface EventsListProps {
   showMeetingLinks: boolean;
 }
 
-export default async function EventsList({ headerText, showOnlyRegisteredEvents, showMeetingLinks }: EventsListProps) {
+export default async function EventsList({
+  headerText,
+  showOnlyRegisteredEvents,
+  showMeetingLinks,
+}: EventsListProps) {
   const allEventsResponse = await getAllEvents(true);
   const registeredEventsResponse = await getRegisteredEvents(true);
 
@@ -29,16 +37,18 @@ export default async function EventsList({ headerText, showOnlyRegisteredEvents,
         <p className="self-center text-xl font-medium text-button-secondary-idle-text">
           {headerText}
         </p>
-        {showOnlyRegisteredEvents && <PillButton
-          href="/services/events"
-          disableElevation
-          sx={{
-            backgroundColor: "#f6f6f6",
-            color: "secondary.main",
-          }}
-        >
-          Events Calendar
-        </PillButton>}
+        {showOnlyRegisteredEvents && (
+          <PillButton
+            href="/services/events"
+            disableElevation
+            sx={{
+              backgroundColor: "#f6f6f6",
+              color: "secondary.main",
+            }}
+          >
+            Events Calendar
+          </PillButton>
+        )}
       </Grid2>
       <Grid2 container sx={{ width: "100%" }}>
         <Card
@@ -50,32 +60,34 @@ export default async function EventsList({ headerText, showOnlyRegisteredEvents,
             alignItems: "center",
           }}
         >
-          {showOnlyRegisteredEvents && registeredEventsResponse?.map((item, i, arr) => (
-            <React.Fragment key={i}>
-              <Event
-                showLink={showMeetingLinks}
-                registered={registered(item.event.id)}
-                event={{
-                  ...item.event,
-                  eventType: item.event.eventType as EventTypeEnum,
-                }}
-              />
-              {i < arr.length - 1 && <Divider sx={{ my: 1 }} />}
-            </React.Fragment>
-          ))}
-          {!showOnlyRegisteredEvents && allEventsResponse?.events?.map((event, i, arr) => (
-            <React.Fragment key={i}>
-              <Event
-                showLink={showMeetingLinks}
-                registered={registered(event.id)}
-                event={{
-                  ...event,
-                  eventType: event.eventType as EventTypeEnum,
-                }}
-              />
-              {i < arr.length - 1 && <Divider sx={{ my: 1 }} />}
-            </React.Fragment>
-          ))}
+          {showOnlyRegisteredEvents &&
+            registeredEventsResponse?.map((item, i, arr) => (
+              <React.Fragment key={i}>
+                <Event
+                  showLink={showMeetingLinks}
+                  registered={registered(item.event.id)}
+                  event={{
+                    ...item.event,
+                    eventType: item.event.eventType as EventTypeEnum,
+                  }}
+                />
+                {i < arr.length - 1 && <Divider sx={{ my: 1 }} />}
+              </React.Fragment>
+            ))}
+          {!showOnlyRegisteredEvents &&
+            allEventsResponse?.events?.map((event, i, arr) => (
+              <React.Fragment key={i}>
+                <Event
+                  showLink={showMeetingLinks}
+                  registered={registered(event.id)}
+                  event={{
+                    ...event,
+                    eventType: event.eventType as EventTypeEnum,
+                  }}
+                />
+                {i < arr.length - 1 && <Divider sx={{ my: 1 }} />}
+              </React.Fragment>
+            ))}
         </Card>
       </Grid2>
     </Grid2>

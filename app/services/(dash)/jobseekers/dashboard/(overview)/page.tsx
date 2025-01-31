@@ -97,8 +97,7 @@ export default async function Page() {
         headerText={"Registered Events"}
         showOnlyRegisteredEvents={true}
         showMeetingLinks={true}
-      >
-      </EventsList>
+      ></EventsList>
       {providerPrograms && (
         <TrainingProviderPrograms programs={providerPrograms} />
       )}
