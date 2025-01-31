@@ -10,7 +10,7 @@ import {
   LinkedIn,
   LogoutRounded,
   Menu,
-  NotificationsOutlined,
+  //NotificationsOutlined,
   PersonOutlineRounded,
   QuestionAnswerOutlined,
   TaskOutlined,
@@ -245,14 +245,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               />
             </Link>
             <Stack direction={"row"}>
-              <IconButton
+              {/*<IconButton
                 color="inherit"
                 aria-label="open notifications"
                 edge="start"
                 sx={{ mr: { xs: 2, md: 4 } }}
               >
                 <NotificationsOutlined />
-              </IconButton>
+              </IconButton>*/}
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
