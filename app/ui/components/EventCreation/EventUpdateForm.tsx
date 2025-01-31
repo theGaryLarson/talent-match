@@ -138,7 +138,10 @@ export default function EventUpdateForm() {
         .slice(0, 16); // Trim to YYYY-MM-DDTHH:mm
       setEventName(selectedEvent.name);
       setEventDate(localDateTime);
-      setIsRegisterLink(selectedEvent.registrationLink != null && selectedEvent.registrationLink != "");
+      setIsRegisterLink(
+        selectedEvent.registrationLink != null &&
+          selectedEvent.registrationLink != "",
+      );
       setRegisterLink(selectedEvent.registrationLink ?? "");
       setJoinMeetingLink(selectedEvent.joinMeetingLink ?? "");
       setDuration(selectedEvent.duration);
@@ -237,7 +240,7 @@ export default function EventUpdateForm() {
               id="registerLink"
               value={"Register Link"}
               name={"linkType"}
-              onChange={(e) => {
+              onChange={() => {
                 setIsRegisterLink(true);
                 setJoinMeetingLink("");
               }}
@@ -253,7 +256,7 @@ export default function EventUpdateForm() {
               id="joinLink"
               value={"Public Join Link"}
               name={"linkType"}
-              onChange={(e) => {
+              onChange={() => {
                 setIsRegisterLink(false);
                 setRegisterLink("");
               }}
@@ -266,32 +269,36 @@ export default function EventUpdateForm() {
             </label>
           </div>
 
-          {isRegisterLink && <div>
-            <label htmlFor="zoomLink" className="block text-sm font-medium">
-              Registration Link (join meeting via email confirmation)
-            </label>
-            <input
-              type="url"
-              id="zoomLink"
-              value={registerLink}
-              onChange={(e) => setRegisterLink(e.target.value)}
-              required
-              className="mt-2 p-2 border rounded w-full"
-            />
-          </div>}
-          {!isRegisterLink && <div>
-            <label htmlFor="joinLink" className="block text-sm font-medium">
-              Public Join Link (no Zoom registration required)
-            </label>
-            <input
-              type="url"
-              id="joinLink"
-              value={joinMeetingLink}
-              onChange={(e) => setJoinMeetingLink(e.target.value)}
-              required
-              className="mt-2 p-2 border rounded w-full"
-            />
-          </div>}
+          {isRegisterLink && (
+            <div>
+              <label htmlFor="zoomLink" className="block text-sm font-medium">
+                Registration Link (join meeting via email confirmation)
+              </label>
+              <input
+                type="url"
+                id="zoomLink"
+                value={registerLink}
+                onChange={(e) => setRegisterLink(e.target.value)}
+                required
+                className="mt-2 p-2 border rounded w-full"
+              />
+            </div>
+          )}
+          {!isRegisterLink && (
+            <div>
+              <label htmlFor="joinLink" className="block text-sm font-medium">
+                Public Join Link (no Zoom registration required)
+              </label>
+              <input
+                type="url"
+                id="joinLink"
+                value={joinMeetingLink}
+                onChange={(e) => setJoinMeetingLink(e.target.value)}
+                required
+                className="mt-2 p-2 border rounded w-full"
+              />
+            </div>
+          )}
 
           {/* <div>
             <label htmlFor="eventBlurb" className="block text-sm font-medium">
