@@ -146,7 +146,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
           </div>
         </div>
         {/* Bottom */}
-        <div className="self-stretch h-96 pt-6 flex-col justify-start items-start flex">
+        <div className="self-stretch pt-6 flex-col justify-start items-start flex">
           <div className="self-stretch justify-start items-start gap-6 inline-flex">
             <div className="grow shrink basis-0 text-zinc-900 text-base font-normal leading-normal tracking-tight">
               <div
