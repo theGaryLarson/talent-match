@@ -65,7 +65,7 @@ export default async function Page() {
           alignSelf: "stretch",
         }}
       >
-        <PillButton>Dashboard</PillButton>
+        <PillButton disableElevation>Dashboard</PillButton>
         <Typography
           variant="h4"
           sx={{ fontSize: "24px", textAlign: "center", fontWeight: 400 }}
