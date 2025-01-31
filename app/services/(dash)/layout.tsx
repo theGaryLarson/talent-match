@@ -6,8 +6,7 @@ import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import {
   BookmarkBorderRounded,
-  CalendarTodayRounded,
-  InboxOutlined,
+  CalendarMonthOutlined,
   LinkedIn,
   LogoutRounded,
   Menu,
@@ -15,7 +14,6 @@ import {
   PersonOutlineRounded,
   QuestionAnswerOutlined,
   TaskOutlined,
-  TimelineRounded,
   WorkOutlineRounded,
 } from "@mui/icons-material";
 import {
@@ -47,7 +45,6 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
       icon: <PersonOutlineRounded />,
       label: "Home",
     },
-    { href: "/underconstruction", icon: <InboxOutlined />, label: "Inbox" },
     {
       href: "/services/joblistings",
       icon: <WorkOutlineRounded />,
@@ -65,14 +62,14 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
     },
     {
       href: "/services/jobseekers/dashboard/events",
-      icon: <CalendarTodayRounded />,
+      icon: <CalendarMonthOutlined />,
       label: "Events",
     },
-    {
+    /*{
       href: "/underconstruction",
       icon: <TimelineRounded />,
       label: "Career Services",
-    },
+    },*/
     {
       href: "https://forum.watechwfcoalition.org/",
       icon: <QuestionAnswerOutlined />,
