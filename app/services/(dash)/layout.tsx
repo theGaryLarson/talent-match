@@ -6,16 +6,14 @@ import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import {
   BookmarkBorderRounded,
-  CalendarTodayRounded,
-  InboxOutlined,
+  CalendarMonthOutlined,
   LinkedIn,
   LogoutRounded,
   Menu,
-  NotificationsOutlined,
+  //NotificationsOutlined,
   PersonOutlineRounded,
   QuestionAnswerOutlined,
   TaskOutlined,
-  TimelineRounded,
   WorkOutlineRounded,
 } from "@mui/icons-material";
 import {
@@ -47,7 +45,6 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
       icon: <PersonOutlineRounded />,
       label: "Home",
     },
-    { href: "/underconstruction", icon: <InboxOutlined />, label: "Inbox" },
     {
       href: "/services/joblistings",
       icon: <WorkOutlineRounded />,
@@ -65,14 +62,14 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
     },
     {
       href: "/services/jobseekers/dashboard/events",
-      icon: <CalendarTodayRounded />,
+      icon: <CalendarMonthOutlined />,
       label: "Events",
     },
-    {
+    /*{
       href: "/underconstruction",
       icon: <TimelineRounded />,
       label: "Career Services",
-    },
+    },*/
     {
       href: "https://forum.watechwfcoalition.org/",
       icon: <QuestionAnswerOutlined />,
@@ -248,14 +245,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               />
             </Link>
             <Stack direction={"row"}>
-              <IconButton
+              {/*<IconButton
                 color="inherit"
                 aria-label="open notifications"
                 edge="start"
                 sx={{ mr: { xs: 2, md: 4 } }}
               >
                 <NotificationsOutlined />
-              </IconButton>
+              </IconButton>*/}
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
