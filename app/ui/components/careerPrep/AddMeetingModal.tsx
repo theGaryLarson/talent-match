@@ -24,13 +24,13 @@ export default function AddMeetingModal(params: { jsId: string }) {
   const [failed, setFailed] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
-    setOpen(false)
-    setIsSubmitted(false)
-    setFailed(false)
+    setOpen(false);
+    setIsSubmitted(false);
+    setFailed(false);
   };
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget
+    const form = event.currentTarget;
     const formData = new FormData(form);
     const submitButton = event.currentTarget.querySelector(
       'button[type="submit"]',
@@ -53,7 +53,7 @@ export default function AddMeetingModal(params: { jsId: string }) {
       if (!response.ok) {
         // If response is not OK, handle error
         console.log("Failed to create Meeting");
-        setFailed(true)
+        setFailed(true);
         submitButton.disabled = false;
         return;
       } else {
@@ -79,7 +79,7 @@ export default function AddMeetingModal(params: { jsId: string }) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {failed?<h2 className="text-red-600">Failed Submission</h2>:''}
+          {failed ? <h2 className="text-red-600">Failed Submission</h2> : ""}
           {isSubmitted ? (
             <div>
               <h2>Success!</h2>

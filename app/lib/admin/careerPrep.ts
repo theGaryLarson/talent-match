@@ -1838,7 +1838,7 @@ export async function addMeeting(params: CreateMeetingDTO) {
         //meetingAgenda: params.meetingAgenda?? "",
         meetingDate: new Date(),
         updatedAt: new Date(),
-        }
+      },
     });
     return result;
   } catch (error) {
