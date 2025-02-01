@@ -21,11 +21,17 @@ const style = {
 export default function AddMeetingModal(params: { jsId: string }) {
   const [open, setOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false); // Tracks if the form was successfully submitted
+  const [failed, setFailed] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false)
+    setIsSubmitted(false)
+    setFailed(false)
+  };
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget
+    const formData = new FormData(form);
     const submitButton = event.currentTarget.querySelector(
       'button[type="submit"]',
     ) as HTMLButtonElement;
@@ -46,12 +52,15 @@ export default function AddMeetingModal(params: { jsId: string }) {
 
       if (!response.ok) {
         // If response is not OK, handle error
-        console.error("Failed to create job listing");
+        console.log("Failed to create Meeting");
+        setFailed(true)
         submitButton.disabled = false;
         return;
       } else {
         // Await the response JSON
         setIsSubmitted(true);
+        setFailed(false);
+        form.reset();
         const data = await response.json();
         console.log("Meeting created:", data);
       }
@@ -70,6 +79,7 @@ export default function AddMeetingModal(params: { jsId: string }) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          {failed?<h2 className="text-red-600">Failed Submission</h2>:''}
           {isSubmitted ? (
             <div>
               <h2>Success!</h2>
