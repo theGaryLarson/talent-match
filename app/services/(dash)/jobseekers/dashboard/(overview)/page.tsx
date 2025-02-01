@@ -10,7 +10,7 @@ import { getProviderProgramCardView } from "@/app/lib/eduProviders";
 import { Stack, Typography } from "@mui/material";
 import CareerPrep from "@/app/ui/components/jobseekerdashboard/CareerPrep";
 import Applications from "@/app/ui/components/jobseekerdashboard/Applications";
-import Events from "@/app/ui/components/jobseekerdashboard/Events";
+import EventsList from "@/app/ui/components/EventsList";
 import TrainingProviderPrograms from "@/app/ui/components/jobseekerdashboard/TrainingProviderPrograms";
 import PillButton from "@/app/ui/components/PillButton";
 
@@ -65,7 +65,7 @@ export default async function Page() {
           alignSelf: "stretch",
         }}
       >
-        <PillButton>Dashboard</PillButton>
+        <PillButton disableElevation>Dashboard</PillButton>
         <Typography
           variant="h4"
           sx={{ fontSize: "24px", textAlign: "center", fontWeight: 400 }}
@@ -93,7 +93,11 @@ export default async function Page() {
         caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? "Our"} ${carrerPrepEnrollment?.CaseManger?.last_name ?? "Carrer Navigator"}`}
       />
       <Applications jobs={slicedAppliedJobs} />
-      <Events />
+      <EventsList
+        headerText={"Registered Events"}
+        showOnlyRegisteredEvents={true}
+        showMeetingLinks={true}
+      ></EventsList>
       {providerPrograms && (
         <TrainingProviderPrograms programs={providerPrograms} />
       )}

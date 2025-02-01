@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
 // GET - Retrieve All Events
 export async function GET() {
-  const result = await getAllEvents();
+  const result = await getAllEvents(true);
   if (result.success) {
     return NextResponse.json(result, { status: 200 });
   } else {
