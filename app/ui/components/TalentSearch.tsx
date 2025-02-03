@@ -306,7 +306,7 @@ export default function TalentSearch() {
         <div className="w-1/2 tablet:w-1/3">
           <SingleSelectFilter
             id="jobseeker-listview-edulevel"
-            label="Highest Degree"
+            label="Minimum Degree"
             value={getArrayParam("edulevel")}
             onChange={(event) => {
               setQueryParam(
