@@ -318,17 +318,23 @@ export default function TalentSearch() {
             options={[
               { label: "Any", value: "" },
               { label: "Doctorate", value: "Doctorate" },
-              { label: "Master's Degree", value: "Masters" },
-              { label: "Bachelor's Degree", value: "Bachelors" },
-              { label: "Associate's Degree", value: "Associates" },
+              { label: "Master's Degree", value: "Master's Degree" },
+              { label: "Bachelor's Degree", value: "Bachelor's Degree" },
+              { label: "Associate's Degree", value: "Associates's Degree" },
               {
                 label: "Vocational Qualification / Certification",
-                value: "VocationalQualification",
+                value: "Certificate (less than two years)",
               },
-              { label: "High School Diploma", value: "HighSchool" },
+              {
+                label: "Post High School",
+                value: "Some training or study post high school",
+              },
+              { label: "High School Diploma", value: "High School Diploma" },
               { label: "GED", value: "GED" },
-              { label: "Primary Education", value: "PrimaryEducation" },
-              { label: "No Formal Education", value: "NoFormalEducation" },
+              {
+                label: "No Formal Education",
+                value: "Not yet completed High School",
+              },
             ]}
           ></SingleSelectFilter>
         </div>

@@ -131,7 +131,7 @@ export async function POST(request: Request) {
       highest_level_of_study_completed: {
         in: Object.keys(educationRank).filter(
           (level) =>
-            educationRank[level as HighestCompletedEducationLevel] >= minRank,
+            educationRank[level as HighestCompletedEducationLevel] <= minRank,
         ),
       },
     });
@@ -186,7 +186,7 @@ export async function POST(request: Request) {
         ],
     );
   }
-  devLog(filteredJobSeekers[0]);
+  //devLog(filteredJobSeekers[0]);
 
   return NextResponse.json({
     filteredJobSeekers,
