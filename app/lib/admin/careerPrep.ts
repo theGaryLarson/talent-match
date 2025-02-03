@@ -1824,18 +1824,25 @@ export interface CreateMeetingDTO {
 
 export async function addMeeting(params: CreateMeetingDTO) {
   try {
+    console.log("Received params:", params);
+    const jobseekerExists = await prisma.caseMgmt.findUnique({
+      where: { jobseekerId: params.jobseekerId },
+    });
+    if (!jobseekerExists) {
+      throw new Error(`Jobseeker with ID ${params.jobseekerId} not found`);
+    }
     const result = await prisma.meeting.create({
       data: {
         jobseekerId: params.jobseekerId,
         title: params.meetingTitle,
-        meetingAgenda: params.meetingAgenda,
-        meetingDate: params.meetingDatetime,
+        //meetingAgenda: params.meetingAgenda?? "",
+        meetingDate: new Date(),
         updatedAt: new Date(),
       },
     });
     return result;
   } catch (error) {
-    console.error(error);
+    console.error("Error creating meeting:", error);
   }
 }
 
