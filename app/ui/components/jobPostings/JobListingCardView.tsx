@@ -56,7 +56,6 @@ export default function JobListingCardView({
   const isBookmarked = joblisting?.isBookmarked ?? false;
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
-  console.log(joblisting?.job_description);
   return (
     <>
       <div className="w-full rounded-lg border-2 border-cyan-600 p-2 phone:p-4">
@@ -111,7 +110,9 @@ export default function JobListingCardView({
         <div className="mt-2">
           {/* job description */}
 
-          <p className="ql-editor line-clamp-3 break-words">{description}</p>
+          <p className="line-clamp-3 break-words overflow-hidden">
+            {description}
+          </p>
 
           {/* skills */}
           <div className="mt-2 flex grow text-sm tablet:text-base">
