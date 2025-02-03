@@ -145,7 +145,7 @@ export default function EventCreationForm() {
           id="duration"
           type="number"
           value={duration}
-          onChange={(e) => setDuration(e.target.value as unknown as number)}
+          onChange={(e) => setDuration(Number(e.target.value))}
           required
           className="mt-2 p-2 border rounded w-full"
         />
