@@ -1836,7 +1836,7 @@ export async function addMeeting(params: CreateMeetingDTO) {
         jobseekerId: params.jobseekerId,
         title: params.meetingTitle,
         //meetingAgenda: params.meetingAgenda?? "",
-        meetingDate: new Date(),
+        meetingDate: params.meetingDatetime,
         updatedAt: new Date(),
       },
     });
