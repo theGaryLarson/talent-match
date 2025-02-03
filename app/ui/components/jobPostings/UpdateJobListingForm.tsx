@@ -10,6 +10,9 @@ import { Button } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
+//blank initail form data
+//selected onchange update data to new selecteds current data
+//onsubmit update list with new values submitted to avoid extra network calls
 export default function UpdateJobListingForm() {
   const [joblistings, setJobListings] = useState<job_postings[]>([]);
   const [selectedJob, setSelectedJob] = useState<string>('');
@@ -55,6 +58,13 @@ export default function UpdateJobListingForm() {
         setTechAreas(jsonData);
       });
   }, []);
+  useEffect(() => {
+    if (quill) {
+      quill.on("text-change", () => {
+        setJobDescription(quill.root.innerHTML);
+      });
+    }
+  }, [quill]);
   return (
   <main>
     <div className="grid grid-cols-1">
