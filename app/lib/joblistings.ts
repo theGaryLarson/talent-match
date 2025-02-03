@@ -200,6 +200,19 @@ export async function ApplyToJob(jobPostingId: string) {
       );
     }
 
+    const jobPosting = await prisma.job_postings.findUnique({
+      where: { job_posting_id: jobPostingId },
+    });
+
+    if (!jobPosting) {
+      throw new Error("Job posting not found");
+    }
+
+    const currentDate = new Date();
+    if (currentDate > jobPosting.unpublish_date) {
+      throw new Error("Cannot apply to job: the unpublish date has passed");
+    }
+
     const existingApplication = await prisma.jobseekerJobPosting.findFirst({
       where: {
         jobPostId: jobPostingId,
@@ -271,6 +284,19 @@ export async function WithdrawFromJob(jobPostingId: string) {
       throw new Error(
         "Failed to Withdraw from job: jobseeker ID not found in session",
       );
+    }
+
+    const jobPosting = await prisma.job_postings.findUnique({
+      where: { job_posting_id: jobPostingId },
+    });
+
+    if (!jobPosting) {
+      throw new Error("Job posting not found");
+    }
+
+    const currentDate = new Date();
+    if (currentDate > jobPosting.unpublish_date) {
+      throw new Error("Cannot withdraw from job: unpublish date has passed");
     }
 
     const existingApplication = await prisma.jobseekerJobPosting.findFirst({
@@ -447,6 +473,10 @@ export async function getJobListingsFiltered(request: Request) {
     (skill: string) => skill && skill.trim() !== "",
   );
 
+  andConditions.push({
+    unpublish_date: { gte: new Date() },
+  });
+
   if (jobTitle) {
     andConditions.push({
       job_title: {
@@ -573,6 +603,7 @@ export async function getJobSeekerBookmarkedJobs() {
       },
       where: {
         jobseekerId: session.user.jobseekerId,
+        job_posting: { unpublish_date: { gte: new Date() } },
         isBookmarked: true,
       },
     });

@@ -62,7 +62,8 @@ export default function JobPostingPage({ joblisting, params }: Props) {
             </p>
           </div>
           <div className="self-start">
-            {session && session.user.jobseekerId ? (
+            {session?.user.jobseekerId &&
+            joblisting.unpublish_date >= new Date() ? (
               <Bookmark
                 bookmarked={
                   joblisting?.jobApplications.find(
