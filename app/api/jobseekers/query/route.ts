@@ -186,7 +186,7 @@ export async function POST(request: Request) {
         ],
     );
   }
-  //devLog(filteredJobSeekers[0]);
+  devLog(filteredJobSeekers[0]);
 
   return NextResponse.json({
     filteredJobSeekers,
