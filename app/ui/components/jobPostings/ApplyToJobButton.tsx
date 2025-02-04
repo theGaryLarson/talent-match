@@ -15,12 +15,12 @@ export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
   // Initial state based on appliedStatus
   const [hasApplied, setHasApplied] = useState<boolean>(
     appliedStatus == JobStatus.Screened ||
-    appliedStatus == JobStatus.Applied ||
-    appliedStatus == JobStatus.Interviewing ||
-    appliedStatus == JobStatus.Negotiating ||
-    appliedStatus == JobStatus.Accepted ||
-    appliedStatus == JobStatus.NoResponse ||
-    appliedStatus == JobStatus.NotSelected
+      appliedStatus == JobStatus.Applied ||
+      appliedStatus == JobStatus.Interviewing ||
+      appliedStatus == JobStatus.Negotiating ||
+      appliedStatus == JobStatus.Accepted ||
+      appliedStatus == JobStatus.NoResponse ||
+      appliedStatus == JobStatus.NotSelected,
   );
 
   const session = useSession();
