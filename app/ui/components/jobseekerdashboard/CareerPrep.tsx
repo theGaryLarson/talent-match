@@ -96,7 +96,7 @@ export default async function CareerPrep(props: {
         headline: "Welcome to Career Prep!",
         body: "You've officially joined the program! You can now access the Canvas training and begin your journey.",
         button: "Access Canvas Training",
-        buttonLink: "https://computingforall.instructure.com/enroll/B33XD4",
+        buttonLink: "https://computingforall.instructure.com/enroll/JKT9EF",
       };
       break;
 
