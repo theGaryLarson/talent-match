@@ -91,7 +91,85 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
     // throw new Error('Failed to create job listing with associated skills');
   }
 }
+export async function updateJobListing(jobData:JobPostCreationDTO) {
+  if(!jobData.job_posting_id){
+    return
+  }
+  const Session = await auth();
+  let company_id = Session?.user.companyId;
+  if (
+    Session?.user.roles.includes(Role.ADMIN) ||
+    Session?.user.roles.includes(Role.CASE_MANAGER)
+  ) {
+    company_id = jobData.company_id;
+  }
+  const now = new Date();
+  try {
+    if (!company_id) {
+      throw new Error("Failed to create job listing Company id not found");
+    }
+    let companyAddress = await prisma.company_addresses.findFirst({
+      where: {
+        AND: {
+          zip: jobData.zip,
+          company_id: company_id,
+        },
+      },
+    });
+    if (!companyAddress) {
+      companyAddress = await prisma.company_addresses.create({
+        data: {
+          company_id: company_id,
+          company_address_id: uuidv4(),
+          zip: jobData.zip,
+        },
+      });
+    }
+    const postalGeoData = await prisma.postalGeoData.findFirst({
+      where: { zip: jobData.zip },
+    });
 
+    const res = await prisma.job_postings.update({
+      where:{
+        job_posting_id: jobData.job_posting_id
+      },
+      data: {
+        job_posting_id: jobData.job_posting_id,
+        company_id: company_id,
+        location_id: companyAddress.company_address_id,
+        tech_area_id: jobData.tech_area_id,
+        sector_id: jobData.sector_id,
+        employer_id: Session?.user.employerId ?? null,
+        job_title: jobData.job_title,
+        job_description: jobData.job_description,
+        is_internship: jobData.is_internship ?? false,
+        is_paid: jobData.is_paid ?? true,
+        relocation_services_available: jobData.relocation_services,
+        offer_visa_sponsorship: jobData.visa_sponsership,
+        zip: jobData.zip,
+        employment_type: jobData.employment_type || "full-time",
+        is_apprenticeship: jobData.is_apprenticeship,
+        location: jobData.location,
+        salary_range: jobData.salary_range,
+        county: postalGeoData?.county ?? "",
+        publish_date: now,
+        unpublish_date:
+          jobData.unpublish_date ??
+          new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()), //if closing date is not provided auto set to 1 year in the futrue
+        job_post_url: jobData.job_post_url,
+        assessment_url: jobData.assessment_url,
+        skills: {
+          connect: jobData.skillIds?.map((skillId: string) => ({
+            skill_id: skillId,
+          })),
+        },
+      }
+    })
+  } catch (error) {
+    
+  }
+  
+}
 export async function getJobListingById(joblistingId: string) {
   try {
     const joblisting = await prisma.job_postings.findUnique({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { devLog } from "@/app/lib/utils";
 import { companies, industry_sectors, job_postings, technology_areas } from "@prisma/client";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
@@ -10,6 +10,8 @@ import { Button } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
+import router from "next/router";
+import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 //blank initail form data
 //selected onchange update data to new selecteds current data
 //onsubmit update list with new values submitted to avoid extra network calls
@@ -22,7 +24,58 @@ export default function UpdateJobListingForm() {
     const [techAres, setTechAreas] = useState<technology_areas[]>();
     const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
     const [jobDescription, setJobDescription] = useState("");
-    const onSubmit = ()=>{}
+      async function onSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const submitButton = event.currentTarget.querySelector(
+          'button[type="submit"]',
+        ) as HTMLButtonElement;
+        if (submitButton) submitButton.disabled = true;
+        const jobListingData: JobPostCreationDTO = {
+          job_title: formData.get("job_title") as string,
+          job_description: jobDescription,
+          is_internship: formData.get("is_internship") === "yes",
+          is_paid: formData.get("is_paid") === "yes",
+          is_apprenticeship: formData.get("is_apprenticeship") === "yes",
+          employment_type: formData.get("employment_type") as string,
+          location: formData.get("location") as string,
+          salary_range: formData.get("salary_range") as string,
+          zip: formData.get("zip") as string,
+          unpublish_date: formData.get("unpublish_date")
+            ? new Date(formData.get("unpublish_date") as string)
+            : undefined,
+          job_post_url: formData.get("job_post_url") as string,
+          assessment_url: formData.get("assessment_url") as string,
+          skillIds: skills?.map((v) => v.skill_id),
+          tech_area_id: formData.get("area") as string,
+          sector_id: formData.get("sector") as string,
+          company_id: formData.get("company") as string,
+          relocation_services: formData.get("relocation") === "yes",
+          visa_sponsership: formData.get("visas") === "yes",
+        };
+        try {
+          const response = await fetch("/api/joblistings/update", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(jobListingData), // Send as JSON
+          });
+    
+          if (!response.ok) {
+            // If response is not OK, handle error
+            console.error("Failed to create job listing");
+            return;
+          } else {
+            // Await the response JSON
+            const data = await response.json();
+            //console.log('Job listing created:', data);
+            router.push("/services/joblistings/" + data.job_posting_id);
+          }
+        } catch (error) {
+          console.error("Error creating job listing:", error);
+        }
+      }
   useEffect(() => {
     fetch("/api/joblistings/getall")
       .then((r) => {
