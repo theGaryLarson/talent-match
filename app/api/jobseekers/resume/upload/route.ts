@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { uploadResume } from "@/app/lib/services/azureBlobService";
 import { auth } from "@/auth";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
@@ -23,6 +26,12 @@ export async function POST(request: Request) {
 
     // Upload the image using the Azure Blob Storage service
     const resumeUrl = await uploadResume(fileBuffer, fileName, userId);
+    await prisma.jobseekers.update({
+      where: { user_id: userId },
+      data: {
+        updatedAt: new Date(),
+      },
+    });
 
     return NextResponse.json(
       { success: true, imageUrl: resumeUrl },
