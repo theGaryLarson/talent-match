@@ -36,13 +36,13 @@ const config: Config = {
           100: "#E1F5F9",
           200: "#D6F1F7",
           300: "#81BFCD",
-          // 400: "#4FA5BA",
-          // 500: "#3699B0",
-          // 600: "#006682",
+          400: "#4FA5BA",
+          500: "#3699B0",
+          600: "#006682",
           700: "#003350",
-          400: "#2589FE", //REVIEW - this does not match
-          500: "#0070F3", //REVIEW - this does not match
-          600: "#2F6FEB", //REVIEW - this does not match
+          tw400: "#2589FE",
+          tw500: "#0070F3",
+          tw600: "#2F6FEB",
           background: "#457996",
           border: "#4C809D",
           text: "#457996",
