@@ -1,4 +1,3 @@
-"use client";
 import Bookmark from "@/app/ui/components/Bookmark";
 import ApplyToJobButton from "@/app/ui/components/jobPostings/ApplyToJobButton";
 import DeleteJobPostingButton from "@/app/ui/components/jobPostings/DeleteJobPostingButton";
@@ -6,9 +5,9 @@ import Skills from "@/app/ui/components/Skills";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import Avatar from "@/app/ui/components/Avatar";
-import { useSession } from "next-auth/react";
 import { calculateDaysAway } from "@/app/lib/utils";
 import "quill/dist/quill.snow.css";
+import { auth } from "@/auth";
 
 function daysAwayToString(date: Date): string {
   const daysAway = calculateDaysAway(date);
@@ -29,8 +28,8 @@ interface Props {
   params: any;
 }
 
-export default function JobPostingPage({ joblisting, params }: Props) {
-  const { data: session } = useSession();
+export default async function JobPostingPage({ joblisting, params }: Props) {
+  const session = await auth();
 
   const job_title: string = joblisting?.job_title ?? "";
   const employment_type: string = joblisting?.employment_type ?? "";
@@ -45,7 +44,7 @@ export default function JobPostingPage({ joblisting, params }: Props) {
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   return (
-    <main className="mb-8 mr-4 space-y-4">
+    <main className="mb-8 mr-4 ml-8 space-y-4">
       {/* Job Title & Company */}
       <div className="block tablet:flex tablet:flex-wrap">
         <div className="mb-4 flex items-center space-x-4">
@@ -62,7 +61,8 @@ export default function JobPostingPage({ joblisting, params }: Props) {
             </p>
           </div>
           <div className="self-start">
-            {session && session.user.jobseekerId ? (
+            {session?.user.jobseekerId &&
+            joblisting.unpublish_date >= new Date() ? (
               <Bookmark
                 bookmarked={
                   joblisting?.jobApplications.find(
@@ -150,27 +150,39 @@ export default function JobPostingPage({ joblisting, params }: Props) {
       )}
 
       {/* Company Information */}
-      <div className="space-y-4 rounded-md bg-gray-bg p-2">
-        <div>
-          <p className="font-semibold text-gray-700">About {company_name}:</p>
-          <p className="text-base leading-relaxed text-gray-500">
-            {joblisting?.companies.about_us}
-          </p>
+      {(joblisting?.companies.about_us ||
+        joblisting?.companies.company_mission ||
+        joblisting?.companies.company_vision) && (
+        <div className="space-y-4 rounded-md bg-gray-bg p-2">
+          {joblisting?.companies.about_us && (
+            <div>
+              <p className="font-semibold text-gray-700">
+                About {company_name}:
+              </p>
+              <p className="text-base leading-relaxed text-gray-500">
+                {joblisting?.companies.about_us}
+              </p>
+            </div>
+          )}
+          {joblisting?.companies.company_mission && (
+            <div>
+              <p className="font-semibold text-gray-700">Our Mission:</p>
+              <p className="text-base leading-relaxed text-gray-500">
+                {joblisting?.companies.company_mission}
+              </p>
+            </div>
+          )}
+          {joblisting?.companies.company_vision && (
+            <div>
+              <p className="font-semibold text-gray-700">Our Vision:</p>
+              <p className="text-base leading-relaxed text-gray-500">
+                {joblisting?.companies.company_vision}
+              </p>
+            </div>
+          )}
         </div>
-        <div>
-          <p className="font-semibold text-gray-700">Our Mission:</p>
-          <p className="text-base leading-relaxed text-gray-500">
-            {joblisting?.companies.company_mission}
-          </p>
-        </div>
-        <div>
-          <p className="font-semibold text-gray-700">Our Vision:</p>
-          <p className="text-base leading-relaxed text-gray-500">
-            {joblisting?.companies.company_vision}
-          </p>
-        </div>
-      </div>
-      {isJobseeker && (
+      )}
+      {(!session?.user || isJobseeker) && (
         <div>
           <ApplyToJobButton
             id={params.id}

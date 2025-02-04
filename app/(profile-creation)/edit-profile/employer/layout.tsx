@@ -4,7 +4,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
 import "@/app/ui/global.css";
 import "@/app/ui/profile-creation.css";
-import { inter } from "@/app/ui/fonts";
+import { roboto } from "@/app/ui/fonts";
 import ProfileCreationHeader from "@/app/ui/ProfileCreationHeader";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ThemeProvider, CssBaseline } from "@mui/material";
@@ -22,7 +22,7 @@ export default function ProfileCreationLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${roboto.className} antialiased`}>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
           <AppRouterCacheProvider>
             <SessionProvider>
