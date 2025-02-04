@@ -47,7 +47,7 @@ export const InvitationEmail = ({
             <strong>{invitedByName}</strong> (
             <Link
               href={`mailto:${invitedByEmail}`}
-              className="text-blue-600 no-underline"
+              className="text-blue-tw600 no-underline"
             >
               {invitedByEmail}
             </Link>
@@ -65,7 +65,7 @@ export const InvitationEmail = ({
           </Section>
           <Text className="text-[14px] leading-[24px] text-black">
             or copy and paste this URL into your browser:{" "}
-            <Link href={inviteLink} className="text-blue-600 no-underline">
+            <Link href={inviteLink} className="text-blue-tw600 no-underline">
               {inviteLink}
             </Link>
           </Text>

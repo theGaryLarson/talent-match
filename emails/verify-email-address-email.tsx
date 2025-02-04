@@ -55,7 +55,7 @@ export const VerifyEmailAddressEmail = ({
             or copy and paste this URL into your browser:{" "}
             <Link
               href={verificationLink}
-              className="text-blue-600 no-underline"
+              className="text-blue-tw600 no-underline"
             >
               {verificationLink}
             </Link>
