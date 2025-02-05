@@ -76,9 +76,11 @@ export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
         appliedStatus == JobStatus.NoResponse ||
         appliedStatus == JobStatus.NotSelected
       }
+      disableElevation
+      sx={{ bgcolor: "secondary.main" }}
       onClick={handleApplicationClick}
     >
-      {hasApplied ? "Withdraw Application" : "Apply"}
+      {hasApplied ? "Withdraw Application" : "Apply now"}
     </PillButton>
   );
 }

@@ -474,8 +474,10 @@ export async function getJobListingsFiltered(request: Request) {
     jobTitle = "",
     bookmarked = false,
     skills = [],
-    industrySector = [],
     zipCode = "",
+    profession = "",
+    industrySector = [],
+    employmentType = [],
     sortBy = "publish_date", // eslint-disable-line @typescript-eslint/no-unused-vars
     page = 1,
     maxResults = 50,
@@ -544,6 +546,24 @@ export async function getJobListingsFiltered(request: Request) {
     });
   }
 
+  if (employmentType.length > 0) {
+    andConditions.push({
+      employment_type: {
+        in: employmentType,
+      },
+    });
+  }
+
+  if (profession.length > 0) {
+    andConditions.push({
+      techArea: {
+        title: {
+          equals: profession,
+        },
+      },
+    });
+  }
+
   if (zipCode) {
     andConditions.push({
       zip: {
@@ -593,6 +613,8 @@ export async function getJobListingsFiltered(request: Request) {
       where: andConditions.length > 0 ? { AND: andConditions } : undefined,
     }),
   ]);
+
+  console.log(filteredJobPostings);
 
   const transformedJobPostings = filteredJobPostings.map((posting) => {
     if (posting.jobApplications && posting.jobApplications.length > 0) {
