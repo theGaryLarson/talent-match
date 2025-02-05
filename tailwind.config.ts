@@ -62,6 +62,43 @@ const config: Config = {
           700: "#00680A",
           800: "#003500",
         },
+        primary: {
+          main: "#047F9C",
+          light: "#C4EBF3",
+          25: "#F2FAFC",
+          50: "#E6F5F9",
+          100: "#CDEBF3",
+          200: "#9BD8E7",
+          300: "#69C5DB",
+          400: "#37B2CF",
+          500: "#059FC3",
+          600: "#047F9C",
+          700: "#035F75",
+          800: "#023F4E",
+          900: "#011F27",
+        },
+        secondary: {
+          main: "#014260",
+        },
+        success: {
+          main: "#61CE70",
+          bg: "#61CE70",
+          text: "#001C00",
+        },
+        warning: {
+          main: "#EC7304",
+          bg: "#EC7304",
+          text: "#FFFFFF",
+        },
+        error: {
+          main: "#DB241C",
+          bg: "#DB241C",
+          text: "#FFFFFF",
+        },
+        accent: {
+          main: "#61CE70",
+          light: "#C1F2C8",
+        },
         button: {
           primary: {
             idle: { bg: "#047F9C", text: "white" },
@@ -77,19 +114,6 @@ const config: Config = {
             active: { bg: "#C4EBF3", text: "#014260" },
             disabled: { bg: "#F6F6F6", text: "#8F8F8F" },
           },
-        },
-        primary: {
-          25: "#F2FAFC",
-          50: "#E6F5F9",
-          100: "#CDEBF3",
-          200: "#9BD8E7",
-          300: "#69C5DB",
-          400: "#37B2CF",
-          500: "#059FC3",
-          600: "#047F9C",
-          700: "#035F75",
-          800: "#023F4E",
-          900: "#011F27",
         },
         gray: {
           800: "#363636",
