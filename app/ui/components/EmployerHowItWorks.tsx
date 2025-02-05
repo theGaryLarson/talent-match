@@ -64,7 +64,7 @@ function Step(props: {
   return (
     <div className="grid items-center gap-[32px] laptop:grid-cols-2 laptop:gap-[80px]">
       <div className="space-y-[16px]">
-        <div className=" text-[44px] font-normal leading-[44px] text-[#047f9c]">
+        <div className=" text-[44px] font-normal leading-[44px] text-primary-main">
           {props.title}
         </div>
         <div className=" text-[22px] font-normal leading-[30.80px] text-[#0f1728]">

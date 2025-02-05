@@ -8,7 +8,7 @@ export default function TimeLine() {
               Get Discovered
             </div>
           </div>
-          <div className="absolute left-0 top-[592.07px] inline-flex flex-col items-center justify-start rounded-[20px] bg-[#047f9c] p-[50px]">
+          <div className="absolute left-0 top-[592.07px] inline-flex flex-col items-center justify-start rounded-[20px] bg-primary-main p-[50px]">
             <div className="self-stretch text-center font-['Roboto'] text-4xl font-normal leading-10 text-white">
               Showcase Strengths
             </div>
@@ -57,8 +57,8 @@ export default function TimeLine() {
           </svg>
           <div className="absolute left-0 top-[888.17px] h-[15px] w-[15px] rounded-full border-2 bg-[#014260]" />
           <div className="absolute left-0 top-0 h-[15px] w-[15px] rounded-full border border-[#014260] bg-neutral-100" />
-          <div className="absolute left-0 top-[296.17px] h-[15px] w-[15px] rounded-full border border-[#047f9c] bg-[#c4ebf3]" />
-          <div className="absolute left-0 top-[592.17px] h-[15px] w-[15px] rounded-full border-2 bg-[#047f9c]" />
+          <div className="absolute left-0 top-[296.17px] h-[15px] w-[15px] rounded-full border border-primary-main bg-[#c4ebf3]" />
+          <div className="absolute left-0 top-[592.17px] h-[15px] w-[15px] rounded-full border-2 bg-primary-main" />
         </div>
         <div className="relative h-[1023.52px] w-[400.49px]">
           <div className="absolute left-[0.49px] top-0 inline-flex h-[135.52px] w-[400px] flex-col items-start justify-start gap-5">
@@ -84,7 +84,7 @@ export default function TimeLine() {
             </div>
           </div>
           <div className="absolute left-[0.49px] top-[604px] inline-flex h-[135.52px] w-[400px] flex-col items-start justify-start gap-5">
-            <div className="inline-flex w-[71px] items-center justify-center gap-[14.21px] rounded-[177.59px] border-2 bg-[#047f9c] px-[42.62px] py-[17.76px]">
+            <div className="inline-flex w-[71px] items-center justify-center gap-[14.21px] rounded-[177.59px] border-2 bg-primary-main px-[42.62px] py-[17.76px]">
               <div className="text-center font-['Roboto'] text-5xl font-normal leading-9 tracking-tight text-white">
                 3
               </div>
@@ -157,12 +157,12 @@ export default function TimeLine() {
         </div>
         <div className="flex h-[59px] flex-col items-center justify-start self-stretch rounded-[20px] px-8">
           <div className="inline-flex items-center justify-center gap-2">
-            <div className="flex items-center justify-center rounded-[90px] border bg-[#047f9c] p-2.5">
+            <div className="flex items-center justify-center rounded-[90px] border bg-primary-main p-2.5">
               <div className="text-center font-['Roboto'] text-xl font-normal leading-[14.74px] tracking-tight text-white">
                 3
               </div>
             </div>
-            <div className="flex items-center justify-center rounded-[90px] bg-[#047f9c] px-4 py-[5px]">
+            <div className="flex items-center justify-center rounded-[90px] bg-primary-main px-4 py-[5px]">
               <div className="font-['Roboto'] text-xl font-normal leading-snug text-white">
                 Showcase Strengths
               </div>

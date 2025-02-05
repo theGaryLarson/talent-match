@@ -39,7 +39,7 @@ export default function TCPortalFunctionsFold() {
         <span className="text-[88px] font-normal capitalize leading-[123.20px] text-[#014260]">
           Talent & Career{" "}
         </span>
-        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-[#047f9c]">
+        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-primary-main">
           Portal
         </span>
       </div>

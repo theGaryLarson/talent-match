@@ -152,7 +152,7 @@ export default async function CareerPrep(props: {
               {copy.headline}
             </p>
             <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
-              <p className="font-semibold leading-none tracking-wider text-[#047f9c]">
+              <p className="font-semibold leading-none tracking-wider text-primary-main">
                 Career Prep Program
               </p>
             </div>

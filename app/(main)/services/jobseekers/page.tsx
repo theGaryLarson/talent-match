@@ -17,7 +17,7 @@ export default function Page() {
             <br />
             It&apos;s a{" "}
           </span>
-          <span className="font-['Roboto'] text-6xl font-medium leading-[66px] text-[#047f9c]">
+          <span className="font-['Roboto'] text-6xl font-medium leading-[66px] text-primary-main">
             Launchpad
           </span>
         </div>
@@ -31,7 +31,7 @@ export default function Page() {
           <span className="text-[#014260] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
             Talent{" "}
           </span>
-          <span className="text-[#047f9c] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
+          <span className="text-primary-main text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
             Portal
           </span>
         </div>
