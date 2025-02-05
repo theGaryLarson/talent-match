@@ -36,7 +36,7 @@ export default function TCPortalFunctionsFold() {
   return (
     <div className="flex flex-col items-center gap-[42px]">
       <div className="text-center">
-        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-[#014260]">
+        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-secondary-main">
           Talent & Career{" "}
         </span>
         <span className="text-[88px] font-normal capitalize leading-[123.20px] text-primary-main">

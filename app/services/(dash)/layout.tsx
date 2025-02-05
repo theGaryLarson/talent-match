@@ -125,7 +125,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
             mb: 3,
             width: "123px",
             backgroundColor: "neutral.100",
-            color: "#014260",
+            color: "secondary.main",
           }}
         >
           Log Out
