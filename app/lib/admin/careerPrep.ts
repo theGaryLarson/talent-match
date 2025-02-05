@@ -59,7 +59,7 @@ export enum CareerPrepStatus {
   Completed = "Completed",
   Rejected = "Rejected",
   Withdrawn = "Withdrawn", // additional option from what was given.
-  Placed = "Placed",
+  Placed = "Placed", // added in light of filters for stats requested by Bethany.
 }
 
 /**

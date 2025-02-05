@@ -14,10 +14,11 @@ interface Props {
 export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
   // Initial state based on appliedStatus
   const [hasApplied, setHasApplied] = useState<boolean>(
-    appliedStatus == JobStatus.Accepted ||
+    appliedStatus == JobStatus.Screened ||
       appliedStatus == JobStatus.Applied ||
       appliedStatus == JobStatus.Interviewing ||
       appliedStatus == JobStatus.Negotiating ||
+      appliedStatus == JobStatus.Accepted ||
       appliedStatus == JobStatus.NoResponse ||
       appliedStatus == JobStatus.NotSelected,
   );
@@ -68,6 +69,9 @@ export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
   return (
     <PillButton
       disabled={
+        appliedStatus == JobStatus.Screened ||
+        appliedStatus == JobStatus.Interviewing ||
+        appliedStatus == JobStatus.Negotiating ||
         appliedStatus == JobStatus.Accepted ||
         appliedStatus == JobStatus.NoResponse ||
         appliedStatus == JobStatus.NotSelected

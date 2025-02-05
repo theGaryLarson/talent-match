@@ -221,6 +221,14 @@ export async function ApplyToJob(jobPostingId: string) {
     });
 
     if (existingApplication) {
+      if (
+        existingApplication.jobStatus !== JobStatus.Applied &&
+        existingApplication.jobStatus !== JobStatus.IWithdrew
+      ) {
+        throw new Error(
+          " Cannot change job status to apply: application is already being processed.",
+        );
+      }
       return await prisma.jobseekerJobPosting.update({
         where: {
           id: existingApplication.id,
@@ -307,6 +315,14 @@ export async function WithdrawFromJob(jobPostingId: string) {
     });
 
     if (existingApplication) {
+      if (
+        existingApplication.jobStatus !== JobStatus.Applied &&
+        existingApplication.jobStatus !== JobStatus.IWithdrew
+      ) {
+        throw new Error(
+          " Cannot withdraw from job: application is already being processed.",
+        );
+      }
       return await prisma.jobseekerJobPosting.update({
         where: {
           id: existingApplication.id,

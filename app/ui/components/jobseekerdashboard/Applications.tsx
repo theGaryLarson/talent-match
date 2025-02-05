@@ -32,6 +32,10 @@ const statusConfig: StatusConfigType = {
     color: "success",
     variant: "outlined",
   },
+  [JobStatus.Screened]: {
+    color: "secondary",
+    variant: "outlined",
+  },
   [JobStatus.Interviewing]: {
     color: "primary",
     variant: "outlined",
