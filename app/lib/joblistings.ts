@@ -472,6 +472,7 @@ export async function getJobListingsFiltered(request: Request) {
 
   const {
     jobTitle = "",
+    bookmarked = false,
     skills = [],
     industrySector = [],
     zipCode = "",
@@ -492,6 +493,23 @@ export async function getJobListingsFiltered(request: Request) {
   andConditions.push({
     unpublish_date: { gte: new Date() },
   });
+
+  if (bookmarked) {
+    if (!jobseekerId) {
+      return {
+        filteredJobPostings: [],
+        totalCount: 0,
+      };
+    }
+    andConditions.push({
+      jobApplications: {
+        some: {
+          jobseekerId: jobseekerId,
+          isBookmarked: true,
+        },
+      },
+    });
+  }
 
   if (jobTitle) {
     andConditions.push({

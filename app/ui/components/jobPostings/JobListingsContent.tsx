@@ -6,8 +6,7 @@ import Pagination from "@mui/material/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
 import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
-import SortDropdown from "@/app/ui/components/mui/SortDropdown";
-import { TextField } from "@mui/material";
+import { Box, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import MultipleSelectFilterAutoload from "@/app/ui/components/mui/MultiSelectFilterAutoload";
 import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
@@ -21,6 +20,7 @@ interface JobListingQueryResult {
 
 async function fetchJobPosts(
   jobTitle: string = "",
+  bookmarked: boolean = false,
   skills: string[] = [],
   industrySector: string[] = [],
   zipCode: string = "",
@@ -35,6 +35,7 @@ async function fetchJobPosts(
     },
     body: JSON.stringify({
       jobTitle,
+      bookmarked,
       skills,
       industrySector,
       zipCode,
@@ -51,6 +52,7 @@ async function fetchJobPosts(
 
 export default function JobListingsContent() {
   // Listview data
+  const [value, setValue] = useState(0);
   const [joblistings, setJobListings] = useState<JobListingCardViewDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -62,7 +64,6 @@ export default function JobListingsContent() {
   const [zipCode, setZipCode] = useState<string>();
 
   // Sorting and pagination
-  const [sortBy, setSortBy] = useState<string>();
   const [totalResults, setTotalResults] = useState<number>();
   const [page, setPage] = useState<number>();
 
@@ -81,6 +82,10 @@ export default function JobListingsContent() {
     },
     [queryParams, pathname, router],
   );
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -111,10 +116,11 @@ export default function JobListingsContent() {
     try {
       const data = await fetchJobPosts(
         jobTitle,
+        value === 1,
         skillsList,
         industry,
         zipCode,
-        sortBy,
+        "publish_date",
         resultsPerPage,
         page,
       );
@@ -126,7 +132,7 @@ export default function JobListingsContent() {
     } finally {
       setLoading(false);
     }
-  }, [page, industry, jobTitle, skillsList, zipCode, sortBy]);
+  }, [page, industry, jobTitle, skillsList, zipCode, value]);
 
   useEffect(() => {
     // 1. Initial Load: Set state from URL params (only once)
@@ -135,7 +141,6 @@ export default function JobListingsContent() {
       setSkillsList(getArrayParam("skills"));
       setIndustry(getArrayParam("industry"));
       setZipCode(getParam("zipcode"));
-      setSortBy(getParam("sort") != "" ? getParam("sort") : "publish_date");
       setPage(+getParam("page") == 0 ? 1 : +getParam("page"));
     };
 
@@ -145,7 +150,6 @@ export default function JobListingsContent() {
       skillsList === undefined &&
       industry === undefined &&
       zipCode === undefined &&
-      sortBy === undefined &&
       page === undefined
     ) {
       initializeStateFromParams();
@@ -159,7 +163,6 @@ export default function JobListingsContent() {
       skillsList !== undefined &&
       industry !== undefined &&
       zipCode !== undefined &&
-      sortBy !== undefined &&
       page !== undefined
     ) {
       // Check that they are defined
@@ -168,11 +171,16 @@ export default function JobListingsContent() {
       }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
       return () => clearTimeout(timeoutId);
     }
-  }, [jobTitle, skillsList, industry, zipCode, sortBy, page, execQuery]);
+  }, [jobTitle, skillsList, industry, zipCode, page, execQuery]);
 
   return (
-    <main className="mb-0 mx-2 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[100px]">
-      <h1 className="mb-4 text-2xl font-bold">Job Listings</h1>
+    <Stack spacing={2.5} sx={{ ml: { xs: 3, md: 6.25 } }}>
+      <Typography
+        variant="h2"
+        sx={{ color: "secondary.main", fontSize: "2.5rem", fontWeight: 400 }}
+      >
+        Jobs
+      </Typography>
 
       {/* Job Title Search Bar */}
       <TextField
@@ -208,31 +216,8 @@ export default function JobListingsContent() {
 
       {/* Filters */}
       <div className="mb-0 mt-1 flex flex-row flex-wrap">
-        {/* Industry */}
-        <div className="w-1/2 tablet:w-1/3">
-          <MultipleSelectFilterAutoload
-            id="jobseeker-listview-industry"
-            label="Industry"
-            apiAutoloadRoute="/api/employers/industry-sectors" // TODO: two requests are happening?
-            value={getArrayParam("industry")}
-            onChange={(event) => {
-              setQueryParam(
-                "industry",
-                encodeURIComponent(event.target.value.toString()),
-              );
-              if (typeof event.target.value === "string")
-                setIndustry([event.target.value]);
-              else setIndustry(event.target.value);
-            }}
-            getOptionLabel={(option: IndustrySectorDropdownDTO) =>
-              option.sector_title
-            }
-          />
-        </div>
-
         {/* Zip Code */}
-        {/* Design has agreed to a text field until we have a better distance measurement system in place */}
-        <div className="w-1/2 tablet:w-1/3">
+        <div className="w-1/2 tablet:w-1/4">
           <TextField
             autoComplete="off"
             label="Full/Partial Zip Code"
@@ -280,29 +265,81 @@ export default function JobListingsContent() {
             }}
           />
         </div>
-        <div className="float-left w-1/2 items-center px-4 tablet:w-1/3">
-          <div className="w-full flow-root pb-4 mt-2">
-            {/* Sorting */}
-            <div className="float-right mt-6">
-              <SortDropdown
-                id="jobseeker-listview-sort"
-                label="Sort by:"
-                value={
-                  getParam("sort") == "" ? "publish_date" : getParam("sort")
-                }
-                onChange={(event) => {
-                  setQueryParam("sort", event.target.value);
-                  setSortBy(event.target.value);
-                }}
-                options={[
-                  // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
-                  { label: "Newest", value: "publish_date" },
-                ]}
-              />
-            </div>
-          </div>
+        {/* Profession */}
+        <div className="w-1/2 tablet:w-1/4">
+          <MultipleSelectFilterAutoload
+            id="jobseeker-listview-profession"
+            label="Profession"
+            apiAutoloadRoute="/api/employers/industry-sectors"
+            value={getArrayParam("profession")}
+            onChange={(event) => {
+              setQueryParam(
+                "profession",
+                encodeURIComponent(event.target.value.toString()),
+              );
+              if (typeof event.target.value === "string")
+                setIndustry([event.target.value]);
+              else setIndustry(event.target.value);
+            }}
+            getOptionLabel={(option: IndustrySectorDropdownDTO) =>
+              option.sector_title
+            }
+          />
+        </div>
+        {/* Industry */}
+        <div className="w-1/2 tablet:w-1/4">
+          <MultipleSelectFilterAutoload
+            id="jobseeker-listview-industry"
+            label="Industry"
+            apiAutoloadRoute="/api/employers/industry-sectors" // TODO: two requests are happening?
+            value={getArrayParam("industry")}
+            onChange={(event) => {
+              setQueryParam(
+                "industry",
+                encodeURIComponent(event.target.value.toString()),
+              );
+              if (typeof event.target.value === "string")
+                setIndustry([event.target.value]);
+              else setIndustry(event.target.value);
+            }}
+            getOptionLabel={(option: IndustrySectorDropdownDTO) =>
+              option.sector_title
+            }
+          />
+        </div>
+        {/* Employment Type */}
+        <div className="w-1/2 tablet:w-1/4">
+          <MultipleSelectFilterAutoload
+            id="jobseeker-listview-employment-type"
+            label="Employment Type"
+            apiAutoloadRoute="/api/employers/industry-sectors" // TODO: two requests are happening?
+            value={getArrayParam("employment-type")}
+            onChange={(event) => {
+              setQueryParam(
+                "employment-type",
+                encodeURIComponent(event.target.value.toString()),
+              );
+              if (typeof event.target.value === "string")
+                setIndustry([event.target.value]);
+              else setIndustry(event.target.value);
+            }}
+            getOptionLabel={(option: IndustrySectorDropdownDTO) =>
+              option.sector_title
+            }
+          />
         </div>
       </div>
+
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={value}
+          onChange={handleTabChange}
+          aria-label="Job Search or Saved Jobs"
+        >
+          <Tab id="tab-0" label="Job Search" />
+          <Tab id="tab-1" label="Saved Jobs" />
+        </Tabs>
+      </Box>
 
       {/* Loading */}
       {loading ? (
@@ -364,6 +401,6 @@ export default function JobListingsContent() {
           ""
         )}
       </div>
-    </main>
+    </Stack>
   );
 }

@@ -5,7 +5,6 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import {
-  BookmarkBorderRounded,
   CalendarMonthOutlined,
   LinkedIn,
   LogoutRounded,
@@ -49,11 +48,6 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
       href: "/services/joblistings",
       icon: <WorkOutlineRounded />,
       label: "Jobs",
-    },
-    {
-      href: "/services/jobseekers/dashboard/bookmarks",
-      icon: <BookmarkBorderRounded />,
-      label: "Saved Jobs",
     },
     {
       href: "/services/jobseekers/dashboard/my-applications",
@@ -303,6 +297,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           component="main"
           sx={{
             mt: "25px",
+            pr: { xs: 3, md: 6.25 },
             flexGrow: 1,
             width: { md: `calc(100% - ${drawerWidth}px)` },
           }}
