@@ -155,7 +155,9 @@ export default function CreateJobseekerProfilePreferencesPage() {
                           ? "#047F9C"
                           : "transparent",
                       color:
-                        employmentType === "Full-time" ? "#ffffff" : "#047F9C",
+                        employmentType === "Full-time"
+                          ? "neutral.white"
+                          : "#047F9C",
                     }}
                     variant="outlined"
                     onClick={() => {
@@ -172,7 +174,9 @@ export default function CreateJobseekerProfilePreferencesPage() {
                           ? "#047F9C"
                           : "transparent",
                       color:
-                        employmentType === "Part-time" ? "#ffffff" : "#047F9C",
+                        employmentType === "Part-time"
+                          ? "neutral.white"
+                          : "#047F9C",
                     }}
                     variant="outlined"
                     onClick={() => {
@@ -189,7 +193,9 @@ export default function CreateJobseekerProfilePreferencesPage() {
                           ? "#047F9C"
                           : "transparent",
                       color:
-                        employmentType === "Internship" ? "#ffffff" : "#047F9C",
+                        employmentType === "Internship"
+                          ? "neutral.white"
+                          : "#047F9C",
                     }}
                     variant="outlined"
                     onClick={() => {
@@ -206,7 +212,9 @@ export default function CreateJobseekerProfilePreferencesPage() {
                           ? "#047F9C"
                           : "transparent",
                       color:
-                        employmentType === "On-campus" ? "#ffffff" : "#047F9C",
+                        employmentType === "On-campus"
+                          ? "neutral.white"
+                          : "#047F9C",
                     }}
                     variant="outlined"
                     onClick={() => {

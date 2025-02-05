@@ -156,7 +156,7 @@ export default async function CareerPrep(props: {
                 Career Prep Program
               </p>
             </div>
-            <div className="font-normal leading-tight text-[#191919]/60">
+            <div className="font-normal leading-tight text-neutral-900/60">
               {copy.body}
             </div>
           </div>
