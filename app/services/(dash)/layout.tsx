@@ -124,7 +124,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
             mt: 3,
             mb: 3,
             width: "123px",
-            backgroundColor: "#f6f6f6",
+            backgroundColor: "neutral.100",
             color: "#014260",
           }}
         >
@@ -319,7 +319,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             px: 5,
             py: 2.5,
             zIndex: 9000,
-            bgcolor: "#F6F6F6",
+            bgcolor: "neutral.100",
           }}
         >
           <Stack direction={{ xs: "column", sm: "row" }} gap={2}>

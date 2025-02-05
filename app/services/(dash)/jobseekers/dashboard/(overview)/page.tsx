@@ -76,7 +76,7 @@ export default async function Page() {
           disableElevation
           href={"/services/jobseekers/" + session?.user.jobseekerId}
           sx={{
-            backgroundColor: "#f6f6f6",
+            backgroundColor: "neutral.100",
             color: "secondary.main",
           }}
         >
