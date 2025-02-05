@@ -170,7 +170,7 @@ export default function Header() {
     ) {
       setHeaderTW("w-full z-10 absolute text-white");
     } else if (pathname.startsWith("/services/training-programs/")) {
-      setHeaderTW("bg-[#003350] text-white");
+      setHeaderTW("bg-blue-700 text-white");
     } else {
       setHeaderTW("bg-white");
     }

@@ -71,7 +71,7 @@ export default function RoundedButton({
   } else {
     if (isPrimary) {
       bgColorIdle = "bg-[#047F9C]";
-      bgColorHover = "hover:bg-[#4FA5BA]";
+      bgColorHover = "hover:bg-blue-400";
       textColorIdle = "text-white";
     } else {
       border = "border";
