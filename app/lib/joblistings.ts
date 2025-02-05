@@ -494,6 +494,7 @@ export async function getAllJobPosts() {
           },
         },
         companies: true,
+        skills:true
       },
     });
     return results;
