@@ -13,7 +13,7 @@ export default function TimeLine() {
               Showcase Strengths
             </div>
           </div>
-          <div className="absolute left-0 top-[296.07px] inline-flex h-[140px] w-[432px] flex-col items-center justify-start rounded-[20px] bg-[#c4ebf3] p-[50px]">
+          <div className="absolute left-0 top-[296.07px] inline-flex h-[140px] w-[432px] flex-col items-center justify-start rounded-[20px] bg-primary-light p-[50px]">
             <div className="inline-flex items-center justify-center gap-2.5">
               <div className="text-center font-['Roboto'] text-4xl font-normal leading-10 text-[#014260]">
                 Access Events
@@ -50,14 +50,14 @@ export default function TimeLine() {
                 y2="1060.45"
                 gradientUnits="userSpaceOnUse"
               >
-                <stop stopColor="#C4EBF3" stopOpacity="0.5" />
-                <stop offset="0.618334" stopColor="#047F9C" />
+                <stop stopColor="var(--primary-light)" stopOpacity="0.5" />
+                <stop offset="0.618334" stopColor="var(--primary-main)" />
               </linearGradient>
             </defs>
           </svg>
           <div className="absolute left-0 top-[888.17px] h-[15px] w-[15px] rounded-full border-2 bg-[#014260]" />
           <div className="absolute left-0 top-0 h-[15px] w-[15px] rounded-full border border-[#014260] bg-neutral-100" />
-          <div className="absolute left-0 top-[296.17px] h-[15px] w-[15px] rounded-full border border-primary-main bg-[#c4ebf3]" />
+          <div className="absolute left-0 top-[296.17px] h-[15px] w-[15px] rounded-full border border-primary-main bg-primary-light" />
           <div className="absolute left-0 top-[592.17px] h-[15px] w-[15px] rounded-full border-2 bg-primary-main" />
         </div>
         <div className="relative h-[1023.52px] w-[400.49px]">
@@ -73,7 +73,7 @@ export default function TimeLine() {
             </div>
           </div>
           <div className="absolute left-[0.49px] top-[296px] inline-flex h-[135.52px] w-[400px] flex-col items-start justify-start gap-5">
-            <div className="inline-flex w-[71px] items-center justify-center gap-[14.21px] rounded-[177.59px] border-2 bg-[#c4ebf3] px-[42.62px] py-[17.76px]">
+            <div className="inline-flex w-[71px] items-center justify-center gap-[14.21px] rounded-[177.59px] border-2 bg-primary-light px-[42.62px] py-[17.76px]">
               <div className="text-center font-['Roboto'] text-5xl font-normal leading-9 tracking-tight text-[#014260]">
                 2
               </div>
@@ -134,12 +134,12 @@ export default function TimeLine() {
         </div>
         <div className="flex h-[75px] flex-col items-center justify-start self-stretch rounded-[20px] px-8">
           <div className="inline-flex items-center justify-center gap-2">
-            <div className="flex items-center justify-center rounded-[90px] border bg-[#c4ebf3] p-2.5">
+            <div className="flex items-center justify-center rounded-[90px] border bg-primary-light p-2.5">
               <div className="text-center font-['Roboto'] text-xl font-normal leading-[14.74px] tracking-tight text-[#014260]">
                 2
               </div>
             </div>
-            <div className="flex items-center justify-center rounded-[90px] bg-[#c4ebf3] px-5 py-[5px]">
+            <div className="flex items-center justify-center rounded-[90px] bg-primary-light px-5 py-[5px]">
               <div className="font-['Roboto'] text-xl font-normal leading-snug text-[#014260]">
                 Access Events
               </div>
