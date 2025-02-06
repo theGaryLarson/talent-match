@@ -7,9 +7,10 @@ import Bookmark from "../Bookmark";
 import PillButton from "@/app/ui/components/PillButton";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
-import { Card, Grid2, Stack, Typography } from "@mui/material";
+import { Card, Chip, Grid2, Stack, Typography } from "@mui/material";
 import { Circle } from "@mui/icons-material";
 import ApplyToJobButton from "./ApplyToJobButton";
+import Link from "next/link";
 
 function extractTextFromHTML(htmlString: string) {
   const tempElement = document.createElement("div");
@@ -106,17 +107,35 @@ export default function JobListingCardView({
           })}
         </Typography>
       </Grid2>
-      <Typography sx={{ mt: 1 }}>{description}</Typography>
+      <Typography
+        component={"div"}
+        sx={{
+          mt: 1,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflowWrap: "break-word",
+          overflow: "hidden",
+        }}
+      >
+        {description}
+      </Typography>
+
       {skills.length > 0 && (
-        <Grid2 container sx={{ mt: 1 }}>
-          <Skills skillsList={skills} maxNumSkills={5} />
+        <Grid2 container gap={1} sx={{ mt: 1 }}>
+          {skills.map((skill) => (
+            <Chip
+              component={Link}
+              clickable
+              target="_blank"
+              key={skill?.skill_id}
+              label={skill?.skill_name}
+              href={skill?.skill_info_url}
+            />
+          ))}
         </Grid2>
       )}
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{ mt: 2, justifyContent: "flex-end" }}
-      >
+      <Stack direction="row" gap={1} sx={{ mt: 2, justifyContent: "flex-end" }}>
         <PillButton
           href={`/services/joblistings/${joblisting.job_posting_id}`}
           target="_blank"
