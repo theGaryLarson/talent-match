@@ -14,8 +14,6 @@ export async function POST(request: Request) {
     industrySector = [],
     educationLevel = undefined,
     trainingProvider = undefined,
-    yearsWorkExpMin = 0,
-    yearsWorkExpMax = undefined,
     zipCode = undefined,
     sortBy = "yearsExp",
     maxResults = 50,
@@ -71,30 +69,6 @@ export async function POST(request: Request) {
     ];
     // fixme: let's change this to an { OR: orConditions } when we have a healthy amount of jobseeker users.
     andConditions.push({ OR: orConditions });
-  }
-
-  // Years Work Experience Filtering with both lower and upper bounds
-  if (yearsWorkExpMin !== undefined && yearsWorkExpMax !== undefined) {
-    andConditions.push({
-      years_work_exp: {
-        gte: yearsWorkExpMin, // Greater than or equal to the minimum
-        lte: yearsWorkExpMax, // Less than or equal to the maximum
-      },
-    });
-  } else if (yearsWorkExpMin !== undefined) {
-    // If only minimum is specified
-    andConditions.push({
-      years_work_exp: {
-        gte: yearsWorkExpMin,
-      },
-    });
-  } else if (yearsWorkExpMax !== undefined) {
-    // If only maximum is specified
-    andConditions.push({
-      years_work_exp: {
-        lte: yearsWorkExpMax,
-      },
-    });
   }
 
   // Industry Sector Filtering
