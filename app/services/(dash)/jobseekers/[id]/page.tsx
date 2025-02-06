@@ -243,6 +243,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 skillsList={jobseeker?.jobseeker_has_skills.map(
                   (item: JobseekerSkillDTO) => item.skills,
                 )}
+                jobseekerID={jobseeker?.jobseeker_id}
                 maxNumSkills={0}
               />
             </Box>

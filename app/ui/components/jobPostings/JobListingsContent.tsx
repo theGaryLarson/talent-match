@@ -6,11 +6,22 @@ import Pagination from "@mui/material/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
 import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
-import SortDropdown from "@/app/ui/components/mui/SortDropdown";
-import { TextField } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from "@mui/material";
 import MultipleSelectFilterAutoload from "@/app/ui/components/mui/MultiSelectFilterAutoload";
 import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
+import SingleSelectFilterAutoload from "../mui/SingleSelectFilterAutoload";
+import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO";
+import MultipleSelectCheckmarks from "../mui/MultiSelectFilter";
+import { EmploymentType } from "@/app/lib/admin/jobTracking";
 
 const resultsPerPage = 50;
 
@@ -21,9 +32,12 @@ interface JobListingQueryResult {
 
 async function fetchJobPosts(
   jobTitle: string = "",
+  bookmarked: boolean = false,
   skills: string[] = [],
+  city: string[] = [],
+  profession: string = "",
   industrySector: string[] = [],
-  zipCode: string = "",
+  employmentType: string[] = [],
   sortBy: string = "publish_date",
   maxResults: number = resultsPerPage,
   page: number = 1,
@@ -35,9 +49,12 @@ async function fetchJobPosts(
     },
     body: JSON.stringify({
       jobTitle,
+      bookmarked,
       skills,
+      city,
+      profession,
       industrySector,
-      zipCode,
+      employmentType,
       sortBy,
       maxResults,
       page,
@@ -51,6 +68,7 @@ async function fetchJobPosts(
 
 export default function JobListingsContent() {
   // Listview data
+  const [value, setValue] = useState(0);
   const [joblistings, setJobListings] = useState<JobListingCardViewDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -58,11 +76,12 @@ export default function JobListingsContent() {
   // Query data
   const [jobTitle, setJobTitle] = useState<string>();
   const [skillsList, setSkillsList] = useState<string[]>();
+  const [city, setCity] = useState<string[]>();
+  const [profession, setProfession] = useState<string>();
   const [industry, setIndustry] = useState<string[]>();
-  const [zipCode, setZipCode] = useState<string>();
+  const [employmentType, setEmploymentType] = useState<string[]>();
 
   // Sorting and pagination
-  const [sortBy, setSortBy] = useState<string>();
   const [totalResults, setTotalResults] = useState<number>();
   const [page, setPage] = useState<number>();
 
@@ -81,6 +100,10 @@ export default function JobListingsContent() {
     },
     [queryParams, pathname, router],
   );
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -111,10 +134,13 @@ export default function JobListingsContent() {
     try {
       const data = await fetchJobPosts(
         jobTitle,
+        value === 1,
         skillsList,
+        city,
+        profession,
         industry,
-        zipCode,
-        sortBy,
+        employmentType,
+        "publish_date",
         resultsPerPage,
         page,
       );
@@ -126,16 +152,26 @@ export default function JobListingsContent() {
     } finally {
       setLoading(false);
     }
-  }, [page, industry, jobTitle, skillsList, zipCode, sortBy]);
+  }, [
+    page,
+    industry,
+    profession,
+    employmentType,
+    jobTitle,
+    skillsList,
+    city,
+    value,
+  ]);
 
   useEffect(() => {
     // 1. Initial Load: Set state from URL params (only once)
     const initializeStateFromParams = () => {
       setJobTitle(getParam("jobTitle"));
       setSkillsList(getArrayParam("skills"));
+      setProfession(getParam("profession"));
+      setEmploymentType(getArrayParam("employmentType"));
       setIndustry(getArrayParam("industry"));
-      setZipCode(getParam("zipcode"));
-      setSortBy(getParam("sort") != "" ? getParam("sort") : "publish_date");
+      setCity(getArrayParam("city"));
       setPage(+getParam("page") == 0 ? 1 : +getParam("page"));
     };
 
@@ -144,8 +180,7 @@ export default function JobListingsContent() {
       jobTitle === undefined &&
       skillsList === undefined &&
       industry === undefined &&
-      zipCode === undefined &&
-      sortBy === undefined &&
+      city === undefined &&
       page === undefined
     ) {
       initializeStateFromParams();
@@ -158,8 +193,7 @@ export default function JobListingsContent() {
       jobTitle !== undefined &&
       skillsList !== undefined &&
       industry !== undefined &&
-      zipCode !== undefined &&
-      sortBy !== undefined &&
+      city !== undefined &&
       page !== undefined
     ) {
       // Check that they are defined
@@ -168,11 +202,25 @@ export default function JobListingsContent() {
       }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
       return () => clearTimeout(timeoutId);
     }
-  }, [jobTitle, skillsList, industry, zipCode, sortBy, page, execQuery]);
+  }, [
+    jobTitle,
+    skillsList,
+    profession,
+    employmentType,
+    industry,
+    city,
+    page,
+    execQuery,
+  ]);
 
   return (
-    <main className="mb-0 mx-2 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[100px]">
-      <h1 className="mb-4 text-2xl font-bold">Job Listings</h1>
+    <Stack spacing={2.5} sx={{ mx: { xs: 3, md: 6.25 } }}>
+      <Typography
+        variant="h2"
+        sx={{ color: "secondary.main", fontSize: "2.5rem", fontWeight: 400 }}
+      >
+        Jobs
+      </Typography>
 
       {/* Job Title Search Bar */}
       <TextField
@@ -208,8 +256,44 @@ export default function JobListingsContent() {
 
       {/* Filters */}
       <div className="mb-0 mt-1 flex flex-row flex-wrap">
+        {/* City */}
+        <div className="w-1/2 tablet:w-1/4">
+          <MultipleSelectFilterAutoload
+            id="jobseeker-listview-city"
+            label="City"
+            apiAutoloadRoute="/api/postal-geo-data/city/get"
+            value={getArrayParam("city")}
+            onChange={(event) => {
+              setQueryParam(
+                "city",
+                encodeURIComponent(event.target.value.toString()),
+              );
+              if (typeof event.target.value === "string")
+                setCity([event.target.value]);
+              else setCity(event.target.value);
+            }}
+            getOptionLabel={(option: { city: string }) => option.city}
+          />
+        </div>
+        {/* Profession */}
+        <div className="w-1/2 tablet:w-1/4">
+          <SingleSelectFilterAutoload
+            id="jobseeker-listview-profession"
+            label="Profession"
+            apiAutoloadRoute="/api/employers/technology-areas"
+            value={getParam("profession")}
+            onChange={(event) => {
+              setQueryParam(
+                "profession",
+                encodeURIComponent(event.target.value.toString()),
+              );
+              setProfession(event.target.value);
+            }}
+            getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
+          />
+        </div>
         {/* Industry */}
-        <div className="w-1/2 tablet:w-1/3">
+        <div className="w-1/2 tablet:w-1/4">
           <MultipleSelectFilterAutoload
             id="jobseeker-listview-industry"
             label="Industry"
@@ -229,80 +313,40 @@ export default function JobListingsContent() {
             }
           />
         </div>
-
-        {/* Zip Code */}
-        {/* Design has agreed to a text field until we have a better distance measurement system in place */}
-        <div className="w-1/2 tablet:w-1/3">
-          <TextField
-            autoComplete="off"
-            label="Full/Partial Zip Code"
-            defaultValue={getParam("zipcode")}
-            size="small"
-            onChange={(event) => {
-              if (!isNaN(Number(event.target.value))) {
-                // is it purely numeric chars?
-                if (event.target.value.length <= 5) {
-                  // and not longer than 5 chars?
-                  setQueryParam("zipcode", event.target.value);
-                  setZipCode(event.target.value);
-                } else {
-                  // truncate
-                  event.target.value = Number.parseInt(
-                    event.target.value.slice(0, 5),
-                  ).toString();
-                }
-              } else {
-                // erase non-numeric chars
-                const closestInt = Number.parseInt(event.target.value);
-                event.target.value = isNaN(closestInt)
-                  ? ""
-                  : closestInt.toString();
-              }
-            }}
-            sx={{
-              padding: "0px 2px",
-              width: "100%",
-              "& .MuiInputBase-root": {
-                borderRadius: "9999px",
-                height: "1.75rem",
-              },
-              "& .MuiInputBase-input": {
-                boxShadow: "none",
-                "&:focus": { boxShadow: "none" },
-              },
-              "& .MuiInputLabel-root": {
-                fontSize: "0.875rem",
-                lineHeight: "1.25rem",
-                top: "15px",
-                left: "2px",
-                position: "relative",
-              },
-            }}
-          />
-        </div>
-        <div className="float-left w-1/2 items-center px-4 tablet:w-1/3">
-          <div className="w-full flow-root pb-4 mt-2">
-            {/* Sorting */}
-            <div className="float-right mt-6">
-              <SortDropdown
-                id="jobseeker-listview-sort"
-                label="Sort by:"
-                value={
-                  getParam("sort") == "" ? "publish_date" : getParam("sort")
-                }
-                onChange={(event) => {
-                  setQueryParam("sort", event.target.value);
-                  setSortBy(event.target.value);
-                }}
-                options={[
-                  // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
-                  { label: "Newest", value: "publish_date" },
-                ]}
-              />
-            </div>
-          </div>
+        {/* Employment Type */}
+        <div className="w-1/2 tablet:w-1/4">
+          {
+            <MultipleSelectCheckmarks
+              label="Employment Type"
+              value={getArrayParam("employment-type")}
+              onChange={(event) => {
+                setQueryParam(
+                  "employment-type",
+                  encodeURIComponent(event.target.value.toString()),
+                );
+                if (typeof event.target.value === "string")
+                  setEmploymentType([event.target.value]);
+                else setEmploymentType(event.target.value);
+              }}
+              options={Object.values(EmploymentType).map((type) => ({
+                label: type,
+                value: type,
+              }))}
+            />
+          }
         </div>
       </div>
+
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={value}
+          onChange={handleTabChange}
+          aria-label="Job Search or Saved Jobs"
+        >
+          <Tab id="tab-0" label="Job Search" />
+          <Tab id="tab-1" label="Saved Jobs" />
+        </Tabs>
+      </Box>
 
       {/* Loading */}
       {loading ? (
@@ -324,14 +368,14 @@ export default function JobListingsContent() {
 
       {/* else, Display Results */}
       {!loading && !error ? (
-        <div className="space-y-4">
+        <Stack spacing={2} divider={<Divider />}>
           {joblistings?.map((joblisting: JobListingCardViewDTO) => (
             <JobListingCardView
               joblisting={joblisting}
               key={joblisting.job_posting_id}
             />
           ))}
-        </div>
+        </Stack>
       ) : (
         ""
       )}
@@ -351,19 +395,29 @@ export default function JobListingsContent() {
           ""
         )}
       </div>
-      <div className="mb-4 mt-2 flex justify-center phone:mb-0">
+      <div className="pb-2 mt-2 flex justify-center phone:pb-8">
         {!loading ? (
           <Pagination
-            variant="outlined"
-            shape="rounded"
+            variant="text"
+            color="secondary"
             count={Math.ceil((totalResults ?? 1) / resultsPerPage)}
             page={getParam("page") != "" ? +getParam("page") : 1}
             onChange={handlePageChange}
+            sx={{
+              "& .MuiPaginationItem-root:not(.Mui-selected):not(.MuiPaginationItem-ellipsis):not(.MuiPaginationItem-previousNext)":
+                {
+                  bgcolor: "neutral.200",
+                  "&:hover": { bgcolor: "neutral.100" },
+                },
+              "& .MuiPaginationItem-root:not(.Mui-selected)": {
+                color: "secondary.main",
+              },
+            }}
           />
         ) : (
           ""
         )}
       </div>
-    </main>
+    </Stack>
   );
 }

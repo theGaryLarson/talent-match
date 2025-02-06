@@ -138,7 +138,7 @@ const theme = createTheme({
         },
       },
     },
-    dark: false,
+    dark: true,
   },
   components: {},
 });

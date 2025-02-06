@@ -42,27 +42,22 @@ export default function MultipleSelectCheckmarks({
   }, [filter]);
 
   return (
-    <div className="flex flex-1 px-1">
-      <FormControl className="flex flex-1">
-        <InputLabel className="text-sm relative top-2 left-0">
-          {formattedLabel}
-        </InputLabel>
-        <Select
-          className="rounded-full h-7 flex"
-          multiple
-          value={filter}
-          onChange={handleChange}
-          input={<OutlinedInput />}
-          renderValue={(selected) => selected.join(", ")}
-        >
-          {options.map((option) => (
-            <MenuItem key={option.label} value={option.value}>
-              <Checkbox checked={filter.indexOf(option.value) > -1} />
-              <ListItemText primary={option.label} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl sx={{ display: "flex", flex: 1 }}>
+      <InputLabel>{formattedLabel}</InputLabel>
+      <Select
+        multiple
+        value={filter}
+        onChange={handleChange}
+        input={<OutlinedInput />}
+        renderValue={(selected) => selected.join(", ")}
+      >
+        {options.map((option) => (
+          <MenuItem key={option.label} value={option.value}>
+            <Checkbox checked={filter.indexOf(option.value) > -1} />
+            <ListItemText primary={option.label} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }
