@@ -282,7 +282,7 @@ export default function page() {
                     </div>
                   </div>
                 </div>
-                <div className="absolute left-[250.71px] top-[14.86px] h-[49.52px] w-[49.52px] rounded-full bg-[#c4ebf3]" />
+                <div className="absolute left-[250.71px] top-[14.86px] h-[49.52px] w-[49.52px] rounded-full bg-primary-light" />
                 <div className="absolute left-[260px] top-[24.14px] inline-flex h-[30.95px] w-[30.95px] items-center justify-center">
                   <div className="relative flex h-[30.95px] w-[30.95px] flex-col items-start justify-start">
                     <svg
@@ -294,7 +294,7 @@ export default function page() {
                     >
                       <path
                         d="M26.4601 8.65576L12.2736 22.8423L5.8252 16.3939"
-                        stroke="#047F9C"
+                        stroke="var(--primary-main)"
                         strokeWidth="5.72221"
                         strokeLinecap="round"
                         strokeLinejoin="round"

@@ -61,7 +61,7 @@ export default function EmploymentDetails({
         </Box>
       </Grid2>
       <Grid2 xs={12} md={6}>
-        <Box sx={{ color: "#014260" }}>
+        <Box sx={{ color: "secondary.main" }}>
           <Typography variant="h6">Currently Employed</Typography>
           <LinearProgress
             variant="determinate"

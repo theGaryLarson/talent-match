@@ -42,7 +42,7 @@ export default async function EventsList({
             href="/services/events"
             disableElevation
             sx={{
-              backgroundColor: "#f6f6f6",
+              backgroundColor: "neutral.100",
               color: "secondary.main",
             }}
           >

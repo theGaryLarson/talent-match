@@ -91,7 +91,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             disableElevation
             href={"/services/jobseekers/dashboard"}
             sx={{
-              backgroundColor: "#f6f6f6",
+              backgroundColor: "neutral.100",
               color: "secondary.main",
             }}
           >

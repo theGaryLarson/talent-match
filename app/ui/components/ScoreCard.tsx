@@ -10,7 +10,7 @@ export default function ScoreCard(props: Props) {
         <div className="text-[#181818] text-base font-normal font-['Roboto'] leading-none">
           {props.title}
         </div>
-        <div className="text-center text-[#047f9c] text-xl font-bold font-['Roboto'] leading-7">
+        <div className="text-center text-primary-main text-xl font-bold font-['Roboto'] leading-7">
           {props.val}
         </div>
       </div>

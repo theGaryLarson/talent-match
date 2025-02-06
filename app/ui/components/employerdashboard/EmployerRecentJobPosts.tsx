@@ -91,7 +91,7 @@ function SingleJobPost({
         target="_blank"
       >
         <span className="flex items-center justify-start gap-2">
-          <span className="font-['Roboto'] text-sm font-semibold leading-[16.80px] tracking-tight text-[#047f9c]">
+          <span className="font-['Roboto'] text-sm font-semibold leading-[16.80px] tracking-tight text-primary-main">
             {job.job_title}
           </span>
           <span className="font-['Roboto'] text-sm font-normal leading-[16.80px] tracking-tight text-[#181818]">
@@ -113,7 +113,7 @@ function AddJobLink() {
   return (
     <div className="flex items-center bg-white p-2">
       <div className="flex h-[17px]">
-        {/*<Link href={'/services/employers/dashboard/postjob'}className="text-sm font-semibold text-[#047f9c] flex items-center gap-1">*/}
+        {/*<Link href={'/services/employers/dashboard/postjob'}className="text-sm font-semibold text-primary-main flex items-center gap-1">*/}
         {/*Post a Job*/}
         {/*  <PlusCircleIcon width={20}/>*/}
         {/*</Link>*/}

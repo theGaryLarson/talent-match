@@ -38,10 +38,10 @@ export default function Page() {
             className="w-11/12 tablet:w-3/4 z-50 rounded-3xl shadow"
           />
           {/* Top rounded background rectangle */}
-          <div className="w-full h-[40rem] z-0 absolute top-1/2 inline-flex h-72 bg-[#D6F1F7] rounded-tl-3xl rounded-tr-3xl" />
+          <div className="w-full h-[40rem] z-0 absolute top-1/2 inline-flex h-72 bg-blue-200 rounded-tl-3xl rounded-tr-3xl" />
         </div>
         {/* Content */}
-        <div className="w-full relative justify-center items-center z-1 bg-[#D6F1F7]">
+        <div className="w-full relative justify-center items-center z-1 bg-blue-200">
           <div className="mt-8 px-4 laptop:px-24 flex-col justify-start items-center gap-5 inline-flex">
             <div className="p-4 flex-col justify-start items-center flex">
               {/* About */}
@@ -186,7 +186,7 @@ export default function Page() {
           </div>
         </div>
         {/* round off the bottom of the background rectangle */}
-        <div className="w-full mt-0 h-12 bg-[#D6F1F7] rounded-bl-3xl rounded-br-3xl" />
+        <div className="w-full mt-0 h-12 bg-blue-200 rounded-bl-3xl rounded-br-3xl" />
       </div>
 
       <div className="w-full mt-20 laptop:mt-40 px-8 laptop:px-24 flex-col justify-start items-center gap-3.5 inline-flex">
@@ -206,7 +206,7 @@ export default function Page() {
             </div>
           </div>
           <div className="w-full laptop:w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
-            <div className="px-4 py-2 bg-[#D6F1F7] rounded-2xl justify-start items-center gap-2.5 inline-flex">
+            <div className="px-4 py-2 bg-blue-200 rounded-2xl justify-start items-center gap-2.5 inline-flex">
               <div className="text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">
                 FOR EMPLOYERS
               </div>
@@ -239,7 +239,7 @@ export default function Page() {
         {/* For educators */}
         <div className="mt-24 laptop:mt-16 w-full self-stretch justify-center items-start gap-12 inline-flex">
           <div className="w-full laptop:w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
-            <div className="px-4 py-2 bg-[#D6F1F7] rounded-2xl justify-start items-center gap-2.5 inline-flex">
+            <div className="px-4 py-2 bg-blue-200 rounded-2xl justify-start items-center gap-2.5 inline-flex">
               <div className="text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">
                 FOR EDUCATORS
               </div>
@@ -286,7 +286,7 @@ export default function Page() {
             className="hidden laptop:block w-96"
           />
           <div className="w-full laptop:w-1/2 flex-col justify-center items-start gap-2.5 inline-flex">
-            <div className="px-4 py-2 bg-[#D6F1F7] rounded-2xl justify-start items-center gap-2.5 inline-flex">
+            <div className="px-4 py-2 bg-blue-200 rounded-2xl justify-start items-center gap-2.5 inline-flex">
               <div className="text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">
                 FOR JOB CANDIDATES
               </div>

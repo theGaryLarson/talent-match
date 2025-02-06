@@ -175,7 +175,7 @@ export default function JobseekerSignupFinishPage() {
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
               <p>Already have a TWC account?</p>
-              <Link className="text-blue-500" href="/signin">
+              <Link className="text-blue-tw500" href="/signin">
                 Sign in
               </Link>
             </div> */}
