@@ -392,7 +392,7 @@ export default function TalentSearch() {
             }}
             options={[
               // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
-              { label: "Years of Experience", value: "yearsExp" },
+              // { label: "Years of Experience", value: "yearsExp" },
               { label: "Highest Degree", value: "highestDegree" },
               { label: "Newest", value: "newest" },
             ]}
