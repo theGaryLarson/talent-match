@@ -1,14 +1,15 @@
 import React from "react";
 import EventsList from "@/app/ui/components/EventsList";
+import { Box } from "@mui/material";
 
 export default function Page() {
   return (
-    <div className="ml-[25px] laptop:ml-[50px] flex-1">
+    <Box sx={{ mx: { xs: 3, md: 6.25 }, flex: "flex-1" }}>
       <EventsList
         headerText={"Registered Events"}
         showOnlyRegisteredEvents={true}
         showMeetingLinks={true}
       ></EventsList>
-    </div>
+    </Box>
   );
 }

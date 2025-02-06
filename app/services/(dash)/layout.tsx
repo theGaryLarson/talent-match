@@ -297,7 +297,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           component="main"
           sx={{
             mt: "25px",
-            pr: { xs: 3, md: 6.25 },
             flexGrow: 1,
             width: { md: `calc(100% - ${drawerWidth}px)` },
           }}

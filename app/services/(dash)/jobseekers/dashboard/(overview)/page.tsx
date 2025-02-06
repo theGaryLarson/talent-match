@@ -47,7 +47,7 @@ export default async function Page() {
     <Stack
       direction={"column"}
       spacing={4}
-      sx={{ mb: 12, ml: { xs: 3, md: 6.25 } }}
+      sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}
     >
       {/*hasTakenTest ? (
         ''

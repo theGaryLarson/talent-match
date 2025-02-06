@@ -1,6 +1,5 @@
 "use client";
 import Avatar from "../Avatar";
-import Skills from "../Skills";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import Bookmark from "../Bookmark";
@@ -146,6 +145,7 @@ export default function JobListingCardView({
         <ApplyToJobButton
           id={joblisting.job_posting_id}
           appliedStatus={joblisting.jobStatus}
+          unPublishDate={joblisting.unpublish_date}
         />
       </Stack>
     </Card>

@@ -9,9 +9,14 @@ import PillButton from "../PillButton";
 interface Props {
   id: string;
   appliedStatus?: string;
+  unPublishDate?: Date;
 }
 
-export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
+export default function ApplyToJobButton({
+  id,
+  appliedStatus = "",
+  unPublishDate,
+}: Props) {
   // Initial state based on appliedStatus
   const [hasApplied, setHasApplied] = useState<boolean>(
     appliedStatus == JobStatus.Screened ||
@@ -69,6 +74,7 @@ export default function ApplyToJobButton({ id, appliedStatus = "" }: Props) {
   return (
     <PillButton
       disabled={
+        (unPublishDate && unPublishDate <= new Date()) ||
         appliedStatus == JobStatus.Screened ||
         appliedStatus == JobStatus.Interviewing ||
         appliedStatus == JobStatus.Negotiating ||

@@ -34,7 +34,7 @@ async function fetchJobPosts(
   jobTitle: string = "",
   bookmarked: boolean = false,
   skills: string[] = [],
-  zipCode: string = "",
+  city: string[] = [],
   profession: string = "",
   industrySector: string[] = [],
   employmentType: string[] = [],
@@ -51,7 +51,7 @@ async function fetchJobPosts(
       jobTitle,
       bookmarked,
       skills,
-      zipCode,
+      city,
       profession,
       industrySector,
       employmentType,
@@ -76,7 +76,7 @@ export default function JobListingsContent() {
   // Query data
   const [jobTitle, setJobTitle] = useState<string>();
   const [skillsList, setSkillsList] = useState<string[]>();
-  const [zipCode, setZipCode] = useState<string>();
+  const [city, setCity] = useState<string[]>();
   const [profession, setProfession] = useState<string>();
   const [industry, setIndustry] = useState<string[]>();
   const [employmentType, setEmploymentType] = useState<string[]>();
@@ -136,7 +136,7 @@ export default function JobListingsContent() {
         jobTitle,
         value === 1,
         skillsList,
-        zipCode,
+        city,
         profession,
         industry,
         employmentType,
@@ -159,7 +159,7 @@ export default function JobListingsContent() {
     employmentType,
     jobTitle,
     skillsList,
-    zipCode,
+    city,
     value,
   ]);
 
@@ -171,7 +171,7 @@ export default function JobListingsContent() {
       setProfession(getParam("profession"));
       setEmploymentType(getArrayParam("employmentType"));
       setIndustry(getArrayParam("industry"));
-      setZipCode(getParam("zipcode"));
+      setCity(getArrayParam("city"));
       setPage(+getParam("page") == 0 ? 1 : +getParam("page"));
     };
 
@@ -180,7 +180,7 @@ export default function JobListingsContent() {
       jobTitle === undefined &&
       skillsList === undefined &&
       industry === undefined &&
-      zipCode === undefined &&
+      city === undefined &&
       page === undefined
     ) {
       initializeStateFromParams();
@@ -193,7 +193,7 @@ export default function JobListingsContent() {
       jobTitle !== undefined &&
       skillsList !== undefined &&
       industry !== undefined &&
-      zipCode !== undefined &&
+      city !== undefined &&
       page !== undefined
     ) {
       // Check that they are defined
@@ -208,13 +208,13 @@ export default function JobListingsContent() {
     profession,
     employmentType,
     industry,
-    zipCode,
+    city,
     page,
     execQuery,
   ]);
 
   return (
-    <Stack spacing={2.5} sx={{ ml: { xs: 3, md: 6.25 } }}>
+    <Stack spacing={2.5} sx={{ mx: { xs: 3, md: 6.25 } }}>
       <Typography
         variant="h2"
         sx={{ color: "secondary.main", fontSize: "2.5rem", fontWeight: 400 }}
@@ -256,53 +256,23 @@ export default function JobListingsContent() {
 
       {/* Filters */}
       <div className="mb-0 mt-1 flex flex-row flex-wrap">
-        {/* Zip Code */}
+        {/* City */}
         <div className="w-1/2 tablet:w-1/4">
-          <TextField
-            autoComplete="off"
-            label="Full/Partial Zip Code"
-            defaultValue={getParam("zipcode")}
-            size="small"
+          <MultipleSelectFilterAutoload
+            id="jobseeker-listview-city"
+            label="City"
+            apiAutoloadRoute="/api/postal-geo-data/city/get"
+            value={getArrayParam("city")}
             onChange={(event) => {
-              if (!isNaN(Number(event.target.value))) {
-                // is it purely numeric chars?
-                if (event.target.value.length <= 5) {
-                  // and not longer than 5 chars?
-                  setQueryParam("zipcode", event.target.value);
-                  setZipCode(event.target.value);
-                } else {
-                  // truncate
-                  event.target.value = Number.parseInt(
-                    event.target.value.slice(0, 5),
-                  ).toString();
-                }
-              } else {
-                // erase non-numeric chars
-                const closestInt = Number.parseInt(event.target.value);
-                event.target.value = isNaN(closestInt)
-                  ? ""
-                  : closestInt.toString();
-              }
+              setQueryParam(
+                "city",
+                encodeURIComponent(event.target.value.toString()),
+              );
+              if (typeof event.target.value === "string")
+                setCity([event.target.value]);
+              else setCity(event.target.value);
             }}
-            sx={{
-              padding: "0px 2px",
-              width: "100%",
-              "& .MuiInputBase-root": {
-                borderRadius: "9999px",
-                height: "1.75rem",
-              },
-              "& .MuiInputBase-input": {
-                boxShadow: "none",
-                "&:focus": { boxShadow: "none" },
-              },
-              "& .MuiInputLabel-root": {
-                fontSize: "0.875rem",
-                lineHeight: "1.25rem",
-                top: "15px",
-                left: "2px",
-                position: "relative",
-              },
-            }}
+            getOptionLabel={(option: { city: string }) => option.city}
           />
         </div>
         {/* Profession */}

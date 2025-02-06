@@ -474,7 +474,7 @@ export async function getJobListingsFiltered(request: Request) {
     jobTitle = "",
     bookmarked = false,
     skills = [],
-    zipCode = "",
+    city = [],
     profession = "",
     industrySector = [],
     employmentType = [],
@@ -564,10 +564,14 @@ export async function getJobListingsFiltered(request: Request) {
     });
   }
 
-  if (zipCode) {
+  if (city.length > 0) {
     andConditions.push({
-      zip: {
-        startsWith: zipCode,
+      company_addresses: {
+        locationData: {
+          city: {
+            in: city,
+          },
+        },
       },
     });
   }
@@ -613,8 +617,6 @@ export async function getJobListingsFiltered(request: Request) {
       where: andConditions.length > 0 ? { AND: andConditions } : undefined,
     }),
   ]);
-
-  console.log(filteredJobPostings);
 
   const transformedJobPostings = filteredJobPostings.map((posting) => {
     if (posting.jobApplications && posting.jobApplications.length > 0) {
