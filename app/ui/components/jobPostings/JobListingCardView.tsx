@@ -66,7 +66,9 @@ export default function JobListingCardView({
           {company_image && (
             <div className="shrink-0">{<Avatar imgsrc={company_image} />}</div>
           )}
-          <Typography sx={{ color: "rgba(25, 25, 25, 0.60)", fontWeight: 500 }}>
+          <Typography
+            sx={{ color: "neutral.900", opacity: 0.6, fontWeight: 500 }}
+          >
             {company_name}
           </Typography>
         </Stack>
