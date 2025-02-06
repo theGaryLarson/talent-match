@@ -406,8 +406,8 @@ export default function JobListingsContent() {
             sx={{
               "& .MuiPaginationItem-root:not(.Mui-selected):not(.MuiPaginationItem-ellipsis):not(.MuiPaginationItem-previousNext)":
                 {
-                  bgcolor: "#E5E5E5",
-                  "&:hover": { bgcolor: "#f6f6f6" },
+                  bgcolor: "neutral.200",
+                  "&:hover": { bgcolor: "neutral.100" },
                 },
               "& .MuiPaginationItem-root:not(.Mui-selected)": {
                 color: "secondary.main",

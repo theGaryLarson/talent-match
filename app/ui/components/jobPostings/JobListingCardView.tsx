@@ -100,10 +100,13 @@ export default function JobListingCardView({
         <Circle sx={{ fontSize: 8 }} />
         <Typography>
           Deadline:{" "}
-          {joblisting?.unpublish_date?.toLocaleString("en-US", {
-            month: "long",
-            day: "numeric",
-          })}
+          {joblisting?.unpublish_date
+            ? new Date(joblisting.unpublish_date).toLocaleDateString("en-us", {
+                month: "numeric",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "N/A"}
         </Typography>
       </Grid2>
       <Typography
