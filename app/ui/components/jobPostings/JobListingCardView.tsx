@@ -51,7 +51,12 @@ export default function JobListingCardView({
   return (
     <Card
       elevation={0}
-      sx={{ p: 3, borderRadius: "12px", transition: "box-shadow 0.3s", "&:hover": { boxShadow: 3 } }}
+      sx={{
+        p: 3,
+        borderRadius: "12px",
+        transition: "box-shadow 0.3s",
+        "&:hover": { boxShadow: 3 },
+      }}
     >
       <Stack
         direction={"row"}
