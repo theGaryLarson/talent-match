@@ -81,6 +81,7 @@ Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
 - [Set up local MSSQL Server](setup-MSSQL.md)
 - [Changing the DB schema](prisma-workflow.md)
 - [API Routes](API-routes.md)
+- [CSS Utilities & Styling Guide](styling-guide.md)
 
 ## Available `npm run` Scripts
 
