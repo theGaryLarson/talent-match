@@ -1,6 +1,7 @@
 import RoundedButton from "../ui/components/RoundedButton";
 import Image from "next/image";
 import TrainingProviderMembers from "../ui/components/TrainingProviderMembers";
+import { Link } from "@mui/material";
 
 //entire TWC landing page
 export const metadata = {
@@ -161,15 +162,21 @@ export default function Page() {
                   WHAT WE DO
                 </div>
                 <div className="text-4xl sm-tablet:text-6xl leading-none self-stretch text-cyan-700 font-normal font-['Roboto'] capitalize leading-10">
-                  Build A more inclusive tech future
+                  Build a Workforce for the Future
                 </div>
                 <div className="self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
-                  Our mission is to connect underrepresented candidates with
-                  in-demand tech jobs. We offer targeted training programs in IT
-                  and cybersecurity, along with personalized career coaching and
-                  networking opportunities. By bridging the gap between talent
-                  and opportunity, we are working to build a more diverse and
-                  innovative tech industry.
+                  Our mission is to meet the rapidly evolving IT/Cybersecurity needs of employers while connecting
+                  highly-qualified candidates with in-demand Tech jobs. The advanced training offered by Coalition
+                  partners assists candidates in accelerated productivity and a foundation for growth. Build quality
+                  through contributors with diverse backgrounds. Help evolve education and training at the speed of technology.
+                  </div>
+                  <RoundedButton
+                    content={"Join the Coalition"}
+                    link={"/join"}
+                    invertColor={true}
+                  ></RoundedButton>
+                <div className="self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
+                  <Link className="REPLACE-BEFORE-RELEASE" href="">Check out our education and training partners as well.</Link>
                 </div>
                 <div className="flex-col justify-start items-start flex">
                   <div className="w-px h-7 relative" />
