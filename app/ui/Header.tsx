@@ -142,7 +142,7 @@ const TopLevelLinks: LinkItem[] = [
     ],
   },
   {
-    name: "Coalition",
+    name: "Partners",
     href: "",
     dropDowns: [
       {
