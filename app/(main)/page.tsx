@@ -270,7 +270,9 @@ export default function Page() {
               Discover Essential Skills for Tomorrow&apos;s Workforce. Through
               our Coalition, gain valuable insights directly from employers for
               in-demand skills which will help align your curriculum with the
-              most current industry standards.
+              most current industry standards. Get your students HIRED.
+              <br />
+              Quarterly meetings: February, May, August, November
             </div>
             <div className="mt-4 justify-start items-start gap-5 inline-flex">
               <RoundedButton
