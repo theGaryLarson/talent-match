@@ -165,18 +165,23 @@ export default function Page() {
                   Build a Workforce for the Future
                 </div>
                 <div className="self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
-                  Our mission is to meet the rapidly evolving IT/Cybersecurity needs of employers while connecting
-                  highly-qualified candidates with in-demand Tech jobs. The advanced training offered by Coalition
-                  partners assists candidates in accelerated productivity and a foundation for growth. Build quality
-                  through contributors with diverse backgrounds. Help evolve education and training at the speed of technology.
-                  </div>
-                  <RoundedButton
-                    content={"Join the Coalition"}
-                    link={"/join"}
-                    invertColor={true}
-                  ></RoundedButton>
+                  Our mission is to meet the rapidly evolving IT/Cybersecurity
+                  needs of employers while connecting highly-qualified
+                  candidates with in-demand Tech jobs. The advanced training
+                  offered by Coalition partners assists candidates in
+                  accelerated productivity and a foundation for growth. Build
+                  quality through contributors with diverse backgrounds. Help
+                  evolve education and training at the speed of technology.
+                </div>
+                <RoundedButton
+                  content={"Join the Coalition"}
+                  link={"/join"}
+                  invertColor={true}
+                ></RoundedButton>
                 <div className="self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
-                  <Link className="REPLACE-BEFORE-RELEASE" href="">Check out our education and training partners as well.</Link>
+                  <Link href="/services/training-providers">
+                    Check out our education and training partners as well.
+                  </Link>
                 </div>
                 <div className="flex-col justify-start items-start flex">
                   <div className="w-px h-7 relative" />
