@@ -231,18 +231,23 @@ export default function Page() {
               className="laptop:hidden w-full shadow-none"
             />
             <div className="mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">
-              Meet your hiring needs
+              Unique Recruiting Access
             </div>
             <div className="mt-4 self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
-              We connect small and medium-sized businesses with skilled local
-              candidates in Software, IT/Cloud Support, Cybersecurity, and Data
-              Analytics. All candidates are vetted and curated, saving you time
-              and money on hiring.
+              We reduce your recruiting load by offering candidates from sources
+              not easily identified on the big job boards. Save time and money
+              by accessing candidates with the degrees and industry recognized
+              certifications you value
             </div>
             <div className="mt-4 justify-start items-start gap-5 inline-flex">
               <RoundedButton
-                content={"Discover Local Talent"}
+                content={"Search Talent"}
                 link={"/services/talent-search"}
+                invertColor={true}
+              ></RoundedButton>
+              <RoundedButton
+                content={"Post Jobs"}
+                link={"mailto:susanne.mata@computingforall.org"}
                 invertColor={true}
               ></RoundedButton>
             </div>
