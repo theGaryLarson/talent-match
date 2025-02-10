@@ -196,7 +196,7 @@ export default function page() {
             </div>
             <div className="flex-1 space-y-[10px]">
               <div className="relative h-[277.33px] w-[377px]">
-                <div className="absolute left-[36.86px] top-[188.71px] inline-flex flex-col items-start justify-start gap-[8.94px] rounded-lg bg-white p-[9.29px] shadow">
+                <div className="absolute left-[36.86px] top-[188.71px] inline-flex flex-col items-start justify-start gap-[8.94px] rounded-lg bg-white p-[9.29px] shadow-xs">
                   <div className="flex flex-col items-start justify-start gap-[2.98px]">
                     <div className="inline-flex items-center justify-start">
                       <div className="flex h-[7.92px] w-[7.92px] items-center justify-center">
@@ -210,7 +210,7 @@ export default function page() {
                     </div>
                   </div>
                 </div>
-                <div className="absolute left-[257.29px] top-[129.41px] inline-flex flex-col items-start justify-start gap-[10.06px] rounded-lg bg-white p-[9.29px] shadow">
+                <div className="absolute left-[257.29px] top-[129.41px] inline-flex flex-col items-start justify-start gap-[10.06px] rounded-lg bg-white p-[9.29px] shadow-xs">
                   <div className="flex flex-col items-start justify-start gap-[3.35px]">
                     <div className="inline-flex items-center justify-start">
                       <div className="flex h-[8.91px] w-[8.91px] items-center justify-center">
@@ -273,7 +273,7 @@ export default function page() {
                   src="/images/about-us/Chris Moore.png"
                   alt="Stock photo of smiling man"
                 />
-                <div className="absolute left-[12.57px] top-[60.33px] inline-flex flex-col items-start justify-start gap-3.5 rounded-xl bg-white p-[9.29px] shadow">
+                <div className="absolute left-[12.57px] top-[60.33px] inline-flex flex-col items-start justify-start gap-3.5 rounded-xl bg-white p-[9.29px] shadow-xs">
                   <div className="flex flex-col items-start justify-start gap-[4.66px]">
                     <div className="flex flex-col items-start justify-start">
                       <div className="text-right font-['Roboto'] text-sm font-bold leading-[18.68px] text-black/90">
@@ -302,7 +302,7 @@ export default function page() {
                     </svg>
                   </div>
                 </div>
-                <div className="absolute left-[110.81px] top-[246.88px] inline-flex h-[30.57px] flex-col items-start justify-start gap-[13.09px] rounded-[10.91px] bg-white/25 p-[9.29px] shadow backdrop-blur-[24.76px]">
+                <div className="absolute left-[110.81px] top-[246.88px] inline-flex h-[30.57px] flex-col items-start justify-start gap-[13.09px] rounded-[10.91px] bg-white/25 p-[9.29px] shadow-xs backdrop-blur-[24.76px]">
                   <div className="flex flex-col items-start justify-start gap-[4.36px]">
                     <div className="flex flex-col items-start justify-start">
                       <div className="text-center font-['Roboto'] text-[8.73px] font-normal leading-3 text-black/90">
@@ -311,7 +311,7 @@ export default function page() {
                     </div>
                   </div>
                 </div>
-                <div className="absolute left-[241.20px] top-[171.43px] inline-flex flex-col items-start justify-start gap-[11.18px] rounded-[9.31px] bg-white/50 p-[9.29px] shadow backdrop-blur-[24.76px]">
+                <div className="absolute left-[241.20px] top-[171.43px] inline-flex flex-col items-start justify-start gap-[11.18px] rounded-[9.31px] bg-white/50 p-[9.29px] shadow-xs backdrop-blur-[24.76px]">
                   <div className="flex flex-col items-start justify-start gap-[3.73px]">
                     <div className="inline-flex items-center justify-start">
                       <div className="flex h-[9.90px] w-[9.90px] items-center justify-center">

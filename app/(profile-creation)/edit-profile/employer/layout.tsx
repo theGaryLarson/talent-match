@@ -2,7 +2,6 @@
 
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
-import "@/app/ui/global.css";
 import "@/app/ui/profile-creation.css";
 import { roboto } from "@/app/ui/fonts";
 import ProfileCreationHeader from "@/app/ui/ProfileCreationHeader";

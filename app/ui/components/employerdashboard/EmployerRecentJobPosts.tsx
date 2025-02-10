@@ -51,7 +51,7 @@ export default function EmployerRecentJobPosts() {
       <div className="text-xl font-medium leading-relaxed text-black/90">
         Recent Job Posts
       </div>
-      <div className="gap-2 divide-y rounded-[10px] bg-white p-4 shadow">
+      <div className="gap-2 divide-y rounded-[10px] bg-white p-4 shadow-xs">
         {joblistings.map((job) => (
           <SingleJobPost
             key={job.job_posting_id}

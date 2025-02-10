@@ -22,13 +22,13 @@ export default function EmployerSignUpFinish() {
     <>
       <SignupHeader />
 
-      <main className="mx-auto max-w-screen-sm-tablet overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
+      <main className="mx-auto max-w-(--breakpoint-sm-tablet) overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
         <SignupPrompt
           vectorImgSrc={vectorImgSrc}
           prompt="It's free to set up your company with TWC. We work for YOU - providing customized solutions built within your budget to match your unique business needs. (placeholder)"
         />
         <section className="mx-auto w-full px-8 laptop:pt-24">
-          <form className="mx-auto flex flex-col gap-6 laptop:max-w-screen-sm-tablet">
+          <form className="mx-auto flex flex-col gap-6 laptop:max-w-(--breakpoint-sm-tablet)">
             <fieldset className="flex flex-col gap-3 disabled:text-gray-400">
               <div>
                 <input

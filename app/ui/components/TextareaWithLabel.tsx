@@ -20,7 +20,7 @@ export default function TextareaWithLabel({
         name={id}
         disabled={disabled}
         rows={5}
-        className="border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-blue-tw600 focus:outline-none focus:ring-0"
+        className="border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-blue-tw600 focus:outline-hidden focus:ring-0"
         {...rest}
       ></textarea>
       {!!children && (

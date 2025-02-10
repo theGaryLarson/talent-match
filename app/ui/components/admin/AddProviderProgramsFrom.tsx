@@ -175,7 +175,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
   };
 
   return (
-    <form className="border p-4 rounded" onSubmit={handleSubmit}>
+    <form className="border p-4 rounded-xs" onSubmit={handleSubmit}>
       <legend className="text-xl font-bold mb-4">Add Programs</legend>
       <div className="grid grid-cols-1">
         <label htmlFor="company">Select Program</label>
@@ -208,7 +208,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           required
           value={formData.programName}
           onChange={handleInputChange}
-          className="p-2 border rounded"
+          className="p-2 border rounded-xs"
         />
         <label htmlFor="logoUrl">Logo URL</label>
         <input
@@ -217,7 +217,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           name="logoUrl"
           value={formData.logoUrl}
           onChange={handleInputChange}
-          className="p-2 border rounded"
+          className="p-2 border rounded-xs"
         />
 
         <label htmlFor="description">Description</label>
@@ -226,7 +226,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           name="description"
           value={formData.description}
           onChange={handleInputChange}
-          className="p-2 border rounded"
+          className="p-2 border rounded-xs"
         />
         <label htmlFor="programLength">Program Length</label>
         <input
@@ -235,7 +235,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           name="programLength"
           value={formData.programLength}
           onChange={handleInputChange}
-          className="p-2 border rounded"
+          className="p-2 border rounded-xs"
         />
         <label>Program Location(s)</label>
         <StringListInputWithChips
@@ -263,7 +263,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           name="tuition"
           value={formData.tuition}
           onChange={handleInputChange}
-          className="p-2 border rounded"
+          className="p-2 border rounded-xs"
         />
 
         <label htmlFor="targetedJobRoles">Targeted Job Roles</label>
@@ -279,7 +279,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           name="fees"
           value={formData.fees}
           onChange={handleInputChange}
-          className="p-2 border rounded"
+          className="p-2 border rounded-xs"
         />
 
         <label htmlFor="costSummary">Cost Summary</label>
@@ -288,7 +288,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           name="costSummary"
           value={formData.costSummary}
           onChange={handleInputChange}
-          className="p-2 border rounded"
+          className="p-2 border rounded-xs"
         />
 
         <label htmlFor="getStartedUrl">Get Started URL</label>
@@ -298,7 +298,7 @@ export default function AddProviderProgramsForm(props: { providerId: string }) {
           name="getStartedUrl"
           value={formData.getStartedUrl}
           onChange={handleInputChange}
-          className="p-2 border rounded"
+          className="p-2 border rounded-xs"
         />
       </div>
       <DynamicForm entries={entries} setEntries={setEntries} />

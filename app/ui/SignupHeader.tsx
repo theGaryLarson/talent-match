@@ -7,7 +7,7 @@ export default function SignupHeader({ className }: { className?: string }) {
   return (
     <header className={"mx-8 bg-white " + className}>
       <nav
-        className="max-w-screen-lg mx-auto flex items-center justify-between py-6 laptop:px-8"
+        className="max-w-[theme(screens.lg)] mx-auto flex items-center justify-between py-6 laptop:px-8"
         aria-label="Global"
       >
         <div className="w-1/2">

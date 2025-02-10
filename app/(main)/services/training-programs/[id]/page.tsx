@@ -16,7 +16,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
 
   return (
     <div className="w-full bg-white flex-col justify-start items-start inline-flex">
-      <div className="self-stretch px-6 laptop:px-24 py-8 bg-gradient-to-b from-blue-700 to-blue-600 justify-start items-center gap-2.5 inline-flex">
+      <div className="self-stretch px-6 laptop:px-24 py-8 bg-linear-to-b from-blue-700 to-blue-600 justify-start items-center gap-2.5 inline-flex">
         <div className="w-full laptop:w-2/3 rounded-2xl flex-col justify-end items-start inline-flex">
           <div className="flex-col justify-center items-start gap-2.5 flex">
             {/* Edu Provider Logo */}

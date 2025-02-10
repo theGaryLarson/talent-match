@@ -217,7 +217,7 @@ export default function Header() {
             if (link.dropDowns != undefined && link.dropDowns != null) {
               return (
                 <Popover className="relative" key={link.name}>
-                  <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6">
+                  <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 hover:cursor-pointer">
                     {link.name}
                     <ChevronDownIcon
                       className="h-5 w-5 flex-none"
