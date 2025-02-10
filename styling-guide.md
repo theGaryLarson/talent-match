@@ -1,7 +1,7 @@
 # CSS Utility Classes & Styling Guide - _Tech Talent Showcase_
 
 This is intended for developer use on implementing stylings we have in place, please refer to the design team for latest information.
-At the moment we are utilizing MUI where applicable, Tailwind when necessary, and global.css when utility classes are not compatible.
+At the moment we are utilizing MUI where applicable and Tailwind when necessary.
 
 ## Reference Designs
 
@@ -10,7 +10,6 @@ At the moment we are utilizing MUI where applicable, Tailwind when necessary, an
 ## Files of Interest
 
 - @/mui.theme.tsx
-- @/tailwind.config.ts
 - app/ui/global.css
 
 ## Colors

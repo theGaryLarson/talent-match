@@ -54,10 +54,10 @@ export default function CircleBlurb() {
           src="/images/stock/2DAvatar.png"
           alt={""}
         />
-        <span className="w-[156.23px] h-[42.92px] left-[16.33px] top-[232.38px] absolute rounded-[7.07px] shadow flex items-center justify-center bg-white border border-black">
+        <span className="w-[156.23px] h-[42.92px] left-[16.33px] top-[232.38px] absolute rounded-[7.07px] shadow-xs flex items-center justify-center bg-white border border-black">
           ADD PROJECTS
         </span>
-        <span className="w-[174.25px] h-[42.92px] left-[447.05px] top-[301.44px] absolute rounded-[7.07px] shadow flex items-center justify-center bg-white border border-black">
+        <span className="w-[174.25px] h-[42.92px] left-[447.05px] top-[301.44px] absolute rounded-[7.07px] shadow-xs flex items-center justify-center bg-white border border-black">
           ADD CERTIFICATES
         </span>
 
@@ -65,11 +65,11 @@ export default function CircleBlurb() {
           <div className="w-[78.67px] h-[78.67px] left-0 top-0 absolute bg-[#047089] rounded-full" />
         </div>
 
-        <span className="w-[221.62px] h-[42.92px] left-[320.42px] top-[356.92px] absolute rounded-[7.07px] shadow flex items-center justify-center bg-white border border-black">
+        <span className="w-[221.62px] h-[42.92px] left-[320.42px] top-[356.92px] absolute rounded-[7.07px] shadow-xs flex items-center justify-center bg-white border border-black">
           ADD WORK EXPERIENCE
         </span>
 
-        <div className="w-64 h-[87.61px] p-[18.81px] left-[39.28px] top-[297px] absolute bg-white rounded-[18.81px] shadow flex-col justify-start items-start gap-[22.57px] inline-flex">
+        <div className="w-64 h-[87.61px] p-[18.81px] left-[39.28px] top-[297px] absolute bg-white rounded-[18.81px] shadow-xs flex-col justify-start items-start gap-[22.57px] inline-flex">
           <div className="flex-col justify-start items-start gap-[7.52px] flex">
             <div className="flex-col justify-start items-start flex">
               <div className="text-center text-black/90 text-[22.57px] font-bold font-['Roboto'] leading-[30.11px]">

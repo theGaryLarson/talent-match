@@ -14,7 +14,7 @@ export default async function EmployerTeamMembers(props: {
       <div className="text-xl font-medium leading-relaxed text-black/90">
         My team
       </div>
-      <div className="flex flex-wrap gap-[16px] rounded-[10px] bg-white p-4 shadow">
+      <div className="flex flex-wrap gap-[16px] rounded-[10px] bg-white p-4 shadow-xs">
         <ShareMenu href={"/signin"}>
           <div className="flex items-center gap-[8px]">
             <Avatar imgsrc={"/images/plusIcon.png"} scale={0.75} />

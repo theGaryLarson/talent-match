@@ -1,6 +1,165 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-phone: 430px;
+  --breakpoint-sm-tablet: 600px;
+  --breakpoint-tablet: 904px;
+  --breakpoint-laptop: 1240px;
+  --breakpoint-desktop: 1440px;
+
+  --font-*: initial;
+  --font-roboto: Roboto;
+
+  --grid-template-columns-13: repeat(13, minmax(0, 1fr));
+
+  --color-neutral-100: #f6f6f6;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #cccccc;
+  --color-neutral-400: #b3b3b3;
+  --color-neutral-500: #999999;
+  --color-neutral-600: #8f8f8f;
+  --color-neutral-700: #707070;
+  --color-neutral-800: #363636;
+  --color-neutral-900: #191919;
+  --color-neutral-white: #ffffff;
+  --color-neutral-black: #000000;
+
+  --color-blue-100: #e1f5f9;
+  --color-blue-200: #d6f1f7;
+  --color-blue-300: #81bfcd;
+  --color-blue-400: #4fa5ba;
+  --color-blue-500: #3699b0;
+  --color-blue-600: #006682;
+  --color-blue-700: #003350;
+  --color-blue-tw400: #2589fe;
+  --color-blue-tw500: #0070f3;
+  --color-blue-tw600: #2f6feb;
+  --color-blue-background: #457996;
+  --color-blue-border: #4c809d;
+  --color-blue-text: #457996;
+  --color-blue-textdark: #014361;
+  --color-blue-textdark2: #014260;
+  --color-blue-text2: #047f9c;
+  --color-blue-trans: #457996bf;
+  --color-blue-link: #1e88e5;
+
+  --color-green-100: #effaf1;
+  --color-green-200: #dff5e2;
+  --color-green-300: #a0e2a9;
+  --color-green-400: #81d88d;
+  --color-green-500: #2e9b3d;
+  --color-green-600: #158124;
+  --color-green-700: #00680a;
+  --color-green-800: #003500;
+
+  --color-primary-25: #f2fafc;
+  --color-primary-50: #e6f5f9;
+  --color-primary-100: #cdebf3;
+  --color-primary-200: #9bd8e7;
+  --color-primary-300: #69c5db;
+  --color-primary-400: #37b2cf;
+  --color-primary-500: #059fc3;
+  --color-primary-600: #047f9c;
+  --color-primary-700: light-dark(#035f75, #ff0);
+  --color-primary-800: #023f4e;
+  --color-primary-900: #011f27;
+  --color-primary-main: #047f9c;
+  --color-primary-light: #c4ebf3;
+
+  --color-secondary-main: #014260;
+
+  --color-success-main: #61ce70;
+  --color-success-bg: #61ce70;
+  --color-success-text: #001c00;
+
+  --color-warning-main: #ec7304;
+  --color-warning-bg: #ec7304;
+  --color-warning-text: #ffffff;
+
+  --color-error-main: #db241c;
+  --color-error-bg: #db241c;
+  --color-error-text: #ffffff;
+
+  --color-accent-main: #61ce70;
+  --color-accent-light: #c1f2c8;
+
+  --color-button-primary-idle-bg: #047f9c;
+  --color-button-primary-idle-text: white;
+
+  --color-button-primary-hover-bg: #4fa5ba;
+  --color-button-primary-hover-text: white;
+
+  --color-button-primary-focus-bg: #3699b0;
+  --color-button-primary-focus-text: white;
+
+  --color-button-primary-active-bg: #006682;
+  --color-button-primary-active-text: white;
+
+  --color-button-primary-disabled-bg: #e5e5e5;
+  --color-button-primary-disabled-text: #1919199a;
+
+  --color-button-secondary-idle-bg: #f6f6f6;
+  --color-button-secondary-idle-text: #014260;
+
+  --color-button-secondary-hover-bg: #e1f5f9;
+  --color-button-secondary-hover-text: #014260;
+
+  --color-button-secondary-focus-bg: #d6f1f7;
+  --color-button-secondary-focus-text: #014260;
+
+  --color-button-secondary-active-bg: #c4ebf3;
+  --color-button-secondary-active-text: #014260;
+
+  --color-button-secondary-disabled-bg: #f6f6f6;
+  --color-button-secondary-disabled-text: #8f8f8f;
+
+  --color-gray-800: #363636;
+  --color-gray-trans: #18181875;
+  --color-gray-background: #f3f3f3;
+  --color-gray-bg: #f5f5f5;
+  --color-gray-background3: #f6f6f6;
+  --color-gray-text: #151b26;
+
+  --text-fluid-lg: clamp(30px, 8vw, 66px);
+  --text-fluid-xl: clamp(48px, 10vw, 88px);
+
+  --leading-fluid-lg: clamp(45px, 12vw, 79.2px);
+  --leading-fluid-lg-snug: clamp(30px, 8vw, 66px);
+  --leading-fluid-xl: clamp(60px, 16vw, 123.2px);
+
+  --background-image-services-hero: url("/images/stock/people-using-digital-device-while-meeting 1.jpg");
+  --background-image-employer-hero-1: url("/images/stock/AdobeStock_816883006_forweb 1.png");
+  --background-image-jobseeker-hero-1: linear-gradient(
+      to left,
+      #01161b00,
+      #01161b88
+    ),
+    url("/images/stock/Above Fold.png");
+  --background-image-jobseeker-bottom-1: url("/images/stock/59dfec5cf3bb750f6868c1291599a4ed.jpeg");
+  --background-image-blue-square: url("/blue-bullet.png");
+  --background-image-quote: url("/images/stock/quote-bg-1.jpg");
+
+  --list-style-type-square: square;
+
+  --list-style-image-blue-square: url("/blue-bullet.png");
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+/*
+@layer theme {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-neutral-700: oklch(57.06% 0.2121 264.665);
+    }
+  }
+}
+*/
 
 input[type="number"] {
   -moz-appearance: textfield;
@@ -19,91 +178,9 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .REPLACE-BEFORE-RELEASE {
   @apply text-fuchsia-500 font-bold;
-  @apply bg-gradient-to-r from-fuchsia-300 via-slate-400 via-50% to-fuchsia-300;
+  @apply bg-linear-to-r from-fuchsia-300 via-slate-400 via-50% to-fuchsia-300;
 }
 
 .LINK {
   @apply font-semibold text-blue-link underline;
-}
-
-:root {
-  /* Neutral */
-  --neutral-white: theme("colors.neutral.white");
-  --neutral-100: theme("colors.neutral.100");
-  --neutral-200: theme("colors.neutral.200");
-  --neutral-300: theme("colors.neutral.300");
-  --neutral-400: theme("colors.neutral.400");
-  --neutral-500: theme("colors.neutral.500");
-  --neutral-600: theme("colors.neutral.600");
-  --neutral-700: theme("colors.neutral.700");
-  --neutral-800: theme("colors.neutral.800");
-  --neutral-900: theme("colors.neutral.900");
-  --neutral-black: theme("colors.neutral.black");
-
-  /* Blue */
-  --blue-100: theme("colors.blue.100");
-  --blue-200: theme("colors.blue.200");
-  --blue-300: theme("colors.blue.300");
-  --blue-400: theme("colors.blue.400");
-  --blue-500: theme("colors.blue.500");
-  --blue-600: theme("colors.blue.600");
-  --blue-700: theme("colors.blue.700");
-  --blue-tw400: theme("colors.blue.tw400");
-  --blue-tw500: theme("colors.blue.tw500");
-  --blue-tw600: theme("colors.blue.tw600");
-  --blue-background: theme("colors.blue.background");
-  --blue-border: theme("colors.blue.border");
-  --blue-text: theme("colors.blue.text");
-  --blue-textdark: theme("colors.blue.textdark");
-  --blue-textdark2: theme("colors.blue.textdark2");
-  --blue-text2: theme("colors.blue.text2");
-  --blue-trans: theme("colors.blue.trans");
-  --blue-link: theme("colors.blue.link");
-
-  /* Green */
-  --green-100: theme("colors.green.100");
-  --green-200: theme("colors.green.200");
-  --green-300: theme("colors.green.300");
-  --green-400: theme("colors.green.400");
-  --green-500: theme("colors.green.500");
-  --green-600: theme("colors.green.600");
-  --green-700: theme("colors.green.700");
-  --green-800: theme("colors.green.800");
-
-  /* Primary */
-  --primary-main: theme("colors.primary.main");
-  --primary-light: theme("colors.primary.light");
-  --primary-25: theme("colors.primary.25");
-  --primary-50: theme("colors.primary.50");
-  --primary-100: theme("colors.primary.100");
-  --primary-200: theme("colors.primary.200");
-  --primary-300: theme("colors.primary.300");
-  --primary-400: theme("colors.primary.400");
-  --primary-500: theme("colors.primary.500");
-  --primary-600: theme("colors.primary.600");
-  --primary-700: theme("colors.primary.700");
-  --primary-800: theme("colors.primary.800");
-  --primary-900: theme("colors.primary.900");
-
-  /* Secondary */
-  --secondary-main: theme("colors.secondary.main");
-
-  /* Success */
-  --success-main: theme("colors.success.main");
-  --success-bg: theme("colors.success.bg");
-  --success-text: theme("colors.success.text");
-
-  /* Warning */
-  --warning-main: theme("colors.warning.main");
-  --warning-bg: theme("colors.warning.bg");
-  --warning-text: theme("colors.warning.text");
-
-  /* Error */
-  --error-main: theme("colors.error.main");
-  --error-bg: theme("colors.error.bg");
-  --error-text: theme("colors.error.text");
-
-  /* Accent */
-  --accent-main: theme("colors.accent.main");
-  --accent-light: theme("colors.accent.light");
 }

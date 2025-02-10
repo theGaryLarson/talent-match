@@ -35,7 +35,7 @@ export default function Page() {
             width={4096}
             height={2213}
             alt="Stock photo"
-            className="w-11/12 tablet:w-3/4 z-50 rounded-3xl shadow"
+            className="w-11/12 tablet:w-3/4 z-50 rounded-3xl shadow-xs"
           />
           {/* Top rounded background rectangle */}
           <div className="w-full h-[40rem] z-0 absolute top-1/2 inline-flex h-72 bg-blue-200 rounded-tl-3xl rounded-tr-3xl" />
@@ -155,7 +155,7 @@ export default function Page() {
                   width={4096}
                   height={2731}
                   alt="What we do"
-                  className="laptop:hidden mb-4 w-full aspect-square rounded-3xl shadow object-cover"
+                  className="laptop:hidden mb-4 w-full aspect-square rounded-3xl shadow-xs object-cover"
                 />
                 <div className="self-stretch text-sky-900 text-xl font-semibold font-['Roboto'] capitalize leading-snug tracking-widest">
                   WHAT WE DO
@@ -180,7 +180,7 @@ export default function Page() {
                 width={4096}
                 height={2731}
                 alt="What we do"
-                className="hidden laptop:block w-96 h-96 rounded-3xl shadow object-cover"
+                className="hidden laptop:block w-96 h-96 rounded-3xl shadow-xs object-cover"
               />
             </div>
           </div>
