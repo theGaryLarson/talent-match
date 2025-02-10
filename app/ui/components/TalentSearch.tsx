@@ -452,7 +452,7 @@ export default function TalentSearch() {
         {!loading ? (
           <Pagination
             variant="outlined"
-            shape="rounded-xs"
+            shape="rounded"
             count={Math.ceil((totalResults ?? 1) / resultsPerPage)}
             page={getParam("page") != "" ? +getParam("page") : 1}
             onChange={handlePageChange}
