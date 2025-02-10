@@ -324,8 +324,8 @@ export default function Page() {
                 you
               </span>
               <span className="text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
-                . Showcase your skills, connect directly with local companies,
-                and access exclusive career development resources. Create your
+                . Showcase your skills, connect directly with employers, and
+                access exclusive career development resources. Create your
                 profile today and take the next step toward your dream tech
                 role.
               </span>
