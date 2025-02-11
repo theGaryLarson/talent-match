@@ -11,7 +11,7 @@ export default async function SignInPage({
 
   console.log(providerMap);
   return (
-    <main className="mx-auto max-w-screen-sm-tablet">
+    <main className="mx-auto max-w-(--breakpoint-sm-tablet)">
       {/* <SignupPrompt/> */}
       <section className="flex w-full flex-col gap-8 px-8 pt-16 laptop:pt-24">
         <h1 className="text-[2.125rem]">Choose an account to log in</h1>

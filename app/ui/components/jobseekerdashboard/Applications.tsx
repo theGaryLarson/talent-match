@@ -32,6 +32,10 @@ const statusConfig: StatusConfigType = {
     color: "success",
     variant: "outlined",
   },
+  [JobStatus.Screened]: {
+    color: "secondary",
+    variant: "outlined",
+  },
   [JobStatus.Interviewing]: {
     color: "primary",
     variant: "outlined",
@@ -104,7 +108,7 @@ export default async function Applications({
           href="/services/joblistings"
           disableElevation
           sx={{
-            backgroundColor: "#f6f6f6",
+            backgroundColor: "neutral.100",
             color: "secondary.main",
           }}
         >

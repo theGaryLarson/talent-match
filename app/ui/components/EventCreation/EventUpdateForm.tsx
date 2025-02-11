@@ -177,7 +177,7 @@ export default function EventUpdateForm() {
         onChange={(e) => {
           setSelectedEventId(e.target.value);
         }}
-        className="mt-2 p-2 border rounded w-full"
+        className="mt-2 p-2 border rounded-xs w-full"
       >
         <option value="">--Please Select An Event--</option>
         {existingEvents?.map((ev) => (
@@ -198,7 +198,7 @@ export default function EventUpdateForm() {
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
               required
-              className="mt-2 p-2 border rounded w-full"
+              className="mt-2 p-2 border rounded-xs w-full"
             />
           </div>
           <div>
@@ -214,7 +214,7 @@ export default function EventUpdateForm() {
               value={eventLocation}
               onChange={(e) => setEventLocation(e.target.value)}
               required
-              className="mt-2 p-2 border rounded w-full"
+              className="mt-2 p-2 border rounded-xs w-full"
             />
           </div>
 
@@ -228,7 +228,7 @@ export default function EventUpdateForm() {
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
               required
-              className="mt-2 p-2 border rounded w-full"
+              className="mt-2 p-2 border rounded-xs w-full"
             />
           </div>
           <div>
@@ -241,7 +241,7 @@ export default function EventUpdateForm() {
               value={duration}
               onChange={(e) => setDuration(e.target.value as unknown as number)}
               required
-              className="mt-2 p-2 border rounded w-full"
+              className="mt-2 p-2 border rounded-xs w-full"
             />
           </div>
 
@@ -294,7 +294,7 @@ export default function EventUpdateForm() {
                 value={registerLink}
                 onChange={(e) => setRegisterLink(e.target.value)}
                 required
-                className="mt-2 p-2 border rounded w-full"
+                className="mt-2 p-2 border rounded-xs w-full"
               />
             </div>
           )}
@@ -309,7 +309,7 @@ export default function EventUpdateForm() {
                 value={joinMeetingLink}
                 onChange={(e) => setJoinMeetingLink(e.target.value)}
                 required
-                className="mt-2 p-2 border rounded w-full"
+                className="mt-2 p-2 border rounded-xs w-full"
               />
             </div>
           )}
@@ -323,7 +323,7 @@ export default function EventUpdateForm() {
               value={eventBlurb}
               onChange={(e) => setEventBlurb(e.target.value)}
               required
-              className="mt-2 p-2 border rounded w-full"
+              className="mt-2 p-2 border rounded-xs w-full"
             />
           </div> */}
           <div>
@@ -343,7 +343,7 @@ export default function EventUpdateForm() {
               id="eventType"
               value={eventType}
               onChange={(e) => setEventType(e.target.value as EventTypeEnum)} // Cast to EventType
-              className="mt-2 p-2 border rounded w-full"
+              className="mt-2 p-2 border rounded-xs w-full"
             >
               {Object.values(EventTypeEnum).map((type) => (
                 <option key={type} value={type}>

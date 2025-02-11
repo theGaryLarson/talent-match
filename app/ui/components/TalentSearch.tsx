@@ -12,7 +12,6 @@ import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO
 import MultipleSelectFilterAutoload from "@/app/ui/components/mui/MultiSelectFilterAutoload";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import Slider from "@mui/material/Slider";
 import { TrainingProviderDropdownDTO } from "@/data/dtos/TrainingProviderDropdownDTO";
 import SingleSelectFilterAutoload from "@/app/ui/components/mui/SingleSelectFilterAutoload";
 import { useSession } from "next-auth/react";
@@ -30,8 +29,6 @@ async function fetchFilteredJobSeekerCardView(
   industrySector: string[] = [],
   educationLevel: string = "",
   trainingProvider: string = "",
-  yearsWorkExpMin: number = 0,
-  yearsWorkExpMax: number | undefined = undefined,
   zipCode: string = "",
   sortBy: string = "yearsExp",
   maxResults: number = resultsPerPage,
@@ -42,7 +39,6 @@ async function fetchFilteredJobSeekerCardView(
     pool2 = true,
     pool3 = false;
 
-  if (yearsWorkExpMax == 5) yearsWorkExpMax = undefined; // API expects undefined for max to handle 5+ yearsExp
   const response = await fetch("/api/jobseekers/query", {
     // Make the request
     method: "POST",
@@ -54,8 +50,6 @@ async function fetchFilteredJobSeekerCardView(
       industrySector,
       educationLevel,
       trainingProvider,
-      yearsWorkExpMin,
-      yearsWorkExpMax,
       zipCode,
       sortBy,
       maxResults,
@@ -99,8 +93,6 @@ export default function TalentSearch() {
   const [industry, setIndustry] = useState<string[]>();
   const [eduLevel, setEduLevel] = useState<string>();
   const [trainingProvider, setTrainingProvider] = useState<string>();
-  const [yearsExpMin, setYearsExpMin] = useState<number>();
-  const [yearsExpMax, setYearsExpMax] = useState<number>();
   const [zipCode, setZipCode] = useState<string>();
 
   // Sorting and pagination
@@ -157,8 +149,6 @@ export default function TalentSearch() {
         industry,
         eduLevel,
         trainingProvider,
-        yearsExpMin,
-        yearsExpMax,
         zipCode,
         sortBy,
         resultsPerPage,
@@ -172,17 +162,7 @@ export default function TalentSearch() {
     } finally {
       setLoading(false);
     }
-  }, [
-    skillsList,
-    industry,
-    eduLevel,
-    trainingProvider,
-    yearsExpMin,
-    yearsExpMax,
-    zipCode,
-    sortBy,
-    page,
-  ]);
+  }, [skillsList, industry, eduLevel, trainingProvider, zipCode, sortBy, page]);
 
   useEffect(() => {
     const fetchBookmarked = async () => {
@@ -215,8 +195,6 @@ export default function TalentSearch() {
       industry == undefined &&
       eduLevel == undefined &&
       trainingProvider == undefined &&
-      yearsExpMin == undefined &&
-      yearsExpMax == undefined &&
       zipCode == undefined &&
       sortBy == undefined &&
       page == undefined
@@ -225,10 +203,6 @@ export default function TalentSearch() {
       setIndustry(getArrayParam("industry"));
       setEduLevel(getParam("eduLevel"));
       setTrainingProvider(getParam("trainingProvider"));
-      setYearsExpMin(+getParam("yearsExpMin"));
-      setYearsExpMax(
-        +getParam("yearsExpMax") == 0 ? 5 : +getParam("yearsExpMax"),
-      );
       setZipCode(getParam("zipcode"));
       setSortBy(getParam("sort") != "" ? getParam("sort") : "yearsExp");
       const pageParam = getParam("page");
@@ -241,17 +215,7 @@ export default function TalentSearch() {
       }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
       return () => clearTimeout(timeoutId);
     }
-  }, [
-    skillsList,
-    industry,
-    eduLevel,
-    trainingProvider,
-    yearsExpMin,
-    yearsExpMax,
-    zipCode,
-    sortBy,
-    page,
-  ]);
+  }, [skillsList, industry, eduLevel, trainingProvider, zipCode, sortBy, page]);
 
   return (
     <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8 w-full">
@@ -306,7 +270,7 @@ export default function TalentSearch() {
         <div className="w-1/2 tablet:w-1/3">
           <SingleSelectFilter
             id="jobseeker-listview-edulevel"
-            label="Highest Degree"
+            label="Minimum Degree"
             value={getArrayParam("edulevel")}
             onChange={(event) => {
               setQueryParam(
@@ -318,17 +282,23 @@ export default function TalentSearch() {
             options={[
               { label: "Any", value: "" },
               { label: "Doctorate", value: "Doctorate" },
-              { label: "Master's Degree", value: "Masters" },
-              { label: "Bachelor's Degree", value: "Bachelors" },
-              { label: "Associate's Degree", value: "Associates" },
+              { label: "Master's Degree", value: "Master's Degree" },
+              { label: "Bachelor's Degree", value: "Bachelor's Degree" },
+              { label: "Associate's Degree", value: "Associates's Degree" },
               {
                 label: "Vocational Qualification / Certification",
-                value: "VocationalQualification",
+                value: "Certificate (less than two years)",
               },
-              { label: "High School Diploma", value: "HighSchool" },
+              {
+                label: "Post High School",
+                value: "Some training or study post high school",
+              },
+              { label: "High School Diploma", value: "High School Diploma" },
               { label: "GED", value: "GED" },
-              { label: "Primary Education", value: "PrimaryEducation" },
-              { label: "No Formal Education", value: "NoFormalEducation" },
+              {
+                label: "No Formal Education",
+                value: "Not yet completed High School",
+              },
             ]}
           ></SingleSelectFilter>
         </div>
@@ -407,45 +377,8 @@ export default function TalentSearch() {
           />
         </div>
 
-        {/* Years of Experience */}
-        <div className="float-left items-center px-4 w-1/2 tablet:w-1/3">
-          <p className="text-sm text-slate-600 text-center relative top-2">
-            Years of Experience
-          </p>
-          <Slider
-            sx={{ color: "#0891b2" }}
-            size="small"
-            value={[
-              +getParam("yearsExpMin"),
-              +getParam("yearsExpMax") == 0 ? 5 : +getParam("yearsExpMax"),
-            ]}
-            onChange={(event: Event, newValue: number | number[]) => {
-              if (typeof newValue !== "number") {
-                setYearsExpMin(newValue[0]);
-                setQueryParam("yearsExpMin", newValue[0].toString());
-                setYearsExpMax(newValue[1]);
-                setQueryParam("yearsExpMax", newValue[1].toString());
-              }
-            }}
-            valueLabelDisplay="off"
-            getAriaLabel={() => "Years of Experience filter range"}
-            getAriaValueText={(value: number, index: number) => {
-              return index == 0 ? "min: " + value : "max: " + value;
-            }}
-            step={1}
-            marks={[
-              { value: 0, label: "0" },
-              { value: 1, label: "1" },
-              { value: 2, label: "2" },
-              { value: 3, label: "3" },
-              { value: 4, label: "4" },
-              { value: 5, label: "5+" },
-            ]}
-            min={0}
-            max={5}
-            disableSwap
-          />
-        </div>
+        {/* Years of Experience, Removed at Marketing's request */}
+        <div className="float-left items-center px-4 w-1/2 tablet:w-1/3"></div>
 
         {/* Sorting */}
         <div className="float-right mt-6">
@@ -459,7 +392,7 @@ export default function TalentSearch() {
             }}
             options={[
               // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
-              { label: "Years of Experience", value: "yearsExp" },
+              // { label: "Years of Experience", value: "yearsExp" },
               { label: "Highest Degree", value: "highestDegree" },
               { label: "Newest", value: "newest" },
             ]}

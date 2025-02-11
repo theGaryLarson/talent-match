@@ -1,6 +1,6 @@
 import { SkillDTO } from "@/data/dtos/SkillDTO";
-import Pill from "./Pill";
-import { Grid2 } from "@mui/material";
+import { Chip, Grid2 } from "@mui/material";
+import Link from "next/link";
 
 export default function Skills({
   skillsList,
@@ -26,20 +26,23 @@ export default function Skills({
   return (
     <Grid2 container gap={1}>
       {skillsList.map((pill) => (
-        <Pill
+        <Chip
+          component={Link}
+          clickable
+          color="primary"
           key={pill?.skill_id}
-          text={pill?.skill_name}
+          label={pill?.skill_name}
           href={pill?.skill_info_url}
-          grayscale={false}
         />
       ))}
       {/* N-maxNumSkills link here */}
       {jobseekerID != null && leftoverSkillsCount > 0 ? (
-        <Pill
+        <Chip
+          component={Link}
+          clickable
           key={"leftoverSkills"}
-          text={"+" + leftoverSkillsCount}
+          label={"+" + leftoverSkillsCount}
           href={"/services/jobseekers/" + jobseekerID + "#skills"}
-          grayscale={true}
         />
       ) : (
         ""

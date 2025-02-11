@@ -12,12 +12,12 @@ export default function Page() {
       <JobSeekerPageBanner />
       <div className="container mx-auto flex flex-col items-center space-y-8 px-8 py-16 md:px-12 lg:px-16">
         <div className="text-center">
-          <span className="font-['Roboto'] text-6xl font-normal leading-[66px] text-[#014260]">
+          <span className="font-['Roboto'] text-6xl font-normal leading-[66px] text-secondary-main">
             It&apos;s Not a Job Board—
             <br />
             It&apos;s a{" "}
           </span>
-          <span className="font-['Roboto'] text-6xl font-medium leading-[66px] text-[#047f9c]">
+          <span className="font-['Roboto'] text-6xl font-medium leading-[66px] text-primary-main">
             Launchpad
           </span>
         </div>
@@ -28,10 +28,10 @@ export default function Page() {
         <br />
         <CircleBlurb />
         <div className="text-center">
-          <span className="text-[#014260] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
+          <span className="text-secondary-main text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
             Talent{" "}
           </span>
-          <span className="text-[#047f9c] text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
+          <span className="text-primary-main text-6xl font-normal font-['Roboto'] capitalize leading-[66px]">
             Portal
           </span>
         </div>

@@ -278,6 +278,19 @@ export async function ApplyToJob(jobPostingId: string) {
       );
     }
 
+    const jobPosting = await prisma.job_postings.findUnique({
+      where: { job_posting_id: jobPostingId },
+    });
+
+    if (!jobPosting) {
+      throw new Error("Job posting not found");
+    }
+
+    const currentDate = new Date();
+    if (currentDate > jobPosting.unpublish_date) {
+      throw new Error("Cannot apply to job: the unpublish date has passed");
+    }
+
     const existingApplication = await prisma.jobseekerJobPosting.findFirst({
       where: {
         jobPostId: jobPostingId,
@@ -286,6 +299,14 @@ export async function ApplyToJob(jobPostingId: string) {
     });
 
     if (existingApplication) {
+      if (
+        existingApplication.jobStatus !== JobStatus.Applied &&
+        existingApplication.jobStatus !== JobStatus.IWithdrew
+      ) {
+        throw new Error(
+          " Cannot change job status to apply: application is already being processed.",
+        );
+      }
       return await prisma.jobseekerJobPosting.update({
         where: {
           id: existingApplication.id,
@@ -351,6 +372,19 @@ export async function WithdrawFromJob(jobPostingId: string) {
       );
     }
 
+    const jobPosting = await prisma.job_postings.findUnique({
+      where: { job_posting_id: jobPostingId },
+    });
+
+    if (!jobPosting) {
+      throw new Error("Job posting not found");
+    }
+
+    const currentDate = new Date();
+    if (currentDate > jobPosting.unpublish_date) {
+      throw new Error("Cannot withdraw from job: unpublish date has passed");
+    }
+
     const existingApplication = await prisma.jobseekerJobPosting.findFirst({
       where: {
         jobPostId: jobPostingId,
@@ -359,6 +393,14 @@ export async function WithdrawFromJob(jobPostingId: string) {
     });
 
     if (existingApplication) {
+      if (
+        existingApplication.jobStatus !== JobStatus.Applied &&
+        existingApplication.jobStatus !== JobStatus.IWithdrew
+      ) {
+        throw new Error(
+          " Cannot withdraw from job: application is already being processed.",
+        );
+      }
       return await prisma.jobseekerJobPosting.update({
         where: {
           id: existingApplication.id,
@@ -509,9 +551,12 @@ export async function getJobListingsFiltered(request: Request) {
 
   const {
     jobTitle = "",
+    bookmarked = false,
     skills = [],
+    city = [],
+    profession = "",
     industrySector = [],
-    zipCode = "",
+    employmentType = [],
     sortBy = "publish_date", // eslint-disable-line @typescript-eslint/no-unused-vars
     page = 1,
     maxResults = 50,
@@ -525,6 +570,27 @@ export async function getJobListingsFiltered(request: Request) {
   const normalizedSkills: string[] = skills.filter(
     (skill: string) => skill && skill.trim() !== "",
   );
+
+  andConditions.push({
+    unpublish_date: { gte: new Date() },
+  });
+
+  if (bookmarked) {
+    if (!jobseekerId) {
+      return {
+        filteredJobPostings: [],
+        totalCount: 0,
+      };
+    }
+    andConditions.push({
+      jobApplications: {
+        some: {
+          jobseekerId: jobseekerId,
+          isBookmarked: true,
+        },
+      },
+    });
+  }
 
   if (jobTitle) {
     andConditions.push({
@@ -559,10 +625,32 @@ export async function getJobListingsFiltered(request: Request) {
     });
   }
 
-  if (zipCode) {
+  if (employmentType.length > 0) {
     andConditions.push({
-      zip: {
-        startsWith: zipCode,
+      employment_type: {
+        in: employmentType,
+      },
+    });
+  }
+
+  if (profession.length > 0) {
+    andConditions.push({
+      techArea: {
+        title: {
+          equals: profession,
+        },
+      },
+    });
+  }
+
+  if (city.length > 0) {
+    andConditions.push({
+      company_addresses: {
+        locationData: {
+          city: {
+            in: city,
+          },
+        },
       },
     });
   }
@@ -652,6 +740,7 @@ export async function getJobSeekerBookmarkedJobs() {
       },
       where: {
         jobseekerId: session.user.jobseekerId,
+        job_posting: { unpublish_date: { gte: new Date() } },
         isBookmarked: true,
       },
     });

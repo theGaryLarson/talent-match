@@ -233,7 +233,7 @@ export default function Page() {
               required
               minLength={2}
               maxLength={200}
-              className="rounded border p-2"
+              className="rounded-xs border p-2"
             />
           </div>
 
@@ -243,7 +243,7 @@ export default function Page() {
               name="subcategory"
               id="subcategory"
               required
-              className="rounded border p-2"
+              className="rounded-xs border p-2"
             >
               <option value="">--Please Select a Subcategory--</option>
               {skillSubcategories?.map((subcat) => (
@@ -269,7 +269,7 @@ export default function Page() {
               required
               pattern="https://.*"
               placeholder="https://www.example.com"
-              className="rounded border p-2"
+              className="rounded-xs border p-2"
             />
           </div>
 

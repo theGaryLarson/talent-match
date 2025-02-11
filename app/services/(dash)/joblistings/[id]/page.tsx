@@ -20,7 +20,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
   };
   if (joblisting == null || joblisting == undefined) {
     return (
-      <main className="h-screen text-center space-y-3 py-8 mx-4 tablet:mx-[150px] laptop:mx-[200px]">
+      <main className="h-screen text-center space-y-3 py-8 ml-4 tablet:mx-[150px] laptop:mx-[200px]">
         <h1 className="text-4xl">Job Listing Not Found</h1>
         <Link href="/services/joblistings" className="LINK">
           Find Active Job Listings Here
