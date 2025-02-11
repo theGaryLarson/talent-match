@@ -247,7 +247,9 @@ export default function Page() {
               ></RoundedButton>
               <RoundedButton
                 content={"Post Jobs"}
-                link={"mailto:susanne.mata@computingforall.org"}
+                link={
+                  "mailto:susanne.mata@computingforall.org?subject=TSP%20|%20Job%20Post%20Request"
+                }
                 invertColor={true}
               ></RoundedButton>
             </div>
