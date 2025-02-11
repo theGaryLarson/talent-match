@@ -1,6 +1,7 @@
 import RoundedButton from "../ui/components/RoundedButton";
 import Image from "next/image";
 import TrainingProviderMembers from "../ui/components/TrainingProviderMembers";
+import { Link } from "@mui/material";
 
 //entire TWC landing page
 export const metadata = {
@@ -161,15 +162,26 @@ export default function Page() {
                   WHAT WE DO
                 </div>
                 <div className="text-4xl sm-tablet:text-6xl leading-none self-stretch text-cyan-700 font-normal font-['Roboto'] capitalize leading-10">
-                  Build A more inclusive tech future
+                  Build a Workforce for the Future
                 </div>
                 <div className="self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
-                  Our mission is to connect underrepresented candidates with
-                  in-demand tech jobs. We offer targeted training programs in IT
-                  and cybersecurity, along with personalized career coaching and
-                  networking opportunities. By bridging the gap between talent
-                  and opportunity, we are working to build a more diverse and
-                  innovative tech industry.
+                  Our mission is to meet the rapidly evolving IT/Cybersecurity
+                  needs of employers while connecting highly-qualified
+                  candidates with in-demand Tech jobs. The advanced training
+                  offered by Coalition partners assists candidates in
+                  accelerated productivity and a foundation for growth. Build
+                  quality through contributors with diverse backgrounds. Help
+                  evolve education and training at the speed of technology.
+                </div>
+                <RoundedButton
+                  content={"Join the Coalition"}
+                  link={"/join"}
+                  invertColor={true}
+                ></RoundedButton>
+                <div className="self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
+                  <Link href="/services/training-providers">
+                    Check out our education and training partners as well.
+                  </Link>
                 </div>
                 <div className="flex-col justify-start items-start flex">
                   <div className="w-px h-7 relative" />
@@ -219,18 +231,25 @@ export default function Page() {
               className="laptop:hidden w-full shadow-none"
             />
             <div className="mt-4 self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">
-              Meet your hiring needs
+              Unique Recruiting Access
             </div>
             <div className="mt-4 self-stretch text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
-              We connect small and medium-sized businesses with skilled local
-              candidates in Software, IT/Cloud Support, Cybersecurity, and Data
-              Analytics. All candidates are vetted and curated, saving you time
-              and money on hiring.
+              We reduce your recruiting load by offering candidates from sources
+              not easily identified on the big job boards. Save time and money
+              by accessing candidates with the degrees and industry recognized
+              certifications you value
             </div>
             <div className="mt-4 justify-start items-start gap-5 inline-flex">
               <RoundedButton
-                content={"Discover Local Talent"}
+                content={"Search Talent"}
                 link={"/services/talent-search"}
+                invertColor={true}
+              ></RoundedButton>
+              <RoundedButton
+                content={"Post Jobs"}
+                link={
+                  "mailto:susanne.mata@computingforall.org?subject=TSP%20|%20Job%20Post%20Request"
+                }
                 invertColor={true}
               ></RoundedButton>
             </div>
@@ -258,7 +277,9 @@ export default function Page() {
               Discover Essential Skills for Tomorrow&apos;s Workforce. Through
               our Coalition, gain valuable insights directly from employers for
               in-demand skills which will help align your curriculum with the
-              most current industry standards.
+              most current industry standards. Get your students HIRED.
+              <br />
+              Quarterly meetings: February, May, August, November
             </div>
             <div className="mt-4 justify-start items-start gap-5 inline-flex">
               <RoundedButton
@@ -310,8 +331,8 @@ export default function Page() {
                 you
               </span>
               <span className="text-neutral-700 text-xl font-normal font-['Roboto'] leading-loose">
-                . Showcase your skills, connect directly with local companies,
-                and access exclusive career development resources. Create your
+                . Showcase your skills, connect directly with employers, and
+                access exclusive career development resources. Create your
                 profile today and take the next step toward your dream tech
                 role.
               </span>

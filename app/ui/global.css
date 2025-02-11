@@ -130,11 +130,8 @@
 
   --background-image-services-hero: url("/images/stock/people-using-digital-device-while-meeting 1.jpg");
   --background-image-employer-hero-1: url("/images/stock/AdobeStock_816883006_forweb 1.png");
-  --background-image-jobseeker-hero-1: linear-gradient(
-      to left,
-      #01161b00,
-      #01161b88
-    ),
+  --background-image-jobseeker-hero-1:
+    linear-gradient(to left, #01161b00, #01161b88),
     url("/images/stock/Above Fold.png");
   --background-image-jobseeker-bottom-1: url("/images/stock/59dfec5cf3bb750f6868c1291599a4ed.jpeg");
   --background-image-blue-square: url("/blue-bullet.png");

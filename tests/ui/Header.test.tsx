@@ -82,9 +82,9 @@ describe("Header", () => {
 
     // expect(screen.getByText('Events')).toBeDefined();
 
-    const topLinkCoalition = screen.getByText("Coalition");
-    expect(topLinkCoalition).toBeDefined();
-    fireEvent.click(topLinkCoalition);
+    const topLinkPartners = screen.getByText("Partners");
+    expect(topLinkPartners).toBeDefined();
+    fireEvent.click(topLinkPartners);
     expect(screen.getByText("Training Providers")).toBeDefined();
 
     expect(screen.getByText("About Us")).toBeDefined();
@@ -133,9 +133,9 @@ describe("Header", () => {
 
     // expect(within(mobileMenu).getByText('Events')).toBeDefined();
 
-    const topLinkCoalition = within(mobileMenu).getByText("Coalition");
-    expect(topLinkCoalition).toBeDefined();
-    fireEvent.click(topLinkCoalition);
+    const topLinkPartners = within(mobileMenu).getByText("Partners");
+    expect(topLinkPartners).toBeDefined();
+    fireEvent.click(topLinkPartners);
     expect(within(mobileMenu).getByText("Training Providers")).toBeDefined();
 
     expect(within(mobileMenu).getByText("About Us")).toBeDefined();
