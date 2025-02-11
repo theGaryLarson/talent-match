@@ -82,7 +82,7 @@ describe("Header", () => {
 
     // expect(screen.getByText('Events')).toBeDefined();
 
-    const topLinkPartners= screen.getByText("Partners");
+    const topLinkPartners = screen.getByText("Partners");
     expect(topLinkPartners).toBeDefined();
     fireEvent.click(topLinkPartners);
     expect(screen.getByText("Training Providers")).toBeDefined();
