@@ -341,9 +341,9 @@ export default function UpdateJobListingForm() {
         <TagsWithAutocomplete
           apiSearchRoute="/api/skills/search/"
           fieldLabel="Select the top 5 skills"
-          id="job-listing-skills"
+          id={"skills"+selectedJob}
           maxTags={5}
-          initialTags={["JPEG%25202000"]}
+          addNewTags={skills}
           searchingText="Searching..."
           noResultsText="No skills found..."
           onChange={function (ev, val) {
