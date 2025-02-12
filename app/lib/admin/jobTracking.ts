@@ -8,10 +8,11 @@ export enum EmploymentStatus {
 }
 
 export enum EmploymentType {
-  FullTime = "Full-time employment",
-  PartTime = "Part-time employment",
-  Seasonal = "Seasonal employment",
-  EarnAndLearn = "Earn and Learn employment",
+  FullTime = "Full-time",
+  PartTime = "Part-time",
+  Contract = "Contract",
+  Seasonal = "Seasonal",
+  EarnAndLearn = "Earn and Learn",
   Other = "Other",
 }
 

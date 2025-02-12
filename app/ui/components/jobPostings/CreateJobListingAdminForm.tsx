@@ -10,6 +10,7 @@ import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
+import { EmploymentType } from "@/app/lib/admin/jobTracking";
 
 export default function CreateJobListingAdminForm() {
   const router = useRouter();
@@ -238,10 +239,12 @@ export default function CreateJobListingAdminForm() {
       {/* Employment Type */}
       <div>
         <label htmlFor="employment_type">Employment Type</label>
-        <select name="employment_type" defaultValue="full-time">
-          <option value="full-time">Full-Time</option>
-          <option value="part-time">Part-Time</option>
-          <option value="contract">Contract</option>
+        <select name="employment_type" defaultValue={EmploymentType.FullTime}>
+          {Object.entries(EmploymentType).map(([key, value]) => (
+            <option key={key} value={value}>
+              {value}
+            </option>
+          ))}
         </select>
       </div>
 
