@@ -10,6 +10,7 @@ import { Card, Chip, Grid2, Stack, Typography } from "@mui/material";
 import { Circle } from "@mui/icons-material";
 import ApplyToJobButton from "./ApplyToJobButton";
 import Link from "next/link";
+import React, { useMemo } from "react";
 
 function extractTextFromHTML(htmlString: string) {
   const tempElement = document.createElement("div");
@@ -29,7 +30,7 @@ function extractTextFromHTML(htmlString: string) {
   return text;
 }
 
-export default function JobListingCardView({
+function JobListingCardView({
   joblisting,
 }: {
   joblisting: JobListingCardViewDTO;
@@ -42,8 +43,9 @@ export default function JobListingCardView({
     joblisting.companies.company_logo_url ?? undefined;
   const skills: SkillDTO[] = joblisting.skills ?? [];
   const salary_range: string = joblisting?.salary_range ?? "";
-  const description: string = extractTextFromHTML(
-    joblisting?.job_description ?? "",
+  const description: string = useMemo(
+    () => extractTextFromHTML(joblisting?.job_description ?? ""),
+    [joblisting?.job_description],
   );
   const isBookmarked = joblisting?.isBookmarked ?? false;
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
@@ -156,3 +158,5 @@ export default function JobListingCardView({
     </Card>
   );
 }
+
+export default React.memo(JobListingCardView);
