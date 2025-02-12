@@ -32,12 +32,12 @@ const PillButton: React.FC<PillButtonProps> = ({
           color: "primary.main", // Per Figma, text matches border
           backgroundColor: "transparent",
           "&:hover": {
-            backgroundColor: "primary.light",
+            backgroundColor: "blue.100",
             color: "secondary.main",
           },
           "&:focus": {
             backgroundColor: "primary.main",
-            color: "accent.light",
+            color: "neutral.white",
             boxShadow: "0 0 0 4px rgba(59, 130, 246, 0.5)",
           },
           "&:active": {
@@ -45,8 +45,8 @@ const PillButton: React.FC<PillButtonProps> = ({
             color: "secondary.main",
           },
           "&.Mui-disabled": {
-            backgroundColor: "accent.light",
-            color: "accent.main",
+            backgroundColor: "neutral.100",
+            color: "neutral.600",
           },
         }),
 
@@ -54,23 +54,23 @@ const PillButton: React.FC<PillButtonProps> = ({
         ...(variant === "contained" && {
           // Default Primary Button (Idle State)
           backgroundColor: "primary.main",
-          color: "accent.light",
+          color: "neutral.white",
           "&:hover": {
-            backgroundColor: "primary.light",
-            color: "accent.light",
+            backgroundColor: "blue.400",
+            color: "neutral.white",
           },
           "&:focus": {
-            backgroundColor: "secondary.light",
-            color: "accent.light",
+            backgroundColor: "blue.500",
+            color: "neutral.white",
             boxShadow: "0 0 0 4px rgba(59, 130, 246, 0.5)",
           },
           "&:active": {
             backgroundColor: "primary.main",
-            color: "accent.light",
+            color: "neutral.white",
           },
           "&.Mui-disabled": {
-            backgroundColor: "accent.main",
-            color: "accent.dark",
+            backgroundColor: "neutral.200",
+            color: "neutral.900",
             cursor: "not-allowed",
           },
         }),

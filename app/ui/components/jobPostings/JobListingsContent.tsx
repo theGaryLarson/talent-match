@@ -1,16 +1,29 @@
 "use client";
 import JobListingCardView from "@/app/ui/components/jobPostings/JobListingCardView";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Pagination from "@mui/material/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
 import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
-import SortDropdown from "@/app/ui/components/mui/SortDropdown";
-import { TextField } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from "@mui/material";
 import MultipleSelectFilterAutoload from "@/app/ui/components/mui/MultiSelectFilterAutoload";
 import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
+import SingleSelectFilterAutoload from "../mui/SingleSelectFilterAutoload";
+import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO";
+import { MultipleSelectCheckmarks } from "../mui/MultiSelectFilter";
+import { EmploymentType } from "@/app/lib/admin/jobTracking";
+import { useSession } from "next-auth/react";
+import { Role } from "@/data/dtos/UserInfoDTO";
 
 const resultsPerPage = 50;
 
@@ -21,9 +34,12 @@ interface JobListingQueryResult {
 
 async function fetchJobPosts(
   jobTitle: string = "",
+  bookmarked: boolean = false,
   skills: string[] = [],
+  city: string[] = [],
+  profession: string = "",
   industrySector: string[] = [],
-  zipCode: string = "",
+  employmentType: string[] = [],
   sortBy: string = "publish_date",
   maxResults: number = resultsPerPage,
   page: number = 1,
@@ -35,9 +51,12 @@ async function fetchJobPosts(
     },
     body: JSON.stringify({
       jobTitle,
+      bookmarked,
       skills,
+      city,
+      profession,
       industrySector,
-      zipCode,
+      employmentType,
       sortBy,
       maxResults,
       page,
@@ -50,60 +69,70 @@ async function fetchJobPosts(
 }
 
 export default function JobListingsContent() {
+  const { data: session } = useSession();
   // Listview data
+  const [value, setValue] = useState(0);
   const [joblistings, setJobListings] = useState<JobListingCardViewDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
-  // Query data
-  const [jobTitle, setJobTitle] = useState<string>();
-  const [skillsList, setSkillsList] = useState<string[]>();
-  const [industry, setIndustry] = useState<string[]>();
-  const [zipCode, setZipCode] = useState<string>();
+  // Query data (initialized with empty defaults)
+  const [jobTitle, setJobTitle] = useState<string>("");
+  const [skillsList, setSkillsList] = useState<string[]>([]);
+  const [city, setCity] = useState<string[]>([]);
+  const [profession, setProfession] = useState<string>("");
+  const [industry, setIndustry] = useState<string[]>([]);
+  const [employmentType, setEmploymentType] = useState<string[]>([]);
 
   // Sorting and pagination
-  const [sortBy, setSortBy] = useState<string>();
-  const [totalResults, setTotalResults] = useState<number>();
-  const [page, setPage] = useState<number>();
+  const [totalResults, setTotalResults] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
 
   const pathname = usePathname();
   const router = useRouter();
   const queryParams = useSearchParams();
+
   const setQueryParam = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(queryParams.toString());
-      if (params.get(name) != value) {
-        if (value == "") params.delete(name);
+      if (params.get(name) !== value) {
+        if (value === "") params.delete(name);
         else params.set(name, value);
-        router.push(pathname + "?" + params.toString());
+        router.push(`${pathname}?${params.toString()}`);
       }
-      return;
     },
     [queryParams, pathname, router],
   );
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
-    setQueryParam("page", encodeURIComponent(value.toString()));
-    setPage(value);
-  };
+  const getParam = useCallback(
+    (param: string) => {
+      const retrieved = queryParams.get(param);
+      return retrieved ? decodeURIComponent(retrieved) : "";
+    },
+    [queryParams],
+  );
 
-  function getParam(param: string) {
-    const retrievedParam: string | null = queryParams.get(param);
-    let result: string = "";
-    if (retrievedParam != null) result = decodeURIComponent(retrievedParam);
-    return result;
-  }
+  const getArrayParam = useCallback(
+    (param: string) => {
+      const retrieved = queryParams.get(param);
+      return retrieved && retrieved.length > 0
+        ? decodeURIComponent(retrieved).split(",")
+        : [];
+    },
+    [queryParams],
+  );
 
-  function getArrayParam(param: string) {
-    const retrievedParam: string | null = queryParams.get(param);
-    let result: string[] = [];
-    if (retrievedParam != null && retrievedParam.length > 0)
-      result = decodeURIComponent(retrievedParam).split(",");
-    return result;
-  }
+  // Initialize state from URL parameters only once (on mount)
+  useEffect(() => {
+    setJobTitle(getParam("jobTitle"));
+    setSkillsList(getArrayParam("skills"));
+    setProfession(getParam("profession"));
+    setEmploymentType(getArrayParam("employment-type"));
+    setIndustry(getArrayParam("industry"));
+    setCity(getArrayParam("city"));
+    const pageParam = +getParam("page");
+    setPage(pageParam > 0 ? pageParam : 1);
+  }, []);
 
   const execQuery = useCallback(async () => {
     setLoading(true);
@@ -111,68 +140,133 @@ export default function JobListingsContent() {
     try {
       const data = await fetchJobPosts(
         jobTitle,
+        value === 1,
         skillsList,
+        city,
+        profession,
         industry,
-        zipCode,
-        sortBy,
+        employmentType,
+        "publish_date",
         resultsPerPage,
         page,
       );
       setJobListings(data.filteredJobPostings);
       setTotalResults(data.totalCount);
-    } catch (error) {
+    } catch (err) {
       setError(true);
-      console.error("Error fetching job listings:", error);
+      console.error("Error fetching job listings:", err);
     } finally {
       setLoading(false);
     }
-  }, [page, industry, jobTitle, skillsList, zipCode, sortBy]);
+  }, [
+    jobTitle,
+    value,
+    skillsList,
+    city,
+    profession,
+    industry,
+    employmentType,
+    page,
+  ]);
 
   useEffect(() => {
-    // 1. Initial Load: Set state from URL params (only once)
-    const initializeStateFromParams = () => {
-      setJobTitle(getParam("jobTitle"));
-      setSkillsList(getArrayParam("skills"));
-      setIndustry(getArrayParam("industry"));
-      setZipCode(getParam("zipcode"));
-      setSortBy(getParam("sort") != "" ? getParam("sort") : "publish_date");
-      setPage(+getParam("page") == 0 ? 1 : +getParam("page"));
-    };
+    const timeoutId = setTimeout(() => {
+      execQuery();
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [
+    jobTitle,
+    skillsList,
+    profession,
+    employmentType,
+    industry,
+    city,
+    page,
+    execQuery,
+  ]);
 
-    // Check if state has already been initialized from params
-    if (
-      jobTitle === undefined &&
-      skillsList === undefined &&
-      industry === undefined &&
-      zipCode === undefined &&
-      sortBy === undefined &&
-      page === undefined
-    ) {
-      initializeStateFromParams();
-    }
-  });
+  const handleTabChange = useCallback(
+    (event: React.SyntheticEvent, newValue: number) => {
+      setValue(newValue);
+    },
+    [],
+  );
 
-  useEffect(() => {
-    // 2. Subsequent Updates: Execute query (debounced) whenever relevant state changes
-    if (
-      jobTitle !== undefined &&
-      skillsList !== undefined &&
-      industry !== undefined &&
-      zipCode !== undefined &&
-      sortBy !== undefined &&
-      page !== undefined
-    ) {
-      // Check that they are defined
-      const timeoutId = setTimeout(() => {
-        execQuery();
-      }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
-      return () => clearTimeout(timeoutId);
-    }
-  }, [jobTitle, skillsList, industry, zipCode, sortBy, page, execQuery]);
+  const handlePageChange = useCallback(
+    (event: React.ChangeEvent<unknown>, value: number) => {
+      setQueryParam("page", encodeURIComponent(value.toString()));
+      setPage(value);
+    },
+    [setQueryParam],
+  );
+
+  const handleJobTitleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const val = event.target.value;
+      setQueryParam("jobTitle", val);
+      setJobTitle(val);
+    },
+    [setQueryParam],
+  );
+
+  const handleSkillsChange = useCallback(
+    (event: any, val: any) => {
+      const newVal = (val as SkillDTO[]).map((skill) => skill.skill_name);
+      setQueryParam("skills", encodeURIComponent(newVal.toString()));
+      setSkillsList(newVal);
+    },
+    [setQueryParam],
+  );
+
+  const handleCityChange = useCallback(
+    (event: any) => {
+      const newValue = event.target.value;
+      setQueryParam("city", encodeURIComponent(newValue.toString()));
+      setCity(typeof newValue === "string" ? [newValue] : newValue);
+    },
+    [setQueryParam],
+  );
+
+  const handleProfessionChange = useCallback(
+    (event: any) => {
+      const val = event.target.value;
+      setQueryParam("profession", encodeURIComponent(val.toString()));
+      setProfession(val);
+    },
+    [setQueryParam],
+  );
+
+  const handleIndustryChange = useCallback(
+    (event: any) => {
+      const newValue = event.target.value;
+      setQueryParam("industry", encodeURIComponent(newValue.toString()));
+      setIndustry(typeof newValue === "string" ? [newValue] : newValue);
+    },
+    [setQueryParam],
+  );
+
+  const handleEmploymentTypeChange = useCallback(
+    (event: any) => {
+      const newValue = event.target.value;
+      setQueryParam("employment-type", encodeURIComponent(newValue.toString()));
+      setEmploymentType(typeof newValue === "string" ? [newValue] : newValue);
+    },
+    [setQueryParam],
+  );
+
+  const totalPages = useMemo(
+    () => Math.ceil((totalResults || 1) / resultsPerPage),
+    [totalResults],
+  );
 
   return (
-    <main className="mb-0 mx-2 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[100px]">
-      <h1 className="mb-4 text-2xl font-bold">Job Listings</h1>
+    <Stack spacing={2.5} sx={{ mx: { xs: 3, md: 6.25 } }}>
+      <Typography
+        variant="h2"
+        sx={{ color: "secondary.main", fontSize: "2.5rem", fontWeight: 400 }}
+      >
+        Jobs
+      </Typography>
 
       {/* Job Title Search Bar */}
       <TextField
@@ -180,10 +274,7 @@ export default function JobListingsContent() {
         label="Full/Partial Job Title"
         fullWidth
         defaultValue={getParam("jobTitle")}
-        onChange={(event) => {
-          setQueryParam("jobTitle", event.target.value);
-          setJobTitle(event.target.value);
-        }}
+        onChange={handleJobTitleChange}
         sx={{ mb: 3 }}
       />
 
@@ -195,11 +286,7 @@ export default function JobListingsContent() {
         maxTags={5}
         searchingText="Searching..."
         noResultsText="No skills found..."
-        onChange={function (ev, val) {
-          const newVal = (val as SkillDTO[]).map((skill) => skill.skill_name);
-          setQueryParam("skills", encodeURIComponent(newVal.toString()));
-          setSkillsList(newVal);
-        }}
+        onChange={handleSkillsChange}
         searchPlaceholder="Skill (ex: Java)"
         getTagLabel={(option: SkillDTO) => option.skill_name}
         getTagLink={(option: SkillDTO) => option.skill_info_url}
@@ -208,162 +295,130 @@ export default function JobListingsContent() {
 
       {/* Filters */}
       <div className="mb-0 mt-1 flex flex-row flex-wrap">
+        {/* City */}
+        <div className="w-1/2 tablet:w-1/4">
+          <MultipleSelectFilterAutoload
+            id="jobseeker-listview-city"
+            label="City"
+            apiAutoloadRoute="/api/postal-geo-data/city/get"
+            value={getArrayParam("city")}
+            onChange={handleCityChange}
+            getOptionLabel={(option: { city: string }) => option.city}
+          />
+        </div>
+        {/* Profession */}
+        <div className="w-1/2 tablet:w-1/4">
+          <SingleSelectFilterAutoload
+            id="jobseeker-listview-profession"
+            label="Profession"
+            apiAutoloadRoute="/api/employers/technology-areas"
+            value={getParam("profession")}
+            onChange={handleProfessionChange}
+            getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
+          />
+        </div>
         {/* Industry */}
-        <div className="w-1/2 tablet:w-1/3">
+        <div className="w-1/2 tablet:w-1/4">
           <MultipleSelectFilterAutoload
             id="jobseeker-listview-industry"
             label="Industry"
-            apiAutoloadRoute="/api/employers/industry-sectors" // TODO: two requests are happening?
+            apiAutoloadRoute="/api/employers/industry-sectors"
             value={getArrayParam("industry")}
-            onChange={(event) => {
-              setQueryParam(
-                "industry",
-                encodeURIComponent(event.target.value.toString()),
-              );
-              if (typeof event.target.value === "string")
-                setIndustry([event.target.value]);
-              else setIndustry(event.target.value);
-            }}
+            onChange={handleIndustryChange}
             getOptionLabel={(option: IndustrySectorDropdownDTO) =>
               option.sector_title
             }
           />
         </div>
-
-        {/* Zip Code */}
-        {/* Design has agreed to a text field until we have a better distance measurement system in place */}
-        <div className="w-1/2 tablet:w-1/3">
-          <TextField
-            autoComplete="off"
-            label="Full/Partial Zip Code"
-            defaultValue={getParam("zipcode")}
-            size="small"
-            onChange={(event) => {
-              if (!isNaN(Number(event.target.value))) {
-                // is it purely numeric chars?
-                if (event.target.value.length <= 5) {
-                  // and not longer than 5 chars?
-                  setQueryParam("zipcode", event.target.value);
-                  setZipCode(event.target.value);
-                } else {
-                  // truncate
-                  event.target.value = Number.parseInt(
-                    event.target.value.slice(0, 5),
-                  ).toString();
-                }
-              } else {
-                // erase non-numeric chars
-                const closestInt = Number.parseInt(event.target.value);
-                event.target.value = isNaN(closestInt)
-                  ? ""
-                  : closestInt.toString();
-              }
-            }}
-            sx={{
-              padding: "0px 2px",
-              width: "100%",
-              "& .MuiInputBase-root": {
-                borderRadius: "9999px",
-                height: "1.75rem",
-              },
-              "& .MuiInputBase-input": {
-                boxShadow: "none",
-                "&:focus": { boxShadow: "none" },
-              },
-              "& .MuiInputLabel-root": {
-                fontSize: "0.875rem",
-                lineHeight: "1.25rem",
-                top: "15px",
-                left: "2px",
-                position: "relative",
-              },
-            }}
+        {/* Employment Type */}
+        <div className="w-1/2 tablet:w-1/4">
+          <MultipleSelectCheckmarks
+            label="Employment Type"
+            value={getArrayParam("employment-type")}
+            onChange={handleEmploymentTypeChange}
+            options={Object.values(EmploymentType).map((type) => ({
+              label: type,
+              value: type,
+            }))}
           />
-        </div>
-        <div className="float-left w-1/2 items-center px-4 tablet:w-1/3">
-          <div className="w-full flow-root pb-4 mt-2">
-            {/* Sorting */}
-            <div className="float-right mt-6">
-              <SortDropdown
-                id="jobseeker-listview-sort"
-                label="Sort by:"
-                value={
-                  getParam("sort") == "" ? "publish_date" : getParam("sort")
-                }
-                onChange={(event) => {
-                  setQueryParam("sort", event.target.value);
-                  setSortBy(event.target.value);
-                }}
-                options={[
-                  // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
-                  { label: "Newest", value: "publish_date" },
-                ]}
-              />
-            </div>
-          </div>
         </div>
       </div>
 
+      {session?.user.roles.includes(Role.JOBSEEKER) && (
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={handleTabChange}
+            aria-label="Job Search or Saved Jobs"
+          >
+            <Tab id="tab-0" label="Job Search" />
+            <Tab id="tab-1" label="Saved Jobs" />
+          </Tabs>
+        </Box>
+      )}
+
       {/* Loading */}
-      {loading ? (
+      {loading && (
         <div className="h-full w-full text-center">
           <CircularProgress />
         </div>
-      ) : (
-        ""
       )}
 
       {/* Error */}
-      {!loading && error ? (
+      {!loading && error && (
         <div className="h-full w-full text-center text-3xl">
           Error: Invalid Query
         </div>
-      ) : (
-        ""
       )}
 
-      {/* else, Display Results */}
-      {!loading && !error ? (
-        <div className="space-y-4">
-          {joblistings?.map((joblisting: JobListingCardViewDTO) => (
+      {/* Display Results */}
+      {!loading && !error && (
+        <Stack spacing={2} divider={<Divider />}>
+          {joblistings.map((joblisting: JobListingCardViewDTO) => (
             <JobListingCardView
               joblisting={joblisting}
               key={joblisting.job_posting_id}
             />
           ))}
+        </Stack>
+      )}
+
+      {/* Pagination Info */}
+      {!loading && !error && (
+        <div className="mt-6 flex justify-center">
+          <div>
+            Showing{" "}
+            {totalResults === 0
+              ? 0
+              : resultsPerPage * page - resultsPerPage + 1}{" "}
+            - {Math.min(resultsPerPage * page, totalResults)} of {totalResults}{" "}
+            total results
+          </div>
         </div>
-      ) : (
-        ""
       )}
 
       {/* Pagination */}
-      <div className="mt-6 flex justify-center">
-        {!loading && !error ? (
-          <div>
-            Showing{" "}
-            {totalResults == 0
-              ? 0
-              : resultsPerPage * (page ?? 1) - resultsPerPage + 1}{" "}
-            - {Math.min(resultsPerPage * (page ?? 1), totalResults ?? 1)} of{" "}
-            {totalResults} total results
-          </div>
-        ) : (
-          ""
-        )}
-      </div>
-      <div className="mb-4 mt-2 flex justify-center phone:mb-0">
-        {!loading ? (
+      <div className="pb-2 mt-2 flex justify-center phone:pb-8">
+        {!loading && (
           <Pagination
-            variant="outlined"
-            shape="rounded"
-            count={Math.ceil((totalResults ?? 1) / resultsPerPage)}
-            page={getParam("page") != "" ? +getParam("page") : 1}
+            variant="text"
+            color="secondary"
+            count={totalPages}
+            page={page}
             onChange={handlePageChange}
+            sx={{
+              "& .MuiPaginationItem-root:not(.Mui-selected):not(.MuiPaginationItem-ellipsis):not(.MuiPaginationItem-previousNext)":
+                {
+                  bgcolor: "neutral.200",
+                  "&:hover": { bgcolor: "neutral.100" },
+                },
+              "& .MuiPaginationItem-root:not(.Mui-selected)": {
+                color: "secondary.main",
+              },
+            }}
           />
-        ) : (
-          ""
         )}
       </div>
-    </main>
+    </Stack>
   );
 }

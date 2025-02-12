@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 h1 {
   @apply my-2 text-5xl;
@@ -67,7 +65,7 @@ h2 {
   line-height: 26px;
   letter-spacing: 0.46000000834465027px;
   text-align: left;
-  color: #00000099;
+  color: var(--color-neutral-black);
 }
 
 .subtitle-congrats {
@@ -77,7 +75,7 @@ h2 {
   line-height: 26px;
   letter-spacing: 0.46000000834465027px;
   text-align: left;
-  color: #00000099;
+  color: var(--color-neutral-black);
 }
 
 .subtitle-optional {
@@ -87,13 +85,13 @@ h2 {
   line-height: 19.2px;
   letter-spacing: 0.15000000596046448px;
   text-align: left;
-  color: #00000099;
+  color: var(--color-neutral-black);
 }
 
 /* Figma Button colors */
 .custom-outline-btn {
-  color: #047f9c;
-  border-color: #047f9c;
+  color: var(--color-primary-main);
+  border-color: var(--color-primary-main);
   background-color: transparent;
   transition:
     background-color 0.3s ease,
@@ -103,15 +101,15 @@ h2 {
 
 .custom-outline-btn.selected,
 .custom-outline-btn:hover.selected {
-  background-color: #047f9c !important;
+  background-color: var(--color-primary-main) !important;
   color: #fff;
-  border-color: #000000;
+  border-color: var(--color-neutral-black);
 }
 
 .custom-outline-btn:hover {
-  color: #047f9c;
+  color: var(--color-primary-main);
   background-color: #f3f4f6 !important;
-  border-color: #047f9c;
+  border-color: var(--color-primary-main);
 }
 
 .main-content {

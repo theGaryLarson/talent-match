@@ -47,7 +47,7 @@ export const InvitationEmail = ({
             <strong>{invitedByName}</strong> (
             <Link
               href={`mailto:${invitedByEmail}`}
-              className="text-blue-600 no-underline"
+              className="text-blue-tw600 no-underline"
             >
               {invitedByEmail}
             </Link>
@@ -57,7 +57,7 @@ export const InvitationEmail = ({
           </Text>
           <Section className="my-[32px] text-center">
             <Button
-              className="rounded bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
+              className="rounded bg-neutral-black px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
               href={inviteLink}
             >
               Accept
@@ -65,7 +65,7 @@ export const InvitationEmail = ({
           </Section>
           <Text className="text-[14px] leading-[24px] text-black">
             or copy and paste this URL into your browser:{" "}
-            <Link href={inviteLink} className="text-blue-600 no-underline">
+            <Link href={inviteLink} className="text-blue-tw600 no-underline">
               {inviteLink}
             </Link>
           </Text>

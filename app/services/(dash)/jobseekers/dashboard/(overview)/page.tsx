@@ -47,7 +47,7 @@ export default async function Page() {
     <Stack
       direction={"column"}
       spacing={4}
-      sx={{ mb: 12, mx: { xs: 3, md: 6 } }}
+      sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}
     >
       {/*hasTakenTest ? (
         ''
@@ -76,7 +76,7 @@ export default async function Page() {
           disableElevation
           href={"/services/jobseekers/" + session?.user.jobseekerId}
           sx={{
-            backgroundColor: "#f6f6f6",
+            backgroundColor: "neutral.100",
             color: "secondary.main",
           }}
         >

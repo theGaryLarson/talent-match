@@ -5,7 +5,6 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import {
-  BookmarkBorderRounded,
   CalendarMonthOutlined,
   LinkedIn,
   LogoutRounded,
@@ -49,11 +48,6 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
       href: "/services/joblistings",
       icon: <WorkOutlineRounded />,
       label: "Jobs",
-    },
-    {
-      href: "/services/jobseekers/dashboard/bookmarks",
-      icon: <BookmarkBorderRounded />,
-      label: "Saved Jobs",
     },
     {
       href: "/services/jobseekers/dashboard/my-applications",
@@ -124,8 +118,8 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
             mt: 3,
             mb: 3,
             width: "123px",
-            backgroundColor: "#f6f6f6",
-            color: "#014260",
+            backgroundColor: "neutral.100",
+            color: "secondary.main",
           }}
         >
           Log Out
@@ -169,7 +163,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <>
         <Header />
         <div className="flex">
-          <div className="flex min-w-[230px] flex-col text-[#047f9c]">
+          <div className="flex min-w-[230px] flex-col text-primary-main">
             <Link
               href="/services/employers/dashboard"
               className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
@@ -319,7 +313,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             px: 5,
             py: 2.5,
             zIndex: 9000,
-            bgcolor: "#F6F6F6",
+            bgcolor: "neutral.100",
           }}
         >
           <Stack direction={{ xs: "column", sm: "row" }} gap={2}>

@@ -106,7 +106,7 @@ export default function EventCreationForm() {
           value={eventName}
           onChange={(e) => setEventName(e.target.value)}
           required
-          className="mt-2 p-2 border rounded w-full"
+          className="mt-2 p-2 border rounded-xs w-full"
         />
       </div>
       <div>
@@ -119,7 +119,7 @@ export default function EventCreationForm() {
           value={eventLocation}
           onChange={(e) => setEventLocation(e.target.value)}
           required
-          className="mt-2 p-2 border rounded w-full"
+          className="mt-2 p-2 border rounded-xs w-full"
         />
       </div>
 
@@ -133,7 +133,7 @@ export default function EventCreationForm() {
           value={eventDate}
           onChange={(e) => setEventDate(e.target.value)}
           required
-          className="mt-2 p-2 border rounded w-full"
+          className="mt-2 p-2 border rounded-xs w-full"
         />
       </div>
 
@@ -147,7 +147,7 @@ export default function EventCreationForm() {
           value={duration}
           onChange={(e) => setDuration(Number(e.target.value))}
           required
-          className="mt-2 p-2 border rounded w-full"
+          className="mt-2 p-2 border rounded-xs w-full"
         />
       </div>
       <div className="flex flex-row gap-2">
@@ -198,7 +198,7 @@ export default function EventCreationForm() {
             value={registerLink}
             onChange={(e) => setRegisterLink(e.target.value)}
             required
-            className="mt-2 p-2 border rounded w-full"
+            className="mt-2 p-2 border rounded-xs w-full"
           />
         </div>
       )}
@@ -213,7 +213,7 @@ export default function EventCreationForm() {
             value={joinMeetingLink}
             onChange={(e) => setJoinMeetingLink(e.target.value)}
             required
-            className="mt-2 p-2 border rounded w-full"
+            className="mt-2 p-2 border rounded-xs w-full"
           />
         </div>
       )}
@@ -226,7 +226,7 @@ export default function EventCreationForm() {
           value={eventBlurb}
           onChange={(e) => setEventBlurb(e.target.value)}
           required
-          className="mt-2 p-2 border rounded w-full"
+          className="mt-2 p-2 border rounded-xs w-full"
         />
       </div> */}
       <div>
@@ -243,7 +243,7 @@ export default function EventCreationForm() {
           id="eventType"
           value={eventType}
           onChange={(e) => setEventType(e.target.value as EventTypeEnum)} // Cast to EventType
-          className="mt-2 p-2 border rounded w-full"
+          className="mt-2 p-2 border rounded-xs w-full"
         >
           {Object.values(EventTypeEnum).map((type) => (
             <option key={type} value={type}>

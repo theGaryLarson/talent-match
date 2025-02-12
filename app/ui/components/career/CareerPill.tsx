@@ -14,7 +14,7 @@ export default function CareerPill({
 }) {
   return (
     <Link href={href}>
-      <div className="w-full rounded-3xl shadow flex-col justify-center items-center inline-flex bg-sky-100 hover:bg-sky-900 text-sky-900 hover:text-neutral-100">
+      <div className="w-full rounded-3xl shadow-xs flex-col justify-center items-center inline-flex bg-sky-100 hover:bg-sky-900 text-sky-900 hover:text-neutral-100">
         <Image
           src={img}
           height={4096}

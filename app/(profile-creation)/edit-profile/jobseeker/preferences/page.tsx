@@ -152,10 +152,12 @@ export default function CreateJobseekerProfilePreferencesPage() {
                       m: 2, // Margin all sides equivalent to 'm-2'
                       backgroundColor:
                         employmentType === "Full-time"
-                          ? "#047F9C"
+                          ? "primary.main"
                           : "transparent",
                       color:
-                        employmentType === "Full-time" ? "#ffffff" : "#047F9C",
+                        employmentType === "Full-time"
+                          ? "neutral.white"
+                          : "primary.main",
                     }}
                     variant="outlined"
                     onClick={() => {
@@ -169,10 +171,12 @@ export default function CreateJobseekerProfilePreferencesPage() {
                       m: 2,
                       backgroundColor:
                         employmentType === "Part-time"
-                          ? "#047F9C"
+                          ? "primary.main"
                           : "transparent",
                       color:
-                        employmentType === "Part-time" ? "#ffffff" : "#047F9C",
+                        employmentType === "Part-time"
+                          ? "neutral.white"
+                          : "primary.main",
                     }}
                     variant="outlined"
                     onClick={() => {
@@ -186,10 +190,12 @@ export default function CreateJobseekerProfilePreferencesPage() {
                       m: 2,
                       backgroundColor:
                         employmentType === "Internship"
-                          ? "#047F9C"
+                          ? "primary.main"
                           : "transparent",
                       color:
-                        employmentType === "Internship" ? "#ffffff" : "#047F9C",
+                        employmentType === "Internship"
+                          ? "neutral.white"
+                          : "primary.main",
                     }}
                     variant="outlined"
                     onClick={() => {
@@ -203,10 +209,12 @@ export default function CreateJobseekerProfilePreferencesPage() {
                       m: 2,
                       backgroundColor:
                         employmentType === "On-campus"
-                          ? "#047F9C"
+                          ? "primary.main"
                           : "transparent",
                       color:
-                        employmentType === "On-campus" ? "#ffffff" : "#047F9C",
+                        employmentType === "On-campus"
+                          ? "neutral.white"
+                          : "primary.main",
                     }}
                     variant="outlined"
                     onClick={() => {

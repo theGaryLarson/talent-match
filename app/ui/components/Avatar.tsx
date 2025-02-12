@@ -14,7 +14,8 @@ export default function Avatar({
   }
   return (
     <div
-      className={`w-[${size}px] h-[${size}px] flex justify-center items-center`}
+      className={`flex justify-center items-center`}
+      style={{ width: `${size}px`, height: `${size}px` }}
     >
       {imgsrc ? (
         <Image

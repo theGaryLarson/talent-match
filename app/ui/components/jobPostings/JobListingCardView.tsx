@@ -1,19 +1,20 @@
 "use client";
 import Avatar from "../Avatar";
-import Skills from "../Skills";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import Bookmark from "../Bookmark";
 import PillButton from "@/app/ui/components/PillButton";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
-import { Chip, Stack } from "@mui/material";
-import "quill/dist/quill.snow.css";
+import { Card, Chip, Grid2, Stack, Typography } from "@mui/material";
+import { Circle } from "@mui/icons-material";
+import ApplyToJobButton from "./ApplyToJobButton";
+import Link from "next/link";
+import React, { useMemo } from "react";
 
 function extractTextFromHTML(htmlString: string) {
   const tempElement = document.createElement("div");
   tempElement.innerHTML = htmlString;
-
   // Add spaces between block-level elements
   const blockElements = tempElement.querySelectorAll(
     "p, div, h1, h2, h3, h4, h5, h6, li",
@@ -21,17 +22,15 @@ function extractTextFromHTML(htmlString: string) {
   blockElements.forEach((element) => {
     element.insertAdjacentText("afterend", " ");
   });
-
   // Get the text content and normalize spaces
   let text = tempElement.textContent || tempElement.innerText || "";
-
   // Replace multiple spaces, newlines, and tabs with a single space
   text = text.replace(/\s+/g, " ").trim();
 
   return text;
 }
 
-export default function JobListingCardView({
+function JobListingCardView({
   joblisting,
 }: {
   joblisting: JobListingCardViewDTO;
@@ -39,116 +38,125 @@ export default function JobListingCardView({
   const { data: session } = useSession();
 
   const job_title: string = joblisting?.job_title;
-  const employment_type: string = joblisting.employment_type ?? "";
   const company_name: string = joblisting.companies.company_name;
-  const company_image: string = joblisting.companies.company_logo_url ?? "";
+  const company_image: string | undefined =
+    joblisting.companies.company_logo_url ?? undefined;
   const skills: SkillDTO[] = joblisting.skills ?? [];
   const salary_range: string = joblisting?.salary_range ?? "";
-  const description: string = extractTextFromHTML(
-    joblisting?.job_description ?? "",
+  const description: string = useMemo(
+    () => extractTextFromHTML(joblisting?.job_description ?? ""),
+    [joblisting?.job_description],
   );
-  const location: string =
-    joblisting?.location +
-    ", " +
-    joblisting?.company_addresses?.locationData?.city +
-    ", " +
-    joblisting?.zip;
   const isBookmarked = joblisting?.isBookmarked ?? false;
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   return (
-    <>
-      <div className="w-full rounded-lg border-2 border-cyan-600 p-2 phone:p-4">
-        {/* top row */}
-        <div className="flex flex-row items-center">
-          {/* picture */}
-          <div className="shrink-0">{<Avatar imgsrc={company_image} />}</div>
-          {/* name and location */}
-          {/* TODO: This should link to the company's page so the jobseeker or whoever can see other postings by that company and other details */}
-          <div className="grow pl-2 sm-tablet:pl-4">
-            <p className="text-wrap font-bold">{job_title}</p>
-            <p className="text-wrap text-sm sm-tablet:text-base">
-              {company_name}
-            </p>
-            <p className="text-wrap text-sm text-slate-400 sm-tablet:text-base">
-              {location}
-            </p>
-          </div>
+    <Card
+      elevation={0}
+      sx={{
+        p: 3,
+        borderRadius: "12px",
+        transition: "box-shadow 0.3s",
+        "&:hover": { boxShadow: 3 },
+      }}
+    >
+      <Stack
+        direction={"row"}
+        sx={{ alignItems: "center", justifyContent: "space-between" }}
+      >
+        <Stack direction={"row"} spacing={2} sx={{ alignItems: "center" }}>
+          {company_image && (
+            <div className="shrink-0">{<Avatar imgsrc={company_image} />}</div>
+          )}
+          <Typography
+            sx={{ color: "neutral.900", opacity: 0.6, fontWeight: 500 }}
+          >
+            {company_name}
+          </Typography>
+        </Stack>
+        {isJobseeker ? (
+          <Bookmark
+            bookmarked={isBookmarked}
+            addUrl={
+              "/api/joblistings/bookmark/add/" + joblisting.job_posting_id
+            }
+            removeUrl={
+              "/api/joblistings/bookmark/remove/" + joblisting.job_posting_id
+            }
+          />
+        ) : (
+          ""
+        )}
+      </Stack>
+      <Typography variant="h5" sx={{ my: 1 }}>
+        {job_title}
+      </Typography>
+      <Grid2 container columnSpacing={2} sx={{ alignItems: "center" }}>
+        <Typography>{joblisting?.location}</Typography>
+        <Circle sx={{ fontSize: 8 }} />
+        <Typography>{joblisting?.employment_type}</Typography>
+        <Circle sx={{ fontSize: 8 }} />
+        <Typography>
+          {joblisting?.company_addresses?.locationData.city}
+        </Typography>
+        <Circle sx={{ fontSize: 8 }} />
+        <Typography>{joblisting?.is_paid ? salary_range : "unpaid"}</Typography>
+        <Circle sx={{ fontSize: 8 }} />
+        <Typography>
+          Deadline:{" "}
+          {joblisting?.unpublish_date
+            ? new Date(joblisting.unpublish_date).toLocaleDateString("en-us", {
+                month: "numeric",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "N/A"}
+        </Typography>
+      </Grid2>
+      <Typography
+        component={"div"}
+        sx={{
+          mt: 1,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflowWrap: "break-word",
+          overflow: "hidden",
+        }}
+      >
+        {description}
+      </Typography>
 
-          {/* view and bookmark */}
-          <div className="flex flex-col">
-            <div className="h-min w-max">
-              <PillButton
-                // onClick={() => handleModalChange(true)}
-                href={`/services/joblistings/${joblisting.job_posting_id}`}
-                target="_blank"
-                variant="outlined"
-              >
-                <strong>View Job</strong>
-              </PillButton>
-            </div>
-            <div className="mr-2 mt-2 flex flex-row place-self-end text-cyan-600">
-              {isJobseeker ? (
-                <Bookmark
-                  bookmarked={isBookmarked}
-                  addUrl={
-                    "/api/joblistings/bookmark/add/" + joblisting.job_posting_id
-                  }
-                  removeUrl={
-                    "/api/joblistings/bookmark/remove/" +
-                    joblisting.job_posting_id
-                  }
-                />
-              ) : (
-                ""
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* bottom row */}
-        <div className="mt-2">
-          {/* job description */}
-
-          <p className="line-clamp-3 break-words overflow-hidden">
-            {description}
-          </p>
-
-          {/* skills */}
-          <div className="mt-2 flex grow text-sm tablet:text-base">
-            <Skills
-              skillsList={skills}
-              maxNumSkills={5}
-              jobseekerID={undefined}
+      {skills.length > 0 && (
+        <Grid2 container gap={1} sx={{ mt: 1 }}>
+          {skills.map((skill) => (
+            <Chip
+              component={Link}
+              clickable
+              target="_blank"
+              key={skill?.skill_id}
+              label={skill?.skill_name}
+              href={skill?.skill_info_url}
             />
-          </div>
-
-          {/* employment type, salary, and job status */}
-          <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
-            <div>
-              <h4 className="mt-2 text-sm italic text-slate-400">
-                {employment_type}
-              </h4>
-              <h4 className="mt-2 text-sm italic text-slate-400">
-                {salary_range}
-              </h4>
-            </div>
-            {isJobseeker && (
-              <Chip
-                variant="outlined"
-                color="primary"
-                sx={{ alignSelf: "end" }}
-                label={
-                  joblisting.jobStatus == undefined ||
-                  joblisting.jobStatus.toString() == ""
-                    ? "Not Applied"
-                    : joblisting.jobStatus
-                }
-              />
-            )}
-          </Stack>
-        </div>
-      </div>
-    </>
+          ))}
+        </Grid2>
+      )}
+      <Stack direction="row" gap={1} sx={{ mt: 2, justifyContent: "flex-end" }}>
+        <PillButton
+          href={`/services/joblistings/${joblisting.job_posting_id}`}
+          target="_blank"
+          variant="outlined"
+        >
+          View job posting
+        </PillButton>
+        <ApplyToJobButton
+          id={joblisting.job_posting_id}
+          appliedStatus={joblisting.jobStatus}
+          unPublishDate={joblisting.unpublish_date}
+        />
+      </Stack>
+    </Card>
   );
 }
+
+export default React.memo(JobListingCardView);

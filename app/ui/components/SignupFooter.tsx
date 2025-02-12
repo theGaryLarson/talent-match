@@ -13,7 +13,7 @@ export default function SignupFooter({ className = "" }: Props) {
       }
     >
       <p className="pb-4">Not ready to create an account?</p>
-      <Link className="text-blue-500 underline" href="/">
+      <Link className="text-blue-tw500 underline" href="/">
         Learn how TWC works
       </Link>
     </footer>

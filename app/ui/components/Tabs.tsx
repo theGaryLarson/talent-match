@@ -16,7 +16,7 @@ export default function Tabs(props: { tabs: TabProps[] }) {
             key={index}
             onClick={() => setActiveIndex(index)}
             className={`py-2 px-2 grow text-sm 
-            ${index === activeIndex ? "bg-blue-background font-bold text-white " : "text-blue-text hover:text-blue-600 hover:bg-gray-100 "}
+            ${index === activeIndex ? "bg-blue-background font-bold text-white " : "text-blue-text hover:text-blue-tw600 hover:bg-gray-100 "}
               ${index === 0 ? "rounded-tl-md rounded-bl-md" : ""}
               ${index === props.tabs.length - 1 ? "rounded-tr-md rounded-br-md" : ""}`}
           >

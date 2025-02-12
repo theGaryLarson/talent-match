@@ -86,6 +86,7 @@ export default auth((req) => {
     "/api/jobseekers/query",
     "/api/joblistings/query",
     "/api/employers/industry-sectors",
+    "/api/postal-geo-data/city/get",
     "/api/postal-geo-data/zip/search/",
     "/api/employers/training-providers",
     "/api/events",
