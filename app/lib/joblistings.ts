@@ -300,6 +300,7 @@ export async function ApplyToJob(jobPostingId: string) {
 
     if (existingApplication) {
       if (
+        existingApplication.jobStatus.length !== 0 &&
         existingApplication.jobStatus !== JobStatus.Applied &&
         existingApplication.jobStatus !== JobStatus.IWithdrew
       ) {
@@ -394,6 +395,7 @@ export async function WithdrawFromJob(jobPostingId: string) {
 
     if (existingApplication) {
       if (
+        existingApplication.jobStatus.length !== 0 &&
         existingApplication.jobStatus !== JobStatus.Applied &&
         existingApplication.jobStatus !== JobStatus.IWithdrew
       ) {

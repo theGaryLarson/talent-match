@@ -178,12 +178,10 @@ export default function TagsWithAutocomplete<ValueType>({
           const target = link == "javascript:;" ? "_self" : "_blank";
           return (
             <Chip
+              color="primary"
+              clickable
               label={
-                <a
-                  href={link}
-                  target={target}
-                  className={"text-white text-base"}
-                >
+                <a href={link} target={target}>
                   {label}
                 </a>
               }
@@ -215,13 +213,8 @@ export default function TagsWithAutocomplete<ValueType>({
       }}
       value={selectedTags}
       sx={{
-        // Couldn't find a better way to change the background color ¯\_ (ツ)_/¯
         "& .MuiChip-filled": {
-          backgroundColor: "rgb(8, 145, 178)",
           height: "auto",
-          "&:hover": {
-            backgroundColor: "rgb(14, 116, 144)",
-          },
         },
       }}
     />

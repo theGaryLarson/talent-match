@@ -257,7 +257,7 @@ export default function CreateEmployerCompanyInfoPage() {
         <ProgressBarFlat progress={(2 / 5) * 100} />
         <p className="mb-6">Step 2/5</p>
         <form onSubmit={handleSubmit}>
-          <div className="profile-form-grid md:grid-cols-2">
+          <div className="profile-form-grid md:grid-cols-1">
             <SelectAutoload
               id="profile-creation-company-industrySectorTitle"
               apiAutoloadRoute="/api/employers/industry-sectors"
@@ -321,7 +321,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 disabled={!employerInfo?.is_verified_employee}
                 required
               >
-                Company Website *
+                Company Website
               </InputTextWithLabel>
 
               <InputTextWithLabel
@@ -333,7 +333,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 disabled={!employerInfo?.is_verified_employee}
                 required
               >
-                Company Email *
+                Company Email
               </InputTextWithLabel>
 
               <InputTextWithLabel
@@ -345,7 +345,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 disabled={!employerInfo?.is_verified_employee}
                 required
               >
-                Company Phone Number *
+                Company Phone Number
               </InputTextWithLabel>
 
               <DatePicker
@@ -359,7 +359,6 @@ export default function CreateEmployerCompanyInfoPage() {
                     yearFounded: newValue?.year().toString() || "",
                   });
                 }}
-                className="year-picker"
                 disabled={!employerInfo?.is_verified_employee}
               />
 
@@ -378,8 +377,9 @@ export default function CreateEmployerCompanyInfoPage() {
                 placeholder="Please select"
                 value={companyData.companySize ?? ""}
                 disabled={!employerInfo?.is_verified_employee}
+                required
               >
-                Company Size *
+                Company Size
               </SelectOptionsWithLabel>
 
               <InputTextWithLabel
@@ -391,7 +391,7 @@ export default function CreateEmployerCompanyInfoPage() {
                 disabled={!employerInfo?.is_verified_employee}
                 required
               >
-                Estimated Annual Hires *
+                Estimated Annual Hires
               </InputTextWithLabel>
 
               <TextFieldWithAutocomplete
