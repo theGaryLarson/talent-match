@@ -158,6 +158,17 @@
 }
 */
 
+/* Not idiomatic v4 code */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-neutral-200, currentColor);
+  }
+}
+
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;

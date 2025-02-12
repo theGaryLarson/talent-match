@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -7,6 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
+import React from "react";
 
 interface Props<ValueType> {
   id: string;
@@ -26,44 +26,43 @@ export default function MultipleSelectFilterAutoload<ValueType>({
   getOptionLabel,
   ...rest
 }: Props<ValueType>) {
-  const [filter, setFilter] = React.useState<string[]>([]);
   const [options, setOptions] = React.useState<ValueType[]>([]);
-  const [formattedLabel, setFormattedLabel] = React.useState<string>(label);
   const [loading, setLoading] = React.useState(false);
+  const formattedLabel = `${label} (${value.length})`;
 
-  const handleChange = (event: SelectChangeEvent<string[]>) => {
-    const {
-      target: { value },
-    } = event;
-
-    setFilter(typeof value === "string" ? value.split(",") : value);
-    onChange(event);
-  };
-
-  // Load the initial filter values
   React.useEffect(() => {
-    const autoload = async () => {
+    const abortController = new AbortController();
+
+    const loadOptions = async () => {
       try {
         setLoading(true);
-        const response = await fetch(apiAutoloadRoute);
+        const response = await fetch(apiAutoloadRoute, {
+          signal: abortController.signal,
+        });
+
+        if (!response.ok) throw new Error("Fetch failed");
+
         const data: ValueType[] = await response.json();
-
-        setOptions(data); // Update the options with fetched data
-
-        if (value?.length !== 0) {
-          setFilter(value);
+        if (!abortController.signal.aborted) {
+          setOptions(data);
         }
-        setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        if (!abortController.signal.aborted) {
+          console.error("Fetch error:", error);
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
-    autoload();
-  }, []);
 
-  React.useEffect(() => {
-    setFormattedLabel(label + " (" + filter.length + ")");
-  }, [filter, label]);
+    loadOptions();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [apiAutoloadRoute]);
 
   return (
     <div className="flex flex-1 px-1">
@@ -81,8 +80,8 @@ export default function MultipleSelectFilterAutoload<ValueType>({
         </InputLabel>
         <Select
           multiple
-          value={filter}
-          onChange={handleChange}
+          value={value}
+          onChange={onChange}
           input={<OutlinedInput />}
           disabled={loading}
           renderValue={(selected) => selected.join(", ")}
@@ -90,21 +89,25 @@ export default function MultipleSelectFilterAutoload<ValueType>({
             borderRadius: "9999px",
             height: "1.75rem",
           }}
-          MenuProps={{ PaperProps: { sx: { maxHeight: 500 } } }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                maxHeight: 500,
+                "& ul": { padding: 0 },
+              },
+            },
+          }}
           {...rest}
         >
-          {options.map((option) => (
-            <MenuItem
-              dense={true}
-              key={getOptionLabel(option)}
-              value={getOptionLabel(option)}
-            >
-              <Checkbox
-                checked={filter.indexOf(getOptionLabel(option)) !== -1}
-              />
-              <ListItemText primary={getOptionLabel(option)} />
-            </MenuItem>
-          ))}
+          {options.map((option) => {
+            const optionLabel = getOptionLabel(option);
+            return (
+              <MenuItem dense={true} key={optionLabel} value={optionLabel}>
+                <Checkbox checked={value.includes(optionLabel)} />
+                <ListItemText primary={optionLabel} />
+              </MenuItem>
+            );
+          })}
         </Select>
       </FormControl>
     </div>

@@ -257,7 +257,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 onChange={handleFieldChange}
                 value={introData.firstName ?? ""}
               >
-                First Name
+                First Name *
               </InputTextWithLabel>
               <InputTextWithLabel
                 id="profile-creation-intro-lastName"
@@ -265,7 +265,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 onChange={handleFieldChange}
                 value={introData.lastName ?? ""}
               >
-                Last Name
+                Last Name *
               </InputTextWithLabel>
             </div>
 
@@ -297,7 +297,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 pattern="\d{5}(-\d{4})?"
                 required
               >
-                Zip Code *
+                Zip Code
               </InputTextWithLabel>
             </div>
 
@@ -311,7 +311,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 required
                 disabled
               >
-                Email *
+                Email
               </InputTextWithLabel>
             </div>
 

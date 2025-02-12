@@ -575,7 +575,7 @@ export default function CreateEmployerProfilePage() {
                 value={profileData.currentJobTitle}
                 required
               >
-                Job Title *
+                Job Title
               </InputTextWithLabel>
               {isCompanySelected && (
                 <div>
