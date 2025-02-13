@@ -14,11 +14,13 @@ export type JobPostCreationDTO = {
   salary_range: string;
   //county: string;
   relocation_services: boolean;
-  visa_sponsership: boolean;
+  visa_sponsorship: boolean;
   zip: string;
   //publish_date?: Date;
   unpublish_date?: Date;
   job_post_url?: string;
   assessment_url?: string;
   skillIds?: string[]; // Array of skill IDs to associate with the job
+  earn_and_learn_type?: string,
+  occupation_code?: string,
 };
