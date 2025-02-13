@@ -10,7 +10,7 @@ import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
-import { EmploymentType } from "@/app/lib/admin/jobTracking";
+import {EarnLearnType, EmploymentType} from "@/app/lib/admin/jobTracking";
 
 export default function CreateJobListingAdminForm() {
   const router = useRouter();
@@ -20,6 +20,9 @@ export default function CreateJobListingAdminForm() {
   const [techAres, setTechAreas] = useState<technology_areas[]>();
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
   const [jobDescription, setJobDescription] = useState("");
+  const [selectedEmploymentType, setSelectedEmploymentType] = useState<string>(
+    EmploymentType.FullTime
+  );
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -48,7 +51,9 @@ export default function CreateJobListingAdminForm() {
       sector_id: formData.get("sector") as string,
       company_id: formData.get("company") as string,
       relocation_services: formData.get("relocation") === "yes",
-      visa_sponsership: formData.get("visas") === "yes",
+      visa_sponsorship: formData.get("visas") === "yes",
+      earn_and_learn_type: formData.get("earn_and_learn_type") as string,
+      occupation_code: formData.get("occupation_code") as string,
     };
     try {
       const response = await fetch("/api/joblistings/add", {
@@ -239,7 +244,11 @@ export default function CreateJobListingAdminForm() {
       {/* Employment Type */}
       <div>
         <label htmlFor="employment_type">Employment Type</label>
-        <select name="employment_type" defaultValue={EmploymentType.FullTime}>
+        <select
+          name="employment_type"
+          value={selectedEmploymentType}
+          onChange={(e) => setSelectedEmploymentType(e.target.value as string)}
+        >
           {Object.entries(EmploymentType).map(([key, value]) => (
             <option key={key} value={value}>
               {value}
@@ -247,6 +256,21 @@ export default function CreateJobListingAdminForm() {
           ))}
         </select>
       </div>
+
+      {/* Conditionally Render Earn and Learn Select */}
+      {selectedEmploymentType === EmploymentType.EarnAndLearn && (
+        <div>
+          <label htmlFor="earn_and_learn_type">Earn and Learn Type</label>
+          <select name="earn_and_learn_type" id="earn_and_learn_type" required>
+            <option value="">--Please Select Earn and Learn Type--</option>
+            {Object.values(EarnLearnType).map((typeValue) => (
+              <option key={typeValue} value={typeValue}>
+                {typeValue}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Location */}
       <div>
