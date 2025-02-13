@@ -600,6 +600,8 @@ model job_postings {
   assessment_url                String?           @db.VarChar(255)
   relocation_services_available Boolean           @default(false)
   offer_visa_sponsorship        Boolean           @default(false)
+  occupation_code               String?           @db.VarChar(255)
+  earn_and_learn_type           String?           @db.VarChar(255)
   skills                        skills[]          @relation("JobPostingSkills") // Direct One-directional reference to skills to skills
   companies                     companies         @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_job_postings_companies1")
   employers                     employers?        @relation(fields: [employer_id], references: [employer_id], onUpdate: NoAction, onDelete: SetNull, map: "fk_job_postings_employers1")
