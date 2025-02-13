@@ -10,18 +10,22 @@ import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
-import {EarnLearnType, EmploymentType} from "@/app/lib/admin/jobTracking";
+import {
+  EarnLearnType,
+  EmploymentType,
+  OccupationCode,
+} from "@/app/lib/admin/jobTracking";
 
 export default function CreateJobListingAdminForm() {
   const router = useRouter();
   const { quill, quillRef } = useQuill();
   const [skills, setSkills] = useState<SkillDTO[]>();
   const [companies, setCompanies] = useState<companies[]>();
-  const [techAres, setTechAreas] = useState<technology_areas[]>();
+  const [techAreas, setTechAreas] = useState<technology_areas[]>();
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
   const [jobDescription, setJobDescription] = useState("");
   const [selectedEmploymentType, setSelectedEmploymentType] = useState<string>(
-    EmploymentType.FullTime
+    EmploymentType.FullTime,
   );
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -129,10 +133,25 @@ export default function CreateJobListingAdminForm() {
         </select>
       </div>
 
-      {/* Job Title */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="job_title">Job Title</label>
-        <input type="text" name="job_title" required />
+      <div className="grid grid-cols-2 gap-4">
+        {/* Job Title */}
+        <div className="flex flex-col">
+          <label htmlFor="job_title">Job Title</label>
+          <input type="text" name="job_title" required />
+        </div>
+
+        {/* Occupation Code (NAICS) */}
+        <div className="flex flex-col">
+          <label htmlFor="occupation_code">Occupation Code (NAICS)</label>
+          <select name="occupation_code" id="occupation_code" required>
+            <option value="">--Select Occupation Code--</option>
+            {Object.values(OccupationCode).map((code) => (
+              <option key={code} value={code}>
+                {code}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Job Description */}
@@ -163,7 +182,7 @@ export default function CreateJobListingAdminForm() {
         <label htmlFor="area">What Tech Area Best Describes This Job?</label>
         <select name="area" id="area" required>
           <option value={""}>--Please Select an Area--</option>
-          {techAres?.map((area) => (
+          {techAreas?.map((area) => (
             <option key={area.id} value={area.id}>
               {area.title}
             </option>
