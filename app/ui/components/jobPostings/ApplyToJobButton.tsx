@@ -5,6 +5,7 @@ import { JobStatus } from "@/app/lib/jobseekerJobTracking";
 import { useSession } from "next-auth/react";
 import { redirect, usePathname } from "next/navigation";
 import PillButton from "../PillButton";
+import { Add, Clear } from "@mui/icons-material";
 
 interface Props {
   id: string;
@@ -71,8 +72,31 @@ export default function ApplyToJobButton({
     }
   };
 
-  return (
+  return hasApplied ? (
     <PillButton
+      startIcon={<Clear />}
+      disabled={
+        (unPublishDate && unPublishDate <= new Date()) ||
+        appliedStatus == JobStatus.Screened ||
+        appliedStatus == JobStatus.Interviewing ||
+        appliedStatus == JobStatus.Negotiating ||
+        appliedStatus == JobStatus.Accepted ||
+        appliedStatus == JobStatus.NoResponse ||
+        appliedStatus == JobStatus.NotSelected
+      }
+      disableElevation
+      sx={{
+        bgcolor: "error.bg",
+        "&:hover": { bgcolor: "#ED251C" },
+        "&:selected": { bgcolor: "#ED251C" },
+      }}
+      onClick={handleApplicationClick}
+    >
+      Withdraw Consideration
+    </PillButton>
+  ) : (
+    <PillButton
+      startIcon={<Add />}
       disabled={
         (unPublishDate && unPublishDate <= new Date()) ||
         appliedStatus == JobStatus.Screened ||
@@ -86,7 +110,7 @@ export default function ApplyToJobButton({
       sx={{ bgcolor: "secondary.main" }}
       onClick={handleApplicationClick}
     >
-      {hasApplied ? "Withdraw Application" : "Apply now"}
+      Be Considered
     </PillButton>
   );
 }

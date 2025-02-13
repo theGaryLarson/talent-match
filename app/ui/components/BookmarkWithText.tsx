@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { IconButton } from "@mui/material";
 import { Bookmark, BookmarkBorderOutlined } from "@mui/icons-material";
+import PillButton from "./PillButton";
 
 interface BookmarkProps {
   bookmarked: boolean;
@@ -9,7 +9,11 @@ interface BookmarkProps {
   removeUrl: string;
 }
 
-function BookmarkComponent({ bookmarked, addUrl, removeUrl }: BookmarkProps) {
+function BookmarkWithTextComponent({
+  bookmarked,
+  addUrl,
+  removeUrl,
+}: BookmarkProps) {
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
   async function toggleBookmark() {
     const initialState = isBookmarked;
@@ -35,15 +39,31 @@ function BookmarkComponent({ bookmarked, addUrl, removeUrl }: BookmarkProps) {
     }
   }
 
-  return (
-    <IconButton onClick={toggleBookmark}>
-      {isBookmarked ? (
-        <Bookmark sx={{ color: "secondary.main" }} />
-      ) : (
-        <BookmarkBorderOutlined />
-      )}
-    </IconButton>
+  return isBookmarked ? (
+    <PillButton
+      disableElevation
+      startIcon={<Bookmark />}
+      onClick={toggleBookmark}
+      sx={{
+        backgroundColor: "neutral.100",
+        color: "secondary.main",
+      }}
+    >
+      Remove Job
+    </PillButton>
+  ) : (
+    <PillButton
+      disableElevation
+      startIcon={<BookmarkBorderOutlined />}
+      onClick={toggleBookmark}
+      sx={{
+        backgroundColor: "neutral.100",
+        color: "secondary.main",
+      }}
+    >
+      Save Job
+    </PillButton>
   );
 }
 
-export default React.memo(BookmarkComponent);
+export default React.memo(BookmarkWithTextComponent);

@@ -7,12 +7,11 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Chip,
-  ChipProps,
   Box,
   Typography,
   Stack,
   Divider,
+  TypographyProps,
 } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import Link from "next/link";
@@ -22,50 +21,40 @@ import PillButton from "../PillButton";
 
 type StatusConfigType = {
   [K in JobStatus]: {
-    color: ChipProps["color"];
-    variant: ChipProps["variant"];
+    color: TypographyProps["color"];
   };
 };
 
 const statusConfig: StatusConfigType = {
   [JobStatus.Applied]: {
     color: "success",
-    variant: "outlined",
   },
   [JobStatus.Screened]: {
     color: "secondary",
-    variant: "outlined",
   },
   [JobStatus.Interviewing]: {
     color: "primary",
-    variant: "outlined",
   },
   [JobStatus.Negotiating]: {
     color: "secondary",
-    variant: "filled",
   },
   [JobStatus.Accepted]: {
     color: "success",
-    variant: "filled",
   },
   [JobStatus.IWithdrew]: {
     color: "error",
-    variant: "outlined",
   },
   [JobStatus.NotSelected]: {
     color: "error",
-    variant: "outlined",
   },
   [JobStatus.NoResponse]: {
     color: "default",
-    variant: "outlined",
   },
 };
 
 const getStatusStyle = (status: string) => {
   const defaultStyle = {
-    color: "default" as ChipProps["color"],
-    variant: "outlined" as ChipProps["variant"],
+    color: "default" as TypographyProps["color"],
   };
 
   return statusConfig[status as JobStatus] || defaultStyle;
@@ -122,22 +111,22 @@ export default async function Applications({
               <TableHead>
                 <TableRow>
                   <TableCell
-                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                    sx={{ color: "secondary.main", fontWeight: "500" }}
                   >
                     Job Title
                   </TableCell>
                   <TableCell
-                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                    sx={{ color: "secondary.main", fontWeight: "500" }}
                   >
                     Company Name
                   </TableCell>
                   <TableCell
-                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                    sx={{ color: "secondary.main", fontWeight: "500" }}
                   >
                     Deadline
                   </TableCell>
                   <TableCell
-                    sx={{ color: "secondary.main", fontWeight: "600" }}
+                    sx={{ color: "secondary.main", fontWeight: "500" }}
                   >
                     Status
                   </TableCell>
@@ -154,14 +143,14 @@ export default async function Applications({
                     }}
                   >
                     <TableCell
-                      sx={{ color: "secondary.main", fontWeight: "600" }}
+                      sx={{ color: "secondary.main", fontWeight: "500" }}
                     >
                       {job.job_title}
                     </TableCell>
                     <TableCell sx={{ color: "secondary.main" }}>
                       {job.companies.company_name}
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ color: "neutral.700" }}>
                       {job.unpublish_date?.toLocaleString(undefined, {
                         weekday: "long",
                         month: "short",
@@ -175,17 +164,14 @@ export default async function Applications({
                         alignItems: "center",
                       }}
                     >
-                      <Chip
-                        label={job.jobStatus}
-                        color={getStatusStyle(job.jobStatus).color}
-                        variant={getStatusStyle(job.jobStatus).variant}
-                        size="small"
-                      />
+                      <Typography color={getStatusStyle(job.jobStatus).color}>
+                        {job.jobStatus}
+                      </Typography>
                       <Link
                         target="_blank"
                         href={"/services/joblistings/" + job.job_posting_id}
                       >
-                        <ArrowCircleRightOutlined />
+                        <ArrowCircleRightOutlined color="action" />
                       </Link>
                     </TableCell>
                   </TableRow>
@@ -200,20 +186,16 @@ export default async function Applications({
               <Box key={job.job_posting_id + "sm"} sx={{ px: 2 }}>
                 <Typography>{job.job_title}</Typography>
                 <Typography>{job.companies.company_name}</Typography>
-                <Typography>
+                <Typography sx={{ color: "neutral.700" }}>
                   {job.unpublish_date?.toLocaleString(undefined, {
                     weekday: "long",
                     month: "short",
                     day: "numeric",
                   })}
                 </Typography>
-                <Chip
-                  label={job.jobStatus}
-                  color={getStatusStyle(job.jobStatus).color}
-                  variant={getStatusStyle(job.jobStatus).variant}
-                  size="small"
-                />
-
+                <Typography color={getStatusStyle(job.jobStatus).color}>
+                  {job.jobStatus}
+                </Typography>
                 <Link
                   target="_blank"
                   href={"/services/joblistings/" + job.job_posting_id}
