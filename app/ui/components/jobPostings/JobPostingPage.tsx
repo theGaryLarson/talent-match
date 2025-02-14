@@ -19,6 +19,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
 
   const job_title: string = joblisting?.job_title ?? "";
   const employment_type: string = joblisting?.employment_type ?? "";
+  const earn_and_learn_type: string = joblisting?.earn_and_learn_type ?? "";
   const company_name: string = joblisting?.companies.company_name ?? "";
   const skills: SkillDTO[] = joblisting?.skills ?? [];
   const salary_range: string = joblisting?.salary_range ?? "";
@@ -84,7 +85,11 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
       >
         <Typography>{location}</Typography>
         <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />
-        <Typography>{employment_type}</Typography>
+        <Typography>
+          {employment_type === "Earn and Learn"
+            ? earn_and_learn_type
+            : employment_type}
+        </Typography>
         <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />
         <Typography>
           {city}, {state}

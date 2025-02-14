@@ -94,7 +94,11 @@ function JobListingCardView({
       <Grid2 container columnSpacing={2} sx={{ alignItems: "center" }}>
         <Typography>{joblisting?.location}</Typography>
         <Circle sx={{ fontSize: 8 }} />
-        <Typography>{joblisting?.employment_type}</Typography>
+        <Typography>
+          {joblisting?.employment_type === "Earn and Learn"
+            ? joblisting?.earn_and_learn_type
+            : joblisting?.employment_type}
+        </Typography>
         <Circle sx={{ fontSize: 8 }} />
         <Typography>
           {joblisting?.company_addresses?.locationData.city}
