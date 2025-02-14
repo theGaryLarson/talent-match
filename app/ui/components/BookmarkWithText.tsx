@@ -43,7 +43,8 @@ function BookmarkWithTextComponent({
     <PillButton
       startIcon={<Bookmark />}
       onClick={toggleBookmark}
-      color="secondary"
+      color="inherit"
+      sx={{ color: "secondary.main" }}
     >
       Remove Job
     </PillButton>
