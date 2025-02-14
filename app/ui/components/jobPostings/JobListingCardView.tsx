@@ -154,11 +154,11 @@ function JobListingCardView({
         >
           View job posting
         </PillButton>
-        <ApplyToJobButton
+        {!session?.user && isJobseeker && <ApplyToJobButton
           id={joblisting.job_posting_id}
           appliedStatus={joblisting.jobStatus}
           unPublishDate={joblisting.unpublish_date}
-        />
+        />}
       </Stack>
     </Card>
   );
