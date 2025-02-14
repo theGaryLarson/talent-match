@@ -27,6 +27,7 @@ export default function CreateJobListingAdminForm() {
   const [selectedEmploymentType, setSelectedEmploymentType] = useState<string>(
     EmploymentType.FullTime,
   );
+  const [isPermanent, setIsPermanent] = useState("yes");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -58,6 +59,18 @@ export default function CreateJobListingAdminForm() {
       visa_sponsorship: formData.get("visas") === "yes",
       earn_and_learn_type: formData.get("earn_and_learn_type") as string,
       occupation_code: formData.get("occupation_code") as string,
+      employment_duration:
+        formData.get("is_permanent") === "no"
+          ? (formData.get("employment_duration") as string)
+          : undefined,
+      start_date: formData.get("start_date")
+        ? new Date(formData.get("start_date") as string)
+        : undefined,
+      end_date: formData.get("end_date")
+        ? new Date(formData.get("end_date") as string)
+        : undefined,
+      career_services_offered:
+        formData.get("career_services_offered") === "yes",
     };
     try {
       const response = await fetch("/api/joblistings/add", {
@@ -133,7 +146,7 @@ export default function CreateJobListingAdminForm() {
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1">
         {/* Job Title */}
         <div className="flex flex-col">
           <label htmlFor="job_title">Job Title</label>
@@ -141,7 +154,7 @@ export default function CreateJobListingAdminForm() {
         </div>
 
         {/* Occupation Code (NAICS) */}
-        <div className="flex flex-col">
+        <div className="grid grid-cols-1">
           <label htmlFor="occupation_code">Occupation Code (NAICS)</label>
           <select name="occupation_code" id="occupation_code" required>
             <option value="">--Select Occupation Code--</option>
@@ -233,6 +246,44 @@ export default function CreateJobListingAdminForm() {
           </label>
         </div>
       </div>
+
+      {/* Permanent Role */}
+      <div>
+        <label>Is this position permanent?</label>
+        <div>
+          <label>
+            <input
+              type="radio"
+              name="is_permanent"
+              value="yes"
+              required
+              checked={isPermanent === "yes"}
+              onChange={(e) => setIsPermanent(e.target.value)}
+            />
+            Yes
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="is_permanent"
+              value="no"
+              required
+              checked={isPermanent === "no"}
+              onChange={(e) => setIsPermanent(e.target.value)}
+            />
+            No
+          </label>
+        </div>
+      </div>
+
+      {/* Employment Duration */}
+      {isPermanent === "no" && (
+        <div className="flex flex-col">
+          <label htmlFor="employment_duration">Employment Duration</label>
+          <input type="text" name="employment_duration" />
+        </div>
+      )}
+
       <div>
         <label>Does This Position Offer Relocation Services?</label>
         <div>
@@ -291,6 +342,26 @@ export default function CreateJobListingAdminForm() {
         </div>
       )}
 
+      {/* Start Date */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="start_date">Start Date</label>
+        <input
+          type="date"
+          name="start_date"
+          min={new Date().toISOString().split("T")[0]}
+        />
+      </div>
+
+      {/* End Date */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="end_date">End Date</label>
+        <input
+          type="date"
+          name="end_date"
+          min={new Date().toISOString().split("T")[0]}
+        />
+      </div>
+
       {/* Location */}
       <div>
         <label>Location</label>
@@ -347,6 +418,31 @@ export default function CreateJobListingAdminForm() {
       <div>
         <label htmlFor="assessment_url">Assessment URL</label>
         <input type="text" name="assessment_url" />
+      </div>
+
+      {/* Career Services Offered */}
+      <div>
+        <label>Does this position offer career services?</label>
+        <div>
+          <label>
+            <input
+              type="radio"
+              name="career_services_offered"
+              value="yes"
+              required
+            />
+            Yes
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="career_services_offered"
+              value="no"
+              required
+            />
+            No
+          </label>
+        </div>
       </div>
 
       {/* Skills */}

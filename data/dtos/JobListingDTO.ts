@@ -23,4 +23,8 @@ export type JobPostCreationDTO = {
   skillIds?: string[]; // Array of skill IDs to associate with the job
   earn_and_learn_type?: string;
   occupation_code?: string;
+  employment_duration?: string;
+  start_date?: Date;
+  end_date?: Date;
+  career_services_offered?: boolean;
 };

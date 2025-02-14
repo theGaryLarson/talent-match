@@ -78,6 +78,10 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         assessment_url: jobData.assessment_url,
         earn_and_learn_type: jobData.earn_and_learn_type,
         occupation_code: jobData.occupation_code,
+        employment_duration: jobData.employment_duration,
+        start_date: jobData.start_date,
+        end_date: jobData.end_date,
+        career_services_offered: jobData.career_services_offered,
         skills: {
           connect: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,
