@@ -33,6 +33,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
 
   const job_title: string = joblisting?.job_title ?? "";
   const employment_type: string = joblisting?.employment_type ?? "";
+  const earn_and_learn_type: string = joblisting?.earn_and_learn_type ?? "";
   const company_name: string = joblisting?.companies.company_name ?? "";
   const company_image: string = joblisting?.companies.company_logo_url ?? "";
   const industry: string = joblisting?.industry_sectors?.sector_title ?? "";
@@ -114,7 +115,11 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
       <div className="grid grid-cols-1 gap-4 sm-tablet:grid-cols-3">
         <div>
           <p className="font-semibold text-gray-700">Employment Type:</p>
-          <p className="capitalize text-gray-500">{employment_type}</p>
+          <p className="capitalize text-gray-500">
+            {employment_type === "Earn and Learn"
+              ? earn_and_learn_type
+              : employment_type}
+          </p>
         </div>
         <div>
           <p className="font-semibold text-gray-700">Salary:</p>

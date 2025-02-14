@@ -1896,6 +1896,48 @@ const CareerPrepStatus = [
   "Withdrawn", // additional option from what was given.
 ];
 
+const EmploymentTypes = [
+  "Full-time",
+  "Part-time",
+  "Contract",
+  "Seasonal",
+  "Earn and Learn",
+  "Other",
+];
+
+const EarnLearnTypes = [
+  "Registered Apprenticeship",
+  "Non-registered Apprenticeship",
+  "Internship",
+  "Customized Training",
+  "Incumbent Worker Training",
+  "Other (Transitional Jobs, Cooperatives, Practicums, Residences, or Fellowships)",
+];
+
+export const OccupationCodes = [
+  "Computer Systems Analysts (15-1211)",
+  "Information Security Analysts (15-1212)",
+  "Computer and Information Research Scientists (15-1221)",
+  "Computer Network Support Specialists (15-1231)",
+  "Computer User Support Specialists (15-1232)",
+  "Computer Network Architects (15-1241)",
+  "Database Administrators (15-1242)",
+  "Database Architects (15-1243)",
+  "Network and Computer Systems Administrators (15-1244)",
+  "Computer Programmers (15-1251)",
+  "Software Developers (15-1252)",
+  "Software Quality Assurance Analysts and Testers (15-1253)",
+  "Web Developers (15-1254)",
+  "Web and Digital Interface Designers (15-1255)",
+  "Operations Research Analysts (15-2031)",
+  "Data Scientists (15-2051)",
+  "Computer Hardware Engineers (17-2061)",
+  "Electronics Engineers (17-2072)",
+  "Electronics Repairers (49-2094)",
+  "HVAC Mechanics (49-9021)",
+  "OTHER Computer Occupations (15-1299)",
+];
+
 export const TimeUntilCompletion = [
   "N/A",
   "0-3 months",
@@ -3192,6 +3234,7 @@ async function seedJobPostings() {
                 max: waStateCountiesWithZipCodes.length - 1,
               })
             ];
+          const employmentType = faker.helpers.arrayElement(EmploymentTypes);
           await prisma.job_postings.create({
             data: {
               job_posting_id: uuidv4(),
@@ -3207,13 +3250,7 @@ async function seedJobPostings() {
               ),
               is_internship: isInternship,
               is_paid: isPaid,
-              employment_type: faker.helpers.arrayElement([
-                "Full-time job",
-                "Part-time job",
-                "Internship",
-                "On-campus job",
-                "Contract",
-              ]),
+              employment_type: employmentType,
               location: faker.helpers.arrayElement([
                 "on-site",
                 "remote",
@@ -3229,6 +3266,11 @@ async function seedJobPostings() {
               unpublish_date: faker.date.future(),
               job_post_url: faker.internet.url(),
               assessment_url: faker.internet.url(),
+              earn_and_learn_type:
+                employmentType != "Earn and Learn"
+                  ? employmentType
+                  : faker.helpers.arrayElement(EarnLearnTypes),
+              occupation_code: faker.helpers.arrayElement(OccupationCodes),
             },
           });
           totalJobPostings++; // Increment the total job postings counter
