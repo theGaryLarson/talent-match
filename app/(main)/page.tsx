@@ -1,7 +1,7 @@
 import RoundedButton from "../ui/components/RoundedButton";
 import Image from "next/image";
 import TrainingProviderMembers from "../ui/components/TrainingProviderMembers";
-import { Link } from "@mui/material";
+import { Link, List, ListItem, ListItemText } from "@mui/material";
 
 //entire TWC landing page
 export const metadata = {
@@ -102,18 +102,30 @@ export default function Page() {
                       Hire Qualified Candidates
                     </div>
                     <div className="self-stretch text-neutral-100 text-xl font-normal font-['Roboto'] leading-loose">
-                      Members of the Coalition have access to our soon to be
-                      launched Talent Finder Portal. Our searchable database
-                      will quickly connect you with local talent that meets your
-                      specific needs.
+                      Post jobs and receive the resumes of up to 5 degreed
+                      and/or industry-certified candidates for these roles:
+                      <List>
+                        <ListItem>
+                          <ListItemText primary="• Software Development"></ListItemText>
+                        </ListItem>
+                        <ListItem>
+                          <ListItemText primary="• Cybersecurity"></ListItemText>
+                        </ListItem>
+                        <ListItem>
+                          <ListItemText primary="• IT/Cloud Support"></ListItemText>
+                        </ListItem>
+                        <ListItem>
+                          <ListItemText primary="• Data Analytics"></ListItemText>
+                        </ListItem>
+                      </List>
                     </div>
                     <div className="flex-col justify-start items-start flex">
                       <div className="w-px h-2.5 relative" />
                     </div>
                     <div className="justify-start items-start gap-5 inline-flex">
                       <RoundedButton
-                        content={"Join the Coalition"}
-                        link={"/join"}
+                        content={"Post Jobs"}
+                        link={"mailto:susanne.mata@computingforall.org"}
                         invertColor={true}
                       ></RoundedButton>
                     </div>
