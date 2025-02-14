@@ -88,12 +88,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           }}
         >
           <PillButton
-            disableElevation
+            color="inherit"
             href={"/services/jobseekers/dashboard"}
-            sx={{
-              backgroundColor: "neutral.100",
-              color: "secondary.main",
-            }}
+            sx={{ color: "secondary.main" }}
           >
             Dashboard
           </PillButton>
@@ -103,7 +100,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           >
             |
           </Typography>
-          <PillButton disableElevation>Showcase</PillButton>
+          <PillButton color="secondary">Showcase</PillButton>
         </Stack>
       )}
 

@@ -299,7 +299,7 @@ export default function JobListingsContent() {
         {/* Filters */}
         <div className="mb-0 mt-1 flex flex-row flex-wrap">
           {/* City */}
-          <div className="w-1/2 tablet:w-1/4">
+          <div className="w-full phone:w-1/2 tablet:w-1/4">
             <MultipleSelectFilterAutoload
               id="jobseeker-listview-city"
               label="City"
@@ -310,7 +310,7 @@ export default function JobListingsContent() {
             />
           </div>
           {/* Profession */}
-          <div className="w-1/2 tablet:w-1/4">
+          <div className="w-full phone:w-1/2 tablet:w-1/4">
             <SingleSelectFilterAutoload
               id="jobseeker-listview-profession"
               label="Profession"
@@ -323,7 +323,7 @@ export default function JobListingsContent() {
             />
           </div>
           {/* Industry */}
-          <div className="w-1/2 tablet:w-1/4">
+          <div className="w-full phone:w-1/2 tablet:w-1/4">
             <MultipleSelectFilterAutoload
               id="jobseeker-listview-industry"
               label="Industry"
@@ -336,7 +336,7 @@ export default function JobListingsContent() {
             />
           </div>
           {/* Employment Type */}
-          <div className="w-1/2 tablet:w-1/4">
+          <div className="w-full mt-4 phone:mt-0 phone:w-1/2 tablet:w-1/4">
             <MultipleSelectCheckmarks
               label="Employment Type"
               value={getArrayParam("employment-type")}

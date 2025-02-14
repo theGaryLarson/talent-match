@@ -11,69 +11,30 @@ const PillButton: React.FC<PillButtonProps> = ({
   href,
   sx,
   variant = "contained",
+  color = "primary",
   ...props
 }) => {
   return (
     <Button
+      disableElevation
       variant={variant}
       component={href ? "a" : "button"}
       href={href || undefined}
       target={target}
+      color={color}
       sx={{
         borderRadius: "9999px",
         textTransform: "none",
         fontWeight: 500,
         transition: "all 0.3s ease-in-out",
         padding: "0.5rem 1.25rem",
-
-        // Outlined Button
-        ...(variant === "outlined" && {
-          border: "1px solid primary.main",
-          color: "primary.main", // Per Figma, text matches border
-          backgroundColor: "transparent",
-          "&:hover": {
-            backgroundColor: "blue.100",
-            color: "secondary.main",
-          },
-          "&:focus": {
-            backgroundColor: "primary.main",
-            color: "neutral.white",
-            boxShadow: "0 0 0 4px rgba(59, 130, 246, 0.5)",
-          },
-          "&:active": {
-            backgroundColor: "primary.light",
-            color: "secondary.main",
-          },
-          "&.Mui-disabled": {
+        ...(variant === "contained" &&
+          color === "inherit" && {
             backgroundColor: "neutral.100",
-            color: "neutral.600",
-          },
-        }),
-
-        // Default Button
-        ...(variant === "contained" && {
-          // Default Primary Button (Idle State)
-          backgroundColor: "primary.main",
-          color: "neutral.white",
-          "&:hover": {
-            backgroundColor: "blue.400",
-            color: "neutral.white",
-          },
-          "&:focus": {
-            backgroundColor: "blue.500",
-            color: "neutral.white",
-            boxShadow: "0 0 0 4px rgba(59, 130, 246, 0.5)",
-          },
-          "&:active": {
-            backgroundColor: "primary.main",
-            color: "neutral.white",
-          },
-          "&.Mui-disabled": {
-            backgroundColor: "neutral.200",
-            color: "neutral.900",
-            cursor: "not-allowed",
-          },
-        }),
+            "&:hover": {
+              backgroundColor: "neutral.200",
+            },
+          }),
         ...sx,
       }}
       {...props}

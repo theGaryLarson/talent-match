@@ -162,7 +162,10 @@ export default function MyJobApplications({
                           target="_blank"
                           href={`/services/joblistings/${job.job_posting_id}`}
                         >
-                          <ArrowCircleRightOutlined color="action" />
+                          <ArrowCircleRightOutlined
+                            fontSize="large"
+                            color="action"
+                          />
                         </Link>
                       </TableCell>
                     </TableRow>
@@ -197,7 +200,10 @@ export default function MyJobApplications({
                     href={`/services/joblistings/${job.job_posting_id}`}
                   >
                     <Typography sx={{ textAlign: "end", mb: 1 }}>
-                      <ArrowCircleRightOutlined />
+                      <ArrowCircleRightOutlined
+                        fontSize="large"
+                        color="action"
+                      />
                     </Typography>
                   </Link>
                   {index !== jobsToDisplay.length - 1 && (

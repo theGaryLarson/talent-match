@@ -41,25 +41,18 @@ function BookmarkWithTextComponent({
 
   return isBookmarked ? (
     <PillButton
-      disableElevation
       startIcon={<Bookmark />}
       onClick={toggleBookmark}
-      sx={{
-        backgroundColor: "neutral.100",
-        color: "secondary.main",
-      }}
+      color="secondary"
     >
       Remove Job
     </PillButton>
   ) : (
     <PillButton
-      disableElevation
       startIcon={<BookmarkBorderOutlined />}
       onClick={toggleBookmark}
-      sx={{
-        backgroundColor: "neutral.100",
-        color: "secondary.main",
-      }}
+      color="inherit"
+      sx={{ color: "secondary.main" }}
     >
       Save Job
     </PillButton>

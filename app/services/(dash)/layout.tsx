@@ -110,15 +110,14 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
           </Link>
         ))}
         <PillButton
+          color="inherit"
           startIcon={<LogoutRounded />}
-          disableElevation
           href="/signout"
           sx={{
             ml: 5,
             mt: 3,
             mb: 3,
             width: "123px",
-            backgroundColor: "neutral.100",
             color: "secondary.main",
           }}
         >

@@ -54,7 +54,7 @@ function JobListingCardView({
     <Card
       elevation={0}
       sx={{
-        p: 3,
+        p: { xs: 0, md: 3 },
         borderRadius: "12px",
         transition: "box-shadow 0.3s",
         "&:hover": { boxShadow: 3 },
@@ -141,11 +141,16 @@ function JobListingCardView({
           ))}
         </Grid2>
       )}
-      <Stack direction="row" gap={1} sx={{ mt: 2, justifyContent: "flex-end" }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        gap={1}
+        sx={{ mt: 2, justifyContent: "flex-end" }}
+      >
         <PillButton
           href={`/services/joblistings/${joblisting.job_posting_id}`}
           target="_blank"
           variant="outlined"
+          color="secondary"
         >
           View job posting
         </PillButton>

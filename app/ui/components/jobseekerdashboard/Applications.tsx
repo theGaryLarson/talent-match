@@ -94,10 +94,9 @@ export default async function Applications({
           Application Status
         </Typography>
         <PillButton
+          color="inherit"
           href="/services/joblistings"
-          disableElevation
           sx={{
-            backgroundColor: "neutral.100",
             color: "secondary.main",
           }}
         >
@@ -171,7 +170,10 @@ export default async function Applications({
                         target="_blank"
                         href={"/services/joblistings/" + job.job_posting_id}
                       >
-                        <ArrowCircleRightOutlined color="action" />
+                        <ArrowCircleRightOutlined
+                          fontSize="large"
+                          color="action"
+                        />
                       </Link>
                     </TableCell>
                   </TableRow>
@@ -201,7 +203,7 @@ export default async function Applications({
                   href={"/services/joblistings/" + job.job_posting_id}
                 >
                   <Typography sx={{ textAlign: "end", mb: 1 }}>
-                    <ArrowCircleRightOutlined />
+                    <ArrowCircleRightOutlined fontSize="large" color="action" />
                   </Typography>
                 </Link>
                 {index !== jobs.length - 1 && (
