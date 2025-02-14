@@ -39,10 +39,9 @@ export default async function EventsList({
         </p>
         {showOnlyRegisteredEvents && (
           <PillButton
+            color="inherit"
             href="/services/events"
-            disableElevation
             sx={{
-              backgroundColor: "neutral.100",
               color: "secondary.main",
             }}
           >

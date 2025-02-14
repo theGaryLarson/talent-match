@@ -1,27 +1,13 @@
-import Bookmark from "@/app/ui/components/Bookmark";
 import ApplyToJobButton from "@/app/ui/components/jobPostings/ApplyToJobButton";
 import DeleteJobPostingButton from "@/app/ui/components/jobPostings/DeleteJobPostingButton";
 import Skills from "@/app/ui/components/Skills";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import Avatar from "@/app/ui/components/Avatar";
-import { calculateDaysAway } from "@/app/lib/utils";
-import "quill/dist/quill.snow.css";
 import { auth } from "@/auth";
-
-function daysAwayToString(date: Date): string {
-  const daysAway = calculateDaysAway(date);
-  if (daysAway === 0) {
-    return "today";
-  } else {
-    const plural = Math.abs(daysAway) === 1 ? "" : "s";
-    if (daysAway < 0) {
-      return `${Math.abs(daysAway)} day${plural} ago`;
-    } else {
-      return `in ${daysAway} day${plural}`;
-    }
-  }
-}
+import { Box, Grid2, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Circle } from "@mui/icons-material";
+import "quill/dist/quill.snow.css";
+import BookmarkWithText from "../BookmarkWithText";
 
 interface Props {
   joblisting: any;
@@ -35,110 +21,155 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
   const employment_type: string = joblisting?.employment_type ?? "";
   const earn_and_learn_type: string = joblisting?.earn_and_learn_type ?? "";
   const company_name: string = joblisting?.companies.company_name ?? "";
-  const company_image: string = joblisting?.companies.company_logo_url ?? "";
-  const industry: string = joblisting?.industry_sectors?.sector_title ?? "";
   const skills: SkillDTO[] = joblisting?.skills ?? [];
   const salary_range: string = joblisting?.salary_range ?? "";
   const description: string = joblisting?.job_description ?? "";
-  const location: string =
-    joblisting?.location + ", " + joblisting?.county + ", " + joblisting?.zip;
+  const location: string = joblisting?.location;
+  const city: string = joblisting?.company_addresses?.locationData.city;
+  const state: string = joblisting?.company_addresses?.locationData.stateCode;
   const isJobseeker = session?.user.roles.includes(Role.JOBSEEKER);
 
   return (
-    <main className="mb-8 mr-4 ml-8 space-y-4">
-      {/* Job Title & Company */}
-      <div className="block tablet:flex tablet:flex-wrap">
-        <div className="mb-4 flex items-center space-x-4">
-          {company_image && (
-            <div className="min-w-[85px]">
-              <Avatar imgsrc={company_image ?? undefined} scale={1} />
+    <Stack
+      direction={"column"}
+      spacing={4}
+      sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}
+    >
+      <Grid2 container direction={{ xs: "column", sm: "row" }}>
+        <Grid2 size="grow">
+          <Stack direction={"row"} spacing={2} sx={{ alignItems: "center" }}>
+            <Typography variant="h3">{job_title}</Typography>
+            {session &&
+              joblisting &&
+              session.user.companyId === joblisting.company_id && (
+                <DeleteJobPostingButton id={params.id} />
+              )}
+          </Stack>
+          <Typography variant="h5">{company_name}</Typography>
+        </Grid2>
+        <Stack
+          direction={{ xs: "column", lg: "row" }}
+          spacing={2}
+          sx={{ display: { xs: "none", sm: "flex" } }}
+        >
+          {isJobseeker && (
+            <div>
+              <BookmarkWithText
+                bookmarked={joblisting.isBookmarked}
+                addUrl={
+                  "/api/joblistings/bookmark/add/" + joblisting.job_posting_id
+                }
+                removeUrl={
+                  "/api/joblistings/bookmark/remove/" +
+                  joblisting.job_posting_id
+                }
+              />
             </div>
           )}
-          <div>
-            <h4 className="text-lg font-semibold">{job_title}</h4>
-            <p>{company_name}</p>
-            <p className="sm-tablet:text-bas text-wrap text-sm capitalize text-gray-500">
-              {location}
-            </p>
-          </div>
-          <div className="self-start">
-            {session?.user.jobseekerId &&
-            joblisting.unpublish_date >= new Date() ? (
-              <Bookmark
-                bookmarked={
-                  joblisting?.jobApplications.find(
-                    (app: any) =>
-                      app.jobPostId === params.id &&
-                      app.jobseekerId === session.user.jobseekerId,
-                  )?.isBookmarked ?? false
-                }
-                addUrl={`/api/joblistings/bookmark/add/${joblisting?.job_posting_id}`}
-                removeUrl={`/api/joblistings/bookmark/remove/${joblisting?.job_posting_id}`}
+          {(!session?.user || isJobseeker) && (
+            <div>
+              <ApplyToJobButton
+                id={params.id}
+                appliedStatus={joblisting.jobStatus}
+                unPublishDate={joblisting.unpublish_date}
               />
-            ) : (
-              ""
-            )}
-            {session &&
-            joblisting &&
-            session.user.companyId === joblisting.company_id ? (
-              <DeleteJobPostingButton id={params.id} />
-            ) : (
-              ""
-            )}
-          </div>
-        </div>
-        {joblisting && (
-          <div className="mb-8 mr-4 grow self-center text-left text-gray-500 tablet:text-right">
-            <p className="text-sm">
-              Posted {daysAwayToString(joblisting.publish_date)} @{" "}
-              {joblisting.publish_date.toLocaleString("en-us", {
-                timeZoneName: "short",
+            </div>
+          )}
+        </Stack>
+      </Grid2>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        columnGap={2}
+        rowGap={0.5}
+        sx={{ alignItems: { sm: "center" } }}
+      >
+        <Typography>{location}</Typography>
+        <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />
+        <Typography>
+          {employment_type === "Earn and Learn"
+            ? earn_and_learn_type
+            : employment_type}
+        </Typography>
+        <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />
+        <Typography>
+          {city}, {state}
+        </Typography>
+        <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />
+        <Typography>{salary_range}</Typography>
+        <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />
+        <Typography>
+          Deadline:{" "}
+          {joblisting?.unpublish_date
+            ? new Date(joblisting.unpublish_date).toLocaleDateString("en-us", {
                 month: "numeric",
                 day: "numeric",
-                year: "numeric" /*hour: 'numeric', minute: 'numeric'*/,
-              })}
-            </p>
-            <p className="text-sm">
-              Closing {daysAwayToString(joblisting.unpublish_date)} @{" "}
-              {joblisting.unpublish_date.toLocaleString("en-us", {
-                timeZoneName: "short",
-                month: "numeric",
-                day: "numeric",
-                year: "numeric" /*hour: 'numeric', minute: 'numeric'*/,
-              })}
-            </p>
+                year: "numeric",
+              })
+            : "N/A"}
+        </Typography>
+      </Stack>
+      <Stack rowGap={2} direction="column" sx={{ display: { sm: "none" } }}>
+        {isJobseeker && (
+          <Box>
+            <BookmarkWithText
+              bookmarked={joblisting.isBookmarked}
+              addUrl={
+                "/api/joblistings/bookmark/add/" + joblisting.job_posting_id
+              }
+              removeUrl={
+                "/api/joblistings/bookmark/remove/" + joblisting.job_posting_id
+              }
+            />
+          </Box>
+        )}
+        {(!session?.user || isJobseeker) && (
+          <div>
+            <ApplyToJobButton
+              id={params.id}
+              appliedStatus={joblisting.jobStatus}
+              unPublishDate={joblisting.unpublish_date}
+            />
           </div>
         )}
-      </div>
+      </Stack>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs value={0} aria-label="Details of job">
+          <Tab id="tab-0" label="Details" />
+        </Tabs>
+      </Box>
 
-      {/* Job Details */}
-      <div className="grid grid-cols-1 gap-4 sm-tablet:grid-cols-3">
-        <div>
-          <p className="font-semibold text-gray-700">Employment Type:</p>
-          <p className="capitalize text-gray-500">
-            {employment_type === "Earn and Learn"
-              ? earn_and_learn_type
-              : employment_type}
-          </p>
-        </div>
-        <div>
-          <p className="font-semibold text-gray-700">Salary:</p>
-          <p className="capitalize text-gray-500">{salary_range}</p>
-        </div>
-        <div>
-          <p className="font-semibold text-gray-700">Industry:</p>
-          <p className="capitalize text-gray-500">{industry}</p>
-        </div>
-      </div>
-
-      {/* Job Description */}
-      <div>
-        <p className="font-semibold text-gray-700">Description:</p>
-        <div
-          dangerouslySetInnerHTML={{ __html: description }}
-          className="ql-editor"
-        />
-      </div>
+      {/* Company Information */}
+      {(joblisting?.companies.about_us ||
+        joblisting?.companies.company_mission ||
+        joblisting?.companies.company_vision) && (
+        <Stack rowGap={2}>
+          {joblisting?.companies.about_us && (
+            <>
+              <Typography sx={{ fontWeight: "bold" }}>Our Company</Typography>
+              <p>{joblisting?.companies.about_us}</p>
+            </>
+          )}
+          {joblisting?.companies.company_mission && (
+            <>
+              <Typography sx={{ fontWeight: "bold" }}>Our Mission</Typography>
+              <p>{joblisting?.companies.company_mission}</p>
+            </>
+          )}
+          {joblisting?.companies.company_vision && (
+            <>
+              <Typography sx={{ fontWeight: "bold" }}>Our Vision</Typography>
+              <p>{joblisting?.companies.company_vision}</p>
+            </>
+          )}
+          <>
+            <Typography sx={{ fontWeight: "bold" }}>Description</Typography>
+            <div
+              dangerouslySetInnerHTML={{ __html: description }}
+              className="ql-editor"
+            />
+          </>
+        </Stack>
+      )}
 
       {/* Skills */}
       {skills.length > 0 && (
@@ -153,49 +184,6 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
           </div>
         </div>
       )}
-
-      {/* Company Information */}
-      {(joblisting?.companies.about_us ||
-        joblisting?.companies.company_mission ||
-        joblisting?.companies.company_vision) && (
-        <div className="space-y-4 rounded-md bg-gray-bg p-2">
-          {joblisting?.companies.about_us && (
-            <div>
-              <p className="font-semibold text-gray-700">
-                About {company_name}:
-              </p>
-              <p className="text-base leading-relaxed text-gray-500">
-                {joblisting?.companies.about_us}
-              </p>
-            </div>
-          )}
-          {joblisting?.companies.company_mission && (
-            <div>
-              <p className="font-semibold text-gray-700">Our Mission:</p>
-              <p className="text-base leading-relaxed text-gray-500">
-                {joblisting?.companies.company_mission}
-              </p>
-            </div>
-          )}
-          {joblisting?.companies.company_vision && (
-            <div>
-              <p className="font-semibold text-gray-700">Our Vision:</p>
-              <p className="text-base leading-relaxed text-gray-500">
-                {joblisting?.companies.company_vision}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-      {(!session?.user || isJobseeker) && (
-        <div>
-          <ApplyToJobButton
-            id={params.id}
-            appliedStatus={joblisting.jobStatus}
-            unPublishDate={joblisting.unpublish_date}
-          />
-        </div>
-      )}
-    </main>
+    </Stack>
   );
 }

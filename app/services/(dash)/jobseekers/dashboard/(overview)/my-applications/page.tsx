@@ -1,37 +1,49 @@
 import { getJobSeekerAppliedJobs } from "@/app/lib/joblistings";
-import JobListingCardView from "@/app/ui/components/jobPostings/JobListingCardView";
-import { Divider, Stack } from "@mui/material";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
+import MyJobApplications from "@/app/ui/components/jobPostings/MyJobApplications";
+import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
+import { ArrowBack } from "@mui/icons-material";
+import { Box } from "@mui/material";
 import Link from "next/link";
 
-export default async function page() {
-  const myAppliedJobs = await getJobSeekerAppliedJobs();
-  if (myAppliedJobs === undefined || myAppliedJobs.length == 0) {
+export default async function Page() {
+  const myAppliedJobs: JobListingCardViewDTO[] | undefined =
+    await getJobSeekerAppliedJobs();
+
+  if (!myAppliedJobs || myAppliedJobs.length === 0) {
     return (
       <div>
         <p>
           No Applications Found:{" "}
-          <Link href={"/services/joblistings"} className="LINK">
+          <Link href="/services/joblistings" className="LINK">
             Find Job Listings here
           </Link>
         </p>
       </div>
     );
   }
+
+  const excludedStatuses = [
+    JobStatus.NoResponse,
+    JobStatus.IWithdrew,
+    JobStatus.NotSelected,
+  ];
+  const activeJobs = myAppliedJobs.filter(
+    (job) => !excludedStatuses.includes(job.jobStatus as JobStatus),
+  );
+  const nonActiveJobs = myAppliedJobs.filter((job) =>
+    excludedStatuses.includes(job.jobStatus as JobStatus),
+  );
+
   return (
-    <main className="mb-0 flex-1 pt-8 phone:m-4 phone:p-6 sm-tablet:m-6 laptop:px-[200px]">
-      <h1 className="mb-4 text-2xl font-bold">Applied Jobs</h1>
-      <div className="space-y-4">
-        <Stack spacing={2} divider={<Divider />}>
-          {myAppliedJobs.map(
-            (job) =>
-              job && (
-                <div key={job.job_posting_id}>
-                  <JobListingCardView joblisting={job} />
-                </div>
-              ),
-          )}
-        </Stack>
-      </div>
-    </main>
+    <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
+      <Link href="/services/jobseekers/dashboard">
+        <ArrowBack sx={{ width: "16px", height: "16px" }} /> My Dashboard
+      </Link>
+      <MyJobApplications
+        activeJobs={activeJobs}
+        nonActiveJobs={nonActiveJobs}
+      />
+    </Box>
   );
 }

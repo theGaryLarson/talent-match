@@ -97,6 +97,7 @@ const theme = createTheme({
         },
         error: {
           main: "#DB241C",
+          light: "#F8D3D2",
           bg: "#DB241C",
           text: "#FFFFFF",
         },

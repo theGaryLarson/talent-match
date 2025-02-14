@@ -24,6 +24,8 @@ import { MultipleSelectCheckmarks } from "../mui/MultiSelectFilter";
 import { EmploymentType } from "@/app/lib/admin/jobTracking";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
+import Link from "next/link";
+import { ArrowBack } from "@mui/icons-material";
 
 const resultsPerPage = 50;
 
@@ -260,165 +262,169 @@ export default function JobListingsContent() {
   );
 
   return (
-    <Stack spacing={2.5} sx={{ mx: { xs: 3, md: 6.25 } }}>
-      <Typography
-        variant="h2"
-        sx={{ color: "secondary.main", fontSize: "2.5rem", fontWeight: 400 }}
-      >
-        Jobs
-      </Typography>
+    <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
+      <Link href="/services/jobseekers/dashboard">
+        <ArrowBack sx={{ width: "16px", height: "16px" }} /> My Dashboard
+      </Link>
+      <Stack spacing={2.5}>
+        <Typography variant="h3" sx={{ color: "secondary.main" }}>
+          Jobs
+        </Typography>
 
-      {/* Job Title Search Bar */}
-      <TextField
-        autoComplete="off"
-        label="Full/Partial Job Title"
-        fullWidth
-        defaultValue={getParam("jobTitle")}
-        onChange={handleJobTitleChange}
-        sx={{ mb: 3 }}
-      />
+        {/* Job Title Search Bar */}
+        <TextField
+          autoComplete="off"
+          label="Full/Partial Job Title"
+          fullWidth
+          defaultValue={getParam("jobTitle")}
+          onChange={handleJobTitleChange}
+          sx={{ mb: 3 }}
+        />
 
-      {/* Skill Search Bar */}
-      <TagsWithAutocomplete
-        apiSearchRoute="/api/skills/search/"
-        fieldLabel="Select up to 5 skills to search"
-        id="employer-listview-skills"
-        maxTags={5}
-        searchingText="Searching..."
-        noResultsText="No skills found..."
-        onChange={handleSkillsChange}
-        searchPlaceholder="Skill (ex: Java)"
-        getTagLabel={(option: SkillDTO) => option.skill_name}
-        getTagLink={(option: SkillDTO) => option.skill_info_url}
-        initialTags={getArrayParam("skills")}
-      />
+        {/* Skill Search Bar */}
+        <TagsWithAutocomplete
+          apiSearchRoute="/api/skills/search/"
+          fieldLabel="Select up to 5 skills to search"
+          id="employer-listview-skills"
+          maxTags={5}
+          searchingText="Searching..."
+          noResultsText="No skills found..."
+          onChange={handleSkillsChange}
+          searchPlaceholder="Skill (ex: Java)"
+          getTagLabel={(option: SkillDTO) => option.skill_name}
+          getTagLink={(option: SkillDTO) => option.skill_info_url}
+          initialTags={getArrayParam("skills")}
+        />
 
-      {/* Filters */}
-      <div className="mb-0 mt-1 flex flex-row flex-wrap">
-        {/* City */}
-        <div className="w-1/2 tablet:w-1/4">
-          <MultipleSelectFilterAutoload
-            id="jobseeker-listview-city"
-            label="City"
-            apiAutoloadRoute="/api/postal-geo-data/city/get"
-            value={getArrayParam("city")}
-            onChange={handleCityChange}
-            getOptionLabel={(option: { city: string }) => option.city}
-          />
-        </div>
-        {/* Profession */}
-        <div className="w-1/2 tablet:w-1/4">
-          <SingleSelectFilterAutoload
-            id="jobseeker-listview-profession"
-            label="Profession"
-            apiAutoloadRoute="/api/employers/technology-areas"
-            value={getParam("profession")}
-            onChange={handleProfessionChange}
-            getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
-          />
-        </div>
-        {/* Industry */}
-        <div className="w-1/2 tablet:w-1/4">
-          <MultipleSelectFilterAutoload
-            id="jobseeker-listview-industry"
-            label="Industry"
-            apiAutoloadRoute="/api/employers/industry-sectors"
-            value={getArrayParam("industry")}
-            onChange={handleIndustryChange}
-            getOptionLabel={(option: IndustrySectorDropdownDTO) =>
-              option.sector_title
-            }
-          />
-        </div>
-        {/* Employment Type */}
-        <div className="w-1/2 tablet:w-1/4">
-          <MultipleSelectCheckmarks
-            label="Employment Type"
-            value={getArrayParam("employment-type")}
-            onChange={handleEmploymentTypeChange}
-            options={Object.values(EmploymentType).map((type) => ({
-              label: type,
-              value: type,
-            }))}
-          />
-        </div>
-      </div>
-
-      {session?.user.roles.includes(Role.JOBSEEKER) && (
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={value}
-            onChange={handleTabChange}
-            aria-label="Job Search or Saved Jobs"
-          >
-            <Tab id="tab-0" label="Job Search" />
-            <Tab id="tab-1" label="Saved Jobs" />
-          </Tabs>
-        </Box>
-      )}
-
-      {/* Loading */}
-      {loading && (
-        <div className="h-full w-full text-center">
-          <CircularProgress />
-        </div>
-      )}
-
-      {/* Error */}
-      {!loading && error && (
-        <div className="h-full w-full text-center text-3xl">
-          Error: Invalid Query
-        </div>
-      )}
-
-      {/* Display Results */}
-      {!loading && !error && (
-        <Stack spacing={2} divider={<Divider />}>
-          {joblistings.map((joblisting: JobListingCardViewDTO) => (
-            <JobListingCardView
-              joblisting={joblisting}
-              key={joblisting.job_posting_id}
+        {/* Filters */}
+        <div className="mb-0 mt-1 flex flex-row flex-wrap">
+          {/* City */}
+          <div className="w-full phone:w-1/2 tablet:w-1/4">
+            <MultipleSelectFilterAutoload
+              id="jobseeker-listview-city"
+              label="City"
+              apiAutoloadRoute="/api/postal-geo-data/city/get"
+              value={getArrayParam("city")}
+              onChange={handleCityChange}
+              getOptionLabel={(option: { city: string }) => option.city}
             />
-          ))}
-        </Stack>
-      )}
-
-      {/* Pagination Info */}
-      {!loading && !error && (
-        <div className="mt-6 flex justify-center">
-          <div>
-            Showing{" "}
-            {totalResults === 0
-              ? 0
-              : resultsPerPage * page - resultsPerPage + 1}{" "}
-            - {Math.min(resultsPerPage * page, totalResults)} of {totalResults}{" "}
-            total results
+          </div>
+          {/* Profession */}
+          <div className="w-full phone:w-1/2 tablet:w-1/4">
+            <SingleSelectFilterAutoload
+              id="jobseeker-listview-profession"
+              label="Profession"
+              apiAutoloadRoute="/api/employers/technology-areas"
+              value={getParam("profession")}
+              onChange={handleProfessionChange}
+              getOptionLabel={(option: TechnologyAreaDropdownDTO) =>
+                option.title
+              }
+            />
+          </div>
+          {/* Industry */}
+          <div className="w-full phone:w-1/2 tablet:w-1/4">
+            <MultipleSelectFilterAutoload
+              id="jobseeker-listview-industry"
+              label="Industry"
+              apiAutoloadRoute="/api/employers/industry-sectors"
+              value={getArrayParam("industry")}
+              onChange={handleIndustryChange}
+              getOptionLabel={(option: IndustrySectorDropdownDTO) =>
+                option.sector_title
+              }
+            />
+          </div>
+          {/* Employment Type */}
+          <div className="w-full mt-4 phone:mt-0 phone:w-1/2 tablet:w-1/4">
+            <MultipleSelectCheckmarks
+              label="Employment Type"
+              value={getArrayParam("employment-type")}
+              onChange={handleEmploymentTypeChange}
+              options={Object.values(EmploymentType).map((type) => ({
+                label: type,
+                value: type,
+              }))}
+            />
           </div>
         </div>
-      )}
 
-      {/* Pagination */}
-      <div className="pb-2 mt-2 flex justify-center phone:pb-8">
-        {!loading && (
-          <Pagination
-            variant="text"
-            color="secondary"
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            sx={{
-              "& .MuiPaginationItem-root:not(.Mui-selected):not(.MuiPaginationItem-ellipsis):not(.MuiPaginationItem-previousNext)":
-                {
-                  bgcolor: "neutral.200",
-                  "&:hover": { bgcolor: "neutral.100" },
-                },
-              "& .MuiPaginationItem-root:not(.Mui-selected)": {
-                color: "secondary.main",
-              },
-            }}
-          />
+        {session?.user.roles.includes(Role.JOBSEEKER) && (
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleTabChange}
+              aria-label="Job Search or Saved Jobs"
+            >
+              <Tab id="tab-0" label="Job Search" />
+              <Tab id="tab-1" label="Saved Jobs" />
+            </Tabs>
+          </Box>
         )}
-      </div>
-    </Stack>
+
+        {/* Loading */}
+        {loading && (
+          <div className="h-full w-full text-center">
+            <CircularProgress />
+          </div>
+        )}
+
+        {/* Error */}
+        {!loading && error && (
+          <div className="h-full w-full text-center text-3xl">
+            Error: Invalid Query
+          </div>
+        )}
+
+        {/* Display Results */}
+        {!loading && !error && (
+          <Stack spacing={2} divider={<Divider />}>
+            {joblistings.map((joblisting: JobListingCardViewDTO) => (
+              <JobListingCardView
+                joblisting={joblisting}
+                key={joblisting.job_posting_id}
+              />
+            ))}
+          </Stack>
+        )}
+
+        {/* Pagination Info */}
+        {!loading && !error && (
+          <div className="mt-6 flex justify-center">
+            <div>
+              Showing{" "}
+              {totalResults === 0
+                ? 0
+                : resultsPerPage * page - resultsPerPage + 1}{" "}
+              - {Math.min(resultsPerPage * page, totalResults)} of{" "}
+              {totalResults} total results
+            </div>
+          </div>
+        )}
+
+        {/* Pagination */}
+        <div className="pb-2 mt-2 flex justify-center phone:pb-8">
+          {!loading && (
+            <Pagination
+              variant="text"
+              color="secondary"
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              sx={{
+                "& .MuiPaginationItem-root:not(.Mui-selected):not(.MuiPaginationItem-ellipsis):not(.MuiPaginationItem-previousNext)":
+                  {
+                    bgcolor: "neutral.200",
+                    "&:hover": { bgcolor: "neutral.100" },
+                  },
+                "& .MuiPaginationItem-root:not(.Mui-selected)": {
+                  color: "secondary.main",
+                },
+              }}
+            />
+          )}
+        </div>
+      </Stack>
+    </Box>
   );
 }
