@@ -24,7 +24,6 @@ export default function ApplyToJobButton({
   appliedStatus = "",
   unPublishDate,
 }: Props) {
-  // Initial state based on appliedStatus
   const [hasApplied, setHasApplied] = useState<boolean>(
     appliedStatus == JobStatus.Screened ||
       appliedStatus == JobStatus.Applied ||

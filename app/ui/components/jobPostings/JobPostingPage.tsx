@@ -36,7 +36,14 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
     >
       <Grid2 container direction={{ xs: "column", sm: "row" }}>
         <Grid2 size="grow">
-          <Typography variant="h3">{job_title}</Typography>
+          <Stack direction={"row"} spacing={2} sx={{ alignItems: "center" }}>
+            <Typography variant="h3">{job_title}</Typography>
+            {session &&
+              joblisting &&
+              session.user.companyId === joblisting.company_id && (
+                <DeleteJobPostingButton id={params.id} />
+              )}
+          </Stack>
           <Typography variant="h5">{company_name}</Typography>
         </Grid2>
         <Stack
@@ -120,13 +127,6 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
           </div>
         )}
       </Stack>
-      {session &&
-        joblisting &&
-        session.user.companyId === joblisting.company_id && (
-          <div className="self-start">
-            <DeleteJobPostingButton id={params.id} />
-          </div>
-        )}
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={0} aria-label="Details of job">
           <Tab id="tab-0" label="Details" />
