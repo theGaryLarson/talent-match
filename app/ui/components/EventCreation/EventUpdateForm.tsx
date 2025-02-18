@@ -160,6 +160,12 @@ export default function EventUpdateForm() {
   useEffect(() => {
     if (quill) {
       quill.clipboard.dangerouslyPasteHTML(eventDescription);
+    }
+  }, [eventDescription]);
+
+  useEffect(() => {
+    if (quill) {
+      quill.clipboard.dangerouslyPasteHTML(eventDescription);
       quill.on("text-change", () => {
         setEventDescription(quill.root.innerHTML);
       });
@@ -206,7 +212,7 @@ export default function EventUpdateForm() {
               htmlFor="eventLocation"
               className="block text-sm font-medium"
             >
-              Event Location (Remote or Physical Adress)
+              Event Location (Remote or Physical Address)
             </label>
             <input
               type="text"
