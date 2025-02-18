@@ -244,7 +244,7 @@ export default function TalentSearch() {
       />
 
       {/* Filters */}
-      <Grid2 container spacing={2} sx={{ mt: 2 }}>
+      <Grid2 container spacing={2} sx={{ my: 2 }}>
         {/* Industry */}
         <Grid2 size={{ xs: 6, md: 4 }}>
           <MultipleSelectFilterAutoload
@@ -335,10 +335,7 @@ export default function TalentSearch() {
             }}
           />
         </Grid2>
-      </Grid2>
 
-      {/* Second Filter / Sort row */}
-      <Grid2 container spacing={2} sx={{ mt: 1, mb: 2 }}>
         {/* Training Provider */}
         <Grid2 size={{ xs: 6, md: 4 }}>
           <SingleSelectFilterAutoload
@@ -360,10 +357,7 @@ export default function TalentSearch() {
         </Grid2>
 
         {/* Years of Experience, Removed at Marketing's request */}
-        <Grid2
-          size={{ xs: 6, md: 4 }}
-          sx={{ display: { xs: "none", md: "block" } }}
-        ></Grid2>
+        <Grid2 size={{ xs: 6, md: 4 }}></Grid2>
 
         {/* Sorting */}
         <Grid2
