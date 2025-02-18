@@ -154,14 +154,12 @@ export default function EventUpdateForm() {
       setEventLocation(selectedEvent.location);
       setEventDescription(selectedEvent.description ?? "");
       setEventType(selectedEvent.eventType as EventTypeEnum);
+
+      if (quill) {
+        quill.clipboard.dangerouslyPasteHTML(selectedEvent.description ?? "");
+      }
     }
   }, [selectedEventId]);
-
-  useEffect(() => {
-    if (quill) {
-      quill.clipboard.dangerouslyPasteHTML(eventDescription);
-    }
-  }, [eventDescription]);
 
   useEffect(() => {
     if (quill) {
