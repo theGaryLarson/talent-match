@@ -16,7 +16,7 @@ import { TrainingProviderDropdownDTO } from "@/data/dtos/TrainingProviderDropdow
 import SingleSelectFilterAutoload from "@/app/ui/components/mui/SingleSelectFilterAutoload";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import { Grid2 } from "@mui/material";
+import { Box, Grid2 } from "@mui/material";
 
 const resultsPerPage = 50;
 
@@ -219,7 +219,7 @@ export default function TalentSearch() {
   }, [skillsList, industry, eduLevel, trainingProvider, zipCode, sortBy, page]);
 
   return (
-    <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8 w-full">
+    <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
       <h1 className="text-2xl font-bold mb-4">
         Search Results for: {skillsList?.toString().replaceAll(",", ", ")}
       </h1>
@@ -447,6 +447,6 @@ export default function TalentSearch() {
           ""
         )}
       </div>
-    </main>
+    </Box>
   );
 }
