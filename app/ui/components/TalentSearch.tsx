@@ -246,7 +246,7 @@ export default function TalentSearch() {
       {/* Filters */}
       <Grid2 container spacing={2} sx={{ my: 2 }}>
         {/* Industry */}
-        <Grid2 size={{ xs: 6, md: 4 }}>
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
           <MultipleSelectFilterAutoload
             id="jobseeker-listview-industry"
             label="Industry"
@@ -268,7 +268,7 @@ export default function TalentSearch() {
         </Grid2>
 
         {/* Education Level */}
-        <Grid2 size={{ xs: 6, md: 4 }}>
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
           <SingleSelectFilter
             id="jobseeker-listview-edulevel"
             label="Minimum Degree"
@@ -306,7 +306,7 @@ export default function TalentSearch() {
 
         {/* Zip Code */}
         {/* Design has agreed to a text field until we have a better distance measurement system in place */}
-        <Grid2 size={{ xs: 6, md: 4 }}>
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
           <TextField
             autoComplete="off"
             label="Full/Partial Zip Code"
@@ -337,7 +337,7 @@ export default function TalentSearch() {
         </Grid2>
 
         {/* Training Provider */}
-        <Grid2 size={{ xs: 6, md: 4 }}>
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
           <SingleSelectFilterAutoload
             id="jobseeker-listview-trainingProvider"
             label="Training Provider"
@@ -357,12 +357,15 @@ export default function TalentSearch() {
         </Grid2>
 
         {/* Years of Experience, Removed at Marketing's request */}
-        <Grid2 size={{ xs: 6, md: 4 }}></Grid2>
+        <Grid2
+          size={{ xs: 12, sm: 6, md: 4 }}
+          sx={{ display: { xs: "none", sm: "block" } }}
+        ></Grid2>
 
         {/* Sorting */}
         <Grid2
           container
-          size={{ xs: 6, md: 4 }}
+          size={{ xs: 12, sm: 6, md: 4 }}
           sx={{ justifyContent: "flex-end", alignItems: "flex-end" }}
         >
           <SortDropdown
