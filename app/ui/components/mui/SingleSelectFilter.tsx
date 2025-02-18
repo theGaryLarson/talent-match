@@ -40,10 +40,7 @@ export default function SingleSelectCheckmarks({
 
   return (
     <FormControl fullWidth>
-      <InputLabel
-      >
-        {label}
-      </InputLabel>
+      <InputLabel>{label}</InputLabel>
       <Select
         id={id}
         className=""

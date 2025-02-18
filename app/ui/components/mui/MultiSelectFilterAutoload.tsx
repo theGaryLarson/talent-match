@@ -65,30 +65,27 @@ export default function MultipleSelectFilterAutoload<ValueType>({
   }, [apiAutoloadRoute]);
 
   return (
-      <FormControl fullWidth>
-        <InputLabel
-        >
-          {formattedLabel}
-        </InputLabel>
-        <Select
-          multiple
-          value={value}
-          onChange={onChange}
-          input={<OutlinedInput />}
-          disabled={loading}
-          renderValue={(selected) => selected.join(", ")}
-          {...rest}
-        >
-          {options.map((option) => {
-            const optionLabel = getOptionLabel(option);
-            return (
-              <MenuItem dense={true} key={optionLabel} value={optionLabel}>
-                <Checkbox checked={value.includes(optionLabel)} />
-                <ListItemText primary={optionLabel} />
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
+    <FormControl fullWidth>
+      <InputLabel>{formattedLabel}</InputLabel>
+      <Select
+        multiple
+        value={value}
+        onChange={onChange}
+        input={<OutlinedInput />}
+        disabled={loading}
+        renderValue={(selected) => selected.join(", ")}
+        {...rest}
+      >
+        {options.map((option) => {
+          const optionLabel = getOptionLabel(option);
+          return (
+            <MenuItem dense={true} key={optionLabel} value={optionLabel}>
+              <Checkbox checked={value.includes(optionLabel)} />
+              <ListItemText primary={optionLabel} />
+            </MenuItem>
+          );
+        })}
+      </Select>
+    </FormControl>
   );
 }

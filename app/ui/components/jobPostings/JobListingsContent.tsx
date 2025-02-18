@@ -300,7 +300,7 @@ export default function JobListingsContent() {
         {/* Filters */}
         <Grid2 container spacing={2}>
           {/* City */}
-          <Grid2 size={{xs: 12, sm: 6, md: 3}}>
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectFilterAutoload
               id="jobseeker-listview-city"
               label="City"
@@ -311,7 +311,7 @@ export default function JobListingsContent() {
             />
           </Grid2>
           {/* Profession */}
-          <Grid2 size={{xs: 12, sm: 6, md: 3}}>
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
             <SingleSelectFilterAutoload
               id="jobseeker-listview-profession"
               label="Profession"
@@ -324,7 +324,7 @@ export default function JobListingsContent() {
             />
           </Grid2>
           {/* Industry */}
-          <Grid2 size={{xs: 12, sm: 6, md: 3}}>
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectFilterAutoload
               id="jobseeker-listview-industry"
               label="Industry"
@@ -337,7 +337,7 @@ export default function JobListingsContent() {
             />
           </Grid2>
           {/* Employment Type */}
-          <Grid2 size={{xs: 12, sm: 6, md: 3}}>
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectCheckmarks
               label="Employment Type"
               value={getArrayParam("employment-type")}

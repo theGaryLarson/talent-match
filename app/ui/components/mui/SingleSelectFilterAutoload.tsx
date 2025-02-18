@@ -56,31 +56,28 @@ export default function SingleSelectFilterAutoload<ValueType>({
   }, [apiAutoloadRoute]);
 
   return (
-      <FormControl fullWidth>
-        <InputLabel
-        >
-          {label}
-        </InputLabel>
-        <Select
-          value={value}
-          disabled={loading}
-          onChange={onChange}
-          input={<OutlinedInput />}
-          renderValue={(selected) => selected}
-          {...rest}
-        >
-          <MenuItem dense={true} value="">
-            <ListItemText primary="Any" />
-          </MenuItem>
-          {options.map((option) => {
-            const optionLabel = getOptionLabel(option);
-            return (
-              <MenuItem dense={true} key={optionLabel} value={optionLabel}>
-                <ListItemText primary={optionLabel} />
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
+    <FormControl fullWidth>
+      <InputLabel>{label}</InputLabel>
+      <Select
+        value={value}
+        disabled={loading}
+        onChange={onChange}
+        input={<OutlinedInput />}
+        renderValue={(selected) => selected}
+        {...rest}
+      >
+        <MenuItem dense={true} value="">
+          <ListItemText primary="Any" />
+        </MenuItem>
+        {options.map((option) => {
+          const optionLabel = getOptionLabel(option);
+          return (
+            <MenuItem dense={true} key={optionLabel} value={optionLabel}>
+              <ListItemText primary={optionLabel} />
+            </MenuItem>
+          );
+        })}
+      </Select>
+    </FormControl>
   );
 }
