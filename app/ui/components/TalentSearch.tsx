@@ -437,11 +437,21 @@ export default function TalentSearch() {
       <div className="flex justify-center mt-2 mb-4 phone:mb-0">
         {!loading ? (
           <Pagination
-            variant="outlined"
-            shape="rounded"
+            variant="text"
+            color="secondary"
             count={Math.ceil((totalResults ?? 1) / resultsPerPage)}
             page={getParam("page") != "" ? +getParam("page") : 1}
             onChange={handlePageChange}
+            sx={{
+              "& .MuiPaginationItem-root:not(.Mui-selected):not(.MuiPaginationItem-ellipsis):not(.MuiPaginationItem-previousNext)":
+                {
+                  bgcolor: "neutral.200",
+                  "&:hover": { bgcolor: "neutral.100" },
+                },
+              "& .MuiPaginationItem-root:not(.Mui-selected)": {
+                color: "secondary.main",
+              },
+            }}
           />
         ) : (
           ""
