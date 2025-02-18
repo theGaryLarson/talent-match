@@ -166,7 +166,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
     <div
       role="button"
       tabIndex={0}
-      className="w-full rounded-md p-4 hover:bg-slate-200 grid grid-cols-4 justify-start items-center mb-4 cursor-pointer"
+      className="w-full rounded-md p-4 hover:bg-slate-200 grid grid-cols-4 justify-start items-center mb-4 cursor-pointer gap-8"
     >
       <Modal
         open={open}
