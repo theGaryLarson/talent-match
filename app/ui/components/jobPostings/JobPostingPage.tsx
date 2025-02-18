@@ -141,7 +141,8 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
       {/* Company Information */}
       {(joblisting?.companies.about_us ||
         joblisting?.companies.company_mission ||
-        joblisting?.companies.company_vision) && (
+        joblisting?.companies.company_vision ||
+        description) && (
         <Stack rowGap={2}>
           {joblisting?.companies.about_us && (
             <>
