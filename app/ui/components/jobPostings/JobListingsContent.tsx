@@ -264,9 +264,9 @@ export default function JobListingsContent() {
 
   return (
     <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
-      <Link href="/services/jobseekers/dashboard">
+      {session?.user.roles.includes(Role.JOBSEEKER) && <Link href="/services/jobseekers/dashboard">
         <ArrowBack sx={{ width: "16px", height: "16px" }} /> My Dashboard
-      </Link>
+      </Link>}
       <Stack spacing={2.5}>
         <Typography variant="h3" sx={{ color: "secondary.main" }}>
           Jobs
