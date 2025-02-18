@@ -30,13 +30,13 @@ export default function SortDropdown({
     <FormControl size="small" variant="standard">
       <InputLabel id={id + "-label"}>{label}</InputLabel>
       <Select
-        className="shadow-transparent border-none"
         labelId={id + "-label"}
         id={id}
         value={value}
         label={label}
         onChange={onChange}
         sx={{
+          border: 0,
           "&.MuiInput-underline": { "&:before": { borderBottom: "none" } },
         }}
         {...rest}

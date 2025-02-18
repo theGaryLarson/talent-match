@@ -56,16 +56,8 @@ export default function SingleSelectFilterAutoload<ValueType>({
   }, [apiAutoloadRoute]);
 
   return (
-    <div className="flex flex-1 px-1">
-      <FormControl className="flex flex-1">
+      <FormControl fullWidth>
         <InputLabel
-          sx={{
-            fontSize: "0.875rem",
-            lineHeight: "1.25rem",
-            position: "relative",
-            top: "8px",
-            left: "0px",
-          }}
         >
           {label}
         </InputLabel>
@@ -75,11 +67,6 @@ export default function SingleSelectFilterAutoload<ValueType>({
           onChange={onChange}
           input={<OutlinedInput />}
           renderValue={(selected) => selected}
-          sx={{
-            borderRadius: "9999px",
-            height: "1.75rem",
-          }}
-          MenuProps={{ PaperProps: { sx: { maxHeight: 500 } } }}
           {...rest}
         >
           <MenuItem dense={true} value="">
@@ -95,6 +82,5 @@ export default function SingleSelectFilterAutoload<ValueType>({
           })}
         </Select>
       </FormControl>
-    </div>
   );
 }
