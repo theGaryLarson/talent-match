@@ -124,8 +124,15 @@ export default function Page() {
                     </div>
                     <div className="justify-start items-start gap-5 inline-flex">
                       <RoundedButton
+                        content={"Search Talent"}
+                        link={"/services/talent-search"}
+                        invertColor={true}
+                      ></RoundedButton>
+                      <RoundedButton
                         content={"Post Jobs"}
-                        link={"mailto:susanne.mata@computingforall.org"}
+                        link={
+                          "mailto:susanne.mata@computingforall.org?subject=TSP%20|%20Job%20Post%20Request"
+                        }
                         invertColor={true}
                       ></RoundedButton>
                     </div>
