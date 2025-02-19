@@ -12,7 +12,7 @@ import {
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
@@ -81,6 +81,14 @@ export default function UpdateJobListingForm() {
       });
       if (response.ok) {
         await response.json();
+        setJobListings(
+          (prev)=>(prev.map((j)=>{j
+            if(j.job_posting_id === submitData.job_posting_id && submitData.company_id){
+              return {...j, company_id: submitData.company_id}
+            }
+            return j;
+          }))
+      )
         alert(`Job: ${submitData.job_title} sucsessfully updated `);
       } else {
         console.error("Failed to update job listing");
@@ -151,7 +159,7 @@ export default function UpdateJobListingForm() {
   }, [quill]);
   return (
     <main>
-      <div className="grid grid-cols-1">
+      <Stack>
         <label htmlFor="company">Select Job Listing</label>
         <select
           name="job"
@@ -170,17 +178,17 @@ export default function UpdateJobListingForm() {
             </option>
           ))}
         </select>
-      </div>
+      </Stack>
       {selectedJob && (
         <form onSubmit={onSubmit} className="space-y-3">
           {/* Company (For use on admin page, would need to be added to api and the fetch request) */}
-          <div className="grid grid-cols-1">
-            <label htmlFor="company">
+          <Stack>
+            <label htmlFor="company_id">
               What Company Does this listing belong to?
             </label>
             <select
-              name="company"
-              id="company"
+              name="company_id"
+              id="company_id"
               required
               value={formData.company_id}
               onChange={handleChange}
@@ -192,10 +200,10 @@ export default function UpdateJobListingForm() {
                 </option>
               ))}
             </select>
-          </div>
+          </Stack>
 
           {/* Job Title */}
-          <div className="grid grid-cols-1">
+          <Stack>
             <label htmlFor="job_title">Job Title</label>
             <input
               type="text"
@@ -204,7 +212,7 @@ export default function UpdateJobListingForm() {
               onChange={handleChange}
               required
             />
-          </div>
+          </Stack>
 
           {/* Job Description */}
           <div className="grid grid-cols-1">
@@ -213,7 +221,7 @@ export default function UpdateJobListingForm() {
           </div>
 
           {/*tech Sector*/}
-          <div className="grid grid-cols-1">
+          <Stack>
             <label htmlFor="sector">Tech Sector</label>
             <select
               name="sector_id"
@@ -231,9 +239,9 @@ export default function UpdateJobListingForm() {
                 </option>
               ))}
             </select>
-          </div>
+          </Stack>
           {/*Tech Area*/}
-          <div className="grid grid-cols-1">
+          <Stack>
             <label htmlFor="area">Tech Area</label>
             <select
               name="tech_area_id"
@@ -248,7 +256,7 @@ export default function UpdateJobListingForm() {
                 </option>
               ))}
             </select>
-          </div>
+          </Stack>
 
           {/* Internship */}
           <div>
@@ -447,7 +455,7 @@ export default function UpdateJobListingForm() {
           </div>
 
           {/* Salary Range */}
-          <div className="grid grid-cols-1">
+          <Stack>
             <label htmlFor="salary_range">Salary Range</label>
             <input
               type="text"
@@ -456,12 +464,12 @@ export default function UpdateJobListingForm() {
               value={formData.salary_range}
               onChange={handleChange}
             />
-          </div>
+          </Stack>
 
           {/* County */}
 
           {/* ZIP Code */}
-          <div className="grid grid-cols-1">
+          <Stack>
             <label htmlFor="zip">ZIP Code</label>
             <input
               type="text"
@@ -470,9 +478,9 @@ export default function UpdateJobListingForm() {
               value={formData.zip}
               onChange={handleChange}
             />
-          </div>
+          </Stack>
           {/* Unpublish Date */}
-          <div className="grid grid-cols-1">
+          <Stack>
             <label htmlFor="unpublish_date">Application Deadline</label>
             <input
               type="date"
@@ -480,10 +488,10 @@ export default function UpdateJobListingForm() {
               min={new Date().toISOString().split("T")[0]}
               //value={formData.unpublish_date}
             />
-          </div>
+          </Stack>
 
           {/* Job Post URL */}
-          <div className="grid grid-cols-1">
+          <Stack>
             <label htmlFor="job_post_url">Job Post URL</label>
             <input
               type="text"
@@ -491,7 +499,7 @@ export default function UpdateJobListingForm() {
               value={formData.job_post_url}
               onChange={handleChange}
             />
-          </div>
+          </Stack>
 
           {/* Assessment URL */}
           <div>
