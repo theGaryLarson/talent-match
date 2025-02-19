@@ -90,7 +90,6 @@ export default function UpdateJobListingForm() {
         await response.json();
         setJobListings((prev) =>
           prev.map((j) => {
-            j;
             if (
               j.job_posting_id === submitData.job_posting_id &&
               submitData.company_id
