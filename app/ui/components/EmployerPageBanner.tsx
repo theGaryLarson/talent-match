@@ -12,7 +12,10 @@ export default async function EmployerPageBanner() {
       }
     >
       <div className="inline-flex h-[750px] w-[487px] flex-col items-start justify-start gap-2">
-        <div className="self-stretch  text-[88px] font-normal capitalize leading-[105.60px] text-white">
+        <div
+          className="self-stretch font-normal capitalize leading-[105.60px] text-white"
+          style={{ fontSize: "clamp(4rem, 24vw, 5rem);" }}
+        >
           Where you discover Local tech talent{" "}
         </div>
         <div className="self-stretch  text-[22px] font-normal leading-[30.80px] text-white">
