@@ -39,37 +39,21 @@ export default function SingleSelectCheckmarks({
   }, []);
 
   return (
-    <div className="flex flex-1 px-1">
-      <FormControl className="flex flex-1">
-        <InputLabel
-          sx={{
-            fontSize: "0.875rem",
-            lineHeight: "1.25rem",
-            position: "relative",
-            top: "8px",
-            left: "0px",
-          }}
-        >
-          {label}
-        </InputLabel>
-        <Select
-          id={id}
-          className=""
-          value={filter}
-          onChange={handleChange}
-          input={<OutlinedInput />}
-          sx={{
-            borderRadius: "9999px",
-            height: "1.75rem",
-          }}
-        >
-          {options.map((option) => (
-            <MenuItem key={option.label} value={option.value}>
-              <ListItemText primary={option.label} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl fullWidth>
+      <InputLabel>{label}</InputLabel>
+      <Select
+        id={id}
+        className=""
+        value={filter}
+        onChange={handleChange}
+        input={<OutlinedInput />}
+      >
+        {options.map((option) => (
+          <MenuItem key={option.label} value={option.value}>
+            <ListItemText primary={option.label} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }

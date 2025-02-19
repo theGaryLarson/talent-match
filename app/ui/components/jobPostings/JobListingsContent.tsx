@@ -9,6 +9,7 @@ import { SkillDTO } from "@/data/dtos/SkillDTO";
 import {
   Box,
   Divider,
+  Grid2,
   Stack,
   Tab,
   Tabs,
@@ -263,9 +264,11 @@ export default function JobListingsContent() {
 
   return (
     <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
-      <Link href="/services/jobseekers/dashboard">
-        <ArrowBack sx={{ width: "16px", height: "16px" }} /> My Dashboard
-      </Link>
+      {session?.user.roles.includes(Role.JOBSEEKER) && (
+        <Link href="/services/jobseekers/dashboard">
+          <ArrowBack sx={{ width: "16px", height: "16px" }} /> My Dashboard
+        </Link>
+      )}
       <Stack spacing={2.5}>
         <Typography variant="h3" sx={{ color: "secondary.main" }}>
           Jobs
@@ -297,9 +300,9 @@ export default function JobListingsContent() {
         />
 
         {/* Filters */}
-        <div className="mb-0 mt-1 flex flex-row flex-wrap">
+        <Grid2 container spacing={2}>
           {/* City */}
-          <div className="w-full phone:w-1/2 tablet:w-1/4">
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectFilterAutoload
               id="jobseeker-listview-city"
               label="City"
@@ -308,9 +311,9 @@ export default function JobListingsContent() {
               onChange={handleCityChange}
               getOptionLabel={(option: { city: string }) => option.city}
             />
-          </div>
+          </Grid2>
           {/* Profession */}
-          <div className="w-full phone:w-1/2 tablet:w-1/4">
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
             <SingleSelectFilterAutoload
               id="jobseeker-listview-profession"
               label="Profession"
@@ -321,9 +324,9 @@ export default function JobListingsContent() {
                 option.title
               }
             />
-          </div>
+          </Grid2>
           {/* Industry */}
-          <div className="w-full phone:w-1/2 tablet:w-1/4">
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectFilterAutoload
               id="jobseeker-listview-industry"
               label="Industry"
@@ -334,9 +337,9 @@ export default function JobListingsContent() {
                 option.sector_title
               }
             />
-          </div>
+          </Grid2>
           {/* Employment Type */}
-          <div className="w-full mt-4 phone:mt-0 phone:w-1/2 tablet:w-1/4">
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectCheckmarks
               label="Employment Type"
               value={getArrayParam("employment-type")}
@@ -346,8 +349,8 @@ export default function JobListingsContent() {
                 value: type,
               }))}
             />
-          </div>
-        </div>
+          </Grid2>
+        </Grid2>
 
         {session?.user.roles.includes(Role.JOBSEEKER) && (
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

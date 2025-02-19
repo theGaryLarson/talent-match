@@ -25,7 +25,7 @@ function MultipleSelectCheckmarksComponent({
   const formattedLabel = `${label} (${value.length})`;
 
   return (
-    <FormControl sx={{ display: "flex", flex: 1 }}>
+    <FormControl fullWidth>
       <InputLabel>{formattedLabel}</InputLabel>
       <Select
         multiple

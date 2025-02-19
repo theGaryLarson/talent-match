@@ -141,6 +141,9 @@ const theme = createTheme({
     },
     dark: false,
   },
+  shape: {
+    borderRadius: 8,
+  },
   components: {},
 });
 
