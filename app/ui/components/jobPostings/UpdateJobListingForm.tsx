@@ -61,7 +61,14 @@ export default function UpdateJobListingForm() {
     const checked = "checked" in e.target ? e.target.checked : undefined;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === "checkbox" ? checked : value === "yes" ? true : value === "no" ? false : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : value === "yes"
+            ? true
+            : value === "no"
+              ? false
+              : value,
     }));
   };
 
@@ -81,14 +88,18 @@ export default function UpdateJobListingForm() {
       });
       if (response.ok) {
         await response.json();
-        setJobListings(
-          (prev)=>(prev.map((j)=>{j
-            if(j.job_posting_id === submitData.job_posting_id && submitData.company_id){
-              return {...j, company_id: submitData.company_id}
+        setJobListings((prev) =>
+          prev.map((j) => {
+            j;
+            if (
+              j.job_posting_id === submitData.job_posting_id &&
+              submitData.company_id
+            ) {
+              return { ...j, company_id: submitData.company_id };
             }
             return j;
-          }))
-      )
+          }),
+        );
         alert(`Job: ${submitData.job_title} sucsessfully updated `);
       } else {
         console.error("Failed to update job listing");
