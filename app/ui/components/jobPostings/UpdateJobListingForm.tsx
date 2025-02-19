@@ -61,7 +61,7 @@ export default function UpdateJobListingForm() {
     const checked = "checked" in e.target ? e.target.checked : undefined;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : value === "yes" ? true : value === "no" ? false : value,
     }));
   };
 
@@ -341,7 +341,7 @@ export default function UpdateJobListingForm() {
               <label>
                 <input
                   type="radio"
-                  name="relocation"
+                  name="relocation_services"
                   value="yes"
                   required
                   checked={formData.relocation_services}
@@ -352,7 +352,7 @@ export default function UpdateJobListingForm() {
               <label>
                 <input
                   type="radio"
-                  name="relocation"
+                  name="relocation_services"
                   value="no"
                   required
                   checked={!formData.relocation_services}
@@ -368,7 +368,7 @@ export default function UpdateJobListingForm() {
               <label>
                 <input
                   type="radio"
-                  name="visas"
+                  name="visa_sponsorship"
                   value="yes"
                   required
                   checked={formData.visa_sponsorship}
@@ -379,7 +379,7 @@ export default function UpdateJobListingForm() {
               <label>
                 <input
                   type="radio"
-                  name="visas"
+                  name="visa_sponsorship"
                   value="no"
                   required
                   checked={!formData.visa_sponsorship}
