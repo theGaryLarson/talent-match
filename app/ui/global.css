@@ -183,16 +183,7 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type="text"],
-input[type="url"],
-input[type="email"],
-input[type="number"],
-input[type="tel"],
-input[type="date"],
-textarea,
-select {
-  @apply border rounded-xs;
-}
+
 .REPLACE-BEFORE-RELEASE {
   @apply text-fuchsia-500 font-bold;
   @apply bg-linear-to-r from-fuchsia-300 via-slate-400 via-50% to-fuchsia-300;

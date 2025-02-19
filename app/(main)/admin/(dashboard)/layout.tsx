@@ -1,3 +1,4 @@
+import "@/app/ui/admin.css";
 import Link from "next/link";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
