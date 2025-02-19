@@ -497,7 +497,8 @@ export default function UpdateJobListingForm() {
               type="date"
               name="unpublish_date"
               min={new Date().toISOString().split("T")[0]}
-              //value={formData.unpublish_date}
+              //  value={formData.unpublish_date?.toISOString().split("T")[0]}
+              // onChange={()=>{}}
             />
           </Stack>
 
