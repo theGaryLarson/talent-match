@@ -5,6 +5,11 @@ import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
 import { v4 as uuidv4 } from "uuid";
 import { EducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { Button, Grid2 } from "@mui/material";
+import {
+  ArrowCircleRightOutlined,
+  HighlightOffOutlined,
+} from "@mui/icons-material";
 
 export default function Page() {
   const [eduProviderId, setEduProviderId] = useState(uuidv4()); // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -187,9 +192,22 @@ export default function Page() {
       </div>
 
       {/* Submit Button */}
-      <div>
-        <button type="submit">Create Provider</button>
-      </div>
+      <Grid2 container spacing={1}>
+        <Button
+          type="reset"
+          variant="outlined"
+          startIcon={<HighlightOffOutlined />}
+        >
+          Reset Form
+        </Button>
+        <Button
+          type="submit"
+          endIcon={<ArrowCircleRightOutlined />}
+          variant="contained"
+        >
+          Create Provider
+        </Button>
+      </Grid2>
     </form>
   );
 }
