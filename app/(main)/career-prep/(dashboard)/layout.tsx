@@ -5,6 +5,7 @@ import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutl
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import UpdateOutlinedIcon from '@mui/icons-material/UpdateOutlined';
 import { auth } from "@/auth";
 export default async function layout({
   children,
@@ -52,6 +53,13 @@ export default async function layout({
         >
           <PostAddOutlinedIcon />
           Post a Job
+        </Link>
+        <Link
+          href="/career-prep/updatejob"
+          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
+        >
+          <UpdateOutlinedIcon/>
+          Update a job
         </Link>
         <Link
           href="/career-prep/event-creation"

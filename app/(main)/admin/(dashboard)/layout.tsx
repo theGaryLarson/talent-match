@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import ApprovalOutlinedIcon from "@mui/icons-material/ApprovalOutlined";
 import { AddBusinessOutlined, PsychologyOutlined } from "@mui/icons-material";
+import UpdateOutlinedIcon from '@mui/icons-material/UpdateOutlined';
 export default async function layout({
   children,
 }: {
@@ -85,6 +86,13 @@ export default async function layout({
         >
           <PencilSquareIcon width={24} />
           Post a job
+        </Link>
+        <Link
+          href="/admin/updatejob"
+          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
+        >
+          <UpdateOutlinedIcon/>
+          Update a job
         </Link>
       </div>
       {children}
