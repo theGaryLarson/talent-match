@@ -111,7 +111,7 @@ export default function TagsWithAutocomplete<ValueType>({
     // }
     // getAndAddNewTags();
     if (Array.isArray(addNewTags)) {
-      const tags = new Set([...selectedTags, ...addNewTags])
+      const tags = new Set([...selectedTags, ...addNewTags]);
       setSelectedTags(Array.from(tags));
     }
   }, [addNewTags]);

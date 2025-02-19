@@ -91,9 +91,9 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
     // throw new Error('Failed to create job listing with associated skills');
   }
 }
-export async function updateJobListing(jobData:JobPostCreationDTO) {
-  if(!jobData.job_posting_id){
-    return
+export async function updateJobListing(jobData: JobPostCreationDTO) {
+  if (!jobData.job_posting_id) {
+    return;
   }
   const Session = await auth();
   let company_id = Session?.user.companyId;
@@ -130,8 +130,8 @@ export async function updateJobListing(jobData:JobPostCreationDTO) {
     });
 
     const res = await prisma.job_postings.update({
-      where:{
-        job_posting_id: jobData.job_posting_id
+      where: {
+        job_posting_id: jobData.job_posting_id,
       },
       data: {
         job_posting_id: jobData.job_posting_id,
@@ -163,13 +163,10 @@ export async function updateJobListing(jobData:JobPostCreationDTO) {
             skill_id: skillId,
           })),
         },
-      }
-    })
+      },
+    });
     return res;
-  } catch (error) {
-    
-  }
-  
+  } catch (error) {}
 }
 export async function getJobListingById(joblistingId: string) {
   try {
@@ -539,7 +536,7 @@ export async function getAllJobPosts() {
           },
         },
         companies: true,
-        skills:true
+        skills: true,
       },
     });
     return results;

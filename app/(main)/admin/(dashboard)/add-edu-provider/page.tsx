@@ -6,7 +6,10 @@ import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
 import { v4 as uuidv4 } from "uuid";
 import { EducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { Button } from "@mui/material";
-import { ArrowCircleRightOutlined, HighlightOffOutlined } from "@mui/icons-material";
+import {
+  ArrowCircleRightOutlined,
+  HighlightOffOutlined,
+} from "@mui/icons-material";
 
 export default function Page() {
   const [eduProviderId, setEduProviderId] = useState(uuidv4()); // eslint-disable-line @typescript-eslint/no-unused-vars
