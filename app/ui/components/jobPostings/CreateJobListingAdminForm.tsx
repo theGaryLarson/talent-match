@@ -10,15 +10,24 @@ import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
+import {
+  EarnLearnType,
+  EmploymentType,
+  OccupationCode,
+} from "@/app/lib/admin/jobTracking";
 
 export default function CreateJobListingAdminForm() {
   const router = useRouter();
   const { quill, quillRef } = useQuill();
   const [skills, setSkills] = useState<SkillDTO[]>();
   const [companies, setCompanies] = useState<companies[]>();
-  const [techAres, setTechAreas] = useState<technology_areas[]>();
+  const [techAreas, setTechAreas] = useState<technology_areas[]>();
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
   const [jobDescription, setJobDescription] = useState("");
+  const [selectedEmploymentType, setSelectedEmploymentType] = useState<string>(
+    EmploymentType.FullTime,
+  );
+  const [isPermanent, setIsPermanent] = useState("yes");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -47,7 +56,21 @@ export default function CreateJobListingAdminForm() {
       sector_id: formData.get("sector") as string,
       company_id: formData.get("company") as string,
       relocation_services: formData.get("relocation") === "yes",
-      visa_sponsership: formData.get("visas") === "yes",
+      visa_sponsorship: formData.get("visas") === "yes",
+      earn_and_learn_type: formData.get("earn_and_learn_type") as string,
+      occupation_code: formData.get("occupation_code") as string,
+      employment_duration:
+        formData.get("is_permanent") === "no"
+          ? (formData.get("employment_duration") as string)
+          : undefined,
+      start_date: formData.get("start_date")
+        ? new Date(formData.get("start_date") as string)
+        : undefined,
+      end_date: formData.get("end_date")
+        ? new Date(formData.get("end_date") as string)
+        : undefined,
+      career_services_offered:
+        formData.get("career_services_offered") === "yes",
     };
     try {
       const response = await fetch("/api/joblistings/add", {
@@ -123,10 +146,25 @@ export default function CreateJobListingAdminForm() {
         </select>
       </div>
 
-      {/* Job Title */}
       <div className="grid grid-cols-1">
-        <label htmlFor="job_title">Job Title</label>
-        <input type="text" name="job_title" required />
+        {/* Job Title */}
+        <div className="flex flex-col">
+          <label htmlFor="job_title">Job Title</label>
+          <input type="text" name="job_title" required />
+        </div>
+
+        {/* Occupation Code (NAICS) */}
+        <div className="grid grid-cols-1">
+          <label htmlFor="occupation_code">Occupation Code (NAICS)</label>
+          <select name="occupation_code" id="occupation_code" required>
+            <option value="">--Select Occupation Code--</option>
+            {Object.values(OccupationCode).map((code) => (
+              <option key={code} value={code}>
+                {code}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Job Description */}
@@ -157,7 +195,7 @@ export default function CreateJobListingAdminForm() {
         <label htmlFor="area">What Tech Area Best Describes This Job?</label>
         <select name="area" id="area" required>
           <option value={""}>--Please Select an Area--</option>
-          {techAres?.map((area) => (
+          {techAreas?.map((area) => (
             <option key={area.id} value={area.id}>
               {area.title}
             </option>
@@ -208,6 +246,44 @@ export default function CreateJobListingAdminForm() {
           </label>
         </div>
       </div>
+
+      {/* Permanent Role */}
+      <div>
+        <label>Is this position permanent?</label>
+        <div>
+          <label>
+            <input
+              type="radio"
+              name="is_permanent"
+              value="yes"
+              required
+              checked={isPermanent === "yes"}
+              onChange={(e) => setIsPermanent(e.target.value)}
+            />
+            Yes
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="is_permanent"
+              value="no"
+              required
+              checked={isPermanent === "no"}
+              onChange={(e) => setIsPermanent(e.target.value)}
+            />
+            No
+          </label>
+        </div>
+      </div>
+
+      {/* Employment Duration */}
+      {isPermanent === "no" && (
+        <div className="flex flex-col">
+          <label htmlFor="employment_duration">Employment Duration</label>
+          <input type="text" name="employment_duration" />
+        </div>
+      )}
+
       <div>
         <label>Does This Position Offer Relocation Services?</label>
         <div>
@@ -238,11 +314,52 @@ export default function CreateJobListingAdminForm() {
       {/* Employment Type */}
       <div>
         <label htmlFor="employment_type">Employment Type</label>
-        <select name="employment_type" defaultValue="full-time">
-          <option value="full-time">Full-Time</option>
-          <option value="part-time">Part-Time</option>
-          <option value="contract">Contract</option>
+        <select
+          name="employment_type"
+          value={selectedEmploymentType}
+          onChange={(e) => setSelectedEmploymentType(e.target.value as string)}
+        >
+          {Object.entries(EmploymentType).map(([key, value]) => (
+            <option key={key} value={value}>
+              {value}
+            </option>
+          ))}
         </select>
+      </div>
+
+      {/* Conditionally Render Earn and Learn Select */}
+      {selectedEmploymentType === EmploymentType.EarnAndLearn && (
+        <div>
+          <label htmlFor="earn_and_learn_type">Earn and Learn Type</label>
+          <select name="earn_and_learn_type" id="earn_and_learn_type" required>
+            <option value="">--Please Select Earn and Learn Type--</option>
+            {Object.values(EarnLearnType).map((typeValue) => (
+              <option key={typeValue} value={typeValue}>
+                {typeValue}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Start Date */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="start_date">Start Date</label>
+        <input
+          type="date"
+          name="start_date"
+          min={new Date().toISOString().split("T")[0]}
+        />
+      </div>
+
+      {/* End Date */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="end_date">End Date</label>
+        <input
+          type="date"
+          name="end_date"
+          min={new Date().toISOString().split("T")[0]}
+        />
       </div>
 
       {/* Location */}
@@ -301,6 +418,31 @@ export default function CreateJobListingAdminForm() {
       <div>
         <label htmlFor="assessment_url">Assessment URL</label>
         <input type="text" name="assessment_url" />
+      </div>
+
+      {/* Career Services Offered */}
+      <div>
+        <label>Does this position offer career services?</label>
+        <div>
+          <label>
+            <input
+              type="radio"
+              name="career_services_offered"
+              value="yes"
+              required
+            />
+            Yes
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="career_services_offered"
+              value="no"
+              required
+            />
+            No
+          </label>
+        </div>
       </div>
 
       {/* Skills */}

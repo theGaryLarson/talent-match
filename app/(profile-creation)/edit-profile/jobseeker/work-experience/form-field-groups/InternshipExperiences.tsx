@@ -98,7 +98,7 @@ export default memo(function InternshipExperiences({
           required
           value={internshipExperience[classCompany]}
         >
-          Company Name: *
+          Company Name:
         </InputTextWithLabel>
         <InputTextWithLabel
           id={classNamePrefix + internshipExperience.workId + "-" + classTitle}
@@ -108,7 +108,7 @@ export default memo(function InternshipExperiences({
           required
           value={internshipExperience[classTitle]}
         >
-          Your Job Title: *
+          Your Job Title:
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">

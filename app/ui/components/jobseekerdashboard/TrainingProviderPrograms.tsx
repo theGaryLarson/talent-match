@@ -21,10 +21,9 @@ export default async function TrainingProviderPrograms({
           Coalition Training Provider Programs
         </Typography>
         <PillButton
+          color="inherit"
           href="/services/training-providers"
-          disableElevation
           sx={{
-            backgroundColor: "neutral.100",
             color: "secondary.main",
           }}
         >

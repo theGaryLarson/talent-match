@@ -21,6 +21,7 @@ export type JobListingCardViewDTO = {
   unpublish_date?: Date;
   job_post_url?: string | null;
   assessment_url?: string | null;
+  earn_and_learn_type?: string | null;
   skills?: SkillDTO[];
   company_addresses?: {
     locationData: {

@@ -65,7 +65,7 @@ export default async function Page() {
           alignSelf: "stretch",
         }}
       >
-        <PillButton disableElevation>Dashboard</PillButton>
+        <PillButton color="secondary">Dashboard</PillButton>
         <Typography
           variant="h4"
           sx={{ fontSize: "24px", textAlign: "center", fontWeight: 400 }}
@@ -73,10 +73,9 @@ export default async function Page() {
           |
         </Typography>
         <PillButton
-          disableElevation
+          color="inherit"
           href={"/services/jobseekers/" + session?.user.jobseekerId}
           sx={{
-            backgroundColor: "neutral.100",
             color: "secondary.main",
           }}
         >

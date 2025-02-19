@@ -97,6 +97,7 @@ const theme = createTheme({
         },
         error: {
           main: "#DB241C",
+          light: "#F8D3D2",
           bg: "#DB241C",
           text: "#FFFFFF",
         },
@@ -139,6 +140,9 @@ const theme = createTheme({
       },
     },
     dark: false,
+  },
+  shape: {
+    borderRadius: 8,
   },
   components: {},
 });

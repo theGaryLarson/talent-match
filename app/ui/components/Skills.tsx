@@ -32,6 +32,7 @@ export default function Skills({
           color="primary"
           key={pill?.skill_id}
           label={pill?.skill_name}
+          target="_blank"
           href={pill?.skill_info_url}
         />
       ))}
