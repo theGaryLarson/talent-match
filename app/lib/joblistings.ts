@@ -165,6 +165,7 @@ export async function updateJobListing(jobData:JobPostCreationDTO) {
         },
       }
     })
+    return res;
   } catch (error) {
     
   }

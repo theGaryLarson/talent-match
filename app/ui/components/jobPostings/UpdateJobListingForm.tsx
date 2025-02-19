@@ -10,7 +10,7 @@ import { Button } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
-import router from "next/router";
+
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 //blank initail form data
 //selected onchange update data to new selecteds current data
@@ -23,7 +23,6 @@ export default function UpdateJobListingForm() {
     const [companies, setCompanies] = useState<companies[]>();
     const [techAreas, setTechAreas] = useState<technology_areas[]>([]);
     const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>([]);
-    const [jobDescription, setJobDescription] = useState("");
     const [formData, setFormData] = useState<JobPostCreationDTO>({
       job_title: "",
       is_internship: false,
@@ -58,7 +57,7 @@ export default function UpdateJobListingForm() {
   
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
       event.preventDefault();
-      const submitData = { ...formData, job_description: jobDescription, skillIds: skills.map((v) => v.skill_id) };
+      const submitData: JobPostCreationDTO = { ...formData, skillIds: skills.map((v) => v.skill_id), job_posting_id:selectedJob };
       console.log(submitData)
       try {
         const response = await fetch("/api/joblistings/update", {
@@ -68,7 +67,7 @@ export default function UpdateJobListingForm() {
         });
         if (response.ok) {
           const data = await response.json();
-          router.push("/services/joblistings/" + data.job_posting_id);
+          alert(`Job: ${submitData.job_title} sucsessfully updated `)
         } else {
           console.error("Failed to update job listing");
         }
@@ -138,7 +137,7 @@ export default function UpdateJobListingForm() {
           <option value={""}>--Please Select a Joblisting--</option>
           {joblistings.map((job) => (
             <option key={job.job_posting_id} value={job.job_posting_id}>
-              {job.job_title} @ {job.company_id}
+              {job.job_title} @ {companies?.find((c)=>c.company_id == job.company_id)?.company_name}
             </option>
           ))}
         </select>
@@ -370,7 +369,7 @@ export default function UpdateJobListingForm() {
           endIcon={<ArrowCircleRightOutlined />}
           variant="contained"
         >
-          Create Job Listing
+          Update Job Listing
         </Button>
       </div>
     </form>
