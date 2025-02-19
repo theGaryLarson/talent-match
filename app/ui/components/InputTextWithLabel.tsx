@@ -1,24 +1,17 @@
 "use client";
 
-import { ChangeEventHandler, useState } from "react";
+import { TextField } from "@mui/material";
+import { useState } from "react";
 
 interface Props {
   children: React.ReactNode;
   id: string;
   disabled?: boolean;
   className?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  value?: string;
+  defaultValue?: string;
   [key: string]: any;
-}
-
-interface ManagedValue {
-  value: string;
-  defaultValue?: never;
-}
-
-interface DefaultValue {
-  defaultValue: string;
-  value?: never;
 }
 
 export default function InputTextWithLabel({
@@ -30,35 +23,29 @@ export default function InputTextWithLabel({
   value,
   defaultValue,
   ...rest
-}: Props & (ManagedValue | DefaultValue)) {
-  const [internalValue, setInternalValue] = useState("");
+}: Props) {
+  const [internalValue, setInternalValue] = useState(defaultValue || "");
+
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (onChange) {
+      onChange(e);
+    } else {
+      setInternalValue(e.target.value);
+    }
+  };
 
   return (
-    <div className={"relative " + className}>
-      <div>
-        <input
-          id={id}
-          name={id}
-          disabled={disabled}
-          className="border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
-          value={
-            typeof defaultValue === "undefined"
-              ? (value ?? internalValue)
-              : undefined
-          }
-          defaultValue={
-            typeof defaultValue !== "undefined" ? defaultValue : undefined
-          }
-          onChange={onChange ?? ((e) => setInternalValue(e.target.value))}
-          {...rest}
-        />
-        <label
-          htmlFor={id}
-          className="absolute start-1 top-2 z-10 origin-[0] -translate-y-4 scale-75 transform bg-white px-2 text-sm text-gray-500 duration-300 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
-        >
-          {children}
-        </label>
-      </div>
-    </div>
+    <TextField
+      id={id}
+      name={id}
+      label={children}
+      fullWidth
+      disabled={disabled}
+      className={className}
+      value={value ?? internalValue}
+      defaultValue={defaultValue}
+      onChange={handleChange}
+      {...rest}
+    />
   );
 }

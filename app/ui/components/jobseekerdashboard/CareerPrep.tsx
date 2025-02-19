@@ -148,15 +148,15 @@ export default async function CareerPrep(props: {
         />
         <Grid2 container gap={2} direction={"column"}>
           <div>
-            <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-[#014260]">
+            <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
               {copy.headline}
             </p>
             <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
-              <p className="font-semibold leading-none tracking-wider text-[#047f9c]">
+              <p className="font-semibold leading-none tracking-wider text-primary-main">
                 Career Prep Program
               </p>
             </div>
-            <div className="font-normal leading-tight text-[#191919]/60">
+            <div className="font-normal leading-tight text-neutral-900/60">
               {copy.body}
             </div>
           </div>

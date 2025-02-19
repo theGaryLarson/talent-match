@@ -16,7 +16,7 @@ export default async function layout({
 
   return (
     <div className="flex">
-      <div className="flex min-w-[150px] flex-col text-[#047f9c] capitalize">
+      <div className="flex min-w-[150px] flex-col text-primary-main capitalize">
         <Link
           href="/career-prep"
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"

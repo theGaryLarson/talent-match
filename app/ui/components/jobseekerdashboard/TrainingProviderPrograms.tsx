@@ -24,7 +24,7 @@ export default async function TrainingProviderPrograms({
           href="/services/training-providers"
           disableElevation
           sx={{
-            backgroundColor: "#f6f6f6",
+            backgroundColor: "neutral.100",
             color: "secondary.main",
           }}
         >

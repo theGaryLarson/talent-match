@@ -37,10 +37,10 @@ export default function JobseekerSignupFinishPage() {
     <>
       <SignupHeader />
 
-      <main className="mx-auto max-w-screen-sm-tablet overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
+      <main className="mx-auto max-w-(--breakpoint-sm-tablet) overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
         <SignupPrompt vectorImgSrc={vectorImgSrc} />
         <section className="mx-auto w-full px-8 laptop:pt-24">
-          <form className="mx-auto flex flex-col gap-6 laptop:max-w-screen-sm-tablet">
+          <form className="mx-auto flex flex-col gap-6 laptop:max-w-(--breakpoint-sm-tablet)">
             <fieldset className="flex flex-col gap-3">
               <div className="inline">
                 <p className="inline">Are you a Washington State resident? </p>
@@ -175,7 +175,7 @@ export default function JobseekerSignupFinishPage() {
             {/* <DividerWithText className="py-8">or</DividerWithText>
             <div className="flex flex-col gap-2 text-center">
               <p>Already have a TWC account?</p>
-              <Link className="text-blue-500" href="/signin">
+              <Link className="text-blue-tw500" href="/signin">
                 Sign in
               </Link>
             </div> */}

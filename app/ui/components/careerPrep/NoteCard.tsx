@@ -54,7 +54,7 @@ export default function NoteCard(
       <hr />
       {preview ? (
         <div
-          className="ql-editor border w-[600]"
+          className="ql-editor border w-600"
           dangerouslySetInnerHTML={{ __html: props.noteContent }}
         ></div>
       ) : (

@@ -4,11 +4,11 @@ import { auth } from "@/auth";
 export default async function EmployerPageBanner() {
   const session = await auth();
   console.log("session is ", session);
-  //h-[615px] content-center bg-jobseeker-hero-1 bg-cover bg-center p-4 text-white bg-blend-darken tablet:p-10 laptop:h-[854px] laptop:p-20 bg-gradient-to-r from-purple-500 to-blue-500
+  //h-[615px] content-center bg-jobseeker-hero-1 bg-cover bg-center p-4 text-white bg-blend-darken tablet:p-10 laptop:h-[854px] laptop:p-20 bg-linear-to-r from-purple-500 to-blue-tw500
   return (
     <div
       className={
-        "h-[1000px] flex items-center bg-gradient-to-b from-[#047f9c] to-[#39b2c2] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px]"
+        "h-[1000px] flex items-center bg-linear-to-b from-primary-main to-[#39b2c2] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px]"
       }
     >
       <div className="inline-flex h-[750px] w-[487px] flex-col items-start justify-start gap-2">

@@ -16,7 +16,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
 
   return (
     <div className="w-full bg-white flex-col justify-start items-start inline-flex">
-      <div className="self-stretch px-6 laptop:px-24 py-8 bg-gradient-to-b from-[#003350] to-[#006682] justify-start items-center gap-2.5 inline-flex">
+      <div className="self-stretch px-6 laptop:px-24 py-8 bg-linear-to-b from-blue-700 to-blue-600 justify-start items-center gap-2.5 inline-flex">
         <div className="w-full laptop:w-2/3 rounded-2xl flex-col justify-end items-start inline-flex">
           <div className="flex-col justify-center items-start gap-2.5 flex">
             {/* Edu Provider Logo */}
@@ -67,7 +67,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
       <div className="w-full p-6 laptop:w-2/3 laptop:pl-32 laptop:pr-24 bg-white flex-col justify-start items-start gap-2.5 flex">
         <div className="self-stretch flex-col justify-center items-start gap-2.5 flex">
           {/* Quick Info */}
-          <div className="mb-8 p-6 laptop:w-1/3 laptop:p-12 laptop:mr-8 laptop:right-[0px] laptop:top-[119px] laptop:fixed bg-[#006682] rounded-3xl flex-col justify-center items-center gap-2.5 flex">
+          <div className="mb-8 p-6 laptop:w-1/3 laptop:p-12 laptop:mr-8 laptop:right-[0px] laptop:top-[119px] laptop:fixed bg-blue-600 rounded-3xl flex-col justify-center items-center gap-2.5 flex">
             <div className="self-stretch flex-col justify-start items-center gap-2.5 flex">
               <div className="self-stretch leading-none text-neutral-100 text-5xl font-normal font-['Roboto'] leading-10">
                 Quick Information

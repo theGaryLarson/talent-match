@@ -8,10 +8,11 @@ export enum EmploymentStatus {
 }
 
 export enum EmploymentType {
-  FullTime = "Full-time employment",
-  PartTime = "Part-time employment",
-  Seasonal = "Seasonal employment",
-  EarnAndLearn = "Earn and Learn employment",
+  FullTime = "Full-time",
+  PartTime = "Part-time",
+  Contract = "Contract",
+  Seasonal = "Seasonal",
+  EarnAndLearn = "Earn and Learn",
   Other = "Other",
 }
 
@@ -43,8 +44,8 @@ export enum OccupationCode {
   OperationsResearchAnalysts = "Operations Research Analysts (15-2031)",
   DataScientists = "Data Scientists (15-2051)",
   ComputerHardwareEngineers = "Computer Hardware Engineers (17-2061)",
-  OtherComputerOccupations = "OTHER Computer Occupations (15-1299)",
   ElectronicsEngineers = "Electronics Engineers (17-2072)",
   ElectronicsRepairers = "Electronics Repairers (49-2094)",
   HVACMechanics = "HVAC Mechanics (49-9021)",
+  OtherComputerOccupations = "OTHER Computer Occupations (15-1299)",
 }

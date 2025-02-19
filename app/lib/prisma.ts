@@ -582,6 +582,14 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
 // returns those jobseekers with at least yearsExp in a profession
 export async function getJobSeekerCardViewByWorkExperience() {}
 
+export async function getAllCities(): Promise<{ city: string }[]> {
+  return await prisma.postalGeoData.findMany({
+    where: {},
+    distinct: ["city"],
+    select: { city: true },
+  });
+}
+
 export async function getIndustrySectors() {
   const industrySectors = await prisma.industry_sectors.findMany({
     where: {},

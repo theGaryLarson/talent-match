@@ -10,7 +10,6 @@ import { JobStatus } from "./jobseekerJobTracking";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
-//TODO: fix zip code and location, add in sector and skills
 export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   const Session = await auth();
   let company_id = Session?.user.companyId;
@@ -64,7 +63,7 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
         relocation_services_available: jobData.relocation_services,
-        offer_visa_sponsorship: jobData.visa_sponsership,
+        offer_visa_sponsorship: jobData.visa_sponsorship,
         zip: jobData.zip,
         employment_type: jobData.employment_type || "full-time",
         is_apprenticeship: jobData.is_apprenticeship,
@@ -77,6 +76,12 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
           new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()), //if closing date is not provided auto set to 1 year in the futrue
         job_post_url: jobData.job_post_url,
         assessment_url: jobData.assessment_url,
+        earn_and_learn_type: jobData.earn_and_learn_type,
+        occupation_code: jobData.occupation_code,
+        employment_duration: jobData.employment_duration,
+        start_date: jobData.start_date,
+        end_date: jobData.end_date,
+        career_services_offered: jobData.career_services_offered,
         skills: {
           connect: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,
@@ -474,9 +479,12 @@ export async function getJobListingsFiltered(request: Request) {
 
   const {
     jobTitle = "",
+    bookmarked = false,
     skills = [],
+    city = [],
+    profession = "",
     industrySector = [],
-    zipCode = "",
+    employmentType = [],
     sortBy = "publish_date", // eslint-disable-line @typescript-eslint/no-unused-vars
     page = 1,
     maxResults = 50,
@@ -494,6 +502,23 @@ export async function getJobListingsFiltered(request: Request) {
   andConditions.push({
     unpublish_date: { gte: new Date() },
   });
+
+  if (bookmarked) {
+    if (!jobseekerId) {
+      return {
+        filteredJobPostings: [],
+        totalCount: 0,
+      };
+    }
+    andConditions.push({
+      jobApplications: {
+        some: {
+          jobseekerId: jobseekerId,
+          isBookmarked: true,
+        },
+      },
+    });
+  }
 
   if (jobTitle) {
     andConditions.push({
@@ -528,10 +553,32 @@ export async function getJobListingsFiltered(request: Request) {
     });
   }
 
-  if (zipCode) {
+  if (employmentType.length > 0) {
     andConditions.push({
-      zip: {
-        startsWith: zipCode,
+      employment_type: {
+        in: employmentType,
+      },
+    });
+  }
+
+  if (profession.length > 0) {
+    andConditions.push({
+      techArea: {
+        title: {
+          equals: profession,
+        },
+      },
+    });
+  }
+
+  if (city.length > 0) {
+    andConditions.push({
+      company_addresses: {
+        locationData: {
+          city: {
+            in: city,
+          },
+        },
       },
     });
   }

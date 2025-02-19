@@ -1,52 +1,52 @@
 "use client";
-import { BookmarkIcon as BookmarkIconOutline } from "@heroicons/react/24/outline";
-import { BookmarkIcon as BookmarkIconSolid } from "@heroicons/react/20/solid";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-export default function Bookmark({
-  bookmarked,
-  addUrl,
-  removeUrl,
-}: {
+import React, { useState } from "react";
+import { IconButton } from "@mui/material";
+import { Bookmark, BookmarkBorderOutlined } from "@mui/icons-material";
+
+interface BookmarkProps {
   bookmarked: boolean;
   addUrl: string;
   removeUrl: string;
-}) {
+}
+
+function BookmarkComponent({ bookmarked, addUrl, removeUrl }: BookmarkProps) {
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
-  const router = useRouter();
   async function toggleBookmark() {
-    const initalState = isBookmarked;
-    setIsBookmarked(!isBookmarked); // optimistic
+    const initialState = isBookmarked;
+    setIsBookmarked(!isBookmarked);
 
     const url = isBookmarked ? removeUrl : addUrl;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({}),
-    });
-    if (!response.ok) {
-      // issue setting bookmark, correct our optimism :(
-      setIsBookmarked(initalState);
-    } else {
-      router.refresh();
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+
+      if (!response.ok) {
+        setIsBookmarked(initialState);
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+      setIsBookmarked(initialState);
     }
   }
 
   return (
-    <button className="p-2 rounded-full hover:bg-slate-200 outline-cyan-500">
+    <IconButton onClick={toggleBookmark}>
       {isBookmarked ? (
-        <BookmarkIconSolid
+        <Bookmark
+          sx={{ color: "secondary.main" }}
           className="h-10 w-10 stroke-2"
-          onClick={toggleBookmark}
         />
       ) : (
-        <BookmarkIconOutline
-          className="h-10 w-10 stroke-2"
-          onClick={toggleBookmark}
-        />
+        <BookmarkBorderOutlined className="h-10 w-10 stroke-2" />
       )}
-    </button>
+    </IconButton>
   );
 }
+
+export default React.memo(BookmarkComponent);
