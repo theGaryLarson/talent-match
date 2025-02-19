@@ -42,7 +42,7 @@ export default function EmployerHowItWorks() {
         <div className="space-y-6">
           <div
             className="text-center font-normal capitalize leading-[66px] text-secondary-main"
-            style={{ fontSize: "clamp(2rem, 16vw, 4rem);" }}
+            style={{ fontSize: "clamp(2rem, 16vw, 4rem)" }}
           >
             Discover diverse, qualified talent in your community
           </div>
