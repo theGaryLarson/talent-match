@@ -39,13 +39,13 @@ export default function EmployerSignUpFinish() {
               }
               label={
                 <>
-                  By signing up you agree to our{' '}
+                  By signing up you agree to our{" "}
                   <Link
                     target="_blank"
                     underline="always"
                     href="/policies/terms-of-service"
                     sx={{
-                      cursor: 'pointer',
+                      cursor: "pointer",
                       // Add any additional link styles here
                     }}
                   >
