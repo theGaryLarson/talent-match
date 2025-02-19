@@ -150,7 +150,7 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
         relocation_services_available: jobData.relocation_services,
-        offer_visa_sponsorship: jobData.visa_sponsership,
+        offer_visa_sponsorship: jobData.visa_sponsorship,
         zip: jobData.zip,
         employment_type: jobData.employment_type || "full-time",
         is_apprenticeship: jobData.is_apprenticeship,
@@ -171,7 +171,9 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
       },
     });
     return res;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 export async function getJobListingById(joblistingId: string) {
   try {

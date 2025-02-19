@@ -48,7 +48,7 @@ export default function UpdateJobListingForm() {
     sector_id: "",
     company_id: "",
     relocation_services: false,
-    visa_sponsership: false,
+    visa_sponsorship: false,
     job_description: "",
   });
   const handleChange = (
@@ -80,7 +80,7 @@ export default function UpdateJobListingForm() {
         body: JSON.stringify(submitData),
       });
       if (response.ok) {
-        const data = await response.json();
+        await response.json();
         alert(`Job: ${submitData.job_title} sucsessfully updated `);
       } else {
         console.error("Failed to update job listing");
@@ -108,7 +108,7 @@ export default function UpdateJobListingForm() {
       sector_id: Jl.sector_id ?? undefined,
       company_id: Jl.company_id,
       relocation_services: Jl.relocation_services_available,
-      visa_sponsership: Jl.offer_visa_sponsorship,
+      visa_sponsorship: Jl.offer_visa_sponsorship,
       job_description: Jl.job_description,
     });
     setSkills(Jl.skills);
@@ -371,7 +371,7 @@ export default function UpdateJobListingForm() {
                   name="visas"
                   value="yes"
                   required
-                  checked={formData.visa_sponsership}
+                  checked={formData.visa_sponsorship}
                   onChange={handleChange}
                 />
                 Yes
@@ -382,7 +382,7 @@ export default function UpdateJobListingForm() {
                   name="visas"
                   value="no"
                   required
-                  checked={!formData.visa_sponsership}
+                  checked={!formData.visa_sponsorship}
                   onChange={handleChange}
                 />
                 No

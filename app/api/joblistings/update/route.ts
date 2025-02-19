@@ -1,7 +1,4 @@
-import {
-  createJobListingWithSkills,
-  updateJobListing,
-} from "@/app/lib/joblistings";
+import { updateJobListing } from "@/app/lib/joblistings";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 import { NextResponse } from "next/server";
 
