@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import SignupPrompt from "@/app/ui/components/SignupPrompt";
 import Image from "next/image";
 import Footer from "@/app/ui/Footer";
@@ -11,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import PillButton from "@/app/ui/components/PillButton";
+import { Checkbox, FormControlLabel, Link } from "@mui/material";
 
 export default function EmployerSignUpFinish() {
   const [termsAgree, setTermsAgree] = useState(false);
@@ -29,42 +29,32 @@ export default function EmployerSignUpFinish() {
         />
         <section className="mx-auto w-full px-8 laptop:pt-24">
           <form className="mx-auto flex flex-col gap-6 laptop:max-w-(--breakpoint-sm-tablet)">
-            <fieldset className="flex flex-col gap-3 disabled:text-gray-400">
-              <div>
-                <input
-                  type="checkbox"
+            <FormControlLabel
+              control={
+                <Checkbox
                   id="terms"
                   checked={termsAgree}
                   onChange={() => setTermsAgree(!termsAgree)}
                 />
-                <label htmlFor="terms">
-                  {" "}
-                  By signing up you agree to our{" "}
+              }
+              label={
+                <>
+                  By signing up you agree to our{' '}
                   <Link
                     target="_blank"
-                    className="underline"
+                    underline="always"
                     href="/policies/terms-of-service"
+                    sx={{
+                      cursor: 'pointer',
+                      // Add any additional link styles here
+                    }}
                   >
                     terms of use
                   </Link>
-                  {/*, and acknowledge you have read the{' '}
-                  <Link
-                    className="REPLACE-BEFORE-RELEASE"
-                    href="/underconstruction"
-                  >
-                    privacy notice
-                  </Link>
-                  and{' '}
-                  <Link
-                    className="REPLACE-BEFORE-RELEASE"
-                    href="/underconstruction"
-                  >
-                    data sharing agreement
-                  </Link>*/}
                   .
-                </label>
-              </div>
-            </fieldset>
+                </>
+              }
+            />
             <PillButton
               type="submit"
               onClick={async (e: FormEvent) => {
@@ -95,14 +85,6 @@ export default function EmployerSignUpFinish() {
               sx={{
                 marginX: "auto",
                 marginY: 4,
-                "&:focus": {
-                  boxShadow: "none",
-                },
-                "&:disabled": {
-                  color: "#fff",
-                  bgcolor: "primary.main",
-                  opacity: 0.5,
-                },
               }}
               disabled={!termsAgree}
             >
