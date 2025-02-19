@@ -47,7 +47,7 @@ export default function JobseekerSignupFinishPage() {
     <>
       <SignupHeader />
 
-      <main className="mx-auto max-w-(--breakpoint-sm-tablet) overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
+      <main className="mx-auto max-w-(--breakpoint-sm-tablet) overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:gap-8">
         <SignupPrompt vectorImgSrc={vectorImgSrc} />
         <Box className="mx-auto w-full px-8 laptop:pt-24">
           <form className="mx-auto flex flex-col gap-6 laptop:max-w-(--breakpoint-sm-tablet)">
