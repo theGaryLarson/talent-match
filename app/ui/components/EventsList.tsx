@@ -59,6 +59,8 @@ export default async function EventsList({
             alignItems: "center",
           }}
         >
+          {showOnlyRegisteredEvents && registeredEventsResponse?.length === 0 && 
+            <p className="text-center">You have not registered for any events</p>}
           {showOnlyRegisteredEvents &&
             registeredEventsResponse?.map((item, i, arr) => (
               <React.Fragment key={i}>
@@ -73,6 +75,8 @@ export default async function EventsList({
                 {i < arr.length - 1 && <Divider sx={{ my: 1 }} />}
               </React.Fragment>
             ))}
+            {!showOnlyRegisteredEvents && allEventsResponse?.events?.length === 0 && 
+            <p className="text-center">No events</p>}
           {!showOnlyRegisteredEvents &&
             allEventsResponse?.events?.map((event, i, arr) => (
               <React.Fragment key={i}>
