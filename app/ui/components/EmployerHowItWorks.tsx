@@ -44,11 +44,11 @@ export default function EmployerHowItWorks() {
             className="text-center font-normal capitalize leading-[66px] text-secondary-main"
             style={{ fontSize: "clamp(2rem, 16vw, 4rem)" }}
           >
-            Discover diverse, qualified talent in your community
+            Diverse, Qualified Talent at a Glance​
           </div>
           <Image
             src={"/images/employerBottomPic.png"}
-            alt={"Discover diverse, qualified talent in your community"}
+            alt={"Diverse, Qualified Talent at a Glance​"}
             width={3480}
             height={1791}
           />
