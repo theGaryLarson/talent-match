@@ -123,6 +123,7 @@ model Events {
   date             DateTime        @db.DateTime // Date of the event
   registrationLink String?         @db.VarChar(2083) // Zoom sign-up link (URL)
   joinMeetingLink  String?         @db.VarChar(2083)
+  recordingLink    String?         @db.VarChar(2083)
   duration         Int             @default(90) @db.Int // duration in minutes
   blurb            String?         @db.VarChar(255) // One-sentence blurb about the event
   eventType        String          @db.VarChar(50) // Type of the event
