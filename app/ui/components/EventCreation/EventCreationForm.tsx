@@ -63,6 +63,7 @@ export default function EventCreationForm() {
         console.log("Creation success: ", data);
         if (submitButton) submitButton.disabled = false;
         alert("Event created successfully!");
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error:", error);
