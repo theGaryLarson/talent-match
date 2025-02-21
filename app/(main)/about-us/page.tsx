@@ -457,7 +457,9 @@ export default function page() {
               Steering Committee
             </h3>
             <p>
-              Executives from AWS and Accenture co-lead this committee, providing credibility, prioritization and policy for the Coalition and its initiatives.
+              Executives from AWS and Accenture co-lead this committee,
+              providing credibility, prioritization and policy for the Coalition
+              and its initiatives.
             </p>
           </div>
           <div className="flex-1 space-y-[10px]">
