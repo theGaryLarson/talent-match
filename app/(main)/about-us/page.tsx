@@ -358,11 +358,11 @@ export default function page() {
             <p>
               As a member of the Industry Committee, you will play a critical role in informing curriculum in collaboration with other employers to ensure it stays relevant and effectively prepares students for the workforce. Currently, the Industry Committee is prioritizing these essential roles across all sectors:
             </p>
-            <blockquote className="pl-[40px]">Software Development | Cybersecurity | IT/Cloud Support | Data Analytics​</blockquote>
+            <blockquote className="pl-[40px]">Software Development | Cybersecurity | IT/Cloud Support | Data Analytics</blockquote>
             <p>
               With guidance from AWS, Accenture, Microsoft and WTIA, this committee proactively collaborates with the Education Committee ensuring key industry trends are considered and addressed by educators. Quarterly meetings: January, April, July, and October.
             </p>
-            <div className="mt-[40px]">
+            <div className="pt-[40px]">
               <RoundedButton
                 content="Join"
                 link="/join"
