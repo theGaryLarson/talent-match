@@ -18,6 +18,7 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
 
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
+import { OccupationCode } from "@/app/lib/admin/jobTracking";
 //blank initail form data
 //selected onchange update data to new selecteds current data
 //onsubmit update list with new values submitted to avoid extra network calls
@@ -50,6 +51,7 @@ export default function UpdateJobListingForm() {
     relocation_services: false,
     visa_sponsorship: false,
     job_description: "",
+    career_services_offered:false
   });
   const handleChange = (
     e: React.ChangeEvent<
@@ -120,14 +122,16 @@ export default function UpdateJobListingForm() {
       salary_range: Jl.salary_range,
       zip: Jl.zip,
       unpublish_date: Jl.unpublish_date,
+      occupation_code:Jl.occupation_code?? '',
       job_post_url: Jl.job_post_url ?? undefined,
       assessment_url: Jl.assessment_url ?? undefined,
-      tech_area_id: Jl.tech_area_id ?? undefined,
-      sector_id: Jl.sector_id ?? undefined,
+      tech_area_id: Jl.tech_area_id ?? '',
+      sector_id: Jl.sector_id ?? '',
       company_id: Jl.company_id,
       relocation_services: Jl.relocation_services_available,
       visa_sponsorship: Jl.offer_visa_sponsorship,
       job_description: Jl.job_description,
+      career_services_offered: Jl.career_services_offered ?? false
     });
     setSkills(Jl.skills);
     if (quill) quill.clipboard.dangerouslyPasteHTML(Jl.job_description);
@@ -224,10 +228,27 @@ export default function UpdateJobListingForm() {
             />
           </Stack>
 
+
+          {/* Occupation Code (NAICS) */}
+          <Stack>
+            <label htmlFor="occupation_code">Occupation Code (NAICS)</label>
+            <select name="occupation_code" id="occupation_code" 
+            value={formData.occupation_code}
+            onChange={handleChange}
+            required>
+              <option value="">--Select Occupation Code--</option>
+              {Object.values(OccupationCode).map((code) => (
+                <option key={code} value={code}>
+                  {code}
+                </option>
+              ))}
+            </select>
+          </Stack>
+
           {/* Job Description */}
           <div className="grid grid-cols-1">
             <label htmlFor="job_description">Job Description</label>
-            <div ref={quillRef} style={{ minHeight: "200px" }} />
+            <div ref={quillRef} style={{ minHeight: "200px" }} id='qui'/>
           </div>
 
           {/*tech Sector*/}
@@ -513,7 +534,7 @@ export default function UpdateJobListingForm() {
           </Stack>
 
           {/* Assessment URL */}
-          <div>
+          <Stack>
             <label htmlFor="assessment_url">Assessment URL</label>
             <input
               type="text"
@@ -521,7 +542,36 @@ export default function UpdateJobListingForm() {
               value={formData.assessment_url}
               onChange={handleChange}
             />
-          </div>
+          </Stack>
+
+                {/* Career Services Offered */}
+      <div>
+        <label>Does this position offer career services?</label>
+        <div>
+          <label>
+            <input
+              type="radio"
+              name="career_services_offered"
+              value="yes"
+              required
+              checked={formData.career_services_offered}
+              onChange={handleChange}
+            />
+            Yes
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="career_services_offered"
+              value="no"
+              required
+              checked={!formData.career_services_offered}
+              onChange={handleChange}
+            />
+            No
+          </label>
+        </div>
+      </div>
 
           {/* Skills */}
           <div>
