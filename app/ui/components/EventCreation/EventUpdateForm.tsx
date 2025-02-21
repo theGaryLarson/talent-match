@@ -21,6 +21,7 @@ export default function EventUpdateForm() {
   const [registerLink, setRegisterLink] = useState<string>("");
   const [duration, setDuration] = useState<number>(90);
   const [joinMeetingLink, setJoinMeetingLink] = useState("");
+  const [recordingLink, setRecordingLink] = useState<string>("");
   // const [eventBlurb, setEventBlurb] = useState<string>("");
   const [eventType, setEventType] = useState<EventTypeEnum>(
     EventTypeEnum.General,
@@ -40,6 +41,7 @@ export default function EventUpdateForm() {
       date: new Date(eventDate), // Ensure date is correctly formatted
       registrationLink: registerLink,
       joinMeetingLink: joinMeetingLink,
+      recordingLink: recordingLink,
       // blurb: eventBlurb,
       eventType: eventType,
       duration: duration,
@@ -104,6 +106,7 @@ export default function EventUpdateForm() {
     setEventDate("");
     setRegisterLink("");
     setJoinMeetingLink("");
+    setRecordingLink("");
     // setEventBlurb("");
     setEventLocation("");
     setEventDescription("");
@@ -148,6 +151,7 @@ export default function EventUpdateForm() {
       );
       setRegisterLink(selectedEvent.registrationLink ?? "");
       setJoinMeetingLink(selectedEvent.joinMeetingLink ?? "");
+      setRecordingLink(selectedEvent.recordingLink ?? "");
       setDuration(selectedEvent.duration);
 
       // setEventBlurb(selectedEvent.blurb ?? "");
@@ -317,7 +321,22 @@ export default function EventUpdateForm() {
               />
             </div>
           )}
-
+          <div>
+            <label
+              htmlFor="recordingLink"
+              className="block text-sm font-medium"
+            >
+              Recording link (optional, you can edit this later)
+            </label>
+            <input
+              type="url"
+              id="recordingLink"
+              value={recordingLink}
+              onChange={(e) => setRecordingLink(e.target.value)}
+              required
+              className="mt-2 p-2 border rounded-xs w-full"
+            />
+          </div>
           {/* <div>
             <label htmlFor="eventBlurb" className="block text-sm font-medium">
               Event Blurb

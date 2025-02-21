@@ -17,6 +17,7 @@ export type CreateEventData = {
   registrationLink: string;
   duration: number;
   joinMeetingLink: string;
+  recordingLink?: string;
   // linkTitle: string;
   // blurb: string;
   eventType: EventTypeEnum; // Consider using a union type for stricter control, e.g., "Webinar" | "Workshop" | "Seminar"
@@ -51,6 +52,7 @@ export async function createEvent(data: CreateEventData): Promise<{
         date: data.date,
         registrationLink: data.registrationLink,
         joinMeetingLink: data.joinMeetingLink,
+        recordingLink: data.recordingLink,
         // blurb: data.blurb,
         eventType: data.eventType,
         createdById: session.user.id,
