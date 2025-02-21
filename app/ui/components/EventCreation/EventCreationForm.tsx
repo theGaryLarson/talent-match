@@ -223,7 +223,7 @@ export default function EventCreationForm() {
       )}
       <div>
         <label htmlFor="recordingLink" className="block text-sm font-medium">
-          Recording link (optional, you can edit this later)
+          Recording link (optional, will replace join link)
         </label>
         <input
           type="url"
