@@ -73,7 +73,12 @@ export default function UpdateJobListingForm() {
               : value,
     }));
   };
-
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      unpublish_date: e.target.value ? new Date(e.target.value) : undefined,
+    }));
+  };
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const submitData: JobPostCreationDTO = {
@@ -516,9 +521,13 @@ export default function UpdateJobListingForm() {
             <input
               type="date"
               name="unpublish_date"
-              min={new Date().toISOString().split("T")[0]}
-              //  value={formData.unpublish_date?.toISOString().split("T")[0]}
-              // onChange={()=>{}}
+              value={
+                formData.unpublish_date
+                  ? new Date(formData.unpublish_date).toISOString().split("T")[0]
+                  : ""
+              }
+              
+              onChange={handleDateChange}
             />
           </Stack>
 
