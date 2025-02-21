@@ -39,18 +39,15 @@ export default function page() {
             <p>
               The{" "}
               <b className="font-semibold text-blue-text2">
-                Washington Tech Workforce Coalition
+                Tech Workforce Coalition
               </b>{" "}
-              is an open collaboration of organizations and individuals
-              developing a diverse, highly skilled technology workforce
-              throughout Washington state.
+              is an open collaboration of Industry, Education, and Community whose mission is to advance the Tech workforce at the pace of technological evolution. It enables streamlined access by employers to unique sources of talent not easily identified on the big job boards.
             </p>
             <p>
-              We are funded by the US Department of Commerce Good Jobs Challenge
-              grant through the Washington Jobs Initiative (WJI), managed by the
-              Washington Student Achievement Council. A Seattle non-profit,
-              Computing for All, manages the Coalition in its role as sector
-              intermediary.
+              Guided by AWS, Accenture, Microsoft, and WTIA, the Coalition identifies and helps propagate best practices across its member organizations.
+            </p>
+            <p>
+              We are funded by the US Department of Commerce Good Jobs Challenge grant through the Washington Jobs Initiative (WJI), managed by the Washington Student Achievement Council. A Seattle non-profit, Computing for All, manages the Coalition in its role as sector intermediary.
             </p>
           </div>
           <header className="text-center">
