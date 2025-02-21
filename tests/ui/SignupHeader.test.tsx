@@ -10,7 +10,7 @@ describe("SignupHeader", () => {
   it("renders the header with the correct class name", () => {
     render(<SignupHeader className="test-class" />);
     const headerElement = screen.getByRole("banner");
-    expect(headerElement.className).toBe("mx-8 bg-white test-class");
+    expect(headerElement.className).toBe("bg-white test-class");
   });
 
   it("renders the logo with correct alt text", () => {

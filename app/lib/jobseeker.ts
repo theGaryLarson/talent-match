@@ -222,20 +222,28 @@ export async function getCareerPrepAssementStatus() {
  * Create a jobseeker (for an existing user) and associated data from the database.
  *
  * @param {string} userId - The ID of the user to become a jobseeker.
+ * @param {object} checkboxes - {jobNotifications: boolean, opportunities: boolean, termsAgree: boolean}
  * @returns {Promise<jobseekers>}
  * @throws {Error} If user creation fails
  */
 export async function createJobseeker(
   userId: string,
+  checkboxes: {
+    jobNotifications: boolean;
+    opportunities: boolean;
+    termsAgree: boolean;
+  },
 ): Promise<Prisma.jobseekersGetPayload<object>> {
+  const { jobNotifications, opportunities, termsAgree } = checkboxes;
   try {
-    // Use a transaction to ensure both operations succeed or fail together
     const result = await prisma.$transaction(async (prisma) => {
       await prisma.user.update({
         where: { id: userId },
         data: {
           role: Role.JOBSEEKER,
-          has_agreed_terms: true,
+          has_agreed_terms: termsAgree,
+          sendCareerOpportunities: opportunities,
+          sendNewJobPosts: jobNotifications,
           updatedAt: new Date(),
         },
       });
@@ -257,6 +265,7 @@ export async function createJobseeker(
 
     return result;
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       // Handle known Prisma errors (e.g., unique constraint violations)
       if (error.code === "P2002") {

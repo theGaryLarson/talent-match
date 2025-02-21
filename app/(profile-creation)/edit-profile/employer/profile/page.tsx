@@ -440,7 +440,7 @@ export default function CreateEmployerProfilePage() {
                 value={profileData.firstName}
                 required
               >
-                First Name *
+                First Name
               </InputTextWithLabel>
               <InputTextWithLabel
                 id="profile-creation-profile-lastName"
@@ -449,7 +449,7 @@ export default function CreateEmployerProfilePage() {
                 value={profileData.lastName}
                 required
               >
-                Last Name *
+                Last Name
               </InputTextWithLabel>
             </div>
           </fieldset>

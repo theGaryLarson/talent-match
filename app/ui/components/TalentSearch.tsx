@@ -16,6 +16,7 @@ import { TrainingProviderDropdownDTO } from "@/data/dtos/TrainingProviderDropdow
 import SingleSelectFilterAutoload from "@/app/ui/components/mui/SingleSelectFilterAutoload";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
+import { Box, Grid2 } from "@mui/material";
 
 const resultsPerPage = 50;
 
@@ -218,7 +219,7 @@ export default function TalentSearch() {
   }, [skillsList, industry, eduLevel, trainingProvider, zipCode, sortBy, page]);
 
   return (
-    <main className="m-2 phone:m-4 sm-tablet:m-6 mb-0 phone:p-6 laptop:px-[200px] pt-8 w-full">
+    <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
       <h1 className="text-2xl font-bold mb-4">
         Search Results for: {skillsList?.toString().replaceAll(",", ", ")}
       </h1>
@@ -243,9 +244,9 @@ export default function TalentSearch() {
       />
 
       {/* Filters */}
-      <div className="flex flex-row flex-wrap mt-1 mb-0">
+      <Grid2 container spacing={2} sx={{ my: 2 }}>
         {/* Industry */}
-        <div className="w-1/2 tablet:w-1/3">
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
           <MultipleSelectFilterAutoload
             id="jobseeker-listview-industry"
             label="Industry"
@@ -264,10 +265,10 @@ export default function TalentSearch() {
               option.sector_title
             }
           />
-        </div>
+        </Grid2>
 
         {/* Education Level */}
-        <div className="w-1/2 tablet:w-1/3">
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
           <SingleSelectFilter
             id="jobseeker-listview-edulevel"
             label="Minimum Degree"
@@ -301,16 +302,16 @@ export default function TalentSearch() {
               },
             ]}
           ></SingleSelectFilter>
-        </div>
+        </Grid2>
 
         {/* Zip Code */}
         {/* Design has agreed to a text field until we have a better distance measurement system in place */}
-        <div className="w-1/2 tablet:w-1/3">
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
           <TextField
             autoComplete="off"
             label="Full/Partial Zip Code"
             defaultValue={getParam("zipcode")}
-            size="small"
+            fullWidth
             onChange={(event) => {
               if (!isNaN(Number(event.target.value))) {
                 // is it purely numeric chars?
@@ -332,33 +333,11 @@ export default function TalentSearch() {
                   : closestInt.toString();
               }
             }}
-            sx={{
-              padding: "0px 2px",
-              width: "100%",
-              "& .MuiInputBase-root": {
-                borderRadius: "9999px",
-                height: "1.75rem",
-              },
-              "& .MuiInputBase-input": {
-                boxShadow: "none",
-                "&:focus": { boxShadow: "none" },
-              },
-              "& .MuiInputLabel-root": {
-                fontSize: "0.875rem",
-                lineHeight: "1.25rem",
-                top: "15px",
-                left: "2px",
-                position: "relative",
-              },
-            }}
           />
-        </div>
-      </div>
+        </Grid2>
 
-      {/* Second Filter / Sort row */}
-      <div className="w-full flow-root pb-4 mt-2">
         {/* Training Provider */}
-        <div className="float-left w-1/2 tablet:w-1/3">
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
           <SingleSelectFilterAutoload
             id="jobseeker-listview-trainingProvider"
             label="Training Provider"
@@ -375,17 +354,24 @@ export default function TalentSearch() {
               option.name
             }
           />
-        </div>
+        </Grid2>
 
         {/* Years of Experience, Removed at Marketing's request */}
-        <div className="float-left items-center px-4 w-1/2 tablet:w-1/3"></div>
+        <Grid2
+          size={{ xs: 12, sm: 6, md: 4 }}
+          sx={{ display: { xs: "none", sm: "block" } }}
+        ></Grid2>
 
         {/* Sorting */}
-        <div className="float-right mt-6">
+        <Grid2
+          container
+          size={{ xs: 12, sm: 6, md: 4 }}
+          sx={{ justifyContent: "flex-end", alignItems: "flex-end" }}
+        >
           <SortDropdown
             id="jobseeker-listview-sort"
             label="Sort by:"
-            value={getParam("sort") == "" ? "yearsExp" : getParam("sort")}
+            value={getParam("sort") == "" ? "newest" : getParam("sort")}
             onChange={(event) => {
               setQueryParam("sort", event.target.value);
               setSortBy(event.target.value);
@@ -397,8 +383,8 @@ export default function TalentSearch() {
               { label: "Newest", value: "newest" },
             ]}
           />
-        </div>
-      </div>
+        </Grid2>
+      </Grid2>
 
       {/* Loading */}
       {loading ? (
@@ -451,16 +437,26 @@ export default function TalentSearch() {
       <div className="flex justify-center mt-2 mb-4 phone:mb-0">
         {!loading ? (
           <Pagination
-            variant="outlined"
-            shape="rounded"
+            variant="text"
+            color="secondary"
             count={Math.ceil((totalResults ?? 1) / resultsPerPage)}
             page={getParam("page") != "" ? +getParam("page") : 1}
             onChange={handlePageChange}
+            sx={{
+              "& .MuiPaginationItem-root:not(.Mui-selected):not(.MuiPaginationItem-ellipsis):not(.MuiPaginationItem-previousNext)":
+                {
+                  bgcolor: "neutral.200",
+                  "&:hover": { bgcolor: "neutral.100" },
+                },
+              "& .MuiPaginationItem-root:not(.Mui-selected)": {
+                color: "secondary.main",
+              },
+            }}
           />
         ) : (
           ""
         )}
       </div>
-    </main>
+    </Box>
   );
 }

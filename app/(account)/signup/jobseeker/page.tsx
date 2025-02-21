@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import SignupPrompt from "@/app/ui/components/SignupPrompt";
 import Image from "next/image";
 import Footer from "@/app/ui/Footer";
@@ -11,25 +10,36 @@ import { useUpdateSession } from "@/app/lib/auth/useUpdateSession";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import PillButton from "@/app/ui/components/PillButton";
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Link,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
 
 const vectorImgSrc = "/images/signup/jobseeker-vector.png";
 
 export default function JobseekerSignupFinishPage() {
   const [resident, setResident] = useState(false);
-  const [termsAgree, setTermsAgree] = useState(false);
   const [checkboxState, setCheckboxState] = useState({
     jobNotifications: false,
     opportunities: false,
+    termsAgree: false,
   });
   const { data: session } = useSession();
   const updateSessionProperties = useUpdateSession();
   const router = useRouter();
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = e.target;
+    const { name, checked } = e.target;
+    console.log(name);
     setCheckboxState((prevState) => ({
       ...prevState,
-      [id]: checked,
+      [name]: checked,
     }));
   };
 
@@ -37,107 +47,89 @@ export default function JobseekerSignupFinishPage() {
     <>
       <SignupHeader />
 
-      <main className="mx-auto max-w-(--breakpoint-sm-tablet) overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:flex-row laptop:gap-8">
+      <main className="mx-auto max-w-(--breakpoint-sm-tablet) overflow-hidden laptop:mx-0 laptop:flex laptop:max-w-full laptop:gap-8">
         <SignupPrompt vectorImgSrc={vectorImgSrc} />
-        <section className="mx-auto w-full px-8 laptop:pt-24">
+        <Box className="mx-auto w-full px-8 laptop:pt-24">
           <form className="mx-auto flex flex-col gap-6 laptop:max-w-(--breakpoint-sm-tablet)">
-            <fieldset className="flex flex-col gap-3">
-              <div className="inline">
-                <p className="inline">Are you a Washington State resident? </p>
-                <p className="inline text-gray-400">(required)</p>
-              </div>
-              <label>
-                <input
-                  type="radio"
-                  name="resident"
+            <FormControl>
+              <Box>
+                <FormLabel component="p">
+                  Are you a Washington State resident?{" "}
+                  <Box component="span" sx={{ color: "text.disabled" }}>
+                    (required)
+                  </Box>
+                </FormLabel>
+              </Box>
+              <RadioGroup name="resident">
+                <FormControlLabel
                   value="yes"
+                  control={<Radio />}
+                  label="Yes"
                   onClick={() => setResident(true)}
-                />{" "}
-                Yes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="resident"
+                />
+                <FormControlLabel
                   value="no"
+                  control={<Radio />}
+                  label="No"
                   onClick={() => setResident(false)}
-                />{" "}
-                No
-              </label>
-            </fieldset>
-            <fieldset
-              className="flex flex-col gap-3 disabled:text-gray-400"
-              disabled={!resident}
-            >
-              <p>Notifications</p>
-              <div>
-                <input
-                  type="checkbox"
-                  id="jobNotifications"
-                  checked={checkboxState.jobNotifications}
-                  onChange={handleCheckboxChange}
                 />
-                <label htmlFor="jobNotifications">
-                  {" "}
-                  Receive new job posting notifications
-                </label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="opportunities"
-                  checked={checkboxState.opportunities}
-                  onChange={handleCheckboxChange}
-                />
-                <label htmlFor="opportunities">
-                  {" "}
-                  Hear more about career opportunities
-                </label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="terms"
-                  checked={termsAgree}
-                  onChange={() => setTermsAgree(!termsAgree)}
-                />
-                <label htmlFor="terms">
-                  {" "}
-                  By signing up you agree to our{" "}
-                  <Link
-                    target="_blank"
-                    className="underline"
-                    href="/policies/terms-of-service"
-                  >
-                    terms of use
-                  </Link>
-                  {/*, and acknowledge you have read the{' '}
-                  <Link
-                    className="REPLACE-BEFORE-RELEASE"
-                    href="/underconstruction"
-                  >
-                    privacy notice
-                  </Link>
-                  and{' '}
-                  <Link
-                    className="REPLACE-BEFORE-RELEASE"
-                    href="/underconstruction"
-                  >
-                    data sharing agreement
-                  </Link>*/}
-                  .
-                </label>
-              </div>
-            </fieldset>
+              </RadioGroup>
+            </FormControl>
+            <FormControl disabled={!resident}>
+              <FormLabel component="legend">Notifications</FormLabel>
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checkboxState.jobNotifications}
+                    onChange={handleCheckboxChange}
+                    name="jobNotifications"
+                  />
+                }
+                label="Receive new job posting notifications"
+              />
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checkboxState.opportunities}
+                    onChange={handleCheckboxChange}
+                    name="opportunities"
+                  />
+                }
+                label="Hear more about career opportunities"
+              />
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checkboxState.termsAgree}
+                    onChange={handleCheckboxChange}
+                    name="termsAgree"
+                  />
+                }
+                label={
+                  <>
+                    By signing up you agree to our{" "}
+                    <Link target="_blank" href="/policies/terms-of-service">
+                      terms of use
+                    </Link>
+                    .
+                  </>
+                }
+              />
+            </FormControl>
             <PillButton
               type="submit"
               onClick={async (e: FormEvent) => {
                 e.preventDefault();
+                console.log(JSON.stringify(checkboxState));
                 const response = await fetch("/api/jobseekers/create", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
+                  body: JSON.stringify(checkboxState),
                 });
                 if (response.ok) {
                   const data = await response.json();
@@ -150,7 +142,7 @@ export default function JobseekerSignupFinishPage() {
                     rolesArray.push(Role.JOBSEEKER);
                   }
                   await updateSessionProperties({
-                    jobseekerId: data.jobseekerData.jobseeker_id,
+                    jobseekerId: data.result.jobseeker_id,
                     roles: rolesArray,
                   });
                   router.push("/edit-profile/jobseeker/introduction");
@@ -159,28 +151,13 @@ export default function JobseekerSignupFinishPage() {
               sx={{
                 marginX: "auto",
                 marginY: 4,
-                "&:focus": {
-                  boxShadow: "none",
-                },
-                "&:disabled": {
-                  color: "#fff",
-                  bgcolor: "primary.main",
-                  opacity: 0.5,
-                },
               }}
-              disabled={!(resident && termsAgree)}
+              disabled={!(resident && checkboxState.termsAgree)}
             >
               Create account
             </PillButton>
-            {/* <DividerWithText className="py-8">or</DividerWithText>
-            <div className="flex flex-col gap-2 text-center">
-              <p>Already have a TWC account?</p>
-              <Link className="text-blue-tw500" href="/signin">
-                Sign in
-              </Link>
-            </div> */}
           </form>
-        </section>
+        </Box>
         <Image
           src={vectorImgSrc}
           width={1092}
