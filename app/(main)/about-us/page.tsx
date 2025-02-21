@@ -41,13 +41,23 @@ export default function page() {
               <b className="font-semibold text-blue-text2">
                 Tech Workforce Coalition
               </b>{" "}
-              is an open collaboration of Industry, Education, and Community whose mission is to advance the Tech workforce at the pace of technological evolution. It enables streamlined access by employers to unique sources of talent not easily identified on the big job boards.
+              is an open collaboration of Industry, Education, and Community
+              whose mission is to advance the Tech workforce at the pace of
+              technological evolution. It enables streamlined access by
+              employers to unique sources of talent not easily identified on the
+              big job boards.
             </p>
             <p>
-              Guided by AWS, Accenture, Microsoft, and WTIA, the Coalition identifies and helps propagate best practices across its member organizations.
+              Guided by AWS, Accenture, Microsoft, and WTIA, the Coalition
+              identifies and helps propagate best practices across its member
+              organizations.
             </p>
             <p>
-              We are funded by the US Department of Commerce Good Jobs Challenge grant through the Washington Jobs Initiative (WJI), managed by the Washington Student Achievement Council. A Seattle non-profit, Computing for All, manages the Coalition in its role as sector intermediary.
+              We are funded by the US Department of Commerce Good Jobs Challenge
+              grant through the Washington Jobs Initiative (WJI), managed by the
+              Washington Student Achievement Council. A Seattle non-profit,
+              Computing for All, manages the Coalition in its role as sector
+              intermediary.
             </p>
           </div>
           <header className="text-center">
