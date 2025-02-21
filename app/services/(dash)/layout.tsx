@@ -1,17 +1,14 @@
 "use client";
 import Link from "next/link";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
-import { BookmarkIcon } from "@heroicons/react/24/outline";
 import {
+  BookmarkAddOutlined,
   CalendarMonthOutlined,
   LinkedIn,
   LogoutRounded,
   Menu,
-  //NotificationsOutlined,
   PersonOutlineRounded,
   QuestionAnswerOutlined,
+  SearchRounded,
   TaskOutlined,
   WorkOutlineRounded,
 } from "@mui/icons-material";
@@ -35,49 +32,81 @@ import Footer from "@/app/ui/Footer";
 
 const drawerWidth = 260;
 
-const JobseekerDrawer = ({ session }: { session: any }) => {
-  const pathname = usePathname();
+const employerLinks = [
+  {
+    href: "/services/employers/dashboard",
+    icon: <PersonOutlineRounded />,
+    label: "Home",
+  },
+  {
+    href: "/services/employers/jobs",
+    icon: <WorkOutlineRounded />,
+    label: "Jobs",
+  },
+  {
+    href: "/services/talent-search",
+    icon: <SearchRounded />,
+    label: "Search Candidates",
+  },
+  {
+    href: "/services/events",
+    icon: <CalendarMonthOutlined />,
+    label: "Events",
+  },
+  {
+    href: "https://forum.watechwfcoalition.org/",
+    icon: <QuestionAnswerOutlined />,
+    label: "Community Network",
+    external: true,
+  },
+];
 
-  const links = [
-    {
-      href: "/services/jobseekers/dashboard",
-      icon: <PersonOutlineRounded />,
-      label: "Home",
-    },
-    {
-      href: "/services/joblistings",
-      icon: <WorkOutlineRounded />,
-      label: "Jobs",
-    },
-    {
-      href: "/services/jobseekers/dashboard/my-applications",
-      icon: <TaskOutlined />,
-      label: "Applications",
-    },
-    {
-      href: "/services/jobseekers/dashboard/events",
-      icon: <CalendarMonthOutlined />,
-      label: "Events",
-    },
-    /*{
-      href: "/underconstruction",
-      icon: <TimelineRounded />,
-      label: "Career Services",
-    },*/
-    {
-      href: "https://forum.watechwfcoalition.org/",
-      icon: <QuestionAnswerOutlined />,
-      label: "Community Network",
-      external: true,
-    },
-  ];
+const jobseekerLinks = [
+  {
+    href: "/services/jobseekers/dashboard",
+    icon: <PersonOutlineRounded />,
+    label: "Home",
+  },
+  {
+    href: "/services/joblistings",
+    icon: <WorkOutlineRounded />,
+    label: "Jobs",
+  },
+  {
+    href: "/services/jobseekers/dashboard/my-applications",
+    icon: <TaskOutlined />,
+    label: "Applications",
+  },
+  {
+    href: "/services/jobseekers/dashboard/events",
+    icon: <CalendarMonthOutlined />,
+    label: "Events",
+  },
+  {
+    href: "https://forum.watechwfcoalition.org/",
+    icon: <QuestionAnswerOutlined />,
+    label: "Community Network",
+    external: true,
+  },
+];
+
+const UserDrawer = ({
+  session,
+  links,
+  profileLink,
+}: {
+  session: any;
+  links: Array<any>;
+  profileLink: string;
+}) => {
+  const pathname = usePathname();
 
   return (
     <>
       <Toolbar sx={{ height: "76px" }} />
       <div className="flex flex-col text-button-secondary-idle-text">
         <Stack
-          direction={"row"}
+          direction="row"
           gap={1}
           sx={{ mt: "25px", alignItems: "center", ml: 5, mb: 3 }}
         >
@@ -85,7 +114,7 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
           <div>
             <p className="text-wrap font-bold">{session?.user.name}</p>
             <Link
-              href={"/edit-profile/jobseeker/introduction"}
+              href={profileLink}
               className="text-wrap text-sm text-primary-600 sm-tablet:text-base"
             >
               Edit Profile
@@ -131,10 +160,10 @@ const JobseekerDrawer = ({ session }: { session: any }) => {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const handleDrawerToggle = useCallback(() => {
-    setMobileOpen(!mobileOpen);
-  }, [mobileOpen]);
+  const handleDrawerToggle = useCallback(
+    () => setMobileOpen((prev) => !prev),
+    []
+  );
 
   if (status === "loading") {
     return (
@@ -146,10 +175,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <div className="h-[50px] w-[75px] bg-gray-200"></div>
             </div>
           </div>
-
-          {/* Main content with right drawer */}
           <div className="flex justify-between">
-            {/* Main content area */}
             <div className="flex-1 p-4"></div>
           </div>
         </div>
@@ -157,70 +183,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (session?.user.employerId) {
-    return (
-      <>
-        <Header />
-        <div className="flex">
-          <div className="flex min-w-[230px] flex-col text-primary-main">
-            <Link
-              href="/services/employers/dashboard"
-              className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-            >
-              <PersonOutlineOutlinedIcon />
-              Home
-            </Link>
-            <Link
-              href="/services/talent-search"
-              className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-            >
-              <SearchOutlinedIcon />
-              Candidate Search
-            </Link>
+  if (session?.user.employerId || session?.user.jobseekerId) {
+    const isEmployer = !!session?.user.employerId;
+    const links = isEmployer ? employerLinks : jobseekerLinks;
+    const profileLink = isEmployer
+      ? "/edit-profile/employer/profile"
+      : "/edit-profile/jobseeker/introduction";
 
-            <Link
-              href="/services/employers/dashboard/myjobposts"
-              className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-            >
-              <FolderOutlinedIcon />
-              My Job Posts
-            </Link>
-            <Link
-              href="/services/employers/dashboard/savedcandidates"
-              className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-            >
-              <BookmarkIcon width={24} />
-              Saved Candidates
-            </Link>
-            {/* <Link
-          href="/services/employers/dashboard"
-          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200 REPLACE-BEFORE-RELEASE"
-        >
-          <EmailOutlinedIcon />
-          Inbox
-        </Link> */}
-            {/*<Link*/}
-            {/*  href="/services/employers/dashboard/postjob"*/}
-            {/*  className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"*/}
-            {/*>*/}
-            {/*  <PencilSquareIcon width={24}/>*/}
-            {/*  Post a job*/}
-            {/*</Link>*/}
-          </div>
-          {children}
-        </div>
-        <Footer />
-      </>
-    );
-  } else if (session?.user.jobseekerId) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <AppBar
           position="sticky"
           variant="outlined"
@@ -237,15 +208,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 height={50}
               />
             </Link>
-            <Stack direction={"row"}>
-              {/*<IconButton
-                color="inherit"
-                aria-label="open notifications"
-                edge="start"
-                sx={{ mr: { xs: 2, md: 4 } }}
-              >
-                <NotificationsOutlined />
-              </IconButton>*/}
+            <Stack direction="row">
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -258,9 +221,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Stack>
           </Toolbar>
         </AppBar>
-        <Grid2
-          sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}
-        >
+        <Grid2 sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}>
           <Drawer
             elevation={0}
             variant="permanent"
@@ -271,16 +232,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               "& .MuiDrawer-paper": { border: 0, width: drawerWidth },
             }}
           >
-            <JobseekerDrawer session={session} />
+            <UserDrawer session={session} links={links} profileLink={profileLink} />
           </Drawer>
           <Drawer
             variant="temporary"
             anchor="right"
             open={mobileOpen}
             onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true,
-            }}
+            ModalProps={{ keepMounted: true }}
             sx={{
               display: { xs: "block", md: "none" },
               "& .MuiDrawer-paper": {
@@ -289,7 +248,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               },
             }}
           >
-            <JobseekerDrawer session={session} />
+            <UserDrawer session={session} links={links} profileLink={profileLink} />
           </Drawer>
         </Grid2>
         <Box
@@ -317,8 +276,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           <Stack direction={{ xs: "column", sm: "row" }} gap={2}>
             <Link href={"/policies/terms-of-service"}>Terms of Service</Link>
-            {/*<Link href={'/underconstruction'}>Privacy Policy</Link>
-            <Link href={'/underconstruction'}>Cookie Settings</Link>*/}
           </Stack>
           <div>
             <p>
