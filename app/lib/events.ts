@@ -4,6 +4,9 @@ import { PrismaClient } from "@prisma/client";
 import { unstable_rethrow } from "next/navigation";
 
 const prisma = new PrismaClient();
+
+export const PastEventGraceDuration = 1000 * 60 * 60 * 48; // 48 hours
+
 export enum EventTypeEnum {
   Workshop = "Workshop",
   General = "General",
@@ -97,7 +100,7 @@ export async function getAllEvents(excludePast: boolean) {
     );
     if (excludePast) {
       res = res.filter(
-        (event) => event.date.getTime() > Date.now() - 1000 * 60 * 60 * 48,
+        (event) => event.date.getTime() > Date.now() - PastEventGraceDuration,
       );
     }
     return {
@@ -132,7 +135,7 @@ export async function getRegisteredEvents(excludePast: boolean) {
     if (excludePast) {
       res = res.filter(
         (event) =>
-          event.event.date.getTime() > Date.now() - 1000 * 60 * 60 * 48,
+          event.event.date.getTime() > Date.now() - PastEventGraceDuration,
       );
     }
     return res;

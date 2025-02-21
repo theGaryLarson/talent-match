@@ -19,6 +19,7 @@ export type EventData = {
   registrationLink: string | null;
   duration: number;
   joinMeetingLink: string | null;
+  recordingLink: string | null;
   blurb: string | null;
   eventType: EventTypeEnum;
   createdById: string | null;
@@ -215,19 +216,26 @@ export default function Event({ event, registered, showLink }: EventProps) {
         onClick={handleOpen}
         className="flex-col justify-start items-start inline-flex"
       >
-        {showLink && event.joinMeetingLink && (
+        {event.recordingLink != "" && (
+          <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
+          <Link href={event.joinMeetingLink!} target="_blank">
+            View Recording
+          </Link>
+        </div>
+        )}
+        {event.recordingLink == "" && showLink && event.joinMeetingLink && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
             <Link href={event.joinMeetingLink!} target="_blank">
-              Meeting Link
+              Join Meeting
             </Link>
           </div>
         )}
-        {showLink && event.registrationLink && (
+        {event.recordingLink == "" && showLink && event.registrationLink && (
           <div className="text-base font-normal leading-normal tracking-tight">
-            Check email for Meeting Link
+            Check email to Join Meeting
           </div>
         )}
-        {!showLink && (
+        {event.recordingLink == "" && !showLink && (
           <div className="flex-col justify-start items-start flex">
             {reg ? (
               "Registered"
