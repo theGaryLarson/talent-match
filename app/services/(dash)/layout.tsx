@@ -39,7 +39,7 @@ const employerLinks = [
     label: "Home",
   },
   {
-    href: "/services/employers/jobs",
+    href: "/services/employers/dashboard/jobs",
     icon: <WorkOutlineRounded />,
     label: "Jobs",
   },
@@ -162,7 +162,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = useCallback(
     () => setMobileOpen((prev) => !prev),
-    []
+    [],
   );
 
   if (status === "loading") {
@@ -191,7 +191,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       : "/edit-profile/jobseeker/introduction";
 
     return (
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <div
+        style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+      >
         <AppBar
           position="sticky"
           variant="outlined"
@@ -221,7 +223,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Stack>
           </Toolbar>
         </AppBar>
-        <Grid2 sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}>
+        <Grid2
+          sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}
+        >
           <Drawer
             elevation={0}
             variant="permanent"
@@ -232,7 +236,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               "& .MuiDrawer-paper": { border: 0, width: drawerWidth },
             }}
           >
-            <UserDrawer session={session} links={links} profileLink={profileLink} />
+            <UserDrawer
+              session={session}
+              links={links}
+              profileLink={profileLink}
+            />
           </Drawer>
           <Drawer
             variant="temporary"
@@ -248,7 +256,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               },
             }}
           >
-            <UserDrawer session={session} links={links} profileLink={profileLink} />
+            <UserDrawer
+              session={session}
+              links={links}
+              profileLink={profileLink}
+            />
           </Drawer>
         </Grid2>
         <Box
