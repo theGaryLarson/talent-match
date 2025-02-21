@@ -333,7 +333,6 @@ export default function EventUpdateForm() {
               id="recordingLink"
               value={recordingLink}
               onChange={(e) => setRecordingLink(e.target.value)}
-              required
               className="mt-2 p-2 border rounded-xs w-full"
             />
           </div>
