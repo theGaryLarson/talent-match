@@ -29,8 +29,8 @@ export default async function Page() {
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
       <DeletionFlag deletionDate={undefined} />
       {!session?.user.companyId ? (
-        <div className="bg-red-700 h-[50px] items-center flex text-center justify-center">
-          <h1 className="text-2xl capitalize text-white">
+        <div className="bg-red-700 py-1 items-center flex text-center justify-center">
+          <h1 className="text-md capitalize text-white">
             Some Functions May be limited Please Log out and Log back in to gain
             full functionality
           </h1>
