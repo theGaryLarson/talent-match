@@ -362,7 +362,7 @@ export default function page() {
               the workforce. Currently, the Industry Committee is prioritizing
               these essential roles across all sectors:
             </p>
-            <blockquote className="pl-[40px]">
+            <blockquote className="text-center">
               Software Development | Cybersecurity | IT/Cloud Support | Data
               Analytics
             </blockquote>
