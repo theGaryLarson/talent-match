@@ -403,8 +403,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 value={data.yearsWorkExperience + ""}
                 onChange={handleInputUpdate}
               >
-                How many years of full-time work experience do you have (not
-                including internship)?
+                How many years of work experience do you have (not including
+                internship, enter 0 if none)?
               </InputTextWithLabel>
             </div>
             <WorkExperiences
