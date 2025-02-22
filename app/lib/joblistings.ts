@@ -156,13 +156,15 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         employment_type: jobData.employment_type || "full-time",
         is_apprenticeship: jobData.is_apprenticeship,
         location: jobData.location,
-        career_services_offered:jobData.career_services_offered,
+        career_services_offered: jobData.career_services_offered,
         salary_range: jobData.salary_range,
         county: postalGeoData?.county ?? "",
         publish_date: now,
         unpublish_date:
           jobData.unpublish_date ??
           new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()), //if closing date is not provided auto set to 1 year in the futrue
+        start_date: jobData.start_date,
+        end_date: jobData.end_date,
         job_post_url: jobData.job_post_url,
         assessment_url: jobData.assessment_url,
         skills: {
