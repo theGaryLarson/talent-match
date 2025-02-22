@@ -425,14 +425,13 @@ export default function page() {
               </h2>
             </header>
             <p>
-              The Education Committee is led by Computing for All with a focus
-              on modernizing curriculum and career readiness strategies that
-              address the evolving needs of industry. Sharing models and best
-              practices from employers, this committee addresses program
-              challenges and provides support to faculty. As a committee member,
-              you’ll attend quarterly meetings and, according to your interests,
-              participate in focused initiatives.
+              Discover the essential skills for tomorrow's workforce. Our
+              Coalition connects you directly with employers, providing valuable
+              insights into in-demand skills to help align your curriculum with
+              the latest industry standards. Equip your students for success and
+              get them HIRED!
             </p>
+            <p>Quarterly meetings: February, May, August, November.</p>
             <div className="pt-[40px]">
               <RoundedButton
                 content="Join"
