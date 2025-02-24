@@ -1,6 +1,7 @@
 "use client";
 import { FormEvent, useEffect, useState } from "react";
 import { CompanyAdminCreationDTO } from "@/data/dtos/CompanyAdminCreationDTO";
+import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import { industry_sectors } from "@prisma/client";
 import { Button } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
@@ -9,6 +10,8 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 
 export default function Page() {
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
+  const [logoUrl, setLogoUrl] = useState(""); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [initialImageUrl, setInitialImageUrl] = useState(""); // eslint-disable-line @typescript-eslint/no-unused-vars
   useEffect(() => {
     fetch("/api/joblistings/sectors")
       .then((res) => {
@@ -40,6 +43,7 @@ export default function Page() {
       companyWebsiteUrl: formData.get("company_url") as string,
       companyVision: formData.get("company_vision") as string,
       companyPhone: formData.get("company_phone") as string,
+      logoUrl: formData.get("logoUrl") as string,
     };
     try {
       const response = await fetch("/api/companies/create", {
@@ -53,6 +57,8 @@ export default function Page() {
       if (response.ok) {
         alert("Company created successfully!");
         form.reset();
+        setLogoUrl("");
+        setInitialImageUrl("");
       } else {
         alert("Failed to create company");
       }
@@ -64,6 +70,35 @@ export default function Page() {
   }
   return (
     <form onSubmit={onSubmit} className="space-y-3">
+      <h1 className="text-xl font-bold">Add Company</h1>
+
+      {/* Company Logo Upload */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="avatarUpload">Upload Company Logo</label>
+        <AvatarUpload
+          id="avatarUpload"
+          fileTypeText="SVG, PNG or JPG"
+          accept=".png,.jpg,.jpeg,.svg"
+          maxSizeMB={1}
+          userId="user-id-placeholder" // Replace with actual user ID
+          onImageUpload={(url) => {
+            console.log("Received URL in Page.tsx:", url); // Log the received URL
+            // Handle the uploaded image URL
+            setLogoUrl(url);
+            const hiddenInput = document.getElementById(
+              "logoUrl",
+            ) as HTMLInputElement;
+            if (hiddenInput) {
+              hiddenInput.value = url;
+            }
+          }}
+          initialImageUrl=""
+          apiPath="/api/companies/avatar/upload"
+        />
+        {/* Hidden input to store avatar URL */}
+        <input type="hidden" name="logoUrl" id="logoUrl" />
+      </div>
+
       {/* Job Title */}
       <div className="grid grid-cols-1">
         <label htmlFor="company_name">Company name *</label>
