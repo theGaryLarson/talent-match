@@ -31,6 +31,7 @@ export async function adminCreateCompany(companyData: CompanyAdminCreationDTO) {
         company_website_url: companyData.companyWebsiteUrl,
         company_phone: companyData.companyPhone,
         company_vision: companyData.companyVision,
+        company_logo_url: companyData.logoUrl,
       },
     });
     return result;
