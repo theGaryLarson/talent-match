@@ -13,6 +13,7 @@ interface Props<ValueType> {
   value: string;
   onChange: (event: SelectChangeEvent<string>) => void;
   getOptionLabel: (option: ValueType) => string;
+  getOptionValue?: (value: ValueType) => string;
   [key: string]: any;
 }
 
@@ -22,6 +23,7 @@ export default function SingleSelectFilterAutoload<ValueType>({
   value,
   onChange,
   getOptionLabel,
+  getOptionValue,
   ...rest
 }: Props<ValueType>) {
   const [options, setOptions] = React.useState<ValueType[]>([]);
@@ -63,7 +65,6 @@ export default function SingleSelectFilterAutoload<ValueType>({
         disabled={loading}
         onChange={onChange}
         input={<OutlinedInput />}
-        renderValue={(selected) => selected}
         {...rest}
       >
         <MenuItem dense={true} value="">
@@ -71,9 +72,15 @@ export default function SingleSelectFilterAutoload<ValueType>({
         </MenuItem>
         {options.map((option) => {
           const optionLabel = getOptionLabel(option);
+          let optionValue;
+          if (getOptionValue) optionValue = getOptionValue(option);
           return (
-            <MenuItem dense={true} key={optionLabel} value={optionLabel}>
-              <ListItemText primary={optionLabel} />
+            <MenuItem
+              dense={true}
+              key={optionLabel}
+              value={optionValue ? optionValue : optionLabel}
+            >
+              {optionLabel}
             </MenuItem>
           );
         })}
