@@ -197,9 +197,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           position="sticky"
           variant="outlined"
           color="inherit"
-          sx={{ zIndex: "10000", height: "76px", justifyContent: "center" }}
+          sx={{ zIndex: 1300, height: "76px", justifyContent: "center" }}
         >
-          <Toolbar sx={{ justifyContent: "space-between", zIndex: "20000" }}>
+          <Toolbar sx={{ justifyContent: "space-between", zIndex: 20000 }}>
             <Link href="/">
               <span className="sr-only">Tech Workforce Coalition</span>
               <Image
@@ -281,7 +281,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             justifyContent: "space-between",
             px: 5,
             py: 2.5,
-            zIndex: 9000,
+            zIndex: 1200,
             bgcolor: "neutral.100",
           }}
         >
