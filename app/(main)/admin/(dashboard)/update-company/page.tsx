@@ -4,6 +4,7 @@ import { companies, industry_sectors } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import AvatarUpload from "@/app/ui/components/AvatarUpload";
 
 const companyStartInfo: companies = {
   company_id: "",
@@ -33,6 +34,9 @@ export default function Page() {
   const [selectedCompanyOgInfo, setSelectedCompanyOginfo] =
     useState<companies>(companyStartInfo);
   const [formData, setFormData] = useState<companies>(companyStartInfo);
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [initialImageUrl, setInitialImageUrl] = useState<string>("");
+
   useEffect(() => {
     fetch("/api/companies/getall")
       .then((res) => res.json())
@@ -47,13 +51,22 @@ export default function Page() {
 
   useEffect(() => {
     if (selectedCompany === "") {
+      // Clear form if no selection
+      setFormData(companyStartInfo);
+      setLogoUrl("");
+      setInitialImageUrl("");
+      setSelectedCompany("");
       return;
     }
+
     fetch(`/api/companies/${selectedCompany}`)
       .then((res) => res.json())
       .then((r) => {
         setSelectedCompanyOginfo(r.result);
         setFormData(r.result);
+        setLogoUrl(r.result.company_logo_url || "");
+        setInitialImageUrl(r.result.company_logo_url || "");
+        setSelectedCompany(r.result.company_id);
       })
       .catch((err) => console.error("Error fetching company info:", err));
   }, [selectedCompany]);
@@ -73,6 +86,7 @@ export default function Page() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFormData({ ...formData, company_logo_url: logoUrl });
     try {
       const response = await fetch("/api/companies/update", {
         method: "POST",
@@ -111,6 +125,24 @@ export default function Page() {
 
       {selectedCompany && (
         <form onSubmit={onSubmit} className="space-y-3">
+          {/* Company Logo Upload */}
+          <div className="grid grid-cols-1">
+            <label htmlFor="avatarUpload">Upload Company Logo</label>
+            <AvatarUpload
+              id="avatarUpload"
+              fileTypeText="SVG, PNG or JPG"
+              accept=".png,.jpg,.jpeg,.svg"
+              maxSizeMB={1}
+              userId={selectedCompany}
+              onImageUpload={(url) => {
+                setLogoUrl(url);
+                setInitialImageUrl(url);
+              }}
+              initialImageUrl={logoUrl}
+              apiPath="/api/companies/avatar/upload"
+            />
+          </div>
+
           <div className="grid grid-cols-1">
             <label htmlFor="company_name">Company name *</label>
             <input
