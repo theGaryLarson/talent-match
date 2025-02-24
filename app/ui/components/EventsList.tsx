@@ -45,7 +45,18 @@ export default async function EventsList({
               color: "secondary.main",
             }}
           >
-            Events Calendar
+            All Events
+          </PillButton>
+        )}
+        {!showOnlyRegisteredEvents && (
+          <PillButton
+            color="inherit"
+            href="/services/jobseekers/dashboard/events"
+            sx={{
+              color: "secondary.main",
+            }}
+          >
+            My Events
           </PillButton>
         )}
       </Grid2>
