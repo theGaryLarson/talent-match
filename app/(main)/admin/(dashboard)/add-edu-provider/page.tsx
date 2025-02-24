@@ -86,7 +86,7 @@ export default function Page() {
           fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
           accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
           maxSizeMB={5}
-          userId="user-id-placeholder" // Replace with actual user ID
+          userId={eduProviderId}
           onImageUpload={(url) => {
             console.log("Received URL in Page.tsx:", url); // Log the received URL
             // Handle the uploaded image URL
