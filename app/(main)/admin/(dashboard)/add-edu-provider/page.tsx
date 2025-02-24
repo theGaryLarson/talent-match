@@ -84,7 +84,7 @@ export default function Page() {
         <AvatarUpload
           id="avatarUpload"
           fileTypeText="SVG, PNG or JPG"
-          accept=".png,.jpg,.jpeg,.svg"
+          accept=".png,.jpg,.jpeg,.svg,.webp"
           maxSizeMB={5}
           userId="user-id-placeholder" // Replace with actual user ID
           onImageUpload={(url) => {
