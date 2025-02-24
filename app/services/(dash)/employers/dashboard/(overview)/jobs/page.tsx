@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import Link from "next/link";
 import { Box, Typography } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
-import NewJobForm from "@/app/ui/components/jobManagement/NewJobForm";
+import NewJobFormButton from "@/app/ui/components/jobManagement/NewJobFormButton";
 
 export const metadata = {
   title: "Job Management",
@@ -34,7 +34,9 @@ export default async function Page() {
         Job Management
       </Typography>
 
-      <NewJobForm />
+      <Box sx={{ my: 5 }}>
+        <NewJobFormButton job_posting={undefined} />
+      </Box>
     </Box>
   );
 }

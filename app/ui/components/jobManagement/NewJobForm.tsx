@@ -31,11 +31,12 @@ import {
 } from "@mui/icons-material";
 import SingleSelectFilterAutoload from "../mui/SingleSelectFilterAutoload";
 import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
-import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
 import { EmploymentType, OccupationCode } from "@/app/lib/admin/jobTracking";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
 import SingleSelectCheckmarks from "../mui/SingleSelectFilter";
+import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
+import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO";
 
 const steps = [
   "Job Information",
@@ -44,7 +45,12 @@ const steps = [
   "Publish",
 ];
 
-export default function NewJobForm() {
+export default function NewJobForm({
+  job_posting,
+}: {
+  job_posting?: JobPostCreationDTO;
+}) {
+  // let job_posting_id;
   const [activeStep, setActiveStep] = useState(0);
 
   // Step 0: Job Information state
@@ -52,7 +58,7 @@ export default function NewJobForm() {
   const [jobUrl, setJobUrl] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [industry, setIndustry] = useState("");
-  const [techPathway, setTechPathway] = useState("");
+  const [techArea, setTechArea] = useState("");
   const [occupationCode, setOccupationCode] = useState("");
   const [applicationDeadline, setApplicationDeadline] = useState<any>(null);
 
@@ -64,44 +70,119 @@ export default function NewJobForm() {
   const [location, setLocation] = useState("");
   const [relocation, setRelocation] = useState(false);
   const [visaSponsor, setVisaSponsor] = useState(false);
+  const [employmentDuration, setEmploymentDuration] = useState("");
+  const [employmentIsPermanent, setEmploymentIsPermanent] =
+    useState("permanent");
   const [workEnvironment, setWorkEnvironment] = useState("");
   const [startingPayRange, setStartingPayRange] = useState("");
   const [endingPayRange, setEndingPayRange] = useState("");
   const [compensationType, setCompensationType] = useState("");
 
   // Step 2: Qualifications state
-  const [requiredSkills, setRequiredSkills] = useState<string[]>([]);
+  const [requiredSkills, setRequiredSkills] = useState<SkillDTO[]>([]);
   const [trainingRequirements, setTrainingRequirements] = useState("");
   const [requiredCertifications, setRequiredCertifications] = useState("");
   const [educationLevel, setEducationLevel] = useState("");
 
-  const handlePublish = () => {
-    const formData = {
-      jobTitle,
-      jobUrl,
-      jobDescription,
-      industry,
-      techPathway,
-      occupationCode,
-      applicationDeadline: applicationDeadline
-        ? applicationDeadline.format("MM/DD/YYYY")
-        : "",
-      employmentType,
-      location,
-      workEnvironment,
-      startingPayRange,
-      endingPayRange,
-      requiredSkills,
-      trainingRequirements,
-      requiredCertifications,
-      educationLevel,
-    };
-    console.log("Publishing job with data: ", formData);
+  if (job_posting) {
+    // Set states and job_posting_id
+  }
+
+  const isStepValid = () => {
+    if (activeStep === 0) {
+      return (
+        jobTitle.trim() !== "" &&
+        jobDescription.trim() !== "" &&
+        occupationCode.trim() !== "" &&
+        applicationDeadline
+      );
+    }
+    if (activeStep === 1) {
+      const basicValid =
+        employmentType.trim() !== "" &&
+        location.trim() !== "" &&
+        workEnvironment.trim() !== "";
+      const durationValid =
+        employmentIsPermanent === "permanent" ||
+        (employmentIsPermanent === "temporary" &&
+          employmentDuration.trim() !== "");
+      const compensationValid =
+        !paidPosition ||
+        (startingPayRange.trim() !== "" &&
+          endingPayRange.trim() !== "" &&
+          compensationType.trim() !== "");
+      return basicValid && durationValid && compensationValid;
+    }
+    if (activeStep === 2) {
+      return requiredSkills.length > 0;
+    }
+    return true;
   };
+
+  const handlePublish = async () => {
+    const jobListingData: JobPostCreationDTO = {
+      job_title: jobTitle,
+      job_post_url: jobUrl,
+      job_description: jobDescription,
+      sector_id: industry,
+      tech_area_id: techArea,
+      occupation_code: occupationCode,
+      unpublish_date: applicationDeadline,
+      employment_type: employmentType,
+      location: workEnvironment,
+      zip: location,
+      is_paid: paidPosition,
+      salary_range:
+        "$" +
+        startingPayRange +
+        " - $" +
+        endingPayRange +
+        (compensationType === "hourly" ? " / hr" : " / year"),
+      skillIds: requiredSkills.map((skill) => skill.skill_id),
+      is_apprenticeship: apprenticeship,
+      relocation_services: relocation,
+      visa_sponsorship: visaSponsor,
+    };
+    try {
+      const response = await fetch("/api/joblistings/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jobListingData),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to create job listing");
+        return;
+      } else {
+        const data = await response.json();
+        console.log(data);
+      }
+    } catch (error) {
+      console.error("Error creating job listing:", error);
+    }
+    console.log("Publishing job with data: ", jobListingData);
+  };
+
+  const handleUpdate = async () => {};
+
+  function handleNext() {
+    if (isStepValid()) {
+      setActiveStep((prev) => prev + 1);
+    }
+  }
+
+  function handleBack() {
+    setActiveStep((prev) => prev - 1);
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
-      <Stepper activeStep={activeStep}>
+      <Stepper
+        activeStep={activeStep}
+        sx={{ display: { xs: "none", sm: "flex" } }}
+      >
         {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
           const labelProps: {
@@ -109,12 +190,25 @@ export default function NewJobForm() {
           } = {};
           return (
             <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
+              <StepLabel {...labelProps}>
+                {label == "Publish"
+                  ? job_posting
+                    ? "Update"
+                    : "Publish"
+                  : "Publish"}
+              </StepLabel>
             </Step>
           );
         })}
       </Stepper>
-      <Typography variant="h5">{steps[activeStep]}</Typography>
+      <Typography
+        sx={{ justifySelf: "center", display: { xs: "flex", sm: "none" } }}
+      >
+        {activeStep + 1} / {steps.length}
+      </Typography>
+      <Typography variant="h5" sx={{ mt: 2 }}>
+        {steps[activeStep]}
+      </Typography>
       <Stack>
         {activeStep === 0 && (
           <Stack spacing={3}>
@@ -151,13 +245,17 @@ export default function NewJobForm() {
 
             <FormControl fullWidth>
               <FormLabel required>Industry</FormLabel>
-              <SingleSelectFilterAutoload
+              <SingleSelectFilterAutoload<IndustrySectorDropdownDTO>
                 id="newjobform-Industry"
+                label=""
                 apiAutoloadRoute="/api/employers/industry-sectors"
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value)}
-                getOptionLabel={(options: IndustrySectorDropdownDTO) =>
-                  options.sector_title
+                getOptionLabel={(option: IndustrySectorDropdownDTO) =>
+                  option.sector_title
+                }
+                getOptionValue={(option: IndustrySectorDropdownDTO) =>
+                  option.industry_sector_id
                 }
               />
               <FormHelperText>
@@ -166,20 +264,22 @@ export default function NewJobForm() {
             </FormControl>
 
             <FormControl fullWidth>
-              <FormLabel required>Tech Pathway</FormLabel>
-              <Select
-                required
-                value={techPathway}
-                onChange={(e) => setTechPathway(e.target.value)}
-              >
-                {Object.values(CareerPrepPathways).map((code) => (
-                  <MenuItem key={code + 1} value={code}>
-                    {code}
-                  </MenuItem>
-                ))}
-              </Select>
+              <FormLabel required>Tech Area</FormLabel>
+              <SingleSelectFilterAutoload<TechnologyAreaDropdownDTO>
+                id="newjobform-tech-area"
+                label=""
+                apiAutoloadRoute="/api/employers/technology-areas"
+                value={techArea}
+                onChange={(e) => setTechArea(e.target.value)}
+                getOptionLabel={(option: TechnologyAreaDropdownDTO) =>
+                  option.title
+                }
+                getOptionValue={(option: TechnologyAreaDropdownDTO) =>
+                  option.id
+                }
+              />
               <FormHelperText>
-                Choose the specific pathway for this role
+                Select the technology area that best fits this role
               </FormHelperText>
             </FormControl>
 
@@ -271,15 +371,45 @@ export default function NewJobForm() {
             </FormControl>
 
             <FormControl fullWidth>
+              <FormLabel required>Employment Duration</FormLabel>
+              <Grid2 container direction="row" spacing={2}>
+                <TextField
+                  required
+                  disabled={employmentIsPermanent === "permanent"}
+                  placeholder="3 Months"
+                  value={employmentDuration}
+                  onChange={(e) => setEmploymentDuration(e.target.value)}
+                  helperText="Expected duration of employment"
+                />
+                <RadioGroup
+                  value={employmentIsPermanent}
+                  onChange={(e) => setEmploymentIsPermanent(e.target.value)}
+                  row
+                >
+                  <FormControlLabel
+                    value="permanent"
+                    control={<Radio />}
+                    label="Permanent"
+                  />
+                  <FormControlLabel
+                    value="temporary"
+                    control={<Radio />}
+                    label="Temporary"
+                  />
+                </RadioGroup>
+              </Grid2>
+            </FormControl>
+
+            <FormControl fullWidth>
               <Grid2 container direction="row" spacing={2}>
                 <div>
                   <FormLabel required>Location</FormLabel>
-                  <Select
+                  <TextField
                     fullWidth
                     required
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                  ></Select>
+                  ></TextField>
                   <FormHelperText>
                     Enter the location of the role
                   </FormHelperText>
@@ -308,35 +438,37 @@ export default function NewJobForm() {
                 </FormGroup>
               </Grid2>
             </FormControl>
-
-            <FormControl fullWidth>
-              <FormLabel required>Work Environment</FormLabel>
-              <Select
-                required
-                value={workEnvironment}
-                onChange={(e) => setWorkEnvironment(e.target.value)}
-              >
-                <MenuItem value="">Any</MenuItem>
-                <MenuItem value="remote">Remote</MenuItem>
-                <MenuItem value="hybrid">Hybrid</MenuItem>
-                <MenuItem value="on-site">On-Site</MenuItem>
-              </Select>
-              <FormHelperText>Enter the work environment</FormHelperText>
-            </FormControl>
-
-            <FormControl fullWidth>
+            <div>
+              <FormControl>
+                <FormLabel required>Work Environment</FormLabel>
+                <Select
+                  required
+                  value={workEnvironment}
+                  onChange={(e) => setWorkEnvironment(e.target.value)}
+                >
+                  <MenuItem value="">Any</MenuItem>
+                  <MenuItem value="remote">Remote</MenuItem>
+                  <MenuItem value="hybrid">Hybrid</MenuItem>
+                  <MenuItem value="on-site">On-Site</MenuItem>
+                </Select>
+                <FormHelperText>Enter the work environment</FormHelperText>
+              </FormControl>
+            </div>
+            <FormControl fullWidth disabled={!paidPosition}>
               <FormLabel required>Compensation</FormLabel>
               <Grid2 container direction="row" spacing={2}>
                 <TextField
                   required
-                  placeholder="40000"
+                  disabled={!paidPosition}
+                  placeholder="40,000"
                   value={startingPayRange}
                   onChange={(e) => setStartingPayRange(e.target.value)}
                   helperText="Start range"
                 />
                 <TextField
                   required
-                  placeholder="80000"
+                  disabled={!paidPosition}
+                  placeholder="80,000"
                   value={endingPayRange}
                   onChange={(e) => setEndingPayRange(e.target.value)}
                   helperText="End range"
@@ -374,21 +506,22 @@ export default function NewJobForm() {
                 searchingText="Searching..."
                 noResultsText="No skills found..."
                 onChange={(event: any, val: any) => {
-                  const newVal = (val as SkillDTO[]).map(
-                    (skill) => skill.skill_name,
-                  );
-                  setRequiredSkills(newVal);
+                  setRequiredSkills(val);
                 }}
+                initialTags={requiredSkills.map((skill) => skill.skill_name)}
                 searchPlaceholder="Skill (ex: Java)"
                 getTagLabel={(option: SkillDTO) => option.skill_name}
                 getTagLink={(option: SkillDTO) => option.skill_info_url}
               />
+              <FormHelperText>
+                Enter five required skills needed for this role. Start typing to
+                see suggestions and select multiple skill
+              </FormHelperText>
             </FormControl>
 
             <FormControl fullWidth>
-              <FormLabel required>Training Requirements</FormLabel>
+              <FormLabel>Training Requirements</FormLabel>
               <TextField
-                required
                 value={trainingRequirements}
                 onChange={(e) => setTrainingRequirements(e.target.value)}
                 helperText="Enter required training"
@@ -396,9 +529,8 @@ export default function NewJobForm() {
             </FormControl>
 
             <FormControl fullWidth>
-              <FormLabel required>Required Certifications</FormLabel>
+              <FormLabel>Required Certifications</FormLabel>
               <TextField
-                required
                 value={requiredCertifications}
                 onChange={(e) => setRequiredCertifications(e.target.value)}
                 helperText="Enter required certifications"
@@ -471,7 +603,7 @@ export default function NewJobForm() {
                 <strong>Industry:</strong> {industry}
               </Typography>
               <Typography>
-                <strong>Tech Pathway:</strong> {techPathway}
+                <strong>Tech Area:</strong> {techArea}
               </Typography>
               <Typography>
                 <strong>Occupation Code:</strong> {occupationCode}
@@ -530,7 +662,8 @@ export default function NewJobForm() {
                 </Link>
               </Stack>
               <Typography>
-                <strong>Required Skills:</strong> {requiredSkills}
+                <strong>Required Skills:</strong>{" "}
+                {requiredSkills.map((skill) => skill.skill_name)}
               </Typography>
               <Typography>
                 <strong>Training Requirements:</strong> {trainingRequirements}
@@ -546,21 +679,19 @@ export default function NewJobForm() {
         )}
 
         <Grid2 container sx={{ justifyContent: "space-between", mt: 3 }}>
-          {activeStep > 0 ? (
-            <PillButton
-              color="secondary"
-              onClick={() => setActiveStep(activeStep - 1)}
-            >
-              Back
-            </PillButton>
-          ) : (
-            <div />
-          )}
+          <PillButton
+            color="secondary"
+            disabled={activeStep == 0}
+            onClick={handleBack}
+          >
+            Back
+          </PillButton>
           {activeStep !== 3 ? (
             <PillButton
               color="secondary"
               startIcon={<ArrowCircleRightOutlined />}
-              onClick={() => setActiveStep(activeStep + 1)}
+              onClick={handleNext}
+              disabled={!isStepValid()}
             >
               Continue
             </PillButton>
@@ -568,9 +699,10 @@ export default function NewJobForm() {
             <PillButton
               color="secondary"
               startIcon={<FileUploadOutlined />}
-              onClick={handlePublish}
+              onClick={job_posting ? handleUpdate : handlePublish}
+              disabled={!isStepValid()}
             >
-              Publish
+              {job_posting ? "Update" : "Publish"}
             </PillButton>
           )}
         </Grid2>
