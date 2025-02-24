@@ -88,13 +88,13 @@ export default function Event({ event, registered, showLink }: EventProps) {
                         alt="Calendar icon"
                       />
                       <div className="text-black/90 text-base font-normal leading-normal tracking-tight">
-                        {event.date.toDateString()}{" "}
-                        {event.date.toLocaleTimeString([], {
+                        {new Date(event.date).toDateString()}{" "}
+                        {new Date(event.date).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         }) +
                           " - " +
-                          endTime.toLocaleTimeString([], {
+                          new Date(endTime).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
@@ -161,7 +161,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
     );
   }
 
-  const endTime = new Date(event.date.getTime() + event.duration * 60000);
+  const endTime = new Date(event.date).getTime() + event.duration * 60000;
 
   return (
     <div
@@ -193,7 +193,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
         className="self-stretch justify-start items-center flex"
       >
         <div className="grow shrink basis-0 text-sky-900 text-base font-</div>normal leading-normal tracking-tight">
-          {event.date.toDateString()}
+          {new Date(event.date).toDateString()}
         </div>
       </div>
       <div
@@ -201,12 +201,12 @@ export default function Event({ event, registered, showLink }: EventProps) {
         className="self-stretch justify-start items-center flex"
       >
         <div className="grow shrink basis-0 text-zinc-900/60 text-base font-normal leading-normal tracking-tight">
-          {event.date.toLocaleTimeString([], {
+          {new Date(event.date).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           }) +
             " - " +
-            endTime.toLocaleTimeString([], {
+            new Date(endTime).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
             })}
@@ -218,10 +218,10 @@ export default function Event({ event, registered, showLink }: EventProps) {
       >
         {event.recordingLink != "" && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
-          <Link href={event.joinMeetingLink!} target="_blank">
-            View Recording
-          </Link>
-        </div>
+            <Link href={event.joinMeetingLink!} target="_blank">
+              View Recording
+            </Link>
+          </div>
         )}
         {event.recordingLink == "" && showLink && event.joinMeetingLink && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
