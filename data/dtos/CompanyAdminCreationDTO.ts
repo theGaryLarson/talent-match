@@ -17,4 +17,5 @@ export interface CompanyAdminCreationDTO {
   companyAddresses?: string[];
   companySocialLinks?: string[];
   companyTestimonials?: string[];
+  logoUrl?: string | null;
 }
