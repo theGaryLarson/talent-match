@@ -216,7 +216,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
         onClick={handleOpen}
         className="flex-col justify-start items-start inline-flex"
       >
-        {event.recordingLink != "" && (
+        {event.recordingLink !== null && event.recordingLink !== "" && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
             <Link href={event.recordingLink!} target="_blank">
               View Recording
