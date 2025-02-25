@@ -447,9 +447,9 @@ export default function page() {
               Steering Committee
             </h3>
             <p>
-              Comprised of Co-Leadership partners &amp; members. Provides
-              prioritization and sets policy. Sets membership criteria and
-              approval. Managed by Computing for All.
+              Executives from AWS and Accenture co-lead this committee,
+              providing credibility, prioritization and policy for the Coalition
+              and its initiatives.
             </p>
           </div>
           <div className="flex-1 space-y-[10px]">
