@@ -218,7 +218,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
       >
         {event.recordingLink != "" && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
-            <Link href={event.joinMeetingLink!} target="_blank">
+            <Link href={event.recordingLink!} target="_blank">
               View Recording
             </Link>
           </div>
