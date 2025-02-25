@@ -2,10 +2,7 @@
 
 import { Card, Divider, Grid2, Stack, Typography } from "@mui/material";
 import PillButton from "./PillButton";
-import {
-  EventTypeEnum,
-  PastEventGraceDuration,
-} from "@/app/lib/events";
+import { EventTypeEnum, PastEventGraceDuration } from "@/app/lib/events";
 import Event, { EventData } from "@/app/ui/components/Event";
 import React, { useEffect } from "react";
 
@@ -25,16 +22,21 @@ export default function EventsList({
   const [upcomingEvents, setUpcomingEvents] = React.useState<EventData[]>([]);
   const [pastEvents, setPastEvents] = React.useState<EventData[]>([]);
   const [displayEvents, setDisplayEvents] = React.useState<EventData[]>([]);
-  const [registeredEvents, setRegisteredEvents] = React.useState<EventData[]>([]);
+  const [registeredEvents, setRegisteredEvents] = React.useState<any[]>([]);
 
-  const sortEvents = (events : EventData[]) => {
+  const sortEvents = (events: EventData[]) => {
+    // separate events into past and upcoming
     const now = Date.now();
-    const pastEvents = events.filter((event) => new Date(event.date).getTime() < now);
-    setPastEvents(pastEvents);
-    const upcomingEvents = events.filter((event) => new Date(event.date).getTime() + PastEventGraceDuration > now);
-    setUpcomingEvents(upcomingEvents);
-    setDisplayEvents(showPast ? pastEvents : upcomingEvents);
-  }
+    const past = events.filter((event) => new Date(event.date).getTime() < now);
+    const upcoming = events.filter(
+      (event) => new Date(event.date).getTime() + PastEventGraceDuration > now,
+    );
+
+    setPastEvents(past);
+    setUpcomingEvents(upcoming);
+    setDisplayEvents(showPast ? past : upcoming);
+    setLoading(false);
+  };
 
   const getAllEvents = () => {
     fetch("/api/events")
@@ -45,34 +47,44 @@ export default function EventsList({
         return res.json();
       })
       .then((data) => {
-        sortEvents(data.events);
-        setLoading(false);
+        if (showOnlyRegisteredEvents) {
+          // request registered events
+          fetch("/api/events/registered")
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error("Failed to fetch registered events");
+              }
+              return res.json();
+            })
+            .then((registered) => {
+              setRegisteredEvents(registered.events);
+              const filteredEvents = data.events.filter(
+                (event: { id: string }) =>
+                  registered.events.some(
+                    (e: { eventId: string }) => e.eventId === event.id,
+                  ),
+              );
+              sortEvents(filteredEvents);
+            })
+            .catch((error) => {
+              console.error("Error fetching registered events:", error);
+              // Optionally, update UI to show an error message to users
+            });
+        } else {
+          // otherwise, show all events
+          sortEvents(data.events);
+        }
       })
       .catch((error) => {
         console.error("Error fetching events:", error);
         // Optionally, update UI to show an error message to users
       });
-
-    // fetch("/api/events")
-    // .then((res) => {
-    //   if (!res.ok) {
-    //     throw new Error("Failed to fetch events");
-    //   }
-    //   return res.json();
-    // })
-    // .then((data) => {
-    //   setRegisteredEvents(data.events);
-    // })
-    // .catch((error) => {
-    //   console.error("Error fetching events:", error);
-    //   // Optionally, update UI to show an error message to users
-    // });
   };
 
   useEffect(getAllEvents, []);
 
   const registered = function (id: string) {
-    return registeredEvents?.some((e) => e.id === id);
+    return registeredEvents?.some((e) => e.eventId === id);
   };
 
   return (
@@ -95,10 +107,13 @@ export default function EventsList({
             alignSelf: "stretch",
           }}
         >
-          <PillButton color={showPast ? "inherit" : "secondary"} onClick={() => {
-            setShowPast(false);
-            setDisplayEvents(upcomingEvents);
-          }}>
+          <PillButton
+            color={showPast ? "inherit" : "secondary"}
+            onClick={() => {
+              setShowPast(false);
+              setDisplayEvents(upcomingEvents);
+            }}
+          >
             Upcoming
           </PillButton>
           <Typography
@@ -107,10 +122,13 @@ export default function EventsList({
           >
             |
           </Typography>
-          <PillButton color={showPast ? "secondary" : "inherit"} onClick={() => {
-            setShowPast(true);
-            setDisplayEvents(pastEvents);
-          }}>
+          <PillButton
+            color={showPast ? "secondary" : "inherit"}
+            onClick={() => {
+              setShowPast(true);
+              setDisplayEvents(pastEvents);
+            }}
+          >
             Past
           </PillButton>
         </Stack>
@@ -148,29 +166,10 @@ export default function EventsList({
           }}
         >
           {loading && <p className="text-center my-4">Loading...</p>}
-          {!loading && showOnlyRegisteredEvents && registeredEvents?.length === 0 && (
-            <p className="text-center">
-              You have not registered for any events
-            </p>
+          {!loading && displayEvents?.length === 0 && (
+            <p className="text-center">No events found</p>
           )}
-          {showOnlyRegisteredEvents &&
-            registeredEvents?.map((item, i, arr) => (
-              <React.Fragment key={i}>
-                <Event
-                  showLink={showMeetingLinks}
-                  registered={registered(item.id)}
-                  event={{
-                    ...item,
-                    eventType: item.eventType as EventTypeEnum,
-                  }}
-                />
-                {i < arr.length - 1 && <Divider sx={{ my: 1 }} />}
-              </React.Fragment>
-            ))}
-          {!loading && !showOnlyRegisteredEvents && displayEvents?.length === 0 && (
-            <p className="text-center">No events</p>
-          )}
-          {!showOnlyRegisteredEvents &&
+          {!loading &&
             displayEvents?.map((event, i, arr) => (
               <React.Fragment key={i}>
                 <Event
