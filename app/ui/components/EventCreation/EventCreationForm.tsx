@@ -16,6 +16,7 @@ export default function EventCreationForm() {
   const [isRegisterLink, setIsRegisterLink] = useState<boolean>(true);
   const [registerLink, setRegisterLink] = useState<string>("");
   const [joinMeetingLink, setJoinMeetingLink] = useState("");
+  const [recordingLink, setRecordingLink] = useState<string>("");
   const [duration, setDuration] = useState<number>(90);
   // const [eventBlurb, setEventBlurb] = useState<string>("");
   const [eventType, setEventType] = useState<EventTypeEnum>(
@@ -36,6 +37,7 @@ export default function EventCreationForm() {
       date: new Date(eventDate), // Ensure date is correctly formatted
       registrationLink: registerLink,
       joinMeetingLink: joinMeetingLink,
+      recordingLink: recordingLink,
       // blurb: eventBlurb,
       eventType: eventType,
       duration: duration,
@@ -61,6 +63,7 @@ export default function EventCreationForm() {
         console.log("Creation success: ", data);
         if (submitButton) submitButton.disabled = false;
         alert("Event created successfully!");
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error:", error);
@@ -75,6 +78,7 @@ export default function EventCreationForm() {
     setEventDate("");
     setRegisterLink("");
     setJoinMeetingLink("");
+    setRecordingLink("");
     // setEventBlurb("");
     setEventDescription("");
     setEventLocation("");
@@ -217,6 +221,18 @@ export default function EventCreationForm() {
           />
         </div>
       )}
+      <div>
+        <label htmlFor="recordingLink" className="block text-sm font-medium">
+          Recording link (optional, will replace join link)
+        </label>
+        <input
+          type="url"
+          id="recordingLink"
+          value={recordingLink}
+          onChange={(e) => setRecordingLink(e.target.value)}
+          className="mt-2 p-2 border rounded-xs w-full"
+        />
+      </div>
       {/* <div>
         <label htmlFor="eventBlurb" className="block text-sm font-medium">
           Event Blurb
