@@ -55,8 +55,8 @@ export default function CreateJobListingAdminForm() {
       tech_area_id: formData.get("area") as string,
       sector_id: formData.get("sector") as string,
       company_id: formData.get("company") as string,
-      relocation_services: formData.get("relocation") === "yes",
-      visa_sponsorship: formData.get("visas") === "yes",
+      relocation_services_available: formData.get("relocation") === "yes",
+      offer_visa_sponsorship: formData.get("visas") === "yes",
       earn_and_learn_type: formData.get("earn_and_learn_type") as string,
       occupation_code: formData.get("occupation_code") as string,
       employment_duration:

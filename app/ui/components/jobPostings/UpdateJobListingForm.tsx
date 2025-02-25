@@ -48,8 +48,8 @@ export default function UpdateJobListingForm() {
     tech_area_id: "",
     sector_id: "",
     company_id: "",
-    relocation_services: false,
-    visa_sponsorship: false,
+    relocation_services_available: false,
+    offer_visa_sponsorship: false,
     job_description: "",
     career_services_offered: false,
   });
@@ -134,8 +134,8 @@ export default function UpdateJobListingForm() {
       tech_area_id: Jl.tech_area_id ?? "",
       sector_id: Jl.sector_id ?? "",
       company_id: Jl.company_id,
-      relocation_services: Jl.relocation_services_available,
-      visa_sponsorship: Jl.offer_visa_sponsorship,
+      relocation_services_available: Jl.relocation_services_available,
+      offer_visa_sponsorship: Jl.offer_visa_sponsorship,
       job_description: Jl.job_description,
       career_services_offered: Jl.career_services_offered ?? false,
       start_date: Jl.start_date ?? undefined,
@@ -393,7 +393,7 @@ export default function UpdateJobListingForm() {
                   name="relocation_services"
                   value="yes"
                   required
-                  checked={formData.relocation_services}
+                  checked={formData.relocation_services_available}
                   onChange={handleChange}
                 />
                 Yes
@@ -404,7 +404,7 @@ export default function UpdateJobListingForm() {
                   name="relocation_services"
                   value="no"
                   required
-                  checked={!formData.relocation_services}
+                  checked={!formData.relocation_services_available}
                   onChange={handleChange}
                 />
                 No
@@ -420,7 +420,7 @@ export default function UpdateJobListingForm() {
                   name="visa_sponsorship"
                   value="yes"
                   required
-                  checked={formData.visa_sponsorship}
+                  checked={formData.offer_visa_sponsorship}
                   onChange={handleChange}
                 />
                 Yes
@@ -431,7 +431,7 @@ export default function UpdateJobListingForm() {
                   name="visa_sponsorship"
                   value="no"
                   required
-                  checked={!formData.visa_sponsorship}
+                  checked={!formData.offer_visa_sponsorship}
                   onChange={handleChange}
                 />
                 No

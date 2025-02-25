@@ -62,8 +62,8 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
-        relocation_services_available: jobData.relocation_services,
-        offer_visa_sponsorship: jobData.visa_sponsorship,
+        relocation_services_available: jobData.relocation_services_available,
+        offer_visa_sponsorship: jobData.offer_visa_sponsorship,
         zip: jobData.zip,
         employment_type: jobData.employment_type || "full-time",
         is_apprenticeship: jobData.is_apprenticeship,
@@ -87,6 +87,12 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
             skill_id: skillId,
           })),
         },
+      },
+      include: {
+        industry_sectors: true,
+        techArea: true,
+        companies: true,
+        skills: true,
       },
     });
 
@@ -149,9 +155,8 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
-        occupation_code: jobData.occupation_code,
-        relocation_services_available: jobData.relocation_services,
-        offer_visa_sponsorship: jobData.visa_sponsorship,
+        relocation_services_available: jobData.relocation_services_available,
+        offer_visa_sponsorship: jobData.offer_visa_sponsorship,
         zip: jobData.zip,
         employment_type: jobData.employment_type || "full-time",
         is_apprenticeship: jobData.is_apprenticeship,
@@ -172,6 +177,12 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
             skill_id: skillId,
           })),
         },
+      },
+      include: {
+        industry_sectors: true,
+        techArea: true,
+        companies: true,
+        skills: true,
       },
     });
     return res;
@@ -232,6 +243,7 @@ export async function getMyJobListings() {
       },
       include: {
         industry_sectors: true,
+        techArea: true,
         companies: true,
         skills: true,
       },
@@ -262,7 +274,7 @@ export async function deleteJobListing(jobPostingId: string) {
       },
     });
     if (
-      job?.employer_id != Session.user.companyId &&
+      job?.company_id != Session.user.companyId &&
       !Session?.user.roles.includes(Role.ADMIN)
     ) {
       throw new Error("not an employer of this company");

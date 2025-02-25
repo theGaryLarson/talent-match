@@ -84,7 +84,7 @@ function SingleJobPost({
       dayPostedText = `Posted ${days} Days Ago`;
   }
   return (
-    <div className="flex justify-between px-2">
+    <div className="flex justify-between px-2 py-1">
       <Link
         className="flex items-center"
         href={`/services/joblistings/${job.job_posting_id}`}

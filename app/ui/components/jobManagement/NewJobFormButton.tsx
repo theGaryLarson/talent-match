@@ -1,20 +1,27 @@
 "use client";
 
-import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 import PillButton from "../PillButton";
 import { Add, Close } from "@mui/icons-material";
 import { useState } from "react";
-import { Box, Dialog, DialogTitle, Grid2 } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import NewJobForm from "./NewJobForm";
+import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 
 export default function NewJobFormButton({
-  job_posting,
+  onJobCreated,
 }: {
-  job_posting?: JobPostCreationDTO;
+  onJobCreated?: (job: JobPostCreationDTO) => void;
 }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleJobCreated = (newJob: JobPostCreationDTO) => {
+    if (onJobCreated) {
+      onJobCreated(newJob);
+    }
+    handleClose();
+  };
 
   return (
     <>
@@ -23,23 +30,25 @@ export default function NewJobFormButton({
       </PillButton>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle sx={{ px: 2, pt: 2 }}>
-          <Grid2 container sx={{ justifyContent: "flex-end" }}>
-            <PillButton
-              color="inherit"
-              aria-label="close"
-              startIcon={<Close />}
-              onClick={handleClose}
-              sx={{
-                color: "secondary.main",
-              }}
-            >
-              Close
-            </PillButton>
-          </Grid2>
+          New Job Form
+          <PillButton
+            color="inherit"
+            aria-label="close"
+            startIcon={<Close />}
+            onClick={handleClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 16,
+              color: "secondary.main",
+            }}
+          >
+            Close
+          </PillButton>
         </DialogTitle>
-        <Box sx={{ p: 2 }}>
-          <NewJobForm job_posting={job_posting} />
-        </Box>
+        <DialogContent>
+          <NewJobForm job_posting={undefined} onJobUpdated={handleJobCreated} />
+        </DialogContent>
       </Dialog>
     </>
   );

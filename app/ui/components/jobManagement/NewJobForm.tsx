@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PillButton from "../PillButton";
 import {
   ArrowCircleRightOutlined,
@@ -37,6 +37,18 @@ import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
 import SingleSelectCheckmarks from "../mui/SingleSelectFilter";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO";
+import dayjs from "dayjs";
+
+function getCompensationType(salary_range: string) {
+  const lowerCaseSalary = salary_range.toLowerCase();
+  if (lowerCaseSalary.includes("year") || lowerCaseSalary.includes("yr")) {
+    return "annual";
+  }
+  if (lowerCaseSalary.includes("hour") || lowerCaseSalary.includes("hr")) {
+    return "hourly";
+  }
+  return "";
+}
 
 const steps = [
   "Job Information",
@@ -47,10 +59,11 @@ const steps = [
 
 export default function NewJobForm({
   job_posting,
+  onJobUpdated,
 }: {
   job_posting?: JobPostCreationDTO;
+  onJobUpdated?: (job: JobPostCreationDTO) => void;
 }) {
-  // let job_posting_id;
   const [activeStep, setActiveStep] = useState(0);
 
   // Step 0: Job Information state
@@ -80,13 +93,59 @@ export default function NewJobForm({
 
   // Step 2: Qualifications state
   const [requiredSkills, setRequiredSkills] = useState<SkillDTO[]>([]);
+  // Need changes to DB to have
+  // - trainingRequirements
+  // - requiredCertifications
+  // - educationLevel
   const [trainingRequirements, setTrainingRequirements] = useState("");
   const [requiredCertifications, setRequiredCertifications] = useState("");
   const [educationLevel, setEducationLevel] = useState("");
 
-  if (job_posting) {
-    // Set states and job_posting_id
-  }
+  useEffect(() => {
+    if (job_posting) {
+      // Step 0: Job Information state
+      setJobTitle(job_posting.job_title);
+      setJobUrl(job_posting.job_post_url || "");
+      setJobDescription(job_posting.job_description);
+      setIndustry(job_posting.sector_id || "");
+      setTechArea(job_posting.techArea?.id || job_posting.tech_area_id || "");
+      setOccupationCode(job_posting.occupation_code || "");
+      setApplicationDeadline(
+        job_posting.unpublish_date ? dayjs(job_posting.unpublish_date) : null,
+      );
+
+      // Step 1: Employment Information state
+      setEmploymentType(job_posting.employment_type || "");
+      setPaidPosition(job_posting.is_paid || false);
+      setInternship(job_posting.is_internship || false);
+      setApprenticeship(job_posting.is_apprenticeship || false);
+      setLocation(job_posting.zip || "");
+      setRelocation(job_posting.relocation_services_available || false);
+      setVisaSponsor(job_posting.offer_visa_sponsorship || false);
+      setEmploymentDuration(job_posting.employment_duration || "");
+      setEmploymentIsPermanent(
+        job_posting.employment_duration ? "temporary" : "permanent",
+      );
+      setWorkEnvironment(job_posting.location);
+
+      // Parse salary range
+      if (job_posting.salary_range) {
+        const rangeParts = job_posting.salary_range.split("-");
+        if (rangeParts.length === 2) {
+          setStartingPayRange(rangeParts[0].trim());
+          setEndingPayRange(rangeParts[1].trim());
+        } else {
+          setStartingPayRange(job_posting.salary_range);
+        }
+      }
+      setCompensationType(getCompensationType(job_posting.salary_range));
+
+      // Step 2: Qualifications state
+      if (job_posting.skills) {
+        setRequiredSkills(job_posting.skills);
+      }
+    }
+  }, [job_posting]);
 
   const isStepValid = () => {
     if (activeStep === 0) {
@@ -119,7 +178,7 @@ export default function NewJobForm({
     return true;
   };
 
-  const handlePublish = async () => {
+  const handleSubmit = async () => {
     const jobListingData: JobPostCreationDTO = {
       job_title: jobTitle,
       job_post_url: jobUrl,
@@ -140,32 +199,52 @@ export default function NewJobForm({
         (compensationType === "hourly" ? " / hr" : " / year"),
       skillIds: requiredSkills.map((skill) => skill.skill_id),
       is_apprenticeship: apprenticeship,
-      relocation_services: relocation,
-      visa_sponsorship: visaSponsor,
+      relocation_services_available: relocation,
+      offer_visa_sponsorship: visaSponsor,
     };
-    try {
-      const response = await fetch("/api/joblistings/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(jobListingData),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to create job listing");
-        return;
-      } else {
-        const data = await response.json();
-        console.log(data);
+    if (job_posting) {
+      jobListingData.job_posting_id = job_posting?.job_posting_id;
+      try {
+        const response = await fetch("/api/joblistings/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jobListingData),
+        });
+        if (!response.ok) {
+          console.error("Failed to update job listing");
+          return;
+        }
+        const updatedJob = await response.json();
+        if (onJobUpdated) {
+          onJobUpdated(updatedJob);
+        }
+      } catch (error) {
+        console.error("Error updating job listing:", error);
       }
-    } catch (error) {
-      console.error("Error creating job listing:", error);
+    } else {
+      try {
+        const response = await fetch("/api/joblistings/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jobListingData),
+        });
+        if (!response.ok) {
+          console.error("Failed to create job listing");
+          return;
+        }
+        const createdJob = await response.json();
+        if (onJobUpdated) {
+          onJobUpdated(createdJob);
+        }
+      } catch (error) {
+        console.error("Error creating job listing:", error);
+      }
     }
-    console.log("Publishing job with data: ", jobListingData);
   };
-
-  const handleUpdate = async () => {};
 
   function handleNext() {
     if (isStepValid()) {
@@ -699,7 +778,7 @@ export default function NewJobForm({
             <PillButton
               color="secondary"
               startIcon={<FileUploadOutlined />}
-              onClick={job_posting ? handleUpdate : handlePublish}
+              onClick={handleSubmit}
               disabled={!isStepValid()}
             >
               {job_posting ? "Update" : "Publish"}
