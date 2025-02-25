@@ -216,26 +216,26 @@ export default function Event({ event, registered, showLink }: EventProps) {
         onClick={handleOpen}
         className="flex-col justify-start items-start inline-flex"
       >
-        {event.recordingLink !== null && event.recordingLink !== "" && (
+        {event.recordingLink && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
             <Link href={event.recordingLink!} target="_blank">
               View Recording
             </Link>
           </div>
         )}
-        {event.recordingLink == "" && showLink && event.joinMeetingLink && (
+        {!event.recordingLink && showLink && event.joinMeetingLink && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
             <Link href={event.joinMeetingLink!} target="_blank">
               Join Meeting
             </Link>
           </div>
         )}
-        {event.recordingLink == "" && showLink && event.registrationLink && (
+        {!event.recordingLink && showLink && event.registrationLink && (
           <div className="text-base font-normal leading-normal tracking-tight">
             Check email to Join Meeting
           </div>
         )}
-        {event.recordingLink == "" && !showLink && (
+        {!event.recordingLink && !showLink && (
           <div className="flex-col justify-start items-start flex">
             {reg ? (
               "Registered"
