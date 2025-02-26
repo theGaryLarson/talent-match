@@ -35,7 +35,7 @@ export default function Page() {
     useState<companies>(companyStartInfo);
   const [formData, setFormData] = useState<companies>(companyStartInfo);
   const [logoUrl, setLogoUrl] = useState<string>("");
-  const [initialImageUrl, setInitialImageUrl] = useState<string>("");
+  const [initialImageUrl, setInitialImageUrl] = useState<string>(""); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   useEffect(() => {
     fetch("/api/companies/getall")
