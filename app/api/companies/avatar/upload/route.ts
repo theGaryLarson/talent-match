@@ -3,6 +3,14 @@ import { uploadAvatar } from "@/app/lib/services/azureBlobService";
 import { auth } from "@/auth";
 import { Role } from "@/data/dtos/UserInfoDTO";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "5mb",
+    },
+  },
+};
+
 export async function POST(request: Request) {
   try {
     const session = await auth();
