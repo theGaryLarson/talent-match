@@ -116,9 +116,10 @@ export default async function Page() {
               <PillButton
                 color="inherit"
                 href="/services/joblistings"
+                startIcon={<SearchOutlined />}
                 sx={{ color: "secondary.main" }}
               >
-                Search Jobs
+                Search for Candidates
               </PillButton>
             </Grid2>
             <Grid2 size={1}>
