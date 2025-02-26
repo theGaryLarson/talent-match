@@ -6,13 +6,18 @@ import { industry_sectors } from "@prisma/client";
 import { Button } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { v4 as uuidv4 } from "uuid";
 //TODO: Add ability to add a company logo
 
 export default function Page() {
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
   const [logoUrl, setLogoUrl] = useState(""); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [initialImageUrl, setInitialImageUrl] = useState(""); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [companyId, setCompanyId] = useState("");
+
   useEffect(() => {
+    setCompanyId(uuidv4());
+
     fetch("/api/joblistings/sectors")
       .then((res) => {
         return res.json();
@@ -30,6 +35,7 @@ export default function Page() {
     ) as HTMLButtonElement;
     if (submitButton) submitButton.disabled = true;
     const companyData: CompanyAdminCreationDTO = {
+      companyId: companyId,
       companyName: formData.get("company_name") as string,
       aboutUs: formData.get("about_company") as string,
       companyEmail: formData.get("company_email") as string,
@@ -59,6 +65,7 @@ export default function Page() {
         form.reset();
         setLogoUrl("");
         setInitialImageUrl("");
+        setCompanyId(uuidv4()); // set to new uuid on success in case updating multiple companies at once without reloading page.
       } else {
         alert("Failed to create company");
       }
@@ -77,10 +84,10 @@ export default function Page() {
         <label htmlFor="avatarUpload">Upload Company Logo</label>
         <AvatarUpload
           id="avatarUpload"
-          fileTypeText="SVG, PNG or JPG"
-          accept=".png,.jpg,.jpeg,.svg"
-          maxSizeMB={1}
-          userId="user-id-placeholder" // Replace with actual user ID
+          fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
+          accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
+          maxSizeMB={5}
+          userId={companyId}
           onImageUpload={(url) => {
             console.log("Received URL in Page.tsx:", url); // Log the received URL
             // Handle the uploaded image URL
