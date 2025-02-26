@@ -1,6 +1,6 @@
 SELECT
 
-  --  j.jobseeker_id,
+    j.jobseeker_id,
     u.first_name,
     u.last_name,
 	u.email,
@@ -10,7 +10,8 @@ SELECT
 	j.assignedPool                AS 'Pool Type',
     p.pathway_title AS 'Pathway Title',
     j.created_at                  AS JobseekerCreatedAt,
-    j.updated_at                  AS JobseekerUpdatedAt
+    j.updated_at                  AS JobseekerUpdatedAt,
+    cm.createdAt                  AS EnrollmentDate
 
 
    

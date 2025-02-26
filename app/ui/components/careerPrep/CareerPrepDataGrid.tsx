@@ -1,34 +1,46 @@
 'use client'
-import { CareerPrepJobseekerCardViewDTO } from "@/app/lib/admin/careerPrep";
+import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
+import { PoolCategories } from "@/app/lib/poolAssignment";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 
-const VISIBLE_FIELDS = ['title', 'company', 'director', 'year', 'cinematicUniverse'];
-export default function CareerPrepDataGrid({clients}:{clients:CareerPrepJobseekerCardViewDTO[]}) {
-  const data = clients
-  // Otherwise filter will be applied on fields such as the hidden column id
-  // const columns = React.useMemo(
-  //   () => data.columns.filter((column) => VISIBLE_FIELDS.includes(column.field)),
-  //   [data.columns],
-  // );
-  console.log(clients)
-  //app date, name, status, email, pathway, education, resume, pool filter option by status
+export interface CareerPrepGridData {
+    jobseeker_id:string,
+    first_name: string,
+    last_name: string,
+    email: string,
+    careerPrepTrackRecommendation: string,
+    'CP Enrollment Status': CareerPrepStatus,
+    HighestEdLevel: string,
+    'Pool Type': PoolCategories,
+    'Pathway Title': string,
+    JobseekerCreatedAt: Date,
+    JobseekerUpdatedAt: Date,
+    EnrollmentDate: Date
+}
+export default function CareerPrepDataGrid({clients}:{clients:CareerPrepGridData[]}) {
    const columns: GridColDef[] = [
-      { field: "id", headerName: "ID", width: 70 },
-      { field: "firstName", headerName: "fname", width: 70 },
-      { field: "lastName", headerName: "lname", width: 70 },
-      {field:"careerPrepEnrollmentStatus", headerName:"status", width:70},
-      { field: "assignedPool", headerName: "pool", width: 70 },
+      { field: "first_name", headerName: "First Name" },
+      { field: "last_name", headerName: "Last Name"},
+      {field:"email", headerName:"email", width:200},
+      { field: "careerPrepTrackRecommendation", headerName: "track"},
+      {field: "CP Enrollment Status", headerName: "CP Enrollment Status", width:160},
+      { field: "HighestEdLevel", headerName: "HighestEdLevel", width:160 },
+      { field: 'Pool Type', headerName: 'Pool Type'},
+      { field:'Pathway Title', headerName:'Pathway Title'},
+      { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
+      { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
+      { field: "EnrollmentDate", headerName: "EnrollmentDate"}
     ]
 
   return (
-    <Box sx={{ height: 400, width: 1 }}>
+    <Box>
       <DataGrid
         rows={clients}
-        getRowId={(row:CareerPrepJobseekerCardViewDTO)=>(row.jobseekerId)}
+        getRowId={(row:CareerPrepGridData)=>(row.jobseeker_id)}
         disableColumnFilter
-        disableColumnSelector
-        disableDensitySelector
+        //disableColumnSelector
+        //disableDensitySelector
         columns={columns}
         slots={{ toolbar: GridToolbar }}
         slotProps={{
@@ -36,6 +48,11 @@ export default function CareerPrepDataGrid({clients}:{clients:CareerPrepJobseeke
             showQuickFilter: true,
           },
         }}
+        initialState={{
+            sorting: {
+              sortModel: [{ field: "EnrollmentDate", sort: "desc" }], // Default sort
+            },
+          }}
       />
     </Box>
   );
