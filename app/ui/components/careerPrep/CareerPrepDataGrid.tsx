@@ -3,6 +3,7 @@ import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import { PoolCategories } from "@/app/lib/poolAssignment";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import Link from "next/link";
 
 export interface CareerPrepGridData {
     jobseeker_id:string,
@@ -20,6 +21,16 @@ export interface CareerPrepGridData {
 }
 export default function CareerPrepDataGrid({clients}:{clients:CareerPrepGridData[]}) {
    const columns: GridColDef[] = [
+    {
+        field: "actions",
+        sortable: false,
+        headerName: "Actions",
+        renderCell: (params) => (
+          <Link href={`/career-prep/${params.id}`} className="LINK"       >
+            View Details
+          </Link>
+        ),
+      },
       { field: "first_name", headerName: "First Name" },
       { field: "last_name", headerName: "Last Name"},
       {field:"email", headerName:"email", width:200},
@@ -30,7 +41,8 @@ export default function CareerPrepDataGrid({clients}:{clients:CareerPrepGridData
       { field:'Pathway Title', headerName:'Pathway Title'},
       { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
       { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
-      { field: "EnrollmentDate", headerName: "EnrollmentDate"}
+      { field: "EnrollmentDate", headerName: "EnrollmentDate"},
+
     ]
 
   return (
