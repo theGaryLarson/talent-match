@@ -166,9 +166,6 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
   }
 };
 
-
-
-
 export const getCareerPrepStudentsCardViewByCaseManagerSession =
   async (): Promise<CareerPrepJobseekerCardViewDTO[] | null> => {
     try {
