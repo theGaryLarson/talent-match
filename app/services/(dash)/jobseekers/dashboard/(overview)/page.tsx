@@ -93,7 +93,7 @@ export default async function Page() {
       />
       <Applications jobs={slicedAppliedJobs} />
       <EventsList
-        headerText={"Registered Events"}
+        headerText={"My Events"}
         showOnlyRegisteredEvents={true}
         showMeetingLinks={true}
       ></EventsList>

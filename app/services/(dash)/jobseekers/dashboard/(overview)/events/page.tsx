@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <Box sx={{ mx: { xs: 3, md: 6.25 }, flex: "flex-1" }}>
       <EventsList
-        headerText={"Registered Events"}
+        headerText={"My Events"}
         showOnlyRegisteredEvents={true}
         showMeetingLinks={true}
       ></EventsList>
