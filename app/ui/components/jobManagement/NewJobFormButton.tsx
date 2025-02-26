@@ -3,15 +3,22 @@
 import PillButton from "../PillButton";
 import { Add, Close } from "@mui/icons-material";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { ButtonProps, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import NewJobForm from "./NewJobForm";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 
+interface NewJobFormButtonProps extends ButtonProps {
+  onJobCreated?: (job: JobPostCreationDTO) => void;
+}
+
 export default function NewJobFormButton({
   onJobCreated,
-}: {
-  onJobCreated?: (job: JobPostCreationDTO) => void;
-}) {
+  onClick,
+  children = "Post a New Job",
+  color = "secondary",
+  startIcon = <Add />,
+  ...buttonProps
+}: NewJobFormButtonProps) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -25,8 +32,16 @@ export default function NewJobFormButton({
 
   return (
     <>
-      <PillButton color="secondary" startIcon={<Add />} onClick={handleOpen}>
-        Post a New Job
+      <PillButton
+        color={color}
+        startIcon={startIcon}
+        onClick={(e) => {
+          if (onClick) onClick(e);
+          setOpen(true);
+        }}
+        {...buttonProps}
+      >
+        {children}
       </PillButton>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle sx={{ px: 2, pt: 2 }}>
