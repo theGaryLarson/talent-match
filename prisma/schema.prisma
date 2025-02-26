@@ -181,14 +181,14 @@ model companies {
   industry_sector_id     String?                @db.UniqueIdentifier
   company_name           String                 @unique @db.VarChar(255)
   company_logo_url       String?                @db.VarChar(255)
-  about_us               String                 @db.VarChar(255)
+  about_us               String                 @db.VarChar(2083)
   company_email          String                 @db.VarChar(255)
   year_founded           Int
   company_website_url    String?                @db.VarChar(255)
   company_video_url      String?                @db.VarChar(255)
   company_phone          String?                @db.VarChar(16) // TODO: default phoneCountryCode to 'United States +1 in page.tsx'
-  company_mission        String?                @db.VarChar(255)
-  company_vision         String?                @db.VarChar(255)
+  company_mission        String?                @db.VarChar(2083)
+  company_vision         String?                @db.VarChar(2083)
   size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
   estimated_annual_hires Int?
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
@@ -318,7 +318,7 @@ model educators {
 /////////////////////// Partner Training Provider Additions //////////////
 
 model TraineeDetail {
-  jobseekerId              String                     @id(clustered: false, map: "traineeDetail_PRIMARY") @db.UniqueIdentifier
+  jobseekerEdId            String                     @id(clustered: false, map: "traineeDetail_PRIMARY") @db.UniqueIdentifier
   isVerified               Boolean                    @default(false, map: "DF_trainee_isVerified") @db.Bit
   firstName                String                     @db.VarChar(45)
   lastName                 String                     @db.VarChar(45)
@@ -327,7 +327,7 @@ model TraineeDetail {
   startDate                DateTime                   @db.Date
   exitDate                 DateTime                   @db.Date
   nonCompletionReason      String?                    @db.VarChar(45)
-  jobseekerEd              jobseekers_education       @relation(fields: [jobseekerId], references: [id], onUpdate: NoAction, onDelete: Cascade, map: "fk_traineeDetail_jobseekers_education1")
+  jobseekerEd              jobseekers_education       @relation(fields: [jobseekerEdId], references: [id], onUpdate: NoAction, onDelete: Cascade, map: "fk_traineeDetail_jobseekers_education1")
   OtherPriorityPopulations OtherPriorityPopulations[] @relation("OtherPriorityPopulations")
 }
 
