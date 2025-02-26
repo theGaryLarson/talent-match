@@ -4,6 +4,9 @@ import { PrismaClient } from "@prisma/client";
 import { unstable_rethrow } from "next/navigation";
 
 const prisma = new PrismaClient();
+
+export const PastEventGraceDuration = 1000 * 60 * 60 * 48; // 48 hours
+
 export enum EventTypeEnum {
   Workshop = "Workshop",
   General = "General",
@@ -17,6 +20,7 @@ export type CreateEventData = {
   registrationLink: string;
   duration: number;
   joinMeetingLink: string;
+  recordingLink?: string;
   // linkTitle: string;
   // blurb: string;
   eventType: EventTypeEnum; // Consider using a union type for stricter control, e.g., "Webinar" | "Workshop" | "Seminar"
@@ -51,6 +55,7 @@ export async function createEvent(data: CreateEventData): Promise<{
         date: data.date,
         registrationLink: data.registrationLink,
         joinMeetingLink: data.joinMeetingLink,
+        recordingLink: data.recordingLink,
         // blurb: data.blurb,
         eventType: data.eventType,
         createdById: session.user.id,
@@ -95,7 +100,7 @@ export async function getAllEvents(excludePast: boolean) {
     );
     if (excludePast) {
       res = res.filter(
-        (event) => event.date.getTime() > Date.now() - 1000 * 60 * 60 * 48,
+        (event) => event.date.getTime() > Date.now() - PastEventGraceDuration,
       );
     }
     return {
@@ -130,7 +135,7 @@ export async function getRegisteredEvents(excludePast: boolean) {
     if (excludePast) {
       res = res.filter(
         (event) =>
-          event.event.date.getTime() > Date.now() - 1000 * 60 * 60 * 48,
+          event.event.date.getTime() > Date.now() - PastEventGraceDuration,
       );
     }
     return res;
