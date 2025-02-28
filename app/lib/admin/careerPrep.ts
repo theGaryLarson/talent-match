@@ -135,7 +135,6 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
     const data = await prisma.careerPrepAssessment.findMany({
       select: selectCareerPrepStudentCardView,
     });
-    devLog("career prep card view", data);
     // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
     const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
       (item) => ({
@@ -166,6 +165,7 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
     prisma.$disconnect();
   }
 };
+
 export const getCareerPrepStudentsCardViewByCaseManagerSession =
   async (): Promise<CareerPrepJobseekerCardViewDTO[] | null> => {
     try {
