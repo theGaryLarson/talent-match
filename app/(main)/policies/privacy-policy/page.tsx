@@ -563,7 +563,7 @@ export default function PrivacyPolicyPage() {
             Ritu@computingforall.org
           </Link>{" "}
           or write us at:
-           <br />
+          <br />
           Computing for All
           <br />
           1311 108th Ave NE

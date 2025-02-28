@@ -38,7 +38,13 @@ export default function DataSharingAgreementPage() {
           Introduction
         </Typography>
         <Typography>
-          This User Data Sharing Agreement ("Agreement") outlines the terms under which Washington Tech Workforce Coalition, a program of Computing for All, ("we," "us," or "our") collects, uses, shares, and protects user data. By using our services, you ("User") agree to the terms of this Agreement, which supplements our Privacy Policy and Terms and Conditions of Use. In the event of any conflict, this Agreement will govern the data-sharing practices.
+          This User Data Sharing Agreement ("Agreement") outlines the terms
+          under which Washington Tech Workforce Coalition, a program of
+          Computing for All, ("we," "us," or "our") collects, uses, shares, and
+          protects user data. By using our services, you ("User") agree to the
+          terms of this Agreement, which supplements our Privacy Policy and
+          Terms and Conditions of Use. In the event of any conflict, this
+          Agreement will govern the data-sharing practices.
         </Typography>
 
         {/* Purpose of Data Sharing */}
@@ -51,7 +57,8 @@ export default function DataSharingAgreementPage() {
           Purpose of Data Sharing
         </Typography>
         <Typography>
-          The primary purpose of collecting and sharing user data is to enhance the functionality of our website, including but not limited to:
+          The primary purpose of collecting and sharing user data is to enhance
+          the functionality of our website, including but not limited to:
         </Typography>
         <List
           disablePadding
@@ -91,7 +98,7 @@ export default function DataSharingAgreementPage() {
           }}
         >
           <ListItem disablePadding>
-            <ListItemText primary='Personal Identifiable Information (PII): Name, email address, phone number, location, and professional details.' />
+            <ListItemText primary="Personal Identifiable Information (PII): Name, email address, phone number, location, and professional details." />
           </ListItem>
           <ListItem disablePadding>
             <ListItemText primary="Usage Data: Interaction with our website, search queries, and application activity." />
@@ -171,7 +178,11 @@ export default function DataSharingAgreementPage() {
           Amendments
         </Typography>
         <Typography>
-          We reserve the right to amend this Agreement from time to time to reflect changes in our practices, legal obligations, or services. Users will be notified of material changes through our website or via email, and continued use of the site constitutes acceptance of the updated Agreement.
+          We reserve the right to amend this Agreement from time to time to
+          reflect changes in our practices, legal obligations, or services.
+          Users will be notified of material changes through our website or via
+          email, and continued use of the site constitutes acceptance of the
+          updated Agreement.
         </Typography>
 
         {/* Contact Us */}
@@ -184,9 +195,12 @@ export default function DataSharingAgreementPage() {
           Contact Us
         </Typography>
         <Typography>
-          To ask questions or comment about this Agreement and our data-sharing practices, contact us at:
+          To ask questions or comment about this Agreement and our data-sharing
+          practices, contact us at:
         </Typography>
-        <Link href="mailto:Ritu@computingforall.org">Ritu@computingforall.org</Link>
+        <Link href="mailto:Ritu@computingforall.org">
+          Ritu@computingforall.org
+        </Link>
         <Typography>Computing for All</Typography>
         <Typography>1311 108th Ave NE, Bellevue, WA 98004</Typography>
       </Box>
