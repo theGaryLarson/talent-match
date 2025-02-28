@@ -1,11 +1,12 @@
 "use client";
 import Button from "@mui/material/Button";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SelfAssignCaseButton(props: { jobseekerId: string }) {
-  const router = useRouter();
+  const [claimed, setClaimed] = useState(false);
   const handleClick = async () => {
     try {
+      setClaimed(true);
       const response = await fetch("/api/admin/career-prep/self-assign-case", {
         method: "POST",
         headers: {
@@ -15,14 +16,12 @@ export default function SelfAssignCaseButton(props: { jobseekerId: string }) {
       });
 
       if (!response.ok) {
-        console.error("Failed to self-assign case:", await response.text());
-      } else {
-        console.log("Successfully self-assigned case");
-        router.refresh();
+        alert("Failed to self-assign case:"+ await response.text());
+        setClaimed(false);
       }
     } catch (error) {
       console.error("Error while self-assigning case:", error);
     }
   };
-  return <Button onClick={handleClick}>Claim</Button>;
+  return <Button onClick={handleClick} disabled={claimed}>{claimed?"Claimed":"Claim"}</Button>;
 }

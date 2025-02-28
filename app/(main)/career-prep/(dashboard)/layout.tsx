@@ -24,7 +24,7 @@ export default async function layout({
           className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
         >
           <PersonOutlineOutlinedIcon />
-          Home
+          Candidates
         </Link>
         <Link
           href="/career-prep/my-case-load"

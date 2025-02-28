@@ -11,6 +11,7 @@ import { devLog } from "@/app/lib/utils";
 import TransactionClient = Prisma.TransactionClient;
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { JobStatus } from "../jobseekerJobTracking";
+import { CareerPrepGridData } from "@/app/ui/components/careerPrep/CareerPrepDataGrid";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -221,7 +222,7 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
  * @return {Promise<CareerPrepJobseekerCardViewDTO[]>} A Promise resolving to an array of CareerPrepJobseekerCardViewDTO objects representing unmanaged Career Prep students.
  */
 export const getUnManagedCareerPrepStudents = async (): Promise<
-  CareerPrepJobseekerCardViewDTO[]
+CareerPrepGridData[]
 > => {
   const assessmentsWithoutCaseMgmt = await prisma.careerPrepAssessment.findMany(
     {
@@ -233,22 +234,28 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
       },
     },
   );
-  const transformedData: CareerPrepJobseekerCardViewDTO[] =
+  const transformedData: CareerPrepGridData[] =
     assessmentsWithoutCaseMgmt.map((item) => ({
-      jobseekerId: item.jobseekerId,
-      firstName: item.Jobseeker?.users?.first_name || "",
-      lastName: item.Jobseeker?.users?.last_name || "",
+      jobseeker_id: item.jobseekerId,
+      first_name: item.Jobseeker?.users?.first_name || "",
+      HighestEdLevel:item.Jobseeker.highest_level_of_study_completed??"Unknown",
+      last_name: item.Jobseeker?.users?.last_name || "",
+      "Pathway Title":item.Jobseeker.pathways?.pathway_title??'None',
+      email:item.Jobseeker.users.email,
+      EnrollmentDate:item.CaseMgmt?.createdAt??new Date(),
+      JobseekerUpdatedAt: item.Jobseeker?.updatedAt??new Date('1/1/1979'),
+      JobseekerCreatedAt:item.Jobseeker?.createdAt,
       pronouns: item.pronouns,
-      recommendedCareerPrepTrack: item.Jobseeker
+      careerPrepTrackRecommendation: item.Jobseeker
         .careerPrepTrackRecommendation as CareerPrepTrack,
       assignedCareerPrepTrack: item.CaseMgmt
         ?.AssignedCareerPrepTrack as CareerPrepTrack,
       careerPrepAssessmentDate: item.assessmentDate,
-      careerPrepEnrollmentStatus: item.CaseMgmt
+      "CP Enrollment Status": item.CaseMgmt
         ?.prepEnrollmentStatus as CareerPrepStatus,
       careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
       expectedEduCompletion: item.expectedEduCompletion as TimeUntilCompletion,
-      assignedPool:
+      "Pool Type":
         (item.Jobseeker?.assignedPool as PoolCategories) || PoolCategories.None,
     }));
   return transformedData;
@@ -414,18 +421,28 @@ const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
         prepEnrollmentStatus: true,
         prepExpectedEndDate: true,
         AssignedCareerPrepTrack: true,
+        createdAt:true
       },
     },
     Jobseeker: {
       select: {
         assignedPool: true,
         careerPrepTrackRecommendation: true,
+        highest_level_of_study_completed:true,
+        createdAt:true,
+        updatedAt:true,
         users: {
           select: {
             first_name: true,
             last_name: true,
+            email:true
           },
         },
+        pathways:{
+          select:{
+            pathway_title:true
+          }
+        }
       },
     },
   };
