@@ -1,4 +1,3 @@
-import EmployerNameTitleTag from "@/app/ui/components/employerdashboard/EmployerNameTitleTag";
 import ScoreCard from "@/app/ui/components/ScoreCard";
 import DeletionFlag from "@/app/ui/components/DeletionFlag";
 import { getCompanyById, getEmployerById } from "@/app/lib/prisma";
@@ -6,22 +5,26 @@ import EmployerTeamMembers from "@/app/ui/components/employerdashboard/EmployerT
 import { auth } from "@/auth";
 import EmployerRecentJobPosts from "@/app/ui/components/employerdashboard/EmployerRecentJobPosts";
 import Link from "next/link";
-import { Box, Button, Card, Grid2, Stack, Typography } from "@mui/material";
+import { Box, Grid2, Typography } from "@mui/material";
 import NewJobFormButton from "@/app/ui/components/jobManagement/NewJobFormButton";
 import PillButton from "@/app/ui/components/PillButton";
 import { SearchOutlined } from "@mui/icons-material";
-import JobListingsTable from "@/app/ui/components/jobManagement/JobListingsTable";
 import { getMyJobListings } from "@/app/lib/joblistings";
-//employer dashboard
+
 export const metadata = {
   title: "My Dashboard",
 };
+
 export default async function Page() {
   const session = await auth();
-
   const proInfo = await getEmployerById(session?.user.employerId ?? "");
   const company = await getCompanyById(proInfo?.company_id ?? "");
   const jobs = (await getMyJobListings()).splice(0, 3);
+  const preScreened = jobs.reduce(
+    (total, job) => total + job.jobApplications.length,
+    0,
+  );
+  console.log(jobs);
   if (!proInfo || company == undefined) {
     return (
       <div>
@@ -56,22 +59,23 @@ export default async function Page() {
           <Grid2
             container
             size={"grow"}
-            spacing={4.5}
+            columnSpacing={4.5}
+            rowSpacing={2}
             sx={{ justifyContent: "center", mb: 7 }}
           >
-            <div>
-              <NewJobFormButton size="large" />
-            </div>
-            <div>
-              <PillButton
-                size="large"
-                color="secondary"
-                startIcon={<SearchOutlined />}
-                href="/services/talent-search"
-              >
-                Search for Candidates
-              </PillButton>
-            </div>
+            <NewJobFormButton
+              size="large"
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            />
+            <PillButton
+              size="large"
+              color="secondary"
+              startIcon={<SearchOutlined />}
+              href="/services/talent-search"
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            >
+              Search for Candidates
+            </PillButton>
           </Grid2>
           <Grid2 container spacing={2} sx={{ justifyContent: "center", mb: 7 }}>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
@@ -84,10 +88,7 @@ export default async function Page() {
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
               <Link href="/services/employers/dashboard/savedcandidates">
-                <ScoreCard
-                  title="Pre-screened candidates"
-                  val={proInfo.BookmarkedJobseeker.length}
-                />
+                <ScoreCard title="Pre-screened candidates" val={preScreened} />
               </Link>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
@@ -111,7 +112,7 @@ export default async function Page() {
                 color="secondary"
                 sx={{ alignSelf: "center" }}
               >
-                Recommended pre-screened candidate
+                Recommended pre-screened candidates
               </Typography>
               <PillButton
                 color="inherit"
@@ -123,7 +124,10 @@ export default async function Page() {
               </PillButton>
             </Grid2>
             <Grid2 size={1}>
-              <JobListingsTable jobs={jobs} />
+              <EmployerRecentJobPosts
+                jobs={jobs}
+                bookmarkedJobseekers={proInfo.BookmarkedJobseeker}
+              />
             </Grid2>
             <Grid2 size={1} sx={{ display: { xs: "flex", md: "none" } }}>
               <EmployerTeamMembers companyid={company.company_id} />

@@ -237,7 +237,7 @@ export async function getMyJobListings() {
     );
   }
   try {
-    const results = prisma.job_postings.findMany({
+    const results = await prisma.job_postings.findMany({
       where: {
         employer_id: Session?.user.employerId,
       },
@@ -246,6 +246,25 @@ export async function getMyJobListings() {
         techArea: true,
         companies: true,
         skills: true,
+        jobApplications: {
+          where: {
+            // TODO(): Change back to Screened after testing
+            jobStatus: JobStatus.Applied,
+          },
+          include: {
+            Jobseekers: {
+              include: {
+                users: true,
+                pathways: true,
+                jobseeker_has_skills: {
+                  include: {
+                    skills: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     return results;

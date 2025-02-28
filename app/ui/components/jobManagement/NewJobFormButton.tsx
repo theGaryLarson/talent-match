@@ -20,7 +20,6 @@ export default function NewJobFormButton({
   ...buttonProps
 }: NewJobFormButtonProps) {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleJobCreated = (newJob: JobPostCreationDTO) => {

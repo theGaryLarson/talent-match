@@ -7,6 +7,24 @@ export type JobPostCreationDTO = {
   techArea?: { id: string; title: string };
   sector_id?: string;
   company_id?: string;
+  jobApplications: {
+    jobseekerId: string;
+    jobStatus: string;
+    Jobseekers: {
+      pathways: {
+        pathway_title: string;
+      };
+      users: {
+        first_name: string;
+        last_name: string;
+        photo_url: string;
+      };
+      intro_headline: string;
+      jobseeker_has_skills?: {
+        skills: SkillDTO;
+      }[];
+    };
+  }[];
   job_title: string;
   job_description: string;
   is_internship?: boolean;

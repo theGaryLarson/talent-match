@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, ReactNode } from "react";
 import { Bookmark, BookmarkBorderOutlined } from "@mui/icons-material";
 import PillButton from "./PillButton";
 
@@ -7,14 +7,25 @@ interface BookmarkProps {
   bookmarked: boolean;
   addUrl: string;
   removeUrl: string;
+  bookmarkedText?: string;
+  unbookmarkedText?: string;
+  bookmarkedIcon?: ReactNode;
+  unbookmarkedIcon?: ReactNode;
+  onBookmarkChange?: (isBookmarked: boolean) => void;
 }
 
 function BookmarkWithTextComponent({
   bookmarked,
   addUrl,
   removeUrl,
+  bookmarkedText = "Remove Job",
+  unbookmarkedText = "Save Job",
+  bookmarkedIcon = <Bookmark />,
+  unbookmarkedIcon = <BookmarkBorderOutlined />,
+  onBookmarkChange,
 }: BookmarkProps) {
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
+
   async function toggleBookmark() {
     const initialState = isBookmarked;
     setIsBookmarked(!isBookmarked);
@@ -30,7 +41,9 @@ function BookmarkWithTextComponent({
         body: JSON.stringify({}),
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        onBookmarkChange?.(!bookmarked);
+      } else {
         setIsBookmarked(initialState);
       }
     } catch (error) {
@@ -41,21 +54,21 @@ function BookmarkWithTextComponent({
 
   return isBookmarked ? (
     <PillButton
-      startIcon={<Bookmark />}
+      startIcon={bookmarkedIcon}
       onClick={toggleBookmark}
       color="inherit"
       sx={{ color: "secondary.main" }}
     >
-      Remove Job
+      {bookmarkedText}
     </PillButton>
   ) : (
     <PillButton
-      startIcon={<BookmarkBorderOutlined />}
+      startIcon={unbookmarkedIcon}
       onClick={toggleBookmark}
       color="inherit"
       sx={{ color: "secondary.main" }}
     >
-      Save Job
+      {unbookmarkedText}
     </PillButton>
   );
 }
