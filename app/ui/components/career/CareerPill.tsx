@@ -8,7 +8,7 @@ export default function CareerPill({
   href,
 }: {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   img: string;
   href: string;
 }) {
