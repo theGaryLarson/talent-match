@@ -1,6 +1,4 @@
-import { NextResponse } from "next/server"; // For Next.js App Router
 import { readFile } from "fs/promises";
-import { join } from "path";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
