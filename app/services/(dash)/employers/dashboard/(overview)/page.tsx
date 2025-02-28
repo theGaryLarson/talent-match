@@ -19,12 +19,16 @@ export default async function Page() {
   const session = await auth();
   const proInfo = await getEmployerById(session?.user.employerId ?? "");
   const company = await getCompanyById(proInfo?.company_id ?? "");
-  const jobs = (await getMyJobListings()).splice(0, 3);
+  const jobs = await getMyJobListings();
+  const activeJobs = jobs.reduce(
+    (total, job) => total + (job.unpublish_date > new Date() ? 1 : 0),
+    0,
+  );
   const preScreened = jobs.reduce(
     (total, job) => total + job.jobApplications.length,
     0,
   );
-  console.log(jobs);
+
   if (!proInfo || company == undefined) {
     return (
       <div>
@@ -79,11 +83,8 @@ export default async function Page() {
           </Grid2>
           <Grid2 container spacing={2} sx={{ justifyContent: "center", mb: 7 }}>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
-              <Link href="/services/employers/dashboard/myjobposts">
-                <ScoreCard
-                  title="Your active jobs"
-                  val={proInfo.job_postings.length}
-                />
+              <Link href="/services/employers/dashboard/jobs">
+                <ScoreCard title="Your active jobs" val={activeJobs} />
               </Link>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
@@ -125,7 +126,7 @@ export default async function Page() {
             </Grid2>
             <Grid2 size={1}>
               <EmployerRecentJobPosts
-                jobs={jobs}
+                jobs={jobs.splice(0, 3)}
                 bookmarkedJobseekers={proInfo.BookmarkedJobseeker}
               />
             </Grid2>
