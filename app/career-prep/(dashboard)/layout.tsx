@@ -244,36 +244,7 @@ export default function layout({ children }: { children: React.ReactNode }){
           >
             {children}
           </Box>
-          <Grid2
-            gap={2}
-            container
-            sx={{
-              position: "relative",
-              alignItems: "center",
-              justifyContent: "space-between",
-              px: 5,
-              py: 2.5,
-              zIndex: 9000,
-              bgcolor: "neutral.100",
-            }}
-          >
-            <Stack direction={{ xs: "column", sm: "row" }} gap={2}>
-              <Link href={"/policies/terms-of-service"}>Terms of Service</Link>
-              {/*<Link href={'/underconstruction'}>Privacy Policy</Link>
-              <Link href={'/underconstruction'}>Cookie Settings</Link>*/}
-            </Stack>
-            <div>
-              <p>
-                Follow Us{" "}
-                <Link
-                  target="_blank"
-                  href="https://www.linkedin.com/company/washington-tech-workforce-coalition"
-                >
-                  <LinkedIn />
-                </Link>
-              </p>
-            </div>
-          </Grid2>
+
         </div>
       );
 }
