@@ -7,7 +7,7 @@ export const metadata = {
 export default async function Page() {
   const clients = (await getUnManagedCareerPrepStudents());
   return (
-    <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
+    <main className="space-y-3s">
       <h1 className="text-2xl font-medium">New Students</h1>
 
       {/* {clients?.map((client) => {
@@ -19,7 +19,9 @@ export default async function Page() {
           />
         );
       })} */}
+      <div className="max-w-10/12">
       <NewCasesDataGrid clients={clients}/>
+      </div>
     </main>
   );
 }
