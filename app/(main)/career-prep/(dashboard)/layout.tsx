@@ -8,83 +8,6 @@ import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
-export default function layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return(
-    <SideBar>{children}</SideBar>
-  )
-
-  return (
-    <div className="flex max-w-full">
-      <div className="flex min-w-[150px] flex-col text-primary-main capitalize">
-        <Link
-          href="/career-prep"
-          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-        >
-          <PersonOutlineOutlinedIcon />
-          Candidates
-        </Link>
-        <Link
-          href="/career-prep/my-case-load"
-          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-        >
-          <CasesOutlinedIcon />
-          My Case Load
-        </Link>
-        <Link
-          href="/career-prep/new-cases"
-          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-        >
-          <CreateNewFolderOutlinedIcon />
-          Unassigned Cases
-        </Link>
-
-        <Link
-          href="/career-prep/placement-tracking"
-          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-        >
-          <TableChartOutlinedIcon />
-          Application Status
-        </Link>
-        <Link
-          href="/career-prep/postajob"
-          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-        >
-          <PostAddOutlinedIcon />
-          Post a Job
-        </Link>
-        <Link
-          href="/career-prep/updatejob"
-          className="inline-flex items-center justify-start gap-[5px]  p-2 hover:bg-gray-200"
-        >
-          <UpdateOutlinedIcon />
-          Update a job
-        </Link>
-        <Link
-          href="/career-prep/events"
-          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-        >
-          <EditCalendarIcon />
-          Events
-        </Link>
-
-        {/*
-        <Link
-          href="/career-prep"
-          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
-        >
-          <BookmarkIcon width={24}/>
-          Unassigned Cases
-        </Link> */}
-      </div>
-      {children}
-    </div>
-  );
-}
-
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
@@ -116,6 +39,7 @@ import { usePathname } from "next/navigation";
 import PillButton from "@/app/ui/components/PillButton";
 import Header from "@/app/ui/Header";
 import Footer from "@/app/ui/Footer";
+import AccountMenu from "@/app/ui/components/mui/AccountMenu";
 
 const drawerWidth = 260;
 
@@ -214,8 +138,48 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
     </>
   );
 };
-
-function SideBar({ children }: { children: React.ReactNode }){
+const DashboardHeader = ({handleDrawerToggle}:{handleDrawerToggle:() => void})=>(
+  <AppBar
+            position="sticky"
+            variant="outlined"
+            color="inherit"
+            sx={{ zIndex: "10000", height: "76px", justifyContent: "center" }}
+          >
+            <Toolbar sx={{ justifyContent: "space-between", zIndex: "20000" }}>
+              <Link href="/">
+                <span className="sr-only">Tech Workforce Coalition</span>
+                <Image
+                  src="/images/TWC_75x50_2024.svg"
+                  alt="Tech Workforce Coalition"
+                  width={75}
+                  height={50}
+                />
+              </Link>
+              
+              <Stack direction={"row"}>
+                {/*<IconButton
+                  color="inherit"
+                  aria-label="open notifications"
+                  edge="start"
+                  sx={{ mr: { xs: 2, md: 4 } }}
+                >
+                  <NotificationsOutlined />
+                </IconButton>*/}
+                <AccountMenu/>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                  sx={{ display:"block", ml:{ xs: 2, md: 4 }}}
+                >
+                  <Menu />
+                </IconButton>
+              </Stack>
+            </Toolbar>
+          </AppBar>
+)
+export default function layout({ children }: { children: React.ReactNode }){
   const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -251,59 +215,8 @@ function SideBar({ children }: { children: React.ReactNode }){
             flexDirection: "column",
           }}
         >
-          <AppBar
-            position="sticky"
-            variant="outlined"
-            color="inherit"
-            sx={{ zIndex: "10000", height: "76px", justifyContent: "center" }}
-          >
-            <Toolbar sx={{ justifyContent: "space-between", zIndex: "20000" }}>
-              <Link href="/">
-                <span className="sr-only">Tech Workforce Coalition</span>
-                <Image
-                  src="/images/TWC_75x50_2024.svg"
-                  alt="Tech Workforce Coalition"
-                  width={75}
-                  height={50}
-                />
-              </Link>
-              <Stack direction={"row"}>
-                {/*<IconButton
-                  color="inherit"
-                  aria-label="open notifications"
-                  edge="start"
-                  sx={{ mr: { xs: 2, md: 4 } }}
-                >
-                  <NotificationsOutlined />
-                </IconButton>*/}
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  edge="start"
-                  onClick={handleDrawerToggle}
-                  sx={{ display: { xs: "block", md: "none" } }}
-                >
-                  <Menu />
-                </IconButton>
-              </Stack>
-            </Toolbar>
-          </AppBar>
-          <Grid2
-            sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}
-          >
-            <Drawer
-              elevation={0}
-              variant="permanent"
-              anchor="right"
-              sx={{
-                display: { xs: "none", md: "block" },
-                width: drawerWidth,
-                "& .MuiDrawer-paper": { border: 0, width: drawerWidth },
-              }}
-            >
-              <CareerNavDrawer session={session} />
-            </Drawer>
-            <Drawer
+          <DashboardHeader handleDrawerToggle={handleDrawerToggle}/>
+          <Drawer
               variant="temporary"
               anchor="right"
               open={mobileOpen}
@@ -321,13 +234,12 @@ function SideBar({ children }: { children: React.ReactNode }){
             >
               <CareerNavDrawer session={session} />
             </Drawer>
-          </Grid2>
           <Box
             component="main"
             sx={{
               mt: "25px",
               flexGrow: 1,
-              width: { md: `calc(100% - ${drawerWidth}px)` },
+              width: { md: `calc(100%)` },
             }}
           >
             {children}

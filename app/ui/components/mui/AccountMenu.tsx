@@ -27,6 +27,9 @@ export default function AccountMenu() {
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
+    if(open){
+      handleClose()
+    }
   };
   const handleClose = () => {
     setAnchorEl(null);
