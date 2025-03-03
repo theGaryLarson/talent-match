@@ -26,16 +26,16 @@ export default async function EmployerPageBanner() {
           <div className="relative h-[33.21px] w-px" />
         </div>
         <div className="gap-4 flex flex-row items-start justify-start">
-        <RoundedButton
-          content={"Search Talent"}
-          link={"/services/talent-search"}
-          invertColor={false}
-        />
-        <RoundedButton
-          content={"Post Jobs"}
-          link={"mailto:susanne.mata@computingforall.org"}
-          invertColor={false}
-        />
+          <RoundedButton
+            content={"Search Talent"}
+            link={"/services/talent-search"}
+            invertColor={false}
+          />
+          <RoundedButton
+            content={"Post Jobs"}
+            link={"mailto:susanne.mata@computingforall.org"}
+            invertColor={false}
+          />
         </div>
       </div>
     </div>
