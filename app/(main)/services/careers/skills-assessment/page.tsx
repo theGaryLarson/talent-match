@@ -37,9 +37,16 @@ export default function Page() {
               excel. Take the assessment today and get one step closer to your
               dream tech career. <strong>(400 characters max)</strong>
             </p>
+
+            <div className="laptop:hidden block text-[28px] text-center text-error-main pt-8">
+              <p>
+                For the best experience, please take the skills assessment on a
+                desktop or laptop computer.
+              </p>
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 tablet:grid-cols-2 pt-8 sm-tablet:p-12 justify-center items-center gap-12">
+        <div className="hidden laptop:grid grid-cols-1 tablet:grid-cols-2 pt-8 sm-tablet:p-12 justify-center items-center gap-12">
           <CareerPill
             title={"Software Developer"}
             // subtitle={"$100k avg. salary | 1 - 2 year programs"}
