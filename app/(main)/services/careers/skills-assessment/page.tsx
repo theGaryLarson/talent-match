@@ -1,5 +1,4 @@
 import CareerPill from "@/app/ui/components/career/CareerPill";
-import Image from "next/image";
 
 export default function Page() {
   return (
