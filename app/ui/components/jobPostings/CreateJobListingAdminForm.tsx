@@ -466,7 +466,6 @@ export default function CreateJobListingAdminForm() {
           getTagLabel={(option: SkillDTO) => option.skill_name}
           getTagLink={(option: SkillDTO) => option.skill_info_url}
         />
-        <p>Select your top 5 skills from your skills list</p>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <Button

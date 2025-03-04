@@ -230,9 +230,9 @@ export default function UpdateTrainingProviderPage() {
               <label htmlFor="avatarUpload">Upload Provider Logo</label>
               <AvatarUpload
                 id="avatarUpload"
-                fileTypeText="SVG, PNG or JPG"
-                accept=".png,.jpg,.jpeg,.svg"
-                maxSizeMB={1}
+                fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
+                accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
+                maxSizeMB={5}
                 userId={eduProviderId}
                 onImageUpload={(url) => {
                   setLogoUrl(url);

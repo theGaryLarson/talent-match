@@ -18,6 +18,7 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
 
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
+import { OccupationCode } from "@/app/lib/admin/jobTracking";
 //blank initail form data
 //selected onchange update data to new selecteds current data
 //onsubmit update list with new values submitted to avoid extra network calls
@@ -50,6 +51,7 @@ export default function UpdateJobListingForm() {
     relocation_services: false,
     visa_sponsorship: false,
     job_description: "",
+    career_services_offered: false,
   });
   const handleChange = (
     e: React.ChangeEvent<
@@ -71,7 +73,13 @@ export default function UpdateJobListingForm() {
               : value,
     }));
   };
-
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value ? new Date(value) : undefined,
+    }));
+  };
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const submitData: JobPostCreationDTO = {
@@ -120,14 +128,18 @@ export default function UpdateJobListingForm() {
       salary_range: Jl.salary_range,
       zip: Jl.zip,
       unpublish_date: Jl.unpublish_date,
+      occupation_code: Jl.occupation_code ?? "",
       job_post_url: Jl.job_post_url ?? undefined,
       assessment_url: Jl.assessment_url ?? undefined,
-      tech_area_id: Jl.tech_area_id ?? undefined,
-      sector_id: Jl.sector_id ?? undefined,
+      tech_area_id: Jl.tech_area_id ?? "",
+      sector_id: Jl.sector_id ?? "",
       company_id: Jl.company_id,
       relocation_services: Jl.relocation_services_available,
       visa_sponsorship: Jl.offer_visa_sponsorship,
       job_description: Jl.job_description,
+      career_services_offered: Jl.career_services_offered ?? false,
+      start_date: Jl.start_date ?? undefined,
+      end_date: Jl.end_date ?? undefined,
     });
     setSkills(Jl.skills);
     if (quill) quill.clipboard.dangerouslyPasteHTML(Jl.job_description);
@@ -224,10 +236,29 @@ export default function UpdateJobListingForm() {
             />
           </Stack>
 
+          {/* Occupation Code (NAICS) */}
+          <Stack>
+            <label htmlFor="occupation_code">Occupation Code (NAICS)</label>
+            <select
+              name="occupation_code"
+              id="occupation_code"
+              value={formData.occupation_code}
+              onChange={handleChange}
+              required
+            >
+              <option value="">--Select Occupation Code--</option>
+              {Object.values(OccupationCode).map((code) => (
+                <option key={code} value={code}>
+                  {code}
+                </option>
+              ))}
+            </select>
+          </Stack>
+
           {/* Job Description */}
           <div className="grid grid-cols-1">
             <label htmlFor="job_description">Job Description</label>
-            <div ref={quillRef} style={{ minHeight: "200px" }} />
+            <div ref={quillRef} style={{ minHeight: "200px" }} id="qui" />
           </div>
 
           {/*tech Sector*/}
@@ -421,7 +452,37 @@ export default function UpdateJobListingForm() {
               <option value="contract">Contract</option>
             </select>
           </div>
+          {/* Start Date */}
+          <div className="grid grid-cols-1">
+            <label htmlFor="start_date">Start Date</label>
+            <input
+              type="date"
+              name="start_date"
+              min={new Date().toISOString().split("T")[0]}
+              value={
+                formData.start_date
+                  ? new Date(formData.start_date).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={handleDateChange}
+            />
+          </div>
 
+          {/* End Date */}
+          <div className="grid grid-cols-1">
+            <label htmlFor="end_date">End Date</label>
+            <input
+              type="date"
+              name="end_date"
+              min={new Date().toISOString().split("T")[0]}
+              onChange={handleDateChange}
+              value={
+                formData.end_date
+                  ? new Date(formData.end_date).toISOString().split("T")[0]
+                  : ""
+              }
+            />
+          </div>
           {/* Location */}
           <div>
             <label>Location</label>
@@ -495,9 +556,14 @@ export default function UpdateJobListingForm() {
             <input
               type="date"
               name="unpublish_date"
-              min={new Date().toISOString().split("T")[0]}
-              //  value={formData.unpublish_date?.toISOString().split("T")[0]}
-              // onChange={()=>{}}
+              value={
+                formData.unpublish_date
+                  ? new Date(formData.unpublish_date)
+                      .toISOString()
+                      .split("T")[0]
+                  : ""
+              }
+              onChange={handleDateChange}
             />
           </Stack>
 
@@ -513,7 +579,7 @@ export default function UpdateJobListingForm() {
           </Stack>
 
           {/* Assessment URL */}
-          <div>
+          <Stack>
             <label htmlFor="assessment_url">Assessment URL</label>
             <input
               type="text"
@@ -521,6 +587,35 @@ export default function UpdateJobListingForm() {
               value={formData.assessment_url}
               onChange={handleChange}
             />
+          </Stack>
+
+          {/* Career Services Offered */}
+          <div>
+            <label>Does this position offer career services?</label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="career_services_offered"
+                  value="yes"
+                  required
+                  checked={formData.career_services_offered}
+                  onChange={handleChange}
+                />
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="career_services_offered"
+                  value="no"
+                  required
+                  checked={!formData.career_services_offered}
+                  onChange={handleChange}
+                />
+                No
+              </label>
+            </div>
           </div>
 
           {/* Skills */}
@@ -545,7 +640,6 @@ export default function UpdateJobListingForm() {
               getTagLabel={(option: SkillDTO) => option.skill_name}
               getTagLink={(option: SkillDTO) => option.skill_info_url}
             />
-            <p>Select your top 5 skills from your skills list</p>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Button

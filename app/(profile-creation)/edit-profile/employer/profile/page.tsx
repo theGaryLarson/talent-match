@@ -423,7 +423,7 @@ export default function CreateEmployerProfilePage() {
               id="profile-creation-profile-photoUrl"
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
-              maxSizeMB={1}
+              maxSizeMB={5}
               userId={session?.user.id!}
               onImageUpload={handleAvatarUpload}
               initialImageUrl={session?.user?.image!}
