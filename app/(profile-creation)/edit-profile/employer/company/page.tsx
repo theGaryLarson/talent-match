@@ -301,7 +301,7 @@ export default function CreateEmployerCompanyInfoPage() {
               id="profile-creation-company-logoUrl"
               fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
               accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
-              maxSizeMB={1}
+              maxSizeMB={5}
               userId={companyData.companyId!}
               onImageUpload={handleImageUpload}
               initialImageUrl={companyData.logoUrl || ""}
