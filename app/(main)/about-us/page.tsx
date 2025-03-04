@@ -52,18 +52,18 @@ export default function page() {
               accessible in traditional job boards. You’ll have direct access to
               quality ​ candidates from:​
             </p>
-              <List>
-                <ListItem>• Colleges with AWS curriculum​</ListItem>
-                <ListItem>
-                  • Colleges with curriculum funded by the National Science
-                  Foundation​
-                </ListItem>
-                <ListItem>• Colleges with AI curriculum​</ListItem>
-                <ListItem>
-                  • Training partners delivering candidates with industry-valued
-                  credentials​
-                </ListItem>
-              </List>
+            <List>
+              <ListItem>• Colleges with AWS curriculum​</ListItem>
+              <ListItem>
+                • Colleges with curriculum funded by the National Science
+                Foundation​
+              </ListItem>
+              <ListItem>• Colleges with AI curriculum​</ListItem>
+              <ListItem>
+                • Training partners delivering candidates with industry-valued
+                credentials​
+              </ListItem>
+            </List>
           </div>
           <header className="text-center">
             <h2 className="font-semibold uppercase leading-snug">Our Goal</h2>
