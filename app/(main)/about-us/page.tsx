@@ -51,6 +51,7 @@ export default function page() {
               Talent Finder Portal taps into​ talent pools that are not easily
               accessible in traditional job boards. You’ll have direct access to
               quality ​ candidates from:​
+            </p>
               <List>
                 <ListItem>• Colleges with AWS curriculum​</ListItem>
                 <ListItem>
@@ -63,7 +64,6 @@ export default function page() {
                   credentials​
                 </ListItem>
               </List>
-            </p>
           </div>
           <header className="text-center">
             <h2 className="font-semibold uppercase leading-snug">Our Goal</h2>
