@@ -110,6 +110,7 @@ export default async function Page() {
             sx={{ justifyContent: "center", mb: 7 }}
           >
             <NewJobFormButton
+              company_id={session?.user.companyId || ""}
               size="large"
               sx={{ width: { xs: "100%", sm: "auto" } }}
             />
