@@ -48,7 +48,7 @@ export default function CreateJobListingAdminForm() {
       zip: formData.get("zip") as string,
       unpublish_date: formData.get("unpublish_date")
         ? new Date(formData.get("unpublish_date") as string)
-        : undefined,
+        : null,
       job_post_url: formData.get("job_post_url") as string,
       assessment_url: formData.get("assessment_url") as string,
       skillIds: skills?.map((v) => v.skill_id),
@@ -62,15 +62,18 @@ export default function CreateJobListingAdminForm() {
       employment_duration:
         formData.get("is_permanent") === "no"
           ? (formData.get("employment_duration") as string)
-          : undefined,
+          : null,
       start_date: formData.get("start_date")
         ? new Date(formData.get("start_date") as string)
-        : undefined,
+        : null,
       end_date: formData.get("end_date")
         ? new Date(formData.get("end_date") as string)
-        : undefined,
+        : null,
       career_services_offered:
         formData.get("career_services_offered") === "yes",
+      techArea: null,
+      jobApplications: [],
+      publish_date: null,
     };
     try {
       const response = await fetch("/api/joblistings/add", {

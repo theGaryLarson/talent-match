@@ -248,8 +248,7 @@ export async function getMyJobListings() {
         skills: true,
         jobApplications: {
           where: {
-            // TODO(): Change back to Screened after testing
-            jobStatus: JobStatus.Applied,
+            jobStatus: JobStatus.Screened,
           },
           include: {
             Jobseekers: {

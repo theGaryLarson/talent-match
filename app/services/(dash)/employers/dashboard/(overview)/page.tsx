@@ -1,6 +1,10 @@
 import ScoreCard from "@/app/ui/components/ScoreCard";
 import DeletionFlag from "@/app/ui/components/DeletionFlag";
-import { getCompanyById, getEmployerById } from "@/app/lib/prisma";
+import {
+  getCompanyById,
+  getEmployerById,
+  searchLocations,
+} from "@/app/lib/prisma";
 import EmployerTeamMembers from "@/app/ui/components/employerdashboard/EmployerTeamMembers";
 import { auth } from "@/auth";
 import EmployerRecentJobPosts from "@/app/ui/components/employerdashboard/EmployerRecentJobPosts";
@@ -10,6 +14,43 @@ import NewJobFormButton from "@/app/ui/components/jobManagement/NewJobFormButton
 import PillButton from "@/app/ui/components/PillButton";
 import { SearchOutlined } from "@mui/icons-material";
 import { getMyJobListings } from "@/app/lib/joblistings";
+import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
+
+async function processJobs(
+  jobs: JobPostCreationDTO[],
+): Promise<JobPostCreationDTO[]> {
+  await Promise.all(
+    jobs.map(async (job) => {
+      const processJobZip = async () => {
+        if (job.zip) {
+          const results = await searchLocations(job.zip, "zip");
+          if (results?.length) {
+            job.postalGeoData = results[0];
+          }
+        }
+      };
+      const processApplications = async () => {
+        await Promise.all(
+          job.jobApplications.map(async (application) => {
+            if (application.Jobseekers.users.zip) {
+              const results = await searchLocations(
+                application.Jobseekers.users.zip,
+                "zip",
+              );
+              if (results?.length) {
+                application.postalGeoData = results[0];
+              }
+            }
+          }),
+        );
+      };
+
+      await Promise.all([processJobZip(), processApplications()]);
+    }),
+  );
+
+  return jobs;
+}
 
 export const metadata = {
   title: "My Dashboard",
@@ -28,6 +69,7 @@ export default async function Page() {
     (total, job) => total + job.jobApplications.length,
     0,
   );
+  const recentJobs = await processJobs(jobs);
 
   if (!proInfo || company == undefined) {
     return (
@@ -88,9 +130,7 @@ export default async function Page() {
               </Link>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
-              <Link href="/services/employers/dashboard/savedcandidates">
-                <ScoreCard title="Pre-screened candidates" val={preScreened} />
-              </Link>
+              <ScoreCard title="Pre-screened candidates" val={preScreened} />
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
               <Link href="/services/employers/dashboard/savedcandidates">
@@ -126,7 +166,7 @@ export default async function Page() {
             </Grid2>
             <Grid2 size={1}>
               <EmployerRecentJobPosts
-                jobs={jobs.splice(0, 3)}
+                jobs={recentJobs}
                 bookmarkedJobseekers={proInfo.BookmarkedJobseeker}
               />
             </Grid2>

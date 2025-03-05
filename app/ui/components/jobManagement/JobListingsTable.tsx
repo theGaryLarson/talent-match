@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  Link,
 } from "@mui/material";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 import { useEffect, useState } from "react";
@@ -133,6 +134,7 @@ export default function JobListingsTable({
             <TableBody>
               {localJobs.map((job) => (
                 <TableRow
+                  hover
                   key={job.job_posting_id}
                   sx={{ "&:last-child td": { borderBottom: 0 } }}
                 >
@@ -157,10 +159,14 @@ export default function JobListingsTable({
                       </Select>
                     </FormControl>
                   </TableCell>
-                  <TableCell
-                    sx={{ color: "secondary.main", fontWeight: "500" }}
-                  >
-                    {job.job_title}
+                  <TableCell>
+                    <Link
+                      href={"/services/joblistings/" + job.job_posting_id}
+                      color="secondary"
+                      sx={{ fontWeight: "500" }}
+                    >
+                      {job.job_title}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ color: "secondary.main" }}>
                     {job.techArea?.title}
@@ -197,7 +203,14 @@ export default function JobListingsTable({
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Typography>{job.job_title}</Typography>
+                <Typography>
+                  <Link
+                    color="secondary"
+                    href={"/services/joblistings/" + job.job_posting_id}
+                  >
+                    {job.job_title}
+                  </Link>
+                </Typography>
                 <IconButton
                   onClick={() =>
                     setExpandedJobId(

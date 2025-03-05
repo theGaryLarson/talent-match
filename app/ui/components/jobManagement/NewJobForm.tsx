@@ -201,6 +201,16 @@ export default function NewJobForm({
       is_apprenticeship: apprenticeship,
       relocation_services_available: relocation,
       offer_visa_sponsorship: visaSponsor,
+      techArea: null,
+      company_id: null,
+      jobApplications: [],
+      publish_date: null,
+      assessment_url: null,
+      earn_and_learn_type: null,
+      employment_duration: null,
+      start_date: null,
+      end_date: null,
+      career_services_offered: null,
     };
     if (job_posting) {
       jobListingData.job_posting_id = job_posting?.job_posting_id;

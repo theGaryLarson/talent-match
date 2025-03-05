@@ -10,6 +10,7 @@ import {
   Divider,
   Grid2,
   IconButton,
+  Link,
   Stack,
   Table,
   TableBody,
@@ -28,7 +29,6 @@ import {
 } from "@mui/icons-material";
 import Avatar from "../Avatar";
 import PillButton from "../PillButton";
-import Link from "next/link";
 import BookmarkWithText from "../BookmarkWithText";
 
 export default function EmployerRecentJobPosts({
@@ -81,18 +81,24 @@ export default function EmployerRecentJobPosts({
                 <React.Fragment key={job.job_posting_id}>
                   <TableRow
                     key={job.job_posting_id}
-                    sx={{ "& > *": { borderBottom: "unset" } }}
+                    sx={{ "&:last-child td": { borderBottom: 0 } }}
                   >
-                    <TableCell
-                      sx={{ color: "secondary.main", fontWeight: "500" }}
-                    >
-                      {job.job_title}
+                    <TableCell>
+                      <Link
+                        href={"/services/joblistings/" + job.job_posting_id}
+                        color="secondary"
+                        sx={{ fontWeight: "500" }}
+                      >
+                        {job.job_title}
+                      </Link>
                     </TableCell>
                     <TableCell sx={{ color: "secondary.main" }}>
                       {job.techArea?.title}
                     </TableCell>
                     <TableCell sx={{ color: "neutral.700" }}>
-                      {job.zip}
+                      {job.postalGeoData?.city +
+                        ", " +
+                        job.postalGeoData?.stateCode}
                     </TableCell>
                     <TableCell>
                       {job.unpublish_date?.toLocaleString(undefined, {
@@ -128,177 +134,144 @@ export default function EmployerRecentJobPosts({
                     >
                       <Collapse in={expandedJobId !== undefined} timeout="auto">
                         {expandedJobId === job.job_posting_id && (
-                          <Grid2
-                            container
-                            sx={{ justifyContent: "space-around", m: 1 }}
-                          >
-                            {job.jobApplications
-                              .slice(0, 2)
-                              .map((application) => (
-                                <Card
-                                  key={
-                                    job.job_posting_id +
-                                    application.jobseekerId +
-                                    " Card"
-                                  }
-                                  component={Grid2}
-                                  size={4}
-                                  sx={{ p: 2 }}
-                                >
-                                  <Grid2 container sx={{ mb: 2 }}>
-                                    <Avatar
-                                      imgsrc={
-                                        application.Jobseekers.users.photo_url
-                                      }
-                                    />
-                                    <div>
-                                      <Typography>
-                                        {application.Jobseekers.users
-                                          .first_name +
-                                          " " +
-                                          application.Jobseekers.users
-                                            .last_name}
-                                      </Typography>
-                                      <Typography color="textSecondary">
-                                        {
-                                          application.Jobseekers.pathways
-                                            .pathway_title
-                                        }
-                                      </Typography>
-                                      <Typography color="textSecondary">
-                                        TEST
-                                      </Typography>
-                                    </div>
-                                  </Grid2>
-                                  <Typography
-                                    sx={{
-                                      mt: 1,
-                                      mb: 2,
-                                      display: "-webkit-box",
-                                      WebkitLineClamp: 2,
-                                      WebkitBoxOrient: "vertical",
-                                      overflowWrap: "break-word",
-                                      overflow: "hidden",
-                                    }}
-                                  >
-                                    {application.Jobseekers.intro_headline}
-                                  </Typography>
-                                  <Grid2 container spacing={1}>
-                                    {application.Jobseekers.jobseeker_has_skills?.map(
-                                      (skill) => {
-                                        const jobSkillIds =
-                                          job.skills?.map(
-                                            (skill) => skill.skill_id,
-                                          ) || [];
-                                        if (
-                                          jobSkillIds.includes(
-                                            skill.skills.skill_id,
-                                          )
-                                        )
-                                          return (
-                                            <Chip
-                                              key={
-                                                job.job_posting_id +
-                                                application.jobseekerId +
-                                                skill.skills.skill_id +
-                                                " skill"
-                                              }
-                                              color="primary"
-                                              component={Link}
-                                              clickable
-                                              href={skill.skills.skill_info_url}
-                                              label={skill.skills.skill_name}
-                                            />
-                                          );
-                                        else
-                                          return (
-                                            <Chip
-                                              key={
-                                                job.job_posting_id +
-                                                application.jobseekerId +
-                                                skill.skills.skill_id +
-                                                " skill"
-                                              }
-                                              component={Link}
-                                              clickable
-                                              href={skill.skills.skill_info_url}
-                                              label={skill.skills.skill_name}
-                                              sx={{ opacity: 0.4 }}
-                                            />
-                                          );
-                                      },
-                                    )}
-                                  </Grid2>
-                                  <Divider sx={{ my: 2 }} />
-                                  <Stack spacing={1}>
-                                    <BookmarkWithText
-                                      bookmarked={bookmarkedIds.includes(
-                                        application.jobseekerId,
-                                      )}
-                                      addUrl={
-                                        "/api/companies/bookmark/addJobseeker/" +
-                                        application.jobseekerId
-                                      }
-                                      removeUrl={
-                                        "/api/companies/bookmark/removeJobseeker/" +
-                                        application.jobseekerId
-                                      }
-                                      onBookmarkChange={(isBookmarked) =>
-                                        handleBookmarkChange(
-                                          application.jobseekerId,
-                                          isBookmarked,
-                                        )
-                                      }
-                                      unbookmarkedText="Save Candidate"
-                                      unbookmarkedIcon={<SaveAlt />}
-                                      bookmarkedText="Remove Candidate"
-                                      bookmarkedIcon={<SaveAlt />}
-                                    />
-                                    <PillButton
-                                      startIcon={<OpenInNew />}
-                                      color="secondary"
-                                      fullWidth
-                                      href={
-                                        "/services/jobseekers/" +
-                                        application.jobseekerId
-                                      }
-                                    >
-                                      View Showcase
-                                    </PillButton>
-                                  </Stack>
-                                </Card>
-                              ))}
-                            {job.jobApplications.length > 2 && (
-                              <Card component={Grid2} size={3} sx={{ p: 2 }}>
-                                <Grid2
-                                  container
+                          <Grid2 container spacing={1} sx={{ my: 1 }}>
+                            {job.jobApplications.map((application) => (
+                              <Card
+                                key={
+                                  job.job_posting_id +
+                                  application.jobseekerId +
+                                  " Card"
+                                }
+                                component={Grid2}
+                                size={4}
+                                sx={{ p: 2 }}
+                              >
+                                <Grid2 container spacing={1} sx={{ mb: 2 }}>
+                                  <Avatar
+                                    imgsrc={
+                                      application.Jobseekers.users.photo_url ||
+                                      undefined
+                                    }
+                                  />
+                                  <div>
+                                    <Typography>
+                                      {application.Jobseekers.users.first_name +
+                                        " " +
+                                        application.Jobseekers.users.last_name}
+                                    </Typography>
+                                    <Typography color="textSecondary">
+                                      {application.Jobseekers.pathways &&
+                                        application.Jobseekers.pathways
+                                          .pathway_title}
+                                    </Typography>
+                                    <Typography color="textSecondary">
+                                      {application.postalGeoData?.city +
+                                        ", " +
+                                        application.postalGeoData?.stateCode}
+                                    </Typography>
+                                  </div>
+                                </Grid2>
+                                <Typography
                                   sx={{
-                                    height: "100%",
-                                    justifyContent: "center",
-                                    alignItems: "center",
+                                    mt: 1,
+                                    mb: 2,
+                                    display: "-webkit-box",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                    overflowWrap: "break-word",
+                                    overflow: "hidden",
                                   }}
                                 >
-                                  <Stack
-                                    sx={{
-                                      alignItems: "center",
-                                      justifyContent: "space-between",
-                                    }}
+                                  {application.Jobseekers.intro_headline}
+                                </Typography>
+                                <Typography>
+                                  {
+                                    application.Jobseekers.jobseeker_has_skills?.filter(
+                                      (skillObj) =>
+                                        (
+                                          job.skills?.map(
+                                            (skill) => skill.skill_id,
+                                          ) || []
+                                        ).includes(skillObj.skills.skill_id),
+                                    ).length
+                                  }{" "}
+                                  of {job.skills?.length} skills match
+                                </Typography>
+                                <Divider sx={{ my: 2 }} />
+                                <Stack spacing={1}>
+                                  <BookmarkWithText
+                                    bookmarked={bookmarkedIds.includes(
+                                      application.jobseekerId,
+                                    )}
+                                    addUrl={
+                                      "/api/companies/bookmark/addJobseeker/" +
+                                      application.jobseekerId
+                                    }
+                                    removeUrl={
+                                      "/api/companies/bookmark/removeJobseeker/" +
+                                      application.jobseekerId
+                                    }
+                                    onBookmarkChange={(isBookmarked) =>
+                                      handleBookmarkChange(
+                                        application.jobseekerId,
+                                        isBookmarked,
+                                      )
+                                    }
+                                    unbookmarkedText="Save Candidate"
+                                    unbookmarkedIcon={<SaveAlt />}
+                                    bookmarkedText="Remove Candidate"
+                                    bookmarkedIcon={<SaveAlt />}
+                                  />
+                                  <PillButton
+                                    startIcon={<OpenInNew />}
+                                    color="secondary"
+                                    fullWidth
+                                    href={
+                                      "/services/jobseekers/" +
+                                      application.jobseekerId
+                                    }
                                   >
-                                    <Typography variant="h5" color="secondary">
-                                      View {job.jobApplications.length - 2} more
-                                      qualified candidates
-                                    </Typography>
-                                    <People
-                                      color="primary"
-                                      sx={{ width: 58, height: 58 }}
-                                    />
-                                  </Stack>
-                                  <PillButton fullWidth color="secondary">
-                                    View More
+                                    View Showcase
                                   </PillButton>
-                                </Grid2>
+                                </Stack>
                               </Card>
-                            )}
+                            ))}
+                            <Card component={Grid2} size={4} sx={{ p: 2 }}>
+                              <Grid2
+                                container
+                                sx={{
+                                  height: "100%",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Stack
+                                  sx={{
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <Typography variant="h5" color="secondary">
+                                    View more qualified candidates
+                                  </Typography>
+                                  <People
+                                    color="primary"
+                                    sx={{ width: 58, height: 58 }}
+                                  />
+                                </Stack>
+                                <PillButton
+                                  target="_blank"
+                                  href={
+                                    "/services/talent-search?skills=" +
+                                    job.skills?.map((skill) => skill.skill_name)
+                                  }
+                                  fullWidth
+                                  color="secondary"
+                                >
+                                  View More
+                                </PillButton>
+                              </Grid2>
+                            </Card>
                           </Grid2>
                         )}
                       </Collapse>
@@ -320,9 +293,13 @@ export default function EmployerRecentJobPosts({
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Typography sx={{ color: "secondary.main", fontWeight: "500" }}>
+                <Link
+                  href={"/services/joblistings/" + job.job_posting_id}
+                  color="secondary"
+                  sx={{ fontWeight: "500" }}
+                >
                   {job.job_title}
-                </Typography>
+                </Link>
                 {job.jobApplications.length > 0 && (
                   <IconButton
                     onClick={() =>
@@ -344,7 +321,9 @@ export default function EmployerRecentJobPosts({
               <Typography sx={{ color: "secondary.main" }}>
                 {job.techArea?.title}
               </Typography>
-              <Typography sx={{ color: "neutral.700" }}>{job.zip}</Typography>
+              <Typography sx={{ color: "neutral.700" }}>
+                {job.postalGeoData?.city + ", " + job.postalGeoData?.stateCode}
+              </Typography>
               <Typography>
                 {job.unpublish_date?.toLocaleString(undefined, {
                   weekday: "long",
@@ -356,13 +335,11 @@ export default function EmployerRecentJobPosts({
                 in={expandedJobId === job.job_posting_id}
                 timeout="auto"
               >
-                <Grid2
-                  direction={"column"}
+                <Stack
                   spacing={2}
-                  container
                   sx={{ justifyContent: "space-around", my: 2 }}
                 >
-                  {job.jobApplications.slice(0, 2).map((application) => (
+                  {job.jobApplications.map((application) => (
                     <Card
                       key={
                         job.job_posting_id + application.jobseekerId + " Card"
@@ -370,9 +347,11 @@ export default function EmployerRecentJobPosts({
                       component={Grid2}
                       sx={{ p: 2 }}
                     >
-                      <Grid2 container sx={{ mb: 2 }}>
+                      <Grid2 container spacing={1} sx={{ mb: 2 }}>
                         <Avatar
-                          imgsrc={application.Jobseekers.users.photo_url}
+                          imgsrc={
+                            application.Jobseekers.users.photo_url ?? undefined
+                          }
                         />
                         <div>
                           <Typography>
@@ -381,9 +360,14 @@ export default function EmployerRecentJobPosts({
                               application.Jobseekers.users.last_name}
                           </Typography>
                           <Typography color="textSecondary">
-                            {application.Jobseekers.pathways.pathway_title}
+                            {application.Jobseekers.pathways &&
+                              application.Jobseekers.pathways.pathway_title}
                           </Typography>
-                          <Typography color="textSecondary">TEST</Typography>
+                          <Typography color="textSecondary">
+                            {application.postalGeoData?.city +
+                              ", " +
+                              application.postalGeoData?.stateCode}
+                          </Typography>
                         </div>
                       </Grid2>
                       <Typography
@@ -399,46 +383,17 @@ export default function EmployerRecentJobPosts({
                       >
                         {application.Jobseekers.intro_headline}
                       </Typography>
-                      <Grid2 container spacing={1}>
-                        {application.Jobseekers.jobseeker_has_skills?.map(
-                          (skill) => {
-                            const jobSkillIds =
-                              job.skills?.map((skill) => skill.skill_id) || [];
-                            if (jobSkillIds.includes(skill.skills.skill_id))
-                              return (
-                                <Chip
-                                  key={
-                                    job.job_posting_id +
-                                    application.jobseekerId +
-                                    skill.skills.skill_id +
-                                    " skill"
-                                  }
-                                  color="primary"
-                                  component={Link}
-                                  clickable
-                                  href={skill.skills.skill_info_url}
-                                  label={skill.skills.skill_name}
-                                />
-                              );
-                            else
-                              return (
-                                <Chip
-                                  key={
-                                    job.job_posting_id +
-                                    application.jobseekerId +
-                                    skill.skills.skill_id +
-                                    " skill"
-                                  }
-                                  component={Link}
-                                  clickable
-                                  href={skill.skills.skill_info_url}
-                                  label={skill.skills.skill_name}
-                                  sx={{ opacity: 0.4 }}
-                                />
-                              );
-                          },
-                        )}
-                      </Grid2>
+                      <Typography>
+                        {
+                          application.Jobseekers.jobseeker_has_skills?.filter(
+                            (skillObj) =>
+                              (
+                                job.skills?.map((skill) => skill.skill_id) || []
+                              ).includes(skillObj.skills.skill_id),
+                          ).length
+                        }{" "}
+                        of {job.skills?.length} skills match
+                      </Typography>
                       <Divider sx={{ my: 2 }} />
                       <Stack spacing={1}>
                         <BookmarkWithText
@@ -477,7 +432,6 @@ export default function EmployerRecentJobPosts({
                       </Stack>
                     </Card>
                   ))}
-                  {job.jobApplications.length > 2 && (
                     <Card component={Grid2} sx={{ p: 2 }}>
                       <Stack
                         sx={{
@@ -493,7 +447,7 @@ export default function EmployerRecentJobPosts({
                           align="center"
                           sx={{ mb: 1 }}
                         >
-                          View {job.jobApplications.length - 2} more qualified
+                          View more qualified
                           candidates
                         </Typography>
                         <People
@@ -503,14 +457,16 @@ export default function EmployerRecentJobPosts({
                         <PillButton
                           fullWidth
                           color="secondary"
-                          href={`/services/jobs/${job.job_posting_id}/applications`}
+                          href={
+                            "/services/talent-search?skills=" +
+                            job.skills?.map((skill) => skill.skill_name)
+                          }
                         >
                           View More
                         </PillButton>
                       </Stack>
                     </Card>
-                  )}
-                </Grid2>
+                </Stack>
               </Collapse>
               {index !== jobs.length - 1 && (
                 <Divider
