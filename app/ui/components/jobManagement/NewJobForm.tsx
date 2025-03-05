@@ -104,7 +104,6 @@ export default function NewJobForm({
   // Step 1: Employment Information state
   const [employmentType, setEmploymentType] = useState("");
   const [earnAndLearnType, setEarnAndLearnType] = useState<string | null>(null);
-  const [careerServices, setCareerServices] = useState(false);
   const [paidPosition, setPaidPosition] = useState(false);
   const [internship, setInternship] = useState(false);
   const [apprenticeship, setApprenticeship] = useState(false);
@@ -145,7 +144,6 @@ export default function NewJobForm({
       // Step 1: Employment Information state
       setEmploymentType(job_posting.employment_type || "");
       setEarnAndLearnType(job_posting.earn_and_learn_type || null);
-      setCareerServices(job_posting.career_services_offered || false);
       setPaidPosition(job_posting.is_paid || false);
       setInternship(job_posting.is_internship || false);
       setApprenticeship(job_posting.is_apprenticeship || false);
@@ -243,7 +241,7 @@ export default function NewJobForm({
       unpublish_date: applicationDeadline?.toDate() ?? null,
       employment_type: employmentType,
       earn_and_learn_type: earnAndLearnType,
-      career_services_offered: careerServices,
+      career_services_offered: job_posting?.career_services_offered ?? null,
       location: workEnvironment,
       zip: location,
       is_paid: paidPosition,
@@ -548,18 +546,6 @@ export default function NewJobForm({
                     Select the earn and learn type for this role
                   </FormHelperText>
                 </div>
-                <FormGroup row>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={careerServices}
-                        onChange={(e) => setCareerServices(e.target.checked)}
-                        name="career-services"
-                      />
-                    }
-                    label="Career Services offered"
-                  />
-                </FormGroup>
               </Grid2>
             </FormControl>
 
