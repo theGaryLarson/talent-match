@@ -82,6 +82,9 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         start_date: jobData.start_date,
         end_date: jobData.end_date,
         career_services_offered: jobData.career_services_offered,
+        trainingRequirements: jobData.trainingRequirements,
+        requiredCertifications: jobData.requiredCertifications,
+        minimumEducationLevel: jobData.minimumEducationLevel,
         skills: {
           connect: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,
@@ -159,6 +162,7 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         offer_visa_sponsorship: jobData.offer_visa_sponsorship,
         zip: jobData.zip,
         employment_type: jobData.employment_type || "full-time",
+        earn_and_learn_type: jobData.earn_and_learn_type,
         is_apprenticeship: jobData.is_apprenticeship,
         location: jobData.location,
         career_services_offered: jobData.career_services_offered,
@@ -168,10 +172,14 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         unpublish_date:
           jobData.unpublish_date ??
           new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()), //if closing date is not provided auto set to 1 year in the futrue
+        employment_duration: jobData.employment_duration,
         start_date: jobData.start_date,
         end_date: jobData.end_date,
         job_post_url: jobData.job_post_url,
         assessment_url: jobData.assessment_url,
+        trainingRequirements: jobData.trainingRequirements,
+        requiredCertifications: jobData.requiredCertifications,
+        minimumEducationLevel: jobData.minimumEducationLevel,
         skills: {
           connect: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,

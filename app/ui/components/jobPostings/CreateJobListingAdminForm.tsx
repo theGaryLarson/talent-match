@@ -74,6 +74,9 @@ export default function CreateJobListingAdminForm() {
       techArea: null,
       jobApplications: [],
       publish_date: null,
+      trainingRequirements: null,
+      requiredCertifications: null,
+      minimumEducationLevel: null,
     };
     try {
       const response = await fetch("/api/joblistings/add", {

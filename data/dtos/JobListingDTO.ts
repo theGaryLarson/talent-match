@@ -55,4 +55,7 @@ export type JobPostCreationDTO = {
   start_date: Date | null;
   end_date: Date | null;
   career_services_offered: boolean | null;
+  trainingRequirements: string | null;
+  requiredCertifications: string | null;
+  minimumEducationLevel: string | null;
 };

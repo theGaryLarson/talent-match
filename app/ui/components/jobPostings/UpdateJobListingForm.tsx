@@ -61,6 +61,9 @@ export default function UpdateJobListingForm() {
     employment_duration: null,
     start_date: null,
     end_date: null,
+    trainingRequirements: null,
+    requiredCertifications: null,
+    minimumEducationLevel: null,
   });
   const handleChange = (
     e: React.ChangeEvent<
@@ -154,6 +157,9 @@ export default function UpdateJobListingForm() {
       publish_date: null,
       earn_and_learn_type: null,
       employment_duration: null,
+      trainingRequirements: Jl.trainingRequirements,
+      requiredCertifications: Jl.requiredCertifications,
+      minimumEducationLevel: Jl.minimumEducationLevel,
     });
     setSkills(Jl.skills);
     if (quill) quill.clipboard.dangerouslyPasteHTML(Jl.job_description);

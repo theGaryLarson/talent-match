@@ -157,7 +157,7 @@ export default async function Page() {
               </Typography>
               <PillButton
                 color="inherit"
-                href="/services/joblistings"
+                href="/services/talent-search"
                 startIcon={<SearchOutlined />}
                 sx={{ color: "secondary.main" }}
               >

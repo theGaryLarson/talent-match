@@ -8,10 +8,12 @@ import NewJobForm from "./NewJobForm";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 
 interface NewJobFormButtonProps extends ButtonProps {
+  company_id: string;
   onJobCreated?: (job: JobPostCreationDTO) => void;
 }
 
 export default function NewJobFormButton({
+  company_id,
   onJobCreated,
   onClick,
   children = "Post a New Job",
@@ -61,7 +63,11 @@ export default function NewJobFormButton({
           </PillButton>
         </DialogTitle>
         <DialogContent>
-          <NewJobForm job_posting={undefined} onJobUpdated={handleJobCreated} />
+          <NewJobForm
+            company_id={company_id}
+            job_posting={undefined}
+            onJobUpdated={handleJobCreated}
+          />
         </DialogContent>
       </Dialog>
     </>

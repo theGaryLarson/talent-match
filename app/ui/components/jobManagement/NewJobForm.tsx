@@ -20,6 +20,9 @@ import {
   Radio,
   FormGroup,
   Checkbox,
+  Autocomplete,
+  Chip,
+  createFilterOptions,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -31,13 +34,19 @@ import {
 } from "@mui/icons-material";
 import SingleSelectFilterAutoload from "../mui/SingleSelectFilterAutoload";
 import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
-import { EmploymentType, OccupationCode } from "@/app/lib/admin/jobTracking";
+import {
+  EarnLearnType,
+  EmploymentType,
+  OccupationCode,
+} from "@/app/lib/admin/jobTracking";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
-import SingleSelectCheckmarks from "../mui/SingleSelectFilter";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
 
 function getCompensationType(salary_range: string) {
   const lowerCaseSalary = salary_range.toLowerCase();
@@ -58,12 +67,27 @@ const steps = [
 ];
 
 export default function NewJobForm({
+  company_id,
   job_posting,
   onJobUpdated,
 }: {
+  company_id: string;
   job_posting?: JobPostCreationDTO;
   onJobUpdated?: (job: JobPostCreationDTO) => void;
 }) {
+  const { quill, quillRef } = useQuill({
+    modules: {
+      toolbar: [
+        ["bold", "italic", "underline", "strike"],
+        [{ align: [] }],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ indent: "-1" }, { indent: "+1" }],
+      ],
+      clipboard: {
+        matchVisual: false,
+      },
+    },
+  });
   const [activeStep, setActiveStep] = useState(0);
 
   // Step 0: Job Information state
@@ -73,10 +97,14 @@ export default function NewJobForm({
   const [industry, setIndustry] = useState("");
   const [techArea, setTechArea] = useState("");
   const [occupationCode, setOccupationCode] = useState("");
-  const [applicationDeadline, setApplicationDeadline] = useState<any>(null);
+  const [applicationDeadline, setApplicationDeadline] = useState<Dayjs | null>(
+    null,
+  );
 
   // Step 1: Employment Information state
   const [employmentType, setEmploymentType] = useState("");
+  const [earnAndLearnType, setEarnAndLearnType] = useState<string | null>(null);
+  const [careerServices, setCareerServices] = useState(false);
   const [paidPosition, setPaidPosition] = useState(false);
   const [internship, setInternship] = useState(false);
   const [apprenticeship, setApprenticeship] = useState(false);
@@ -84,6 +112,8 @@ export default function NewJobForm({
   const [relocation, setRelocation] = useState(false);
   const [visaSponsor, setVisaSponsor] = useState(false);
   const [employmentDuration, setEmploymentDuration] = useState("");
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [employmentIsPermanent, setEmploymentIsPermanent] =
     useState("permanent");
   const [workEnvironment, setWorkEnvironment] = useState("");
@@ -93,16 +123,14 @@ export default function NewJobForm({
 
   // Step 2: Qualifications state
   const [requiredSkills, setRequiredSkills] = useState<SkillDTO[]>([]);
-  // Need changes to DB to have
-  // - trainingRequirements
-  // - requiredCertifications
-  // - educationLevel
   const [trainingRequirements, setTrainingRequirements] = useState("");
   const [requiredCertifications, setRequiredCertifications] = useState("");
   const [educationLevel, setEducationLevel] = useState("");
 
   useEffect(() => {
     if (job_posting) {
+      if (quill)
+        quill.clipboard.dangerouslyPasteHTML(job_posting.job_description);
       // Step 0: Job Information state
       setJobTitle(job_posting.job_title);
       setJobUrl(job_posting.job_post_url || "");
@@ -116,6 +144,8 @@ export default function NewJobForm({
 
       // Step 1: Employment Information state
       setEmploymentType(job_posting.employment_type || "");
+      setEarnAndLearnType(job_posting.earn_and_learn_type || null);
+      setCareerServices(job_posting.career_services_offered || false);
       setPaidPosition(job_posting.is_paid || false);
       setInternship(job_posting.is_internship || false);
       setApprenticeship(job_posting.is_apprenticeship || false);
@@ -123,8 +153,15 @@ export default function NewJobForm({
       setRelocation(job_posting.relocation_services_available || false);
       setVisaSponsor(job_posting.offer_visa_sponsorship || false);
       setEmploymentDuration(job_posting.employment_duration || "");
+      setStartDate(
+        job_posting.start_date ? dayjs(job_posting.start_date) : null,
+      );
+      setEndDate(job_posting.end_date ? dayjs(job_posting.end_date) : null);
       setEmploymentIsPermanent(
-        job_posting.employment_duration ? "temporary" : "permanent",
+        job_posting.employment_duration &&
+          job_posting.employment_duration.length > 0
+          ? "temporary"
+          : "permanent",
       );
       setWorkEnvironment(job_posting.location);
 
@@ -144,6 +181,9 @@ export default function NewJobForm({
       if (job_posting.skills) {
         setRequiredSkills(job_posting.skills);
       }
+      setTrainingRequirements(job_posting.trainingRequirements || "");
+      setRequiredCertifications(job_posting.requiredCertifications || "");
+      setEducationLevel(job_posting.minimumEducationLevel || "");
     }
   }, [job_posting]);
 
@@ -161,16 +201,29 @@ export default function NewJobForm({
         employmentType.trim() !== "" &&
         location.trim() !== "" &&
         workEnvironment.trim() !== "";
+      const earnLearnValid =
+        employmentType === EmploymentType.EarnAndLearn
+          ? earnAndLearnType
+          : true;
       const durationValid =
         employmentIsPermanent === "permanent" ||
         (employmentIsPermanent === "temporary" &&
           employmentDuration.trim() !== "");
+      const datesValid =
+        employmentIsPermanent === "permanent" ||
+        (employmentIsPermanent === "temporary" && startDate?.isBefore(endDate));
       const compensationValid =
         !paidPosition ||
         (startingPayRange.trim() !== "" &&
           endingPayRange.trim() !== "" &&
           compensationType.trim() !== "");
-      return basicValid && durationValid && compensationValid;
+      return (
+        basicValid &&
+        earnLearnValid &&
+        durationValid &&
+        datesValid &&
+        compensationValid
+      );
     }
     if (activeStep === 2) {
       return requiredSkills.length > 0;
@@ -180,37 +233,42 @@ export default function NewJobForm({
 
   const handleSubmit = async () => {
     const jobListingData: JobPostCreationDTO = {
+      company_id: company_id,
       job_title: jobTitle,
       job_post_url: jobUrl,
       job_description: jobDescription,
       sector_id: industry,
       tech_area_id: techArea,
       occupation_code: occupationCode,
-      unpublish_date: applicationDeadline,
+      unpublish_date: applicationDeadline?.toDate() ?? null,
       employment_type: employmentType,
+      earn_and_learn_type: earnAndLearnType,
+      career_services_offered: careerServices,
       location: workEnvironment,
       zip: location,
       is_paid: paidPosition,
-      salary_range:
-        "$" +
-        startingPayRange +
-        " - $" +
-        endingPayRange +
-        (compensationType === "hourly" ? " / hr" : " / year"),
+      salary_range: paidPosition
+        ? "$" +
+          startingPayRange +
+          " - $" +
+          endingPayRange +
+          (compensationType === "hourly" ? " / hr" : " / year")
+        : "",
       skillIds: requiredSkills.map((skill) => skill.skill_id),
+      is_internship: internship,
       is_apprenticeship: apprenticeship,
       relocation_services_available: relocation,
       offer_visa_sponsorship: visaSponsor,
       techArea: null,
-      company_id: null,
       jobApplications: [],
       publish_date: null,
       assessment_url: null,
-      earn_and_learn_type: null,
-      employment_duration: null,
-      start_date: null,
-      end_date: null,
-      career_services_offered: null,
+      employment_duration: employmentDuration,
+      start_date: startDate?.toDate() ?? null,
+      end_date: endDate?.toDate() ?? null,
+      trainingRequirements: trainingRequirements,
+      requiredCertifications: requiredCertifications,
+      minimumEducationLevel: educationLevel,
     };
     if (job_posting) {
       jobListingData.job_posting_id = job_posting?.job_posting_id;
@@ -256,6 +314,15 @@ export default function NewJobForm({
     }
   };
 
+  useEffect(() => {
+    if (quill) {
+      quill.clipboard.dangerouslyPasteHTML(jobDescription);
+      quill.on("text-change", () => {
+        setJobDescription(quill.root.innerHTML);
+      });
+    }
+  }, [quill]);
+
   function handleNext() {
     if (isStepValid()) {
       setActiveStep((prev) => prev + 1);
@@ -265,6 +332,14 @@ export default function NewJobForm({
   function handleBack() {
     setActiveStep((prev) => prev - 1);
   }
+
+  const getChipsArray = (value: string) =>
+    value
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+  const filter = createFilterOptions<string>();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
@@ -284,7 +359,7 @@ export default function NewJobForm({
                   ? job_posting
                     ? "Update"
                     : "Publish"
-                  : "Publish"}
+                  : label}
               </StepLabel>
             </Step>
           );
@@ -322,14 +397,7 @@ export default function NewJobForm({
 
             <FormControl fullWidth>
               <FormLabel required>Job Description</FormLabel>
-              <TextField
-                multiline
-                rows={5}
-                required
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-                helperText="Provide a detailed description of the job responsibilities, requirements, and qualifications."
-              />
+              <div ref={quillRef} style={{ minHeight: "200px" }} />
             </FormControl>
 
             <FormControl fullWidth>
@@ -460,6 +528,42 @@ export default function NewJobForm({
             </FormControl>
 
             <FormControl fullWidth>
+              <Grid2 container direction="row" spacing={2}>
+                <div>
+                  <FormLabel required>Earn and Learn Type</FormLabel>
+                  <Select
+                    fullWidth
+                    disabled={employmentType !== EmploymentType.EarnAndLearn}
+                    required
+                    value={earnAndLearnType ?? ""}
+                    onChange={(e) => setEarnAndLearnType(e.target.value)}
+                  >
+                    {Object.values(EarnLearnType).map((code) => (
+                      <MenuItem key={code + 1} value={code}>
+                        {code}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>
+                    Select the earn and learn type for this role
+                  </FormHelperText>
+                </div>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={careerServices}
+                        onChange={(e) => setCareerServices(e.target.checked)}
+                        name="career-services"
+                      />
+                    }
+                    label="Career Services offered"
+                  />
+                </FormGroup>
+              </Grid2>
+            </FormControl>
+
+            <FormControl fullWidth>
               <FormLabel required>Employment Duration</FormLabel>
               <Grid2 container direction="row" spacing={2}>
                 <TextField
@@ -487,6 +591,28 @@ export default function NewJobForm({
                   />
                 </RadioGroup>
               </Grid2>
+            </FormControl>
+
+            <FormControl>
+              <FormLabel required>Start Date</FormLabel>
+              <DatePicker
+                disablePast
+                disabled={employmentIsPermanent === "permanent"}
+                value={startDate}
+                onChange={(newValue) => setStartDate(newValue)}
+              />
+              <FormHelperText>Select when the job would start</FormHelperText>
+            </FormControl>
+
+            <FormControl>
+              <FormLabel required>End Date</FormLabel>
+              <DatePicker
+                disablePast
+                disabled={employmentIsPermanent === "permanent"}
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+              />
+              <FormHelperText>Select when the job would end</FormHelperText>
             </FormControl>
 
             <FormControl fullWidth>
@@ -610,56 +736,137 @@ export default function NewJobForm({
 
             <FormControl fullWidth>
               <FormLabel>Training Requirements</FormLabel>
-              <TextField
-                value={trainingRequirements}
-                onChange={(e) => setTrainingRequirements(e.target.value)}
-                helperText="Enter required training"
+              <Autocomplete
+                multiple
+                freeSolo
+                value={getChipsArray(trainingRequirements)}
+                onChange={(event, newValue) => {
+                  const processedValues = newValue.map((item) => {
+                    if (typeof item === "string") {
+                      if (item.startsWith('Add "')) {
+                        return item.substring(5, item.length - 1);
+                      }
+                      return item;
+                    }
+                    return item;
+                  });
+                  setTrainingRequirements(processedValues.join(", "));
+                }}
+                filterOptions={(options, params) => {
+                  const filtered = filter(options, params);
+                  if (params.inputValue !== "") {
+                    filtered.push(`Add "${params.inputValue}"`);
+                  }
+                  return filtered;
+                }}
+                selectOnFocus
+                clearOnBlur
+                handleHomeEndKeys
+                options={[]}
+                renderTags={(value: string[], getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      label={option}
+                      {...getTagProps({ index })}
+                      key={index}
+                    />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Enter training requirement"
+                    helperText="Type and press Enter to add training requirement"
+                  />
+                )}
               />
             </FormControl>
-
             <FormControl fullWidth>
               <FormLabel>Required Certifications</FormLabel>
-              <TextField
-                value={requiredCertifications}
-                onChange={(e) => setRequiredCertifications(e.target.value)}
-                helperText="Enter required certifications"
+              <Autocomplete
+                multiple
+                freeSolo
+                value={getChipsArray(requiredCertifications)}
+                onChange={(event, newValue) => {
+                  const processedValues = newValue.map((item) => {
+                    if (typeof item === "string") {
+                      if (item.startsWith('Add "')) {
+                        return item.substring(5, item.length - 1);
+                      }
+                      return item;
+                    }
+                    return item;
+                  });
+                  setRequiredCertifications(processedValues.join(", "));
+                }}
+                filterOptions={(options, params) => {
+                  const filtered = filter(options, params);
+                  if (params.inputValue !== "") {
+                    filtered.push(`Add "${params.inputValue}"`);
+                  }
+                  return filtered;
+                }}
+                selectOnFocus
+                clearOnBlur
+                handleHomeEndKeys
+                options={[]}
+                renderTags={(value: string[], getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      label={option}
+                      {...getTagProps({ index })}
+                      key={index}
+                    />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Enter certification"
+                    helperText="Type and press Enter to add certification"
+                  />
+                )}
               />
             </FormControl>
 
-            <FormControl fullWidth>
+            <FormControl>
               <FormLabel required>Minimum Level of Education</FormLabel>
-              <SingleSelectCheckmarks
-                id="jobpost-edulevel"
-                label=""
-                value={[educationLevel]}
-                onChange={(event) => {
-                  setEducationLevel(event.target.value as string);
-                }}
-                options={[
-                  { label: "Any", value: "" },
-                  { label: "Doctorate", value: "Doctorate" },
-                  { label: "Master's Degree", value: "Master's Degree" },
-                  { label: "Bachelor's Degree", value: "Bachelor's Degree" },
-                  { label: "Associate's Degree", value: "Associates's Degree" },
-                  {
-                    label: "Vocational Qualification / Certification",
-                    value: "Certificate (less than two years)",
-                  },
-                  {
-                    label: "Post High School",
-                    value: "Some training or study post high school",
-                  },
-                  {
-                    label: "High School Diploma",
-                    value: "High School Diploma",
-                  },
-                  { label: "GED", value: "GED" },
-                  {
-                    label: "No Formal Education",
-                    value: "Not yet completed High School",
-                  },
-                ]}
-              />
+              <Select
+                required
+                value={educationLevel}
+                onChange={(e) => setEducationLevel(e.target.value)}
+              >
+                <MenuItem value="">Any</MenuItem>
+                <MenuItem value={HighestCompletedEducationLevel.Doctorate}>
+                  Doctorate
+                </MenuItem>
+                <MenuItem value={HighestCompletedEducationLevel.Masters}>
+                  Master's Degree
+                </MenuItem>
+                <MenuItem value={HighestCompletedEducationLevel.Bachelors}>
+                  Bachelor's Degree
+                </MenuItem>
+                <MenuItem value={HighestCompletedEducationLevel.Associates}>
+                  Associate's Degree
+                </MenuItem>
+                <MenuItem value={HighestCompletedEducationLevel.Certificate}>
+                  Vocational Qualification / Certification
+                </MenuItem>
+                <MenuItem value={HighestCompletedEducationLevel.PostHighSchool}>
+                  Post High School
+                </MenuItem>
+                <MenuItem value={HighestCompletedEducationLevel.HighSchool}>
+                  High School Diploma
+                </MenuItem>
+                <MenuItem value={HighestCompletedEducationLevel.GED}>
+                  GED
+                </MenuItem>
+                <MenuItem
+                  value={HighestCompletedEducationLevel.NoFormalEducation}
+                >
+                  No Formal Education
+                </MenuItem>
+              </Select>
               <FormHelperText>Select education level</FormHelperText>
             </FormControl>
           </Stack>
@@ -684,9 +891,6 @@ export default function NewJobForm({
               </Typography>
               <Typography>
                 <strong>Job URL:</strong> {jobUrl}
-              </Typography>
-              <Typography>
-                <strong>Description:</strong> {jobDescription}
               </Typography>
               <Typography>
                 <strong>Industry:</strong> {industry}
@@ -715,29 +919,33 @@ export default function NewJobForm({
                 <strong>Employment Type:</strong> {employmentType}
               </Typography>
               <Typography>
-                <strong>Paid Position:</strong> {paidPosition.toString()}
+                <strong>Paid Position:</strong> {paidPosition ? "Yes" : "No"}
               </Typography>
               <Typography>
-                <strong>Internship:</strong> {internship.toString()}
+                <strong>Internship:</strong> {internship ? "Yes" : "No"}
               </Typography>
               <Typography>
-                <strong>Apprenticeship:</strong> {apprenticeship.toString()}
+                <strong>Apprenticeship:</strong> {apprenticeship ? "Yes" : "No"}
               </Typography>
               <Typography>
                 <strong>Location:</strong> {location}
               </Typography>
               <Typography>
-                <strong>Relocation Assistance:</strong> {relocation.toString()}
+                <strong>Relocation Assistance:</strong>{" "}
+                {relocation ? "Yes" : "No"}
               </Typography>
               <Typography>
-                <strong>H1B Visa Sponsorship:</strong> {visaSponsor.toString()}
+                <strong>H1B Visa Sponsorship:</strong>{" "}
+                {visaSponsor ? "Yes" : "No"}
               </Typography>
               <Typography>
                 <strong>Work Environment:</strong> {workEnvironment}
               </Typography>
               <Typography>
-                <strong>Compensation:</strong> ${startingPayRange} - $
-                {endingPayRange}
+                <strong>Compensation:</strong>{" "}
+                {paidPosition
+                  ? "$" + startingPayRange + " - $" + endingPayRange
+                  : "None"}
               </Typography>
               <Typography>
                 <strong>Compensation Type:</strong> {compensationType}

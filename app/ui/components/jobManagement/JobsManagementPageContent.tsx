@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import NewJobFormButton from "./NewJobFormButton";
 import JobListingsTable from "./JobListingsTable";
+import { useSession } from "next-auth/react";
 
 async function fetchMyJobListings(): Promise<any> {
   const response = await fetch("/api/joblistings/getmyjoblistings", {
@@ -22,6 +23,7 @@ async function fetchMyJobListings(): Promise<any> {
 }
 
 export default function JobsManagementPageContent() {
+  const { data: session } = useSession();
   const [joblistings, setJobListings] = useState<JobPostCreationDTO[]>([]);
 
   useEffect(() => {
@@ -37,7 +39,6 @@ export default function JobsManagementPageContent() {
   }, []);
 
   const handleJobUpdated = (job: JobPostCreationDTO, action: string) => {
-    console.log(job);
     if (action === "delete") {
       setJobListings((prevJobs) =>
         prevJobs.filter((j) => j.job_posting_id !== job.job_posting_id),
@@ -65,6 +66,7 @@ export default function JobsManagementPageContent() {
 
       <Box sx={{ my: 5 }}>
         <NewJobFormButton
+          company_id={session?.user.companyId || ""}
           onJobCreated={(newJob: JobPostCreationDTO) =>
             handleJobUpdated(newJob, "create")
           }
@@ -72,7 +74,11 @@ export default function JobsManagementPageContent() {
       </Box>
 
       <Box>
-        <JobListingsTable jobs={joblistings} onJobUpdated={handleJobUpdated} />
+        <JobListingsTable
+          company_id={session?.user.companyId || ""}
+          jobs={joblistings}
+          onJobUpdated={handleJobUpdated}
+        />
       </Box>
     </Box>
   );

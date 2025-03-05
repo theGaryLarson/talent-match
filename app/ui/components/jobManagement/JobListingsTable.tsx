@@ -35,10 +35,12 @@ import NewJobForm from "./NewJobForm";
 import PillButton from "../PillButton";
 
 interface JobListingsTableProps {
+  company_id: string;
   jobs: JobPostCreationDTO[];
   onJobUpdated?: (job: JobPostCreationDTO, action: "update" | "delete") => void;
 }
 export default function JobListingsTable({
+  company_id,
   jobs,
   onJobUpdated,
 }: JobListingsTableProps) {
@@ -290,6 +292,7 @@ export default function JobListingsTable({
         <DialogContent>
           {selectedJob && (
             <NewJobForm
+              company_id={company_id}
               job_posting={selectedJob}
               onJobUpdated={handleJobUpdated}
             />
