@@ -5,7 +5,6 @@ import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 import {
   Box,
   Card,
-  Chip,
   Collapse,
   Divider,
   Grid2,
@@ -432,40 +431,39 @@ export default function EmployerRecentJobPosts({
                       </Stack>
                     </Card>
                   ))}
-                    <Card component={Grid2} sx={{ p: 2 }}>
-                      <Stack
-                        sx={{
-                          alignItems: "center",
-                          justifyContent: "center",
-                          spacing: 2,
-                          pb: 2,
-                        }}
+                  <Card component={Grid2} sx={{ p: 2 }}>
+                    <Stack
+                      sx={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        spacing: 2,
+                        pb: 2,
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        color="secondary"
+                        align="center"
+                        sx={{ mb: 1 }}
                       >
-                        <Typography
-                          variant="h6"
-                          color="secondary"
-                          align="center"
-                          sx={{ mb: 1 }}
-                        >
-                          View more qualified
-                          candidates
-                        </Typography>
-                        <People
-                          color="primary"
-                          sx={{ width: 48, height: 48, mb: 2 }}
-                        />
-                        <PillButton
-                          fullWidth
-                          color="secondary"
-                          href={
-                            "/services/talent-search?skills=" +
-                            job.skills?.map((skill) => skill.skill_name)
-                          }
-                        >
-                          View More
-                        </PillButton>
-                      </Stack>
-                    </Card>
+                        View more qualified candidates
+                      </Typography>
+                      <People
+                        color="primary"
+                        sx={{ width: 48, height: 48, mb: 2 }}
+                      />
+                      <PillButton
+                        fullWidth
+                        color="secondary"
+                        href={
+                          "/services/talent-search?skills=" +
+                          job.skills?.map((skill) => skill.skill_name)
+                        }
+                      >
+                        View More
+                      </PillButton>
+                    </Stack>
+                  </Card>
                 </Stack>
               </Collapse>
               {index !== jobs.length - 1 && (
