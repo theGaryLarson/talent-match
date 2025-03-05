@@ -57,7 +57,7 @@ export default function CareerPrepDataGrid({
       <DataGrid
         rows={clients}
         getRowId={(row: CareerPrepGridData) => row.jobseeker_id}
-        disableColumnFilter
+        //disableColumnFilter
         //disableColumnSelector
         //disableDensitySelector
         columns={columns}
