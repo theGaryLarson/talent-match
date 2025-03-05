@@ -1,15 +1,23 @@
 "use client";
 import { FormEvent, useEffect, useState } from "react";
 import { CompanyAdminCreationDTO } from "@/data/dtos/CompanyAdminCreationDTO";
+import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import { industry_sectors } from "@prisma/client";
 import { Button } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { v4 as uuidv4 } from "uuid";
 //TODO: Add ability to add a company logo
 
 export default function Page() {
   const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
+  const [logoUrl, setLogoUrl] = useState(""); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [initialImageUrl, setInitialImageUrl] = useState(""); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [companyId, setCompanyId] = useState("");
+
   useEffect(() => {
+    setCompanyId(uuidv4());
+
     fetch("/api/joblistings/sectors")
       .then((res) => {
         return res.json();
@@ -27,6 +35,7 @@ export default function Page() {
     ) as HTMLButtonElement;
     if (submitButton) submitButton.disabled = true;
     const companyData: CompanyAdminCreationDTO = {
+      companyId: companyId,
       companyName: formData.get("company_name") as string,
       aboutUs: formData.get("about_company") as string,
       companyEmail: formData.get("company_email") as string,
@@ -40,6 +49,7 @@ export default function Page() {
       companyWebsiteUrl: formData.get("company_url") as string,
       companyVision: formData.get("company_vision") as string,
       companyPhone: formData.get("company_phone") as string,
+      logoUrl: formData.get("logoUrl") as string,
     };
     try {
       const response = await fetch("/api/companies/create", {
@@ -53,6 +63,9 @@ export default function Page() {
       if (response.ok) {
         alert("Company created successfully!");
         form.reset();
+        setLogoUrl("");
+        setInitialImageUrl("");
+        setCompanyId(uuidv4()); // set to new uuid on success in case updating multiple companies at once without reloading page.
       } else {
         alert("Failed to create company");
       }
@@ -64,6 +77,35 @@ export default function Page() {
   }
   return (
     <form onSubmit={onSubmit} className="space-y-3">
+      <h1 className="text-xl font-bold">Add Company</h1>
+
+      {/* Company Logo Upload */}
+      <div className="grid grid-cols-1">
+        <label htmlFor="avatarUpload">Upload Company Logo</label>
+        <AvatarUpload
+          id="avatarUpload"
+          fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
+          accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
+          maxSizeMB={5}
+          userId={companyId}
+          onImageUpload={(url) => {
+            console.log("Received URL in Page.tsx:", url); // Log the received URL
+            // Handle the uploaded image URL
+            setLogoUrl(url);
+            const hiddenInput = document.getElementById(
+              "logoUrl",
+            ) as HTMLInputElement;
+            if (hiddenInput) {
+              hiddenInput.value = url;
+            }
+          }}
+          initialImageUrl=""
+          apiPath="/api/companies/avatar/upload"
+        />
+        {/* Hidden input to store avatar URL */}
+        <input type="hidden" name="logoUrl" id="logoUrl" />
+      </div>
+
       {/* Job Title */}
       <div className="grid grid-cols-1">
         <label htmlFor="company_name">Company name *</label>

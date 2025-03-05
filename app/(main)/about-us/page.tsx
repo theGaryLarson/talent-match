@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import RoundedButton from "@/app/ui/components/RoundedButton";
 import TrainingProviderMembers from "@/app/ui/components/TrainingProviderMembers";
+import { List, ListItem } from "@mui/material";
 
 export const metadata = {
   title: "About Us",
@@ -41,24 +42,28 @@ export default function page() {
               <b className="font-semibold text-blue-text2">
                 Tech Workforce Coalition
               </b>{" "}
-              is an open collaboration of Industry, Education, and Community
-              whose mission is to advance the Tech workforce at the pace of
-              technological evolution. It enables streamlined access by
-              employers to unique sources of talent not easily identified on the
-              big job boards.
+              bridges Washington’s gaps in critical IT/Cybersecurity jobs.​
+              Aligning job candidate competencies with advances in technology.
+              Guided by AWS, Microsoft, Accenture, ​ and WTIA, the Coalition
+              creates a platform for the state’s postsecondary education and
+              training institutions ​ to address industry priorities.​ Providing
+              your organization access to unique sources of quality talent. Our
+              Talent Finder Portal taps into​ talent pools that are not easily
+              accessible in traditional job boards. You’ll have direct access to
+              quality ​ candidates from:​
             </p>
-            <p>
-              Guided by AWS, Accenture, Microsoft, and WTIA, the Coalition
-              identifies and helps propagate best practices across its member
-              organizations.
-            </p>
-            <p>
-              We are funded by the US Department of Commerce Good Jobs Challenge
-              grant through the Washington Jobs Initiative (WJI), managed by the
-              Washington Student Achievement Council. A Seattle non-profit,
-              Computing for All, manages the Coalition in its role as sector
-              intermediary.
-            </p>
+            <List>
+              <ListItem>• Colleges with AWS curriculum​</ListItem>
+              <ListItem>
+                • Colleges with curriculum funded by the National Science
+                Foundation​
+              </ListItem>
+              <ListItem>• Colleges with AI curriculum​</ListItem>
+              <ListItem>
+                • Training partners delivering candidates with industry-valued
+                credentials​
+              </ListItem>
+            </List>
           </div>
           <header className="text-center">
             <h2 className="font-semibold uppercase leading-snug">Our Goal</h2>

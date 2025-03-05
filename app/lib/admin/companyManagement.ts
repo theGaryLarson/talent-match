@@ -3,9 +3,9 @@ import { CompanyAdminCreationDTO } from "@/data/dtos/CompanyAdminCreationDTO";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { PrismaClient } from "@prisma/client";
 import getPrismaClient from "../prismaClient.mjs";
-import { v4 as uuidv4 } from "uuid";
 import { validate as isUuid } from "uuid";
 const prisma: PrismaClient = getPrismaClient();
+
 export async function adminCreateCompany(companyData: CompanyAdminCreationDTO) {
   const Session = await auth();
   if (!Session?.user.roles.includes(Role.ADMIN)) {
@@ -17,9 +17,9 @@ export async function adminCreateCompany(companyData: CompanyAdminCreationDTO) {
   try {
     const result = await prisma.companies.create({
       data: {
+        company_id: companyData.companyId,
         company_name: companyData.companyName,
         company_email: companyData.companyEmail,
-        company_id: uuidv4(),
         about_us: companyData.aboutUs,
         size: companyData.size,
         year_founded: companyData.yearFounded,
@@ -31,6 +31,7 @@ export async function adminCreateCompany(companyData: CompanyAdminCreationDTO) {
         company_website_url: companyData.companyWebsiteUrl,
         company_phone: companyData.companyPhone,
         company_vision: companyData.companyVision,
+        company_logo_url: companyData.logoUrl,
       },
     });
     return result;

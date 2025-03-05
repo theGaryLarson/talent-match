@@ -45,49 +45,6 @@ export default function Page() {
         <div className="w-full relative justify-center items-center z-1 bg-blue-200">
           <div className="mt-8 px-4 laptop:px-24 flex-col justify-start items-center gap-5 inline-flex">
             <div className="p-4 flex-col justify-start items-center flex">
-              {/* About */}
-              <div className="justify-center items-center gap-12 mt-10 mb-20 flex-col laptop:flex-row laptop:inline-flex">
-                <div className="flex-col justify-center items-center gap-6 flex">
-                  <div className="w-full mb-6 h-36 flex justify-center items-center">
-                    <Image
-                      src="/images/landing/TWC-logo.svg"
-                      width={242}
-                      height={155}
-                      alt="TWC logo"
-                      className="w-1/2 sm-tablet:w-1/4 laptop:w-full"
-                    />
-                  </div>
-                  <div className="text-center text-sky-900 text-5xl font-normal font-['Roboto'] leading-10">
-                    About TWC
-                  </div>
-                </div>
-                {/* divider */}
-                <div className="h-56 w-px hidden laptop:flex flex-col justify-start items-start inline-flex">
-                  <div className="w-px h-px relative" />
-                  <div className="w-56 shrink origin-top-left rotate-90 border border-cyan-700"></div>
-                </div>
-                {/* about text */}
-                <div className="mt-12 laptop:mt-0 grow shrink basis-0">
-                  <span className="text-gray-900 text-xl font-normal font-['Roboto'] leading-loose">
-                    The{" "}
-                  </span>
-                  <span className="text-cyan-700 text-xl font-semibold font-['Roboto'] leading-loose">
-                    Washington Tech Workforce Coalition
-                  </span>
-                  <span className="text-gray-900 text-xl font-normal font-['Roboto'] leading-loose">
-                    {" "}
-                    is committed to diversifying the IT and cybersecurity sector
-                    by bridging the skills gap for underrepresented communities.
-                    We&apos;re actively expanding access to tech job
-                    opportunities and providing targeted training and mentorship
-                    programs. By fostering partnerships between industry
-                    leaders, education providers, and community organizations,
-                    we&apos;re creating a more inclusive and equitable tech
-                    ecosystem where everyone can thrive.
-                  </span>
-                </div>
-              </div>
-
               {/* Launching soon talent portal */}
               <div className="w-full desktop:w-3/4 pt-8 pb-0 laptop:pb-8 pl-8 pr-8 laptop:pr-0 bg-sky-950 rounded-3xl justify-start items-center gap-20">
                 <div className="w-full laptop:grid laptop:grid-cols-2 justify-center items-start gap-2.5">

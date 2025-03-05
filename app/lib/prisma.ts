@@ -597,6 +597,7 @@ export async function getIndustrySectors() {
       industry_sector_id: true,
       sector_title: true,
     },
+    orderBy: [{ sector_title: "asc" }],
   });
   return industrySectors;
 }
