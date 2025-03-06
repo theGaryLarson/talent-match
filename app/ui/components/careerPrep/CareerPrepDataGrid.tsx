@@ -6,7 +6,6 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import Link from "next/link";
 import { CareerPrepGridData } from "./NewCasesDataGrid";
 
-
 export default function CareerPrepDataGrid({
   clients,
 }: {

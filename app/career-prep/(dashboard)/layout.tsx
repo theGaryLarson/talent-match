@@ -60,13 +60,13 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
     },
     {
       href: "/career-prep/new-cases",
-      icon: <AssignmentOutlined/>,
+      icon: <AssignmentOutlined />,
       label: "New Cases",
     },
     {
-      href:"career-prep/pre-screened",
-      icon:<TaskOutlined />,
-      label:"Pre Screened"
+      href: "career-prep/pre-screened",
+      icon: <TaskOutlined />,
+      label: "Pre Screened",
     },
     {
       href: "/career-prep/placement-tracking",
@@ -144,26 +144,30 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
     </>
   );
 };
-const DashboardHeader = ({handleDrawerToggle}:{handleDrawerToggle:() => void})=>(
+const DashboardHeader = ({
+  handleDrawerToggle,
+}: {
+  handleDrawerToggle: () => void;
+}) => (
   <AppBar
-            position="sticky"
-            variant="outlined"
-            color="inherit"
-            sx={{ zIndex: "10000", height: "76px", justifyContent: "center" }}
-          >
-            <Toolbar sx={{ justifyContent: "space-between", zIndex: "20000" }}>
-              <Link href="/">
-                <span className="sr-only">Tech Workforce Coalition</span>
-                <Image
-                  src="/images/TWC_75x50_2024.svg"
-                  alt="Tech Workforce Coalition"
-                  width={75}
-                  height={50}
-                />
-              </Link>
-              
-              <Stack direction={"row"}>
-                {/*<IconButton
+    position="sticky"
+    variant="outlined"
+    color="inherit"
+    sx={{ zIndex: "10000", height: "76px", justifyContent: "center" }}
+  >
+    <Toolbar sx={{ justifyContent: "space-between", zIndex: "20000" }}>
+      <Link href="/">
+        <span className="sr-only">Tech Workforce Coalition</span>
+        <Image
+          src="/images/TWC_75x50_2024.svg"
+          alt="Tech Workforce Coalition"
+          width={75}
+          height={50}
+        />
+      </Link>
+
+      <Stack direction={"row"}>
+        {/*<IconButton
                   color="inherit"
                   aria-label="open notifications"
                   edge="start"
@@ -171,21 +175,21 @@ const DashboardHeader = ({handleDrawerToggle}:{handleDrawerToggle:() => void})=>
                 >
                   <NotificationsOutlined />
                 </IconButton>*/}
-                <AccountMenu/>
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  edge="start"
-                  onClick={handleDrawerToggle}
-                  sx={{ display:"block", ml:{ xs: 2, md: 4 }}}
-                >
-                  <Menu />
-                </IconButton>
-              </Stack>
-            </Toolbar>
-          </AppBar>
-)
-export default function layout({ children }: { children: React.ReactNode }){
+        <AccountMenu />
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{ display: "block", ml: { xs: 2, md: 4 } }}
+        >
+          <Menu />
+        </IconButton>
+      </Stack>
+    </Toolbar>
+  </AppBar>
+);
+export default function layout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -213,44 +217,43 @@ export default function layout({ children }: { children: React.ReactNode }){
       </div>
     );
   }
-      return (
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <DashboardHeader handleDrawerToggle={handleDrawerToggle}/>
-          <Drawer
-              variant="temporary"
-              anchor="right"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              ModalProps={{
-                keepMounted: true,
-              }}
-              sx={{
-                display: "block",
-                "& .MuiDrawer-paper": {
-                  boxSizing: "border-box",
-                  width: drawerWidth,
-                },
-              }}
-            >
-              <CareerNavDrawer session={session} />
-            </Drawer>
-          <Box
-            component="main"
-            sx={{
-              mt: "25px",
-              flexGrow: 1,
-              width: { md: `calc(100%)` },
-            }}
-          >
-            {children}
-          </Box>
-
-        </div>
-      );
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <DashboardHeader handleDrawerToggle={handleDrawerToggle} />
+      <Drawer
+        variant="temporary"
+        anchor="right"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          display: "block",
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+          },
+        }}
+      >
+        <CareerNavDrawer session={session} />
+      </Drawer>
+      <Box
+        component="main"
+        sx={{
+          mt: "25px",
+          flexGrow: 1,
+          width: { md: `calc(100%)` },
+        }}
+      >
+        {children}
+      </Box>
+    </div>
+  );
 }

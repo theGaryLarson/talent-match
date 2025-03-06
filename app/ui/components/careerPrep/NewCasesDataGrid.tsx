@@ -1,4 +1,3 @@
-
 "use client";
 import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import { PoolCategories } from "@/app/lib/poolAssignment";
@@ -21,7 +20,7 @@ export interface CareerPrepGridData {
   JobseekerCreatedAt: Date;
   JobseekerUpdatedAt: Date;
   EnrollmentDate: Date;
-  user_id:string;
+  user_id: string;
 }
 export default function NewCasesDataGrid({
   clients,
@@ -32,26 +31,24 @@ export default function NewCasesDataGrid({
     {
       field: "",
       sortable: false,
-      width:170,
+      width: 170,
       headerName: "Actions",
       renderCell: (params) => (
         <>
-        <Link href={`/career-prep/${params.id}`} className="LINK">
-          View Details
-        </Link>
-        
-        <SelfAssignCaseButton jobseekerId={params.row.jobseeker_id}/>
+          <Link href={`/career-prep/${params.id}`} className="LINK">
+            View Details
+          </Link>
+
+          <SelfAssignCaseButton jobseekerId={params.row.jobseeker_id} />
         </>
       ),
     },
     {
       field: "resume",
       sortable: false,
-      width:75,
+      width: 75,
       headerName: "Resume",
-      renderCell: (params) => (
-        <ViewResume userId={params.row.user_id}/>
-      ),
+      renderCell: (params) => <ViewResume userId={params.row.user_id} />,
     },
     { field: "first_name", headerName: "First Name" },
     { field: "last_name", headerName: "Last Name" },

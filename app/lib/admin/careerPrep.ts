@@ -186,26 +186,29 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
       const transformedData: CareerPrepGridData[] = data.map((item) => ({
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
-        HighestEdLevel:item.Jobseeker.highest_level_of_study_completed??"Unknown",
+        HighestEdLevel:
+          item.Jobseeker.highest_level_of_study_completed ?? "Unknown",
         last_name: item.Jobseeker?.users?.last_name || "",
-        "Pathway Title":item.Jobseeker.pathways?.pathway_title??'None',
-        email:item.Jobseeker.users.email,
-        EnrollmentDate:item.CaseMgmt?.createdAt??new Date(),
-        JobseekerUpdatedAt: item.Jobseeker?.updatedAt??new Date('1/1/1979'),
-        JobseekerCreatedAt:item.Jobseeker?.createdAt,
+        "Pathway Title": item.Jobseeker.pathways?.pathway_title ?? "None",
+        email: item.Jobseeker.users.email,
+        EnrollmentDate: item.CaseMgmt?.createdAt ?? new Date(),
+        JobseekerUpdatedAt: item.Jobseeker?.updatedAt ?? new Date("1/1/1979"),
+        JobseekerCreatedAt: item.Jobseeker?.createdAt,
         pronouns: item.pronouns,
         careerPrepTrackRecommendation: item.Jobseeker
           .careerPrepTrackRecommendation as CareerPrepTrack,
         assignedCareerPrepTrack: item.CaseMgmt
           ?.AssignedCareerPrepTrack as CareerPrepTrack,
         careerPrepAssessmentDate: item.assessmentDate,
-        user_id:item.Jobseeker.users.id,
+        user_id: item.Jobseeker.users.id,
         "CP Enrollment Status": item.CaseMgmt
           ?.prepEnrollmentStatus as CareerPrepStatus,
         careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
-        expectedEduCompletion: item.expectedEduCompletion as TimeUntilCompletion,
+        expectedEduCompletion:
+          item.expectedEduCompletion as TimeUntilCompletion,
         "Pool Type":
-          (item.Jobseeker?.assignedPool as PoolCategories) || PoolCategories.None,
+          (item.Jobseeker?.assignedPool as PoolCategories) ||
+          PoolCategories.None,
       }));
       return transformedData;
     } catch (e) {
@@ -225,101 +228,100 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
  * @return {Promise<CareerPrepJobseekerCardViewDTO[]>} A Promise resolving to an array of CareerPrepJobseekerCardViewDTO objects representing unmanaged Career Prep students.
  */
 export const getUnManagedCareerPrepStudents = async (): Promise<
-CareerPrepGridData[]
+  CareerPrepGridData[]
 > => {
   try {
-    const assessmentsWithoutCaseMgmt = await prisma.careerPrepAssessment.findMany(
-      {
+    const assessmentsWithoutCaseMgmt =
+      await prisma.careerPrepAssessment.findMany({
         select: selectCareerPrepStudentCardView,
         where: {
           CaseMgmt: {
             CaseManager: null,
           },
         },
-      },
-    );
+      });
     const transformedData: CareerPrepGridData[] =
       assessmentsWithoutCaseMgmt.map((item) => ({
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
-        HighestEdLevel:item.Jobseeker.highest_level_of_study_completed??"Unknown",
+        HighestEdLevel:
+          item.Jobseeker.highest_level_of_study_completed ?? "Unknown",
         last_name: item.Jobseeker?.users?.last_name || "",
-        "Pathway Title":item.Jobseeker.pathways?.pathway_title??'None',
-        email:item.Jobseeker.users.email,
-        EnrollmentDate:item.CaseMgmt?.createdAt??new Date(),
-        JobseekerUpdatedAt: item.Jobseeker?.updatedAt??new Date('1/1/1979'),
-        JobseekerCreatedAt:item.Jobseeker?.createdAt,
+        "Pathway Title": item.Jobseeker.pathways?.pathway_title ?? "None",
+        email: item.Jobseeker.users.email,
+        EnrollmentDate: item.CaseMgmt?.createdAt ?? new Date(),
+        JobseekerUpdatedAt: item.Jobseeker?.updatedAt ?? new Date("1/1/1979"),
+        JobseekerCreatedAt: item.Jobseeker?.createdAt,
         pronouns: item.pronouns,
         careerPrepTrackRecommendation: item.Jobseeker
           .careerPrepTrackRecommendation as CareerPrepTrack,
         assignedCareerPrepTrack: item.CaseMgmt
           ?.AssignedCareerPrepTrack as CareerPrepTrack,
         careerPrepAssessmentDate: item.assessmentDate,
-        user_id:item.Jobseeker.users.id,
+        user_id: item.Jobseeker.users.id,
         "CP Enrollment Status": item.CaseMgmt
           ?.prepEnrollmentStatus as CareerPrepStatus,
         careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
-        expectedEduCompletion: item.expectedEduCompletion as TimeUntilCompletion,
+        expectedEduCompletion:
+          item.expectedEduCompletion as TimeUntilCompletion,
         "Pool Type":
-          (item.Jobseeker?.assignedPool as PoolCategories) || PoolCategories.None,
+          (item.Jobseeker?.assignedPool as PoolCategories) ||
+          PoolCategories.None,
       }));
     return transformedData;
   } catch (error) {
-    return []
+    return [];
   }
-
 };
 
-
-
-export const getAllPreScreenedCareerPrepStudents = async ():Promise<CareerPrepGridData[]> => {
+export const getAllPreScreenedCareerPrepStudents = async (): Promise<
+  CareerPrepGridData[]
+> => {
   try {
-    const assessmentsWithoutCaseMgmt = await prisma.careerPrepAssessment.findMany(
-      {
+    const assessmentsWithoutCaseMgmt =
+      await prisma.careerPrepAssessment.findMany({
         select: selectCareerPrepStudentCardView,
         where: {
-          Jobseeker:{
-            careerPrepComplete:true
-          }
+          Jobseeker: {
+            careerPrepComplete: true,
+          },
         },
-      },
-    );
+      });
     const transformedData: CareerPrepGridData[] =
       assessmentsWithoutCaseMgmt.map((item) => ({
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
-        HighestEdLevel:item.Jobseeker.highest_level_of_study_completed??"Unknown",
+        HighestEdLevel:
+          item.Jobseeker.highest_level_of_study_completed ?? "Unknown",
         last_name: item.Jobseeker?.users?.last_name || "",
-        "Pathway Title":item.Jobseeker.pathways?.pathway_title??'None',
-        email:item.Jobseeker.users.email,
-        EnrollmentDate:item.CaseMgmt?.createdAt??new Date(),
-        JobseekerUpdatedAt: item.Jobseeker?.updatedAt??new Date('1/1/1979'),
-        JobseekerCreatedAt:item.Jobseeker?.createdAt,
+        "Pathway Title": item.Jobseeker.pathways?.pathway_title ?? "None",
+        email: item.Jobseeker.users.email,
+        EnrollmentDate: item.CaseMgmt?.createdAt ?? new Date(),
+        JobseekerUpdatedAt: item.Jobseeker?.updatedAt ?? new Date("1/1/1979"),
+        JobseekerCreatedAt: item.Jobseeker?.createdAt,
         pronouns: item.pronouns,
         careerPrepTrackRecommendation: item.Jobseeker
           .careerPrepTrackRecommendation as CareerPrepTrack,
         assignedCareerPrepTrack: item.CaseMgmt
           ?.AssignedCareerPrepTrack as CareerPrepTrack,
         careerPrepAssessmentDate: item.assessmentDate,
-        user_id:item.Jobseeker.users.id,
+        user_id: item.Jobseeker.users.id,
         "CP Enrollment Status": item.CaseMgmt
           ?.prepEnrollmentStatus as CareerPrepStatus,
         careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
-        expectedEduCompletion: item.expectedEduCompletion as TimeUntilCompletion,
+        expectedEduCompletion:
+          item.expectedEduCompletion as TimeUntilCompletion,
         "Pool Type":
-          (item.Jobseeker?.assignedPool as PoolCategories) || PoolCategories.None,
+          (item.Jobseeker?.assignedPool as PoolCategories) ||
+          PoolCategories.None,
       }));
     return transformedData;
   } catch (error) {
-    return []
+    return [];
   }
-  
-  
-  
+
   return [];
-}
-
-
+};
 
 /**
  * Assigns the authenticated user as the case manager for a specific jobseeker.
@@ -481,29 +483,29 @@ const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
         prepEnrollmentStatus: true,
         prepExpectedEndDate: true,
         AssignedCareerPrepTrack: true,
-        createdAt:true
+        createdAt: true,
       },
     },
     Jobseeker: {
       select: {
         assignedPool: true,
         careerPrepTrackRecommendation: true,
-        highest_level_of_study_completed:true,
-        createdAt:true,
-        updatedAt:true,
+        highest_level_of_study_completed: true,
+        createdAt: true,
+        updatedAt: true,
         users: {
           select: {
             first_name: true,
             last_name: true,
-            email:true,
-            id:true
+            email: true,
+            id: true,
           },
         },
-        pathways:{
-          select:{
-            pathway_title:true
-          }
-        }
+        pathways: {
+          select: {
+            pathway_title: true,
+          },
+        },
       },
     },
   };
@@ -969,7 +971,6 @@ export type CareerPrepEnrollmentDTO = {
   streetAddress: string;
   priorityPopulations: string;
 };
-
 
 /**
  * Submits a career preparation skills assessment with session data.

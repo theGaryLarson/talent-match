@@ -16,12 +16,16 @@ export default function SelfAssignCaseButton(props: { jobseekerId: string }) {
       });
 
       if (!response.ok) {
-        alert("Failed to self-assign case:"+ await response.text());
+        alert("Failed to self-assign case:" + (await response.text()));
         setClaimed(false);
       }
     } catch (error) {
       console.error("Error while self-assigning case:", error);
     }
   };
-  return <Button onClick={handleClick} disabled={claimed}>{claimed?"Claimed":"Claim"}</Button>;
+  return (
+    <Button onClick={handleClick} disabled={claimed}>
+      {claimed ? "Claimed" : "Claim"}
+    </Button>
+  );
 }

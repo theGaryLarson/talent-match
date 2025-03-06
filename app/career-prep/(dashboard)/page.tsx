@@ -11,7 +11,9 @@ export default async function Page() {
   )) as CareerPrepGridData[];
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
-      <h1 className="text-2xl font-medium">Career Prep Candidates (all eligible Job Seekers)</h1>
+      <h1 className="text-2xl font-medium">
+        Career Prep Candidates (all eligible Job Seekers)
+      </h1>
       <CareerPrepDataGrid clients={clients ?? []} />
     </main>
   );
