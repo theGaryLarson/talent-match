@@ -12,6 +12,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import {
+  AssignmentOutlined,
   CalendarMonthOutlined,
   LinkedIn,
   LogoutRounded,
@@ -59,8 +60,13 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
     },
     {
       href: "/career-prep/new-cases",
-      icon: <TaskOutlined />,
+      icon: <AssignmentOutlined/>,
       label: "New Cases",
+    },
+    {
+      href:"career-prep/pre-screened",
+      icon:<TaskOutlined />,
+      label:"Pre Screened"
     },
     {
       href: "/career-prep/placement-tracking",
