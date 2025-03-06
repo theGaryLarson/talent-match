@@ -4,21 +4,9 @@ import { PoolCategories } from "@/app/lib/poolAssignment";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import Link from "next/link";
+import { CareerPrepGridData } from "./NewCasesDataGrid";
 
-export interface CareerPrepGridData {
-  jobseeker_id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  careerPrepTrackRecommendation: string;
-  "CP Enrollment Status": CareerPrepStatus;
-  HighestEdLevel: string;
-  "Pool Type": PoolCategories;
-  "Pathway Title": string;
-  JobseekerCreatedAt: Date;
-  JobseekerUpdatedAt: Date;
-  EnrollmentDate: Date;
-}
+
 export default function CareerPrepDataGrid({
   clients,
 }: {

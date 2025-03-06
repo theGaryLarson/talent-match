@@ -1,7 +1,7 @@
 import { ExecuteSqlFile } from "@/app/lib/sql/sqlUtils";
-import CareerPrepDataGrid, {
-  CareerPrepGridData,
-} from "@/app/ui/components/careerPrep/CareerPrepDataGrid";
+import CareerPrepDataGrid from "@/app/ui/components/careerPrep/CareerPrepDataGrid";
+import { CareerPrepGridData } from "@/app/ui/components/careerPrep/NewCasesDataGrid";
+
 export const metadata = {
   title: "My Dashboard",
 };

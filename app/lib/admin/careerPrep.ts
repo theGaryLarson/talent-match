@@ -11,7 +11,7 @@ import { devLog } from "@/app/lib/utils";
 import TransactionClient = Prisma.TransactionClient;
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { JobStatus } from "../jobseekerJobTracking";
-import { CareerPrepGridData } from "@/app/ui/components/careerPrep/CareerPrepDataGrid";
+import { CareerPrepGridData } from "@/app/ui/components/careerPrep/NewCasesDataGrid";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -168,7 +168,7 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
 };
 
 export const getCareerPrepStudentsCardViewByCaseManagerSession =
-  async (): Promise<CareerPrepJobseekerCardViewDTO[] | null> => {
+  async (): Promise<CareerPrepGridData[]> => {
     try {
       const session = await auth();
       const data = await prisma.careerPrepAssessment.findMany({
@@ -183,31 +183,34 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
       });
       devLog("career prep card view", data);
       // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
-      const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
-        (item) => ({
-          jobseekerId: item.jobseekerId,
-          firstName: item.Jobseeker?.users?.first_name || "",
-          lastName: item.Jobseeker?.users?.last_name || "",
-          pronouns: item.pronouns,
-          recommendedCareerPrepTrack: item.Jobseeker
-            ?.careerPrepTrackRecommendation as CareerPrepTrack,
-          assignedCareerPrepTrack: item.CaseMgmt
-            ?.AssignedCareerPrepTrack as CareerPrepTrack,
-          careerPrepAssessmentDate: item.assessmentDate,
-          careerPrepEnrollmentStatus: item.CaseMgmt
-            ?.prepEnrollmentStatus as CareerPrepStatus,
-          careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
-          expectedEduCompletion:
-            item.expectedEduCompletion as TimeUntilCompletion,
-          assignedPool:
-            (item.Jobseeker?.assignedPool as PoolCategories) ||
-            PoolCategories.None,
-        }),
-      );
+      const transformedData: CareerPrepGridData[] = data.map((item) => ({
+        jobseeker_id: item.jobseekerId,
+        first_name: item.Jobseeker?.users?.first_name || "",
+        HighestEdLevel:item.Jobseeker.highest_level_of_study_completed??"Unknown",
+        last_name: item.Jobseeker?.users?.last_name || "",
+        "Pathway Title":item.Jobseeker.pathways?.pathway_title??'None',
+        email:item.Jobseeker.users.email,
+        EnrollmentDate:item.CaseMgmt?.createdAt??new Date(),
+        JobseekerUpdatedAt: item.Jobseeker?.updatedAt??new Date('1/1/1979'),
+        JobseekerCreatedAt:item.Jobseeker?.createdAt,
+        pronouns: item.pronouns,
+        careerPrepTrackRecommendation: item.Jobseeker
+          .careerPrepTrackRecommendation as CareerPrepTrack,
+        assignedCareerPrepTrack: item.CaseMgmt
+          ?.AssignedCareerPrepTrack as CareerPrepTrack,
+        careerPrepAssessmentDate: item.assessmentDate,
+        user_id:item.Jobseeker.users.id,
+        "CP Enrollment Status": item.CaseMgmt
+          ?.prepEnrollmentStatus as CareerPrepStatus,
+        careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
+        expectedEduCompletion: item.expectedEduCompletion as TimeUntilCompletion,
+        "Pool Type":
+          (item.Jobseeker?.assignedPool as PoolCategories) || PoolCategories.None,
+      }));
       return transformedData;
     } catch (e) {
       console.error("Error fetching career prep students card view:", e);
-      return null;
+      return [];
     } finally {
       prisma.$disconnect();
     }
@@ -251,6 +254,7 @@ CareerPrepGridData[]
       assignedCareerPrepTrack: item.CaseMgmt
         ?.AssignedCareerPrepTrack as CareerPrepTrack,
       careerPrepAssessmentDate: item.assessmentDate,
+      user_id:item.Jobseeker.users.id,
       "CP Enrollment Status": item.CaseMgmt
         ?.prepEnrollmentStatus as CareerPrepStatus,
       careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
@@ -435,7 +439,8 @@ const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
           select: {
             first_name: true,
             last_name: true,
-            email:true
+            email:true,
+            id:true
           },
         },
         pathways:{

@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import Link from "next/link";
 import SelfAssignCaseButton from "./SelfAsignCaseButton";
+import ViewResume from "./ViewResume";
 
 export interface CareerPrepGridData {
   jobseeker_id: string;
@@ -20,6 +21,7 @@ export interface CareerPrepGridData {
   JobseekerCreatedAt: Date;
   JobseekerUpdatedAt: Date;
   EnrollmentDate: Date;
+  user_id:string;
 }
 export default function NewCasesDataGrid({
   clients,
@@ -28,17 +30,27 @@ export default function NewCasesDataGrid({
 }) {
   const columns: GridColDef[] = [
     {
-      field: "actions",
+      field: "",
       sortable: false,
-      width:200,
+      width:170,
       headerName: "Actions",
       renderCell: (params) => (
         <>
         <Link href={`/career-prep/${params.id}`} className="LINK">
           View Details
         </Link>
+        
         <SelfAssignCaseButton jobseekerId={params.row.jobseeker_id}/>
         </>
+      ),
+    },
+    {
+      field: "resume",
+      sortable: false,
+      width:75,
+      headerName: "Resume",
+      renderCell: (params) => (
+        <ViewResume userId={params.row.user_id}/>
       ),
     },
     { field: "first_name", headerName: "First Name" },
