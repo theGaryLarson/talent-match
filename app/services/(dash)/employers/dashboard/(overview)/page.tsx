@@ -19,8 +19,9 @@ import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 async function processJobs(
   jobs: JobPostCreationDTO[],
 ): Promise<JobPostCreationDTO[]> {
+  const recentJobs = jobs.slice(0, 3);
   await Promise.all(
-    jobs.map(async (job) => {
+    recentJobs.map(async (job) => {
       const processJobZip = async () => {
         if (job.zip) {
           const results = await searchLocations(job.zip, "zip");
@@ -60,16 +61,18 @@ export default async function Page() {
   const session = await auth();
   const proInfo = await getEmployerById(session?.user.employerId ?? "");
   const company = await getCompanyById(proInfo?.company_id ?? "");
-  const jobs = await getMyJobListings();
-  const activeJobs = jobs.reduce(
+  const jobsWithScreenedApplicants = (await getMyJobListings()).filter(
+    (job) => job.jobApplications.length > 0,
+  );
+  const activeJobs = jobsWithScreenedApplicants.reduce(
     (total, job) => total + (job.unpublish_date > new Date() ? 1 : 0),
     0,
   );
-  const preScreened = jobs.reduce(
+  const preScreened = jobsWithScreenedApplicants.reduce(
     (total, job) => total + job.jobApplications.length,
     0,
   );
-  const recentJobs = await processJobs(jobs);
+  const recentJobs = await processJobs(jobsWithScreenedApplicants);
 
   if (!proInfo || company == undefined) {
     return (

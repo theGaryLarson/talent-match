@@ -51,6 +51,10 @@ export default function EmployerRecentJobPosts({
     }
   };
 
+  if (jobs.length == 0) {
+    return <p>No prescreened applicants currently, check back later</p>;
+  }
+
   return (
     <>
       <Card variant="outlined" sx={{ display: { xs: "none", sm: "block" } }}>
