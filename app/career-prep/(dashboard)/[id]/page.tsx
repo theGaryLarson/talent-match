@@ -55,10 +55,11 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
         />
       </h2>
       <h2>
-        <b>
-          Screened?
-        </b>
-        <ScreenedDropdown screened={client.data.prescreened} jobseekerId={client.data.jobseekerId}/>
+        <b>Screened?</b>
+        <ScreenedDropdown
+          screened={client.data.prescreened}
+          jobseekerId={client.data.jobseekerId}
+        />
       </h2>
       <h2>
         <b>Auto Recommended Track: </b>
