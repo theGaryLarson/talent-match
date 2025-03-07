@@ -135,7 +135,6 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
     const data = await prisma.careerPrepAssessment.findMany({
       select: selectCareerPrepStudentCardView,
     });
-    devLog("career prep card view", data);
     // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
     const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
       (item) => ({
@@ -166,6 +165,7 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
     prisma.$disconnect();
   }
 };
+
 export const getCareerPrepStudentsCardViewByCaseManagerSession =
   async (): Promise<CareerPrepJobseekerCardViewDTO[] | null> => {
     try {
@@ -484,8 +484,71 @@ export const updateCareerPrepStatusCardView = async (
   } catch (e) {
     console.error("Could not update student card view", e);
     return null;
-  } finally {
-    prisma.$disconnect();
+  }
+};
+
+/**
+ * Transactional wrapper for updating the career preparation status card view for a job seeker.
+ *
+ * @param {TransactionClient} tx - The Prisma transaction client used for database operations.
+ * @param {string} jobseekerId - The unique identifier for the job seeker.
+ * @param {CareerPrepStatus} [status] - The new career preparation status for the job seeker.
+ *
+ * @returns {Promise<{ status: CareerPrepStatus; expectedEndDate: Date | null } | null>}
+ * A promise that resolves with an object containing the updated status and expected end date,
+ * or null if an error occurs.
+ *
+ * @description
+ * This function must be invoked within a Prisma.$transaction callback to ensure
+ * the transaction context is maintained. Using the global Prisma client instead of
+ * the transaction client (tx) may lead to transaction errors.
+ */
+export const updateCareerPrepStatusCardViewTx = async (
+  tx: TransactionClient,
+  jobseekerId: string,
+  status?: CareerPrepStatus,
+): Promise<{
+  status: CareerPrepStatus;
+  expectedEndDate: Date | null;
+} | null> => {
+  try {
+    const data = await tx.careerPrepAssessment.findUnique({
+      where: {
+        jobseekerId: jobseekerId,
+      },
+      select: selectCareerPrepStudentCardView,
+    });
+    const studentStatus = await tx.caseMgmt.upsert({
+      where: {
+        jobseekerId: jobseekerId,
+      },
+      update: {
+        ...(status ? { prepEnrollmentStatus: status } : {}),
+      },
+      create: {
+        ...(status
+          ? { prepEnrollmentStatus: status }
+          : { prepEnrollmentStatus: CareerPrepStatus.Applied }),
+        careerPrepTrack: data?.Jobseeker.careerPrepTrackRecommendation!,
+        PrepAssessment: {
+          connect: {
+            jobseekerId: jobseekerId,
+          },
+        },
+        // CaseManager: {
+        //   connect: {
+        //     id: session?.user.id!,
+        //   },
+        // },
+      },
+    });
+    return {
+      status: studentStatus.prepEnrollmentStatus as CareerPrepStatus,
+      expectedEndDate: studentStatus.prepExpectedEndDate,
+    };
+  } catch (e) {
+    console.error("Could not update student card view", e);
+    return null;
   }
 };
 
@@ -947,7 +1010,7 @@ export const submitCareerPrepAssessment = async (
  * @returns
  */
 export const getCareerPrepAssessment = async (jobseekerId: string) => {
-  //todo: add find on careerprepAssesmert
+  //todo: add find on careerPrepAssessment
   try {
     const result = await prisma.careerPrepAssessment.findUnique({
       where: { jobseekerId: jobseekerId },
@@ -983,9 +1046,10 @@ export const submitCareerPrepEnrollment = async (
   devLog("DTO", data);
   try {
     const result = await prisma.$transaction(
-      async (prisma) => {
-        await updateCareerPrepEnrollment(prisma, jobseekerId, data);
-        await updateCareerPrepStatusCardView(
+      async (tx) => {
+        await updateCareerPrepEnrollment(tx, jobseekerId, data);
+        await updateCareerPrepStatusCardViewTx(
+          tx,
           jobseekerId,
           CareerPrepStatus.Enrolled,
         );
@@ -1409,7 +1473,7 @@ const updateCareerPrepEnrollment = async (
   enrollment: CareerPrepEnrollmentDTO,
 ): Promise<{ success: boolean; status: number }> => {
   try {
-    prisma.careerPrepAssessment.update({
+    await prisma.careerPrepAssessment.update({
       where: {
         jobseekerId,
       },

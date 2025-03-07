@@ -8,27 +8,35 @@ export default async function EmployerPageBanner() {
   return (
     <div
       className={
-        "h-[1000px] flex items-center bg-linear-to-b from-primary-main to-[#39b2c2] px-[16px] sm-tablet:px-[50px] laptop:h-[854px] laptop:px-[100px]"
+        "h-[700px] laptop:h-[700px] flex items-center bg-linear-to-b from-primary-main to-[#39b2c2] px-[16px] sm-tablet:px-[50px] laptop:px-[100px]"
       }
     >
-      <div className="inline-flex h-[750px] w-[487px] flex-col items-start justify-start gap-2">
+      <div className="inline-flex flex-col items-start justify-start gap-2">
         <div
           className="self-stretch font-normal capitalize leading-[105.60px] text-white"
           style={{ fontSize: "clamp(4rem, 24vw, 5rem)" }}
         >
-          Where you discover Local tech talent{" "}
+          Unique Access to Undiscovered Talent​{" "}
         </div>
-        <div className="self-stretch  text-[22px] font-normal leading-[30.80px] text-white">
-          Connect with quality local candidates in our Talent Portal
+        <div className="self-stretch text-[22px] font-normal leading-[30.80px] text-white">
+          The Talent Finder Portal creates a recruiting gateway primarily
+          designed for Public​
         </div>
         <div className="flex flex-col items-start justify-start">
           <div className="relative h-[33.21px] w-px" />
         </div>
-        <RoundedButton
-          content={"Search Talent"}
-          link={"/services/talent-search"}
-          invertColor={false}
-        />
+        <div className="gap-4 flex flex-row items-start justify-start">
+          <RoundedButton
+            content={"Search Talent"}
+            link={"/services/talent-search"}
+            invertColor={false}
+          />
+          <RoundedButton
+            content={"Post Jobs"}
+            link={"mailto:susanne.mata@computingforall.org"}
+            invertColor={false}
+          />
+        </div>
       </div>
     </div>
   );

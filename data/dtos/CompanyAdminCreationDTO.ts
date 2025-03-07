@@ -1,4 +1,5 @@
 export interface CompanyAdminCreationDTO {
+  companyId: string;
   industrySectorId?: string;
   companyName: string;
   companyLogoUrl?: string;
@@ -17,4 +18,5 @@ export interface CompanyAdminCreationDTO {
   companyAddresses?: string[];
   companySocialLinks?: string[];
   companyTestimonials?: string[];
+  logoUrl?: string | null;
 }

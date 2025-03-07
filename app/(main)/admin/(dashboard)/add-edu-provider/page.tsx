@@ -83,10 +83,10 @@ export default function Page() {
         <label htmlFor="avatarUpload">Upload Training Provider Logo</label>
         <AvatarUpload
           id="avatarUpload"
-          fileTypeText="SVG, PNG or JPG"
-          accept=".png,.jpg,.jpeg,.svg"
-          maxSizeMB={1}
-          userId="user-id-placeholder" // Replace with actual user ID
+          fileTypeText="File types: SVG, PNG, JPG, GIF, or WEBP"
+          accept=".svg,.png,.jpg,.jpeg,.gif,.webp"
+          maxSizeMB={5}
+          userId={eduProviderId}
           onImageUpload={(url) => {
             console.log("Received URL in Page.tsx:", url); // Log the received URL
             // Handle the uploaded image URL
