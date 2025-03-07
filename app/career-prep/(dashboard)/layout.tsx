@@ -1,25 +1,16 @@
 "use client";
 import "@/app/ui/admin.css";
 import Link from "next/link";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import CasesOutlinedIcon from "@mui/icons-material/CasesOutlined";
-import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined";
-import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
-import { BookmarkIcon } from "@heroicons/react/24/outline";
 import {
   AssignmentOutlined,
   CalendarMonthOutlined,
-  LinkedIn,
   LogoutRounded,
   Menu,
   //NotificationsOutlined,
   PersonOutlineRounded,
-  QuestionAnswerOutlined,
   TaskOutlined,
   WorkOutlineRounded,
 } from "@mui/icons-material";
@@ -27,7 +18,6 @@ import {
   AppBar,
   Box,
   Drawer,
-  Grid2,
   IconButton,
   Stack,
   Toolbar,
@@ -38,8 +28,6 @@ import { useSession } from "next-auth/react";
 import { useCallback, useState } from "react";
 import { usePathname } from "next/navigation";
 import PillButton from "@/app/ui/components/PillButton";
-import Header from "@/app/ui/Header";
-import Footer from "@/app/ui/Footer";
 import AccountMenu from "@/app/ui/components/mui/AccountMenu";
 
 const drawerWidth = 260;

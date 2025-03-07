@@ -1,5 +1,4 @@
 import { getUnManagedCareerPrepStudents } from "@/app/lib/admin/careerPrep";
-import CareerPrepStudentsCard from "@/app/ui/components/careerPrep/CareerPrepStudentsCard";
 import NewCasesDataGrid from "@/app/ui/components/careerPrep/NewCasesDataGrid";
 export const metadata = {
   title: "My Dashboard",
