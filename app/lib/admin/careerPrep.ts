@@ -270,6 +270,7 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
       }));
     return transformedData;
   } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -317,6 +318,7 @@ export const getAllPreScreenedCareerPrepStudents = async (): Promise<
       }));
     return transformedData;
   } catch (error) {
+    console.error(error);
     return [];
   }
 
@@ -328,7 +330,7 @@ export async function setPresreenedStatus(
   prescreened: boolean,
 ) {
   try {
-    let result = await prisma.jobseekers.update({
+    const result = await prisma.jobseekers.update({
       where: {
         jobseeker_id: jobsekerId,
       },
@@ -337,7 +339,9 @@ export async function setPresreenedStatus(
       },
     });
     return result;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**

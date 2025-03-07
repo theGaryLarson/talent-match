@@ -1,6 +1,4 @@
 "use client";
-import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
-import { PoolCategories } from "@/app/lib/poolAssignment";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import Link from "next/link";
