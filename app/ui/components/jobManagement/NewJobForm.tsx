@@ -195,10 +195,7 @@ export default function NewJobForm({
       );
     }
     if (activeStep === 1) {
-      const basicValid =
-        employmentType.trim() !== "" &&
-        location.trim() !== "" &&
-        workEnvironment.trim() !== "";
+      const basicValid = employmentType.trim() !== "" && location.trim() !== "";
       const earnLearnValid =
         employmentType === EmploymentType.EarnAndLearn
           ? earnAndLearnType
@@ -218,8 +215,7 @@ export default function NewJobForm({
       return (
         basicValid &&
         earnLearnValid &&
-        durationValid &&
-        datesValid &&
+        (durationValid || datesValid) &&
         compensationValid
       );
     }
@@ -528,7 +524,11 @@ export default function NewJobForm({
             <FormControl fullWidth>
               <Grid2 container direction="row" spacing={2}>
                 <div>
-                  <FormLabel required>Earn and Learn Type</FormLabel>
+                  <FormLabel
+                    required={employmentType === EmploymentType.EarnAndLearn}
+                  >
+                    Earn and Learn Type
+                  </FormLabel>
                   <Select
                     fullWidth
                     disabled={employmentType !== EmploymentType.EarnAndLearn}
@@ -550,7 +550,7 @@ export default function NewJobForm({
             </FormControl>
 
             <FormControl fullWidth>
-              <FormLabel required>Employment Duration</FormLabel>
+              <FormLabel>Employment Duration</FormLabel>
               <Grid2 container direction="row" spacing={2}>
                 <TextField
                   required
@@ -580,7 +580,7 @@ export default function NewJobForm({
             </FormControl>
 
             <FormControl>
-              <FormLabel required>Start Date</FormLabel>
+              <FormLabel>Start Date</FormLabel>
               <DatePicker
                 disablePast
                 disabled={employmentIsPermanent === "permanent"}
@@ -591,7 +591,7 @@ export default function NewJobForm({
             </FormControl>
 
             <FormControl>
-              <FormLabel required>End Date</FormLabel>
+              <FormLabel>End Date</FormLabel>
               <DatePicker
                 disablePast
                 disabled={employmentIsPermanent === "permanent"}
@@ -641,7 +641,7 @@ export default function NewJobForm({
             </FormControl>
             <div>
               <FormControl>
-                <FormLabel required>Work Environment</FormLabel>
+                <FormLabel>Work Environment</FormLabel>
                 <Select
                   required
                   value={workEnvironment}
