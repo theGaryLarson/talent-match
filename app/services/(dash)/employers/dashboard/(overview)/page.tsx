@@ -61,18 +61,18 @@ export default async function Page() {
   const session = await auth();
   const proInfo = await getEmployerById(session?.user.employerId ?? "");
   const company = await getCompanyById(proInfo?.company_id ?? "");
-  const jobsWithScreenedApplicants = (await getMyJobListings()).filter(
-    (job) => job.jobApplications.length > 0,
-  );
-  const activeJobs = jobsWithScreenedApplicants.reduce(
+  const jobs = await getMyJobListings();
+  const activeJobs = jobs.reduce(
     (total, job) => total + (job.unpublish_date > new Date() ? 1 : 0),
     0,
   );
-  const preScreened = jobsWithScreenedApplicants.reduce(
+  const preScreened = jobs.reduce(
     (total, job) => total + job.jobApplications.length,
     0,
   );
-  const recentJobs = await processJobs(jobsWithScreenedApplicants);
+  const recentJobs = await processJobs(
+    jobs.filter((job) => job.jobApplications.length > 0),
+  );
 
   if (!proInfo || company == undefined) {
     return (
