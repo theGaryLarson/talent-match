@@ -283,7 +283,7 @@ export const getAllPreScreenedCareerPrepStudents = async (): Promise<
         select: selectCareerPrepStudentCardView,
         where: {
           Jobseeker: {
-            careerPrepComplete: true,
+            prescreened:true,
           },
         },
       });
@@ -322,6 +322,22 @@ export const getAllPreScreenedCareerPrepStudents = async (): Promise<
 
   return [];
 };
+
+export  async function setPresreenedStatus(jobsekerId:string, prescreened:boolean){
+  try {
+    let result = await prisma.jobseekers.update({
+      where:{
+        jobseeker_id: jobsekerId
+      },
+      data:{
+        prescreened:prescreened
+      }
+    })
+    return result
+  } catch (error) {
+    
+  }
+}
 
 /**
  * Assigns the authenticated user as the case manager for a specific jobseeker.
@@ -405,6 +421,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
       prepEnrollmentStatus: data.CaseMgmt
         ?.prepEnrollmentStatus as CareerPrepStatus,
       prepStartDate: data.CaseMgmt?.prepStartDate?.toISOString(),
+      prescreened:data.Jobseeker.prescreened,
       prepExpectedEndDate: data.CaseMgmt?.prepExpectedEndDate?.toISOString(),
       prepActualEndDate: data.CaseMgmt?.prepActualEndDate?.toISOString(),
       firstName: data.Jobseeker?.users?.first_name!,
@@ -491,6 +508,7 @@ const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
         assignedPool: true,
         careerPrepTrackRecommendation: true,
         highest_level_of_study_completed: true,
+        prescreened:true,
         createdAt: true,
         updatedAt: true,
         users: {
@@ -688,6 +706,7 @@ const selectCareerPrepStudentDetailView /*: Prisma.CareerPrepAssessmentSelect*/ 
         portfolio_url: true,
         linkedin_url: true,
         assignedPool: true,
+        prescreened:true,
         careerPrepTrackRecommendation: true,
         users: {
           select: {
@@ -740,6 +759,7 @@ export interface CareerPrepJobseekerDetailViewDTO {
   pronouns: string;
   emailAddress: string;
   pathway: string;
+  prescreened: boolean;
   education: HighestCompletedEducationLevel;
   eduProviders?: PartnerTrainingProvider[];
   expectedEduCompletion: TimeUntilCompletion;
