@@ -577,7 +577,7 @@ export default memo(function Educations({
               required
               value={education[classEnrollmentStatus] as string}
             >
-              Enrollment status: *
+              Enrollment status:
             </SelectOptionsWithLabel>
             {/*end add for WJI data collection alignment*/}
           </div>
