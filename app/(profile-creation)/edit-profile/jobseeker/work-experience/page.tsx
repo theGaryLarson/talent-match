@@ -67,46 +67,52 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
 
   const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
-  const initFilteredWorkExp = workExperienceData.workExperiences
-  ?.filter((exp) => !exp.isInternship)
-  .map(
-    (exp): WorkExperienceData => ({
-      workId: exp.workId,
-      company: exp.company,
-      sectorObject: {
-        industry_sector_id: exp.sectorId ?? "",
-        sector_title: "",
-      },
-      techAreaObject: { id: exp.techAreaId ?? "", title: "" },
-      jobTitle: exp.jobTitle,
-      startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
-      endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
-      isCurrentJob: exp.isCurrentJob,
-      responsibilities: exp.responsibilities,
-    }),
-  ) ?? [];
+  const initFilteredWorkExp =
+    workExperienceData.workExperiences
+      ?.filter((exp) => !exp.isInternship)
+      .map(
+        (exp): WorkExperienceData => ({
+          workId: exp.workId,
+          company: exp.company,
+          sectorObject: {
+            industry_sector_id: exp.sectorId ?? "",
+            sector_title: "",
+          },
+          techAreaObject: { id: exp.techAreaId ?? "", title: "" },
+          jobTitle: exp.jobTitle,
+          startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
+          endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
+          isCurrentJob: exp.isCurrentJob,
+          responsibilities: exp.responsibilities,
+        }),
+      ) ?? [];
 
-  const initFilteredInternshipExp = workExperienceData.workExperiences
-  ?.filter((exp) => exp.isInternship)
-  .map(
-    (exp): WorkExperienceData => ({
-      workId: exp.workId,
-      company: exp.company,
-      sectorObject: {
-        industry_sector_id: exp.sectorId ?? "",
-        sector_title: "",
-      },
-      techAreaObject: { id: exp.techAreaId ?? "", title: "" },
-      jobTitle: exp.jobTitle,
-      startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
-      endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
-      isCurrentJob: exp.isCurrentJob,
-      responsibilities: exp.responsibilities,
-    }),
-  ) ?? [];
+  const initFilteredInternshipExp =
+    workExperienceData.workExperiences
+      ?.filter((exp) => exp.isInternship)
+      .map(
+        (exp): WorkExperienceData => ({
+          workId: exp.workId,
+          company: exp.company,
+          sectorObject: {
+            industry_sector_id: exp.sectorId ?? "",
+            sector_title: "",
+          },
+          techAreaObject: { id: exp.techAreaId ?? "", title: "" },
+          jobTitle: exp.jobTitle,
+          startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
+          endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
+          isCurrentJob: exp.isCurrentJob,
+          responsibilities: exp.responsibilities,
+        }),
+      ) ?? [];
 
-  const [hasWorkExp, setHasWorkExp] = useState<boolean | null>(initFilteredWorkExp.length > 0 ? true : null);
-  const [hasInternshipExp, setHasInternshipExp] = useState<boolean | null>(initFilteredInternshipExp.length > 0 ? true : null);
+  const [hasWorkExp, setHasWorkExp] = useState<boolean | null>(
+    initFilteredWorkExp.length > 0 ? true : null,
+  );
+  const [hasInternshipExp, setHasInternshipExp] = useState<boolean | null>(
+    initFilteredInternshipExp.length > 0 ? true : null,
+  );
 
   const [data, setData] = useState<Data>({
     yearsWorkExperience: workExperienceData.yearsWorkExperience,
@@ -258,11 +264,13 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     responsibilities: exp.responsibilities,
                   }),
                 ) ?? [];
-            
-            if (filteredWorkExp.length === 0) filteredWorkExp.push(defaultWorkExperienceData());
+
+            if (filteredWorkExp.length === 0)
+              filteredWorkExp.push(defaultWorkExperienceData());
             else setHasWorkExp(true);
 
-            if (filteredInternshipExp.length === 0) filteredInternshipExp.push(defaultInternshipExperienceData());
+            if (filteredInternshipExp.length === 0)
+              filteredInternshipExp.push(defaultInternshipExperienceData());
             else setHasInternshipExp(true);
 
             setData({
@@ -426,7 +434,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         <form onSubmit={handleSubmit}>
           <fieldset className="work-experience-groups">
             <legend>
-              <p>Share your professional journey, even if it's not tech-related. Employers value transferable skills like teamwork, communication, and problem-solving.</p>
+              <p>
+                Share your professional journey, even if it's not tech-related.
+                Employers value transferable skills like teamwork,
+                communication, and problem-solving.
+              </p>
               <h2>Work experience</h2>
             </legend>
             <RadioGroup>
@@ -489,7 +501,11 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
           </fieldset>
           <fieldset className="internship-experience-groups">
             <legend>
-              <p>Internships demonstrate your commitment to learning and growth. Highlight your hands-on experience and how it's prepared you for your career.</p>
+              <p>
+                Internships demonstrate your commitment to learning and growth.
+                Highlight your hands-on experience and how it's prepared you for
+                your career.
+              </p>
               <h2>Internship experience</h2>
             </legend>
             <RadioGroup>

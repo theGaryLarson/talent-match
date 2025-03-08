@@ -66,8 +66,12 @@ export default function CreateJobseekerProfileEducationPage() {
     educationData.highestLevelOfStudy,
   );
 
-  const [hasEduHistory, setHasEduHistory] = useState<boolean | null>(educationData.educations.length > 0 ? true : null);
-  const [hasCerts, setHasCerts] = useState<boolean | null>(educationData.certifications.length > 0 ? true : null);
+  const [hasEduHistory, setHasEduHistory] = useState<boolean | null>(
+    educationData.educations.length > 0 ? true : null,
+  );
+  const [hasCerts, setHasCerts] = useState<boolean | null>(
+    educationData.certifications.length > 0 ? true : null,
+  );
 
   const [data, setData] = useState<Data>({
     projectExperiences: educationData.projects.map(
@@ -123,9 +127,9 @@ export default function CreateJobseekerProfileEducationPage() {
         programObject:
           education.programId && education.programName
             ? {
-              id: education.programId,
-              title: education.programName,
-            }
+                id: education.programId,
+                title: education.programName,
+              }
             : undefined,
         programName: education.programName,
         programId: education.programId,
@@ -253,16 +257,17 @@ export default function CreateJobseekerProfileEducationPage() {
               if (fetchedData.educations?.length !== 0) {
                 educationData.educations = fetchedData.educations;
                 setHasEduHistory(true);
-              }
-              else {
-                educationData.educations = [{
-                  ...defaultEducationData(),
-                  gradDate: "",
-                  startDate: "",
-                  programId: undefined,
-                  edProviderId: "",
-                  enrollmentStatus: undefined,
-                }];
+              } else {
+                educationData.educations = [
+                  {
+                    ...defaultEducationData(),
+                    gradDate: "",
+                    startDate: "",
+                    programId: undefined,
+                    edProviderId: "",
+                    enrollmentStatus: undefined,
+                  },
+                ];
               }
               if (fetchedData.projects?.length !== 0) {
                 educationData.projects = fetchedData.projects;
@@ -270,13 +275,14 @@ export default function CreateJobseekerProfileEducationPage() {
               if (fetchedData.certifications?.length !== 0) {
                 educationData.certifications = fetchedData.certifications;
                 setHasCerts(true);
-              }
-              else {
-                educationData.certifications = [{
-                  ...defaultLicenseData(),
-                  issueDate: undefined,
-                  expiryDate: undefined,
-                }];
+              } else {
+                educationData.certifications = [
+                  {
+                    ...defaultLicenseData(),
+                    issueDate: undefined,
+                    expiryDate: undefined,
+                  },
+                ];
               }
 
               setData({
@@ -309,9 +315,9 @@ export default function CreateJobseekerProfileEducationPage() {
                       programObject:
                         education.programId && education.programName
                           ? {
-                            id: education.programId,
-                            title: education.programName,
-                          }
+                              id: education.programId,
+                              title: education.programName,
+                            }
                           : undefined,
                       programName: education.programName,
                       programId: education.programId,
@@ -531,7 +537,14 @@ export default function CreateJobseekerProfileEducationPage() {
         <ProgressBarFlat progress={(4 / 6) * 100} />
         <p>Step 4/6</p>
         <h1>Education</h1>
-        <p>The Talent Portal connects you to in-demand technical training through our coalition partners. Complete your training, and we'll connect you directly with employer partners actively seeking your skills. Whether you've completed a technical training program, are finishing a technical degree, or just starting your tech journey, we have resources to help you succeed.</p>
+        <p>
+          The Talent Portal connects you to in-demand technical training through
+          our coalition partners. Complete your training, and we'll connect you
+          directly with employer partners actively seeking your skills. Whether
+          you've completed a technical training program, are finishing a
+          technical degree, or just starting your tech journey, we have
+          resources to help you succeed.
+        </p>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
           <fieldset>
@@ -587,16 +600,19 @@ export default function CreateJobseekerProfileEducationPage() {
                 No
               </div>
             </RadioGroup>
-            {hasEduHistory && <Educations
-              data={data.educations}
-              hasUnmetRequired={hasUnmetRequired}
-              onUpdate={handleUpdate}
-              onRemove={removeEducation}
-            />}
+            {hasEduHistory && (
+              <Educations
+                data={data.educations}
+                hasUnmetRequired={hasUnmetRequired}
+                onUpdate={handleUpdate}
+                onRemove={removeEducation}
+              />
+            )}
             <PillButton
               variant="outlined"
               onClick={addNewEducation}
-              hidden={!hasEduHistory}>
+              hidden={!hasEduHistory}
+            >
               <Add className="mr-2 h-5 w-5" />
               Add education history
             </PillButton>
@@ -606,7 +622,10 @@ export default function CreateJobseekerProfileEducationPage() {
               <h2>Licenses &amp; Certifications</h2>
             </legend>
             <RadioGroup>
-              <p>Have you completed a technical certification program with a provider outside of our coalition? *</p>
+              <p>
+                Have you completed a technical certification program with a
+                provider outside of our coalition? *
+              </p>
               <div className="block gap-8">
                 <Radio
                   name="hasCerts"
@@ -632,15 +651,18 @@ export default function CreateJobseekerProfileEducationPage() {
                 No
               </div>
             </RadioGroup>
-            {hasCerts && <Licenses
-              data={data.licenses}
-              onUpdate={handleUpdate}
-              onRemove={removeLicense}
-            />}
-            <PillButton 
-            variant="outlined" 
-            onClick={addNewLicense}
-            hidden={!hasCerts}>
+            {hasCerts && (
+              <Licenses
+                data={data.licenses}
+                onUpdate={handleUpdate}
+                onRemove={removeLicense}
+              />
+            )}
+            <PillButton
+              variant="outlined"
+              onClick={addNewLicense}
+              hidden={!hasCerts}
+            >
               <Add className="mr-2 h-5 w-5" />
               Add license or certification
             </PillButton>

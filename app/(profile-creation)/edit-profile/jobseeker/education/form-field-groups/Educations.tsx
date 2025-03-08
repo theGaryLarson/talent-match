@@ -153,21 +153,24 @@ export default memo(function Educations({
       </legend>
 
       <div>
-      <p>If you have completed technical training through one of our coalition partners, select Technical Training Program below:</p>
-      <div className="mt-4 grid grid-cols-3">
-        <li>Ada Developers Academy</li>
-        <li>Big Bend Community College</li>
-        <li>Career Connect SW ESD 112</li>
-        <li>CodeDay x MinT</li>
-        <li>Computing For All</li>
-        <li>Per Scholas</li>
-        <li>PNW Cyber Challenge Games</li>
-        <li>Riipen</li>
-        <li>SkillSource</li>
-        <li>Washington Vets to Tech</li>
-        <li>Wenatchee Valley College</li>
-        <li>Year Up Puget Sound</li>
-      </div>
+        <p>
+          If you have completed technical training through one of our coalition
+          partners, select Technical Training Program below:
+        </p>
+        <div className="mt-4 grid grid-cols-3">
+          <li>Ada Developers Academy</li>
+          <li>Big Bend Community College</li>
+          <li>Career Connect SW ESD 112</li>
+          <li>CodeDay x MinT</li>
+          <li>Computing For All</li>
+          <li>Per Scholas</li>
+          <li>PNW Cyber Challenge Games</li>
+          <li>Riipen</li>
+          <li>SkillSource</li>
+          <li>Washington Vets to Tech</li>
+          <li>Wenatchee Valley College</li>
+          <li>Year Up Puget Sound</li>
+        </div>
         <FormControl component="fieldset">
           <FormLabel
             className="mb-2 mt-5"
