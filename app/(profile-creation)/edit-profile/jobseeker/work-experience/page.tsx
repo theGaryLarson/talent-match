@@ -237,7 +237,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                     isCurrentJob: exp.isCurrentJob,
                     responsibilities: exp.responsibilities,
                   }),
-                ) ?? [defaultWorkExperienceData()];
+                ) ?? [];
 
             const filteredInternshipExp =
               workExperienceData.workExperiences
@@ -435,7 +435,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 <Radio
                   name="hasWorkExp"
                   value="yes"
-                  onChange={() => setHasWorkExp(true)}
+                  onChange={() => {
+                    setHasWorkExp(true);
+                    addNewWorkExperience();
+                  }}
                   checked={hasWorkExp !== null && hasWorkExp}
                   required={true}
                 />{" "}
@@ -495,7 +498,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 <Radio
                   name="hasInternExp"
                   value="yes"
-                  onChange={() => setHasInternshipExp(true)}
+                  onChange={() => {
+                    setHasInternshipExp(true);
+                    addNewInternshipExperience();
+                  }}
                   checked={hasInternshipExp !== null && hasInternshipExp}
                   required={true}
                 />{" "}
