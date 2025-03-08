@@ -146,13 +146,28 @@ export default memo(function Educations({
   return data.map((education, index) => (
     <fieldset key={classNamePrefix + education.id + "-key"}>
       <legend className="flex w-full justify-between">
-        <h3>Education Detail {index + 1}</h3>
+        <h3>Education History {index + 1}</h3>
         <PillButton onClick={() => onRemove(education.id)} variant="outlined">
           <Close className="h-5 w-5" />
         </PillButton>
       </legend>
 
       <div>
+      <p>If you have completed technical training through one of our coalition partners, select Technical Training Program below:</p>
+      <div className="mt-4 grid grid-cols-3">
+        <li>Ada Developers Academy</li>
+        <li>Big Bend Community College</li>
+        <li>Career Connect SW ESD 112</li>
+        <li>CodeDay x MinT</li>
+        <li>Computing For All</li>
+        <li>Per Scholas</li>
+        <li>PNW Cyber Challenge Games</li>
+        <li>Riipen</li>
+        <li>SkillSource</li>
+        <li>Washington Vets to Tech</li>
+        <li>Wenatchee Valley College</li>
+        <li>Year Up Puget Sound</li>
+      </div>
         <FormControl component="fieldset">
           <FormLabel
             className="mb-2 mt-5"
@@ -191,7 +206,7 @@ export default memo(function Educations({
             <FormControlLabel
               value={EducationLevel.TrainingProgram}
               control={<Radio required />}
-              label="Training program / Bootcamp"
+              label="Technical Training Program"
               sx={{
                 "& .MuiFormControlLabel-asterisk": {
                   display: "none",
@@ -521,7 +536,7 @@ export default memo(function Educations({
             >
               <TextFieldWithAutocomplete
                 apiSearchRoute="/api/edu-providers/search/"
-                fieldLabel="Training or bootcamp provider: *"
+                fieldLabel="Technical training provider: *"
                 id="profile-creation-education-training-provider-name"
                 searchingText="Searching..."
                 noResultsText="No education providers found..."
