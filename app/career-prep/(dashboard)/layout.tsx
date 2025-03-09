@@ -14,14 +14,7 @@ import {
   TaskOutlined,
   WorkOutlineRounded,
 } from "@mui/icons-material";
-import {
-  AppBar,
-  Box,
-  Drawer,
-  IconButton,
-  Stack,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Box, Drawer, IconButton, Stack, Toolbar } from "@mui/material";
 import Image from "next/image";
 import Avatar from "@/app/ui/components/Avatar";
 import { useSession } from "next-auth/react";
