@@ -265,13 +265,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                   }),
                 ) ?? [];
 
-            if (filteredWorkExp.length === 0)
-              filteredWorkExp.push(defaultWorkExperienceData());
-            else setHasWorkExp(true);
-
-            if (filteredInternshipExp.length === 0)
-              filteredInternshipExp.push(defaultInternshipExperienceData());
-            else setHasInternshipExp(true);
+            if (filteredWorkExp.length !== 0) setHasWorkExp(true);
+            if (filteredInternshipExp.length !== 0) setHasInternshipExp(true);
 
             setData({
               yearsWorkExperience: workExperienceData.yearsWorkExperience,
