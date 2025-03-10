@@ -17,6 +17,7 @@ import SingleSelectFilterAutoload from "@/app/ui/components/mui/SingleSelectFilt
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { Box, Grid2 } from "@mui/material";
+import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const resultsPerPage = 50;
 
@@ -282,23 +283,38 @@ export default function TalentSearch() {
             }}
             options={[
               { label: "Any", value: "" },
-              { label: "Doctorate", value: "Doctorate" },
-              { label: "Master's Degree", value: "Master's Degree" },
-              { label: "Bachelor's Degree", value: "Bachelor's Degree" },
-              { label: "Associate's Degree", value: "Associates's Degree" },
+              {
+                label: "Doctorate",
+                value: HighestCompletedEducationLevel.Doctorate,
+              },
+              {
+                label: "Master's Degree",
+                value: HighestCompletedEducationLevel.Masters,
+              },
+              {
+                label: "Bachelor's Degree",
+                value: HighestCompletedEducationLevel.Bachelors,
+              },
+              {
+                label: "Associate's Degree",
+                value: HighestCompletedEducationLevel.Associates,
+              },
               {
                 label: "Vocational Qualification / Certification",
-                value: "Certificate (less than two years)",
+                value: HighestCompletedEducationLevel.Certificate,
               },
               {
                 label: "Post High School",
-                value: "Some training or study post high school",
+                value: HighestCompletedEducationLevel.PostHighSchool,
               },
-              { label: "High School Diploma", value: "High School Diploma" },
-              { label: "GED", value: "GED" },
+              {
+                label: "High School Diploma",
+                value: HighestCompletedEducationLevel.HighSchool,
+              },
+              { label: "GED", value: HighestCompletedEducationLevel.GED },
               {
                 label: "No Formal Education",
-                value: "Not yet completed High School",
+                value: HighestCompletedEducationLevel.NoFormalEducation,
               },
             ]}
           ></SingleSelectFilter>

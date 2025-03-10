@@ -62,8 +62,8 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
-        relocation_services_available: jobData.relocation_services,
-        offer_visa_sponsorship: jobData.visa_sponsorship,
+        relocation_services_available: jobData.relocation_services_available,
+        offer_visa_sponsorship: jobData.offer_visa_sponsorship,
         zip: jobData.zip,
         employment_type: jobData.employment_type || "full-time",
         is_apprenticeship: jobData.is_apprenticeship,
@@ -82,11 +82,20 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         start_date: jobData.start_date,
         end_date: jobData.end_date,
         career_services_offered: jobData.career_services_offered,
+        trainingRequirements: jobData.trainingRequirements,
+        requiredCertifications: jobData.requiredCertifications,
+        minimumEducationLevel: jobData.minimumEducationLevel,
         skills: {
           connect: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,
           })),
         },
+      },
+      include: {
+        industry_sectors: true,
+        techArea: true,
+        companies: true,
+        skills: true,
       },
     });
 
@@ -149,11 +158,11 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
-        occupation_code: jobData.occupation_code,
-        relocation_services_available: jobData.relocation_services,
-        offer_visa_sponsorship: jobData.visa_sponsorship,
+        relocation_services_available: jobData.relocation_services_available,
+        offer_visa_sponsorship: jobData.offer_visa_sponsorship,
         zip: jobData.zip,
         employment_type: jobData.employment_type || "full-time",
+        earn_and_learn_type: jobData.earn_and_learn_type,
         is_apprenticeship: jobData.is_apprenticeship,
         location: jobData.location,
         career_services_offered: jobData.career_services_offered,
@@ -163,15 +172,25 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         unpublish_date:
           jobData.unpublish_date ??
           new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()), //if closing date is not provided auto set to 1 year in the futrue
+        employment_duration: jobData.employment_duration,
         start_date: jobData.start_date,
         end_date: jobData.end_date,
         job_post_url: jobData.job_post_url,
         assessment_url: jobData.assessment_url,
+        trainingRequirements: jobData.trainingRequirements,
+        requiredCertifications: jobData.requiredCertifications,
+        minimumEducationLevel: jobData.minimumEducationLevel,
         skills: {
           connect: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,
           })),
         },
+      },
+      include: {
+        industry_sectors: true,
+        techArea: true,
+        companies: true,
+        skills: true,
       },
     });
     return res;
@@ -226,14 +245,33 @@ export async function getMyJobListings() {
     );
   }
   try {
-    const results = prisma.job_postings.findMany({
+    const results = await prisma.job_postings.findMany({
       where: {
         employer_id: Session?.user.employerId,
       },
       include: {
         industry_sectors: true,
+        techArea: true,
         companies: true,
         skills: true,
+        jobApplications: {
+          where: {
+            jobStatus: JobStatus.Screened,
+          },
+          include: {
+            Jobseekers: {
+              include: {
+                users: true,
+                pathways: true,
+                jobseeker_has_skills: {
+                  include: {
+                    skills: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     return results;
@@ -262,7 +300,7 @@ export async function deleteJobListing(jobPostingId: string) {
       },
     });
     if (
-      job?.employer_id != Session.user.companyId &&
+      job?.company_id != Session.user.companyId &&
       !Session?.user.roles.includes(Role.ADMIN)
     ) {
       throw new Error("not an employer of this company");

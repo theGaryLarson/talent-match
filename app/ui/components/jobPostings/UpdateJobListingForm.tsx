@@ -48,10 +48,22 @@ export default function UpdateJobListingForm() {
     tech_area_id: "",
     sector_id: "",
     company_id: "",
-    relocation_services: false,
-    visa_sponsorship: false,
+    relocation_services_available: false,
+    offer_visa_sponsorship: false,
     job_description: "",
     career_services_offered: false,
+    techArea: null,
+    occupation_code: null,
+    jobApplications: [],
+    publish_date: null,
+    unpublish_date: null,
+    earn_and_learn_type: null,
+    employment_duration: null,
+    start_date: null,
+    end_date: null,
+    trainingRequirements: null,
+    requiredCertifications: null,
+    minimumEducationLevel: null,
   });
   const handleChange = (
     e: React.ChangeEvent<
@@ -129,17 +141,25 @@ export default function UpdateJobListingForm() {
       zip: Jl.zip,
       unpublish_date: Jl.unpublish_date,
       occupation_code: Jl.occupation_code ?? "",
-      job_post_url: Jl.job_post_url ?? undefined,
-      assessment_url: Jl.assessment_url ?? undefined,
+      job_post_url: Jl.job_post_url ?? null,
+      assessment_url: Jl.assessment_url ?? null,
       tech_area_id: Jl.tech_area_id ?? "",
       sector_id: Jl.sector_id ?? "",
       company_id: Jl.company_id,
-      relocation_services: Jl.relocation_services_available,
-      visa_sponsorship: Jl.offer_visa_sponsorship,
+      relocation_services_available: Jl.relocation_services_available,
+      offer_visa_sponsorship: Jl.offer_visa_sponsorship,
       job_description: Jl.job_description,
       career_services_offered: Jl.career_services_offered ?? false,
-      start_date: Jl.start_date ?? undefined,
-      end_date: Jl.end_date ?? undefined,
+      start_date: Jl.start_date ?? null,
+      end_date: Jl.end_date ?? null,
+      techArea: null,
+      jobApplications: [],
+      publish_date: null,
+      earn_and_learn_type: null,
+      employment_duration: null,
+      trainingRequirements: Jl.trainingRequirements,
+      requiredCertifications: Jl.requiredCertifications,
+      minimumEducationLevel: Jl.minimumEducationLevel,
     });
     setSkills(Jl.skills);
     if (quill) quill.clipboard.dangerouslyPasteHTML(Jl.job_description);
@@ -212,7 +232,7 @@ export default function UpdateJobListingForm() {
               name="company_id"
               id="company_id"
               required
-              value={formData.company_id}
+              value={formData.company_id ?? undefined}
               onChange={handleChange}
             >
               <option value={""}>--Please Select a Company--</option>
@@ -242,7 +262,7 @@ export default function UpdateJobListingForm() {
             <select
               name="occupation_code"
               id="occupation_code"
-              value={formData.occupation_code}
+              value={formData.occupation_code ?? undefined}
               onChange={handleChange}
               required
             >
@@ -266,7 +286,7 @@ export default function UpdateJobListingForm() {
             <label htmlFor="sector">Tech Sector</label>
             <select
               name="sector_id"
-              value={formData.sector_id}
+              value={formData.sector_id ?? undefined}
               onChange={handleChange}
               required
             >
@@ -286,7 +306,7 @@ export default function UpdateJobListingForm() {
             <label htmlFor="area">Tech Area</label>
             <select
               name="tech_area_id"
-              value={formData.tech_area_id}
+              value={formData.tech_area_id ?? undefined}
               onChange={handleChange}
               required
             >
@@ -393,7 +413,7 @@ export default function UpdateJobListingForm() {
                   name="relocation_services"
                   value="yes"
                   required
-                  checked={formData.relocation_services}
+                  checked={formData.relocation_services_available}
                   onChange={handleChange}
                 />
                 Yes
@@ -404,7 +424,7 @@ export default function UpdateJobListingForm() {
                   name="relocation_services"
                   value="no"
                   required
-                  checked={!formData.relocation_services}
+                  checked={!formData.relocation_services_available}
                   onChange={handleChange}
                 />
                 No
@@ -420,7 +440,7 @@ export default function UpdateJobListingForm() {
                   name="visa_sponsorship"
                   value="yes"
                   required
-                  checked={formData.visa_sponsorship}
+                  checked={formData.offer_visa_sponsorship}
                   onChange={handleChange}
                 />
                 Yes
@@ -431,7 +451,7 @@ export default function UpdateJobListingForm() {
                   name="visa_sponsorship"
                   value="no"
                   required
-                  checked={!formData.visa_sponsorship}
+                  checked={!formData.offer_visa_sponsorship}
                   onChange={handleChange}
                 />
                 No
@@ -573,7 +593,7 @@ export default function UpdateJobListingForm() {
             <input
               type="text"
               name="job_post_url"
-              value={formData.job_post_url}
+              value={formData.job_post_url ?? undefined}
               onChange={handleChange}
             />
           </Stack>
@@ -584,7 +604,7 @@ export default function UpdateJobListingForm() {
             <input
               type="text"
               name="assessment_url"
-              value={formData.assessment_url}
+              value={formData.assessment_url ?? undefined}
               onChange={handleChange}
             />
           </Stack>
@@ -599,7 +619,7 @@ export default function UpdateJobListingForm() {
                   name="career_services_offered"
                   value="yes"
                   required
-                  checked={formData.career_services_offered}
+                  checked={formData.career_services_offered ?? undefined}
                   onChange={handleChange}
                 />
                 Yes
