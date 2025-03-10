@@ -10,7 +10,6 @@ import WorkExperiences, {
   WorkExperienceData,
 } from "./form-field-groups/WorkExperiences";
 import InternshipExperiences, {
-  defaultInternshipExperienceData,
   InternshipExperienceData,
 } from "./form-field-groups/InternshipExperiences";
 import { JsWorkExpDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
