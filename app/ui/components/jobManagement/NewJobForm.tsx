@@ -124,7 +124,10 @@ export default function NewJobForm({
   const [requiredSkills, setRequiredSkills] = useState<SkillDTO[]>([]);
   const [trainingRequirements, setTrainingRequirements] = useState("");
   const [requiredCertifications, setRequiredCertifications] = useState("");
-  const [educationLevel, setEducationLevel] = useState("");
+  const [educationLevel, setEducationLevel] =
+    useState<HighestCompletedEducationLevel>(
+      HighestCompletedEducationLevel.NoFormalEducation,
+    );
 
   useEffect(() => {
     if (job_posting) {
@@ -181,7 +184,10 @@ export default function NewJobForm({
       }
       setTrainingRequirements(job_posting.trainingRequirements || "");
       setRequiredCertifications(job_posting.requiredCertifications || "");
-      setEducationLevel(job_posting.minimumEducationLevel || "");
+      setEducationLevel(
+        (job_posting.minimumEducationLevel as HighestCompletedEducationLevel) ||
+          HighestCompletedEducationLevel.NoFormalEducation,
+      );
     }
   }, [job_posting]);
 
@@ -219,9 +225,6 @@ export default function NewJobForm({
         compensationValid
       );
     }
-    if (activeStep === 2) {
-      return requiredSkills.length > 0;
-    }
     return true;
   };
 
@@ -236,7 +239,10 @@ export default function NewJobForm({
       occupation_code: occupationCode,
       unpublish_date: applicationDeadline?.toDate() ?? null,
       employment_type: employmentType,
-      earn_and_learn_type: earnAndLearnType,
+      earn_and_learn_type:
+        employmentType === EmploymentType.EarnAndLearn
+          ? earnAndLearnType
+          : null,
       career_services_offered: job_posting?.career_services_offered ?? null,
       location: workEnvironment,
       zip: location,
@@ -257,9 +263,13 @@ export default function NewJobForm({
       jobApplications: [],
       publish_date: null,
       assessment_url: null,
-      employment_duration: employmentDuration,
+      employment_duration:
+        employmentIsPermanent === "temporary" ? employmentDuration : null,
       start_date: startDate?.toDate() ?? null,
-      end_date: endDate?.toDate() ?? null,
+      end_date:
+        employmentIsPermanent === "temporary"
+          ? (endDate?.toDate() ?? null)
+          : null,
       trainingRequirements: trainingRequirements,
       requiredCertifications: requiredCertifications,
       minimumEducationLevel: educationLevel,
@@ -368,599 +378,601 @@ export default function NewJobForm({
         {steps[activeStep]}
       </Typography>
       <Stack>
-        {activeStep === 0 && (
-          <Stack spacing={3}>
-            <FormControl fullWidth>
-              <FormLabel required>Job Title</FormLabel>
-              <TextField
-                required
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-                helperText="Enter a clear and concise job title (e.g., Senior Software Engineer, Marketing Manager)"
-              />
-            </FormControl>
+        <Stack spacing={3} sx={{ display: activeStep === 0 ? "flex" : "none" }}>
+          <FormControl fullWidth>
+            <FormLabel required>Job Title</FormLabel>
+            <TextField
+              required
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              helperText="Enter a clear and concise job title (e.g., Senior Software Engineer, Marketing Manager)"
+            />
+          </FormControl>
 
-            <FormControl fullWidth>
-              <FormLabel>Job URL</FormLabel>
-              <TextField
-                value={jobUrl}
-                onChange={(e) => setJobUrl(e.target.value)}
-                helperText="Enter a URL to the job post, if applicable"
-              />
-            </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>Job URL</FormLabel>
+            <TextField
+              value={jobUrl}
+              onChange={(e) => setJobUrl(e.target.value)}
+              helperText="Enter a URL to the job post, if applicable"
+            />
+          </FormControl>
 
-            <FormControl fullWidth>
-              <FormLabel required>Job Description</FormLabel>
-              <div ref={quillRef} style={{ minHeight: "200px" }} />
-            </FormControl>
+          <FormControl fullWidth>
+            <FormLabel required>Job Description</FormLabel>
+            <div ref={quillRef} style={{ minHeight: "200px" }} />
+          </FormControl>
 
-            <FormControl fullWidth>
-              <FormLabel required>Industry</FormLabel>
-              <SingleSelectFilterAutoload<IndustrySectorDropdownDTO>
-                id="newjobform-Industry"
-                label=""
-                apiAutoloadRoute="/api/employers/industry-sectors"
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-                getOptionLabel={(option: IndustrySectorDropdownDTO) =>
-                  option.sector_title
-                }
-                getOptionValue={(option: IndustrySectorDropdownDTO) =>
-                  option.industry_sector_id
-                }
-              />
-              <FormHelperText>
-                Select the industry that best fits this role
-              </FormHelperText>
-            </FormControl>
+          <FormControl fullWidth>
+            <FormLabel required>Industry</FormLabel>
+            <SingleSelectFilterAutoload<IndustrySectorDropdownDTO>
+              id="newjobform-Industry"
+              label=""
+              apiAutoloadRoute="/api/employers/industry-sectors"
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+              getOptionLabel={(option: IndustrySectorDropdownDTO) =>
+                option.sector_title
+              }
+              getOptionValue={(option: IndustrySectorDropdownDTO) =>
+                option.industry_sector_id
+              }
+            />
+            <FormHelperText>
+              Select the industry that best fits this role
+            </FormHelperText>
+          </FormControl>
 
-            <FormControl fullWidth>
-              <FormLabel required>Tech Area</FormLabel>
-              <SingleSelectFilterAutoload<TechnologyAreaDropdownDTO>
-                id="newjobform-tech-area"
-                label=""
-                apiAutoloadRoute="/api/employers/technology-areas"
-                value={techArea}
-                onChange={(e) => setTechArea(e.target.value)}
-                getOptionLabel={(option: TechnologyAreaDropdownDTO) =>
-                  option.title
-                }
-                getOptionValue={(option: TechnologyAreaDropdownDTO) =>
-                  option.id
-                }
-              />
-              <FormHelperText>
-                Select the technology area that best fits this role
-              </FormHelperText>
-            </FormControl>
+          <FormControl fullWidth>
+            <FormLabel required>Tech Area</FormLabel>
+            <SingleSelectFilterAutoload<TechnologyAreaDropdownDTO>
+              id="newjobform-tech-area"
+              label=""
+              apiAutoloadRoute="/api/employers/technology-areas"
+              value={techArea}
+              onChange={(e) => setTechArea(e.target.value)}
+              getOptionLabel={(option: TechnologyAreaDropdownDTO) =>
+                option.title
+              }
+              getOptionValue={(option: TechnologyAreaDropdownDTO) => option.id}
+            />
+            <FormHelperText>
+              Select the technology area that best fits this role
+            </FormHelperText>
+          </FormControl>
 
-            <FormControl fullWidth>
-              <FormLabel required>Occupation Code (NAICS)</FormLabel>
-              <Select
-                required
-                value={occupationCode}
-                onChange={(e) => setOccupationCode(e.target.value)}
-              >
-                {Object.values(OccupationCode).map((code) => (
-                  <MenuItem key={code + 1} value={code}>
-                    {code}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText>Select an occupation code</FormHelperText>
-            </FormControl>
+          <FormControl fullWidth>
+            <FormLabel required>Occupation Code (NAICS)</FormLabel>
+            <Select
+              required
+              value={occupationCode}
+              onChange={(e) => setOccupationCode(e.target.value)}
+            >
+              {Object.values(OccupationCode).map((code) => (
+                <MenuItem key={code + 1} value={code}>
+                  {code}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>Select an occupation code</FormHelperText>
+          </FormControl>
 
-            <FormControl fullWidth>
-              <FormLabel required>Application Deadline</FormLabel>
-              <DatePicker
-                disablePast
-                value={applicationDeadline}
-                onChange={(newValue) => setApplicationDeadline(newValue)}
-              />
-              <FormHelperText>
-                Select the deadline for applications
-              </FormHelperText>
-            </FormControl>
-          </Stack>
-        )}
-
-        {activeStep === 1 && (
-          <Stack spacing={3}>
-            <FormControl fullWidth>
-              <Grid2 container direction="row" spacing={2}>
-                <div>
-                  <FormLabel required>Employment Type</FormLabel>
-                  <Select
-                    fullWidth
-                    required
-                    value={employmentType}
-                    onChange={(e) => setEmploymentType(e.target.value)}
-                  >
-                    {Object.values(EmploymentType).map((code) => (
-                      <MenuItem key={code + 1} value={code}>
-                        {code}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>
-                    Select the employment type for this role
-                  </FormHelperText>
-                </div>
-                <FormGroup row>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={paidPosition}
-                        onChange={(e) => setPaidPosition(e.target.checked)}
-                        name="paid-position"
-                      />
-                    }
-                    label="Paid Position"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={internship}
-                        onChange={(e) => setInternship(e.target.checked)}
-                        name="internship"
-                      />
-                    }
-                    label="Internship"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={apprenticeship}
-                        onChange={(e) => setApprenticeship(e.target.checked)}
-                        name="apprenticeship"
-                      />
-                    }
-                    label="Apprenticeship"
-                  />
-                </FormGroup>
-              </Grid2>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <Grid2 container direction="row" spacing={2}>
-                <div>
-                  <FormLabel
-                    required={employmentType === EmploymentType.EarnAndLearn}
-                  >
-                    Earn and Learn Type
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    disabled={employmentType !== EmploymentType.EarnAndLearn}
-                    required
-                    value={earnAndLearnType ?? ""}
-                    onChange={(e) => setEarnAndLearnType(e.target.value)}
-                  >
-                    {Object.values(EarnLearnType).map((code) => (
-                      <MenuItem key={code + 1} value={code}>
-                        {code}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>
-                    Select the earn and learn type for this role
-                  </FormHelperText>
-                </div>
-              </Grid2>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <FormLabel>Employment Duration</FormLabel>
-              <Grid2 container direction="row" spacing={2}>
-                <TextField
-                  required
-                  disabled={employmentIsPermanent === "permanent"}
-                  placeholder="3 Months"
-                  value={employmentDuration}
-                  onChange={(e) => setEmploymentDuration(e.target.value)}
-                  helperText="Expected duration of employment"
-                />
-                <RadioGroup
-                  value={employmentIsPermanent}
-                  onChange={(e) => setEmploymentIsPermanent(e.target.value)}
-                  row
-                >
-                  <FormControlLabel
-                    value="permanent"
-                    control={<Radio />}
-                    label="Permanent"
-                  />
-                  <FormControlLabel
-                    value="temporary"
-                    control={<Radio />}
-                    label="Temporary"
-                  />
-                </RadioGroup>
-              </Grid2>
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>Start Date</FormLabel>
-              <DatePicker
-                disablePast
-                disabled={employmentIsPermanent === "permanent"}
-                value={startDate}
-                onChange={(newValue) => setStartDate(newValue)}
-              />
-              <FormHelperText>Select when the job would start</FormHelperText>
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>End Date</FormLabel>
-              <DatePicker
-                disablePast
-                disabled={employmentIsPermanent === "permanent"}
-                value={endDate}
-                onChange={(newValue) => setEndDate(newValue)}
-              />
-              <FormHelperText>Select when the job would end</FormHelperText>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <Grid2 container direction="row" spacing={2}>
-                <div>
-                  <FormLabel required>Location</FormLabel>
-                  <TextField
-                    fullWidth
-                    required
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                  ></TextField>
-                  <FormHelperText>
-                    Enter the location of the role
-                  </FormHelperText>
-                </div>
-                <FormGroup row>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={relocation}
-                        onChange={(e) => setRelocation(e.target.checked)}
-                        name="relocation"
-                      />
-                    }
-                    label="Relocation Assistance"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={visaSponsor}
-                        onChange={(e) => setVisaSponsor(e.target.checked)}
-                        name="visaSponsor"
-                      />
-                    }
-                    label="H1B Visa Sponsorship"
-                  />
-                </FormGroup>
-              </Grid2>
-            </FormControl>
-            <div>
-              <FormControl>
-                <FormLabel>Work Environment</FormLabel>
+          <FormControl fullWidth>
+            <FormLabel required>Application Deadline</FormLabel>
+            <DatePicker
+              disablePast
+              value={applicationDeadline}
+              onChange={(newValue) => setApplicationDeadline(newValue)}
+            />
+            <FormHelperText>
+              Select the deadline for applications
+            </FormHelperText>
+          </FormControl>
+        </Stack>
+        <Stack spacing={3} sx={{ display: activeStep === 1 ? "flex" : "none" }}>
+          <FormControl fullWidth>
+            <Grid2 container direction="row" spacing={2}>
+              <div>
+                <FormLabel required>Employment Type</FormLabel>
                 <Select
+                  fullWidth
                   required
-                  value={workEnvironment}
-                  onChange={(e) => setWorkEnvironment(e.target.value)}
+                  value={employmentType}
+                  onChange={(e) => setEmploymentType(e.target.value)}
                 >
-                  <MenuItem value="">Any</MenuItem>
-                  <MenuItem value="remote">Remote</MenuItem>
-                  <MenuItem value="hybrid">Hybrid</MenuItem>
-                  <MenuItem value="on-site">On-Site</MenuItem>
+                  {Object.values(EmploymentType).map((code) => (
+                    <MenuItem key={code + 1} value={code}>
+                      {code}
+                    </MenuItem>
+                  ))}
                 </Select>
-                <FormHelperText>Enter the work environment</FormHelperText>
-              </FormControl>
-            </div>
-            <FormControl fullWidth disabled={!paidPosition}>
-              <FormLabel required>Compensation</FormLabel>
-              <Grid2 container direction="row" spacing={2}>
-                <TextField
-                  required
-                  disabled={!paidPosition}
-                  placeholder="40,000"
-                  value={startingPayRange}
-                  onChange={(e) => setStartingPayRange(e.target.value)}
-                  helperText="Start range"
+                <FormHelperText>
+                  Select the employment type for this role
+                </FormHelperText>
+              </div>
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={paidPosition}
+                      onChange={(e) => setPaidPosition(e.target.checked)}
+                      name="paid-position"
+                    />
+                  }
+                  label="Paid Position"
                 />
-                <TextField
-                  required
-                  disabled={!paidPosition}
-                  placeholder="80,000"
-                  value={endingPayRange}
-                  onChange={(e) => setEndingPayRange(e.target.value)}
-                  helperText="End range"
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={internship}
+                      onChange={(e) => setInternship(e.target.checked)}
+                      name="internship"
+                    />
+                  }
+                  label="Internship"
                 />
-                <RadioGroup
-                  value={compensationType}
-                  onChange={(e) => setCompensationType(e.target.value)}
-                  row
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={apprenticeship}
+                      onChange={(e) => setApprenticeship(e.target.checked)}
+                      name="apprenticeship"
+                    />
+                  }
+                  label="Apprenticeship"
+                />
+              </FormGroup>
+            </Grid2>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <Grid2 container direction="row" spacing={2}>
+              <div>
+                <FormLabel
+                  required={employmentType === EmploymentType.EarnAndLearn}
                 >
-                  <FormControlLabel
-                    value="hourly"
-                    control={<Radio />}
-                    label="Hourly"
-                  />
-                  <FormControlLabel
-                    value="annual"
-                    control={<Radio />}
-                    label="Annual"
-                  />
-                </RadioGroup>
-              </Grid2>
-            </FormControl>
-          </Stack>
-        )}
+                  Earn and Learn Type
+                </FormLabel>
+                <Select
+                  fullWidth
+                  disabled={employmentType !== EmploymentType.EarnAndLearn}
+                  required
+                  value={earnAndLearnType ?? ""}
+                  onChange={(e) => setEarnAndLearnType(e.target.value)}
+                >
+                  {Object.values(EarnLearnType).map((code) => (
+                    <MenuItem key={code + 1} value={code}>
+                      {code}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>
+                  Select the earn and learn type for this role
+                </FormHelperText>
+              </div>
+            </Grid2>
+          </FormControl>
 
-        {activeStep === 2 && (
-          <Stack spacing={3}>
-            <FormControl fullWidth>
-              <FormLabel required>Top 5 required skills</FormLabel>
-              <TagsWithAutocomplete
-                fieldLabel=""
-                apiSearchRoute="/api/skills/search/"
-                id="employer-jobpost-skills"
-                maxTags={5}
-                searchingText="Searching..."
-                noResultsText="No skills found..."
-                onChange={(event: any, val: any) => {
-                  setRequiredSkills(val);
-                }}
-                initialTags={requiredSkills.map((skill) => skill.skill_name)}
-                searchPlaceholder="Skill (ex: Java)"
-                getTagLabel={(option: SkillDTO) => option.skill_name}
-                getTagLink={(option: SkillDTO) => option.skill_info_url}
+          <FormControl fullWidth>
+            <FormLabel>Employment Duration</FormLabel>
+            <Grid2 container direction="row" spacing={2}>
+              <TextField
+                required
+                disabled={employmentIsPermanent === "permanent"}
+                placeholder="3 Months"
+                value={employmentDuration}
+                onChange={(e) => setEmploymentDuration(e.target.value)}
+                helperText="Expected duration of employment"
               />
-              <FormHelperText>
-                Enter five required skills needed for this role. Start typing to
-                see suggestions and select multiple skill
-              </FormHelperText>
-            </FormControl>
+              <RadioGroup
+                value={employmentIsPermanent}
+                onChange={(e) => setEmploymentIsPermanent(e.target.value)}
+                row
+              >
+                <FormControlLabel
+                  value="permanent"
+                  control={<Radio />}
+                  label="Permanent"
+                />
+                <FormControlLabel
+                  value="temporary"
+                  control={<Radio />}
+                  label="Temporary"
+                />
+              </RadioGroup>
+            </Grid2>
+          </FormControl>
 
-            <FormControl fullWidth>
-              <FormLabel>Training Requirements</FormLabel>
-              <Autocomplete
-                multiple
-                freeSolo
-                value={getChipsArray(trainingRequirements)}
-                onChange={(event, newValue) => {
-                  const processedValues = newValue.map((item) => {
-                    if (typeof item === "string") {
-                      if (item.startsWith('Add "')) {
-                        return item.substring(5, item.length - 1);
-                      }
-                      return item;
-                    }
-                    return item;
-                  });
-                  setTrainingRequirements(processedValues.join(", "));
-                }}
-                filterOptions={(options, params) => {
-                  const filtered = filter(options, params);
-                  if (params.inputValue !== "") {
-                    filtered.push(`Add "${params.inputValue}"`);
-                  }
-                  return filtered;
-                }}
-                selectOnFocus
-                clearOnBlur
-                handleHomeEndKeys
-                options={[]}
-                renderTags={(value: string[], getTagProps) =>
-                  value.map((option, index) => (
-                    <Chip
-                      label={option}
-                      {...getTagProps({ index })}
-                      key={index}
+          <FormControl>
+            <FormLabel>Start Date</FormLabel>
+            <DatePicker
+              disablePast
+              value={startDate}
+              onChange={(newValue) => setStartDate(newValue)}
+            />
+            <FormHelperText>Select when the job would start</FormHelperText>
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>End Date</FormLabel>
+            <DatePicker
+              disablePast
+              disabled={employmentIsPermanent === "permanent"}
+              value={endDate}
+              onChange={(newValue) => setEndDate(newValue)}
+            />
+            <FormHelperText>Select when the job would end</FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <Grid2 container direction="row" spacing={2}>
+              <div>
+                <FormLabel required>ZIP Code</FormLabel>
+                <TextField
+                  fullWidth
+                  required
+                  value={location}
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/[^0-9]/g, "");
+                    setLocation(numericValue);
+                  }}
+                  slotProps={{
+                    htmlInput: {
+                      maxLength: 5,
+                      inputMode: "numeric",
+                    },
+                  }}
+                ></TextField>
+                <FormHelperText>
+                  Enter the zip code (location) of the role
+                </FormHelperText>
+              </div>
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={relocation}
+                      onChange={(e) => setRelocation(e.target.checked)}
+                      name="relocation"
                     />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="Enter training requirement"
-                    helperText="Type and press Enter to add training requirement"
-                  />
-                )}
-              />
-            </FormControl>
-            <FormControl fullWidth>
-              <FormLabel>Required Certifications</FormLabel>
-              <Autocomplete
-                multiple
-                freeSolo
-                value={getChipsArray(requiredCertifications)}
-                onChange={(event, newValue) => {
-                  const processedValues = newValue.map((item) => {
-                    if (typeof item === "string") {
-                      if (item.startsWith('Add "')) {
-                        return item.substring(5, item.length - 1);
-                      }
-                      return item;
-                    }
-                    return item;
-                  });
-                  setRequiredCertifications(processedValues.join(", "));
-                }}
-                filterOptions={(options, params) => {
-                  const filtered = filter(options, params);
-                  if (params.inputValue !== "") {
-                    filtered.push(`Add "${params.inputValue}"`);
                   }
-                  return filtered;
-                }}
-                selectOnFocus
-                clearOnBlur
-                handleHomeEndKeys
-                options={[]}
-                renderTags={(value: string[], getTagProps) =>
-                  value.map((option, index) => (
-                    <Chip
-                      label={option}
-                      {...getTagProps({ index })}
-                      key={index}
+                  label="Relocation Assistance"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={visaSponsor}
+                      onChange={(e) => setVisaSponsor(e.target.checked)}
+                      name="visaSponsor"
                     />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="Enter certification"
-                    helperText="Type and press Enter to add certification"
-                  />
-                )}
-              />
-            </FormControl>
-
+                  }
+                  label="H1B Visa Sponsorship"
+                />
+              </FormGroup>
+            </Grid2>
+          </FormControl>
+          <div>
             <FormControl>
-              <FormLabel required>Minimum Level of Education</FormLabel>
+              <FormLabel>Work Environment</FormLabel>
               <Select
                 required
-                value={educationLevel}
-                onChange={(e) => setEducationLevel(e.target.value)}
+                value={workEnvironment}
+                onChange={(e) => setWorkEnvironment(e.target.value)}
               >
                 <MenuItem value="">Any</MenuItem>
-                <MenuItem value={HighestCompletedEducationLevel.Doctorate}>
-                  Doctorate
-                </MenuItem>
-                <MenuItem value={HighestCompletedEducationLevel.Masters}>
-                  Master's Degree
-                </MenuItem>
-                <MenuItem value={HighestCompletedEducationLevel.Bachelors}>
-                  Bachelor's Degree
-                </MenuItem>
-                <MenuItem value={HighestCompletedEducationLevel.Associates}>
-                  Associate's Degree
-                </MenuItem>
-                <MenuItem value={HighestCompletedEducationLevel.Certificate}>
-                  Vocational Qualification / Certification
-                </MenuItem>
-                <MenuItem value={HighestCompletedEducationLevel.PostHighSchool}>
-                  Post High School
-                </MenuItem>
-                <MenuItem value={HighestCompletedEducationLevel.HighSchool}>
-                  High School Diploma
-                </MenuItem>
-                <MenuItem value={HighestCompletedEducationLevel.GED}>
-                  GED
-                </MenuItem>
-                <MenuItem
-                  value={HighestCompletedEducationLevel.NoFormalEducation}
-                >
-                  No Formal Education
-                </MenuItem>
+                <MenuItem value="remote">Remote</MenuItem>
+                <MenuItem value="hybrid">Hybrid</MenuItem>
+                <MenuItem value="on-site">On-Site</MenuItem>
               </Select>
-              <FormHelperText>Select education level</FormHelperText>
+              <FormHelperText>Enter the work environment</FormHelperText>
             </FormControl>
-          </Stack>
-        )}
+          </div>
+          <FormControl fullWidth disabled={!paidPosition}>
+            <FormLabel required>Compensation</FormLabel>
+            <Grid2 container direction="row" spacing={2}>
+              <TextField
+                required
+                disabled={!paidPosition}
+                placeholder="40,000"
+                value={startingPayRange}
+                onChange={(e) => setStartingPayRange(e.target.value)}
+                helperText="Start range"
+              />
+              <TextField
+                required
+                disabled={!paidPosition}
+                placeholder="80,000"
+                value={endingPayRange}
+                onChange={(e) => setEndingPayRange(e.target.value)}
+                helperText="End range"
+              />
+              <RadioGroup
+                value={compensationType}
+                onChange={(e) => setCompensationType(e.target.value)}
+                row
+              >
+                <FormControlLabel
+                  value="hourly"
+                  control={<Radio />}
+                  label="Hourly"
+                />
+                <FormControlLabel
+                  value="annual"
+                  control={<Radio />}
+                  label="Annual"
+                />
+              </RadioGroup>
+            </Grid2>
+          </FormControl>
+        </Stack>
+        <Stack spacing={3} sx={{ display: activeStep === 2 ? "flex" : "none" }}>
+          <FormControl fullWidth>
+            <FormLabel>Top 5 required skills</FormLabel>
+            <TagsWithAutocomplete
+              fieldLabel=""
+              apiSearchRoute="/api/skills/search/"
+              id="employer-jobpost-skills"
+              maxTags={5}
+              searchingText="Searching..."
+              noResultsText="No skills found..."
+              onChange={(event: any, val: any) => {
+                setRequiredSkills(val);
+              }}
+              initialTags={
+                job_posting
+                  ? job_posting.skills &&
+                    job_posting.skills.map((skill) => skill.skill_name)
+                  : requiredSkills.map((skill) => skill.skill_name)
+              }
+              searchPlaceholder="Skill (ex: Java)"
+              getTagLabel={(option: SkillDTO) => option.skill_name}
+              getTagLink={(option: SkillDTO) => option.skill_info_url}
+            />
+            <FormHelperText>
+              Enter five required skills needed for this role. Start typing to
+              see suggestions and select multiple skill
+            </FormHelperText>
+          </FormControl>
 
-        {activeStep === 3 && (
-          <Box>
+          <FormControl fullWidth>
+            <FormLabel>Training Requirements</FormLabel>
+            <Autocomplete
+              multiple
+              freeSolo
+              value={getChipsArray(trainingRequirements)}
+              onChange={(event, newValue) => {
+                const processedValues = newValue.map((item) => {
+                  if (typeof item === "string") {
+                    if (item.startsWith('Add "')) {
+                      return item.substring(5, item.length - 1);
+                    }
+                    return item;
+                  }
+                  return item;
+                });
+                setTrainingRequirements(processedValues.join(", "));
+              }}
+              filterOptions={(options, params) => {
+                const filtered = filter(options, params);
+                if (params.inputValue !== "") {
+                  filtered.push(`Add "${params.inputValue}"`);
+                }
+                return filtered;
+              }}
+              selectOnFocus
+              clearOnBlur
+              handleHomeEndKeys
+              options={[]}
+              renderTags={(value: string[], getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    label={option}
+                    {...getTagProps({ index })}
+                    key={index}
+                  />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Enter training requirement"
+                  helperText="Type and press Enter to add training requirement"
+                />
+              )}
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>Required Certifications</FormLabel>
+            <Autocomplete
+              multiple
+              freeSolo
+              value={getChipsArray(requiredCertifications)}
+              onChange={(event, newValue) => {
+                const processedValues = newValue.map((item) => {
+                  if (typeof item === "string") {
+                    if (item.startsWith('Add "')) {
+                      return item.substring(5, item.length - 1);
+                    }
+                    return item;
+                  }
+                  return item;
+                });
+                setRequiredCertifications(processedValues.join(", "));
+              }}
+              filterOptions={(options, params) => {
+                const filtered = filter(options, params);
+                if (params.inputValue !== "") {
+                  filtered.push(`Add "${params.inputValue}"`);
+                }
+                return filtered;
+              }}
+              selectOnFocus
+              clearOnBlur
+              handleHomeEndKeys
+              options={[]}
+              renderTags={(value: string[], getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    label={option}
+                    {...getTagProps({ index })}
+                    key={index}
+                  />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Enter certification"
+                  helperText="Type and press Enter to add certification"
+                />
+              )}
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel required>Minimum Level of Education</FormLabel>
+            <Select
+              required
+              value={educationLevel}
+              onChange={(e) =>
+                setEducationLevel(
+                  e.target.value as HighestCompletedEducationLevel,
+                )
+              }
+            >
+              <MenuItem value={HighestCompletedEducationLevel.Doctorate}>
+                Doctorate
+              </MenuItem>
+              <MenuItem value={HighestCompletedEducationLevel.Masters}>
+                Master's Degree
+              </MenuItem>
+              <MenuItem value={HighestCompletedEducationLevel.Bachelors}>
+                Bachelor's Degree
+              </MenuItem>
+              <MenuItem value={HighestCompletedEducationLevel.Associates}>
+                Associate's Degree
+              </MenuItem>
+              <MenuItem value={HighestCompletedEducationLevel.Certificate}>
+                Vocational Qualification / Certification
+              </MenuItem>
+              <MenuItem value={HighestCompletedEducationLevel.PostHighSchool}>
+                Post High School
+              </MenuItem>
+              <MenuItem value={HighestCompletedEducationLevel.HighSchool}>
+                High School Diploma
+              </MenuItem>
+              <MenuItem value={HighestCompletedEducationLevel.GED}>
+                GED
+              </MenuItem>
+              <MenuItem
+                value={HighestCompletedEducationLevel.NoFormalEducation}
+              >
+                No Formal Education
+              </MenuItem>
+            </Select>
+            <FormHelperText>Select education level</FormHelperText>
+          </FormControl>
+        </Stack>
+        <Box sx={{ display: activeStep === 3 ? "block" : "none" }}>
+          <Typography>
+            Please review the information below before publishing your job
+            posting. You can edit any section by clicking the "Edit" link next
+            to it.
+          </Typography>
+          <Box sx={{ mt: 2 }}>
+            <Stack spacing={2} direction="row" alignItems="center">
+              <Typography variant="h6">Job Information</Typography>
+              <Link component="button" onClick={() => setActiveStep(0)}>
+                Edit
+              </Link>
+            </Stack>
             <Typography>
-              Please review the information below before publishing your job
-              posting. You can edit any section by clicking the "Edit" link next
-              to it.
+              <strong>Job Title:</strong> {jobTitle}
             </Typography>
-            <Box sx={{ mt: 2 }}>
-              <Stack spacing={2} direction="row" alignItems="center">
-                <Typography variant="h6">Job Information</Typography>
-                <Link component="button" onClick={() => setActiveStep(0)}>
-                  Edit
-                </Link>
-              </Stack>
-              <Typography>
-                <strong>Job Title:</strong> {jobTitle}
-              </Typography>
-              <Typography>
-                <strong>Job URL:</strong> {jobUrl}
-              </Typography>
-              <Typography>
-                <strong>Industry:</strong> {industry}
-              </Typography>
-              <Typography>
-                <strong>Tech Area:</strong> {techArea}
-              </Typography>
-              <Typography>
-                <strong>Occupation Code:</strong> {occupationCode}
-              </Typography>
-              <Typography>
-                <strong>Application Deadline:</strong>{" "}
-                {applicationDeadline
-                  ? applicationDeadline.format("MM/DD/YYYY")
-                  : ""}
-              </Typography>
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <Stack spacing={2} direction="row" alignItems="center">
-                <Typography variant="h6">Employment Information</Typography>
-                <Link component="button" onClick={() => setActiveStep(1)}>
-                  Edit
-                </Link>
-              </Stack>
-              <Typography>
-                <strong>Employment Type:</strong> {employmentType}
-              </Typography>
-              <Typography>
-                <strong>Paid Position:</strong> {paidPosition ? "Yes" : "No"}
-              </Typography>
-              <Typography>
-                <strong>Internship:</strong> {internship ? "Yes" : "No"}
-              </Typography>
-              <Typography>
-                <strong>Apprenticeship:</strong> {apprenticeship ? "Yes" : "No"}
-              </Typography>
-              <Typography>
-                <strong>Location:</strong> {location}
-              </Typography>
-              <Typography>
-                <strong>Relocation Assistance:</strong>{" "}
-                {relocation ? "Yes" : "No"}
-              </Typography>
-              <Typography>
-                <strong>H1B Visa Sponsorship:</strong>{" "}
-                {visaSponsor ? "Yes" : "No"}
-              </Typography>
-              <Typography>
-                <strong>Work Environment:</strong> {workEnvironment}
-              </Typography>
-              <Typography>
-                <strong>Compensation:</strong>{" "}
-                {paidPosition
-                  ? "$" + startingPayRange + " - $" + endingPayRange
-                  : "None"}
-              </Typography>
-              <Typography>
-                <strong>Compensation Type:</strong> {compensationType}
-              </Typography>
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <Stack spacing={2} direction="row" alignItems="center">
-                <Typography variant="h6">Qualifications</Typography>
-                <Link component="button" onClick={() => setActiveStep(2)}>
-                  Edit
-                </Link>
-              </Stack>
-              <Typography>
-                <strong>Required Skills:</strong>{" "}
-                {requiredSkills.map((skill) => skill.skill_name)}
-              </Typography>
-              <Typography>
-                <strong>Training Requirements:</strong> {trainingRequirements}
-              </Typography>
-              <Typography>
-                <strong>Certifications:</strong> {requiredCertifications}
-              </Typography>
-              <Typography>
-                <strong>Education Level:</strong> {educationLevel}
-              </Typography>
-            </Box>
+            <Typography>
+              <strong>Job URL:</strong> {jobUrl}
+            </Typography>
+            <Typography>
+              <strong>Industry:</strong> {industry}
+            </Typography>
+            <Typography>
+              <strong>Tech Area:</strong> {techArea}
+            </Typography>
+            <Typography>
+              <strong>Occupation Code:</strong> {occupationCode}
+            </Typography>
+            <Typography>
+              <strong>Application Deadline:</strong>{" "}
+              {applicationDeadline
+                ? applicationDeadline.format("MM/DD/YYYY")
+                : ""}
+            </Typography>
           </Box>
-        )}
-
+          <Box sx={{ mt: 2 }}>
+            <Stack spacing={2} direction="row" alignItems="center">
+              <Typography variant="h6">Employment Information</Typography>
+              <Link component="button" onClick={() => setActiveStep(1)}>
+                Edit
+              </Link>
+            </Stack>
+            <Typography>
+              <strong>Employment Type:</strong> {employmentType}
+            </Typography>
+            <Typography>
+              <strong>Paid Position:</strong> {paidPosition ? "Yes" : "No"}
+            </Typography>
+            <Typography>
+              <strong>Internship:</strong> {internship ? "Yes" : "No"}
+            </Typography>
+            <Typography>
+              <strong>Apprenticeship:</strong> {apprenticeship ? "Yes" : "No"}
+            </Typography>
+            <Typography>
+              <strong>Location:</strong> {location}
+            </Typography>
+            <Typography>
+              <strong>Relocation Assistance:</strong>{" "}
+              {relocation ? "Yes" : "No"}
+            </Typography>
+            <Typography>
+              <strong>H1B Visa Sponsorship:</strong>{" "}
+              {visaSponsor ? "Yes" : "No"}
+            </Typography>
+            <Typography>
+              <strong>Work Environment:</strong> {workEnvironment}
+            </Typography>
+            <Typography>
+              <strong>Compensation:</strong>{" "}
+              {paidPosition
+                ? "$" + startingPayRange + " - $" + endingPayRange
+                : "None"}
+            </Typography>
+            <Typography>
+              <strong>Compensation Type:</strong> {compensationType}
+            </Typography>
+          </Box>
+          <Box sx={{ mt: 2 }}>
+            <Stack spacing={2} direction="row" alignItems="center">
+              <Typography variant="h6">Qualifications</Typography>
+              <Link component="button" onClick={() => setActiveStep(2)}>
+                Edit
+              </Link>
+            </Stack>
+            <Typography>
+              <strong>Required Skills:</strong>{" "}
+              {requiredSkills.map((skill) => skill.skill_name)}
+            </Typography>
+            <Typography>
+              <strong>Training Requirements:</strong> {trainingRequirements}
+            </Typography>
+            <Typography>
+              <strong>Certifications:</strong> {requiredCertifications}
+            </Typography>
+            <Typography>
+              <strong>Education Level:</strong> {educationLevel}
+            </Typography>
+          </Box>
+        </Box>
         <Grid2 container sx={{ justifyContent: "space-between", mt: 3 }}>
           <PillButton
             color="secondary"
