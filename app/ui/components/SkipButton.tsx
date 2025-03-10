@@ -41,7 +41,10 @@ function SkipButton() {
       : null;
 
   // hide skip button on jobseeker education and work exp pages, since we require this information
-  if (nextPage === "/edit-profile/jobseeker/disclosures" || nextPage === "/edit-profile/jobseeker/work-experience") {
+  if (
+    nextPage === "/edit-profile/jobseeker/disclosures" ||
+    nextPage === "/edit-profile/jobseeker/work-experience"
+  ) {
     nextPage = null;
   }
 
