@@ -155,9 +155,9 @@ export default memo(function Educations({
       <div>
         <p>
           If you have completed technical training through one of our coalition
-          partners, select Technical Training Program below:
+          partners, select <strong>Technical Training Program</strong> below:
         </p>
-        <div className="mt-4 grid grid-cols-3">
+        <div className="mt-4 grid grid-cols-3 mb-4">
           <li>Ada Developers Academy</li>
           <li>Big Bend Community College</li>
           <li>Career Connect SW ESD 112</li>
