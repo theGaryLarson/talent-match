@@ -91,6 +91,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 email: email!,
                 firstName: firstName ?? "",
                 lastName: lastName ?? "",
+                CareerPrepAssessment: {pronouns: fetchedData.CareerPrepAssessment.pronouns ?? ""},
                 photoUrl: fetchedData.photoUrl ?? session.user?.image,
                 birthDate: fetchedData.birthDate ?? null,
                 zipCode: fetchedData.zipCode ?? "",
@@ -125,15 +126,26 @@ export default function CreateJobseekerProfileIntroPage() {
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
+    console.log(e.target);
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
-    if (introData.hasOwnProperty(fieldName)) {
+    if (fieldName.includes('.')) {
+      const [nestedObjKey, nestedFieldKey] = fieldName.split('.');
+      setIntroData((prevData) => ({
+        ...prevData,
+        [nestedObjKey]: {
+          ...prevData[nestedObjKey],
+          [nestedFieldKey]: value,
+        },
+      }));
+    } else {
+      // Top-level field update
       setIntroData({
         ...introData,
         [fieldName]: value,
       });
-      dispatch(setPageDirty("introduction"));
     }
+    dispatch(setPageDirty("introduction"));
   };
 
   const handleImageUpload = (url: string) => {
@@ -266,6 +278,15 @@ export default function CreateJobseekerProfileIntroPage() {
                 value={introData.lastName ?? ""}
               >
                 Last Name *
+              </InputTextWithLabel>
+
+              <InputTextWithLabel
+                id="profile-creation-intro-CareerPrepAssessment.pronouns"
+                placeholder="They/Them"
+                onChange={handleFieldChange}
+                value={introData.CareerPrepAssessment ? introData.CareerPrepAssessment.pronouns ?? "" : ""}
+              >
+                Preferred Pronouns
               </InputTextWithLabel>
             </div>
 

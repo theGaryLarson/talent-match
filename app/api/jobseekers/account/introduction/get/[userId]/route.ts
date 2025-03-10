@@ -65,6 +65,11 @@ export async function GET(
                 pathway_title: true,
               },
             },
+            CareerPrepAssessment: {
+              select: {
+                pronouns: true,
+              },
+            },
           },
         },
       },
@@ -97,6 +102,9 @@ export async function GET(
       email: user.email,
       introHeadline: jobseeker?.intro_headline,
       currentJobTitle: jobseeker?.current_job_title,
+      CareerPrepAssessment: {
+        pronouns: (jobseeker?.CareerPrepAssessment && jobseeker.CareerPrepAssessment.length > 0) ? jobseeker.CareerPrepAssessment[0].pronouns : null,
+      },
     };
 
     // metadata that may be needed

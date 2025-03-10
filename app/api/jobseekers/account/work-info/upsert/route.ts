@@ -20,9 +20,12 @@ export async function POST(request: Request) {
       yearsWorkExperience,
       monthsInternshipExperience,
       isAuthorizedToWorkUsa,
+      CareerPrepAssessment,
       requiresSponsorship,
       workExperiences,
     } = body;
+
+    console.log("BOOG: ", CareerPrepAssessment);
 
     const result: JsWorkExpDTO = await prisma.$transaction(async (prisma) => {
       // Update the jobseeker table with the provided properties
@@ -36,6 +39,23 @@ export async function POST(request: Request) {
             ? parseInt(monthsInternshipExperience, 10)
             : null,
           updatedAt: new Date(),
+        },
+      });
+
+      const careerPrep = await prisma.careerPrepAssessment.upsert({
+        where: {jobseekerId: updatedJobseeker.jobseeker_id},
+        create: {
+          jobseekerId: updatedJobseeker.jobseeker_id,
+          pronouns: "",
+          expectedEduCompletion: "",
+          experienceWithApplying: CareerPrepAssessment.experienceWithApplying ?? false,
+          experienceWithInterview: CareerPrepAssessment.experienceWithInterview ?? false,
+          prevWorkExperience: (updatedJobseeker.years_work_exp && updatedJobseeker.years_work_exp > 0) ? true : false,
+        },
+        update: {
+          experienceWithApplying: CareerPrepAssessment.experienceWithApplying ?? false,
+          experienceWithInterview: CareerPrepAssessment.experienceWithInterview ?? false,
+          prevWorkExperience: (updatedJobseeker.years_work_exp && updatedJobseeker.years_work_exp > 0) ? true : false,
         },
       });
 
@@ -155,6 +175,10 @@ export async function POST(request: Request) {
           updatedJobseeker?.months_internship_exp?.toString() ?? "",
         isAuthorizedToWorkUsa: updatedPrivateData.is_authorized_to_work_in_usa,
         requiresSponsorship: updatedPrivateData.job_sponsorship_required,
+        CareerPrepAssessment: {
+          experienceWithInterview: careerPrep.experienceWithInterview,
+          experienceWithApplying: careerPrep.experienceWithApplying,
+        },
         workExperiences: createdWorkExperiences,
       };
     });

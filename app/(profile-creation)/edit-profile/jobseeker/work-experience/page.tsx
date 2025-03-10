@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
-import { Radio, RadioGroup } from "@mui/material";
+import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
 import PillButton from "@/app/ui/components/PillButton";
 import InputTextWithLabel from "../../../../ui/components/InputTextWithLabel";
 import WorkExperiences, {
@@ -37,6 +37,10 @@ interface Data {
   internshipExperiences: WorkExperienceData[];
   isAuthorizedToWorkUsa?: boolean | null;
   requiresSponsorship?: boolean | null;
+  CareerPrepAssessment: {
+    experienceWithInterview: boolean;
+    experienceWithApplying: boolean;
+  };
 }
 
 export default function CreateJobseekerProfileWorkExperiencePage() {
@@ -121,6 +125,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     internshipExperiences: initFilteredInternshipExp,
     isAuthorizedToWorkUsa: workExperienceData.isAuthorizedToWorkUsa,
     requiresSponsorship: workExperienceData.requiresSponsorship,
+    CareerPrepAssessment: {
+      experienceWithApplying: workExperienceData.CareerPrepAssessment.experienceWithApplying,
+      experienceWithInterview: workExperienceData.CareerPrepAssessment.experienceWithInterview,
+    },
   });
 
   function removeAllWorkExperiences() {
@@ -203,6 +211,28 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     [dispatch],
   );
 
+  const handleNestedInputUpdate = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value, type } = event.target;
+      const newValue = (type === "radio") ? (value === 'true') : value;
+      setData((prevData) => {
+        if (name.includes(".")) {
+          const [parentKey, childKey] = name.split(".");
+          return {
+            ...prevData,
+            [parentKey]: {
+              ...prevData[parentKey],
+              [childKey]: newValue,
+            },
+          };
+        }
+        return { ...prevData, [name]: newValue };
+      });
+      dispatch(setPageDirty("work-experience"));
+    },
+    [dispatch],
+  );
+
   useEffect(() => {
     if (session?.user?.id && status === "authenticated") {
       const initializeFormFields = async () => {
@@ -275,6 +305,10 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               internshipExperiences: filteredInternshipExp,
               isAuthorizedToWorkUsa: workExperienceData.isAuthorizedToWorkUsa,
               requiresSponsorship: workExperienceData.requiresSponsorship,
+              CareerPrepAssessment: {
+                experienceWithApplying: workExperienceData.CareerPrepAssessment.experienceWithApplying,
+                experienceWithInterview: workExperienceData.CareerPrepAssessment.experienceWithInterview,
+              },
             });
           } catch (error) {
             console.error(error);
@@ -373,6 +407,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       data.monthsInternshipExperience.toString(); // Replace with actual calculation
     workExperienceData.isAuthorizedToWorkUsa = data.isAuthorizedToWorkUsa;
     workExperienceData.requiresSponsorship = data.requiresSponsorship;
+    workExperienceData.CareerPrepAssessment = data.CareerPrepAssessment;
     workExperienceData.workExperiences = [
       ...(hasWorkExp ? workExperiences : []),
       ...(hasInternshipExp ? internshipExperiences : []),
@@ -559,6 +594,35 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               Add internship experience
             </PillButton>
           </fieldset>
+            <h2>Job Readiness</h2>
+            <Box>
+              <FormControl component="fieldset" sx={{ mb: 2 }}>
+                <FormLabel>Do you have previous work experience?</FormLabel>
+                <RadioGroup
+                  name="CareerPrepAssessment.experienceWithInterview"
+                  onChange={handleNestedInputUpdate}
+                  value={data.CareerPrepAssessment.experienceWithInterview}
+                >
+                  <FormControlLabel value={true} control={<Radio />} label="Yes" />
+                  <FormControlLabel value={false} control={<Radio />} label="No" />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+            <Box>
+              <FormControl component="fieldset" sx={{ mb: 2 }}>
+                <FormLabel>
+                  Do you have experience applying for tech jobs?
+                </FormLabel>
+                <RadioGroup
+                  name="CareerPrepAssessment.experienceWithApplying"
+                  onChange={handleNestedInputUpdate}
+                  value={data.CareerPrepAssessment.experienceWithApplying}
+                >
+                  <FormControlLabel value={true} control={<Radio />} label="Yes" />
+                  <FormControlLabel value={false} control={<Radio />} label="No" />
+                </RadioGroup>
+              </FormControl>
+            </Box>
           <fieldset>
             <legend>
               <h2>Authorization</h2>

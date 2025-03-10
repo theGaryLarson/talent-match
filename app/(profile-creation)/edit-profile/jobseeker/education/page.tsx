@@ -44,6 +44,8 @@ import {
 import dayjs from "dayjs";
 import _ from "lodash";
 import { Add } from "@mui/icons-material";
+import { FormControl, FormLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
 
 interface Data {
   projectExperiences: ProjectExperienceData[];
@@ -72,6 +74,7 @@ export default function CreateJobseekerProfileEducationPage() {
   const [hasCerts, setHasCerts] = useState<boolean | null>(
     educationData.certifications.length > 0 ? true : null,
   );
+  const [expectedEduCompletion, setExpectedEduCompletion] = useState(educationData.CareerPrepAssessment.expectedEduCompletion);
 
   const [data, setData] = useState<Data>({
     projectExperiences: educationData.projects.map(
@@ -160,6 +163,13 @@ export default function CreateJobseekerProfileEducationPage() {
   function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>) {
     setHighestLevelOfStudy(
       mapToEnumOrThrow(event.target.value, HighestCompletedEducationLevel),
+    );
+    dispatch(setPageDirty("education"));
+  }
+
+  function handleExpectedEduCompletion(event: SelectChangeEvent<string>) {
+    setExpectedEduCompletion(
+      mapToEnumOrThrow(event.target.value, TimeUntilCompletion),
     );
     dispatch(setPageDirty("education"));
   }
@@ -253,6 +263,10 @@ export default function CreateJobseekerProfileEducationPage() {
                 educationData.highestLevelOfStudy =
                   fetchedData.highestLevelOfStudy;
                 setHighestLevelOfStudy(educationData.highestLevelOfStudy);
+              }
+              if (fetchedData.CareerPrepAssessment.expectedEduCompletion) {
+                educationData.CareerPrepAssessment.expectedEduCompletion = fetchedData.CareerPrepAssessment.expectedEduCompletion;
+                setExpectedEduCompletion(educationData.CareerPrepAssessment.expectedEduCompletion);
               }
               if (fetchedData.educations?.length !== 0) {
                 educationData.educations = fetchedData.educations;
@@ -499,6 +513,9 @@ export default function CreateJobseekerProfileEducationPage() {
       ...educationData,
       userId: userId,
       highestLevelOfStudy: highestLevelOfStudy,
+      CareerPrepAssessment: {
+        expectedEduCompletion: expectedEduCompletion,
+      },
       educations: educations,
       certifications: certifications,
       projects: projects,
@@ -569,6 +586,23 @@ export default function CreateJobseekerProfileEducationPage() {
               What is the highest degree you’ve earned or schooling completed?
             </SelectOptionsWithLabel>
           </fieldset>
+          <FormControl fullWidth component="fieldset" sx={{ mb: 2 }}>
+            <FormLabel>When do you expect to finish your education?</FormLabel>
+            <Select
+              fullWidth
+              id="expected-edu-completion"
+              label="Estimated finish"
+              name="basicInformation.expectedEduCompletion"
+              value={expectedEduCompletion}
+              onChange={handleExpectedEduCompletion}
+            >
+              {Object.entries(TimeUntilCompletion).map(([value, label]) => (
+                <MenuItem key={value + label} id={value + label} value={label}>
+                  {label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <fieldset>
             <legend>
               <h2>Education History</h2>

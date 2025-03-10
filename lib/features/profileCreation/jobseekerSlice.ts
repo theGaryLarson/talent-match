@@ -10,6 +10,7 @@ import {
   JsWorkExpDTO,
   JsWorkDTO,
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
 
 interface JsEducationPageBlankHighestLevelDTO
   extends Omit<JsEducationPageDTO, "highestLevelOfStudy"> {
@@ -46,6 +47,9 @@ export const initialState: JobseekerState = {
     photoUrl: null,
     firstName: "",
     lastName: "",
+    CareerPrepAssessment: {
+      pronouns: "",
+    },
     birthDate: null,
     phoneCountryCode: null,
     phone: null,
@@ -61,6 +65,9 @@ export const initialState: JobseekerState = {
     userId: "",
     jobseekerId: "",
     highestLevelOfStudy: "",
+    CareerPrepAssessment: {
+      expectedEduCompletion: TimeUntilCompletion.NA,
+    },
     educations: [],
     certifications: [],
     projects: [],
@@ -68,6 +75,10 @@ export const initialState: JobseekerState = {
   workExperience: {
     userId: "",
     yearsWorkExperience: "",
+    CareerPrepAssessment: {
+      experienceWithInterview: false,
+      experienceWithApplying: false,
+    },
     monthsInternshipExperience: null,
     isAuthorizedToWorkUsa: undefined,
     requiresSponsorship: undefined,

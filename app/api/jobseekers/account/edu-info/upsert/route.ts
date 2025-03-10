@@ -23,6 +23,7 @@ import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
 import { auth } from "@/auth";
 import { setPoolWithSession } from "@/app/lib/jobseeker";
+import { TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
 
     const body: JsEducationPageDTO = await request.json();
 
-    const { highestLevelOfStudy, educations, certifications, projects } = body;
+    const { highestLevelOfStudy, CareerPrepAssessment, educations, certifications, projects } = body;
 
     const result = await prisma.$transaction(async (prisma) => {
       const createdCerts: certificates[] = [];
@@ -57,6 +58,20 @@ export async function POST(request: Request) {
         where: { user_id: userId },
         update: {
           highest_level_of_study_completed: highestLevelOfStudy || null,
+          CareerPrepAssessment: {
+            upsert: {
+              where: {jobseekerId: jobseekerId},
+              create: {
+                pronouns: "",
+                expectedEduCompletion: CareerPrepAssessment.expectedEduCompletion,
+                experienceWithApplying: false,
+                experienceWithInterview: false,
+              },
+              update: {
+                expectedEduCompletion: CareerPrepAssessment.expectedEduCompletion ?? "",
+              },
+            },
+          },
           is_enrolled_ed_program: isEnrolledEdProgram,
           updatedAt: new Date(),
         },
@@ -73,6 +88,21 @@ export async function POST(request: Request) {
           portfolio_url: undefined,
           video_url: undefined,
           employment_type_sought: undefined,
+          CareerPrepAssessment: {
+            create: {
+              pronouns: "",
+              expectedEduCompletion: CareerPrepAssessment.expectedEduCompletion ?? "",
+              experienceWithApplying: false,
+              experienceWithInterview: false,
+            },
+          },
+        },
+        include: {
+          CareerPrepAssessment: {
+            select: {
+              expectedEduCompletion: true,
+            },
+          },
         },
       });
 
@@ -488,6 +518,9 @@ export async function POST(request: Request) {
           upsertedJobseeker.highest_level_of_study_completed,
           HighestCompletedEducationLevel,
         ),
+        CareerPrepAssessment: {
+          expectedEduCompletion: upsertedJobseeker.CareerPrepAssessment.length > 0 ? mapToEnumOrThrow(upsertedJobseeker.CareerPrepAssessment[0].expectedEduCompletion, TimeUntilCompletion) : null
+        },
         educations: mappedEdHistory,
         certifications: mappedCerts,
         projects: mappedProjects,
