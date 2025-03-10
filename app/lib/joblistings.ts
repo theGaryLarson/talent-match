@@ -19,7 +19,14 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   ) {
     company_id = jobData.company_id;
   }
-
+  if (
+    !Session?.user.roles.includes(Role.ADMIN) &&
+    Session?.user.roles.includes(Role.EMPLOYER)
+  ) {
+    if (!Session?.user.employeeIsApproved || !Session?.user.companyIsApproved) {
+      throw new Error("Either company or employee not approved");
+    }
+  }
   try {
     if (!company_id) {
       throw new Error("Failed to create job listing Company id not found");
@@ -116,6 +123,14 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
     Session?.user.roles.includes(Role.CASE_MANAGER)
   ) {
     company_id = jobData.company_id;
+  }
+  if (
+    !Session?.user.roles.includes(Role.ADMIN) &&
+    Session?.user.roles.includes(Role.EMPLOYER)
+  ) {
+    if (!Session?.user.employeeIsApproved || !Session?.user.companyIsApproved) {
+      throw new Error("Either company or employee not approved");
+    }
   }
   const now = new Date();
   try {
@@ -237,6 +252,53 @@ export async function getJobListingById(joblistingId: string) {
     console.error(e);
   }
 }
+export async function getCompanyJobListings() {
+  const Session = await auth();
+  if (!Session?.user.roles.includes(Role.EMPLOYER)) {
+    throw new Error("User is not an employer");
+  }
+  if (!Session?.user.companyId) {
+    throw new Error("Employee not part of a company");
+  }
+  if (!Session?.user.employeeIsApproved || !Session?.user.companyIsApproved) {
+    throw new Error("Either company or employee not approved");
+  }
+  try {
+    const results = await prisma.job_postings.findMany({
+      where: {
+        company_id: Session?.user.companyId,
+      },
+      include: {
+        industry_sectors: true,
+        techArea: true,
+        companies: true,
+        skills: true,
+        jobApplications: {
+          where: {
+            jobStatus: JobStatus.Screened,
+          },
+          include: {
+            Jobseekers: {
+              include: {
+                users: true,
+                pathways: true,
+                jobseeker_has_skills: {
+                  include: {
+                    skills: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return results;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
 export async function getMyJobListings() {
   const Session = await auth();
   if (!Session?.user.employerId) {
@@ -291,6 +353,9 @@ export async function deleteJobListing(jobPostingId: string) {
     throw new Error(
       "Failed to delete job listing: company ID not found in session",
     );
+  }
+  if (!Session?.user.employeeIsApproved) {
+    throw new Error("Employee not approved");
   }
 
   try {

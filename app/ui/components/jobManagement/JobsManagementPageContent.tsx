@@ -10,7 +10,7 @@ import JobListingsTable from "./JobListingsTable";
 import { useSession } from "next-auth/react";
 
 async function fetchMyJobListings(): Promise<any> {
-  const response = await fetch("/api/joblistings/getmyjoblistings", {
+  const response = await fetch("/api/joblistings/getcompanyjoblistings", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -60,18 +60,21 @@ export default function JobsManagementPageContent() {
         <ArrowBack sx={{ width: "16px", height: "16px" }} /> My Dashboard
       </Link>
 
-      <Typography variant="h3" sx={{ color: "secondary.main" }}>
+      <Typography variant="h3" sx={{ color: "secondary.main", mb: 5 }}>
         Job Management
       </Typography>
 
-      <Box sx={{ my: 5 }}>
-        <NewJobFormButton
-          company_id={session?.user.companyId || ""}
-          onJobCreated={(newJob: JobPostCreationDTO) =>
-            handleJobUpdated(newJob, "create")
-          }
-        />
-      </Box>
+      {session?.user?.companyIsApproved &&
+        session?.user?.employeeIsApproved && (
+          <Box sx={{ mb: 5 }}>
+            <NewJobFormButton
+              company_id={session?.user.companyId || ""}
+              onJobCreated={(newJob: JobPostCreationDTO) =>
+                handleJobUpdated(newJob, "create")
+              }
+            />
+          </Box>
+        )}
 
       <Box>
         <JobListingsTable

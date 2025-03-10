@@ -13,15 +13,14 @@ import { Box, Grid2, Typography } from "@mui/material";
 import NewJobFormButton from "@/app/ui/components/jobManagement/NewJobFormButton";
 import PillButton from "@/app/ui/components/PillButton";
 import { SearchOutlined } from "@mui/icons-material";
-import { getMyJobListings } from "@/app/lib/joblistings";
+import { getCompanyJobListings } from "@/app/lib/joblistings";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 
 async function processJobs(
   jobs: JobPostCreationDTO[],
 ): Promise<JobPostCreationDTO[]> {
-  const recentJobs = jobs.slice(0, 3);
   await Promise.all(
-    recentJobs.map(async (job) => {
+    jobs.map(async (job) => {
       const processJobZip = async () => {
         if (job.zip) {
           const results = await searchLocations(job.zip, "zip");
@@ -61,7 +60,7 @@ export default async function Page() {
   const session = await auth();
   const proInfo = await getEmployerById(session?.user.employerId ?? "");
   const company = await getCompanyById(proInfo?.company_id ?? "");
-  const jobs = await getMyJobListings();
+  const jobs = await getCompanyJobListings();
   const activeJobs = jobs.reduce(
     (total, job) => total + (job.unpublish_date > new Date() ? 1 : 0),
     0,
@@ -112,11 +111,14 @@ export default async function Page() {
             rowSpacing={2}
             sx={{ justifyContent: "center", mb: 7 }}
           >
-            <NewJobFormButton
-              company_id={session?.user.companyId || ""}
-              size="large"
-              sx={{ width: { xs: "100%", sm: "auto" } }}
-            />
+            {session?.user.companyIsApproved &&
+              session?.user.employeeIsApproved && (
+                <NewJobFormButton
+                  company_id={session?.user.companyId || ""}
+                  size="large"
+                  sx={{ width: { xs: "100%", sm: "auto" } }}
+                />
+              )}
             <PillButton
               size="large"
               color="secondary"
