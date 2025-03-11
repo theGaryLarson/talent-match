@@ -60,9 +60,16 @@ export default async function Page() {
   const session = await auth();
   const proInfo = await getEmployerById(session?.user.employerId ?? "");
   const company = await getCompanyById(proInfo?.company_id ?? "");
-  const jobs = await getCompanyJobListings();
+  let jobs: JobPostCreationDTO[];
+  try {
+    jobs = await getCompanyJobListings();
+  } catch {
+    jobs = [];
+  }
+
   const activeJobs = jobs.reduce(
-    (total, job) => total + (job.unpublish_date > new Date() ? 1 : 0),
+    (total, job) =>
+      total + (job.unpublish_date && job.unpublish_date > new Date() ? 1 : 0),
     0,
   );
   const preScreened = jobs.reduce(
@@ -70,7 +77,7 @@ export default async function Page() {
     0,
   );
   const recentJobs = await processJobs(
-    jobs.filter((job) => job.jobApplications.length > 0),
+    jobs.filter((job) => job.jobApplications.length > 0) ?? [],
   );
 
   if (!proInfo || company == undefined) {
@@ -114,7 +121,7 @@ export default async function Page() {
             {session?.user.companyIsApproved &&
               session?.user.employeeIsApproved && (
                 <NewJobFormButton
-                  company_id={session?.user.companyId || ""}
+                  company_id={session?.user.companyId ?? null}
                   size="large"
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 />
@@ -132,11 +139,14 @@ export default async function Page() {
           <Grid2 container spacing={2} sx={{ justifyContent: "center", mb: 7 }}>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
               <Link href="/services/employers/dashboard/jobs">
-                <ScoreCard title="Your active jobs" val={activeJobs} />
+                <ScoreCard title="Your active jobs" val={activeJobs ?? 0} />
               </Link>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
-              <ScoreCard title="Pre-screened candidates" val={preScreened} />
+              <ScoreCard
+                title="Pre-screened candidates"
+                val={preScreened ?? 0}
+              />
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
               <Link href="/services/employers/dashboard/savedcandidates">

@@ -260,9 +260,10 @@ export async function getCompanyJobListings() {
   if (!Session?.user.companyId) {
     throw new Error("Employee not part of a company");
   }
-  if (!Session?.user.employeeIsApproved || !Session?.user.companyIsApproved) {
-    throw new Error("Either company or employee not approved");
+  if (!Session?.user.employeeIsApproved) {
+    throw new Error("Employee not approved");
   }
+  if (!Session?.user.companyIsApproved) throw new Error("Company not approved");
   try {
     const results = await prisma.job_postings.findMany({
       where: {

@@ -8,7 +8,7 @@ import NewJobForm from "./NewJobForm";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 
 interface NewJobFormButtonProps extends ButtonProps {
-  company_id: string;
+  company_id: string | null;
   onJobCreated?: (job: JobPostCreationDTO) => void;
 }
 

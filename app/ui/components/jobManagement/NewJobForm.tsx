@@ -71,7 +71,7 @@ export default function NewJobForm({
   job_posting,
   onJobUpdated,
 }: {
-  company_id: string;
+  company_id: string | null;
   job_posting?: JobPostCreationDTO;
   onJobUpdated?: (job: JobPostCreationDTO) => void;
 }) {
@@ -162,18 +162,22 @@ export default function NewJobForm({
         job_posting.employment_duration &&
           job_posting.employment_duration.length > 0
           ? "temporary"
-          : "permanent",
+          : job_posting.end_date
+            ? "temporary"
+            : "permanent",
       );
       setWorkEnvironment(job_posting.location);
 
       // Parse salary range
       if (job_posting.salary_range) {
-        const rangeParts = job_posting.salary_range.split("-");
-        if (rangeParts.length === 2) {
-          setStartingPayRange(rangeParts[0].trim());
-          setEndingPayRange(rangeParts[1].trim());
-        } else {
-          setStartingPayRange(job_posting.salary_range);
+        console.log(job_posting.salary_range);
+        const salaryWithoutCommas = job_posting.salary_range.replace(/,/g, "");
+        const regex = /(\d+)/g;
+        const numbers = salaryWithoutCommas.match(regex);
+
+        if (numbers) {
+          setStartingPayRange(numbers[0] || "");
+          setEndingPayRange(numbers.length > 1 ? numbers[1] : "");
         }
       }
       setCompensationType(getCompensationType(job_posting.salary_range));
@@ -216,8 +220,9 @@ export default function NewJobForm({
       const compensationValid =
         !paidPosition ||
         (startingPayRange.trim() !== "" &&
-          endingPayRange.trim() !== "" &&
-          compensationType.trim() !== "");
+          compensationType.trim() !== "" &&
+          (endingPayRange.trim() === "" ||
+            Number(endingPayRange) > Number(startingPayRange)));
       return (
         basicValid &&
         earnLearnValid &&
@@ -249,9 +254,10 @@ export default function NewJobForm({
       is_paid: paidPosition,
       salary_range: paidPosition
         ? "$" +
-          startingPayRange +
-          " - $" +
-          endingPayRange +
+          Number(startingPayRange).toLocaleString() +
+          (endingPayRange
+            ? " - $" + Number(endingPayRange).toLocaleString()
+            : "") +
           (compensationType === "hourly" ? " / hr" : " / year")
         : "",
       skillIds: requiredSkills.map((skill) => skill.skill_id),
@@ -673,17 +679,33 @@ export default function NewJobForm({
               <TextField
                 required
                 disabled={!paidPosition}
-                placeholder="40,000"
+                placeholder="40000"
                 value={startingPayRange}
-                onChange={(e) => setStartingPayRange(e.target.value)}
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/[^0-9]/g, "");
+                  setStartingPayRange(numericValue);
+                }}
+                slotProps={{
+                  htmlInput: {
+                    inputMode: "numeric",
+                  },
+                }}
                 helperText="Start range"
               />
               <TextField
                 required
                 disabled={!paidPosition}
-                placeholder="80,000"
+                placeholder="80000"
                 value={endingPayRange}
-                onChange={(e) => setEndingPayRange(e.target.value)}
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/[^0-9]/g, "");
+                  setEndingPayRange(numericValue);
+                }}
+                slotProps={{
+                  htmlInput: {
+                    inputMode: "numeric",
+                  },
+                }}
                 helperText="End range"
               />
               <RadioGroup
@@ -944,7 +966,12 @@ export default function NewJobForm({
             <Typography>
               <strong>Compensation:</strong>{" "}
               {paidPosition
-                ? "$" + startingPayRange + " - $" + endingPayRange
+                ? "$" +
+                  Number(startingPayRange).toLocaleString() +
+                  (endingPayRange
+                    ? " - $" + Number(endingPayRange).toLocaleString()
+                    : "") +
+                  (compensationType === "hourly" ? " / hr" : " / year")
                 : "None"}
             </Typography>
             <Typography>
