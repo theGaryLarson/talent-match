@@ -17,7 +17,7 @@ async function fetchMyJobListings(): Promise<any> {
     },
   });
   if (!response.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error("Error fetching jobs");
   }
   return response.json();
 }
@@ -31,9 +31,7 @@ export default function JobsManagementPageContent() {
       try {
         const myJobListings = await fetchMyJobListings();
         setJobListings(myJobListings);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
-      }
+      } catch {}
     };
     fetchJobListings();
   }, []);
