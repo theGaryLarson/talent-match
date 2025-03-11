@@ -36,7 +36,13 @@ export async function POST(request: Request) {
 
     const body: JsEducationPageDTO = await request.json();
 
-    const { highestLevelOfStudy, CareerPrepAssessment, educations, certifications, projects } = body;
+    const {
+      highestLevelOfStudy,
+      CareerPrepAssessment,
+      educations,
+      certifications,
+      projects,
+    } = body;
 
     const result = await prisma.$transaction(async (prisma) => {
       const createdCerts: certificates[] = [];
@@ -60,15 +66,17 @@ export async function POST(request: Request) {
           highest_level_of_study_completed: highestLevelOfStudy || null,
           CareerPrepAssessment: {
             upsert: {
-              where: {jobseekerId: jobseekerId},
+              where: { jobseekerId: jobseekerId },
               create: {
                 pronouns: "",
-                expectedEduCompletion: CareerPrepAssessment.expectedEduCompletion,
+                expectedEduCompletion:
+                  CareerPrepAssessment.expectedEduCompletion,
                 experienceWithApplying: false,
                 experienceWithInterview: false,
               },
               update: {
-                expectedEduCompletion: CareerPrepAssessment.expectedEduCompletion ?? "",
+                expectedEduCompletion:
+                  CareerPrepAssessment.expectedEduCompletion ?? "",
               },
             },
           },
@@ -91,7 +99,8 @@ export async function POST(request: Request) {
           CareerPrepAssessment: {
             create: {
               pronouns: "",
-              expectedEduCompletion: CareerPrepAssessment.expectedEduCompletion ?? "",
+              expectedEduCompletion:
+                CareerPrepAssessment.expectedEduCompletion ?? "",
               experienceWithApplying: false,
               experienceWithInterview: false,
             },
@@ -519,7 +528,14 @@ export async function POST(request: Request) {
           HighestCompletedEducationLevel,
         ),
         CareerPrepAssessment: {
-          expectedEduCompletion: upsertedJobseeker.CareerPrepAssessment.length > 0 ? mapToEnumOrThrow(upsertedJobseeker.CareerPrepAssessment[0].expectedEduCompletion, TimeUntilCompletion) : null
+          expectedEduCompletion:
+            upsertedJobseeker.CareerPrepAssessment.length > 0
+              ? mapToEnumOrThrow(
+                  upsertedJobseeker.CareerPrepAssessment[0]
+                    .expectedEduCompletion,
+                  TimeUntilCompletion,
+                )
+              : null,
         },
         educations: mappedEdHistory,
         certifications: mappedCerts,

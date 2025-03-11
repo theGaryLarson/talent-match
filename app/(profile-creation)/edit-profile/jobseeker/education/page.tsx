@@ -44,7 +44,13 @@ import {
 import dayjs from "dayjs";
 import _ from "lodash";
 import { Add } from "@mui/icons-material";
-import { FormControl, FormLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import {
+  FormControl,
+  FormLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 import { TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
 
 interface Data {
@@ -67,6 +73,7 @@ export default function CreateJobseekerProfileEducationPage() {
   const [highestLevelOfStudy, setHighestLevelOfStudy] = useState(
     educationData.highestLevelOfStudy,
   );
+<<<<<<< HEAD
 
   const [hasEduHistory, setHasEduHistory] = useState<boolean | null>(
     educationData.educations.length > 0 ? true : null,
@@ -76,6 +83,11 @@ export default function CreateJobseekerProfileEducationPage() {
   );
   const [expectedEduCompletion, setExpectedEduCompletion] = useState(educationData.CareerPrepAssessment.expectedEduCompletion);
 
+=======
+  const [expectedEduCompletion, setExpectedEduCompletion] = useState(
+    educationData.CareerPrepAssessment.expectedEduCompletion,
+  );
+>>>>>>> d299f966 (profile-creation, technical-skills: Implemented, needs some more changes)
   const [data, setData] = useState<Data>({
     projectExperiences: educationData.projects.map(
       (project): ProjectExperienceData => ({
@@ -265,8 +277,11 @@ export default function CreateJobseekerProfileEducationPage() {
                 setHighestLevelOfStudy(educationData.highestLevelOfStudy);
               }
               if (fetchedData.CareerPrepAssessment.expectedEduCompletion) {
-                educationData.CareerPrepAssessment.expectedEduCompletion = fetchedData.CareerPrepAssessment.expectedEduCompletion;
-                setExpectedEduCompletion(educationData.CareerPrepAssessment.expectedEduCompletion);
+                educationData.CareerPrepAssessment.expectedEduCompletion =
+                  fetchedData.CareerPrepAssessment.expectedEduCompletion;
+                setExpectedEduCompletion(
+                  educationData.CareerPrepAssessment.expectedEduCompletion,
+                );
               }
               if (fetchedData.educations?.length !== 0) {
                 educationData.educations = fetchedData.educations;

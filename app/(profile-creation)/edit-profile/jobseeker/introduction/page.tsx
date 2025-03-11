@@ -91,7 +91,9 @@ export default function CreateJobseekerProfileIntroPage() {
                 email: email!,
                 firstName: firstName ?? "",
                 lastName: lastName ?? "",
-                CareerPrepAssessment: {pronouns: fetchedData.CareerPrepAssessment.pronouns ?? ""},
+                CareerPrepAssessment: {
+                  pronouns: fetchedData.CareerPrepAssessment.pronouns ?? "",
+                },
                 photoUrl: fetchedData.photoUrl ?? session.user?.image,
                 birthDate: fetchedData.birthDate ?? null,
                 zipCode: fetchedData.zipCode ?? "",
@@ -129,8 +131,8 @@ export default function CreateJobseekerProfileIntroPage() {
     console.log(e.target);
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
-    if (fieldName.includes('.')) {
-      const [nestedObjKey, nestedFieldKey] = fieldName.split('.');
+    if (fieldName.includes(".")) {
+      const [nestedObjKey, nestedFieldKey] = fieldName.split(".");
       setIntroData((prevData) => ({
         ...prevData,
         [nestedObjKey]: {
@@ -284,7 +286,11 @@ export default function CreateJobseekerProfileIntroPage() {
                 id="profile-creation-intro-CareerPrepAssessment.pronouns"
                 placeholder="They/Them"
                 onChange={handleFieldChange}
-                value={introData.CareerPrepAssessment ? introData.CareerPrepAssessment.pronouns ?? "" : ""}
+                value={
+                  introData.CareerPrepAssessment
+                    ? (introData.CareerPrepAssessment.pronouns ?? "")
+                    : ""
+                }
               >
                 Preferred Pronouns
               </InputTextWithLabel>

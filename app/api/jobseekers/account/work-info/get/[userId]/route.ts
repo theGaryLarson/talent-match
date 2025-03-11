@@ -42,8 +42,8 @@ export async function GET(
               select: {
                 experienceWithApplying: true,
                 experienceWithInterview: true,
-              }
-            }
+              },
+            },
           },
         },
       },
@@ -88,8 +88,14 @@ export async function GET(
           requiresSponsorship: privateData.job_sponsorship_required,
         }),
         CareerPrepAssessment: {
-          experienceWithApplying: jobseeker.CareerPrepAssessment.length > 0 ? jobseeker.CareerPrepAssessment[0].experienceWithApplying : false,
-          experienceWithInterview: jobseeker.CareerPrepAssessment.length > 0 ? jobseeker.CareerPrepAssessment[0].experienceWithInterview : false,
+          experienceWithApplying:
+            jobseeker.CareerPrepAssessment.length > 0
+              ? jobseeker.CareerPrepAssessment[0].experienceWithApplying
+              : false,
+          experienceWithInterview:
+            jobseeker.CareerPrepAssessment.length > 0
+              ? jobseeker.CareerPrepAssessment[0].experienceWithInterview
+              : false,
         },
         workExperiences,
       };

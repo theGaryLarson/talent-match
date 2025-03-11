@@ -1,4 +1,13 @@
-import { CybersecuritySkills, DataAnalyticsSkills, DurableSkillsRatings, ItAndCloudSupportSkills, ProfessionalBrandingRatings, SoftwareDeveloperSkills, TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
+import {
+  CareerPrepPathways,
+  CybersecuritySkills,
+  DataAnalyticsSkills,
+  DurableSkillsRatings,
+  ItAndCloudSupportSkills,
+  ProfessionalBrandingRatings,
+  SoftwareDeveloperSkills,
+  TimeUntilCompletion,
+} from "@/app/lib/admin/careerPrep";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 
 export type JsIntroDTO = {
@@ -17,8 +26,8 @@ export type JsIntroDTO = {
   state?: string | null;
   zipCode?: string | null;
   CareerPrepAssessment: {
-    pronouns: string | null,
-  },
+    pronouns: string | null;
+  };
 };
 
 export type JsIntroPostDTO = {
@@ -37,8 +46,8 @@ export type JsIntroPostDTO = {
   state?: string | null;
   zipCode?: string;
   CareerPrepAssessment: {
-    pronouns: string | null,
-  },
+    pronouns: string | null;
+  };
 };
 
 export type CertDTO = {
@@ -148,8 +157,8 @@ export type JsEducationInfoDTO = {
 export type JsEducationPageDTO = {
   highestLevelOfStudy: HighestCompletedEducationLevel;
   CareerPrepAssessment: {
-    expectedEduCompletion: TimeUntilCompletion,
-  },
+    expectedEduCompletion: TimeUntilCompletion;
+  };
   userId: string;
   certifications: CertDTO[];
   educations: JsEducationInfoDTO[];
@@ -161,9 +170,9 @@ export type JsWorkExpDTO = {
   userId: string;
   yearsWorkExperience: string;
   CareerPrepAssessment: {
-    experienceWithApplying: boolean,
-    experienceWithInterview: boolean,
-  },
+    experienceWithApplying: boolean;
+    experienceWithInterview: boolean;
+  };
   monthsInternshipExperience?: string | null;
   isAuthorizedToWorkUsa?: boolean | null;
   requiresSponsorship?: boolean | null;
@@ -203,13 +212,13 @@ export type JsPreferencesDTO = {
 
 export type JsCareerPrepPathwaySkillsDTO = {
   userId: string;
-  targetedPathway: string | null;
+  targetedPathway: CareerPrepPathways | null;
   CareerPrepAssessment: {
     cybersecurity: CybersecuritySkills | null;
     dataAnalytics: DataAnalyticsSkills | null;
     itAndCloudComputing: ItAndCloudSupportSkills | null;
     softwareDevelopment: SoftwareDeveloperSkills | null;
-  }
+  };
 };
 
 export type JsCareerPrepDurableSkillsDTO = {
@@ -217,14 +226,14 @@ export type JsCareerPrepDurableSkillsDTO = {
   CareerPrepAssessment: {
     durableSkills: DurableSkillsRatings;
     professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
-  }
+  };
 };
 
 export type JsCareerPrepProfessionalBrandingDTO = {
   userId: string;
   CareerPrepAssessment: {
     professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
-  }
+  };
 };
 
 export type JsDisclosuresDTO = {

@@ -13,7 +13,11 @@ import {
   JsCareerPrepDurableSkillsDTO,
   JsCareerPrepProfessionalBrandingDTO,
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
-import { AgreementLevel, SkillLevel, TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
+import {
+  AgreementLevel,
+  SkillLevel,
+  TimeUntilCompletion,
+} from "@/app/lib/admin/careerPrep";
 
 interface JsEducationPageBlankHighestLevelDTO
   extends Omit<JsEducationPageDTO, "highestLevelOfStudy"> {
@@ -138,7 +142,7 @@ export const initialState: JobseekerState = {
         perspectiveTaking: SkillLevel.NeedsImprovement,
         culturalAwareness: SkillLevel.NeedsImprovement,
         relationshipBuilding: SkillLevel.NeedsImprovement,
-        documentationSkills: SkillLevel.NeedsImprovement
+        documentationSkills: SkillLevel.NeedsImprovement,
       },
       professionalBrandingAndJobMarketReadiness: {
         overallAverage: null,
@@ -158,7 +162,7 @@ export const initialState: JobseekerState = {
         networkingTechniques: AgreementLevel.StronglyDisagree,
         onboardingBestPractices: AgreementLevel.StronglyDisagree,
         developmentPlan: AgreementLevel.StronglyDisagree,
-        mentorship: AgreementLevel.StronglyDisagree
+        mentorship: AgreementLevel.StronglyDisagree,
       },
     },
   },
@@ -183,7 +187,7 @@ export const initialState: JobseekerState = {
         networkingTechniques: AgreementLevel.StronglyDisagree,
         onboardingBestPractices: AgreementLevel.StronglyDisagree,
         developmentPlan: AgreementLevel.StronglyDisagree,
-        mentorship: AgreementLevel.StronglyDisagree
+        mentorship: AgreementLevel.StronglyDisagree,
       },
     },
   },
@@ -230,6 +234,12 @@ export const jobseekerSlice = createSlice({
     setDisclosures: (state, action: PayloadAction<JsDisclosuresPostDTO>) => {
       state.disclosures = action.payload;
     },
+    setPathwaySkills: (
+      state,
+      action: PayloadAction<JsCareerPrepPathwaySkillsDTO>,
+    ) => {
+      state.pathwaySkills = action.payload;
+    },
   },
 });
 
@@ -240,6 +250,7 @@ export const {
   setShowcase,
   setPreferences,
   setDisclosures,
+  setPathwaySkills,
 } = jobseekerSlice.actions;
 
 // TODO: Review if needed in future

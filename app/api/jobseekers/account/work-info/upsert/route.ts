@@ -43,19 +43,31 @@ export async function POST(request: Request) {
       });
 
       const careerPrep = await prisma.careerPrepAssessment.upsert({
-        where: {jobseekerId: updatedJobseeker.jobseeker_id},
+        where: { jobseekerId: updatedJobseeker.jobseeker_id },
         create: {
           jobseekerId: updatedJobseeker.jobseeker_id,
           pronouns: "",
           expectedEduCompletion: "",
-          experienceWithApplying: CareerPrepAssessment.experienceWithApplying ?? false,
-          experienceWithInterview: CareerPrepAssessment.experienceWithInterview ?? false,
-          prevWorkExperience: (updatedJobseeker.years_work_exp && updatedJobseeker.years_work_exp > 0) ? true : false,
+          experienceWithApplying:
+            CareerPrepAssessment.experienceWithApplying ?? false,
+          experienceWithInterview:
+            CareerPrepAssessment.experienceWithInterview ?? false,
+          prevWorkExperience:
+            updatedJobseeker.years_work_exp &&
+            updatedJobseeker.years_work_exp > 0
+              ? true
+              : false,
         },
         update: {
-          experienceWithApplying: CareerPrepAssessment.experienceWithApplying ?? false,
-          experienceWithInterview: CareerPrepAssessment.experienceWithInterview ?? false,
-          prevWorkExperience: (updatedJobseeker.years_work_exp && updatedJobseeker.years_work_exp > 0) ? true : false,
+          experienceWithApplying:
+            CareerPrepAssessment.experienceWithApplying ?? false,
+          experienceWithInterview:
+            CareerPrepAssessment.experienceWithInterview ?? false,
+          prevWorkExperience:
+            updatedJobseeker.years_work_exp &&
+            updatedJobseeker.years_work_exp > 0
+              ? true
+              : false,
         },
       });
 

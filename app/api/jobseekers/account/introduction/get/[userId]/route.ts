@@ -103,7 +103,11 @@ export async function GET(
       introHeadline: jobseeker?.intro_headline,
       currentJobTitle: jobseeker?.current_job_title,
       CareerPrepAssessment: {
-        pronouns: (jobseeker?.CareerPrepAssessment && jobseeker.CareerPrepAssessment.length > 0) ? jobseeker.CareerPrepAssessment[0].pronouns : null,
+        pronouns:
+          jobseeker?.CareerPrepAssessment &&
+          jobseeker.CareerPrepAssessment.length > 0
+            ? jobseeker.CareerPrepAssessment[0].pronouns
+            : null,
       },
     };
 

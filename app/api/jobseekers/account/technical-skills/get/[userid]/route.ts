@@ -1,8 +1,9 @@
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
-import { jobseekers_private_data, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { JsCareerPrepPathwaySkillsDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { Role } from "@/data/dtos/UserInfoDTO";
+import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -61,35 +62,48 @@ export async function GET(
     }
 
     const jobseeker = await prisma.jobseekers.findUnique({
-        where: { user_id: userId },
-        select: {
-          user_id: true,
-          pathways: true,
-          CareerPrepAssessment: {
-            select: {
-              CybersecurityRating: true,
-              ITCloudRating: true,
-              DataAnalyticsRating: true,
-              SoftwareDevRating: true,
-            }
-          }
+      where: { user_id: userId },
+      select: {
+        user_id: true,
+        pathways: true,
+        CareerPrepAssessment: {
+          select: {
+            CybersecurityRating: true,
+            ITCloudRating: true,
+            DataAnalyticsRating: true,
+            SoftwareDevRating: true,
+          },
         },
-      });
+      },
+    });
 
-      if (!jobseeker) {
-        return NextResponse.json(
-            { error: `Failed to retrieve jobseeker` },
-            { status: 404 },
-          );
+    if (!jobseeker) {
+      return NextResponse.json(
+        { error: `Failed to retrieve jobseeker` },
+        { status: 404 },
+      );
     }
     const result: JsCareerPrepPathwaySkillsDTO = {
       userId: userId, // users.jobseekers[0].jobseeker_id
-      targetedPathway: jobseeker.pathways?.pathway_title || null,
+      targetedPathway:
+        (jobseeker.pathways?.pathway_title as CareerPrepPathways) || null,
       CareerPrepAssessment: {
-        cybersecurity: jobseeker.CareerPrepAssessment.length > 0 ? jobseeker.CareerPrepAssessment[0].CybersecurityRating[0] : null,
-        itAndCloudComputing: jobseeker.CareerPrepAssessment.length > 0 ? jobseeker.CareerPrepAssessment[0].ITCloudRating[0] : null,
-        dataAnalytics: jobseeker.CareerPrepAssessment.length > 0 ? jobseeker.CareerPrepAssessment[0].DataAnalyticsRating[0] : null,
-        softwareDevelopment: jobseeker.CareerPrepAssessment.length > 0 ? jobseeker.CareerPrepAssessment[0].SoftwareDevRating[0] : null,
+        cybersecurity:
+          jobseeker.CareerPrepAssessment.length > 0
+            ? jobseeker.CareerPrepAssessment[0].CybersecurityRating[0]
+            : null,
+        itAndCloudComputing:
+          jobseeker.CareerPrepAssessment.length > 0
+            ? jobseeker.CareerPrepAssessment[0].ITCloudRating[0]
+            : null,
+        dataAnalytics:
+          jobseeker.CareerPrepAssessment.length > 0
+            ? jobseeker.CareerPrepAssessment[0].DataAnalyticsRating[0]
+            : null,
+        softwareDevelopment:
+          jobseeker.CareerPrepAssessment.length > 0
+            ? jobseeker.CareerPrepAssessment[0].SoftwareDevRating[0]
+            : null,
       },
     };
 

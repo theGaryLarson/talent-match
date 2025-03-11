@@ -98,7 +98,7 @@ export async function POST(request: Request) {
           current_job_title: currentJobTitle,
           CareerPrepAssessment: {
             upsert: {
-              where: {jobseekerId: jobseekerId},
+              where: { jobseekerId: jobseekerId },
               create: {
                 pronouns: CareerPrepAssessment.pronouns ?? "",
                 expectedEduCompletion: "",
@@ -159,7 +159,10 @@ export async function POST(request: Request) {
         firstName: user.first_name,
         lastName: user.last_name,
         CareerPrepAssessment: {
-          pronouns: jobseeker.CareerPrepAssessment.length > 0 ? jobseeker.CareerPrepAssessment[0].pronouns : null,
+          pronouns:
+            jobseeker.CareerPrepAssessment.length > 0
+              ? jobseeker.CareerPrepAssessment[0].pronouns
+              : null,
         },
         birthDate: user.birthdate,
         phoneCountryCode: user.phoneCountryCode,
