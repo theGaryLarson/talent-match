@@ -415,7 +415,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             <PillButton
               variant="outlined"
               onClick={() => {
-                router.push("/edit-profile/jobseeker/work-experience");
+                router.push("/edit-profile/jobseeker/professional-branding");
               }}
             >
               Previous

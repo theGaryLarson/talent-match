@@ -1,4 +1,4 @@
-import { TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
+import { CybersecuritySkills, DataAnalyticsSkills, DurableSkillsRatings, ItAndCloudSupportSkills, ProfessionalBrandingRatings, SoftwareDeveloperSkills, TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 
 export type JsIntroDTO = {
@@ -199,6 +199,32 @@ export type JsPreferencesDTO = {
   preferredEmploymentType?: string | null;
   targetedPathway?: string | null;
   targetedPathwayId?: string | null;
+};
+
+export type JsCareerPrepPathwaySkillsDTO = {
+  userId: string;
+  targetedPathway: string | null;
+  CareerPrepAssessment: {
+    cybersecurity: CybersecuritySkills | null;
+    dataAnalytics: DataAnalyticsSkills | null;
+    itAndCloudComputing: ItAndCloudSupportSkills | null;
+    softwareDevelopment: SoftwareDeveloperSkills | null;
+  }
+};
+
+export type JsCareerPrepDurableSkillsDTO = {
+  userId: string;
+  CareerPrepAssessment: {
+    durableSkills: DurableSkillsRatings;
+    professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
+  }
+};
+
+export type JsCareerPrepProfessionalBrandingDTO = {
+  userId: string;
+  CareerPrepAssessment: {
+    professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
+  }
 };
 
 export type JsDisclosuresDTO = {

@@ -445,7 +445,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       }
 
       await response.json();
-      router.push("/edit-profile/jobseeker/disclosures");
+      router.push("/edit-profile/jobseeker/technical-skills");
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }

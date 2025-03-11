@@ -9,8 +9,11 @@ import {
   JsShowcaseDTO,
   JsWorkExpDTO,
   JsWorkDTO,
+  JsCareerPrepPathwaySkillsDTO,
+  JsCareerPrepDurableSkillsDTO,
+  JsCareerPrepProfessionalBrandingDTO,
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
-import { TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
+import { AgreementLevel, SkillLevel, TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
 
 interface JsEducationPageBlankHighestLevelDTO
   extends Omit<JsEducationPageDTO, "highestLevelOfStudy"> {
@@ -37,6 +40,9 @@ export interface JobseekerState {
   workExperience: JsWorkExpStringDateDTO;
   showcase: JsShowcaseWithResumeDTO;
   preferences: JsPreferencesDTO;
+  pathwaySkills: JsCareerPrepPathwaySkillsDTO;
+  durableSkills: JsCareerPrepDurableSkillsDTO;
+  professionalBranding: JsCareerPrepProfessionalBrandingDTO;
   disclosures: JsDisclosuresPostDTO;
 }
 
@@ -98,6 +104,88 @@ export const initialState: JobseekerState = {
     targetedPathwayId: null,
     targetedPathway: null,
     preferredEmploymentType: null,
+  },
+  pathwaySkills: {
+    userId: "",
+    targetedPathway: null,
+    CareerPrepAssessment: {
+      cybersecurity: null,
+      dataAnalytics: null,
+      itAndCloudComputing: null,
+      softwareDevelopment: null,
+    },
+  },
+  durableSkills: {
+    userId: "",
+    CareerPrepAssessment: {
+      durableSkills: {
+        overallAverage: null,
+        emotionManagement: SkillLevel.NeedsImprovement,
+        empathy: SkillLevel.NeedsImprovement,
+        goalSetting: SkillLevel.NeedsImprovement,
+        timeManagement: SkillLevel.NeedsImprovement,
+        adaptability: SkillLevel.NeedsImprovement,
+        criticalThinking: SkillLevel.NeedsImprovement,
+        creativity: SkillLevel.NeedsImprovement,
+        resilience: SkillLevel.NeedsImprovement,
+        communication: SkillLevel.NeedsImprovement,
+        activeListening: SkillLevel.NeedsImprovement,
+        conflictResolution: SkillLevel.NeedsImprovement,
+        nonverbalCommunication: SkillLevel.NeedsImprovement,
+        teamwork: SkillLevel.NeedsImprovement,
+        trustBuilding: SkillLevel.NeedsImprovement,
+        leadership: SkillLevel.NeedsImprovement,
+        perspectiveTaking: SkillLevel.NeedsImprovement,
+        culturalAwareness: SkillLevel.NeedsImprovement,
+        relationshipBuilding: SkillLevel.NeedsImprovement,
+        documentationSkills: SkillLevel.NeedsImprovement
+      },
+      professionalBrandingAndJobMarketReadiness: {
+        overallAverage: null,
+        personalBrand: AgreementLevel.StronglyDisagree,
+        onlinePresence: AgreementLevel.StronglyDisagree,
+        elevatorPitch: AgreementLevel.StronglyDisagree,
+        resumeEffectiveness: AgreementLevel.StronglyDisagree,
+        coverLetterEffectiveness: AgreementLevel.StronglyDisagree,
+        interviewExperience: AgreementLevel.StronglyDisagree,
+        responseTechnique: AgreementLevel.StronglyDisagree,
+        followUpImportance: AgreementLevel.StronglyDisagree,
+        onlineNetworking: AgreementLevel.StronglyDisagree,
+        eventNetworking: AgreementLevel.StronglyDisagree,
+        relationshipManagement: AgreementLevel.StronglyDisagree,
+        jobSearchStrategy: AgreementLevel.StronglyDisagree,
+        materialDistribution: AgreementLevel.StronglyDisagree,
+        networkingTechniques: AgreementLevel.StronglyDisagree,
+        onboardingBestPractices: AgreementLevel.StronglyDisagree,
+        developmentPlan: AgreementLevel.StronglyDisagree,
+        mentorship: AgreementLevel.StronglyDisagree
+      },
+    },
+  },
+  professionalBranding: {
+    userId: "",
+    CareerPrepAssessment: {
+      professionalBrandingAndJobMarketReadiness: {
+        overallAverage: undefined,
+        personalBrand: AgreementLevel.StronglyDisagree,
+        onlinePresence: AgreementLevel.StronglyDisagree,
+        elevatorPitch: AgreementLevel.StronglyDisagree,
+        resumeEffectiveness: AgreementLevel.StronglyDisagree,
+        coverLetterEffectiveness: AgreementLevel.StronglyDisagree,
+        interviewExperience: AgreementLevel.StronglyDisagree,
+        responseTechnique: AgreementLevel.StronglyDisagree,
+        followUpImportance: AgreementLevel.StronglyDisagree,
+        onlineNetworking: AgreementLevel.StronglyDisagree,
+        eventNetworking: AgreementLevel.StronglyDisagree,
+        relationshipManagement: AgreementLevel.StronglyDisagree,
+        jobSearchStrategy: AgreementLevel.StronglyDisagree,
+        materialDistribution: AgreementLevel.StronglyDisagree,
+        networkingTechniques: AgreementLevel.StronglyDisagree,
+        onboardingBestPractices: AgreementLevel.StronglyDisagree,
+        developmentPlan: AgreementLevel.StronglyDisagree,
+        mentorship: AgreementLevel.StronglyDisagree
+      },
+    },
   },
   disclosures: {
     userId: "",
