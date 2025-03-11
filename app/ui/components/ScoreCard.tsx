@@ -1,3 +1,5 @@
+import { Card, Grid2, Typography } from "@mui/material";
+
 //draft
 interface Props {
   title: string;
@@ -5,15 +7,18 @@ interface Props {
 }
 export default function ScoreCard(props: Props) {
   return (
-    <div className="h-[50px] bg-white rounded-[100px] shadow-xs border backdrop-blur-[120px] justify-center items-center inline-flex">
-      <div className="p-5 justify-center items-center gap-2 flex">
-        <div className="text-[#181818] text-base font-normal font-['Roboto'] leading-none">
-          {props.title}
-        </div>
-        <div className="text-center text-primary-main text-xl font-bold font-['Roboto'] leading-7">
+    <Card variant="outlined" sx={{ p: 2 }}>
+      <Grid2
+        container
+        spacing={1}
+        direction={{ xs: "row", md: "column" }}
+        sx={{ justifyContent: "space-between", alignItems: "center" }}
+      >
+        <Typography>{props.title}</Typography>
+        <Typography variant="h4" color="primary">
           {props.val}
-        </div>
-      </div>
-    </div>
+        </Typography>
+      </Grid2>
+    </Card>
   );
 }

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import RoundedButton from "@/app/ui/components/RoundedButton";
 import TrainingProviderMembers from "@/app/ui/components/TrainingProviderMembers";
+import { List, ListItem } from "@mui/material";
 
 export const metadata = {
   title: "About Us",
@@ -39,19 +40,30 @@ export default function page() {
             <p>
               The{" "}
               <b className="font-semibold text-blue-text2">
-                Washington Tech Workforce Coalition
+                Tech Workforce Coalition
               </b>{" "}
-              is an open collaboration of organizations and individuals
-              developing a diverse, highly skilled technology workforce
-              throughout Washington state.
+              bridges Washington’s gaps in critical IT/Cybersecurity jobs.​
+              Aligning job candidate competencies with advances in technology.
+              Guided by AWS, Microsoft, Accenture, ​ and WTIA, the Coalition
+              creates a platform for the state’s postsecondary education and
+              training institutions ​ to address industry priorities.​ Providing
+              your organization access to unique sources of quality talent. Our
+              Talent Finder Portal taps into​ talent pools that are not easily
+              accessible in traditional job boards. You’ll have direct access to
+              quality ​ candidates from:​
             </p>
-            <p>
-              We are funded by the US Department of Commerce Good Jobs Challenge
-              grant through the Washington Jobs Initiative (WJI), managed by the
-              Washington Student Achievement Council. A Seattle non-profit,
-              Computing for All, manages the Coalition in its role as sector
-              intermediary.
-            </p>
+            <List>
+              <ListItem>• Colleges with AWS curriculum​</ListItem>
+              <ListItem>
+                • Colleges with curriculum funded by the National Science
+                Foundation​
+              </ListItem>
+              <ListItem>• Colleges with AI curriculum​</ListItem>
+              <ListItem>
+                • Training partners delivering candidates with industry-valued
+                credentials​
+              </ListItem>
+            </List>
           </div>
           <header className="text-center">
             <h2 className="font-semibold uppercase leading-snug">Our Goal</h2>
@@ -356,30 +368,21 @@ export default function page() {
               </h2>
             </header>
             <p>
-              The Industry Committee, led by{" "}
-              <Link
-                href="https://www.computingforall.org/"
-                target="_blank"
-                className="underline"
-              >
-                Computing for All
-              </Link>{" "}
-              in collaboration with the{" "}
-              <Link
-                href="https://www.washingtontechnology.org/"
-                target="_blank"
-                className="underline"
-              >
-                Washington Technology Industry Association
-              </Link>{" "}
-              (WTIA), facilitates strategies for creating a robust talent
-              pipeline and methods for employers to better recruit and
-              assimilate new talent into their organization. The committee
-              supports employers by clarifying and understanding their needs,
-              identifying challenges and barriers to participation, and
-              addressing these challenges through development of new or existing
-              programs. As a committee member, you’ll attend quarterly meetings
-              and any additional focused efforts per your interest.
+              As a member of the Industry Committee, you will play a critical
+              role in informing curriculum in collaboration with other employers
+              to ensure it stays relevant and effectively prepares students for
+              the workforce. Currently, the Industry Committee is prioritizing
+              these essential roles across all sectors:
+            </p>
+            <blockquote className="text-center">
+              Software Development | Cybersecurity | IT/Cloud Support | Data
+              Analytics
+            </blockquote>
+            <p>
+              With guidance from AWS, Accenture, Microsoft and WTIA, this
+              committee proactively collaborates with the Education Committee
+              ensuring key industry trends are considered and addressed by
+              educators. Quarterly meetings: January, April, July, and October.
             </p>
             <div className="pt-[40px]">
               <RoundedButton
@@ -425,14 +428,13 @@ export default function page() {
               </h2>
             </header>
             <p>
-              The Education Committee is led by Computing for All with a focus
-              on modernizing curriculum and career readiness strategies that
-              address the evolving needs of industry. Sharing models and best
-              practices from employers, this committee addresses program
-              challenges and provides support to faculty. As a committee member,
-              you’ll attend quarterly meetings and, according to your interests,
-              participate in focused initiatives.
+              Discover the essential skills for tomorrow's workforce. Our
+              Coalition connects you directly with employers, providing valuable
+              insights into in-demand skills to help align your curriculum with
+              the latest industry standards. Equip your students for success and
+              get them HIRED!
             </p>
+            <p>Quarterly meetings: February, May, August, November.</p>
             <div className="pt-[40px]">
               <RoundedButton
                 content="Join"
@@ -457,9 +459,9 @@ export default function page() {
               Steering Committee
             </h3>
             <p>
-              Comprised of Co-Leadership partners &amp; members. Provides
-              prioritization and sets policy. Sets membership criteria and
-              approval. Managed by Computing for All.
+              Executives from AWS and Accenture co-lead this committee,
+              providing credibility, prioritization and policy for the Coalition
+              and its initiatives.
             </p>
           </div>
           <div className="flex-1 space-y-[10px]">

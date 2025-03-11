@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 import { uploadCoverLetter } from "@/app/lib/services/azureBlobService";
 import { auth } from "@/auth";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "5mb",
+    },
+  },
+};
+
 export async function POST(request: Request) {
   try {
     // Get essentials from session, not the request

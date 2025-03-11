@@ -38,12 +38,9 @@ function BookmarkComponent({ bookmarked, addUrl, removeUrl }: BookmarkProps) {
   return (
     <IconButton onClick={toggleBookmark}>
       {isBookmarked ? (
-        <Bookmark
-          sx={{ color: "secondary.main" }}
-          className="h-10 w-10 stroke-2"
-        />
+        <Bookmark sx={{ color: "secondary.main" }} />
       ) : (
-        <BookmarkBorderOutlined className="h-10 w-10 stroke-2" />
+        <BookmarkBorderOutlined />
       )}
     </IconButton>
   );

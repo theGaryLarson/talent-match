@@ -19,7 +19,14 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
   ) {
     company_id = jobData.company_id;
   }
-
+  if (
+    !Session?.user.roles.includes(Role.ADMIN) &&
+    Session?.user.roles.includes(Role.EMPLOYER)
+  ) {
+    if (!Session?.user.employeeIsApproved || !Session?.user.companyIsApproved) {
+      throw new Error("Either company or employee not approved");
+    }
+  }
   try {
     if (!company_id) {
       throw new Error("Failed to create job listing Company id not found");
@@ -62,8 +69,8 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         job_description: jobData.job_description,
         is_internship: jobData.is_internship ?? false,
         is_paid: jobData.is_paid ?? true,
-        relocation_services_available: jobData.relocation_services,
-        offer_visa_sponsorship: jobData.visa_sponsorship,
+        relocation_services_available: jobData.relocation_services_available,
+        offer_visa_sponsorship: jobData.offer_visa_sponsorship,
         zip: jobData.zip,
         employment_type: jobData.employment_type || "full-time",
         is_apprenticeship: jobData.is_apprenticeship,
@@ -82,11 +89,20 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         start_date: jobData.start_date,
         end_date: jobData.end_date,
         career_services_offered: jobData.career_services_offered,
+        trainingRequirements: jobData.trainingRequirements,
+        requiredCertifications: jobData.requiredCertifications,
+        minimumEducationLevel: jobData.minimumEducationLevel,
         skills: {
           connect: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,
           })),
         },
+      },
+      include: {
+        industry_sectors: true,
+        techArea: true,
+        companies: true,
+        skills: true,
       },
     });
 
@@ -96,7 +112,107 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
     // throw new Error('Failed to create job listing with associated skills');
   }
 }
+export async function updateJobListing(jobData: JobPostCreationDTO) {
+  if (!jobData.job_posting_id) {
+    return;
+  }
+  const Session = await auth();
+  let company_id = Session?.user.companyId;
+  if (
+    Session?.user.roles.includes(Role.ADMIN) ||
+    Session?.user.roles.includes(Role.CASE_MANAGER)
+  ) {
+    company_id = jobData.company_id;
+  }
+  if (
+    !Session?.user.roles.includes(Role.ADMIN) &&
+    Session?.user.roles.includes(Role.EMPLOYER)
+  ) {
+    if (!Session?.user.employeeIsApproved || !Session?.user.companyIsApproved) {
+      throw new Error("Either company or employee not approved");
+    }
+  }
+  const now = new Date();
+  try {
+    if (!company_id) {
+      throw new Error("Failed to create job listing Company id not found");
+    }
+    let companyAddress = await prisma.company_addresses.findFirst({
+      where: {
+        AND: {
+          zip: jobData.zip,
+          company_id: company_id,
+        },
+      },
+    });
+    if (!companyAddress) {
+      companyAddress = await prisma.company_addresses.create({
+        data: {
+          company_id: company_id,
+          company_address_id: uuidv4(),
+          zip: jobData.zip,
+        },
+      });
+    }
+    const postalGeoData = await prisma.postalGeoData.findFirst({
+      where: { zip: jobData.zip },
+    });
 
+    const res = await prisma.job_postings.update({
+      where: {
+        job_posting_id: jobData.job_posting_id,
+      },
+      data: {
+        job_posting_id: jobData.job_posting_id,
+        company_id: company_id,
+        location_id: companyAddress.company_address_id,
+        tech_area_id: jobData.tech_area_id,
+        sector_id: jobData.sector_id,
+        employer_id: Session?.user.employerId ?? null,
+        job_title: jobData.job_title,
+        job_description: jobData.job_description,
+        is_internship: jobData.is_internship ?? false,
+        is_paid: jobData.is_paid ?? true,
+        relocation_services_available: jobData.relocation_services_available,
+        offer_visa_sponsorship: jobData.offer_visa_sponsorship,
+        zip: jobData.zip,
+        employment_type: jobData.employment_type || "full-time",
+        earn_and_learn_type: jobData.earn_and_learn_type,
+        is_apprenticeship: jobData.is_apprenticeship,
+        location: jobData.location,
+        career_services_offered: jobData.career_services_offered,
+        salary_range: jobData.salary_range,
+        county: postalGeoData?.county ?? "",
+        publish_date: now,
+        unpublish_date:
+          jobData.unpublish_date ??
+          new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()), //if closing date is not provided auto set to 1 year in the futrue
+        employment_duration: jobData.employment_duration,
+        start_date: jobData.start_date,
+        end_date: jobData.end_date,
+        job_post_url: jobData.job_post_url,
+        assessment_url: jobData.assessment_url,
+        trainingRequirements: jobData.trainingRequirements,
+        requiredCertifications: jobData.requiredCertifications,
+        minimumEducationLevel: jobData.minimumEducationLevel,
+        skills: {
+          connect: jobData.skillIds?.map((skillId: string) => ({
+            skill_id: skillId,
+          })),
+        },
+      },
+      include: {
+        industry_sectors: true,
+        techArea: true,
+        companies: true,
+        skills: true,
+      },
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+}
 export async function getJobListingById(joblistingId: string) {
   try {
     const joblisting = await prisma.job_postings.findUnique({
@@ -136,6 +252,54 @@ export async function getJobListingById(joblistingId: string) {
     console.error(e);
   }
 }
+export async function getCompanyJobListings() {
+  const Session = await auth();
+  if (!Session?.user.roles.includes(Role.EMPLOYER)) {
+    throw new Error("User is not an employer");
+  }
+  if (!Session?.user.companyId) {
+    throw new Error("Employee not part of a company");
+  }
+  if (!Session?.user.employeeIsApproved) {
+    throw new Error("Employee not approved");
+  }
+  if (!Session?.user.companyIsApproved) throw new Error("Company not approved");
+  try {
+    const results = await prisma.job_postings.findMany({
+      where: {
+        company_id: Session?.user.companyId,
+      },
+      include: {
+        industry_sectors: true,
+        techArea: true,
+        companies: true,
+        skills: true,
+        jobApplications: {
+          where: {
+            jobStatus: JobStatus.Screened,
+          },
+          include: {
+            Jobseekers: {
+              include: {
+                users: true,
+                pathways: true,
+                jobseeker_has_skills: {
+                  include: {
+                    skills: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return results;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
 export async function getMyJobListings() {
   const Session = await auth();
   if (!Session?.user.employerId) {
@@ -144,14 +308,33 @@ export async function getMyJobListings() {
     );
   }
   try {
-    const results = prisma.job_postings.findMany({
+    const results = await prisma.job_postings.findMany({
       where: {
         employer_id: Session?.user.employerId,
       },
       include: {
         industry_sectors: true,
+        techArea: true,
         companies: true,
         skills: true,
+        jobApplications: {
+          where: {
+            jobStatus: JobStatus.Screened,
+          },
+          include: {
+            Jobseekers: {
+              include: {
+                users: true,
+                pathways: true,
+                jobseeker_has_skills: {
+                  include: {
+                    skills: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     return results;
@@ -172,6 +355,9 @@ export async function deleteJobListing(jobPostingId: string) {
       "Failed to delete job listing: company ID not found in session",
     );
   }
+  if (!Session?.user.employeeIsApproved) {
+    throw new Error("Employee not approved");
+  }
 
   try {
     const job = await prisma.job_postings.findUnique({
@@ -180,7 +366,7 @@ export async function deleteJobListing(jobPostingId: string) {
       },
     });
     if (
-      job?.employer_id != Session.user.companyId &&
+      job?.company_id != Session.user.companyId &&
       !Session?.user.roles.includes(Role.ADMIN)
     ) {
       throw new Error("not an employer of this company");
@@ -465,6 +651,7 @@ export async function getAllJobPosts() {
           },
         },
         companies: true,
+        skills: true,
       },
     });
     return results;

@@ -4,6 +4,7 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import PillButton from "@/app/ui/components/PillButton";
+import { Radio, RadioGroup } from "@mui/material";
 import {
   CertDTO,
   HighestCompletedEducationLevel,
@@ -64,6 +65,14 @@ export default function CreateJobseekerProfileEducationPage() {
   const [highestLevelOfStudy, setHighestLevelOfStudy] = useState(
     educationData.highestLevelOfStudy,
   );
+
+  const [hasEduHistory, setHasEduHistory] = useState<boolean | null>(
+    educationData.educations.length > 0 ? true : null,
+  );
+  const [hasCerts, setHasCerts] = useState<boolean | null>(
+    educationData.certifications.length > 0 ? true : null,
+  );
+
   const [data, setData] = useState<Data>({
     projectExperiences: educationData.projects.map(
       (project): ProjectExperienceData => ({
@@ -131,6 +140,22 @@ export default function CreateJobseekerProfileEducationPage() {
       }),
     ),
   });
+
+  function removeAllCerts() {
+    setData({
+      ...data,
+      licenses: [],
+    });
+    dispatch(setPageDirty("education"));
+  }
+
+  function removeAllEduHistory() {
+    setData({
+      ...data,
+      educations: [],
+    });
+    dispatch(setPageDirty("education"));
+  }
 
   function handleLevelOfStudy(event: ChangeEvent<HTMLSelectElement>) {
     setHighestLevelOfStudy(
@@ -231,12 +256,33 @@ export default function CreateJobseekerProfileEducationPage() {
               }
               if (fetchedData.educations?.length !== 0) {
                 educationData.educations = fetchedData.educations;
+                setHasEduHistory(true);
+              } else {
+                educationData.educations = [
+                  {
+                    ...defaultEducationData(),
+                    gradDate: "",
+                    startDate: "",
+                    programId: undefined,
+                    edProviderId: "",
+                    enrollmentStatus: undefined,
+                  },
+                ];
               }
               if (fetchedData.projects?.length !== 0) {
                 educationData.projects = fetchedData.projects;
               }
               if (fetchedData.certifications?.length !== 0) {
                 educationData.certifications = fetchedData.certifications;
+                setHasCerts(true);
+              } else {
+                educationData.certifications = [
+                  {
+                    ...defaultLicenseData(),
+                    issueDate: undefined,
+                    expiryDate: undefined,
+                  },
+                ];
               }
 
               setData({
@@ -491,6 +537,14 @@ export default function CreateJobseekerProfileEducationPage() {
         <ProgressBarFlat progress={(4 / 6) * 100} />
         <p>Step 4/6</p>
         <h1>Education</h1>
+        <p>
+          The Talent Portal connects you to in-demand technical training through
+          our coalition partners. Complete your training, and we'll connect you
+          directly with employer partners actively seeking your skills. Whether
+          you've completed a technical training program, are finishing a
+          technical degree, or just starting your tech journey, we have
+          resources to help you succeed.
+        </p>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
           <fieldset>
@@ -510,35 +564,105 @@ export default function CreateJobseekerProfileEducationPage() {
               placeholder="Please select"
               onChange={handleLevelOfStudy}
               value={highestLevelOfStudy}
+              required={true}
             >
               What is the highest degree you’ve earned or schooling completed?
             </SelectOptionsWithLabel>
           </fieldset>
           <fieldset>
             <legend>
-              <h2>Education Details</h2>
+              <h2>Education History</h2>
             </legend>
-            <Educations
-              data={data.educations}
-              hasUnmetRequired={hasUnmetRequired}
-              onUpdate={handleUpdate}
-              onRemove={removeEducation}
-            />
-            <PillButton variant="outlined" onClick={addNewEducation}>
+            <RadioGroup>
+              <p>Do you have an education history? *</p>
+              <div className="block gap-8">
+                <Radio
+                  name="hasEduHistory"
+                  value="yes"
+                  onChange={() => {
+                    setHasEduHistory(true);
+                    addNewEducation();
+                  }}
+                  checked={hasEduHistory !== null && hasEduHistory}
+                  required={true}
+                />{" "}
+                Yes
+                <Radio
+                  name="hasEduHistory"
+                  value="no"
+                  onChange={() => {
+                    setHasEduHistory(false);
+                    removeAllEduHistory();
+                  }}
+                  checked={hasEduHistory !== null && !hasEduHistory}
+                  required={true}
+                />{" "}
+                No
+              </div>
+            </RadioGroup>
+            {hasEduHistory && (
+              <Educations
+                data={data.educations}
+                hasUnmetRequired={hasUnmetRequired}
+                onUpdate={handleUpdate}
+                onRemove={removeEducation}
+              />
+            )}
+            <PillButton
+              variant="outlined"
+              onClick={addNewEducation}
+              hidden={!hasEduHistory}
+            >
               <Add className="mr-2 h-5 w-5" />
-              Add education detail
+              Add education history
             </PillButton>
           </fieldset>
           <fieldset className="license-groups">
             <legend>
               <h2>Licenses &amp; Certifications</h2>
             </legend>
-            <Licenses
-              data={data.licenses}
-              onUpdate={handleUpdate}
-              onRemove={removeLicense}
-            />
-            <PillButton variant="outlined" onClick={addNewLicense}>
+            <RadioGroup>
+              <p>
+                Have you completed a technical certification program with a
+                provider outside of our coalition? *
+              </p>
+              <div className="block gap-8">
+                <Radio
+                  name="hasCerts"
+                  value="yes"
+                  onChange={() => {
+                    setHasCerts(true);
+                    addNewLicense();
+                  }}
+                  checked={hasCerts !== null && hasCerts}
+                  required={true}
+                />{" "}
+                Yes
+                <Radio
+                  name="hasCerts"
+                  value="no"
+                  onChange={() => {
+                    setHasCerts(false);
+                    removeAllCerts();
+                  }}
+                  checked={hasCerts !== null && !hasCerts}
+                  required={true}
+                />{" "}
+                No
+              </div>
+            </RadioGroup>
+            {hasCerts && (
+              <Licenses
+                data={data.licenses}
+                onUpdate={handleUpdate}
+                onRemove={removeLicense}
+              />
+            )}
+            <PillButton
+              variant="outlined"
+              onClick={addNewLicense}
+              hidden={!hasCerts}
+            >
               <Add className="mr-2 h-5 w-5" />
               Add license or certification
             </PillButton>

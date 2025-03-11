@@ -1,11 +1,11 @@
-@import "tailwindcss";
+@import "./global.css";
 
 h1 {
   @apply my-2 text-5xl;
   font-weight: 700;
 
   /* From Figma Properties */
-  /* 
+  /*
   font-size: 34px;
   font-family: Roboto;
   line-height: 41.99px;
@@ -130,7 +130,7 @@ h2 {
 .snackbar-message > svg {
   margin-right: 16px;
 }
-/* 
+/*
 .snackbar-message > div > div + p {
   margin-bottom: 4px;
 } */

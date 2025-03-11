@@ -597,6 +597,7 @@ export async function getIndustrySectors() {
       industry_sector_id: true,
       sector_title: true,
     },
+    orderBy: [{ sector_title: "asc" }],
   });
   return industrySectors;
 }
@@ -873,11 +874,6 @@ export async function getEmployerById(employerId: string) {
         BookmarkedJobseeker: {
           select: {
             jobseekerId: true,
-          },
-        },
-        job_postings: {
-          select: {
-            job_posting_id: true,
           },
         },
       },

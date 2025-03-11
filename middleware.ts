@@ -67,6 +67,8 @@ export default auth((req) => {
     "/about-us",
     "/underconstruction",
     "/policies/terms-of-service",
+    "/policies/privacy-policy",
+    "/policies/user-data-agreement",
     "/signin",
     "/signout",
     "/services",
@@ -83,6 +85,7 @@ export default auth((req) => {
     "/services/careers/software-developer",
     "/services/training-providers",
     "/api/events/sign-up",
+    "/api/events/registered",
     "/api/jobseekers/query",
     "/api/joblistings/query",
     "/api/employers/industry-sectors",
@@ -136,6 +139,8 @@ export default auth((req) => {
     if (
       roleRoutes.GUEST.includes(pathname) ||
       pathname == "/policies/terms-of-service" ||
+      pathname == "/policies/privacy-policy" ||
+      pathname == "/policies/user-data-agreement" ||
       pathname == "/signout"
     ) {
       return NextResponse.next();

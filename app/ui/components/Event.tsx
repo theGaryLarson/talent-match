@@ -19,6 +19,7 @@ export type EventData = {
   registrationLink: string | null;
   duration: number;
   joinMeetingLink: string | null;
+  recordingLink: string | null;
   blurb: string | null;
   eventType: EventTypeEnum;
   createdById: string | null;
@@ -87,13 +88,13 @@ export default function Event({ event, registered, showLink }: EventProps) {
                         alt="Calendar icon"
                       />
                       <div className="text-black/90 text-base font-normal leading-normal tracking-tight">
-                        {event.date.toDateString()}{" "}
-                        {event.date.toLocaleTimeString([], {
+                        {new Date(event.date).toDateString()}{" "}
+                        {new Date(event.date).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         }) +
                           " - " +
-                          endTime.toLocaleTimeString([], {
+                          new Date(endTime).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
@@ -148,7 +149,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
         {/* Bottom */}
         <div className="self-stretch pt-6 flex-col justify-start items-start flex">
           <div className="self-stretch justify-start items-start gap-6 inline-flex">
-            <div className="grow shrink basis-0 text-zinc-900 text-base font-normal leading-normal tracking-tight">
+            <div className="grow shrink basis-0 text-zinc-900 text-base font-normal leading-normal tracking-tight h-[50vh]">
               <div
                 dangerouslySetInnerHTML={{ __html: event.description! }}
                 className="ql-editor"
@@ -160,13 +161,13 @@ export default function Event({ event, registered, showLink }: EventProps) {
     );
   }
 
-  const endTime = new Date(event.date.getTime() + event.duration * 60000);
+  const endTime = new Date(event.date).getTime() + event.duration * 60000;
 
   return (
     <div
       role="button"
       tabIndex={0}
-      className="w-full rounded-md p-4 hover:bg-slate-200 grid grid-cols-4 justify-start items-center mb-4 cursor-pointer"
+      className="w-full rounded-md p-4 hover:bg-slate-200 grid grid-cols-4 justify-start items-center mb-4 cursor-pointer gap-8"
     >
       <Modal
         open={open}
@@ -192,7 +193,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
         className="self-stretch justify-start items-center flex"
       >
         <div className="grow shrink basis-0 text-sky-900 text-base font-</div>normal leading-normal tracking-tight">
-          {event.date.toDateString()}
+          {new Date(event.date).toDateString()}
         </div>
       </div>
       <div
@@ -200,12 +201,12 @@ export default function Event({ event, registered, showLink }: EventProps) {
         className="self-stretch justify-start items-center flex"
       >
         <div className="grow shrink basis-0 text-zinc-900/60 text-base font-normal leading-normal tracking-tight">
-          {event.date.toLocaleTimeString([], {
+          {new Date(event.date).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           }) +
             " - " +
-            endTime.toLocaleTimeString([], {
+            new Date(endTime).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
             })}
@@ -215,19 +216,26 @@ export default function Event({ event, registered, showLink }: EventProps) {
         onClick={handleOpen}
         className="flex-col justify-start items-start inline-flex"
       >
-        {showLink && event.joinMeetingLink && (
+        {event.recordingLink && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
-            <Link href={event.joinMeetingLink!} target="_blank">
-              Meeting Link
+            <Link href={event.recordingLink!} target="_blank">
+              View Recording
             </Link>
           </div>
         )}
-        {showLink && event.registrationLink && (
-          <div className="text-base font-normal leading-normal tracking-tight">
-            Check email for Meeting Link
+        {!event.recordingLink && showLink && event.joinMeetingLink && (
+          <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
+            <Link href={event.joinMeetingLink!} target="_blank">
+              Join Meeting
+            </Link>
           </div>
         )}
-        {!showLink && (
+        {!event.recordingLink && showLink && event.registrationLink && (
+          <div className="text-base font-normal leading-normal tracking-tight">
+            Check email to Join Meeting
+          </div>
+        )}
+        {!event.recordingLink && !showLink && (
           <div className="flex-col justify-start items-start flex">
             {reg ? (
               "Registered"

@@ -48,29 +48,35 @@ export default function CreateJobListingAdminForm() {
       zip: formData.get("zip") as string,
       unpublish_date: formData.get("unpublish_date")
         ? new Date(formData.get("unpublish_date") as string)
-        : undefined,
+        : null,
       job_post_url: formData.get("job_post_url") as string,
       assessment_url: formData.get("assessment_url") as string,
       skillIds: skills?.map((v) => v.skill_id),
       tech_area_id: formData.get("area") as string,
       sector_id: formData.get("sector") as string,
       company_id: formData.get("company") as string,
-      relocation_services: formData.get("relocation") === "yes",
-      visa_sponsorship: formData.get("visas") === "yes",
+      relocation_services_available: formData.get("relocation") === "yes",
+      offer_visa_sponsorship: formData.get("visas") === "yes",
       earn_and_learn_type: formData.get("earn_and_learn_type") as string,
       occupation_code: formData.get("occupation_code") as string,
       employment_duration:
         formData.get("is_permanent") === "no"
           ? (formData.get("employment_duration") as string)
-          : undefined,
+          : null,
       start_date: formData.get("start_date")
         ? new Date(formData.get("start_date") as string)
-        : undefined,
+        : null,
       end_date: formData.get("end_date")
         ? new Date(formData.get("end_date") as string)
-        : undefined,
+        : null,
       career_services_offered:
         formData.get("career_services_offered") === "yes",
+      techArea: null,
+      jobApplications: [],
+      publish_date: null,
+      trainingRequirements: null,
+      requiredCertifications: null,
+      minimumEducationLevel: null,
     };
     try {
       const response = await fetch("/api/joblistings/add", {
@@ -466,7 +472,6 @@ export default function CreateJobListingAdminForm() {
           getTagLabel={(option: SkillDTO) => option.skill_name}
           getTagLink={(option: SkillDTO) => option.skill_info_url}
         />
-        <p>Select your top 5 skills from your skills list</p>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <Button

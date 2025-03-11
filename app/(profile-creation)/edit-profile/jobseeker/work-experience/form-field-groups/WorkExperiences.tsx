@@ -91,14 +91,14 @@ export default memo(function WorkExperiences({
           required
           value={workExperience[classCompany]}
         >
-          Company Name: *
+          Company Name:
         </InputTextWithLabel>
         <SelectAutoload
           id={
             classNamePrefix + workExperience.workId + "-" + classCompanyIndustry
           }
           apiAutoloadRoute="/api/employers/industry-sectors"
-          label="Industry Sector:"
+          label="Industry Sector: *"
           getOptionLabel={(option: IndustrySectorDropdownDTO) =>
             option.sector_title
           }
@@ -118,7 +118,7 @@ export default memo(function WorkExperiences({
             classNamePrefix + workExperience.workId + "-" + classCompanyTechArea
           }
           apiAutoloadRoute="/api/employers/technology-areas"
-          label="Job Role or Department:"
+          label="Job Role or Department: *"
           getOptionLabel={(option: TechnologyAreaDropdownDTO) => option.title}
           getOptionId={(option: TechnologyAreaDropdownDTO) => option.id}
           getOptionFromId={(options: TechnologyAreaDropdownDTO[], id: string) =>
@@ -137,7 +137,7 @@ export default memo(function WorkExperiences({
           required
           value={workExperience[classTitle]}
         >
-          Your Job Title: *
+          Your Job Title:
         </InputTextWithLabel>
       </div>
       <div className="profile-form-grid md:grid-cols-2">

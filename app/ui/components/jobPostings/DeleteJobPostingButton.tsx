@@ -1,7 +1,8 @@
 "use client";
 
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { DeleteOutlined } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
+import PillButton from "../PillButton";
 
 export default function DeleteJobPostingButton(params: { id: string }) {
   const router = useRouter();
@@ -26,11 +27,13 @@ export default function DeleteJobPostingButton(params: { id: string }) {
     }
   };
   return (
-    <button
-      className="px-3 rounded-full hover:bg-slate-200 text-xs flex flex-col justify-center items-center"
+    <PillButton
+      variant="outlined"
+      color="error"
+      startIcon={<DeleteOutlined />}
       onClick={save}
     >
-      <TrashIcon width={20} /> Delete
-    </button>
+      Delete
+    </PillButton>
   );
 }

@@ -8,7 +8,6 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
-  Paper,
   Grid2,
   Stepper,
   Step,
@@ -986,7 +985,6 @@ export default function Page() {
                   "Thank you for completing the skills assessment! A dedicated Career Navigator will review your results and create a personalized Professional Development Plan tailored to your needs. You’ll receive an email notification when your plan is ready."
                 }
               </Typography>
-              {/*<p className="subtitle-congrats">{`Thank you again for your participation!`}</p>*/}
               <Grid2 container>
                 <PillButton href="/services/jobseekers/dashboard">
                   Go to Dashboard
@@ -996,31 +994,45 @@ export default function Page() {
           </Box>
         </>
       ) : (
-        <Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: "auto", my: 4 }}>
+        <Box sx={{ p: 3, my: 4 }}>
           <Typography variant="h4" align="center" sx={{ mb: 4 }}>
             Career Prep Skills Assessment
           </Typography>
           {activeStep == 0 && (
             <Typography sx={{ mb: 4 }}>
-              Th
-              {
-                "is assessment will evaluate your technical, durable, and career readiness skills to help us create a personalized professional development plan tailored to your specific needs and goals. Your responses will help us understand your current skills, strengths, and areas for improvement where you might need support in reaching your career goals. To help us provide the best possible guidance, please ensure your responses accurately represent you in this present moment. Let's work together to unlock your potential!"
-              }
+              This assessment will evaluate your technical, durable, and career
+              readiness skills to help us create a personalized professional
+              development plan tailored to your specific needs and goals. Your
+              responses will help us understand your current skills, strengths,
+              and areas for improvement where you might need support in reaching
+              your career goals. To help us provide the best possible guidance,
+              please ensure your responses accurately represent you in this
+              present moment. Let's work together to unlock your potential!
             </Typography>
           )}
-          <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+          <Stepper
+            activeStep={activeStep}
+            sx={{ display: { xs: "none", md: "flex" }, mb: 4 }}
+          >
             {steps.map((label) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
           </Stepper>
+          <Typography
+            sx={{
+              display: { xs: "flex", md: "none" },
+              mb: 4,
+              justifySelf: "center",
+            }}
+          >
+            {"Progress: " + activeStep + " / " + steps.length}
+          </Typography>
           <form onSubmit={handleSubmit}>
             {getStepContent(activeStep)}
 
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}
-            >
+            <Grid2 container sx={{ justifyContent: "space-between", mt: 4 }}>
               <PillButton disabled={activeStep === 0} onClick={handleBack}>
                 Back
               </PillButton>
@@ -1032,9 +1044,9 @@ export default function Page() {
                   <PillButton onClick={handleNext}>Next</PillButton>
                 )}
               </Box>
-            </Box>
+            </Grid2>
           </form>
-        </Paper>
+        </Box>
       )}
     </>
   );
