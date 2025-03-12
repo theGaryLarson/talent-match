@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import Link from "next/link";
 import { CareerPrepGridData } from "./NewCasesDataGrid";
+import ViewResume from "./ViewResume";
 
 export default function CareerPrepDataGrid({
   clients,
@@ -20,6 +21,13 @@ export default function CareerPrepDataGrid({
         </Link>
       ),
     },
+        {
+          field: "resume",
+          sortable: false,
+          width: 75,
+          headerName: "Resume",
+          renderCell: (params) => <ViewResume userId={params.row.user_id} />,
+        },
     { field: "first_name", headerName: "First Name" },
     { field: "last_name", headerName: "Last Name" },
     { field: "email", headerName: "email", width: 200 },

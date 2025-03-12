@@ -1,6 +1,7 @@
 SELECT
 
     j.jobseeker_id,
+    j.user_id ,
     u.first_name,
     u.last_name,
 	u.email,
