@@ -222,19 +222,28 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value, type } = event.target;
       const newValue = type === "radio" ? value === "true" : value;
+
       setData((prevData) => {
         if (name.includes(".")) {
           const [parentKey, childKey] = name.split(".");
-          return {
-            ...prevData,
-            [parentKey]: {
-              ...prevData[parentKey],
-              [childKey]: newValue,
-            },
-          };
+          if (parentKey === "CareerPrepAssessment") {
+            return {
+              ...prevData,
+              CareerPrepAssessment: {
+                ...prevData.CareerPrepAssessment,
+                [childKey]: newValue,
+              },
+            };
+          }
+
+          return prevData;
         }
-        return { ...prevData, [name]: newValue };
+        return {
+          ...prevData,
+          [name as keyof typeof prevData]: newValue,
+        };
       });
+
       dispatch(setPageDirty("work-experience"));
     },
     [dispatch],
@@ -608,7 +617,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
           <h2>Job Readiness</h2>
           <div className="profile-form-grid">
             <FormControl component="fieldset">
-              <p>Do you have previous work experience?</p>
+              <p>Do you have have experience interviewing?</p>
               <RadioGroup
                 name="CareerPrepAssessment.experienceWithInterview"
                 onChange={handleNestedInputUpdate}

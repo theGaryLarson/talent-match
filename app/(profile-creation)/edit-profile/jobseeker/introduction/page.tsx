@@ -133,13 +133,15 @@ export default function CreateJobseekerProfileIntroPage() {
     const fieldName = name.substring(formNamePrefix.length);
     if (fieldName.includes(".")) {
       const [nestedObjKey, nestedFieldKey] = fieldName.split(".");
-      setIntroData((prevData) => ({
-        ...prevData,
-        [nestedObjKey]: {
-          ...prevData[nestedObjKey],
-          [nestedFieldKey]: value,
-        },
-      }));
+      if (nestedObjKey === "CareerPrepAssessment") {
+        setIntroData((prevData) => ({
+          ...prevData,
+          CareerPrepAssessment: {
+            ...prevData.CareerPrepAssessment,
+            [nestedFieldKey]: value,
+          },
+        }));
+      }
     } else {
       // Top-level field update
       setIntroData({
