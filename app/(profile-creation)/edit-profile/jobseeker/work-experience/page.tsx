@@ -66,51 +66,78 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
 
   const [hasUnmetRequired, setHasUnmetRequired] = useState("");
 
+  const initFilteredWorkExp =
+    workExperienceData.workExperiences
+      ?.filter((exp) => !exp.isInternship)
+      .map(
+        (exp): WorkExperienceData => ({
+          workId: exp.workId,
+          company: exp.company,
+          sectorObject: {
+            industry_sector_id: exp.sectorId ?? "",
+            sector_title: "",
+          },
+          techAreaObject: { id: exp.techAreaId ?? "", title: "" },
+          jobTitle: exp.jobTitle,
+          startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
+          endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
+          isCurrentJob: exp.isCurrentJob,
+          responsibilities: exp.responsibilities,
+        }),
+      ) ?? [];
+
+  const initFilteredInternshipExp =
+    workExperienceData.workExperiences
+      ?.filter((exp) => exp.isInternship)
+      .map(
+        (exp): WorkExperienceData => ({
+          workId: exp.workId,
+          company: exp.company,
+          sectorObject: {
+            industry_sector_id: exp.sectorId ?? "",
+            sector_title: "",
+          },
+          techAreaObject: { id: exp.techAreaId ?? "", title: "" },
+          jobTitle: exp.jobTitle,
+          startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
+          endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
+          isCurrentJob: exp.isCurrentJob,
+          responsibilities: exp.responsibilities,
+        }),
+      ) ?? [];
+
+  const [hasWorkExp, setHasWorkExp] = useState<boolean | null>(
+    initFilteredWorkExp.length > 0 ? true : null,
+  );
+  const [hasInternshipExp, setHasInternshipExp] = useState<boolean | null>(
+    initFilteredInternshipExp.length > 0 ? true : null,
+  );
+
   const [data, setData] = useState<Data>({
     yearsWorkExperience: workExperienceData.yearsWorkExperience,
     monthsInternshipExperience:
       workExperienceData.monthsInternshipExperience ?? "",
-    workExperiences:
-      workExperienceData.workExperiences
-        ?.filter((exp) => !exp.isInternship)
-        .map(
-          (exp): WorkExperienceData => ({
-            workId: exp.workId,
-            company: exp.company,
-            sectorObject: {
-              industry_sector_id: exp.sectorId ?? "",
-              sector_title: "",
-            },
-            techAreaObject: { id: exp.techAreaId ?? "", title: "" },
-            jobTitle: exp.jobTitle,
-            startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
-            endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
-            isCurrentJob: exp.isCurrentJob,
-            responsibilities: exp.responsibilities,
-          }),
-        ) ?? [],
-    internshipExperiences:
-      workExperienceData.workExperiences
-        ?.filter((exp) => exp.isInternship)
-        .map(
-          (exp): WorkExperienceData => ({
-            workId: exp.workId,
-            company: exp.company,
-            sectorObject: {
-              industry_sector_id: exp.sectorId ?? "",
-              sector_title: "",
-            },
-            techAreaObject: { id: exp.techAreaId ?? "", title: "" },
-            jobTitle: exp.jobTitle,
-            startDate: !Boolean(exp.startDate) ? null : dayjs(exp.startDate),
-            endDate: !Boolean(exp.endDate) ? null : dayjs(exp.endDate),
-            isCurrentJob: exp.isCurrentJob,
-            responsibilities: exp.responsibilities,
-          }),
-        ) ?? [],
+    workExperiences: initFilteredWorkExp,
+    internshipExperiences: initFilteredInternshipExp,
     isAuthorizedToWorkUsa: workExperienceData.isAuthorizedToWorkUsa,
     requiresSponsorship: workExperienceData.requiresSponsorship,
   });
+
+  function removeAllWorkExperiences() {
+    setData({
+      ...data,
+      workExperiences: [],
+    });
+    dispatch(setPageDirty("work-experience"));
+  }
+
+  function removeAllInternshipExperiences() {
+    setData({
+      ...data,
+      internshipExperiences: [],
+    });
+    dispatch(setPageDirty("work-experience"));
+  }
 
   function addNewWorkExperience() {
     const newWorkExperienceData = defaultWorkExperienceData();
@@ -197,48 +224,55 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               };
             }
 
+            const filteredWorkExp =
+              workExperienceData.workExperiences
+                ?.filter((exp) => !exp.isInternship)
+                .map(
+                  (exp): WorkExperienceData => ({
+                    workId: exp.workId,
+                    company: exp.company,
+                    sectorObject: {
+                      industry_sector_id: exp.sectorId ?? "",
+                      sector_title: "",
+                    },
+                    techAreaObject: { id: exp.techAreaId ?? "", title: "" },
+                    jobTitle: exp.jobTitle,
+                    startDate: dayjs(exp.startDate),
+                    endDate: exp.endDate ? dayjs(exp.endDate) : null,
+                    isCurrentJob: exp.isCurrentJob,
+                    responsibilities: exp.responsibilities,
+                  }),
+                ) ?? [];
+
+            const filteredInternshipExp =
+              workExperienceData.workExperiences
+                ?.filter((exp) => exp.isInternship)
+                .map(
+                  (exp): WorkExperienceData => ({
+                    workId: exp.workId,
+                    company: exp.company,
+                    sectorObject: {
+                      industry_sector_id: exp.sectorId ?? "",
+                      sector_title: "",
+                    },
+                    techAreaObject: { id: exp.techAreaId ?? "", title: "" },
+                    jobTitle: exp.jobTitle,
+                    startDate: dayjs(exp.startDate),
+                    endDate: exp.endDate ? dayjs(exp.endDate) : null,
+                    isCurrentJob: exp.isCurrentJob,
+                    responsibilities: exp.responsibilities,
+                  }),
+                ) ?? [];
+
+            if (filteredWorkExp.length !== 0) setHasWorkExp(true);
+            if (filteredInternshipExp.length !== 0) setHasInternshipExp(true);
+
             setData({
               yearsWorkExperience: workExperienceData.yearsWorkExperience,
               monthsInternshipExperience:
                 workExperienceData.monthsInternshipExperience ?? "",
-              workExperiences:
-                workExperienceData.workExperiences
-                  ?.filter((exp) => !exp.isInternship)
-                  .map(
-                    (exp): WorkExperienceData => ({
-                      workId: exp.workId,
-                      company: exp.company,
-                      sectorObject: {
-                        industry_sector_id: exp.sectorId ?? "",
-                        sector_title: "",
-                      },
-                      techAreaObject: { id: exp.techAreaId ?? "", title: "" },
-                      jobTitle: exp.jobTitle,
-                      startDate: dayjs(exp.startDate),
-                      endDate: exp.endDate ? dayjs(exp.endDate) : null,
-                      isCurrentJob: exp.isCurrentJob,
-                      responsibilities: exp.responsibilities,
-                    }),
-                  ) ?? [],
-              internshipExperiences:
-                workExperienceData.workExperiences
-                  ?.filter((exp) => exp.isInternship)
-                  .map(
-                    (exp): WorkExperienceData => ({
-                      workId: exp.workId,
-                      company: exp.company,
-                      sectorObject: {
-                        industry_sector_id: exp.sectorId ?? "",
-                        sector_title: "",
-                      },
-                      techAreaObject: { id: exp.techAreaId ?? "", title: "" },
-                      jobTitle: exp.jobTitle,
-                      startDate: dayjs(exp.startDate),
-                      endDate: exp.endDate ? dayjs(exp.endDate) : null,
-                      isCurrentJob: exp.isCurrentJob,
-                      responsibilities: exp.responsibilities,
-                    }),
-                  ) ?? [],
+              workExperiences: filteredWorkExp,
+              internshipExperiences: filteredInternshipExp,
               isAuthorizedToWorkUsa: workExperienceData.isAuthorizedToWorkUsa,
               requiresSponsorship: workExperienceData.requiresSponsorship,
             });
@@ -340,8 +374,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     workExperienceData.isAuthorizedToWorkUsa = data.isAuthorizedToWorkUsa;
     workExperienceData.requiresSponsorship = data.requiresSponsorship;
     workExperienceData.workExperiences = [
-      ...workExperiences,
-      ...internshipExperiences,
+      ...(hasWorkExp ? workExperiences : []),
+      ...(hasInternshipExp ? internshipExperiences : []),
     ].map((experience) => ({
       ...experience,
       startDate: experience.startDate ?? new Date(),
@@ -389,12 +423,45 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
         <ProgressBarFlat progress={(5 / 6) * 100} />
         <p>Step 5/6</p>
         <h1>Work experience</h1>
+        <p>Complete these sections to improve your visibility to employers.</p>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
           <fieldset className="work-experience-groups">
             <legend>
+              <p>
+                Share your professional journey, even if it's not tech-related.
+                Employers value transferable skills like teamwork,
+                communication, and problem-solving.
+              </p>
               <h2>Work experience</h2>
             </legend>
+            <RadioGroup>
+              <p>Do you have any work experience? *</p>
+              <div className="block gap-8">
+                <Radio
+                  name="hasWorkExp"
+                  value="yes"
+                  onChange={() => {
+                    setHasWorkExp(true);
+                    addNewWorkExperience();
+                  }}
+                  checked={hasWorkExp !== null && hasWorkExp}
+                  required={true}
+                />{" "}
+                Yes
+                <Radio
+                  name="hasWorkExp"
+                  value="no"
+                  onChange={() => {
+                    setHasWorkExp(false);
+                    removeAllWorkExperiences();
+                  }}
+                  checked={hasWorkExp !== null && !hasWorkExp}
+                  required={true}
+                />{" "}
+                No
+              </div>
+            </RadioGroup>
             <div className="profile-form-grid">
               <InputTextWithLabel
                 type="number"
@@ -402,26 +469,66 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 name="yearsWorkExperience"
                 value={data.yearsWorkExperience + ""}
                 onChange={handleInputUpdate}
+                hidden={!hasWorkExp}
+                required={hasWorkExp}
               >
                 How many years of work experience do you have (not including
                 internship, enter 0 if none)?
               </InputTextWithLabel>
             </div>
-            <WorkExperiences
-              data={data.workExperiences}
-              hasUnmetRequired={hasUnmetRequired}
-              onUpdate={handleUpdate}
-              onRemove={removeWorkExperience}
-            />
-            <PillButton variant="outlined" onClick={addNewWorkExperience}>
+            {hasWorkExp && (
+              <WorkExperiences
+                data={data.workExperiences}
+                hasUnmetRequired={hasUnmetRequired}
+                onUpdate={handleUpdate}
+                onRemove={removeWorkExperience}
+              />
+            )}
+            <PillButton
+              variant="outlined"
+              onClick={addNewWorkExperience}
+              hidden={!hasWorkExp}
+            >
               <Add className="mr-2 h-5 w-5" />
               Add work experience
             </PillButton>
           </fieldset>
           <fieldset className="internship-experience-groups">
             <legend>
+              <p>
+                Internships demonstrate your commitment to learning and growth.
+                Highlight your hands-on experience and how it's prepared you for
+                your career.
+              </p>
               <h2>Internship experience</h2>
             </legend>
+            <RadioGroup>
+              <p>Do you have any internship experience? *</p>
+              <div className="block gap-8">
+                <Radio
+                  name="hasInternExp"
+                  value="yes"
+                  onChange={() => {
+                    setHasInternshipExp(true);
+                    addNewInternshipExperience();
+                  }}
+                  checked={hasInternshipExp !== null && hasInternshipExp}
+                  required={true}
+                />{" "}
+                Yes
+                <Radio
+                  name="hasInternExp"
+                  value="no"
+                  onChange={() => {
+                    setHasInternshipExp(false);
+                    removeAllInternshipExperiences();
+                  }}
+                  checked={hasInternshipExp !== null && !hasInternshipExp}
+                  required={true}
+                />{" "}
+                No
+              </div>
+            </RadioGroup>
             <div className="profile-form-grid">
               <InputTextWithLabel
                 type="number"
@@ -429,17 +536,25 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 name="monthsInternshipExperience"
                 onChange={handleInputUpdate}
                 value={data.monthsInternshipExperience + ""}
+                required={hasInternshipExp}
+                hidden={!hasInternshipExp}
               >
                 How many months of internship work experience do you have?
               </InputTextWithLabel>
             </div>
-            <InternshipExperiences
-              data={data.internshipExperiences as InternshipExperienceData[]}
-              hasUnmetRequired={hasUnmetRequired}
-              onUpdate={handleUpdate}
-              onRemove={removeInternshipExperience}
-            />
-            <PillButton variant="outlined" onClick={addNewInternshipExperience}>
+            {hasInternshipExp && (
+              <InternshipExperiences
+                data={data.internshipExperiences as InternshipExperienceData[]}
+                hasUnmetRequired={hasUnmetRequired}
+                onUpdate={handleUpdate}
+                onRemove={removeInternshipExperience}
+              />
+            )}
+            <PillButton
+              variant="outlined"
+              onClick={addNewInternshipExperience}
+              hidden={!hasInternshipExp}
+            >
               <Add className="mr-2 h-5 w-5" />
               Add internship experience
             </PillButton>

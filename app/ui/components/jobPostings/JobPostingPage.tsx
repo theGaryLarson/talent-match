@@ -95,7 +95,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
           {city}, {state}
         </Typography>
         <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />
-        <Typography>{salary_range}</Typography>
+        <Typography>{joblisting.is_paid ? salary_range : "unpaid"}</Typography>
         <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />
         <Typography>
           Deadline:{" "}
