@@ -1,0 +1,311 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Box,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import CloseIcon from "@mui/icons-material/Close";
+import AccountMenu from "@/app/ui/components/mui/AccountMenu";
+import {
+  Bars3Icon,
+  BuildingOffice2Icon,
+  SparklesIcon,
+  BriefcaseIcon,
+  NewspaperIcon,
+  UserGroupIcon,
+  QuestionMarkCircleIcon,
+  UsersIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+
+type TopLevelLink = {
+  name: string;
+  dropDowns?: {
+    name: string;
+    href: string;
+    target?: string;
+    rel?: string;
+    icon?: React.ElementType;
+  }[];
+  href?: string;
+};
+
+const TopLevelLinks: TopLevelLink[] = [
+  {
+    name: "For Employers",
+    dropDowns: [
+      {
+        name: "Landing Page",
+        href: "/services/employers",
+        icon: BuildingOffice2Icon,
+      },
+      {
+        name: "Talent Showcase",
+        href: "/services/talent-search",
+        icon: SparklesIcon,
+      },
+    ],
+  },
+  {
+    name: "For Jobseekers",
+    dropDowns: [
+      {
+        name: "Landing Page",
+        href: "/services/jobseekers",
+        icon: BriefcaseIcon,
+      },
+      {
+        name: "Job Listings",
+        href: "/services/joblistings",
+        icon: NewspaperIcon,
+      },
+    ],
+  },
+  {
+    name: "Our Community",
+    dropDowns: [
+      {
+        name: "Join Our Community",
+        href: "https://forum.watechwfcoalition.org/",
+        target: "_blank",
+        rel: "noopener noreferrer",
+        icon: UsersIcon,
+      },
+      {
+        name: "Careers",
+        href: "/services/careers",
+        icon: QuestionMarkCircleIcon,
+      },
+    ],
+  },
+  {
+    name: "Partners",
+    dropDowns: [
+      {
+        name: "Training Providers",
+        href: "/services/training-providers",
+        icon: UserGroupIcon,
+      },
+    ],
+  },
+  { name: "Events", href: "/services/events" },
+  { name: "About Us", href: "/about-us" },
+] as const;
+
+export default function Header() {
+  const pathname = usePathname();
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const toggleDrawer = (open: boolean) => () => {
+    setMobileOpen(open);
+  };
+
+  const [anchorEl, setAnchorEl] = useState<{
+    [key: string]: HTMLElement | null;
+  }>({});
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    name: string,
+  ) => {
+    setAnchorEl((prev) => ({ ...prev, [name]: event.currentTarget }));
+  };
+  const handleMenuClose = (name: string) => {
+    setAnchorEl((prev) => ({ ...prev, [name]: null }));
+  };
+
+  return (
+    <>
+      <AppBar
+        sx={{
+          position: { xs: "fixed", md: "static" },
+          top: 0,
+          width: "100%",
+          zIndex: 1100,
+          color:
+            ["/services/jobseekers", "/services/employers"].includes(
+              pathname,
+            ) || pathname.startsWith("/services/training-programs/")
+              ? "white"
+              : "inherit",
+          backgroundColor:
+            ["/services/jobseekers", "/services/employers"].includes(
+              pathname,
+            ) || pathname.startsWith("/services/training-programs/")
+              ? "transparent !important"
+              : "neutral.100",
+          boxShadow: "none",
+          border: "none",
+          px: 2,
+          "& .MuiPaper-root": {
+            backgroundColor: "transparent",
+          },
+        }}
+      >
+        <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
+          {pathname == "/services/jobseekers" ||
+          pathname == "/services/employers" ||
+          pathname.startsWith("/services/training-programs/") ? (
+            <Link href="/">
+              <span className="sr-only">Tech Workforce Coalition</span>
+              <Image
+                src="/images/TWC logo_White.svg"
+                alt="Tech Workforce Coalition"
+                width={75}
+                height={31.8}
+              />
+            </Link>
+          ) : (
+            <Link href="/">
+              <span className="sr-only">Tech Workforce Coalition</span>
+              <Image
+                src="/images/TWC_75x50_2024.svg"
+                alt="Tech Workforce Coalition"
+                width={75}
+                height={31.8}
+              />
+            </Link>
+          )}
+
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              flexGrow: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 3,
+            }}
+          >
+            {TopLevelLinks.map((link) =>
+              link.dropDowns ? (
+                <Box key={link.name}>
+                  <Button
+                    onClick={(e) => handleMenuOpen(e, link.name)}
+                    endIcon={<ArrowDropDownIcon />}
+                    sx={{ color: "inherit", textTransform: "none" }}
+                  >
+                    {link.name}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl[link.name]}
+                    open={Boolean(anchorEl[link.name])}
+                    onClose={() => handleMenuClose(link.name)}
+                    disableScrollLock
+                  >
+                    {link.dropDowns.map((item) => (
+                      <MenuItem
+                        sx={{ padding: 2 }}
+                        key={item.name}
+                        component={Link}
+                        href={item.href}
+                        target={item.target || "_self"}
+                        rel={item.rel || ""}
+                        onClick={() => handleMenuClose(link.name)}
+                      >
+                        {item.icon && (
+                          <Box
+                            component={item.icon}
+                            sx={{ width: 20, height: 20, marginRight: 1 }}
+                          />
+                        )}
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Box>
+              ) : (
+                <Button
+                  key={link.name}
+                  component={Link}
+                  href={link.href!}
+                  sx={{
+                    color: "inherit",
+                    textTransform: "none",
+                  }}
+                >
+                  {link.name}
+                </Button>
+              ),
+            )}
+          </Box>
+
+          <Box sx={{ marginLeft: "auto" }}>
+            <AccountMenu />
+          </Box>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer(true)}
+            sx={{ display: { md: "none" }, paddingLeft: 5 }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+
+      <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer(false)}>
+        <Box sx={{ width: 250, p: 2 }}>
+          <IconButton
+            onClick={toggleDrawer(false)}
+            sx={{ display: "flex", justifyContent: "flex-end" }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          <List>
+            {TopLevelLinks.map((link) =>
+              link.dropDowns ? (
+                <Box key={link.name}>
+                  <ListItem disablePadding>
+                    <ListItemText
+                      primary={link.name}
+                      sx={{ fontWeight: "bold", px: 2 }}
+                    />
+                  </ListItem>
+                  {link.dropDowns.map((item) => (
+                    <ListItemButton
+                      key={item.name}
+                      component={Link}
+                      href={item.href}
+                      target={item.target || "_self"}
+                      rel={item.rel || ""}
+                      onClick={toggleDrawer(false)}
+                      sx={{ pl: 4 }}
+                    >
+                      <ListItemText primary={item.name} />
+                    </ListItemButton>
+                  ))}
+                </Box>
+              ) : (
+                <ListItemButton
+                  key={link.name}
+                  component={Link}
+                  href={link.href!}
+                  onClick={toggleDrawer(false)}
+                >
+                  <ListItemText primary={link.name} />
+                </ListItemButton>
+              ),
+            )}
+          </List>
+        </Box>
+      </Drawer>
+    </>
+  );
+}
