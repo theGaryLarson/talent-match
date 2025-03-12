@@ -1,9 +1,8 @@
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { JsCareerPrepPathwaySkillsDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import { JsCareerPrepDurableSkillsDTO } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -55,13 +54,9 @@ export async function GET(
       where: { user_id: userId },
       select: {
         user_id: true,
-        pathways: true,
         CareerPrepAssessment: {
           select: {
-            CybersecurityRating: true,
-            ITCloudRating: true,
-            DataAnalyticsRating: true,
-            SoftwareDevRating: true,
+            DurableSkillsRating: true,
           },
         },
       },
@@ -73,26 +68,12 @@ export async function GET(
         { status: 404 },
       );
     }
-    const result: JsCareerPrepPathwaySkillsDTO = {
+    const result: JsCareerPrepDurableSkillsDTO = {
       userId: userId,
-      targetedPathway:
-        (jobseeker.pathways?.pathway_title as CareerPrepPathways) || null,
       CareerPrepAssessment: {
-        cybersecurity:
+        durableSkills:
           jobseeker.CareerPrepAssessment.length > 0
-            ? jobseeker.CareerPrepAssessment[0].CybersecurityRating[0]
-            : null,
-        itAndCloudComputing:
-          jobseeker.CareerPrepAssessment.length > 0
-            ? jobseeker.CareerPrepAssessment[0].ITCloudRating[0]
-            : null,
-        dataAnalytics:
-          jobseeker.CareerPrepAssessment.length > 0
-            ? jobseeker.CareerPrepAssessment[0].DataAnalyticsRating[0]
-            : null,
-        softwareDevelopment:
-          jobseeker.CareerPrepAssessment.length > 0
-            ? jobseeker.CareerPrepAssessment[0].SoftwareDevRating[0]
+            ? jobseeker.CareerPrepAssessment[0].DurableSkillsRating[0]
             : null,
       },
     };

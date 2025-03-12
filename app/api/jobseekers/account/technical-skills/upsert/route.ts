@@ -13,20 +13,40 @@ export async function POST(request: Request) {
     const userId: string = session?.user.id!;
 
     const body: JsCareerPrepPathwaySkillsDTO = await request.json();
-    const { CareerPrepAssessment } = body;
+    const { CareerPrepAssessment, targetedPathway } = body;
 
     const result: JsCareerPrepPathwaySkillsDTO = await prisma.$transaction(
       async (prisma) => {
+
+        let pw = null;
+        if (targetedPathway) {
+          pw = await prisma.pathways.findUnique({
+            where: {
+              pathway_title: targetedPathway,
+            },
+          });
+    
+          if (!pw) {
+            return NextResponse.json(
+              { error: `No record exists for pathway : ${targetedPathway}.` },
+              { status: 404 },
+            );
+          }
+        }
+
         const updatedJobseeker = await prisma.jobseekers.update({
           where: { user_id: userId },
-          data: { updatedAt: new Date() },
+          data: {
+            updatedAt: new Date(),
+            targeted_pathway: pw?.pathway_id,
+          },
         });
 
         const careerPrep = await prisma.careerPrepAssessment.upsert({
           where: { jobseekerId: updatedJobseeker.jobseeker_id },
           create: {
             jobseekerId: updatedJobseeker.jobseeker_id,
-            interestPathway: updatedJobseeker.targeted_pathway,
+            interestPathway: targetedPathway,
             pronouns: "",
             expectedEduCompletion: "",
             experienceWithApplying: false,
@@ -178,6 +198,7 @@ export async function POST(request: Request) {
               : undefined,
           },
           update: {
+            interestPathway: targetedPathway,
             CybersecurityRating: CareerPrepAssessment.cybersecurity
               ? {
                   upsert: {
@@ -491,8 +512,7 @@ export async function POST(request: Request) {
 
         return {
           userId: updatedJobseeker.user_id,
-          targetedPathway:
-            updatedJobseeker.targeted_pathway as CareerPrepPathways,
+          targetedPathway: targetedPathway as CareerPrepPathways,
           CareerPrepAssessment: {
             cybersecurity: careerPrep.CybersecurityRating,
             dataAnalytics: careerPrep.DataAnalyticsRating,

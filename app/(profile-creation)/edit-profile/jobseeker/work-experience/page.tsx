@@ -3,10 +3,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
 import {
-  Box,
   FormControl,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
 } from "@mui/material";
@@ -468,8 +466,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 6) * 100} />
-        <p>Step 5/6</p>
+        <ProgressBarFlat progress={(5 / 9) * 100} />
+        <p>Step 5/9</p>
         <h1>Work experience</h1>
         <p>Complete these sections to improve your visibility to employers.</p>
         <p className="subtitle">* Indicates a required field</p>
@@ -608,9 +606,9 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
             </PillButton>
           </fieldset>
           <h2>Job Readiness</h2>
-          <Box>
-            <FormControl component="fieldset" sx={{ mb: 2 }}>
-              <FormLabel>Do you have previous work experience?</FormLabel>
+          <div className="profile-form-grid">
+            <FormControl component="fieldset">
+              <p>Do you have previous work experience?</p>
               <RadioGroup
                 name="CareerPrepAssessment.experienceWithInterview"
                 onChange={handleNestedInputUpdate}
@@ -628,12 +626,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 />
               </RadioGroup>
             </FormControl>
-          </Box>
-          <Box>
-            <FormControl component="fieldset" sx={{ mb: 2 }}>
-              <FormLabel>
-                Do you have experience applying for tech jobs?
-              </FormLabel>
+            <FormControl component="fieldset">
+              <p>Do you have experience applying for tech jobs?</p>
               <RadioGroup
                 name="CareerPrepAssessment.experienceWithApplying"
                 onChange={handleNestedInputUpdate}
@@ -651,7 +645,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
                 />
               </RadioGroup>
             </FormControl>
-          </Box>
+          </div>
           <fieldset>
             <legend>
               <h2>Authorization</h2>

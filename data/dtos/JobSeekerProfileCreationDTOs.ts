@@ -224,15 +224,14 @@ export type JsCareerPrepPathwaySkillsDTO = {
 export type JsCareerPrepDurableSkillsDTO = {
   userId: string;
   CareerPrepAssessment: {
-    durableSkills: DurableSkillsRatings;
-    professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
+    durableSkills: DurableSkillsRatings | null;
   };
 };
 
 export type JsCareerPrepProfessionalBrandingDTO = {
   userId: string;
   CareerPrepAssessment: {
-    professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings;
+    professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings | null;
   };
 };
 

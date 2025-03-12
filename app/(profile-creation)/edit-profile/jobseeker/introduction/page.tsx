@@ -238,8 +238,8 @@ export default function CreateJobseekerProfileIntroPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(1 / 6) * 100} />
-        <p>Step 1/6</p>
+        <ProgressBarFlat progress={(1 / 9) * 100} />
+        <p>Step 1/9</p>
         <h1>Profile Settings</h1>
         <p className="subtitle">* Indicates a required field</p>
 

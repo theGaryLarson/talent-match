@@ -25,44 +25,20 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    let pw = null;
-    if (!targetedPathwayId && targetedPathway) {
-      pw = await prisma.pathways.findUnique({
-        where: {
-          pathway_title: targetedPathway,
-        },
-      });
-
-      if (!pw) {
-        return NextResponse.json(
-          { error: `No record exists for pathway : ${targetedPathway}.` },
-          { status: 404 },
-        );
-      }
-    }
 
     const upsertedPreferences = await prisma.jobseekers.update({
       where: { user_id: userId },
       data: {
         employment_type_sought: preferredEmploymentType,
-        targeted_pathway: targetedPathwayId || pw?.pathway_id,
         updatedAt: new Date(),
       },
       select: {
         user_id: true,
-        targeted_pathway: true,
         employment_type_sought: true,
-        pathways: {
-          select: {
-            pathway_title: true,
-          },
-        },
       },
     });
     const result: JsPreferencesDTO = {
       userId: upsertedPreferences.user_id,
-      targetedPathwayId: upsertedPreferences.targeted_pathway,
-      targetedPathway: upsertedPreferences.pathways?.pathway_title,
       preferredEmploymentType: upsertedPreferences.employment_type_sought,
     };
 
