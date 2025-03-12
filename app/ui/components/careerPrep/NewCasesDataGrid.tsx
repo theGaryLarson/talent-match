@@ -23,10 +23,11 @@ export interface CareerPrepGridData {
   user_id: string;
 }
 export default function NewCasesDataGrid({
-  clients, ShowClaimButton
+  clients,
+  ShowClaimButton,
 }: {
   clients: CareerPrepGridData[];
-  ShowClaimButton:boolean;
+  ShowClaimButton: boolean;
 }) {
   const columns: GridColDef[] = [
     {
@@ -36,11 +37,18 @@ export default function NewCasesDataGrid({
       headerName: "Actions",
       renderCell: (params) => (
         <>
-          <Link href={`/career-prep/${params.id}`} className="LINK" target="_blank">
+          <Link
+            href={`/career-prep/${params.id}`}
+            className="LINK"
+            target="_blank"
+          >
             View Details
           </Link>
-          {ShowClaimButton?
-          <SelfAssignCaseButton jobseekerId={params.row.jobseeker_id} />:''}
+          {ShowClaimButton ? (
+            <SelfAssignCaseButton jobseekerId={params.row.jobseeker_id} />
+          ) : (
+            ""
+          )}
         </>
       ),
     },
@@ -65,9 +73,11 @@ export default function NewCasesDataGrid({
     { field: "Pathway Title", headerName: "Pathway Title" },
     { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
     { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
-    {field:"careerPrepAssessmentDate", headerName:"careerPrepAssessmentDate"},
+    {
+      field: "careerPrepAssessmentDate",
+      headerName: "careerPrepAssessmentDate",
+    },
     { field: "EnrollmentDate", headerName: "EnrollmentDate" },
-
   ];
 
   return (

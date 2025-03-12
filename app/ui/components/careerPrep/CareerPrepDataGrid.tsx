@@ -16,18 +16,22 @@ export default function CareerPrepDataGrid({
       sortable: false,
       headerName: "Actions",
       renderCell: (params) => (
-        <Link href={`/career-prep/${params.id}`} className="LINK" target="_blank">
+        <Link
+          href={`/career-prep/${params.id}`}
+          className="LINK"
+          target="_blank"
+        >
           View Profile
         </Link>
       ),
     },
-        {
-          field: "resume",
-          sortable: false,
-          width: 75,
-          headerName: "Resume",
-          renderCell: (params) => <ViewResume userId={params.row.user_id} />,
-        },
+    {
+      field: "resume",
+      sortable: false,
+      width: 75,
+      headerName: "Resume",
+      renderCell: (params) => <ViewResume userId={params.row.user_id} />,
+    },
     { field: "first_name", headerName: "First Name" },
     { field: "last_name", headerName: "Last Name" },
     { field: "email", headerName: "email", width: 200 },
@@ -40,9 +44,12 @@ export default function CareerPrepDataGrid({
     { field: "HighestEdLevel", headerName: "HighestEdLevel", width: 160 },
     //{ field: "Pool Type", headerName: "Pool Type" },
     { field: "Pathway Title", headerName: "Pathway Title" },
-   // { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
-   // { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
-   {field:"careerPrepAssessmentDate", headerName:"careerPrepAssessmentDate"},
+    // { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
+    // { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
+    {
+      field: "careerPrepAssessmentDate",
+      headerName: "careerPrepAssessmentDate",
+    },
     { field: "EnrollmentDate", headerName: "EnrollmentDate" },
   ];
 
