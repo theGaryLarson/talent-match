@@ -26,9 +26,8 @@ export async function POST(request: Request) {
           });
 
           if (!pw) {
-            return NextResponse.json(
-              { error: `No record exists for pathway : ${targetedPathway}.` },
-              { status: 404 },
+            throw new Error(
+              `No record exists for pathway: ${targetedPathway}.`,
             );
           }
         }
@@ -511,12 +510,26 @@ export async function POST(request: Request) {
 
         return {
           userId: updatedJobseeker.user_id,
-          targetedPathway: targetedPathway as CareerPrepPathways,
+          targetedPathway: targetedPathway
+            ? (targetedPathway as CareerPrepPathways)
+            : null,
           CareerPrepAssessment: {
-            cybersecurity: careerPrep.CybersecurityRating,
-            dataAnalytics: careerPrep.DataAnalyticsRating,
-            itAndCloudComputing: careerPrep.ITCloudRating,
-            softwareDevelopment: careerPrep.SoftwareDevRating,
+            cybersecurity:
+              careerPrep.CybersecurityRating.length > 0
+                ? careerPrep.CybersecurityRating[0]
+                : null,
+            dataAnalytics:
+              careerPrep.DataAnalyticsRating.length > 0
+                ? careerPrep.DataAnalyticsRating[0]
+                : null,
+            itAndCloudComputing:
+              careerPrep.ITCloudRating.length > 0
+                ? careerPrep.ITCloudRating[0]
+                : null,
+            softwareDevelopment:
+              careerPrep.SoftwareDevRating.length > 0
+                ? careerPrep.SoftwareDevRating[0]
+                : null,
           },
         };
       },

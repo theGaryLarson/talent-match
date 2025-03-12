@@ -169,7 +169,10 @@ export async function POST(request: Request) {
         return {
           userId: updatedJobseeker.user_id,
           CareerPrepAssessment: {
-            durableSkills: careerPrep.DurableSkillsRating,
+            durableSkills:
+              careerPrep.DurableSkillsRating.length > 0
+                ? careerPrep.DurableSkillsRating[0]
+                : null,
           },
         };
       },

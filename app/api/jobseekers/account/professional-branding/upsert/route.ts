@@ -266,7 +266,9 @@ export async function POST(request: Request) {
           userId: updatedJobseeker.user_id,
           CareerPrepAssessment: {
             professionalBrandingAndJobMarketReadiness:
-              careerPrep.BrandingRating,
+              careerPrep.BrandingRating.length > 0
+                ? careerPrep.BrandingRating[0]
+                : null,
           },
         };
       });
