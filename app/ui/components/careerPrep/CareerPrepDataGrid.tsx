@@ -15,8 +15,8 @@ export default function CareerPrepDataGrid({
       sortable: false,
       headerName: "Actions",
       renderCell: (params) => (
-        <Link href={`/career-prep/${params.id}`} className="LINK">
-          View Details
+        <Link href={`/career-prep/${params.id}`} className="LINK" target="_blank">
+          View Profile
         </Link>
       ),
     },
@@ -30,10 +30,11 @@ export default function CareerPrepDataGrid({
       width: 160,
     },
     { field: "HighestEdLevel", headerName: "HighestEdLevel", width: 160 },
-    { field: "Pool Type", headerName: "Pool Type" },
+    //{ field: "Pool Type", headerName: "Pool Type" },
     { field: "Pathway Title", headerName: "Pathway Title" },
-    { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
-    { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
+   // { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
+   // { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
+   {field:"careerPrepAssessmentDate", headerName:"careerPrepAssessmentDate"},
     { field: "EnrollmentDate", headerName: "EnrollmentDate" },
   ];
 
@@ -42,9 +43,6 @@ export default function CareerPrepDataGrid({
       <DataGrid
         rows={clients}
         getRowId={(row: CareerPrepGridData) => row.jobseeker_id}
-        //disableColumnFilter
-        //disableColumnSelector
-        //disableDensitySelector
         columns={columns}
         slots={{ toolbar: GridToolbar }}
         slotProps={{

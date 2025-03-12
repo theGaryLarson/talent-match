@@ -19,7 +19,7 @@ export default async function Page() {
         );
       })} */}
       <div className="max-w-10/12">
-        <NewCasesDataGrid clients={clients} />
+        <NewCasesDataGrid clients={clients} ShowClaimButton={true}/>
       </div>
     </main>
   );
