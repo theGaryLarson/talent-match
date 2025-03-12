@@ -17,7 +17,6 @@ export async function POST(request: Request) {
 
     const result: JsCareerPrepPathwaySkillsDTO = await prisma.$transaction(
       async (prisma) => {
-
         let pw = null;
         if (targetedPathway) {
           pw = await prisma.pathways.findUnique({
@@ -25,7 +24,7 @@ export async function POST(request: Request) {
               pathway_title: targetedPathway,
             },
           });
-    
+
           if (!pw) {
             return NextResponse.json(
               { error: `No record exists for pathway : ${targetedPathway}.` },

@@ -13,14 +13,12 @@ export async function POST(request: Request) {
     const userId: string = session?.user.id!;
 
     const body: JsPreferencesDTO = await request.json();
-    const { preferredEmploymentType, targetedPathwayId, targetedPathway } =
-      body;
+    const { preferredEmploymentType } = body;
 
-    if (!userId && (!preferredEmploymentType || !targetedPathway)) {
+    if (!userId && !preferredEmploymentType) {
       return NextResponse.json(
         {
-          error:
-            "Invalid input. Requires userId and preferredEmploymentType and/or targetedPathway",
+          error: "Invalid input. Requires userId and preferredEmploymentType",
         },
         { status: 400 },
       );

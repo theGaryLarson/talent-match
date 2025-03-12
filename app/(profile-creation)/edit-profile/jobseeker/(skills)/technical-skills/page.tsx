@@ -342,15 +342,15 @@ export default function Page() {
     .filter(([key]) => isNaN(Number(key))) // Filter out numeric keys
     .map(([label, value]) => ({ label, value }));
 
-    const allQuestionsAnswered =
-      (questions.length > 0 &&
-      currentSkills) &&
-      (questions.every(
-        (question) =>
-          currentSkills[question.id as keyof typeof currentSkills] != null,
-      ) ??
+  const allQuestionsAnswered =
+    questions.length > 0 &&
+    currentSkills &&
+    (questions.every(
+      (question) =>
+        currentSkills[question.id as keyof typeof currentSkills] != null,
+    ) ??
       false);
-  
+
   const handlePathwayChange = (event: SelectChangeEvent) => {
     const newPathway = event.target.value as CareerPrepPathways;
     setLocalPathwaySkills((prev) => ({
@@ -505,7 +505,9 @@ export default function Page() {
                       value={option.value}
                       checked={
                         currentSkills
-                          ? currentSkills[question.id as keyof typeof currentSkills] === option.value
+                          ? currentSkills[
+                              question.id as keyof typeof currentSkills
+                            ] === option.value
                           : false
                       }
                       onChange={() =>
