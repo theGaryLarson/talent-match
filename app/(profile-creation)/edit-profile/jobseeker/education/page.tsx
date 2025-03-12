@@ -73,7 +73,6 @@ export default function CreateJobseekerProfileEducationPage() {
   const [highestLevelOfStudy, setHighestLevelOfStudy] = useState(
     educationData.highestLevelOfStudy,
   );
-<<<<<<< HEAD
 
   const [hasEduHistory, setHasEduHistory] = useState<boolean | null>(
     educationData.educations.length > 0 ? true : null,
@@ -81,13 +80,9 @@ export default function CreateJobseekerProfileEducationPage() {
   const [hasCerts, setHasCerts] = useState<boolean | null>(
     educationData.certifications.length > 0 ? true : null,
   );
-  const [expectedEduCompletion, setExpectedEduCompletion] = useState(educationData.CareerPrepAssessment.expectedEduCompletion);
-
-=======
   const [expectedEduCompletion, setExpectedEduCompletion] = useState(
     educationData.CareerPrepAssessment.expectedEduCompletion,
   );
->>>>>>> d299f966 (profile-creation, technical-skills: Implemented, needs some more changes)
   const [data, setData] = useState<Data>({
     projectExperiences: educationData.projects.map(
       (project): ProjectExperienceData => ({
