@@ -1,8 +1,8 @@
-"use server";
 import { getEmployersByCompanyId } from "@/app/lib/prisma";
 import { auth } from "@/auth";
-import Avatar from "../Avatar";
 import ShareMenu from "../ShareButton";
+import { Avatar, Grid2, IconButton, Stack, Typography } from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 export default async function EmployerTeamMembers(props: {
   companyid: string;
@@ -11,31 +11,42 @@ export default async function EmployerTeamMembers(props: {
   const teamates = await getEmployersByCompanyId(props.companyid);
   return (
     <div>
-      <div className="text-xl font-medium leading-relaxed text-black/90">
+      <Typography
+        variant="h5"
+        sx={{
+          color: "secondary.main",
+          justifySelf: { xs: "auto", md: "center" },
+        }}
+      >
         My team
-      </div>
-      <div className="flex flex-wrap gap-[16px] rounded-[10px] bg-white p-4 shadow-xs">
-        <ShareMenu href={"/signin"}>
-          <div className="flex items-center gap-[8px]">
-            <Avatar imgsrc={"/images/plusIcon.png"} scale={0.75} />
-            <div className="text-sm font-semibold tracking-tight">
-              Invite Team
-            </div>
-          </div>
-        </ShareMenu>
+      </Typography>
+      <Grid2 container spacing={3} direction={{ xs: "row", md: "column" }}>
+        <Stack sx={{ alignItems: "center" }}>
+          <ShareMenu href={"/signin"}>
+            <IconButton sx={{ bgcolor: "primary.light" }}>
+              <Add color="secondary" sx={{ width: 40, height: 40 }} />
+            </IconButton>
+          </ShareMenu>
+          <Typography sx={{ color: "secondary.main", mt: 1 }}>
+            Invite new teammate
+          </Typography>
+        </Stack>
         {teamates
           .filter((t) => t.employer_id != session?.user.employerId)
           .map((t) => {
             return (
-              <div className="flex items-center gap-[8px]" key={t.employer_id}>
-                <Avatar imgsrc={t.users.photo_url ?? undefined} scale={0.75} />
-                <div className="text-sm font-semibold tracking-tight">
+              <Stack sx={{ alignItems: "center" }} key={t.employer_id}>
+                <Avatar
+                  src={t.users.photo_url ?? undefined}
+                  sx={{ width: 64, height: 64 }}
+                />
+                <Typography sx={{ color: "secondary.main", mt: 1 }}>
                   {t.users.first_name} {t.users.last_name}
-                </div>
-              </div>
+                </Typography>
+              </Stack>
             );
           })}
-      </div>
+      </Grid2>
     </div>
   );
 }

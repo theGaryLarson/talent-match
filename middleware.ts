@@ -67,6 +67,8 @@ export default auth((req) => {
     "/about-us",
     "/underconstruction",
     "/policies/terms-of-service",
+    "/policies/privacy-policy",
+    "/policies/user-data-agreement",
     "/signin",
     "/signout",
     "/services",
@@ -137,6 +139,8 @@ export default auth((req) => {
     if (
       roleRoutes.GUEST.includes(pathname) ||
       pathname == "/policies/terms-of-service" ||
+      pathname == "/policies/privacy-policy" ||
+      pathname == "/policies/user-data-agreement" ||
       pathname == "/signout"
     ) {
       return NextResponse.next();

@@ -31,6 +31,7 @@ export async function POST(request: Request) {
       email,
       introHeadline,
       currentJobTitle,
+      CareerPrepAssessment,
     } = body;
 
     // const formattedPhone = formatPhoneE164(phoneCountryCode, phone);
@@ -95,6 +96,20 @@ export async function POST(request: Request) {
         update: {
           intro_headline: introHeadline,
           current_job_title: currentJobTitle,
+          CareerPrepAssessment: {
+            upsert: {
+              where: { jobseekerId: jobseekerId },
+              create: {
+                pronouns: CareerPrepAssessment.pronouns ?? "",
+                expectedEduCompletion: "",
+                experienceWithApplying: false,
+                experienceWithInterview: false,
+              },
+              update: {
+                pronouns: CareerPrepAssessment.pronouns ?? "",
+              },
+            },
+          },
           users: {
             connect: {
               id: userId,
@@ -120,6 +135,21 @@ export async function POST(request: Request) {
           portfolio_url: undefined,
           video_url: undefined,
           employment_type_sought: undefined,
+          CareerPrepAssessment: {
+            create: {
+              pronouns: CareerPrepAssessment.pronouns ?? "",
+              expectedEduCompletion: "",
+              experienceWithApplying: false,
+              experienceWithInterview: false,
+            },
+          },
+        },
+        include: {
+          CareerPrepAssessment: {
+            select: {
+              pronouns: true,
+            },
+          },
         },
       });
 
@@ -128,6 +158,12 @@ export async function POST(request: Request) {
         photoUrl: user.photo_url,
         firstName: user.first_name,
         lastName: user.last_name,
+        CareerPrepAssessment: {
+          pronouns:
+            jobseeker.CareerPrepAssessment.length > 0
+              ? jobseeker.CareerPrepAssessment[0].pronouns
+              : null,
+        },
         birthDate: user.birthdate,
         phoneCountryCode: user.phoneCountryCode,
         phone: user.phone ?? "",

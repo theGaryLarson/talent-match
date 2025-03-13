@@ -2,8 +2,6 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
-// import Microsoft from "next-auth/providers/microsoft-entra-id";
-// import LinkedIn from "next-auth/providers/linkedin";
 import type { Provider } from "next-auth/providers";
 import { Role } from "./data/dtos/UserInfoDTO";
 import { createUser, getUserByEmail } from "./app/lib/user";
@@ -20,7 +18,6 @@ const providers: Provider[] = [
     clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
     issuer: `https://login.microsoftonline.com/${process.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID}/v2.0`,
   }),
-  // LinkedIn
 ];
 
 export const providerMap = providers.map((provider) => {
@@ -38,10 +35,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       try {
-        // Assign provider's image to token if user is new or token doesn't have an image yet
-        // if (user && user.image && !token.image) {
-        //   token.image = user.image;
-        // }
         if (trigger === "update") {
           // Iterate over the session properties and dynamically update the token
           Object.entries(session).forEach(([key, value]) => {

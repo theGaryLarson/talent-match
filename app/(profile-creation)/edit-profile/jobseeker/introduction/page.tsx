@@ -91,6 +91,9 @@ export default function CreateJobseekerProfileIntroPage() {
                 email: email!,
                 firstName: firstName ?? "",
                 lastName: lastName ?? "",
+                CareerPrepAssessment: {
+                  pronouns: fetchedData.CareerPrepAssessment.pronouns ?? "",
+                },
                 photoUrl: fetchedData.photoUrl ?? session.user?.image,
                 birthDate: fetchedData.birthDate ?? null,
                 zipCode: fetchedData.zipCode ?? "",
@@ -125,15 +128,28 @@ export default function CreateJobseekerProfileIntroPage() {
   const handleFieldChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
+    console.log(e.target);
     const { name, value } = e.target;
     const fieldName = name.substring(formNamePrefix.length);
-    if (introData.hasOwnProperty(fieldName)) {
+    if (fieldName.includes(".")) {
+      const [nestedObjKey, nestedFieldKey] = fieldName.split(".");
+      if (nestedObjKey === "CareerPrepAssessment") {
+        setIntroData((prevData) => ({
+          ...prevData,
+          CareerPrepAssessment: {
+            ...prevData.CareerPrepAssessment,
+            [nestedFieldKey]: value,
+          },
+        }));
+      }
+    } else {
+      // Top-level field update
       setIntroData({
         ...introData,
         [fieldName]: value,
       });
-      dispatch(setPageDirty("introduction"));
     }
+    dispatch(setPageDirty("introduction"));
   };
 
   const handleImageUpload = (url: string) => {
@@ -224,8 +240,8 @@ export default function CreateJobseekerProfileIntroPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(1 / 6) * 100} />
-        <p>Step 1/6</p>
+        <ProgressBarFlat progress={(1 / 9) * 100} />
+        <p>Step 1/9</p>
         <h1>Profile Settings</h1>
         <p className="subtitle">* Indicates a required field</p>
 
@@ -266,6 +282,19 @@ export default function CreateJobseekerProfileIntroPage() {
                 value={introData.lastName ?? ""}
               >
                 Last Name *
+              </InputTextWithLabel>
+
+              <InputTextWithLabel
+                id="profile-creation-intro-CareerPrepAssessment.pronouns"
+                placeholder="They/Them"
+                onChange={handleFieldChange}
+                value={
+                  introData.CareerPrepAssessment
+                    ? (introData.CareerPrepAssessment.pronouns ?? "")
+                    : ""
+                }
+              >
+                Preferred Pronouns
               </InputTextWithLabel>
             </div>
 

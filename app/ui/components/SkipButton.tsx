@@ -35,10 +35,19 @@ function SkipButton() {
   const lastSegment = currentPath.split("/").pop() || ""; //returns last segment ie: introduction
   const currentIndex = pageSequence.indexOf(lastSegment);
 
-  const nextPage =
+  let nextPage =
     currentIndex >= 0 && currentIndex < pageSequence.length - 1
       ? `/edit-profile/${userPrefix}/${pageSequence[currentIndex + 1]}`
       : null;
+
+  // hide skip button on jobseeker education and work exp pages, since we require this information
+  if (
+    nextPage === "/edit-profile/jobseeker/disclosures" ||
+    nextPage === "/edit-profile/jobseeker/work-experience"
+  ) {
+    nextPage = null;
+  }
+
   return nextPage ? (
     <Link
       href={nextPage}

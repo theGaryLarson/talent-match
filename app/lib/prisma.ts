@@ -876,11 +876,6 @@ export async function getEmployerById(employerId: string) {
             jobseekerId: true,
           },
         },
-        job_postings: {
-          select: {
-            job_posting_id: true,
-          },
-        },
       },
     });
 

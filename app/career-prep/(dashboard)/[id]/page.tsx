@@ -9,10 +9,12 @@ import AddMeetingModal from "@/app/ui/components/careerPrep/AddMeetingModal";
 import EnrollmentStatusDropDown from "@/app/ui/components/careerPrep/EnrollmentStatusDropDown";
 import NoteContainer from "@/app/ui/components/careerPrep/NoteContainer";
 import Tabs from "@/app/ui/components/Tabs";
-import RecommendedTrackDropDown from "../../../../ui/components/careerPrep/RecommendedTrackDropDown";
+
 import SelfAssementReadOnly from "@/app/ui/components/careerPrep/SelfAssementReadOnly";
 import Link from "next/link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import RecommendedTrackDropDown from "@/app/ui/components/careerPrep/RecommendedTrackDropDown";
+import ScreenedDropdown from "@/app/ui/components/careerPrep/ScreenedDropdown";
 export default async function page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const client = await getCareerPrepStudentDetailView(params.id);
@@ -28,7 +30,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
     );
   }
   return (
-    <main className="space-y-3 pr-[100px] w-full">
+    <main className="space-y-3 px-[100px] w-full">
       <div className="inline-flex">
         <h1 className="text-2xl">
           {client.data?.firstName} {client.data?.lastName} (
@@ -50,6 +52,13 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
         <EnrollmentStatusDropDown
           careerPrepEnrollmentStatus={client.data?.prepEnrollmentStatus}
           jobseekerId={params.id}
+        />
+      </h2>
+      <h2>
+        <b>Screened?</b>
+        <ScreenedDropdown
+          screened={client.data.prescreened}
+          jobseekerId={client.data.jobseekerId}
         />
       </h2>
       <h2>
