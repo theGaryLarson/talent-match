@@ -11,6 +11,7 @@ import { devLog } from "@/app/lib/utils";
 import TransactionClient = Prisma.TransactionClient;
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { JobStatus } from "../jobseekerJobTracking";
+import { CareerPrepGridData } from "@/app/ui/components/careerPrep/CareerPrepDataGrid";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -167,7 +168,7 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
 };
 
 export const getCareerPrepStudentsCardViewByCaseManagerSession =
-  async (): Promise<CareerPrepJobseekerCardViewDTO[] | null> => {
+  async (): Promise<CareerPrepGridData[]> => {
     try {
       const session = await auth();
       const data = await prisma.careerPrepAssessment.findMany({
@@ -182,31 +183,37 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
       });
       devLog("career prep card view", data);
       // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
-      const transformedData: CareerPrepJobseekerCardViewDTO[] = data.map(
-        (item) => ({
-          jobseekerId: item.jobseekerId,
-          firstName: item.Jobseeker?.users?.first_name || "",
-          lastName: item.Jobseeker?.users?.last_name || "",
-          pronouns: item.pronouns,
-          recommendedCareerPrepTrack: item.Jobseeker
-            ?.careerPrepTrackRecommendation as CareerPrepTrack,
-          assignedCareerPrepTrack: item.CaseMgmt
-            ?.AssignedCareerPrepTrack as CareerPrepTrack,
-          careerPrepAssessmentDate: item.assessmentDate,
-          careerPrepEnrollmentStatus: item.CaseMgmt
-            ?.prepEnrollmentStatus as CareerPrepStatus,
-          careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
-          expectedEduCompletion:
-            item.expectedEduCompletion as TimeUntilCompletion,
-          assignedPool:
-            (item.Jobseeker?.assignedPool as PoolCategories) ||
-            PoolCategories.None,
-        }),
-      );
+      const transformedData: CareerPrepGridData[] = data.map((item) => ({
+        jobseeker_id: item.jobseekerId,
+        first_name: item.Jobseeker?.users?.first_name || "",
+        HighestEdLevel:
+          item.Jobseeker.highest_level_of_study_completed ?? "Unknown",
+        last_name: item.Jobseeker?.users?.last_name || "",
+        "Pathway Title": item.Jobseeker.pathways?.pathway_title ?? "None",
+        email: item.Jobseeker.users.email,
+        EnrollmentDate: item.CaseMgmt?.createdAt ?? new Date(),
+        JobseekerUpdatedAt: item.Jobseeker?.updatedAt ?? new Date("1/1/1979"),
+        JobseekerCreatedAt: item.Jobseeker?.createdAt,
+        pronouns: item.pronouns,
+        careerPrepTrackRecommendation: item.Jobseeker
+          .careerPrepTrackRecommendation as CareerPrepTrack,
+        assignedCareerPrepTrack: item.CaseMgmt
+          ?.AssignedCareerPrepTrack as CareerPrepTrack,
+        careerPrepAssessmentDate: item.assessmentDate,
+        user_id: item.Jobseeker.users.id,
+        "CP Enrollment Status": item.CaseMgmt
+          ?.prepEnrollmentStatus as CareerPrepStatus,
+        careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
+        expectedEduCompletion:
+          item.expectedEduCompletion as TimeUntilCompletion,
+        "Pool Type":
+          (item.Jobseeker?.assignedPool as PoolCategories) ||
+          PoolCategories.None,
+      }));
       return transformedData;
     } catch (e) {
       console.error("Error fetching career prep students card view:", e);
-      return null;
+      return [];
     } finally {
       prisma.$disconnect();
     }
@@ -221,38 +228,121 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
  * @return {Promise<CareerPrepJobseekerCardViewDTO[]>} A Promise resolving to an array of CareerPrepJobseekerCardViewDTO objects representing unmanaged Career Prep students.
  */
 export const getUnManagedCareerPrepStudents = async (): Promise<
-  CareerPrepJobseekerCardViewDTO[]
+  CareerPrepGridData[]
 > => {
-  const assessmentsWithoutCaseMgmt = await prisma.careerPrepAssessment.findMany(
-    {
-      select: selectCareerPrepStudentCardView,
-      where: {
-        CaseMgmt: {
-          CaseManager: null,
+  try {
+    const assessmentsWithoutCaseMgmt =
+      await prisma.careerPrepAssessment.findMany({
+        select: selectCareerPrepStudentCardView,
+        where: {
+          CaseMgmt: {
+            CaseManager: null,
+          },
         },
-      },
-    },
-  );
-  const transformedData: CareerPrepJobseekerCardViewDTO[] =
-    assessmentsWithoutCaseMgmt.map((item) => ({
-      jobseekerId: item.jobseekerId,
-      firstName: item.Jobseeker?.users?.first_name || "",
-      lastName: item.Jobseeker?.users?.last_name || "",
-      pronouns: item.pronouns,
-      recommendedCareerPrepTrack: item.Jobseeker
-        .careerPrepTrackRecommendation as CareerPrepTrack,
-      assignedCareerPrepTrack: item.CaseMgmt
-        ?.AssignedCareerPrepTrack as CareerPrepTrack,
-      careerPrepAssessmentDate: item.assessmentDate,
-      careerPrepEnrollmentStatus: item.CaseMgmt
-        ?.prepEnrollmentStatus as CareerPrepStatus,
-      careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
-      expectedEduCompletion: item.expectedEduCompletion as TimeUntilCompletion,
-      assignedPool:
-        (item.Jobseeker?.assignedPool as PoolCategories) || PoolCategories.None,
-    }));
-  return transformedData;
+      });
+    const transformedData: CareerPrepGridData[] =
+      assessmentsWithoutCaseMgmt.map((item) => ({
+        jobseeker_id: item.jobseekerId,
+        first_name: item.Jobseeker?.users?.first_name || "",
+        HighestEdLevel:
+          item.Jobseeker.highest_level_of_study_completed ?? "Unknown",
+        last_name: item.Jobseeker?.users?.last_name || "",
+        "Pathway Title": item.Jobseeker.pathways?.pathway_title ?? "None",
+        email: item.Jobseeker.users.email,
+        EnrollmentDate: item.CaseMgmt?.createdAt ?? new Date(),
+        JobseekerUpdatedAt: item.Jobseeker?.updatedAt ?? new Date("1/1/1979"),
+        JobseekerCreatedAt: item.Jobseeker?.createdAt,
+        pronouns: item.pronouns,
+        careerPrepTrackRecommendation: item.Jobseeker
+          .careerPrepTrackRecommendation as CareerPrepTrack,
+        assignedCareerPrepTrack: item.CaseMgmt
+          ?.AssignedCareerPrepTrack as CareerPrepTrack,
+        careerPrepAssessmentDate: item.assessmentDate,
+        user_id: item.Jobseeker.users.id,
+        "CP Enrollment Status": item.CaseMgmt
+          ?.prepEnrollmentStatus as CareerPrepStatus,
+        careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
+        expectedEduCompletion:
+          item.expectedEduCompletion as TimeUntilCompletion,
+        "Pool Type":
+          (item.Jobseeker?.assignedPool as PoolCategories) ||
+          PoolCategories.None,
+      }));
+    return transformedData;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 };
+
+export const getAllPreScreenedCareerPrepStudents = async (): Promise<
+  CareerPrepGridData[]
+> => {
+  try {
+    const assessmentsWithoutCaseMgmt =
+      await prisma.careerPrepAssessment.findMany({
+        select: selectCareerPrepStudentCardView,
+        where: {
+          Jobseeker: {
+            prescreened: true,
+          },
+        },
+      });
+    const transformedData: CareerPrepGridData[] =
+      assessmentsWithoutCaseMgmt.map((item) => ({
+        jobseeker_id: item.jobseekerId,
+        first_name: item.Jobseeker?.users?.first_name || "",
+        HighestEdLevel:
+          item.Jobseeker.highest_level_of_study_completed ?? "Unknown",
+        last_name: item.Jobseeker?.users?.last_name || "",
+        "Pathway Title": item.Jobseeker.pathways?.pathway_title ?? "None",
+        email: item.Jobseeker.users.email,
+        EnrollmentDate: item.CaseMgmt?.createdAt ?? new Date(),
+        JobseekerUpdatedAt: item.Jobseeker?.updatedAt ?? new Date("1/1/1979"),
+        JobseekerCreatedAt: item.Jobseeker?.createdAt,
+        pronouns: item.pronouns,
+        careerPrepTrackRecommendation: item.Jobseeker
+          .careerPrepTrackRecommendation as CareerPrepTrack,
+        assignedCareerPrepTrack: item.CaseMgmt
+          ?.AssignedCareerPrepTrack as CareerPrepTrack,
+        careerPrepAssessmentDate: item.assessmentDate,
+        user_id: item.Jobseeker.users.id,
+        "CP Enrollment Status": item.CaseMgmt
+          ?.prepEnrollmentStatus as CareerPrepStatus,
+        careerPrepExpectedEndDate: item.CaseMgmt?.prepExpectedEndDate || null,
+        expectedEduCompletion:
+          item.expectedEduCompletion as TimeUntilCompletion,
+        "Pool Type":
+          (item.Jobseeker?.assignedPool as PoolCategories) ||
+          PoolCategories.None,
+      }));
+    return transformedData;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+
+  return [];
+};
+
+export async function setPresreenedStatus(
+  jobsekerId: string,
+  prescreened: boolean,
+) {
+  try {
+    const result = await prisma.jobseekers.update({
+      where: {
+        jobseeker_id: jobsekerId,
+      },
+      data: {
+        prescreened: prescreened,
+      },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 /**
  * Assigns the authenticated user as the case manager for a specific jobseeker.
@@ -336,6 +426,7 @@ export const getCareerPrepStudentDetailView = async (jobseekerId: string) => {
       prepEnrollmentStatus: data.CaseMgmt
         ?.prepEnrollmentStatus as CareerPrepStatus,
       prepStartDate: data.CaseMgmt?.prepStartDate?.toISOString(),
+      prescreened: data.Jobseeker.prescreened,
       prepExpectedEndDate: data.CaseMgmt?.prepExpectedEndDate?.toISOString(),
       prepActualEndDate: data.CaseMgmt?.prepActualEndDate?.toISOString(),
       firstName: data.Jobseeker?.users?.first_name!,
@@ -414,16 +505,28 @@ const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
         prepEnrollmentStatus: true,
         prepExpectedEndDate: true,
         AssignedCareerPrepTrack: true,
+        createdAt: true,
       },
     },
     Jobseeker: {
       select: {
         assignedPool: true,
         careerPrepTrackRecommendation: true,
+        highest_level_of_study_completed: true,
+        prescreened: true,
+        createdAt: true,
+        updatedAt: true,
         users: {
           select: {
             first_name: true,
             last_name: true,
+            email: true,
+            id: true,
+          },
+        },
+        pathways: {
+          select: {
+            pathway_title: true,
           },
         },
       },
@@ -608,6 +711,7 @@ const selectCareerPrepStudentDetailView /*: Prisma.CareerPrepAssessmentSelect*/ 
         portfolio_url: true,
         linkedin_url: true,
         assignedPool: true,
+        prescreened: true,
         careerPrepTrackRecommendation: true,
         users: {
           select: {
@@ -660,6 +764,7 @@ export interface CareerPrepJobseekerDetailViewDTO {
   pronouns: string;
   emailAddress: string;
   pathway: string;
+  prescreened: boolean;
   education: HighestCompletedEducationLevel;
   eduProviders?: PartnerTrainingProvider[];
   expectedEduCompletion: TimeUntilCompletion;
@@ -891,57 +996,6 @@ export type CareerPrepEnrollmentDTO = {
   streetAddress: string;
   priorityPopulations: string;
 };
-
-///////////////////////////////////////////////////
-// DO NOT NEED CAN BE INFERRED FROM ACCOUNT INFO //
-///////////////////////////////////////////////////
-// export type jobseekerAccountDataDTO = {
-//   interestPathway: TechPathways;
-//   hasResume: boolean; // have to call getResumeUrl(session.user.id)
-//   // resumeLink: (userId: string) => Promise<string | null>;
-//   hasCoverLetter: boolean; // have to call getCoverLetter(session.user.id)
-//   // coverLetterLink: (userId: string) => Promise<string | null>;
-//   hasPortfolio: boolean;
-//   portfolioLink: string | null;
-//   hasLinkedInProfile: boolean;
-//   linkedInLink: string | null;
-// };
-//
-// export const getJobseekerAccountData = async (
-//   jobseekerId: string,
-// ): Promise<{
-//   success: boolean;
-//   data: jobseekerAccountDataDTO | null;
-// }> => {
-//   const jobseekerData = await prisma.jobseekers.findUnique({
-//     where: {
-//       jobseeker_id: jobseekerId,
-//     },
-//     include: {
-//       pathways: true
-//     }
-//   });
-//   if (!jobseekerData) {
-//     return { success: false, data: null };
-//   }
-//   const userId = jobseekerData.user_id!;
-//   const resumeLink = await getResumeUrl(userId);
-//   const coverLetterLink = await getCoverLetterUrl(userId);
-//   return {
-//     success: true,
-//     data: {
-//       interestPathway: jobseekerData?.pathways?.pathway_title as TechPathways,
-//       hasResume: resumeLink !== null,
-//       // resumeLink: getResumeUrl,
-//       hasCoverLetter: false, // Call similar function if available
-//       // coverLetterLink:  getCoverLetterUrl, // Assign based on a function similar to getResumeUrl
-//       hasPortfolio: !!jobseekerData.portfolio_url, // Set based on your criteria
-//       portfolioLink: jobseekerData.portfolio_url, // Populate if portfolio link is available
-//       hasLinkedInProfile: !!jobseekerData.linkedin_url, // Set based on your criteria
-//       linkedInLink: jobseekerData.portfolio_url, // Populate if LinkedIn link is available
-//     },
-//   };
-// };
 
 /**
  * Submits a career preparation skills assessment with session data.

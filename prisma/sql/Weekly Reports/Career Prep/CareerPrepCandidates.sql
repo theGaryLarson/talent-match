@@ -1,6 +1,7 @@
 SELECT
 
     j.jobseeker_id,
+    j.user_id ,
     u.first_name,
     u.last_name,
 	u.email,
@@ -11,7 +12,8 @@ SELECT
     p.pathway_title AS 'Pathway Title',
     j.created_at                  AS JobseekerCreatedAt,
     j.updated_at                  AS JobseekerUpdatedAt,
-    cm.createdAt                  AS EnrollmentDate
+    cm.createdAt                  AS EnrollmentDate,
+    cpa.assessmentDate            AS careerPrepAssessmentDate
 
 
    
