@@ -15,6 +15,7 @@ import {
 import { mapToEnum, mapToEnumOrThrow } from "@/app/lib/utils";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { JobseekerSkillDTO } from "@/data/dtos/JobseekerSkillDTO";
+import { TimeUntilCompletion } from "@/app/lib/admin/careerPrep";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -105,6 +106,11 @@ export async function GET(
             },
           },
         },
+        CareerPrepAssessment: {
+          select: {
+            expectedEduCompletion: true,
+          },
+        },
       },
     });
     console.log(JSON.stringify(jobseeker, null, 2));
@@ -180,6 +186,13 @@ export async function GET(
       educations: edHistory,
       certifications: certs,
       projects: projects,
+      CareerPrepAssessment: {
+        expectedEduCompletion:
+          jobseeker.CareerPrepAssessment.length > 0
+            ? (jobseeker.CareerPrepAssessment[0]
+                .expectedEduCompletion as TimeUntilCompletion)
+            : TimeUntilCompletion.NA,
+      },
     };
 
     return NextResponse.json(
