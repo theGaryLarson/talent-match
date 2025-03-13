@@ -2,13 +2,31 @@
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import Link from "next/link";
-import { CareerPrepGridData } from "./NewCasesDataGrid";
 import ViewResume from "./ViewResume";
-
+import SelfAssignCaseButton from "./SelfAsignCaseButton";
+import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
+import { PoolCategories } from "@/app/lib/poolAssignment";
+export interface CareerPrepGridData {
+  jobseeker_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  careerPrepTrackRecommendation: string;
+  "CP Enrollment Status": CareerPrepStatus;
+  HighestEdLevel: string;
+  "Pool Type": PoolCategories;
+  "Pathway Title": string;
+  JobseekerCreatedAt: Date;
+  JobseekerUpdatedAt: Date;
+  EnrollmentDate: Date;
+  user_id: string;
+}
 export default function CareerPrepDataGrid({
   clients,
+  ShowClaimButton,
 }: {
   clients: CareerPrepGridData[];
+  ShowClaimButton: boolean;
 }) {
   const columns: GridColDef[] = [
     {
@@ -28,7 +46,6 @@ export default function CareerPrepDataGrid({
     {
       field: "resume",
       sortable: false,
-      width: 75,
       headerName: "Resume",
       renderCell: (params) => <ViewResume userId={params.row.user_id} />,
     },
@@ -52,7 +69,17 @@ export default function CareerPrepDataGrid({
     },
     { field: "EnrollmentDate", headerName: "EnrollmentDate" },
   ];
-
+  if (ShowClaimButton) {
+    columns.unshift({
+      field: "jobseeker_id",
+      sortable: false,
+      width: 75,
+      headerName: "Claim",
+      renderCell: (params) => (
+        <SelfAssignCaseButton jobseekerId={params.row.jobseeker_id} />
+      ),
+    });
+  }
   return (
     <Box>
       <DataGrid

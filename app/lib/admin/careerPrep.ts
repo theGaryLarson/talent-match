@@ -11,7 +11,7 @@ import { devLog } from "@/app/lib/utils";
 import TransactionClient = Prisma.TransactionClient;
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { JobStatus } from "../jobseekerJobTracking";
-import { CareerPrepGridData } from "@/app/ui/components/careerPrep/NewCasesDataGrid";
+import { CareerPrepGridData } from "@/app/ui/components/careerPrep/CareerPrepDataGrid";
 
 const prisma: PrismaClient = getPrismaClient();
 

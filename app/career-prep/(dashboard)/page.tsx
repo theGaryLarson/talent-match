@@ -1,6 +1,6 @@
 import { ExecuteSqlFile } from "@/app/lib/sql/sqlUtils";
 import CareerPrepDataGrid from "@/app/ui/components/careerPrep/CareerPrepDataGrid";
-import { CareerPrepGridData } from "@/app/ui/components/careerPrep/NewCasesDataGrid";
+import { CareerPrepGridData } from "@/app/ui/components/careerPrep/CareerPrepDataGrid";
 
 export const metadata = {
   title: "My Dashboard",
@@ -14,7 +14,7 @@ export default async function Page() {
       <h1 className="text-2xl font-medium">
         Career Prep Candidates (all eligible Job Seekers)
       </h1>
-      <CareerPrepDataGrid clients={clients ?? []} />
+      <CareerPrepDataGrid clients={clients ?? []} ShowClaimButton={false} />
     </main>
   );
 }
