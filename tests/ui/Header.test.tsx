@@ -109,7 +109,7 @@ describe("Header", () => {
     vi.mocked(usePathname).mockReturnValue("/");
     renderWithProviders(<Header />);
 
-    fireEvent.click(screen.getByText("Open main menu"));
+    fireEvent.click(screen.getByRole("button", { name: "Open main menu" }));
 
     const mobileMenu = screen.getByRole("dialog");
 
