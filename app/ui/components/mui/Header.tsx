@@ -238,7 +238,7 @@ export default function Header() {
           <IconButton
             edge="start"
             color="inherit"
-            aria-label="menu"
+            aria-label="Open main menu"
             onClick={toggleDrawer(true)}
             sx={{ display: { md: "none" }, paddingLeft: 5 }}
           >
