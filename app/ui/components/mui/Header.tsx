@@ -23,7 +23,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountMenu from "@/app/ui/components/mui/AccountMenu";
 import {
-  Bars3Icon,
   BuildingOffice2Icon,
   SparklesIcon,
   BriefcaseIcon,
@@ -31,7 +30,6 @@ import {
   UserGroupIcon,
   QuestionMarkCircleIcon,
   UsersIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/outline";
 
 type TopLevelLink = {
