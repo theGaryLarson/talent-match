@@ -111,7 +111,7 @@ describe("Header", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Open main menu" }));
 
-    const mobileMenu = screen.getByRole("dialog");
+    const mobileMenu = screen.getByRole("presentation");
 
     const topLinkForEmployers = within(mobileMenu).getByText("For Employers");
     expect(topLinkForEmployers).toBeDefined();
