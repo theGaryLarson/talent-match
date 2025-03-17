@@ -380,7 +380,7 @@ export default function NewJobForm({
       >
         {activeStep + 1} / {steps.length}
       </Typography>
-      <Typography variant="h5" sx={{ mt: 2 }}>
+      <Typography variant="h5" sx={{ my: 2 }}>
         {steps[activeStep]}
       </Typography>
       <Stack>
