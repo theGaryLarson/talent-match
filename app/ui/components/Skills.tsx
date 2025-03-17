@@ -1,15 +1,17 @@
 import { SkillDTO } from "@/data/dtos/SkillDTO";
-import { Chip, Grid2 } from "@mui/material";
+import { Chip, ChipProps, Grid2 } from "@mui/material";
 import Link from "next/link";
 
 export default function Skills({
   skillsList,
   maxNumSkills,
   jobseekerID,
+  color = "primary",
 }: {
   skillsList?: SkillDTO[];
   maxNumSkills: number;
   jobseekerID?: string;
+  color?: ChipProps["color"];
 }) {
   if (skillsList == null || skillsList.length == 0) return;
 
@@ -29,7 +31,7 @@ export default function Skills({
         <Chip
           component={Link}
           clickable
-          color="primary"
+          color={color}
           key={pill?.skill_id}
           label={pill?.skill_name}
           target="_blank"
