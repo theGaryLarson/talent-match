@@ -192,6 +192,7 @@ model companies {
   size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
   estimated_annual_hires Int?
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
+  createdAt              DateTime               @default(now()) @db.DateTime
   createdBy              String?                @db.UniqueIdentifier
   createdByUser          User?                  @relation(fields: [createdBy], references: [id], onDelete: NoAction)
   industry_sectors       industry_sectors?      @relation(fields: [industry_sector_id], references: [industry_sector_id], onUpdate: NoAction, map: "fk_company_industry_sectors1")
@@ -558,6 +559,7 @@ model employers {
   linkedin_url         String?                @db.VarChar(255)
   // hasAgreedTerms       Boolean                @default(false) @map("has_agreed_terms")
   is_verified_employee Boolean                @default(false, map: "DF__employers__is_verified") @db.Bit
+  createdAt            DateTime               @default(now()) @db.DateTime
   users                User                   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_employer_user1")
   companies            companies?             @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")
   company_addresses    company_addresses?     @relation(fields: [work_address_id], references: [company_address_id], onUpdate: NoAction, map: "fk_employers_company_addresses")
