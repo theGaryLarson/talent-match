@@ -137,9 +137,12 @@ export default function Header() {
           border: "none",
           width: "100%",
           color:
-            ["/services/jobseekers", "/services/employers"].includes(
-              pathname,
-            ) || pathname.startsWith("/services/training-programs/")
+            [
+              "/services/jobseekers",
+              "/services/employers",
+              "/services/careers",
+            ].includes(pathname) ||
+            pathname.startsWith("/services/training-programs/")
               ? "neutral.white"
               : "inherit",
           padding: 2,
@@ -148,6 +151,7 @@ export default function Header() {
         <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
           {pathname == "/services/jobseekers" ||
           pathname == "/services/employers" ||
+          pathname == "/services/careers" ||
           pathname.startsWith("/services/training-programs/") ? (
             <Link href="/">
               <span className="sr-only">Tech Workforce Coalition</span>
