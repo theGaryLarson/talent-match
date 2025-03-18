@@ -6,7 +6,7 @@ import Bookmark from "../Bookmark";
 import PillButton from "@/app/ui/components/PillButton";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
-import { Card, Chip, Grid2, Stack, Typography } from "@mui/material";
+import { Alert, Card, Chip, Grid2, Stack, Typography } from "@mui/material";
 import { Circle } from "@mui/icons-material";
 import ApplyToJobButton from "./ApplyToJobButton";
 import Link from "next/link";
@@ -54,12 +54,17 @@ function JobListingCardView({
     <Card
       elevation={0}
       sx={{
-        p: { xs: 0, md: 3 },
+        p: { xs: 0.5, sm: 1, md: 3 },
         borderRadius: "12px",
         transition: "box-shadow 0.3s",
         "&:hover": { boxShadow: 3 },
       }}
     >
+      {joblisting.career_services_offered && (
+        <Grid2 container sx={{ mb: 3 }}>
+          <Alert color="info">Career Services Offered</Alert>
+        </Grid2>
+      )}
       <Stack
         direction={"row"}
         sx={{ alignItems: "center", justifyContent: "space-between" }}
