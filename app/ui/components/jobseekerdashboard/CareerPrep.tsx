@@ -28,7 +28,7 @@ export default async function CareerPrep(props: {
     button: "Access Canvas Training",
     buttonLink: "https://computingforall.instructure.com/enroll/JKT9EF",
   };
-  //hotfix removed so people dont sign up 
+  //hotfix removed so people dont sign up
   // switch (props.enrollmentStatus) {
   //   case undefined:
   //     copy = {
