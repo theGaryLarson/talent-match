@@ -405,7 +405,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       direction={"row"}
                       sx={{ justifyContent: "space-between" }}
                     >
-                      <Typography variant="h5" sx={{ mb: 1 }}>Projects</Typography>
+                      <Typography variant="h5" sx={{ mb: 1 }}>
+                        Projects
+                      </Typography>
                       {isOwnProfile && (
                         <IconButton href="/edit-profile/jobseeker/education">
                           <EditIcon />
