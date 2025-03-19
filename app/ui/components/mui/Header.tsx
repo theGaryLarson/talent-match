@@ -14,13 +14,20 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Menu,
   MenuItem,
   Box,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CloseIcon from "@mui/icons-material/Close";
+import {
+  Menu as MenuIcon,
+  ArrowDropDown as ArrowDropDownIcon,
+  Close as CloseIcon,
+  ExpandMore as ExpandMoreIcon,
+} from "@mui/icons-material";
+
 import AccountMenu from "@/app/ui/components/mui/AccountMenu";
 import {
   BuildingOffice2Icon,
@@ -113,6 +120,13 @@ export default function Header() {
   const toggleDrawer = (open: boolean) => () => {
     setMobileOpen(open);
   };
+
+  const [expanded, setExpanded] = useState<string | false>(false);
+
+  const handleAccordionToggle =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   const [anchorEl, setAnchorEl] = useState<{
     [key: string]: HTMLElement | null;
@@ -262,7 +276,7 @@ export default function Header() {
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             mb: 2,
           }}
         >
@@ -277,27 +291,42 @@ export default function Header() {
         <List>
           {TopLevelLinks.map((link) =>
             link.dropDowns ? (
-              <Box key={link.name}>
-                <ListItem disablePadding>
+              <Accordion
+                key={link.name}
+                expanded={expanded === link.name}
+                onChange={handleAccordionToggle(link.name)}
+                disableGutters
+                sx={{
+                  boxShadow: "none",
+                  backgroundColor: "transparent",
+                  "&:before": { display: "none" },
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  sx={{ px: 2 }}
+                >
                   <ListItemText
                     primary={link.name}
-                    sx={{ fontWeight: "bold", px: 2 }}
+                    sx={{ fontWeight: "bold" }}
                   />
-                </ListItem>
-                {link.dropDowns.map((item) => (
-                  <ListItemButton
-                    key={item.name}
-                    component={Link}
-                    href={item.href}
-                    target={item.target || "_self"}
-                    rel={item.rel || ""}
-                    onClick={toggleDrawer(false)}
-                    sx={{ pl: 4 }}
-                  >
-                    <ListItemText primary={item.name} />
-                  </ListItemButton>
-                ))}
-              </Box>
+                </AccordionSummary>
+                <AccordionDetails sx={{ p: 0 }}>
+                  {link.dropDowns.map((item) => (
+                    <ListItemButton
+                      key={item.name}
+                      component={Link}
+                      href={item.href}
+                      target={item.target || "_self"}
+                      rel={item.rel || ""}
+                      onClick={toggleDrawer(false)}
+                      sx={{ pl: 4 }}
+                    >
+                      <ListItemText primary={item.name} />
+                    </ListItemButton>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
             ) : (
               <ListItemButton
                 key={link.name}
