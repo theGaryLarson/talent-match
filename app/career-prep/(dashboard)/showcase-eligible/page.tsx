@@ -8,7 +8,7 @@ export default async function Page() {
   const clients = await getAllPreScreenedCareerPrepStudents();
   return (
     <main className="space-y-3 py-8 font-['Roboto'] bg-gray-bg grow px-[50px]">
-      <h1 className="text-2xl font-medium">Pre-Screened Candidates</h1>
+      <h1 className="text-2xl font-medium">Showcase Eligible Candidates</h1>
       <CareerPrepDataGrid clients={clients} ShowClaimButton={false} />
     </main>
   );

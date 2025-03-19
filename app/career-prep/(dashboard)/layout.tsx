@@ -45,9 +45,9 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
       label: "New Cases",
     },
     {
-      href: "/career-prep/pre-screened",
+      href: "/career-prep/showcase-eligible",
       icon: <TaskOutlined />,
-      label: "Pre Screened",
+      label: "Showcase Eligible",
     },
     {
       href: "/career-prep/placement-tracking",

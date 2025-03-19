@@ -6,6 +6,7 @@ import ViewResume from "./ViewResume";
 import SelfAssignCaseButton from "./SelfAsignCaseButton";
 import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import { PoolCategories } from "@/app/lib/poolAssignment";
+import EnrollmentStatusDropDown from "./EnrollmentStatusDropDown";
 export interface CareerPrepGridData {
   jobseeker_id: string;
   first_name: string;
@@ -56,6 +57,10 @@ export default function CareerPrepDataGrid({
     {
       field: "CP Enrollment Status",
       headerName: "CP Enrollment Status",
+      renderCell:(params)=><EnrollmentStatusDropDown
+                careerPrepEnrollmentStatus={params.row["CP Enrollment Status"]}
+                jobseekerId={params.row.jobseeker_id}
+              />,
       width: 160,
     },
     { field: "HighestEdLevel", headerName: "HighestEdLevel", width: 160 },
