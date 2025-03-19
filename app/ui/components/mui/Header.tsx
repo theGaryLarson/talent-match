@@ -254,62 +254,62 @@ export default function Header() {
         anchor="right"
         open={mobileOpen}
         onClose={toggleDrawer(false)}
-        sx={{ width: 250, p: 2 }}
+        slotProps={{
+          paper: { sx: { width: 250, p: 2 } },
+        }}
       >
-        <Box sx={{ width: 250, p: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              mb: 2,
-            }}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mb: 2,
+          }}
+        >
+          <IconButton
+            onClick={toggleDrawer(false)}
+            sx={{ display: "flex", justifyContent: "flex-end" }}
           >
-            <IconButton
-              onClick={toggleDrawer(false)}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-
-          <List>
-            {TopLevelLinks.map((link) =>
-              link.dropDowns ? (
-                <Box key={link.name}>
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={link.name}
-                      sx={{ fontWeight: "bold", px: 2 }}
-                    />
-                  </ListItem>
-                  {link.dropDowns.map((item) => (
-                    <ListItemButton
-                      key={item.name}
-                      component={Link}
-                      href={item.href}
-                      target={item.target || "_self"}
-                      rel={item.rel || ""}
-                      onClick={toggleDrawer(false)}
-                      sx={{ pl: 4 }}
-                    >
-                      <ListItemText primary={item.name} />
-                    </ListItemButton>
-                  ))}
-                </Box>
-              ) : (
-                <ListItemButton
-                  key={link.name}
-                  component={Link}
-                  href={link.href!}
-                  onClick={toggleDrawer(false)}
-                >
-                  <ListItemText primary={link.name} />
-                </ListItemButton>
-              ),
-            )}
-          </List>
+            <CloseIcon />
+          </IconButton>
         </Box>
+
+        <List>
+          {TopLevelLinks.map((link) =>
+            link.dropDowns ? (
+              <Box key={link.name}>
+                <ListItem disablePadding>
+                  <ListItemText
+                    primary={link.name}
+                    sx={{ fontWeight: "bold", px: 2 }}
+                  />
+                </ListItem>
+                {link.dropDowns.map((item) => (
+                  <ListItemButton
+                    key={item.name}
+                    component={Link}
+                    href={item.href}
+                    target={item.target || "_self"}
+                    rel={item.rel || ""}
+                    onClick={toggleDrawer(false)}
+                    sx={{ pl: 4 }}
+                  >
+                    <ListItemText primary={item.name} />
+                  </ListItemButton>
+                ))}
+              </Box>
+            ) : (
+              <ListItemButton
+                key={link.name}
+                component={Link}
+                href={link.href!}
+                onClick={toggleDrawer(false)}
+              >
+                <ListItemText primary={link.name} />
+              </ListItemButton>
+            ),
+          )}
+        </List>
       </Drawer>
     </>
   );
