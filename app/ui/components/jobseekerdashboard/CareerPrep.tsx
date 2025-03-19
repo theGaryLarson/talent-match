@@ -1,28 +1,17 @@
 import { Card, Grid2, Stack } from "@mui/material";
 import Image from "next/image";
-import {
-  CareerPrepStatus,
-  getMeetingByJobSeeker,
-} from "@/app/lib/admin/careerPrep";
-import { CareerPrepTrack } from "@/app/lib/poolAssignment";
 import { ReactNode } from "react";
 import RoundedButton from "../RoundedButton";
 
-export default async function CareerPrep(props: {
-  enrollmentStatus: CareerPrepStatus | undefined;
-  track: CareerPrepTrack | undefined;
-  jobseekerId: string;
-  caseManager: string;
-}) {
-  const Meetings = await getMeetingByJobSeeker(props.jobseekerId);
+export default async function CareerPrep() {
+  //const Meetings = await getMeetingByJobSeeker(props.jobseekerId);
 
-  let copy: {
+  const copy: {
     headline: string;
     body: ReactNode;
     button: string;
     buttonLink: string;
-  };
-  copy = {
+  } = {
     headline: "Access On-demand Career Preparation Skill Building Modules",
     body: "You've officially joined the program! You can now access the Canvas training and begin your journey.",
     button: "Access Canvas Training",
