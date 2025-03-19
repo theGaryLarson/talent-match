@@ -148,7 +148,7 @@ export default function Header() {
           padding: 2,
         }}
       >
-        <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
+        <Toolbar disableGutters>
           {pathname == "/services/jobseekers" ||
           pathname == "/services/employers" ||
           pathname == "/services/careers" ||
@@ -240,18 +240,22 @@ export default function Header() {
             <AccountMenu />
           </Box>
           <IconButton
-            edge="start"
             color="inherit"
             aria-label="Open main menu"
             onClick={toggleDrawer(true)}
-            sx={{ display: { md: "none" }, paddingLeft: 5 }}
+            sx={{ display: { md: "none" }, marginLeft: 5 }}
           >
             <MenuIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
 
-      <Drawer anchor="right" open={mobileOpen} onClose={toggleDrawer(false)}>
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={toggleDrawer(false)}
+        sx={{ width: 250, p: 2 }}
+      >
         <Box sx={{ width: 250, p: 2 }}>
           <Box
             sx={{
