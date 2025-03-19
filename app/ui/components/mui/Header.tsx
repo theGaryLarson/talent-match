@@ -265,16 +265,6 @@ export default function Header() {
               mb: 2,
             }}
           >
-            <Link href="/">
-              <span className="sr-only">Tech Workforce Coalition</span>
-              <Image
-                src="/images/TWC_75x50_2024.svg"
-                alt="Tech Workforce Coalition"
-                width={75}
-                height={31.8}
-              />
-            </Link>
-
             <IconButton
               onClick={toggleDrawer(false)}
               sx={{ display: "flex", justifyContent: "flex-end" }}
