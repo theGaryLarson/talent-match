@@ -219,9 +219,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                   sx={{ justifyContent: "space-between" }}
                 >
                   <Typography variant="h5">About Me</Typography>
-                  <IconButton href="/edit-profile/jobseeker/preferences">
-                    <EditIcon />
-                  </IconButton>
+                  {isOwnProfile && (
+                    <IconButton href="/edit-profile/jobseeker/preferences">
+                      <EditIcon />
+                    </IconButton>
+                  )}
                 </Stack>
                 <Typography>{jobseeker?.intro_headline}</Typography>
               </Card>
@@ -267,9 +269,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       sx={{ justifyContent: "space-between" }}
                     >
                       <Typography variant="h5">Education</Typography>
-                      <IconButton href="/edit-profile/jobseeker/education">
-                        <EditIcon />
-                      </IconButton>
+                      {isOwnProfile && (
+                        <IconButton href="/edit-profile/jobseeker/education">
+                          <EditIcon />
+                        </IconButton>
+                      )}
                     </Stack>
                     {jobseeker?.jobseeker_education.map((education) => (
                       <Box
@@ -325,9 +329,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       <Typography variant="h5">
                         Licenses &amp; Certifications
                       </Typography>
-                      <IconButton href="/edit-profile/jobseeker/education">
-                        <EditIcon />
-                      </IconButton>
+                      {isOwnProfile && (
+                        <IconButton href="/edit-profile/jobseeker/education">
+                          <EditIcon />
+                        </IconButton>
+                      )}
                     </Stack>
                     {jobseeker?.certificates.map((certificate) => (
                       <Box
@@ -400,9 +406,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       sx={{ justifyContent: "space-between" }}
                     >
                       <Typography variant="h5">Projects</Typography>
-                      <IconButton href="/edit-profile/jobseeker/education">
-                        <EditIcon />
-                      </IconButton>
+                      {isOwnProfile && (
+                        <IconButton href="/edit-profile/jobseeker/education">
+                          <EditIcon />
+                        </IconButton>
+                      )}
                     </Stack>
                     <Stack
                       spacing={2}
@@ -569,9 +577,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       sx={{ justifyContent: "space-between" }}
                     >
                       <Typography variant="h5">Experience</Typography>
-                      <IconButton href="/edit-profile/jobseeker/work-experience">
-                        <EditIcon />
-                      </IconButton>
+                      {isOwnProfile && (
+                        <IconButton href="/edit-profile/jobseeker/work-experience">
+                          <EditIcon />
+                        </IconButton>
+                      )}
                     </Stack>
                     <Stack
                       spacing={4}
