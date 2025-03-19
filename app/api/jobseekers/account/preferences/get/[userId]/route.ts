@@ -38,13 +38,7 @@ export async function GET(
       where: { jobseeker_id: jobseekerId },
       select: {
         user_id: true,
-        targeted_pathway: true,
         employment_type_sought: true,
-        pathways: {
-          select: {
-            pathway_title: true,
-          },
-        },
       },
     });
 
@@ -57,8 +51,6 @@ export async function GET(
 
     const result: JsPreferencesDTO = {
       userId: preferences.user_id,
-      targetedPathwayId: preferences.targeted_pathway,
-      targetedPathway: preferences.pathways?.pathway_title,
       preferredEmploymentType: preferences.employment_type_sought,
     };
 

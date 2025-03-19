@@ -1,494 +1,105 @@
 "use client";
-import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
-import { SkillDTO } from "@/data/dtos/SkillDTO";
-import { companies, industry_sectors, technology_areas } from "@prisma/client";
-import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
-import { Button } from "@mui/material";
-import { ArrowCircleRightOutlined } from "@mui/icons-material";
-import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
+import { useEffect, useState } from "react";
+import { companies } from "@prisma/client";
 import {
-  EarnLearnType,
-  EmploymentType,
-  OccupationCode,
-} from "@/app/lib/admin/jobTracking";
+  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+import PillButton from "../PillButton";
+import { Close } from "@mui/icons-material";
+import NewJobForm from "../jobManagement/NewJobForm";
 
 export default function CreateJobListingAdminForm() {
-  const router = useRouter();
-  const { quill, quillRef } = useQuill();
-  const [skills, setSkills] = useState<SkillDTO[]>();
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [companies, setCompanies] = useState<companies[]>();
-  const [techAreas, setTechAreas] = useState<technology_areas[]>();
-  const [industrySectors, setIndustrySectors] = useState<industry_sectors[]>();
-  const [jobDescription, setJobDescription] = useState("");
-  const [selectedEmploymentType, setSelectedEmploymentType] = useState<string>(
-    EmploymentType.FullTime,
-  );
-  const [isPermanent, setIsPermanent] = useState("yes");
+  const [selectedCompany, setSelectedCompany] = useState<string>("");
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const submitButton = event.currentTarget.querySelector(
-      'button[type="submit"]',
-    ) as HTMLButtonElement;
-    if (submitButton) submitButton.disabled = true;
-    const jobListingData: JobPostCreationDTO = {
-      job_title: formData.get("job_title") as string,
-      job_description: jobDescription,
-      is_internship: formData.get("is_internship") === "yes",
-      is_paid: formData.get("is_paid") === "yes",
-      is_apprenticeship: formData.get("is_apprenticeship") === "yes",
-      employment_type: formData.get("employment_type") as string,
-      location: formData.get("location") as string,
-      salary_range: formData.get("salary_range") as string,
-      zip: formData.get("zip") as string,
-      unpublish_date: formData.get("unpublish_date")
-        ? new Date(formData.get("unpublish_date") as string)
-        : null,
-      job_post_url: formData.get("job_post_url") as string,
-      assessment_url: formData.get("assessment_url") as string,
-      skillIds: skills?.map((v) => v.skill_id),
-      tech_area_id: formData.get("area") as string,
-      sector_id: formData.get("sector") as string,
-      company_id: formData.get("company") as string,
-      relocation_services_available: formData.get("relocation") === "yes",
-      offer_visa_sponsorship: formData.get("visas") === "yes",
-      earn_and_learn_type: formData.get("earn_and_learn_type") as string,
-      occupation_code: formData.get("occupation_code") as string,
-      employment_duration:
-        formData.get("is_permanent") === "no"
-          ? (formData.get("employment_duration") as string)
-          : null,
-      start_date: formData.get("start_date")
-        ? new Date(formData.get("start_date") as string)
-        : null,
-      end_date: formData.get("end_date")
-        ? new Date(formData.get("end_date") as string)
-        : null,
-      career_services_offered:
-        formData.get("career_services_offered") === "yes",
-      techArea: null,
-      jobApplications: [],
-      publish_date: null,
-      trainingRequirements: null,
-      requiredCertifications: null,
-      minimumEducationLevel: null,
-    };
-    try {
-      const response = await fetch("/api/joblistings/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(jobListingData), // Send as JSON
-      });
-
-      if (!response.ok) {
-        // If response is not OK, handle error
-        console.error("Failed to create job listing");
-        return;
-      } else {
-        // Await the response JSON
-        const data = await response.json();
-        //console.log('Job listing created:', data);
-        router.push("/services/joblistings/" + data.job_posting_id);
-      }
-    } catch (error) {
-      console.error("Error creating job listing:", error);
-    }
-  }
   useEffect(() => {
     fetch("/api/companies/getall")
-      .then((res) => {
-        return res.json();
-      })
-      .then((jsonData) => {
-        setCompanies(jsonData);
-      });
-
-    fetch("/api/joblistings/sectors")
-      .then((res) => {
-        return res.json();
-      })
-      .then((jsonData) => {
-        setIndustrySectors(jsonData);
-      });
-
-    fetch("/api/joblistings/techarea")
-      .then((res) => {
-        return res.json();
-      })
-      .then((jsonData) => {
-        setTechAreas(jsonData);
-      });
+      .then((res) => res.json())
+      .then((jsonData) => setCompanies(jsonData));
   }, []);
 
-  useEffect(() => {
-    if (quill) {
-      quill.on("text-change", () => {
-        setJobDescription(quill.root.innerHTML);
-      });
-    }
-  }, [quill]);
+  const handleChange = (event: SelectChangeEvent) => {
+    setSelectedCompany(event.target.value as string);
+    setOpen(true);
+  };
+
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
+    if (reason === "clickaway") return;
+    setOpenSnackbar(false);
+  };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3">
-      {/* Company (For use on admin page, would need to be added to api and the fetch request) */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="company">
-          What Company Does this listing belong to?
-        </label>
-        <select name="company" id="company" required>
-          <option value={""}>--Please Select a Company--</option>
+    <Box>
+      <FormControl>
+        <FormLabel>What Company Does this listing belong to?</FormLabel>
+        <Select
+          required
+          value={selectedCompany}
+          label="Company"
+          onChange={handleChange}
+        >
           {companies?.map((comp) => (
-            <option key={comp.company_id} value={comp.company_id}>
+            <MenuItem key={comp.company_id} value={comp.company_id}>
               {comp.company_name}
-            </option>
+            </MenuItem>
           ))}
-        </select>
-      </div>
-
-      <div className="grid grid-cols-1">
-        {/* Job Title */}
-        <div className="flex flex-col">
-          <label htmlFor="job_title">Job Title</label>
-          <input type="text" name="job_title" required />
-        </div>
-
-        {/* Occupation Code (NAICS) */}
-        <div className="grid grid-cols-1">
-          <label htmlFor="occupation_code">Occupation Code (NAICS)</label>
-          <select name="occupation_code" id="occupation_code" required>
-            <option value="">--Select Occupation Code--</option>
-            {Object.values(OccupationCode).map((code) => (
-              <option key={code} value={code}>
-                {code}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Job Description */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="job_description">Job Description</label>
-        <div ref={quillRef} style={{ minHeight: "200px" }} />
-      </div>
-
-      {/*tech Sector*/}
-      <div className="grid grid-cols-1">
-        <label htmlFor="sector">
-          What Tech Sector does this job fall under?
-        </label>
-        <select name="sector" id="sector" required>
-          <option value={""}>--Please Select a Sector--</option>
-          {industrySectors?.map((sector) => (
-            <option
-              key={sector.industry_sector_id}
-              value={sector.industry_sector_id}
-            >
-              {sector.sector_title}
-            </option>
-          ))}
-        </select>
-      </div>
-      {/*Tech Area*/}
-      <div className="grid grid-cols-1">
-        <label htmlFor="area">What Tech Area Best Describes This Job?</label>
-        <select name="area" id="area" required>
-          <option value={""}>--Please Select an Area--</option>
-          {techAreas?.map((area) => (
-            <option key={area.id} value={area.id}>
-              {area.title}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Internship */}
-      <div>
-        <label>Is this an internship?</label>
-        <div>
-          <label>
-            <input type="radio" name="is_internship" value="yes" required />
-            Yes
-          </label>
-          <label>
-            <input type="radio" name="is_internship" value="no" required />
-            No
-          </label>
-        </div>
-      </div>
-      {/* Apprentaceship */}
-      <div>
-        <label>Is this an apprenticeship?</label>
-        <div>
-          <label>
-            <input type="radio" name="is_apprenticeship" value="yes" required />
-            Yes
-          </label>
-          <label>
-            <input type="radio" name="is_apprenticeship" value="no" required />
-            No
-          </label>
-        </div>
-      </div>
-
-      {/* Paid */}
-      <div>
-        <label>Is this a paid position?</label>
-        <div>
-          <label>
-            <input type="radio" name="is_paid" value="yes" required />
-            Yes
-          </label>
-          <label>
-            <input type="radio" name="is_paid" value="no" required />
-            No
-          </label>
-        </div>
-      </div>
-
-      {/* Permanent Role */}
-      <div>
-        <label>Is this position permanent?</label>
-        <div>
-          <label>
-            <input
-              type="radio"
-              name="is_permanent"
-              value="yes"
-              required
-              checked={isPermanent === "yes"}
-              onChange={(e) => setIsPermanent(e.target.value)}
-            />
-            Yes
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="is_permanent"
-              value="no"
-              required
-              checked={isPermanent === "no"}
-              onChange={(e) => setIsPermanent(e.target.value)}
-            />
-            No
-          </label>
-        </div>
-      </div>
-
-      {/* Employment Duration */}
-      {isPermanent === "no" && (
-        <div className="flex flex-col">
-          <label htmlFor="employment_duration">Employment Duration</label>
-          <input type="text" name="employment_duration" />
-        </div>
-      )}
-
-      <div>
-        <label>Does This Position Offer Relocation Services?</label>
-        <div>
-          <label>
-            <input type="radio" name="relocation" value="yes" required />
-            Yes
-          </label>
-          <label>
-            <input type="radio" name="relocation" value="no" required />
-            No
-          </label>
-        </div>
-      </div>
-      <div>
-        <label>Is Position willing to sponsor H1B visas</label>
-        <div>
-          <label>
-            <input type="radio" name="visas" value="yes" required />
-            Yes
-          </label>
-          <label>
-            <input type="radio" name="visas" value="no" required />
-            No
-          </label>
-        </div>
-      </div>
-
-      {/* Employment Type */}
-      <div>
-        <label htmlFor="employment_type">Employment Type</label>
-        <select
-          name="employment_type"
-          value={selectedEmploymentType}
-          onChange={(e) => setSelectedEmploymentType(e.target.value as string)}
-        >
-          {Object.entries(EmploymentType).map(([key, value]) => (
-            <option key={key} value={value}>
-              {value}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Conditionally Render Earn and Learn Select */}
-      {selectedEmploymentType === EmploymentType.EarnAndLearn && (
-        <div>
-          <label htmlFor="earn_and_learn_type">Earn and Learn Type</label>
-          <select name="earn_and_learn_type" id="earn_and_learn_type" required>
-            <option value="">--Please Select Earn and Learn Type--</option>
-            {Object.values(EarnLearnType).map((typeValue) => (
-              <option key={typeValue} value={typeValue}>
-                {typeValue}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {/* Start Date */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="start_date">Start Date</label>
-        <input
-          type="date"
-          name="start_date"
-          min={new Date().toISOString().split("T")[0]}
-        />
-      </div>
-
-      {/* End Date */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="end_date">End Date</label>
-        <input
-          type="date"
-          name="end_date"
-          min={new Date().toISOString().split("T")[0]}
-        />
-      </div>
-
-      {/* Location */}
-      <div>
-        <label>Location</label>
-        <div>
-          <label>
-            <input type="radio" name="location" value="remote" required />
-            Remote
-          </label>
-        </div>
-        <div>
-          <label>
-            <input type="radio" name="location" value="on-site" />
-            On-Site
-          </label>
-        </div>
-        <div>
-          <label>
-            <input type="radio" name="location" value="hybrid" />
-            Hybrid
-          </label>
-        </div>
-      </div>
-
-      {/* Salary Range */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="salary_range">Salary Range</label>
-        <input type="text" name="salary_range" required />
-      </div>
-
-      {/* County */}
-
-      {/* ZIP Code */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="zip">ZIP Code</label>
-        <input type="text" name="zip" required />
-      </div>
-      {/* Unpublish Date */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="unpublish_date">Application Deadline</label>
-        <input
-          type="date"
-          name="unpublish_date"
-          min={new Date().toISOString().split("T")[0]}
-        />
-      </div>
-
-      {/* Job Post URL */}
-      <div className="grid grid-cols-1">
-        <label htmlFor="job_post_url">Job Post URL</label>
-        <input type="text" name="job_post_url" />
-      </div>
-
-      {/* Assessment URL */}
-      <div>
-        <label htmlFor="assessment_url">Assessment URL</label>
-        <input type="text" name="assessment_url" />
-      </div>
-
-      {/* Career Services Offered */}
-      <div>
-        <label>Does this position offer career services?</label>
-        <div>
-          <label>
-            <input
-              type="radio"
-              name="career_services_offered"
-              value="yes"
-              required
-            />
-            Yes
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="career_services_offered"
-              value="no"
-              required
-            />
-            No
-          </label>
-        </div>
-      </div>
-
-      {/* Skills */}
-      <div>
-        <label htmlFor="job-listing-skills">
-          What skills are needed for this role?
-        </label>
-        <TagsWithAutocomplete
-          apiSearchRoute="/api/skills/search/"
-          fieldLabel="Select the top 5 skills"
-          id="job-listing-skills"
-          maxTags={5}
-          searchingText="Searching..."
-          noResultsText="No skills found..."
-          onChange={function (ev, val) {
-            if (val.every((skill) => typeof skill !== "string")) {
-              setSkills(val as SkillDTO[]);
-            }
-          }}
-          searchPlaceholder="Skill (ex: Java)"
-          getTagLabel={(option: SkillDTO) => option.skill_name}
-          getTagLink={(option: SkillDTO) => option.skill_info_url}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        <Button
-          type="reset"
-          variant="outlined"
-          startIcon={<HighlightOffOutlinedIcon />}
-        >
-          Reset Form
-        </Button>
-        <Button
-          type="submit"
-          endIcon={<ArrowCircleRightOutlined />}
-          variant="contained"
-        >
-          Create Job Listing
-        </Button>
-      </div>
-    </form>
+        </Select>
+      </FormControl>
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ px: 2, pt: 2 }}>
+          New Job Form
+          <PillButton
+            color="inherit"
+            aria-label="close"
+            startIcon={<Close />}
+            onClick={handleClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 16,
+              color: "secondary.main",
+            }}
+          >
+            Close
+          </PillButton>
+        </DialogTitle>
+        <DialogContent>
+          <NewJobForm
+            company_id={selectedCompany}
+            job_posting={undefined}
+            isAdminOrCaseManager={true}
+            onJobUpdated={() => {
+              handleClose();
+              setOpenSnackbar(true);
+              setSelectedCompany("");
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2500}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert>Job listing created successfully!</Alert>
+      </Snackbar>
+    </Box>
   );
 }

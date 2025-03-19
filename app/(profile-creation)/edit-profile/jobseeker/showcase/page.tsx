@@ -196,8 +196,8 @@ export default function CreateJobseekerProfileShowcasePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(3 / 6) * 100} />
-        <p>Step 3/6</p>
+        <ProgressBarFlat progress={(3 / 9) * 100} />
+        <p>Step 3/9</p>
         <h1>Showcase</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
