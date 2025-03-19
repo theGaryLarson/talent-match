@@ -273,7 +273,7 @@ export default function JobListingsTable({
         maxWidth="md"
       >
         <DialogTitle>
-          Edit Job Form
+          <Typography variant="h4">Edit Job Form</Typography>
           <PillButton
             color="inherit"
             aria-label="close"
