@@ -1077,7 +1077,6 @@ export const getCareerPrepAssessment = async (jobseekerId: string) => {
         BrandingRating: true,
       },
     });
-    console.log("assess:", result);
     return result;
   } catch (error) {
     console.error(error);
