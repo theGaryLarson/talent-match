@@ -140,32 +140,28 @@ export default function Header() {
     setAnchorEl((prev) => ({ ...prev, [name]: null }));
   };
 
+  const isTransparent =
+    [
+      "/services/jobseekers",
+      "/services/employers",
+      "/services/careers",
+    ].includes(pathname) || pathname.startsWith("/services/training-programs/");
+
+  const appBarStyles = {
+    position: isTransparent ? "absolute" : "static",
+    backgroundColor: isTransparent ? "transparent" : "inherit",
+    boxShadow: "none",
+    border: "none",
+    width: "100%",
+    color: isTransparent ? "neutral.white" : "inherit",
+    padding: 2,
+  };
+
   return (
     <>
-      <AppBar
-        position="absolute"
-        sx={{
-          backgroundColor: "transparent",
-          boxShadow: "none",
-          border: "none",
-          width: "100%",
-          color:
-            [
-              "/services/jobseekers",
-              "/services/employers",
-              "/services/careers",
-            ].includes(pathname) ||
-            pathname.startsWith("/services/training-programs/")
-              ? "neutral.white"
-              : "inherit",
-          padding: 2,
-        }}
-      >
+      <AppBar sx={appBarStyles}>
         <Toolbar disableGutters>
-          {pathname == "/services/jobseekers" ||
-          pathname == "/services/employers" ||
-          pathname == "/services/careers" ||
-          pathname.startsWith("/services/training-programs/") ? (
+          {isTransparent ? (
             <Link href="/">
               <span className="sr-only">Tech Workforce Coalition</span>
               <Image
@@ -262,7 +258,6 @@ export default function Header() {
           </IconButton>
         </Toolbar>
       </AppBar>
-
       <Drawer
         anchor="right"
         open={mobileOpen}
