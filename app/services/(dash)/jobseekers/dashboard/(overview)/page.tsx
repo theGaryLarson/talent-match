@@ -22,13 +22,12 @@ export default async function Page() {
   const session = await auth();
   const pool = await getPoolWithSession(); // eslint-disable-line @typescript-eslint/no-unused-vars
 
-  const [AssementInfo, jobseekerData, appliedJobs, carrerPrepEnrollment] =
-    await Promise.all([
-      getCareerPrepAssementStatus(),
-      getJobSeekerEmployerView(session?.user.jobseekerId || ""),
-      getJobSeekerAppliedJobs(),
-      getCareerPrepStatus(session?.user.jobseekerId ?? ""),
-    ]);
+  const [AssementInfo, jobseekerData, appliedJobs] = await Promise.all([
+    getCareerPrepAssementStatus(),
+    getJobSeekerEmployerView(session?.user.jobseekerId || ""),
+    getJobSeekerAppliedJobs(),
+    getCareerPrepStatus(session?.user.jobseekerId ?? ""),
+  ]);
 
   let providerPrograms;
   if (jobseekerData && jobseekerData.pathways) {
@@ -86,10 +85,10 @@ export default async function Page() {
         Welcome back, {session?.user.firstName}
       </Typography>
       <CareerPrep
-        enrollmentStatus={carrerPrepEnrollment?.enrollment}
-        track={carrerPrepEnrollment?.AssignedTrack}
-        jobseekerId={session?.user.jobseekerId ?? ""}
-        caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? "Our"} ${carrerPrepEnrollment?.CaseManger?.last_name ?? "Carrer Navigator"}`}
+      // enrollmentStatus={carrerPrepEnrollment?.enrollment}
+      // track={carrerPrepEnrollment?.AssignedTrack}
+      // jobseekerId={session?.user.jobseekerId ?? ""}
+      // caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? "Our"} ${carrerPrepEnrollment?.CaseManger?.last_name ?? "Carrer Navigator"}`}
       />
       <Applications jobs={slicedAppliedJobs} />
       <EventsList

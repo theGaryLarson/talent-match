@@ -93,6 +93,7 @@ export default auth((req) => {
     "/api/postal-geo-data/zip/search/",
     "/api/employers/training-providers",
     "/api/events",
+    "/api/ogs",
     "/join",
   ];
 

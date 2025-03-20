@@ -491,6 +491,7 @@ export async function getJobSeekerEmployerView(jobSeekerId: string) {
           id: true,
           first_name: true,
           last_name: true,
+          locationData: true,
           photo_url: true,
           email: true,
           phone: true,
