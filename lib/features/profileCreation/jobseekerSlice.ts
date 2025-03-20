@@ -58,6 +58,7 @@ export const initialState: JobseekerState = {
     firstName: "",
     lastName: "",
     CareerPrepAssessment: {
+      streetAddress: undefined,
       pronouns: "",
     },
     birthDate: null,
@@ -179,6 +180,9 @@ export const initialState: JobseekerState = {
     gender: "",
     race: "",
     ethnicity: "",
+    CareerPrepAssessment: {
+      priorityPopulations: undefined,
+    },
   },
 };
 

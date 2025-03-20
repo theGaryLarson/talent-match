@@ -8,9 +8,14 @@ import { useRouter } from "next/navigation";
 import PillButton from "@/app/ui/components/PillButton";
 
 import {
+  Box,
+  Checkbox,
   FormControl,
   FormControlLabel,
+  FormGroup,
+  FormHelperText,
   FormLabel,
+  Link,
   Radio,
   RadioGroup,
 } from "@mui/material";
@@ -27,6 +32,7 @@ import {
 } from "@/lib/features/profileCreation/saveSlice";
 import _ from "lodash";
 import { devLog } from "@/app/lib/utils";
+import { PriorityPopulationList } from "@/app/lib/admin/eduProviderPartner";
 
 export default function CreateJobseekerProfileDisclosuresPage() {
   const router = useRouter();
@@ -48,6 +54,13 @@ export default function CreateJobseekerProfileDisclosuresPage() {
   const [gender, setGender] = useState(disclosuresData.gender);
   const [race, setRace] = useState(disclosuresData.race);
   const [ethnicity, setEthnicity] = useState(disclosuresData.ethnicity);
+  const [priorityPopulations, setPriorityPopulations] = useState<
+    PriorityPopulationList[] | undefined
+  >(
+    (disclosuresData.CareerPrepAssessment.priorityPopulations?.split(
+      "~",
+    ) as PriorityPopulationList[]) ?? [],
+  );
 
   useEffect(() => {
     if (session?.user?.id && status === "authenticated") {
@@ -91,12 +104,29 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 disclosuresData.race = fetchedData.race;
                 setRace(disclosuresData.race);
               }
+              if (!disclosuresData.CareerPrepAssessment) {
+                disclosuresData.CareerPrepAssessment = {};
+              } else {
+                disclosuresData.CareerPrepAssessment = {
+                  ...disclosuresData.CareerPrepAssessment,
+                };
+                if (fetchedData.CareerPrepAssessment.priorityPopulations) {
+                  disclosuresData.CareerPrepAssessment.priorityPopulations =
+                    fetchedData.CareerPrepAssessment.priorityPopulations;
+                  setPriorityPopulations(
+                    fetchedData.CareerPrepAssessment.priorityPopulations.split(
+                      "~",
+                    ) as PriorityPopulationList[],
+                  );
+                }
+              }
             }
           } catch (error) {
             console.error(error);
           }
         } else {
           devLog("fetching from store");
+          devLog(disclosuresStoreData);
         }
       };
 
@@ -105,6 +135,18 @@ export default function CreateJobseekerProfileDisclosuresPage() {
     }
   }, [session?.user?.id]);
 
+  const handlePrioritySelect = (type: PriorityPopulationList): void => {
+    console.log(priorityPopulations);
+    setPriorityPopulations((prev) => {
+      const currentSelections = prev ?? [];
+      if (currentSelections.includes(type)) {
+        return currentSelections.filter((t) => t !== type);
+      } else {
+        return [...currentSelections, type];
+      }
+    });
+  };
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!session?.user?.id) {
@@ -112,13 +154,22 @@ export default function CreateJobseekerProfileDisclosuresPage() {
       return;
     }
 
-    disclosuresData.userId = session.user.id;
-    disclosuresData.isVeteran = veteranStatus;
-    disclosuresData.disabilityStatus = disabilityStatus;
-    disclosuresData.disability = disabilityType;
-    disclosuresData.gender = gender;
-    disclosuresData.race = race;
-    disclosuresData.ethnicity = ethnicity;
+    const updatedDisclosures = {
+      ...disclosuresData,
+      userId: session.user.id,
+      isVeteran: veteranStatus,
+      disabilityStatus: disabilityStatus,
+      disability: disabilityType,
+      gender: gender,
+      race: race,
+      ethnicity: ethnicity,
+      CareerPrepAssessment: {
+        ...(disclosuresData.CareerPrepAssessment || {}), // Start with existing properties
+        priorityPopulations: priorityPopulations
+          ? priorityPopulations.join("~")
+          : undefined,
+      },
+    };
 
     try {
       const response = await fetch(
@@ -128,12 +179,12 @@ export default function CreateJobseekerProfileDisclosuresPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(disclosuresData),
+          body: JSON.stringify(updatedDisclosures),
         },
       );
       if (response.ok) {
         dispatch(setPageSaved("disclosures"));
-        dispatch(setDisclosures(disclosuresData));
+        dispatch(setDisclosures(updatedDisclosures));
       } else {
         const errorMessage = `Failed to submit disclosure info. Status: ${response.status} - ${response.statusText}`;
         setError({ error: errorMessage });
@@ -160,8 +211,17 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             government reporting requirements. Completion of this form is
             completely voluntary. If you choose not to answer, you will not be
             subject to adverse effects. However, we encourage you to answer each
-            question and assure you that this information is confidential. 
+            question and assure you that this information is confidential.
           </p>
+          <Box sx={{ my: 1 }}>
+            <p>For more information about the WJI and GJC Grant, visit:</p>
+            <Link
+              target="_blank"
+              href="https://wsac.wa.gov/sites/default/files/Washington-Student-Achievement-Project-Narrative.pdf"
+            >
+              https://wsac.wa.gov/sites/default/files/Washington-Student-Achievement-Project-Narrative.pdf
+            </Link>
+          </Box>
           <fieldset>
             <div className="profile-form-grid">
               <SelectWithLabel
@@ -261,6 +321,31 @@ export default function CreateJobseekerProfileDisclosuresPage() {
                 required
               />
             </div>
+          </fieldset>
+          <fieldset>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">
+                Please indicate if you identify with any of the following
+                priority populations:
+              </FormLabel>
+              <FormHelperText sx={{ m: 0 }}>
+                Select all that apply
+              </FormHelperText>
+              <FormGroup>
+                {Object.values(PriorityPopulationList).map((type) => (
+                  <FormControlLabel
+                    key={type}
+                    control={
+                      <Checkbox
+                        checked={priorityPopulations?.includes(type)}
+                        onChange={() => handlePrioritySelect(type)}
+                      />
+                    }
+                    label={type}
+                  />
+                ))}
+              </FormGroup>
+            </FormControl>
           </fieldset>
           <fieldset>
             <legend>
