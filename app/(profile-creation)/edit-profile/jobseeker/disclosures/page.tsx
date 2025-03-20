@@ -214,7 +214,7 @@ export default function CreateJobseekerProfileDisclosuresPage() {
             question and assure you that this information is confidential.
           </p>
           <Box sx={{ my: 1 }}>
-            <p>For more information about the WJI and GJC Grant, visit:</p>
+            <p>For information about the WJI and GJC Grant, visit:</p>
             <Link
               target="_blank"
               href="https://wsac.wa.gov/sites/default/files/Washington-Student-Achievement-Project-Narrative.pdf"
