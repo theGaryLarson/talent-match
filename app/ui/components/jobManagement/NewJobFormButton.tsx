@@ -3,13 +3,7 @@
 import PillButton from "../PillButton";
 import { Add, Close } from "@mui/icons-material";
 import { useState } from "react";
-import {
-  ButtonProps,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from "@mui/material";
+import { ButtonProps, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import NewJobForm from "./NewJobForm";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 
@@ -51,8 +45,8 @@ export default function NewJobFormButton({
         {children}
       </PillButton>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ px: 2, pt: 2 }}>
-          <Typography variant="h4">New Job Form</Typography>
+        <DialogTitle variant="h4" sx={{ px: 2, pt: 2 }}>
+          New Job Form
           <PillButton
             color="inherit"
             aria-label="close"
