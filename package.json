@@ -24,7 +24,6 @@
     "@emotion/cache": "^11.13.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "@headlessui/react": "^2.0.3",
     "@heroicons/react": "^2.0.18",
     "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.5",

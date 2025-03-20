@@ -6,7 +6,7 @@ import {
   within,
 } from "@testing-library/react";
 import { describe, it, expect, vi, afterEach } from "vitest";
-import Header from "../../app/ui/Header";
+import Header from "../../app/ui/components/mui/Header";
 import { usePathname } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 
@@ -109,9 +109,9 @@ describe("Header", () => {
     vi.mocked(usePathname).mockReturnValue("/");
     renderWithProviders(<Header />);
 
-    fireEvent.click(screen.getByText("Open main menu"));
+    fireEvent.click(screen.getByRole("button", { name: "Open main menu" }));
 
-    const mobileMenu = screen.getByRole("dialog");
+    const mobileMenu = screen.getByRole("presentation");
 
     const topLinkForEmployers = within(mobileMenu).getByText("For Employers");
     expect(topLinkForEmployers).toBeDefined();

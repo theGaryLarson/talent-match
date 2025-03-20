@@ -3,7 +3,7 @@ import { Roboto } from "next/font/google";
 import MyMsalProvider from "./my-msal-provider";
 import { Box, ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./mui.theme";
-import Header from "../ui/Header";
+import Header from "@/app/ui/components/mui/Header";
 import Footer from "../ui/Footer";
 import { SessionProvider } from "next-auth/react";
 import "@/app/ui/global.css";
