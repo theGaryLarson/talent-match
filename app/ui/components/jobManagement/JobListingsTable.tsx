@@ -272,8 +272,8 @@ export default function JobListingsTable({
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>
-          <Typography variant="h4">Edit Job Form</Typography>
+        <DialogTitle variant="h4">
+          Edit Job Form
           <PillButton
             color="inherit"
             aria-label="close"
