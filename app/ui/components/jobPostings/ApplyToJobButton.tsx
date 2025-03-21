@@ -25,8 +25,11 @@ export default function ApplyToJobButton({
   unPublishDate,
 }: Props) {
   const [hasApplied, setHasApplied] = useState<boolean>(
-    appliedStatus == JobStatus.Screened ||
-      appliedStatus == JobStatus.Applied ||
+    appliedStatus == JobStatus.Applied ||
+      appliedStatus == JobStatus.Contacted ||
+      appliedStatus == JobStatus.ScreeningScheduled ||
+      appliedStatus == JobStatus.Screened ||
+      appliedStatus == JobStatus.Recommended ||
       appliedStatus == JobStatus.Interviewing ||
       appliedStatus == JobStatus.Negotiating ||
       appliedStatus == JobStatus.Accepted ||
