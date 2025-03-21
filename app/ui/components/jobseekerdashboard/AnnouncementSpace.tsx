@@ -1,23 +1,23 @@
 import { auth } from "@/auth";
 import { Card, Stack } from "@mui/material";
 import Carousel from "../Carousel";
-import CareerPrep from "@/app/ui/components/jobseekerdashboard/CareerPrep";
-import { getCareerPrepAssementStatus } from "@/app/lib/jobseeker";
-import { getJobSeekerEmployerView } from "@/app/lib/prisma";
-import { getJobSeekerAppliedJobs } from "@/app/lib/joblistings";
-import { getCareerPrepStatus } from "@/app/lib/admin/careerPrep";
+// import CareerPrep from "@/app/ui/components/jobseekerdashboard/CareerPrep";
+// import { getCareerPrepAssementStatus } from "@/app/lib/jobseeker";
+// import { getJobSeekerEmployerView } from "@/app/lib/prisma";
+// import { getJobSeekerAppliedJobs } from "@/app/lib/joblistings";
+// import { getCareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import RoundedButton from "../RoundedButton";
 
 export default async function AnnouncementSpace() {
   const session = await auth();
 
-  const [AssementInfo, jobseekerData, appliedJobs, carrerPrepEnrollment] =
-    await Promise.all([
-      getCareerPrepAssementStatus(),
-      getJobSeekerEmployerView(session?.user.jobseekerId || ""),
-      getJobSeekerAppliedJobs(),
-      getCareerPrepStatus(session?.user.jobseekerId ?? ""),
-    ]);
+  // const [AssementInfo, jobseekerData, appliedJobs, carrerPrepEnrollment] =
+  //   await Promise.all([
+  //     getCareerPrepAssementStatus(),
+  //     getJobSeekerEmployerView(session?.user.jobseekerId || ""),
+  //     getJobSeekerAppliedJobs(),
+  //     getCareerPrepStatus(session?.user.jobseekerId ?? ""),
+  //   ]);
 
 
   return (
@@ -42,12 +42,12 @@ export default async function AnnouncementSpace() {
         </div>
       </div>
       <Carousel>
-        <CareerPrep
+        {/* <CareerPrep
           enrollmentStatus={carrerPrepEnrollment?.enrollment}
           track={carrerPrepEnrollment?.AssignedTrack}
           jobseekerId={session?.user.jobseekerId ?? ""}
-          caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? "Our"} ${carrerPrepEnrollment?.CaseManger?.last_name ?? "Carrer Navigator"}`}
-        />
+          caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? "Our"} ${carrerPrepEnrollment?.CaseManger?.last_name ?? "Career Navigator"}`}
+        /> */}
         {/* Update your profile card */}
         <Card
           elevation={0}
@@ -60,18 +60,15 @@ export default async function AnnouncementSpace() {
         >
           <Stack direction={{ sx: "column" }} gap={2} className="p-4">
             <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
-              Update Your Profile
+              Keep Your Profile Up to Date
             </p>
             <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
-                Regularly update your profile with your skills, experiences, and accomplishments.
               </p>
             </div>
-            <ul className="list-disc font-normal leading-tight text-neutral-900/60">
-              <li><strong>Resume:</strong> Upload your most recent resume.</li>
-              <li><strong>Portfolio:</strong> Upload your portfolio – showcasing projects, designs, or any relevant work samples.</li>
-              <li><strong>Video Introduction (Optional):</strong> Create a short video introducing yourself and your career goals.</li>
-            </ul>
+            <div className="list-disc font-normal leading-tight text-neutral-900/60">
+              <p>Keep your introduction, skills, education, work history, and resume current to help you <br/>stand out to employers and our Career Services team.</p>
+            </div>
             <RoundedButton
               snug
               invertColor
