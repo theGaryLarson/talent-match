@@ -26,6 +26,7 @@ export type JsIntroDTO = {
   state?: string | null;
   zipCode?: string | null;
   CareerPrepAssessment: {
+    streetAddress?: string | null;
     pronouns: string | null;
   };
 };
@@ -46,6 +47,7 @@ export type JsIntroPostDTO = {
   state?: string | null;
   zipCode?: string;
   CareerPrepAssessment: {
+    streetAddress?: string | null;
     pronouns: string | null;
   };
 };
@@ -243,6 +245,9 @@ export type JsDisclosuresDTO = {
   gender?: string | null;
   race?: string | null;
   ethnicity?: string | null; // users.ethnicity
+  CareerPrepAssessment: {
+    priorityPopulations?: string | null;
+  };
 };
 
 export type JsDisclosuresPostDTO = {
@@ -253,4 +258,7 @@ export type JsDisclosuresPostDTO = {
   gender: string; // users.gender
   race: string; //users.race
   ethnicity: string;
+  CareerPrepAssessment: {
+    priorityPopulations?: string | null;
+  };
 };

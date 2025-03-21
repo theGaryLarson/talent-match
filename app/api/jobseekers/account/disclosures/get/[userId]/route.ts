@@ -38,6 +38,11 @@ export async function GET(
                 ethnicity: true,
               },
             },
+            CareerPrepAssessment: {
+              select: {
+                priorityPopulations: true,
+              },
+            },
           },
         },
         role: true,
@@ -66,6 +71,9 @@ export async function GET(
       gender: null, // users.gender
       race: null, //users.race
       ethnicity: null,
+      CareerPrepAssessment: {
+        priorityPopulations: undefined,
+      },
     };
 
     if (user?.jobseekers && user?.jobseekers.length > 0) {
@@ -83,6 +91,11 @@ export async function GET(
         result.gender = privateDetails.gender;
         result.race = privateDetails.race;
         result.ethnicity = privateDetails.ethnicity;
+        result.CareerPrepAssessment.priorityPopulations =
+          jobseekerDetails.CareerPrepAssessment &&
+          jobseekerDetails.CareerPrepAssessment.length > 0
+            ? jobseekerDetails.CareerPrepAssessment[0].priorityPopulations
+            : undefined;
       }
     }
 

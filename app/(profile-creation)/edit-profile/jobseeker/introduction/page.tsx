@@ -92,6 +92,7 @@ export default function CreateJobseekerProfileIntroPage() {
                 firstName: firstName ?? "",
                 lastName: lastName ?? "",
                 CareerPrepAssessment: {
+                  streetAddress: fetchedData.CareerPrepAssessment.streetAddress,
                   pronouns: fetchedData.CareerPrepAssessment.pronouns ?? "",
                 },
                 photoUrl: fetchedData.photoUrl ?? session.user?.image,
@@ -315,6 +316,20 @@ export default function CreateJobseekerProfileIntroPage() {
                   slotProps={{ textField: { fullWidth: true } }}
                 />
               </RequiredTooltip>
+            </div>
+
+            <div className="profile-form-grid">
+              <InputTextWithLabel
+                id="profile-creation-intro-CareerPrepAssessment.streetAddress"
+                placeholder="1234 N Stroodle Ave"
+                onChange={handleFieldChange}
+                value={
+                  introData.CareerPrepAssessment &&
+                  (introData.CareerPrepAssessment.streetAddress ?? undefined)
+                }
+              >
+                Street Address
+              </InputTextWithLabel>
             </div>
 
             <div className="profile-form-grid md:grid-cols-2">

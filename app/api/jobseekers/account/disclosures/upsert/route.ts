@@ -16,8 +16,15 @@ export async function POST(request: Request) {
     const userId: string = session?.user.id!;
 
     const body: JsDisclosuresPostDTO = await request.json();
-    const { isVeteran, disabilityStatus, disability, gender, race, ethnicity } =
-      body;
+    const {
+      isVeteran,
+      disabilityStatus,
+      disability,
+      gender,
+      race,
+      ethnicity,
+      CareerPrepAssessment,
+    } = body;
 
     if (!userId) {
       return NextResponse.json({
@@ -72,6 +79,23 @@ export async function POST(request: Request) {
                   },
                 },
               },
+              CareerPrepAssessment: {
+                upsert: {
+                  where: { jobseekerId: jobseekerId },
+                  create: {
+                    priorityPopulations:
+                      CareerPrepAssessment.priorityPopulations,
+                    pronouns: "",
+                    expectedEduCompletion: "",
+                    experienceWithApplying: false,
+                    experienceWithInterview: false,
+                  },
+                  update: {
+                    priorityPopulations:
+                      CareerPrepAssessment.priorityPopulations,
+                  },
+                },
+              },
             },
           },
         },
@@ -88,6 +112,11 @@ export async function POST(request: Request) {
                 gender: true,
                 race: true,
                 ethnicity: true,
+              },
+            },
+            CareerPrepAssessment: {
+              select: {
+                priorityPopulations: true,
               },
             },
           },
@@ -108,6 +137,13 @@ export async function POST(request: Request) {
       isVeteran: privateDetails?.is_veteran || null,
       disabilityStatus: privateDetails?.disability_status || null,
       disability: privateDetails?.disability || null,
+      CareerPrepAssessment: {
+        priorityPopulations:
+          jobseekerDetails.CareerPrepAssessment &&
+          jobseekerDetails.CareerPrepAssessment.length > 0
+            ? jobseekerDetails.CareerPrepAssessment[0].priorityPopulations
+            : undefined,
+      },
     };
 
     return NextResponse.json({ success: true, result }, { status: 200 });

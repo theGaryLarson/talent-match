@@ -67,6 +67,7 @@ export async function GET(
             },
             CareerPrepAssessment: {
               select: {
+                streetAddress: true,
                 pronouns: true,
               },
             },
@@ -103,6 +104,11 @@ export async function GET(
       introHeadline: jobseeker?.intro_headline,
       currentJobTitle: jobseeker?.current_job_title,
       CareerPrepAssessment: {
+        streetAddress:
+          jobseeker?.CareerPrepAssessment &&
+          jobseeker.CareerPrepAssessment.length > 0
+            ? jobseeker.CareerPrepAssessment[0].streetAddress
+            : null,
         pronouns:
           jobseeker?.CareerPrepAssessment &&
           jobseeker.CareerPrepAssessment.length > 0
