@@ -276,7 +276,7 @@ export async function getCompanyJobListings() {
         skills: true,
         jobApplications: {
           where: {
-            jobStatus: JobStatus.Screened,
+            jobStatus: JobStatus.Recommended,
           },
           include: {
             Jobseekers: {
@@ -319,7 +319,7 @@ export async function getMyJobListings() {
         skills: true,
         jobApplications: {
           where: {
-            jobStatus: JobStatus.Screened,
+            jobStatus: JobStatus.Recommended,
           },
           include: {
             Jobseekers: {
