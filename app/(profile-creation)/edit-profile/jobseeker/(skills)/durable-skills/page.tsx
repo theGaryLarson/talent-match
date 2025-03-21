@@ -219,9 +219,9 @@ export default function Page() {
         switch to a skills-based hiring model.
       </Typography>
       <Typography color="secondary">
-        Remember: Your responses will help us understand your
-        current skills and identify areas where you might need support in
-        reaching your career goals.
+        Remember: Your responses will help us understand your current skills and
+        identify areas where you might need support in reaching your career
+        goals.
       </Typography>
       <form onSubmit={handleSubmit}>
         <Table stickyHeader sx={{ mt: 2, mb: 5 }}>

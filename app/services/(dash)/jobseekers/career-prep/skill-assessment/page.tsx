@@ -428,9 +428,9 @@ export default function Page() {
           Technical Skills Assessment
         </Typography>
         <Typography sx={{ mb: 2 }}>
-          Your responses will help us understand your
-          current skills and identify areas where you might need support in
-          reaching your career goals.
+          Your responses will help us understand your current skills and
+          identify areas where you might need support in reaching your career
+          goals.
         </Typography>
         <FormControl component="fieldset" sx={{ mb: 4 }}>
           <FormLabel>What technology pathway most interests you?</FormLabel>
@@ -738,9 +738,9 @@ export default function Page() {
         switch to a skills-based hiring model.
       </Typography>
       <Typography>
-        Remember:Your responses will help us understand your
-        current skills and identify areas where you might need support in
-        reaching your career goals.
+        Remember:Your responses will help us understand your current skills and
+        identify areas where you might need support in reaching your career
+        goals.
       </Typography>
       <Grid2 container spacing={2}>
         {
@@ -839,9 +839,9 @@ export default function Page() {
         Professional Branding & Job Market Readiness
       </Typography>
       <Typography>
-        Remember: Your responses will help us understand your
-        current skills and identify areas where you might need support in
-        reaching your career goals.
+        Remember: Your responses will help us understand your current skills and
+        identify areas where you might need support in reaching your career
+        goals.
       </Typography>
       <Grid2 container spacing={2}>
         {

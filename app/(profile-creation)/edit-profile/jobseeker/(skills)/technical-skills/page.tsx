@@ -458,9 +458,9 @@ export default function Page() {
         Technical Skills Assessment
       </Typography>
       <Typography sx={{ my: 2 }}>
-        Remember: Your responses will help us understand your
-        current skills and identify areas where you might need support in
-        reaching your career goals.
+        Remember: Your responses will help us understand your current skills and
+        identify areas where you might need support in reaching your career
+        goals.
       </Typography>
       <FormControl fullWidth>
         <FormLabel>What technology path most interests you?</FormLabel>
