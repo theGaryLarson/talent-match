@@ -7,6 +7,7 @@ import Carousel from "../Carousel";
 // import { getJobSeekerAppliedJobs } from "@/app/lib/joblistings";
 // import { getCareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import RoundedButton from "../RoundedButton";
+import PillButton from "../PillButton";
 
 export default async function AnnouncementSpace() {
   const session = await auth();
@@ -18,7 +19,6 @@ export default async function AnnouncementSpace() {
   //     getJobSeekerAppliedJobs(),
   //     getCareerPrepStatus(session?.user.jobseekerId ?? ""),
   //   ]);
-
 
   return (
     <Card
@@ -36,7 +36,7 @@ export default async function AnnouncementSpace() {
         <div className="self-stretch justify-center text-secondary-main text-3xl font-normal font-['Roboto'] leading-10">
           Welcome to the Talent Portal!
         </div>
-        <div className="self-stretch justify-center text-text-primary text-base font-normal font-['Roboto'] leading-tight mb-4">
+        <div className="self-stretch justify-center text-text-primary text-base font-normal font-['Roboto'] leading-tight mb-8">
           This guide will help you navigate the platform and make the most of
           your journey to a technology career.
         </div>
@@ -64,18 +64,27 @@ export default async function AnnouncementSpace() {
             </p>
             <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
+                Your Talent Portal profile is key to showcasing your skills and
+                experience to potential employers.
               </p>
             </div>
-            <div className="list-disc font-normal leading-tight text-neutral-900/60">
-              <p>Keep your introduction, skills, education, work history, and resume current to help you <br/>stand out to employers and our Career Services team.</p>
+            <div className="list-disc font-normal leading-tight text-neutral-900/60 w-[50vw]">
+              <p>
+                To maximize your opportunities and stand out to employers, we
+                encourage you to complete and maintain your{" "}
+                <strong>
+                  introduction, skills, education history, work experience, and
+                  resume.
+                </strong>
+              </p>
             </div>
-            <RoundedButton
-              snug
-              invertColor
-              link="/edit-profile/jobseeker/introduction"
-              content="Update Profile"
+            <PillButton
               className="mt-4 place-self-end"
-            />
+              color="secondary"
+              href="/edit-profile/jobseeker/introduction"
+            >
+              Update Profile
+            </PillButton>
           </Stack>
         </Card>
         {/* Find and apply for jobs card */}
@@ -94,19 +103,27 @@ export default async function AnnouncementSpace() {
             </p>
             <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
+                We've built strong partnerships with employers to offer you
+                targeted job opportunities.
               </p>
             </div>
-            <ul className="list-disc font-normal leading-tight text-neutral-900/60">
-              <li><strong>Job Board:</strong> Browse available job openings that match your skills and apply for positions that align with your career goals.</li>
-              <li><strong>Pre-Screening:</strong> Participate in job pre-screenings to receive guidance and support from a Career Navigator <br/>who can personally recommend you as a strong candidate to employers.</li>
-            </ul>
-            <RoundedButton
-              snug
-              invertColor
-              link="/services/joblistings"
-              content="Search for Jobs"
+            <div className="list-disc font-normal leading-tight text-neutral-900/60 w-[50vw]">
+              <p>
+                Our system analyzes your skills and experience to connect you
+                with ideal roles, then our team reviews your qualifications and
+                schedules a pre-screening meeting to prepare you for the
+                application process. If you're a top candidate, we'll directly
+                recommend you to the employer, boosting your chances of securing
+                an interview and being considered for the role.
+              </p>
+            </div>
+            <PillButton
               className="mt-4 place-self-end"
-            />
+              color="secondary"
+              href="/services/joblistings"
+            >
+              Search for Jobs
+            </PillButton>
           </Stack>
         </Card>
         {/* Attend events card */}
@@ -125,18 +142,24 @@ export default async function AnnouncementSpace() {
             </p>
             <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
+                Join our Events & Workshops!
               </p>
             </div>
-            <ul className="list-disc font-normal leading-tight text-neutral-900/60">
-              <li><strong>Events:</strong> Register for workshops and events to further develop your skills, <br/>learn from industry professionals, and expand your network.</li>
-            </ul>
-            <RoundedButton
-              snug
-              invertColor
-              link="/services/jobseekers/dashboard/events"
-              content="View Events"
+            <div className="list-disc font-normal leading-tight text-neutral-900/60 w-[50vw]">
+              <p>
+                We offer monthly sessions led by industry professionals,
+                covering essential skills and the latest industry knowledge. And
+                because we know life gets busy, all workshops are recorded and
+                available online.
+              </p>
+            </div>
+            <PillButton
               className="mt-4 place-self-end"
-            />
+              color="secondary"
+              href="/services/jobseekers/dashboard/events"
+            >
+              View Events
+            </PillButton>
           </Stack>
         </Card>
         {/* Join the community card */}
@@ -154,19 +177,24 @@ export default async function AnnouncementSpace() {
               Join the Community
             </p>
             <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
-              <p className="font-semibold leading-none tracking-wider text-primary-main">
+              <p className="font-semibold leading-none tracking-wider text-primary-main"></p>
+            </div>
+            <div className="list-disc font-normal leading-tight text-neutral-900/60 w-[50vw]">
+              <p>
+                Our tech community provides you with access to a supportive
+                environment where you can explore our comprehensive resource
+                library, learn from industry experts, find groups based on your
+                career goals and interests, join discussions, and build your
+                network.
               </p>
             </div>
-            <ul className="list-disc font-normal leading-tight text-neutral-900/60">
-              <li><strong>Discourse Forum:</strong> Join relevant groups and participate in discussions by sharing <br/>your experiences, asking questions, and learning from others.</li>
-            </ul>
-            <RoundedButton
-              snug
-              invertColor
-              link="https://forum.watechwfcoalition.org/"
-              content="Join the Community"
+            <PillButton
               className="mt-4 place-self-end"
-            />
+              color="secondary"
+              href="https://forum.watechwfcoalition.org/"
+            >
+              Join the Community
+            </PillButton>
           </Stack>
         </Card>
         {/* TODO: Explore career services card, once that feature is complete */}

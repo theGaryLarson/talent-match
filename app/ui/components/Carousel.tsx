@@ -20,8 +20,8 @@ export default function Carousel({ children }: { children: ReactNode }) {
             onClick={() => {
               setSelectedValue(index + 1);
               push("#slide-" + (index + 1));
-            }
-            }>
+            }}
+          >
             {child}
           </div>
         ))}
