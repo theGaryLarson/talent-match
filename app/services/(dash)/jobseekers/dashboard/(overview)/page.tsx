@@ -22,13 +22,12 @@ export default async function Page() {
   const session = await auth();
   const pool = await getPoolWithSession(); // eslint-disable-line @typescript-eslint/no-unused-vars
 
-  const [AssementInfo, jobseekerData, appliedJobs, carrerPrepEnrollment] =
-    await Promise.all([
-      getCareerPrepAssementStatus(),
-      getJobSeekerEmployerView(session?.user.jobseekerId || ""),
-      getJobSeekerAppliedJobs(),
-      getCareerPrepStatus(session?.user.jobseekerId ?? ""),
-    ]);
+  const [AssementInfo, jobseekerData, appliedJobs] = await Promise.all([
+    getCareerPrepAssementStatus(),
+    getJobSeekerEmployerView(session?.user.jobseekerId || ""),
+    getJobSeekerAppliedJobs(),
+    getCareerPrepStatus(session?.user.jobseekerId ?? ""),
+  ]);
 
   let providerPrograms;
   if (jobseekerData && jobseekerData.pathways) {

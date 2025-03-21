@@ -9,7 +9,15 @@ import {
   JsShowcaseDTO,
   JsWorkExpDTO,
   JsWorkDTO,
+  JsCareerPrepPathwaySkillsDTO,
+  JsCareerPrepDurableSkillsDTO,
+  JsCareerPrepProfessionalBrandingDTO,
 } from "@/data/dtos/JobSeekerProfileCreationDTOs";
+import {
+  AgreementLevel,
+  SkillLevel,
+  TimeUntilCompletion,
+} from "@/app/lib/admin/careerPrep";
 
 interface JsEducationPageBlankHighestLevelDTO
   extends Omit<JsEducationPageDTO, "highestLevelOfStudy"> {
@@ -36,6 +44,9 @@ export interface JobseekerState {
   workExperience: JsWorkExpStringDateDTO;
   showcase: JsShowcaseWithResumeDTO;
   preferences: JsPreferencesDTO;
+  pathwaySkills: JsCareerPrepPathwaySkillsDTO;
+  durableSkills: JsCareerPrepDurableSkillsDTO;
+  professionalBranding: JsCareerPrepProfessionalBrandingDTO;
   disclosures: JsDisclosuresPostDTO;
 }
 
@@ -46,6 +57,10 @@ export const initialState: JobseekerState = {
     photoUrl: null,
     firstName: "",
     lastName: "",
+    CareerPrepAssessment: {
+      streetAddress: undefined,
+      pronouns: "",
+    },
     birthDate: null,
     phoneCountryCode: null,
     phone: null,
@@ -61,6 +76,9 @@ export const initialState: JobseekerState = {
     userId: "",
     jobseekerId: "",
     highestLevelOfStudy: "",
+    CareerPrepAssessment: {
+      expectedEduCompletion: TimeUntilCompletion.NA,
+    },
     educations: [],
     certifications: [],
     projects: [],
@@ -68,6 +86,10 @@ export const initialState: JobseekerState = {
   workExperience: {
     userId: "",
     yearsWorkExperience: "",
+    CareerPrepAssessment: {
+      experienceWithInterview: false,
+      experienceWithApplying: false,
+    },
     monthsInternshipExperience: null,
     isAuthorizedToWorkUsa: undefined,
     requiresSponsorship: undefined,
@@ -88,6 +110,68 @@ export const initialState: JobseekerState = {
     targetedPathway: null,
     preferredEmploymentType: null,
   },
+  pathwaySkills: {
+    userId: "",
+    targetedPathway: null,
+    CareerPrepAssessment: {
+      cybersecurity: null,
+      dataAnalytics: null,
+      itAndCloudComputing: null,
+      softwareDevelopment: null,
+    },
+  },
+  durableSkills: {
+    userId: "",
+    CareerPrepAssessment: {
+      durableSkills: {
+        overallAverage: null,
+        emotionManagement: SkillLevel.Fair,
+        empathy: SkillLevel.Fair,
+        goalSetting: SkillLevel.Fair,
+        timeManagement: SkillLevel.Fair,
+        adaptability: SkillLevel.Fair,
+        criticalThinking: SkillLevel.Fair,
+        creativity: SkillLevel.Fair,
+        resilience: SkillLevel.Fair,
+        communication: SkillLevel.Fair,
+        activeListening: SkillLevel.Fair,
+        conflictResolution: SkillLevel.Fair,
+        nonverbalCommunication: SkillLevel.Fair,
+        teamwork: SkillLevel.Fair,
+        trustBuilding: SkillLevel.Fair,
+        leadership: SkillLevel.Fair,
+        perspectiveTaking: SkillLevel.Fair,
+        culturalAwareness: SkillLevel.Fair,
+        relationshipBuilding: SkillLevel.Fair,
+        documentationSkills: SkillLevel.Fair,
+      },
+    },
+  },
+  professionalBranding: {
+    userId: "",
+    CareerPrepAssessment: {
+      professionalBrandingAndJobMarketReadiness: {
+        overallAverage: null,
+        personalBrand: AgreementLevel.Neutral,
+        onlinePresence: AgreementLevel.Neutral,
+        elevatorPitch: AgreementLevel.Neutral,
+        resumeEffectiveness: AgreementLevel.Neutral,
+        coverLetterEffectiveness: AgreementLevel.Neutral,
+        interviewExperience: AgreementLevel.Neutral,
+        responseTechnique: AgreementLevel.Neutral,
+        followUpImportance: AgreementLevel.Neutral,
+        onlineNetworking: AgreementLevel.Neutral,
+        eventNetworking: AgreementLevel.Neutral,
+        relationshipManagement: AgreementLevel.Neutral,
+        jobSearchStrategy: AgreementLevel.Neutral,
+        materialDistribution: AgreementLevel.Neutral,
+        networkingTechniques: AgreementLevel.Neutral,
+        onboardingBestPractices: AgreementLevel.Neutral,
+        developmentPlan: AgreementLevel.Neutral,
+        mentorship: AgreementLevel.Neutral,
+      },
+    },
+  },
   disclosures: {
     userId: "",
     isVeteran: "",
@@ -96,6 +180,9 @@ export const initialState: JobseekerState = {
     gender: "",
     race: "",
     ethnicity: "",
+    CareerPrepAssessment: {
+      priorityPopulations: undefined,
+    },
   },
 };
 
@@ -131,6 +218,24 @@ export const jobseekerSlice = createSlice({
     setDisclosures: (state, action: PayloadAction<JsDisclosuresPostDTO>) => {
       state.disclosures = action.payload;
     },
+    setPathwaySkills: (
+      state,
+      action: PayloadAction<JsCareerPrepPathwaySkillsDTO>,
+    ) => {
+      state.pathwaySkills = action.payload;
+    },
+    setDurableSkills: (
+      state,
+      action: PayloadAction<JsCareerPrepDurableSkillsDTO>,
+    ) => {
+      state.durableSkills = action.payload;
+    },
+    setProfessionalBranding: (
+      state,
+      action: PayloadAction<JsCareerPrepProfessionalBrandingDTO>,
+    ) => {
+      state.professionalBranding = action.payload;
+    },
   },
 });
 
@@ -141,6 +246,9 @@ export const {
   setShowcase,
   setPreferences,
   setDisclosures,
+  setPathwaySkills,
+  setDurableSkills,
+  setProfessionalBranding,
 } = jobseekerSlice.actions;
 
 // TODO: Review if needed in future

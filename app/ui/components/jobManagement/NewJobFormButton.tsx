@@ -45,7 +45,7 @@ export default function NewJobFormButton({
         {children}
       </PillButton>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ px: 2, pt: 2 }}>
+        <DialogTitle variant="h4" sx={{ px: 2, pt: 2 }}>
           New Job Form
           <PillButton
             color="inherit"

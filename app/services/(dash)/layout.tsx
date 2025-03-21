@@ -26,7 +26,7 @@ import { useSession } from "next-auth/react";
 import { useCallback, useState } from "react";
 import { usePathname } from "next/navigation";
 import PillButton from "@/app/ui/components/PillButton";
-import Header from "@/app/ui/Header";
+import Header from "@/app/ui/components/mui/Header";
 import Footer from "@/app/ui/Footer";
 
 const drawerWidth = 260;
@@ -306,7 +306,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
       <>
         <Header />
-        {children}
+        <div className="grow">{children}</div>
         <Footer />
       </>
     );

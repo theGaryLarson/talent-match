@@ -33,6 +33,7 @@ steps:
 
   - script: |
       npx prisma generate
+      npx prisma migrate deploy
       npm run build
     displayName: "Build app"
 

@@ -25,7 +25,10 @@ type StatusConfigType = {
 
 const statusConfig: StatusConfigType = {
   [JobStatus.Applied]: { color: "success" },
+  [JobStatus.Contacted]: { color: "secondary" },
+  [JobStatus.ScreeningScheduled]: { color: "secondary" },
   [JobStatus.Screened]: { color: "secondary" },
+  [JobStatus.Recommended]: { color: "success" },
   [JobStatus.Interviewing]: { color: "primary" },
   [JobStatus.Negotiating]: { color: "secondary" },
   [JobStatus.Accepted]: { color: "success" },

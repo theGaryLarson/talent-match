@@ -2,7 +2,12 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ProgressBarFlat from "@/app/ui/components/ProgressBarFlat";
-import { Radio, RadioGroup } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
 import PillButton from "@/app/ui/components/PillButton";
 import InputTextWithLabel from "../../../../ui/components/InputTextWithLabel";
 import WorkExperiences, {
@@ -37,6 +42,10 @@ interface Data {
   internshipExperiences: WorkExperienceData[];
   isAuthorizedToWorkUsa?: boolean | null;
   requiresSponsorship?: boolean | null;
+  CareerPrepAssessment: {
+    experienceWithInterview: boolean;
+    experienceWithApplying: boolean;
+  };
 }
 
 export default function CreateJobseekerProfileWorkExperiencePage() {
@@ -121,6 +130,12 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     internshipExperiences: initFilteredInternshipExp,
     isAuthorizedToWorkUsa: workExperienceData.isAuthorizedToWorkUsa,
     requiresSponsorship: workExperienceData.requiresSponsorship,
+    CareerPrepAssessment: {
+      experienceWithApplying:
+        workExperienceData.CareerPrepAssessment.experienceWithApplying,
+      experienceWithInterview:
+        workExperienceData.CareerPrepAssessment.experienceWithInterview,
+    },
   });
 
   function removeAllWorkExperiences() {
@@ -203,6 +218,37 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     [dispatch],
   );
 
+  const handleNestedInputUpdate = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value, type } = event.target;
+      const newValue = type === "radio" ? value === "true" : value;
+
+      setData((prevData) => {
+        if (name.includes(".")) {
+          const [parentKey, childKey] = name.split(".");
+          if (parentKey === "CareerPrepAssessment") {
+            return {
+              ...prevData,
+              CareerPrepAssessment: {
+                ...prevData.CareerPrepAssessment,
+                [childKey]: newValue,
+              },
+            };
+          }
+
+          return prevData;
+        }
+        return {
+          ...prevData,
+          [name as keyof typeof prevData]: newValue,
+        };
+      });
+
+      dispatch(setPageDirty("work-experience"));
+    },
+    [dispatch],
+  );
+
   useEffect(() => {
     if (session?.user?.id && status === "authenticated") {
       const initializeFormFields = async () => {
@@ -275,6 +321,14 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               internshipExperiences: filteredInternshipExp,
               isAuthorizedToWorkUsa: workExperienceData.isAuthorizedToWorkUsa,
               requiresSponsorship: workExperienceData.requiresSponsorship,
+              CareerPrepAssessment: {
+                experienceWithApplying:
+                  workExperienceData.CareerPrepAssessment
+                    .experienceWithApplying,
+                experienceWithInterview:
+                  workExperienceData.CareerPrepAssessment
+                    .experienceWithInterview,
+              },
             });
           } catch (error) {
             console.error(error);
@@ -373,6 +427,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       data.monthsInternshipExperience.toString(); // Replace with actual calculation
     workExperienceData.isAuthorizedToWorkUsa = data.isAuthorizedToWorkUsa;
     workExperienceData.requiresSponsorship = data.requiresSponsorship;
+    workExperienceData.CareerPrepAssessment = data.CareerPrepAssessment;
     workExperienceData.workExperiences = [
       ...(hasWorkExp ? workExperiences : []),
       ...(hasInternshipExp ? internshipExperiences : []),
@@ -410,7 +465,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       }
 
       await response.json();
-      router.push("/edit-profile/jobseeker/disclosures");
+      router.push("/edit-profile/jobseeker/technical-skills");
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
@@ -420,8 +475,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 6) * 100} />
-        <p>Step 5/6</p>
+        <ProgressBarFlat progress={(5 / 9) * 100} />
+        <p>Step 5/9</p>
         <h1>Work experience</h1>
         <p>Complete these sections to improve your visibility to employers.</p>
         <p className="subtitle">* Indicates a required field</p>
@@ -559,6 +614,47 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
               Add internship experience
             </PillButton>
           </fieldset>
+          <h2>Job Readiness</h2>
+          <div className="profile-form-grid">
+            <FormControl component="fieldset">
+              <p>Do you have have experience interviewing?</p>
+              <RadioGroup
+                name="CareerPrepAssessment.experienceWithInterview"
+                onChange={handleNestedInputUpdate}
+                value={data.CareerPrepAssessment.experienceWithInterview}
+              >
+                <FormControlLabel
+                  value={true}
+                  control={<Radio />}
+                  label="Yes"
+                />
+                <FormControlLabel
+                  value={false}
+                  control={<Radio />}
+                  label="No"
+                />
+              </RadioGroup>
+            </FormControl>
+            <FormControl component="fieldset">
+              <p>Do you have experience applying for tech jobs?</p>
+              <RadioGroup
+                name="CareerPrepAssessment.experienceWithApplying"
+                onChange={handleNestedInputUpdate}
+                value={data.CareerPrepAssessment.experienceWithApplying}
+              >
+                <FormControlLabel
+                  value={true}
+                  control={<Radio />}
+                  label="Yes"
+                />
+                <FormControlLabel
+                  value={false}
+                  control={<Radio />}
+                  label="No"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
           <fieldset>
             <legend>
               <h2>Authorization</h2>

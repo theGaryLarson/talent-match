@@ -101,18 +101,19 @@ export default function AddMeetingModal(params: { jsId: string }) {
                 <div className="grid grid-cols-1">
                   <label htmlFor="meeting_datetime">Meeting Date & Time</label>
                   <input
+                    className="border"
                     type="datetime-local"
                     name="meeting_datetime"
                     required
                   />
                 </div>
                 <div className="flex justify-end space-x-3">
-                  <button type="button" onClick={handleClose} className="btn">
+                  <Button type="button" onClick={handleClose} className="btn">
                     Close
-                  </button>
-                  <button type="submit" className="btn btn-primary">
+                  </Button>
+                  <Button type="submit" className="btn btn-primary">
                     Add Meeting
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>

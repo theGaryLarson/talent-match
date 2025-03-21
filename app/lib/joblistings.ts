@@ -53,8 +53,6 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
       where: { zip: jobData.zip },
     });
 
-    //console.log('Employer ID:', Session.user.employerId);
-    //console.log('Company ID:', Session.user.companyId);
     const now = new Date();
     const jobListingId = uuidv4();
     const newJobListing = await prisma.job_postings.create({
@@ -88,7 +86,11 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
         employment_duration: jobData.employment_duration,
         start_date: jobData.start_date,
         end_date: jobData.end_date,
-        career_services_offered: jobData.career_services_offered,
+        career_services_offered:
+          Session?.user.roles.includes(Role.ADMIN) ||
+          Session?.user.roles.includes(Role.CASE_MANAGER)
+            ? jobData.career_services_offered
+            : null,
         trainingRequirements: jobData.trainingRequirements,
         requiredCertifications: jobData.requiredCertifications,
         minimumEducationLevel: jobData.minimumEducationLevel,
@@ -180,7 +182,11 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         earn_and_learn_type: jobData.earn_and_learn_type,
         is_apprenticeship: jobData.is_apprenticeship,
         location: jobData.location,
-        career_services_offered: jobData.career_services_offered,
+        career_services_offered:
+          Session?.user.roles.includes(Role.ADMIN) ||
+          Session?.user.roles.includes(Role.CASE_MANAGER)
+            ? jobData.career_services_offered
+            : undefined,
         salary_range: jobData.salary_range,
         county: postalGeoData?.county ?? "",
         publish_date: now,
@@ -276,7 +282,13 @@ export async function getCompanyJobListings() {
         skills: true,
         jobApplications: {
           where: {
-            jobStatus: JobStatus.Screened,
+            jobStatus: {
+              in: [
+                JobStatus.Recommended,
+                JobStatus.Interviewing,
+                JobStatus.Negotiating,
+              ],
+            },
           },
           include: {
             Jobseekers: {
@@ -319,7 +331,13 @@ export async function getMyJobListings() {
         skills: true,
         jobApplications: {
           where: {
-            jobStatus: JobStatus.Screened,
+            jobStatus: {
+              in: [
+                JobStatus.Recommended,
+                JobStatus.Interviewing,
+                JobStatus.Negotiating,
+              ],
+            },
           },
           include: {
             Jobseekers: {
