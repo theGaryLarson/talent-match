@@ -219,8 +219,7 @@ export default function Page() {
         switch to a skills-based hiring model.
       </Typography>
       <Typography color="secondary">
-        Remember: There are no right or wrong answers & your results will not
-        impact your eligibility. Your responses will help us understand your
+        Remember: Your responses will help us understand your
         current skills and identify areas where you might need support in
         reaching your career goals.
       </Typography>
