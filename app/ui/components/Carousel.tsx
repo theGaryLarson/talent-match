@@ -32,7 +32,7 @@ export default function Carousel({ children }: { children: ReactNode }) {
           <Radio
             value={index + 1}
             name={"carousel-radios"}
-            onChange={(event) => {
+            onChange={() => {
               setSelectedValue(index + 1);
               push("#slide-" + (index + 1));
             }}

@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+// import { auth } from "@/auth";
 import { Card, Stack } from "@mui/material";
 import Carousel from "../Carousel";
 // import CareerPrep from "@/app/ui/components/jobseekerdashboard/CareerPrep";
@@ -6,12 +6,11 @@ import Carousel from "../Carousel";
 // import { getJobSeekerEmployerView } from "@/app/lib/prisma";
 // import { getJobSeekerAppliedJobs } from "@/app/lib/joblistings";
 // import { getCareerPrepStatus } from "@/app/lib/admin/careerPrep";
-import RoundedButton from "../RoundedButton";
 import PillButton from "../PillButton";
 
 export default async function AnnouncementSpace() {
-  const session = await auth();
-
+  // const session = await auth();
+  //
   // const [AssementInfo, jobseekerData, appliedJobs, carrerPrepEnrollment] =
   //   await Promise.all([
   //     getCareerPrepAssementStatus(),
