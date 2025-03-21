@@ -7,13 +7,21 @@ import { useRouter } from "next/navigation";
 
 export default function Carousel({ children }: { children: ReactNode }) {
   const { push } = useRouter();
+  // TODO: maybe get the initial value from the URL hash if available... though that assumes only one carousel per page...
   const [selectedValue, setSelectedValue] = useState(1);
 
   return (
     <div className="slider">
       <div className="slides">
         {Children.map(children, (child, index) => (
-          <div id={"slide-" + (index + 1)} key={index}>
+          <div
+            id={"slide-" + (index + 1)}
+            key={index}
+            onClick={() => {
+              setSelectedValue(index + 1);
+              push("#slide-" + (index + 1));
+            }
+            }>
             {child}
           </div>
         ))}
