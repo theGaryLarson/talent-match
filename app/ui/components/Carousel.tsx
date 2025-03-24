@@ -1,45 +1,90 @@
 "use client";
 
-import "@/app/ui/components/carousel.css";
-import { Children, ReactNode, useState } from "react";
-import { Radio } from "@mui/material";
-import { useRouter } from "next/navigation";
+import * as React from "react";
+import Box from "@mui/material/Box";
+import { Radio, Stack } from "@mui/material";
 
-export default function Carousel({ children }: { children: ReactNode }) {
-  const { push } = useRouter();
-  // TODO: maybe get the initial value from the URL hash if available... though that assumes only one carousel per page...
-  const [selectedValue, setSelectedValue] = useState(1);
+export default function CustomCarousel({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const childrenArray = React.Children.toArray(children);
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [touchStartX, setTouchStartX] = React.useState<number>(0);
+  const [touchEndX, setTouchEndX] = React.useState<number>(0);
+  const totalSlides = childrenArray.length;
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchStartX(e.touches[0].clientX);
+    setTouchEndX(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchEndX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+  const delta = touchEndX - touchStartX;
+  if (delta > 75) {
+   handlePrev();
+  } else if (delta < -75) {
+   handleNext();
+  }
+  };
+
+  const handleNext = () => {
+    setCurrentSlide((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
+  };
+
+  const handlePrev = () => {
+    setCurrentSlide((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+  };
 
   return (
-    <div className="slider">
-      <div className="slides">
-        {Children.map(children, (child, index) => (
-          <div
-            id={"slide-" + (index + 1)}
+    <Box
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      sx={{
+        position: "relative",
+        overflow: "hidden",
+        touchAction: "pan-y",
+      }}
+    >
+      <Stack
+    direction={"row"}
+        sx={{
+          transform: `translateX(-${currentSlide * (100 / totalSlides)}%)`,
+          width: `${totalSlides * 100}%`,
+          transition: (theme) => `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+        }}
+      >
+        {childrenArray.map((child, index) => (
+          <Stack
             key={index}
-            onClick={() => {
-              setSelectedValue(index + 1);
-              push("#slide-" + (index + 1));
+            sx={{
+              minWidth: `${100 / totalSlides}%`,
+              padding: 2,
+       pointerEvents: index !== currentSlide ? 'none' : undefined,
+       opacity: index === currentSlide ? 1 : 0.7,
+       transition: (theme) => `opacity ${theme.transitions.duration.standard}ms`,
             }}
           >
             {child}
-          </div>
+          </Stack>
         ))}
-      </div>
-
-      <div className="w-full flex justify-center mt-4">
-        {Children.map(children, (child, index) => (
+      </Stack>
+      <Stack direction={"row"} sx={{justifyContent: "center"}}>
+        {childrenArray.map((_, idx) => (
           <Radio
-            value={index + 1}
-            name={"carousel-radios"}
-            onChange={() => {
-              setSelectedValue(index + 1);
-              push("#slide-" + (index + 1));
-            }}
-            checked={selectedValue === index + 1}
+            key={idx}
+            checked={currentSlide === idx}
+            onClick={() => setCurrentSlide(idx)}
+            size="small"
           />
         ))}
-      </div>
-    </div>
+      </Stack>
+    </Box>
   );
 }
