@@ -130,7 +130,7 @@ export default async function CareerPrep() {
       elevation={0}
       sx={{
         borderRadius: "1rem",
-        backgroundColor: "rgb(255 255 255 / var(--tw-bg-opacity, 1))",
+        backgroundColor: "rgb(246 246 246 / var(--tw-bg-opacity, 1))",
         p: "1rem",
       }}
     >
