@@ -24,7 +24,7 @@ export default function CustomCarousel({
     setTouchEndX(e.touches[0].clientX);
   };
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+  const handleTouchEnd = () => {
     const delta = touchEndX - touchStartX;
     if (delta > 75) {
       handlePrev();
