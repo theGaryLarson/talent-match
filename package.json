@@ -47,7 +47,7 @@
     "lodash.isequal": "^4.5.0",
     "luxon": "^3.4.4",
     "mssql": "^11.0.1",
-    "next": "15.1.7",
+    "next": "15.2.3",
     "next-auth": "^5.0.0-beta.20",
     "nodemailer": "^6.9.16",
     "open-graph-scraper": "^6.9.0",
