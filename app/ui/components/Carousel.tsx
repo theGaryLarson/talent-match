@@ -25,12 +25,12 @@ export default function CustomCarousel({
   };
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-  const delta = touchEndX - touchStartX;
-  if (delta > 75) {
-   handlePrev();
-  } else if (delta < -75) {
-   handleNext();
-  }
+    const delta = touchEndX - touchStartX;
+    if (delta > 75) {
+      handlePrev();
+    } else if (delta < -75) {
+      handleNext();
+    }
   };
 
   const handleNext = () => {
@@ -53,11 +53,12 @@ export default function CustomCarousel({
       }}
     >
       <Stack
-    direction={"row"}
+        direction={"row"}
         sx={{
           transform: `translateX(-${currentSlide * (100 / totalSlides)}%)`,
           width: `${totalSlides * 100}%`,
-          transition: (theme) => `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+          transition: (theme) =>
+            `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
         }}
       >
         {childrenArray.map((child, index) => (
@@ -66,16 +67,17 @@ export default function CustomCarousel({
             sx={{
               minWidth: `${100 / totalSlides}%`,
               padding: 2,
-       pointerEvents: index !== currentSlide ? 'none' : undefined,
-       opacity: index === currentSlide ? 1 : 0.7,
-       transition: (theme) => `opacity ${theme.transitions.duration.standard}ms`,
+              pointerEvents: index !== currentSlide ? "none" : undefined,
+              opacity: index === currentSlide ? 1 : 0.7,
+              transition: (theme) =>
+                `opacity ${theme.transitions.duration.standard}ms`,
             }}
           >
             {child}
           </Stack>
         ))}
       </Stack>
-      <Stack direction={"row"} sx={{justifyContent: "center"}}>
+      <Stack direction={"row"} sx={{ justifyContent: "center" }}>
         {childrenArray.map((_, idx) => (
           <Radio
             key={idx}

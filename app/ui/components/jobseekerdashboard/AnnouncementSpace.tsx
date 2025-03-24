@@ -1,45 +1,28 @@
-// import { auth } from "@/auth";
-import { Card, Stack } from "@mui/material";
+import { Card, Grid2, Stack } from "@mui/material";
 import Carousel from "../Carousel";
-// import CareerPrep from "@/app/ui/components/jobseekerdashboard/CareerPrep";
-// import { getCareerPrepAssementStatus } from "@/app/lib/jobseeker";
-// import { getJobSeekerEmployerView } from "@/app/lib/prisma";
-// import { getJobSeekerAppliedJobs } from "@/app/lib/joblistings";
-// import { getCareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import PillButton from "../PillButton";
 
 export default async function AnnouncementSpace() {
-  // const session = await auth();
-  //
-  // const [AssementInfo, jobseekerData, appliedJobs, carrerPrepEnrollment] =
-  //   await Promise.all([
-  //     getCareerPrepAssementStatus(),
-  //     getJobSeekerEmployerView(session?.user.jobseekerId || ""),
-  //     getJobSeekerAppliedJobs(),
-  //     getCareerPrepStatus(session?.user.jobseekerId ?? ""),
-  //   ]);
-
   return (
     <Card
       elevation={0}
       sx={{
-        borderRadius: "1rem",
-        backgroundColor: "rgb(246 246 246 / var(--tw-bg-opacity, 1))",
+        backgroundColor: "neutral.100",
         p: "1rem",
       }}
     >
-      <div className="self-stretch inline-flex flex-col justify-start items-start gap-2.5 overflow-hidden">
-        <div className="justify-center text-primary-main text-base font-semibold font-['Roboto'] uppercase leading-none tracking-wider">
+      <Grid2 direction="row" spacing={2}>
+        <div className="justify-center text-primary-main text-base font-semibold uppercase leading-none mb-2">
           Talent Portal Guide
         </div>
-        <div className="self-stretch justify-center text-secondary-main text-3xl font-normal font-['Roboto'] leading-10">
+        <div className="justify-center text-secondary-main text-3xl font-normal leading-10 mb-2">
           Welcome to the Talent Portal!
         </div>
-        <div className="self-stretch justify-center text-text-primary text-base font-normal font-['Roboto'] leading-tight mb-8">
+        <div className="justify-center text-text-primary text-base font-normal leading-tight">
           This guide will help you navigate the platform and make the most of
           your journey to a technology career.
         </div>
-      </div>
+      </Grid2>
       <Carousel>
         {/* <CareerPrep
           enrollmentStatus={carrerPrepEnrollment?.enrollment}
@@ -52,22 +35,22 @@ export default async function AnnouncementSpace() {
           elevation={0}
           sx={{
             borderRadius: "1rem",
-            backgroundColor: "rgb(255 255 255)",
-            p: "1rem",
+            p: "calc(var(--spacing) * 4)",
+            width: "100%",
+            height: "100%",
           }}
-          className="w-full h-full"
         >
-          <Stack direction={{ sx: "column" }} gap={2} className="p-4">
+          <Stack direction={{ sx: "column" }} gap={2}>
             <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
               Keep Your Profile Up to Date
             </p>
-            <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
+            <div className="inline-flex items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
                 Your Talent Portal profile is key to showcasing your skills and
                 experience to potential employers.
               </p>
             </div>
-            <div className="list-disc font-normal leading-tight text-neutral-900/60 w-[50vw]">
+            <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
               <p>
                 To maximize your opportunities and stand out to employers, we
                 encourage you to complete and maintain your{" "}
@@ -78,9 +61,12 @@ export default async function AnnouncementSpace() {
               </p>
             </div>
             <PillButton
-              className="mt-4 place-self-end"
               color="secondary"
               href="/edit-profile/jobseeker/introduction"
+              sx={{
+                placeSelf: "end",
+                mt: "calc(var(--spacing) * 4)",
+              }}
             >
               Update Profile
             </PillButton>
@@ -91,22 +77,22 @@ export default async function AnnouncementSpace() {
           elevation={0}
           sx={{
             borderRadius: "1rem",
-            backgroundColor: "rgb(255 255 255)",
-            p: "1rem",
+            p: "calc(var(--spacing) * 4)",
+            width: "100%",
+            height: "100%",
           }}
-          className="w-full h-full"
         >
-          <Stack direction={{ sx: "column" }} gap={2} className="p-4">
+          <Stack direction={{ sx: "column" }} gap={2}>
             <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
               Find and Apply for Jobs
             </p>
-            <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
+            <div className="inline-flex items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
                 We've built strong partnerships with employers to offer you
                 targeted job opportunities.
               </p>
             </div>
-            <div className="list-disc font-normal leading-tight text-neutral-900/60 w-[50vw]">
+            <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
               <p>
                 Our system analyzes your skills and experience to connect you
                 with ideal roles, then our team reviews your qualifications and
@@ -117,9 +103,12 @@ export default async function AnnouncementSpace() {
               </p>
             </div>
             <PillButton
-              className="mt-4 place-self-end"
               color="secondary"
               href="/services/joblistings"
+              sx={{
+                placeSelf: "end",
+                mt: "calc(var(--spacing) * 4)",
+              }}
             >
               Search for Jobs
             </PillButton>
@@ -130,21 +119,21 @@ export default async function AnnouncementSpace() {
           elevation={0}
           sx={{
             borderRadius: "1rem",
-            backgroundColor: "rgb(255 255 255)",
-            p: "1rem",
+            p: "calc(var(--spacing) * 4)",
+            width: "100%",
+            height: "100%",
           }}
-          className="w-full h-full"
         >
-          <Stack direction={{ sx: "column" }} gap={2} className="p-4">
+          <Stack direction={{ sx: "column" }} gap={2}>
             <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
               Attend Events
             </p>
-            <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
+            <div className="inline-flex items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
                 Join our Events & Workshops!
               </p>
             </div>
-            <div className="list-disc font-normal leading-tight text-neutral-900/60 w-[50vw]">
+            <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
               <p>
                 We offer monthly sessions led by industry professionals,
                 covering essential skills and the latest industry knowledge. And
@@ -153,9 +142,12 @@ export default async function AnnouncementSpace() {
               </p>
             </div>
             <PillButton
-              className="mt-4 place-self-end"
               color="secondary"
-              href="/services/jobseekers/dashboard/events"
+              href="/services/events"
+              sx={{
+                placeSelf: "end",
+                mt: "calc(var(--spacing) * 4)",
+              }}
             >
               View Events
             </PillButton>
@@ -166,19 +158,19 @@ export default async function AnnouncementSpace() {
           elevation={0}
           sx={{
             borderRadius: "1rem",
-            backgroundColor: "rgb(255 255 255)",
-            p: "1rem",
+            p: "calc(var(--spacing) * 4)",
+            width: "100%",
+            height: "100%",
           }}
-          className="w-full h-full"
         >
-          <Stack direction={{ sx: "column" }} gap={2} className="p-4">
+          <Stack direction={{ sx: "column" }} gap={2}>
             <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
               Join the Community
             </p>
-            <div className="inline-flex h-4 items-start justify-start gap-2.5 self-stretch">
+            <div className="inline-flex items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main"></p>
             </div>
-            <div className="list-disc font-normal leading-tight text-neutral-900/60 w-[50vw]">
+            <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
               <p>
                 Our tech community provides you with access to a supportive
                 environment where you can explore our comprehensive resource
@@ -188,9 +180,12 @@ export default async function AnnouncementSpace() {
               </p>
             </div>
             <PillButton
-              className="mt-4 place-self-end"
               color="secondary"
               href="https://forum.watechwfcoalition.org/"
+              sx={{
+                placeSelf: "end",
+                mt: "calc(var(--spacing) * 4)",
+              }}
             >
               Join the Community
             </PillButton>
