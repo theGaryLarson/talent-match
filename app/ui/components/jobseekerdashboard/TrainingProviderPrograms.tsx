@@ -2,6 +2,7 @@ import { Grid2, Stack, Typography } from "@mui/material";
 import { ReadEduProviderProgramCardDTO } from "@/app/lib/eduProviders";
 import TrainingProgramCard from "@/app/ui/components/career/TrainingProgramCard";
 import PillButton from "../PillButton";
+import React from "react";
 
 export default async function TrainingProviderPrograms({
   programs,
@@ -37,7 +38,11 @@ export default async function TrainingProviderPrograms({
       </p>
       <Grid2 container gap={2}>
         {programs.map(function (program) {
-          return TrainingProgramCard(program);
+          return (
+            <React.Fragment key={program.programId}>
+              {TrainingProgramCard(program)}
+            </React.Fragment>
+          );
         })}
       </Grid2>
     </Stack>
