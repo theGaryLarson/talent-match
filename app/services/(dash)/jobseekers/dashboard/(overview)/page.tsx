@@ -8,11 +8,11 @@ import { getJobSeekerAppliedJobs } from "@/app/lib/joblistings";
 import { getCareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import { getProviderProgramCardView } from "@/app/lib/eduProviders";
 import { Stack, Typography } from "@mui/material";
-import CareerPrep from "@/app/ui/components/jobseekerdashboard/CareerPrep";
 import Applications from "@/app/ui/components/jobseekerdashboard/Applications";
 import EventsList from "@/app/ui/components/EventsList";
 import TrainingProviderPrograms from "@/app/ui/components/jobseekerdashboard/TrainingProviderPrograms";
 import PillButton from "@/app/ui/components/PillButton";
+import AnnouncementSpace from "@/app/ui/components/jobseekerdashboard/AnnouncementSpace";
 
 export const metadata = {
   title: "My Dashboard",
@@ -84,12 +84,7 @@ export default async function Page() {
       <Typography variant={"h4"} sx={{ color: "secondary.main" }}>
         Welcome back, {session?.user.firstName}
       </Typography>
-      <CareerPrep
-      // enrollmentStatus={carrerPrepEnrollment?.enrollment}
-      // track={carrerPrepEnrollment?.AssignedTrack}
-      // jobseekerId={session?.user.jobseekerId ?? ""}
-      // caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? "Our"} ${carrerPrepEnrollment?.CaseManger?.last_name ?? "Carrer Navigator"}`}
-      />
+      <AnnouncementSpace />
       <Applications jobs={slicedAppliedJobs} />
       <EventsList
         headerText={"My Events"}
