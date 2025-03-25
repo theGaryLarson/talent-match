@@ -69,10 +69,12 @@ const steps = [
 export default function NewJobForm({
   company_id,
   job_posting,
+  isAdminOrCaseManager,
   onJobUpdated,
 }: {
   company_id: string | null;
   job_posting?: JobPostCreationDTO;
+  isAdminOrCaseManager?: boolean;
   onJobUpdated?: (job: JobPostCreationDTO) => void;
 }) {
   const { quill, quillRef } = useQuill({
@@ -104,6 +106,9 @@ export default function NewJobForm({
   // Step 1: Employment Information state
   const [employmentType, setEmploymentType] = useState("");
   const [earnAndLearnType, setEarnAndLearnType] = useState<string | null>(null);
+  const [careerServicesOffered, setCareerServicesOffered] = useState<
+    boolean | null
+  >(null);
   const [paidPosition, setPaidPosition] = useState(false);
   const [internship, setInternship] = useState(false);
   const [apprenticeship, setApprenticeship] = useState(false);
@@ -147,6 +152,7 @@ export default function NewJobForm({
       // Step 1: Employment Information state
       setEmploymentType(job_posting.employment_type || "");
       setEarnAndLearnType(job_posting.earn_and_learn_type || null);
+      setCareerServicesOffered(job_posting.career_services_offered || false);
       setPaidPosition(job_posting.is_paid || false);
       setInternship(job_posting.is_internship || false);
       setApprenticeship(job_posting.is_apprenticeship || false);
@@ -248,7 +254,7 @@ export default function NewJobForm({
         employmentType === EmploymentType.EarnAndLearn
           ? earnAndLearnType
           : null,
-      career_services_offered: job_posting?.career_services_offered ?? null,
+      career_services_offered: careerServicesOffered,
       location: workEnvironment,
       zip: location,
       is_paid: paidPosition,
@@ -556,6 +562,20 @@ export default function NewJobForm({
                   Select the earn and learn type for this role
                 </FormHelperText>
               </div>
+              {isAdminOrCaseManager && (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={careerServicesOffered ?? false}
+                      onChange={(e) =>
+                        setCareerServicesOffered(e.target.checked)
+                      }
+                      name="paid-position"
+                    />
+                  }
+                  label="Career Services Offered"
+                />
+              )}
             </Grid2>
           </FormControl>
 

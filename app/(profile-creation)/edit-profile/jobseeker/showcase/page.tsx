@@ -196,8 +196,8 @@ export default function CreateJobseekerProfileShowcasePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(3 / 6) * 100} />
-        <p>Step 3/6</p>
+        <ProgressBarFlat progress={(3 / 9) * 100} />
+        <p>Step 3/9</p>
         <h1>Showcase</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
@@ -294,6 +294,11 @@ export default function CreateJobseekerProfileShowcasePage() {
                 fullWidth
                 value={linkedInUrl}
                 error={!validLinkedInLink(linkedInUrl)}
+                helperText={
+                  !validLinkedInLink(linkedInUrl)
+                    ? "Please enter a valid LinkedIn profile URL."
+                    : ""
+                }
                 onChange={(e) => {
                   setLinkedInUrl(e.target.value);
                 }}
@@ -392,6 +397,6 @@ function validYouTubeLink(url: string) {
 function validLinkedInLink(url: string) {
   if (url == "") return true;
   const regex =
-    /^(https?:\/\/)?(www\.)?(linkedin\.com)\/in\/[A-Za-z0-9]{3,100}\/?$/;
+    /^(https?:\/\/)?(www\.)?(linkedin\.com)\/in\/[A-Za-z0-9_-]{3,100}\/?.*$/i;
   return regex.test(url);
 }

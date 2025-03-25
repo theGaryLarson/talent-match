@@ -675,6 +675,7 @@ model jobseekers {
   is_marked_deletion               DateTime?                 @db.DateTime
   assignedPool                     String?                   @db.VarChar(20)
   careerPrepComplete               Boolean                   @default(false) @db.Bit
+  prescreened                      Boolean                   @default(false) @db.Bit
   careerPrepTrackRecommendation    String?                   @db.VarChar(25)
   createdAt                        DateTime                  @default(now()) @map("created_at")
   updatedAt                        DateTime?                 @updatedAt @map("updated_at")

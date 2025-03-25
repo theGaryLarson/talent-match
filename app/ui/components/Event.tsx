@@ -124,21 +124,25 @@ export default function Event({ event, registered, showLink }: EventProps) {
                     <div className="w-4 h-2 left-0 top-0 absolute" />
                   </div>
                 </div>
-                <div className="hidden tablet:block">
+                {new Date(event.date) > new Date() && (
+                  <div className="hidden tablet:block">
+                    {reg ? (
+                      <PillButton disabled>Registered</PillButton>
+                    ) : (
+                      <PillButton onClick={register}>Register</PillButton>
+                    )}
+                  </div>
+                )}
+              </div>
+              {new Date(event.date) > new Date() && (
+                <div className="block tablet:hidden">
                   {reg ? (
                     <PillButton disabled>Registered</PillButton>
                   ) : (
                     <PillButton onClick={register}>Register</PillButton>
                   )}
                 </div>
-              </div>
-              <div className="block tablet:hidden">
-                {reg ? (
-                  <PillButton disabled>Registered</PillButton>
-                ) : (
-                  <PillButton onClick={register}>Register</PillButton>
-                )}
-              </div>
+              )}
             </div>
             <div className="self-stretch h-px flex-col justify-start items-start flex">
               <div className="w-px h-px relative" />
@@ -235,15 +239,17 @@ export default function Event({ event, registered, showLink }: EventProps) {
             Check email to Join Meeting
           </div>
         )}
-        {!event.recordingLink && !showLink && (
-          <div className="flex-col justify-start items-start flex">
-            {reg ? (
-              "Registered"
-            ) : (
-              <PillButton onClick={handleOpen}>Register</PillButton>
-            )}
-          </div>
-        )}
+        {!event.recordingLink &&
+          new Date(event.date) > new Date() &&
+          !showLink && (
+            <div className="flex-col justify-start items-start flex">
+              {reg ? (
+                "Registered"
+              ) : (
+                <PillButton onClick={handleOpen}>Register</PillButton>
+              )}
+            </div>
+          )}
       </div>
     </div>
   );

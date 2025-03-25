@@ -1,3 +1,13 @@
+import {
+  CareerPrepPathways,
+  CybersecuritySkills,
+  DataAnalyticsSkills,
+  DurableSkillsRatings,
+  ItAndCloudSupportSkills,
+  ProfessionalBrandingRatings,
+  SoftwareDeveloperSkills,
+  TimeUntilCompletion,
+} from "@/app/lib/admin/careerPrep";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 
 export type JsIntroDTO = {
@@ -15,6 +25,10 @@ export type JsIntroDTO = {
   photoUrl?: string | null;
   state?: string | null;
   zipCode?: string | null;
+  CareerPrepAssessment: {
+    streetAddress?: string | null;
+    pronouns: string | null;
+  };
 };
 
 export type JsIntroPostDTO = {
@@ -32,6 +46,10 @@ export type JsIntroPostDTO = {
   photoUrl?: string | null;
   state?: string | null;
   zipCode?: string;
+  CareerPrepAssessment: {
+    streetAddress?: string | null;
+    pronouns: string | null;
+  };
 };
 
 export type CertDTO = {
@@ -140,6 +158,9 @@ export type JsEducationInfoDTO = {
 
 export type JsEducationPageDTO = {
   highestLevelOfStudy: HighestCompletedEducationLevel;
+  CareerPrepAssessment: {
+    expectedEduCompletion: TimeUntilCompletion;
+  };
   userId: string;
   certifications: CertDTO[];
   educations: JsEducationInfoDTO[];
@@ -150,6 +171,10 @@ export type JsEducationPageDTO = {
 export type JsWorkExpDTO = {
   userId: string;
   yearsWorkExperience: string;
+  CareerPrepAssessment: {
+    experienceWithApplying: boolean;
+    experienceWithInterview: boolean;
+  };
   monthsInternshipExperience?: string | null;
   isAuthorizedToWorkUsa?: boolean | null;
   requiresSponsorship?: boolean | null;
@@ -187,6 +212,31 @@ export type JsPreferencesDTO = {
   targetedPathwayId?: string | null;
 };
 
+export type JsCareerPrepPathwaySkillsDTO = {
+  userId: string;
+  targetedPathway: CareerPrepPathways | null;
+  CareerPrepAssessment: {
+    cybersecurity: CybersecuritySkills | null;
+    dataAnalytics: DataAnalyticsSkills | null;
+    itAndCloudComputing: ItAndCloudSupportSkills | null;
+    softwareDevelopment: SoftwareDeveloperSkills | null;
+  };
+};
+
+export type JsCareerPrepDurableSkillsDTO = {
+  userId: string;
+  CareerPrepAssessment: {
+    durableSkills: DurableSkillsRatings | null;
+  };
+};
+
+export type JsCareerPrepProfessionalBrandingDTO = {
+  userId: string;
+  CareerPrepAssessment: {
+    professionalBrandingAndJobMarketReadiness: ProfessionalBrandingRatings | null;
+  };
+};
+
 export type JsDisclosuresDTO = {
   jobseekerId?: string | null; // jsDetails
   isVeteran?: string | null; // privateDetails
@@ -195,6 +245,9 @@ export type JsDisclosuresDTO = {
   gender?: string | null;
   race?: string | null;
   ethnicity?: string | null; // users.ethnicity
+  CareerPrepAssessment: {
+    priorityPopulations?: string | null;
+  };
 };
 
 export type JsDisclosuresPostDTO = {
@@ -205,4 +258,7 @@ export type JsDisclosuresPostDTO = {
   gender: string; // users.gender
   race: string; //users.race
   ethnicity: string;
+  CareerPrepAssessment: {
+    priorityPopulations?: string | null;
+  };
 };
