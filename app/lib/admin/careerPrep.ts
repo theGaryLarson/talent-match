@@ -184,6 +184,7 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
       devLog("career prep card view", data);
       // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
       const transformedData: CareerPrepGridData[] = data.map((item) => ({
+        AppearOnShowCase:item.Jobseeker.prescreened,
         CybersecurityRating:item.CybersecurityRating,
         DataAnalyticsRating:item.DataAnalyticsRating,
         SoftwareDevRating:item.SoftwareDevRating,
@@ -248,6 +249,7 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
       });
     const transformedData: CareerPrepGridData[] =
       assessmentsWithoutCaseMgmt.map((item) => ({
+        AppearOnShowCase:item.Jobseeker.prescreened,
         CybersecurityRating:item.CybersecurityRating,
         DataAnalyticsRating:item.DataAnalyticsRating,
         SoftwareDevRating:item.SoftwareDevRating,
@@ -302,6 +304,7 @@ export const getAllPreScreenedCareerPrepStudents = async (): Promise<
       });
     const transformedData: CareerPrepGridData[] =
       assessmentsWithoutCaseMgmt.map((item) => ({
+        AppearOnShowCase:item.Jobseeker.prescreened,
         CybersecurityRating:item.CybersecurityRating,
         DataAnalyticsRating:item.DataAnalyticsRating,
         SoftwareDevRating:item.SoftwareDevRating,

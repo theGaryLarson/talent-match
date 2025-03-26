@@ -10,6 +10,7 @@ import { PoolCategories } from "@/app/lib/poolAssignment";
 import EnrollmentStatusDropDown from "./EnrollmentStatusDropDown";
 import { BrandingRating, CybersecurityRating, DataAnalyticsRating, DurableSkillsRating, ITCloudRating, SoftwareDevRating } from "@prisma/client";
 import { AssessmentModal } from "./SelfAssementReadOnly";
+import ScreenedDropdown from "./ScreenedDropdown";
 export interface CareerPrepGridData {
   jobseeker_id: string;
   first_name: string;
@@ -30,6 +31,7 @@ export interface CareerPrepGridData {
   SoftwareDevRating: SoftwareDevRating[],
   DurableSkillsRating: DurableSkillsRating[],
   BrandingRating: BrandingRating[],
+  AppearOnShowCase: boolean,
 
 }
 const ratingFields = [
@@ -85,6 +87,12 @@ export default function CareerPrepDataGrid({
       sortable: false,
       headerName: "Resume",
       renderCell: (params) => <ViewResume userId={params.row.user_id} />,
+    },{
+      field:"AppearOnShowCase",
+      width:130,
+      align:"center",
+      headerName:"AppearOnShowCase",
+      renderCell: (params) => <ScreenedDropdown screened={params.row.AppearOnShowCase} jobseekerId={params.row.jobseeker_id}/>
     },
    // { field: "careerPrepTrackRecommendation", headerName: "track" },
     {
