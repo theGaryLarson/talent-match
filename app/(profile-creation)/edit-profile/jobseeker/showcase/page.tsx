@@ -294,6 +294,11 @@ export default function CreateJobseekerProfileShowcasePage() {
                 fullWidth
                 value={linkedInUrl}
                 error={!validLinkedInLink(linkedInUrl)}
+                helperText={
+                  !validLinkedInLink(linkedInUrl)
+                    ? "Please enter a valid LinkedIn profile URL."
+                    : ""
+                }
                 onChange={(e) => {
                   setLinkedInUrl(e.target.value);
                 }}
@@ -392,6 +397,6 @@ function validYouTubeLink(url: string) {
 function validLinkedInLink(url: string) {
   if (url == "") return true;
   const regex =
-    /^(https?:\/\/)?(www\.)?(linkedin\.com)\/in\/[A-Za-z0-9]{3,100}\/?$/;
+    /^(https?:\/\/)?(www\.)?(linkedin\.com)\/in\/[A-Za-z0-9_-]{3,100}\/?.*$/i;
   return regex.test(url);
 }

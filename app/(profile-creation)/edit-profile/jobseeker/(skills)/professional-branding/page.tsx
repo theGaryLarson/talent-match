@@ -209,10 +209,9 @@ export default function Page() {
         Professional Branding & Job Market Readiness
       </Typography>
       <Typography color="secondary" sx={{ my: 2 }}>
-        Remember: There are no right or wrong answers & your results will not
-        impact your eligibility. Your responses will help us understand your
-        current skills and identify areas where you might need support in
-        reaching your career goals.
+        Remember: Your responses will help us understand your current skills and
+        identify areas where you might need support in reaching your career
+        goals.
       </Typography>
       <form onSubmit={handleSubmit}>
         <Table stickyHeader sx={{ mt: 2, mb: 5 }}>

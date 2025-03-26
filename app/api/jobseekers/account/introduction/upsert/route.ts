@@ -100,12 +100,14 @@ export async function POST(request: Request) {
             upsert: {
               where: { jobseekerId: jobseekerId },
               create: {
+                streetAddress: CareerPrepAssessment.streetAddress,
                 pronouns: CareerPrepAssessment.pronouns ?? "",
                 expectedEduCompletion: "",
                 experienceWithApplying: false,
                 experienceWithInterview: false,
               },
               update: {
+                streetAddress: CareerPrepAssessment.streetAddress,
                 pronouns: CareerPrepAssessment.pronouns ?? "",
               },
             },
@@ -137,6 +139,7 @@ export async function POST(request: Request) {
           employment_type_sought: undefined,
           CareerPrepAssessment: {
             create: {
+              streetAddress: CareerPrepAssessment.streetAddress,
               pronouns: CareerPrepAssessment.pronouns ?? "",
               expectedEduCompletion: "",
               experienceWithApplying: false,
@@ -147,6 +150,7 @@ export async function POST(request: Request) {
         include: {
           CareerPrepAssessment: {
             select: {
+              streetAddress: true,
               pronouns: true,
             },
           },
@@ -159,6 +163,10 @@ export async function POST(request: Request) {
         firstName: user.first_name,
         lastName: user.last_name,
         CareerPrepAssessment: {
+          streetAddress:
+            jobseeker.CareerPrepAssessment.length > 0
+              ? jobseeker.CareerPrepAssessment[0].streetAddress
+              : null,
           pronouns:
             jobseeker.CareerPrepAssessment.length > 0
               ? jobseeker.CareerPrepAssessment[0].pronouns
