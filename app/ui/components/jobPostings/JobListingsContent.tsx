@@ -8,7 +8,9 @@ import TagsWithAutocomplete from "@/app/ui/components/mui/TagsWithAutocomplete";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import {
   Box,
+  Checkbox,
   Divider,
+  FormControlLabel,
   Grid2,
   Stack,
   Tab,
@@ -41,6 +43,7 @@ async function fetchJobPosts(
   skills: string[] = [],
   city: string[] = [],
   profession: string = "",
+  careerServicesOffered: boolean = false,
   industrySector: string[] = [],
   employmentType: string[] = [],
   sortBy: string = "publish_date",
@@ -58,6 +61,7 @@ async function fetchJobPosts(
       skills,
       city,
       profession,
+      careerServicesOffered,
       industrySector,
       employmentType,
       sortBy,
@@ -86,6 +90,8 @@ export default function JobListingsContent() {
   const [profession, setProfession] = useState<string>("");
   const [industry, setIndustry] = useState<string[]>([]);
   const [employmentType, setEmploymentType] = useState<string[]>([]);
+  const [careerServicesOffered, setCareerServicesOffered] =
+    useState<boolean>(false);
 
   // Sorting and pagination
   const [totalResults, setTotalResults] = useState<number>(0);
@@ -130,6 +136,9 @@ export default function JobListingsContent() {
     setJobTitle(getParam("jobTitle"));
     setSkillsList(getArrayParam("skills"));
     setProfession(getParam("profession"));
+    setCareerServicesOffered(
+      getParam("career-services-offered") === "true" ? true : false,
+    );
     setEmploymentType(getArrayParam("employment-type"));
     setIndustry(getArrayParam("industry"));
     setCity(getArrayParam("city"));
@@ -147,6 +156,7 @@ export default function JobListingsContent() {
         skillsList,
         city,
         profession,
+        careerServicesOffered,
         industry,
         employmentType,
         "publish_date",
@@ -167,6 +177,7 @@ export default function JobListingsContent() {
     skillsList,
     city,
     profession,
+    careerServicesOffered,
     industry,
     employmentType,
     page,
@@ -181,6 +192,7 @@ export default function JobListingsContent() {
     jobTitle,
     skillsList,
     profession,
+    careerServicesOffered,
     employmentType,
     industry,
     city,
@@ -235,6 +247,18 @@ export default function JobListingsContent() {
       const val = event.target.value;
       setQueryParam("profession", encodeURIComponent(val.toString()));
       setProfession(val);
+    },
+    [setQueryParam],
+  );
+
+  const handleCareerServicesChange = useCallback(
+    (event: any) => {
+      const val = event.target.checked;
+      setQueryParam(
+        "career-services-offered",
+        encodeURIComponent(val.toString()),
+      );
+      setCareerServicesOffered(val);
     },
     [setQueryParam],
   );
@@ -348,6 +372,20 @@ export default function JobListingsContent() {
                 label: type,
                 value: type,
               }))}
+            />
+          </Grid2>
+          {/* Career Services Offered */}
+          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+            <FormControlLabel
+              value=""
+              control={
+                <Checkbox
+                  checked={careerServicesOffered}
+                  onChange={handleCareerServicesChange}
+                />
+              }
+              label="Career Services Offered"
+              labelPlacement="end"
             />
           </Grid2>
         </Grid2>

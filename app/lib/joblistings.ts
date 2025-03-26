@@ -688,6 +688,7 @@ export async function getJobListingsFiltered(request: Request) {
     skills = [],
     city = [],
     profession = "",
+    careerServicesOffered = false,
     industrySector = [],
     employmentType = [],
     sortBy = "publish_date", // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -775,6 +776,12 @@ export async function getJobListingsFiltered(request: Request) {
       },
     });
   }
+
+  andConditions.push({
+    career_services_offered: {
+      equals: careerServicesOffered === true ? true : undefined,
+    },
+  });
 
   if (city.length > 0) {
     andConditions.push({
