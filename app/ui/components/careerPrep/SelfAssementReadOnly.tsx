@@ -84,16 +84,23 @@ useEffect(() => {
     </div>
   );
 }
-
-function AssessmentModal({
+/*
+BrandingRating[], 
+    CybersecurityRating:CybersecurityRating[],
+    DataAnalyticsRating:DataAnalyticsRating[],
+    ITCloudRating:ITCloudRating[],
+    SoftwareDevRating:SoftwareDevRating[],
+    DurableSkillsRating:DurableSkillsRating[]
+*/
+export function AssessmentModal({
   list,
   title,
 }: {
-  list: any[] | undefined;
+  list: CybersecurityRating[] | DataAnalyticsRating[]| ITCloudRating[]| SoftwareDevRating[]| DurableSkillsRating[]|BrandingRating[]| undefined;
   title: string;
 }) {
   return list != undefined && list.length > 0 ? (
-    <BasicModal buttonText={title}>
+    <BasicModal buttonText={list[0].overallAverage?list[0].overallAverage.toString():'?'}>
       {
         <div className="h-[650px] w-fit flex flex-col flex-wrap">
           {Object.entries(list[0] || {}) // Use first item in array
@@ -110,6 +117,6 @@ function AssessmentModal({
       }
     </BasicModal>
   ) : (
-    ""
+    "Not Found"
   );
 }
