@@ -5,6 +5,7 @@ import { educationRank } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { devLog } from "@/app/lib/utils";
 import { PoolCategories } from "@/app/lib/poolAssignment";
+import { getResumeUrl } from "@/app/lib/services/azureBlobService";
 
 const prisma = new PrismaClient();
 
@@ -16,6 +17,7 @@ export async function POST(request: Request) {
     trainingProvider = undefined,
     zipCode = undefined,
     sortBy = "yearsExp",
+    isQuality = false,
     maxResults = 50,
     page = 1,
   } = await request.json();
@@ -33,6 +35,15 @@ export async function POST(request: Request) {
     assignedPool: { not: PoolCategories.NotJobReady }, // Ensure assignedPool is not "pool3"
     is_marked_deletion: null,
   });
+
+  // Must have a introduction & at least one skill
+  if (isQuality) {
+    andConditions.push({ intro_headline: { not: null } });
+    andConditions.push({ NOT: { intro_headline: "" } });
+    andConditions.push({
+      jobseeker_has_skills: { some: {} },
+    });
+  }
 
   if (normalizedSkills.length > 0) {
     // Here we are checking if the skills are highlighted in projects or listed as their top five
@@ -135,7 +146,7 @@ export async function POST(request: Request) {
   // Determine the number of results to skip based on the page number and maxResults
   const skip = (page - 1) * maxResults;
 
-  const [filteredJobSeekers, totalCount] = await prisma.$transaction([
+  let [filteredJobSeekers, totalCount] = await prisma.$transaction([
     prisma.jobseekers.findMany({
       where: andConditions.length > 0 ? { AND: andConditions } : undefined,
       select: jobSeekerCardViewSelect, // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
@@ -147,6 +158,20 @@ export async function POST(request: Request) {
       where: andConditions.length > 0 ? { AND: andConditions } : undefined,
     }),
   ]);
+
+  // Must have a resume
+  if (isQuality) {
+    const resumeResults = await Promise.all(
+      filteredJobSeekers.map(async (jobseeker) => {
+        const resumeUrl = await getResumeUrl(jobseeker.user_id);
+        return { jobseeker, resumeUrl };
+      }),
+    );
+    filteredJobSeekers = resumeResults
+      .filter(({ resumeUrl }) => resumeUrl !== null)
+      .map(({ jobseeker }) => jobseeker);
+    totalCount = filteredJobSeekers.length;
+  }
 
   // Sort by education level if needed
   if (sortBy === "highestDegree") {

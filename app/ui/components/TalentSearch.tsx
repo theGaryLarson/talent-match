@@ -41,6 +41,8 @@ async function fetchFilteredJobSeekerCardView(
     pool2 = true,
     pool3 = false;
 
+  const isQuality = true;
+
   const response = await fetch("/api/jobseekers/query", {
     // Make the request
     method: "POST",
@@ -54,6 +56,7 @@ async function fetchFilteredJobSeekerCardView(
       trainingProvider,
       zipCode,
       sortBy,
+      isQuality,
       maxResults,
       page,
       pool1,
