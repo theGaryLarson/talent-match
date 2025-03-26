@@ -62,7 +62,7 @@ export default function CustomCarousel({
         }}
       >
         {childrenArray.map((child, index) => (
-          <Stack
+          <Box
             key={index}
             sx={{
               minWidth: `${100 / totalSlides}%`,
@@ -72,9 +72,11 @@ export default function CustomCarousel({
               transition: (theme) =>
                 `opacity ${theme.transitions.duration.standard}ms`,
             }}
+            aria-hidden={index !== currentSlide}
+            inert={index !== currentSlide ? true : undefined}
           >
             {child}
-          </Stack>
+          </Box>
         ))}
       </Stack>
       <Stack direction={"row"} sx={{ justifyContent: "center" }}>
