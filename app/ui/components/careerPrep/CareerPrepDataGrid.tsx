@@ -8,7 +8,14 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import { PoolCategories } from "@/app/lib/poolAssignment";
 import EnrollmentStatusDropDown from "./EnrollmentStatusDropDown";
-import { BrandingRating, CybersecurityRating, DataAnalyticsRating, DurableSkillsRating, ITCloudRating, SoftwareDevRating } from "@prisma/client";
+import {
+  BrandingRating,
+  CybersecurityRating,
+  DataAnalyticsRating,
+  DurableSkillsRating,
+  ITCloudRating,
+  SoftwareDevRating,
+} from "@prisma/client";
 import { AssessmentModal } from "./SelfAssementReadOnly";
 import ScreenedDropdown from "./ScreenedDropdown";
 export interface CareerPrepGridData {
@@ -25,14 +32,13 @@ export interface CareerPrepGridData {
   JobseekerUpdatedAt: Date;
   EnrollmentDate: Date;
   user_id: string;
-  CybersecurityRating: CybersecurityRating[],
-  DataAnalyticsRating: DataAnalyticsRating[],
-  ITCloudRating: ITCloudRating[],
-  SoftwareDevRating: SoftwareDevRating[],
-  DurableSkillsRating: DurableSkillsRating[],
-  BrandingRating: BrandingRating[],
-  AppearOnShowCase: boolean,
-
+  CybersecurityRating: CybersecurityRating[];
+  DataAnalyticsRating: DataAnalyticsRating[];
+  ITCloudRating: ITCloudRating[];
+  SoftwareDevRating: SoftwareDevRating[];
+  DurableSkillsRating: DurableSkillsRating[];
+  BrandingRating: BrandingRating[];
+  AppearOnShowCase: boolean;
 }
 const ratingFields = [
   { key: "CybersecurityRating", label: "Cybersecurity" },
@@ -60,7 +66,6 @@ export default function CareerPrepDataGrid({
 }) {
   const columns: GridColDef[] = [
     {
-      
       field: "careerPrepAssessmentDate",
       headerName: "Application Date",
     },
@@ -70,7 +75,7 @@ export default function CareerPrepDataGrid({
     {
       field: "actions",
       sortable: false,
-      width:130,
+      width: 130,
       headerName: "Profile",
       renderCell: (params) => (
         <Link
@@ -87,31 +92,39 @@ export default function CareerPrepDataGrid({
       sortable: false,
       headerName: "Resume",
       renderCell: (params) => <ViewResume userId={params.row.user_id} />,
-    },{
-      field:"AppearOnShowCase",
-      width:130,
-      align:"center",
-      headerName:"AppearOnShowCase",
-      renderCell: (params) => <ScreenedDropdown screened={params.row.AppearOnShowCase} jobseekerId={params.row.jobseeker_id}/>
     },
-   // { field: "careerPrepTrackRecommendation", headerName: "track" },
+    {
+      field: "AppearOnShowCase",
+      width: 130,
+      align: "center",
+      headerName: "AppearOnShowCase",
+      renderCell: (params) => (
+        <ScreenedDropdown
+          screened={params.row.AppearOnShowCase}
+          jobseekerId={params.row.jobseeker_id}
+        />
+      ),
+    },
+    // { field: "careerPrepTrackRecommendation", headerName: "track" },
     {
       field: "Status",
       headerName: "CP Enrollment Status",
-      renderCell:(params)=><EnrollmentStatusDropDown
-                careerPrepEnrollmentStatus={params.row["CP Enrollment Status"]}
-                jobseekerId={params.row.jobseeker_id}
-              />,
+      renderCell: (params) => (
+        <EnrollmentStatusDropDown
+          careerPrepEnrollmentStatus={params.row["CP Enrollment Status"]}
+          jobseekerId={params.row.jobseeker_id}
+        />
+      ),
       width: 160,
     },
     ...ratingColumns,
-   // { field: "HighestEdLevel", headerName: "HighestEdLevel", width: 160 },
+    // { field: "HighestEdLevel", headerName: "HighestEdLevel", width: 160 },
     //{ field: "Pool Type", headerName: "Pool Type" },
-   // { field: "Pathway Title", headerName: "Pathway Title" },
+    // { field: "Pathway Title", headerName: "Pathway Title" },
     // { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
     // { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
-    
-   // { field: "EnrollmentDate", headerName: "EnrollmentDate" },
+
+    // { field: "EnrollmentDate", headerName: "EnrollmentDate" },
   ];
   if (ShowClaimButton) {
     columns.unshift({

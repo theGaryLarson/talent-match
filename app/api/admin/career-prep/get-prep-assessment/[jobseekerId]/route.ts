@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCareerPrepAssessment} from "@/app/lib/admin/careerPrep";
+import { getCareerPrepAssessment } from "@/app/lib/admin/careerPrep";
 
 export async function GET(
   request: Request,
@@ -14,6 +14,6 @@ export async function GET(
     );
   }
 
-  const data = await getCareerPrepAssessment(jobseekerId)
+  const data = await getCareerPrepAssessment(jobseekerId);
   return NextResponse.json(data);
 }

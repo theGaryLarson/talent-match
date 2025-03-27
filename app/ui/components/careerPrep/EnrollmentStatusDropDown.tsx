@@ -27,8 +27,8 @@ export default function EnrollmentStatusDropDown(props: {
       .then((response) => {
         if (!response.ok) {
           event.target.value = props.careerPrepEnrollmentStatus;
-          alert("Enrollment Status update failed")
-        }else{
+          alert("Enrollment Status update failed");
+        } else {
           setOpenSnackbar(true);
         }
         return response.json();
@@ -50,33 +50,33 @@ export default function EnrollmentStatusDropDown(props: {
   };
   return (
     <>
-    <select
-      onChange={handleChange}
-      defaultValue={props.careerPrepEnrollmentStatus}
-    >
-      {props.careerPrepEnrollmentStatus == undefined ? (
-        <option>Unknown</option>
-      ) : (
-        ""
-      )}
-      {Object.values(CareerPrepStatus).map((stat) => (
-        <option
-          key={stat}
-          value={stat}
-          //   selected={stat == props.careerPrepEnrollmentStatus}
-        >
-          {stat}
-        </option>
-      ))}
-    </select>
-    <Snackbar
-            open={openSnackbar}
-            autoHideDuration={1000}
-            onClose={handleSnackbarClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      <select
+        onChange={handleChange}
+        defaultValue={props.careerPrepEnrollmentStatus}
+      >
+        {props.careerPrepEnrollmentStatus == undefined ? (
+          <option>Unknown</option>
+        ) : (
+          ""
+        )}
+        {Object.values(CareerPrepStatus).map((stat) => (
+          <option
+            key={stat}
+            value={stat}
+            //   selected={stat == props.careerPrepEnrollmentStatus}
           >
-            <Alert>Enrollment updated successfully!</Alert>
-          </Snackbar>
+            {stat}
+          </option>
+        ))}
+      </select>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={1000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert>Enrollment updated successfully!</Alert>
+      </Snackbar>
     </>
   );
 }

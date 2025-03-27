@@ -36,24 +36,24 @@ export default function ScreenedDropdown(props: {
 
   return (
     <Box
-    sx={{
-      width: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100%", // Ensures vertical alignment in the cell
-    }}
-  >
-    <FormControl sx={{ minWidth: 120 }} size="small">
-      <Select
-        id={`showcase-select-${props.jobseekerId}`}
-        value={screened}
-        onChange={handleChange}
-      >
-        <MenuItem value={"yes"}>Yes</MenuItem>
-        <MenuItem value={"no"}>No</MenuItem>
-      </Select>
-    </FormControl>
-  </Box>
+      sx={{
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%", // Ensures vertical alignment in the cell
+      }}
+    >
+      <FormControl sx={{ minWidth: 120 }} size="small">
+        <Select
+          id={`showcase-select-${props.jobseekerId}`}
+          value={screened}
+          onChange={handleChange}
+        >
+          <MenuItem value={"yes"}>Yes</MenuItem>
+          <MenuItem value={"no"}>No</MenuItem>
+        </Select>
+      </FormControl>
+    </Box>
   );
 }

@@ -184,13 +184,13 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
       devLog("career prep card view", data);
       // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
       const transformedData: CareerPrepGridData[] = data.map((item) => ({
-        AppearOnShowCase:item.Jobseeker.prescreened,
-        CybersecurityRating:item.CybersecurityRating,
-        DataAnalyticsRating:item.DataAnalyticsRating,
-        SoftwareDevRating:item.SoftwareDevRating,
-        DurableSkillsRating:item.DurableSkillsRating,
-        ITCloudRating:item.ITCloudRating,
-        BrandingRating:item.BrandingRating,
+        AppearOnShowCase: item.Jobseeker.prescreened,
+        CybersecurityRating: item.CybersecurityRating,
+        DataAnalyticsRating: item.DataAnalyticsRating,
+        SoftwareDevRating: item.SoftwareDevRating,
+        DurableSkillsRating: item.DurableSkillsRating,
+        ITCloudRating: item.ITCloudRating,
+        BrandingRating: item.BrandingRating,
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
         HighestEdLevel:
@@ -249,13 +249,13 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
       });
     const transformedData: CareerPrepGridData[] =
       assessmentsWithoutCaseMgmt.map((item) => ({
-        AppearOnShowCase:item.Jobseeker.prescreened,
-        CybersecurityRating:item.CybersecurityRating,
-        DataAnalyticsRating:item.DataAnalyticsRating,
-        SoftwareDevRating:item.SoftwareDevRating,
-        DurableSkillsRating:item.DurableSkillsRating,
-        ITCloudRating:item.ITCloudRating,
-        BrandingRating:item.BrandingRating,
+        AppearOnShowCase: item.Jobseeker.prescreened,
+        CybersecurityRating: item.CybersecurityRating,
+        DataAnalyticsRating: item.DataAnalyticsRating,
+        SoftwareDevRating: item.SoftwareDevRating,
+        DurableSkillsRating: item.DurableSkillsRating,
+        ITCloudRating: item.ITCloudRating,
+        BrandingRating: item.BrandingRating,
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
         HighestEdLevel:
@@ -304,13 +304,13 @@ export const getAllPreScreenedCareerPrepStudents = async (): Promise<
       });
     const transformedData: CareerPrepGridData[] =
       assessmentsWithoutCaseMgmt.map((item) => ({
-        AppearOnShowCase:item.Jobseeker.prescreened,
-        CybersecurityRating:item.CybersecurityRating,
-        DataAnalyticsRating:item.DataAnalyticsRating,
-        SoftwareDevRating:item.SoftwareDevRating,
-        DurableSkillsRating:item.DurableSkillsRating,
-        ITCloudRating:item.ITCloudRating,
-        BrandingRating:item.BrandingRating,
+        AppearOnShowCase: item.Jobseeker.prescreened,
+        CybersecurityRating: item.CybersecurityRating,
+        DataAnalyticsRating: item.DataAnalyticsRating,
+        SoftwareDevRating: item.SoftwareDevRating,
+        DurableSkillsRating: item.DurableSkillsRating,
+        ITCloudRating: item.ITCloudRating,
+        BrandingRating: item.BrandingRating,
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
         HighestEdLevel:
@@ -522,11 +522,11 @@ const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
     assessmentDate: true,
     expectedEduCompletion: true,
     CybersecurityRating: true,
-        DataAnalyticsRating: true,
-        ITCloudRating: true,
-        SoftwareDevRating: true,
-        DurableSkillsRating: true,
-        BrandingRating: true,
+    DataAnalyticsRating: true,
+    ITCloudRating: true,
+    SoftwareDevRating: true,
+    DurableSkillsRating: true,
+    BrandingRating: true,
     CaseMgmt: {
       select: {
         prepEnrollmentStatus: true,
