@@ -5,7 +5,6 @@ import { educationRank } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { devLog } from "@/app/lib/utils";
 import { PoolCategories } from "@/app/lib/poolAssignment";
-import { getResumeUrl } from "@/app/lib/services/azureBlobService";
 
 const prisma = new PrismaClient();
 
@@ -36,12 +35,15 @@ export async function POST(request: Request) {
     is_marked_deletion: null,
   });
 
-  // Must have a introduction & at least one skill
+  // Must have an introduction, resume, & at least one skill
   if (isQuality) {
     andConditions.push({ intro_headline: { not: null } });
     andConditions.push({ NOT: { intro_headline: "" } });
     andConditions.push({
       jobseeker_has_skills: { some: {} },
+    });
+    andConditions.push({
+      hasResume: true,
     });
   }
 
@@ -146,7 +148,7 @@ export async function POST(request: Request) {
   // Determine the number of results to skip based on the page number and maxResults
   const skip = (page - 1) * maxResults;
 
-  let [filteredJobSeekers, totalCount] = await prisma.$transaction([
+  const [filteredJobSeekers, totalCount] = await prisma.$transaction([
     prisma.jobseekers.findMany({
       where: andConditions.length > 0 ? { AND: andConditions } : undefined,
       select: jobSeekerCardViewSelect, // for testing queries in Postman use jobseekerQueryTestSelect //website use: jobSeekerCardViewSelect
@@ -158,20 +160,6 @@ export async function POST(request: Request) {
       where: andConditions.length > 0 ? { AND: andConditions } : undefined,
     }),
   ]);
-
-  // Must have a resume
-  if (isQuality) {
-    const resumeResults = await Promise.all(
-      filteredJobSeekers.map(async (jobseeker) => {
-        const resumeUrl = await getResumeUrl(jobseeker.user_id);
-        return { jobseeker, resumeUrl };
-      }),
-    );
-    filteredJobSeekers = resumeResults
-      .filter(({ resumeUrl }) => resumeUrl !== null)
-      .map(({ jobseeker }) => jobseeker);
-    totalCount = filteredJobSeekers.length;
-  }
 
   // Sort by education level if needed
   if (sortBy === "highestDegree") {
