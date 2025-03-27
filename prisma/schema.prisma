@@ -674,6 +674,7 @@ model jobseekers {
   employment_type_sought           String?                   @db.NVarChar(255)
   is_marked_deletion               DateTime?                 @db.DateTime
   assignedPool                     String?                   @db.VarChar(20)
+  hasResume                        Boolean                   @default(false) @db.Bit
   careerPrepComplete               Boolean                   @default(false) @db.Bit
   prescreened                      Boolean                   @default(false) @db.Bit
   careerPrepTrackRecommendation    String?                   @db.VarChar(25)
