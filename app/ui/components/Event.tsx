@@ -184,21 +184,21 @@ export default function Event({ event, registered, showLink }: EventProps) {
       {/* Event info in table row */}
       <div
         onClick={handleOpen}
-        className="col-span-5 text-sky-900 text-base font-medium leading-normal tracking-tight cursor-pointer"
+        className="laptop:col-span-5 col-span-6 text-sky-900 text-base font-medium leading-normal tracking-tight cursor-pointer"
       >
         {event.name}
       </div>
 
       <div
         onClick={handleOpen}
-        className="col-span-2 text-sky-900 text-base font-normal leading-normal tracking-tight"
+        className="laptop:col-span-2 col-span-3 text-sky-900 text-base font-normal leading-normal tracking-tight"
       >
         {new Date(event.date).toDateString()}
       </div>
 
       <div
         onClick={handleOpen}
-        className="col-span-3 text-zinc-900/60 text-base font-normal leading-normal tracking-tight"
+        className="laptop:col-span-3  laptop:block hidden text-zinc-900/60 text-base font-normal leading-normal tracking-tight"
       >
         {new Date(event.date).toLocaleTimeString([], {
           hour: "2-digit",
@@ -213,7 +213,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
 
       <div
         onClick={handleOpen}
-        className="col-span-2 flex flex-col justify-start items-start"
+        className="laptop:col-span-2 col-span-3 flex flex-col justify-start items-start"
       >
         {event.recordingLink && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">
