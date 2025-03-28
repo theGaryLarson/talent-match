@@ -16,7 +16,7 @@ import { TrainingProviderDropdownDTO } from "@/data/dtos/TrainingProviderDropdow
 import SingleSelectFilterAutoload from "@/app/ui/components/mui/SingleSelectFilterAutoload";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import { Box, Grid2 } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Grid2 } from "@mui/material";
 import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const resultsPerPage = 50;
@@ -33,6 +33,9 @@ async function fetchFilteredJobSeekerCardView(
   trainingProvider: string = "",
   zipCode: string = "",
   sortBy: string = "yearsExp",
+  hasIntroduction: boolean = false,
+  hasAnySkills: boolean = false,
+  hasResume: boolean = false,
   maxResults: number = resultsPerPage,
   page: number = 1,
 ): Promise<JobSeekerQueryResult> {
@@ -40,10 +43,6 @@ async function fetchFilteredJobSeekerCardView(
   const pool1 = true,
     pool2 = true,
     pool3 = false;
-
-  const hasIntroduction = true;
-  const hasAnySkills = true;
-  const hasResume = true;
 
   const response = await fetch("/api/jobseekers/query", {
     // Make the request
@@ -87,7 +86,7 @@ async function fetchBookmarkedJobseekers(): Promise<any> {
   return response.json();
 }
 
-export default function TalentSearch() {
+export default function Page() {
   const { data: session } = useSession();
   // Listview data
   const [jobseekers, setJobSeekers] = useState<JobSeekerCardViewDTO[]>([]);
@@ -103,6 +102,9 @@ export default function TalentSearch() {
   const [eduLevel, setEduLevel] = useState<string>();
   const [trainingProvider, setTrainingProvider] = useState<string>();
   const [zipCode, setZipCode] = useState<string>();
+  const [hasIntroduction, setHasIntroduction] = useState<boolean>(false);
+  const [hasAnySkills, setHasAnySkills] = useState<boolean>(false);
+  const [hasResume, setHasResume] = useState<boolean>(false);
 
   // Sorting and pagination
   const [sortBy, setSortBy] = useState<string>();
@@ -160,6 +162,9 @@ export default function TalentSearch() {
         trainingProvider,
         zipCode,
         sortBy,
+        hasIntroduction,
+        hasAnySkills,
+        hasResume,
         resultsPerPage,
         page,
       );
@@ -171,7 +176,18 @@ export default function TalentSearch() {
     } finally {
       setLoading(false);
     }
-  }, [skillsList, industry, eduLevel, trainingProvider, zipCode, sortBy, page]);
+  }, [
+    skillsList,
+    industry,
+    eduLevel,
+    trainingProvider,
+    zipCode,
+    hasIntroduction,
+    hasAnySkills,
+    hasResume,
+    sortBy,
+    page,
+  ]);
 
   useEffect(() => {
     const fetchBookmarked = async () => {
@@ -213,6 +229,11 @@ export default function TalentSearch() {
       setEduLevel(getParam("eduLevel"));
       setTrainingProvider(getParam("trainingProvider"));
       setZipCode(getParam("zipcode"));
+      setHasIntroduction(
+        getParam("has-introduction") === "true" ? true : false,
+      );
+      setHasAnySkills(getParam("has-any-skills") === "true" ? true : false);
+      setHasResume(getParam("has-resume") === "true" ? true : false);
       setSortBy(getParam("sort") != "" ? getParam("sort") : "yearsExp");
       const pageParam = getParam("page");
       const pageNumber = pageParam ? +pageParam : 0;
@@ -224,7 +245,18 @@ export default function TalentSearch() {
       }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
       return () => clearTimeout(timeoutId);
     }
-  }, [skillsList, industry, eduLevel, trainingProvider, zipCode, sortBy, page]);
+  }, [
+    skillsList,
+    industry,
+    eduLevel,
+    trainingProvider,
+    zipCode,
+    hasIntroduction,
+    hasAnySkills,
+    hasResume,
+    sortBy,
+    page,
+  ]);
 
   return (
     <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
@@ -380,10 +412,64 @@ export default function TalentSearch() {
         </Grid2>
 
         {/* Years of Experience, Removed at Marketing's request */}
-        <Grid2
-          size={{ xs: 12, sm: 6, md: 4 }}
-          sx={{ display: { xs: "none", sm: "block" } }}
-        ></Grid2>
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+          <FormControlLabel
+            value=""
+            control={
+              <Checkbox
+                checked={hasIntroduction}
+                onChange={(event: any) => {
+                  const val = event.target.checked;
+                  setQueryParam(
+                    "has-introduction",
+                    encodeURIComponent(val.toString()),
+                  );
+                  setHasIntroduction(val);
+                }}
+              />
+            }
+            label="Has Introduction"
+            labelPlacement="end"
+          />
+
+          <FormControlLabel
+            value=""
+            control={
+              <Checkbox
+                checked={hasAnySkills}
+                onChange={(event: any) => {
+                  const val = event.target.checked;
+                  setQueryParam(
+                    "has-any-skills",
+                    encodeURIComponent(val.toString()),
+                  );
+                  setHasAnySkills(val);
+                }}
+              />
+            }
+            label="Has any Skills"
+            labelPlacement="end"
+          />
+
+          <FormControlLabel
+            value=""
+            control={
+              <Checkbox
+                checked={hasResume}
+                onChange={(event: any) => {
+                  const val = event.target.checked;
+                  setQueryParam(
+                    "has-resume",
+                    encodeURIComponent(val.toString()),
+                  );
+                  setHasResume(val);
+                }}
+              />
+            }
+            label="Has Resume"
+            labelPlacement="end"
+          />
+        </Grid2>
 
         {/* Sorting */}
         <Grid2

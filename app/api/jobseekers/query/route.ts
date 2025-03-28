@@ -16,7 +16,9 @@ export async function POST(request: Request) {
     trainingProvider = undefined,
     zipCode = undefined,
     sortBy = "yearsExp",
-    isQuality = false,
+    hasIntroduction = false,
+    hasAnySkills = false,
+    hasResume = false,
     maxResults = 50,
     page = 1,
   } = await request.json();
@@ -35,13 +37,16 @@ export async function POST(request: Request) {
     is_marked_deletion: null,
   });
 
-  // Must have an introduction, resume, & at least one skill
-  if (isQuality) {
+  if (hasIntroduction) {
     andConditions.push({ intro_headline: { not: null } });
     andConditions.push({ NOT: { intro_headline: "" } });
+  }
+  if (hasAnySkills) {
     andConditions.push({
       jobseeker_has_skills: { some: {} },
     });
+  }
+  if (hasResume) {
     andConditions.push({
       hasResume: true,
     });
