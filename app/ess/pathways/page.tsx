@@ -1,5 +1,5 @@
 import { Container, Box, Typography } from "@mui/material";
-import { Grid2 } from "@mui/material";
+import { Grid } from "@mui/material";
 import Pathways from "../ui/pathways";
 import { CategoryCardSkeleton } from "../ui/skeletons";
 import { Suspense } from "react";
@@ -21,11 +21,11 @@ export default async function Page() {
           you can select a pathway that sounds interesting to you.
         </Typography>
       </Box>
-      <Grid2 container spacing={4}>
+      <Grid container spacing={4}>
         <Suspense fallback={<CategoryCardSkeleton />}>
           <Pathways />
         </Suspense>
-      </Grid2>
+      </Grid>
     </Container>
   );
 }

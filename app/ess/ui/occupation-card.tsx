@@ -5,7 +5,7 @@ import {
   Card,
   CardContent,
   Chip,
-  Grid2,
+  Grid,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
@@ -55,7 +55,7 @@ export default function OccupationCard({
   ]);
 
   return (
-    <Grid2 size={{ md: 6 }}>
+    <Grid size={{ md: 6 }}>
       <Card
         sx={{
           border: "2px solid #00bcd4",
@@ -64,7 +64,7 @@ export default function OccupationCard({
         }}
       >
         <CardContent sx={{ height: "100%" }}>
-          <Grid2
+          <Grid
             container
             spacing={2}
             direction="row"
@@ -72,12 +72,12 @@ export default function OccupationCard({
             sx={{ height: "100%" }}
           >
             {/* Picture and Name */}
-            <Grid2>
+            <Grid>
               <Avatar sx={{ width: 75, height: 75 }}>
                 <Image src={pfpPicSrc} fill={true} alt="picture" />
               </Avatar>
-            </Grid2>
-            <Grid2>
+            </Grid>
+            <Grid>
               <Typography
                 variant="h6"
                 component="div"
@@ -85,18 +85,18 @@ export default function OccupationCard({
               >
                 {occupation.cfa_name}
               </Typography>
-            </Grid2>
+            </Grid>
             {/* Description */}
-            <Grid2>
+            <Grid>
               <Typography variant="body2" color="text.secondary">
                 {(data &&
                   data.cfa_whattheydo &&
                   truncateText(data.cfa_whattheydo, 250)) ||
                   ""}
               </Typography>
-            </Grid2>
+            </Grid>
             {/* Skills */}
-            <Grid2 size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               {data && data.cfa_toplightcastskill_Occupation.length > 0 ? (
                 <>
                   <Typography variant="h6" component="div" gutterBottom>
@@ -120,9 +120,9 @@ export default function OccupationCard({
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}></Box>
                 </>
               )}
-            </Grid2>
+            </Grid>
             {/* View Occupation */}
-            <Grid2>
+            <Grid>
               <Button
                 variant="outlined"
                 onClick={() =>
@@ -133,16 +133,16 @@ export default function OccupationCard({
               >
                 <strong>Learn more</strong>
               </Button>
-            </Grid2>
+            </Grid>
             {/* Bookmark */}
-            <Grid2>
+            <Grid>
               <Button variant="text" sx={{ color: "#00bcd4" }}>
                 Bookmark
               </Button>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
-    </Grid2>
+    </Grid>
   );
 }

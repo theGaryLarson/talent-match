@@ -15,7 +15,7 @@ import {
   AppBar,
   Box,
   Drawer,
-  Grid2,
+  Grid,
   IconButton,
   Stack,
   Toolbar,
@@ -222,9 +222,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Stack>
           </Toolbar>
         </AppBar>
-        <Grid2
-          sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}
-        >
+        <Grid sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}>
           <Drawer
             elevation={0}
             variant="permanent"
@@ -261,7 +259,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               profileLink={profileLink}
             />
           </Drawer>
-        </Grid2>
+        </Grid>
         <Box
           component="main"
           sx={{
@@ -272,7 +270,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           {children}
         </Box>
-        <Grid2
+        <Grid
           gap={2}
           container
           sx={{
@@ -299,7 +297,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Link>
             </p>
           </div>
-        </Grid2>
+        </Grid>
       </div>
     );
   } else {

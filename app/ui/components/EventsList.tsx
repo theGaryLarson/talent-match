@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Divider, Grid2, Stack, Typography } from "@mui/material";
+import { Card, Divider, Grid, Stack, Typography } from "@mui/material";
 import PillButton from "./PillButton";
 import { EventTypeEnum, PastEventGraceDuration } from "@/app/lib/events";
 import Event, { EventData } from "@/app/ui/components/Event";
@@ -89,8 +89,8 @@ export default function EventsList({
   };
 
   return (
-    <Grid2 container rowSpacing={2} columns={1}>
-      <Grid2
+    <Grid container rowSpacing={2} columns={1}>
+      <Grid
         spacing={1}
         container
         size={1}
@@ -155,8 +155,8 @@ export default function EventsList({
             My Events
           </PillButton>
         )}
-      </Grid2>
-      <Grid2 container sx={{ width: "100%" }}>
+      </Grid>
+      <Grid container sx={{ width: "100%" }}>
         <Card
           variant="outlined"
           sx={{
@@ -185,7 +185,7 @@ export default function EventsList({
               </React.Fragment>
             ))}
         </Card>
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }

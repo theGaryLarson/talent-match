@@ -2,7 +2,7 @@ import {
   Container,
   Box,
   Typography,
-  Grid2,
+  Grid,
   Paper,
   Divider,
 } from "@mui/material";
@@ -53,8 +53,8 @@ export default async function Home() {
               professionals transitioned into their IT careers.
             </Typography>
           </Paper>
-          <Grid2 container spacing={2}>
-            <Grid2 size={{ xs: 12, sm: 6 }}>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">Occupation Insights</Typography>
                 <Typography>
@@ -62,8 +62,8 @@ export default async function Home() {
                   occupations. Get in-depth insights into each role.
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">Employment Outlook</Typography>
                 <Typography>
@@ -71,8 +71,8 @@ export default async function Home() {
                   rates, salary ranges, and supply-demand trends.
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">Key Skills & Competencies</Typography>
                 <Typography>
@@ -81,8 +81,8 @@ export default async function Home() {
                   certifications.
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">Occupation Trends</Typography>
                 <Typography>
@@ -90,8 +90,8 @@ export default async function Home() {
                   skills requirements to stay ahead of industry shifts.
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12 }}>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">
                   Comprehensive Job Descriptions & Titles
@@ -104,8 +104,8 @@ export default async function Home() {
                   and data analysis.
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12 }}>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">Employer Directory</Typography>
                 <Typography>
@@ -115,8 +115,8 @@ export default async function Home() {
                   profiles, and current opportunities.
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12 }}>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">
                   Knowledge, Skills, Abilities, and Credentials (KSACs)
@@ -130,8 +130,8 @@ export default async function Home() {
                   certifications.
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12 }}>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">
                   Training Programs & Educational Institutions
@@ -143,8 +143,8 @@ export default async function Home() {
                   career goals and required KSACs.
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12 }}>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
               <Paper elevation={3} sx={{ padding: 2 }}>
                 <Typography variant="h6">Certifications Directory</Typography>
                 <Typography>
@@ -154,8 +154,8 @@ export default async function Home() {
                   career goals.
                 </Typography>
               </Paper>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </Box>
       </Container>
     </Box>

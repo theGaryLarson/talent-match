@@ -1,5 +1,5 @@
 import { SkillDTO } from "@/data/dtos/SkillDTO";
-import { Chip, ChipProps, Grid2 } from "@mui/material";
+import { Chip, ChipProps, Grid } from "@mui/material";
 import Link from "next/link";
 
 export default function Skills({
@@ -26,7 +26,7 @@ export default function Skills({
   }
 
   return (
-    <Grid2 container gap={1}>
+    <Grid container gap={1}>
       {skillsList.map((pill) => (
         <Chip
           component={Link}
@@ -50,6 +50,6 @@ export default function Skills({
       ) : (
         ""
       )}
-    </Grid2>
+    </Grid>
   );
 }

@@ -8,7 +8,7 @@ import {
   Box,
   SelectChangeEvent,
   Button,
-  Grid2,
+  Grid,
   LinearProgress,
   useTheme,
 } from "@mui/material";
@@ -162,14 +162,14 @@ export default function Page(props: {
               <Card sx={{ p: 2, mb: 2, mt: 2 }}>
                 <CardContent>
                   <EducationExperienceDetails occupation={data} />
-                  <Grid2 container spacing={2} sx={{ mt: 2 }}>
-                    <Grid2 size={{ xs: 12, md: 6 }}>
+                  <Grid container spacing={2} sx={{ mt: 2 }}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="h5" fontWeight="bold">
                         Wage Trend
                       </Typography>
                       <WageTrendDetails occupation={data} />
-                    </Grid2>
-                    <Grid2 size={{ xs: 12, md: 6 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="h5" fontWeight="bold">
                         Job Trends
                       </Typography>
@@ -206,8 +206,8 @@ export default function Page(props: {
                           {data.cfa_avgmonthlyhiresaug2023july2024}
                         </Typography>
                       </Box>
-                    </Grid2>
-                  </Grid2>
+                    </Grid>
+                  </Grid>
                 </CardContent>
               </Card>
             )}

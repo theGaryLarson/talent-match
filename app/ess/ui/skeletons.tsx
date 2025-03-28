@@ -1,7 +1,7 @@
 import {
   Card,
   CardContent,
-  Grid2,
+  Grid,
   Typography,
   CardActionArea,
   CardMedia,
@@ -12,7 +12,7 @@ import placeholder from "../../../public/placeholder.jpg";
 
 export function CategoryCardSkeleton() {
   return (
-    <Grid2>
+    <Grid>
       <Card
         sx={{
           width: 300,
@@ -46,6 +46,6 @@ export function CategoryCardSkeleton() {
           </CardContent>
         </CardActionArea>
       </Card>
-    </Grid2>
+    </Grid>
   );
 }
