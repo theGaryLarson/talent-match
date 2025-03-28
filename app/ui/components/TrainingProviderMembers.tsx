@@ -6,11 +6,6 @@ import {
 } from "@/app/lib/eduProviders";
 import RoundedButton from "./RoundedButton";
 
-// Force this component to be server-side rendered, to use updated images
-export async function getServerSideProps() {
-  return { props: {} };
-}
-
 export default async function TrainingProviderMembers() {
   const trainingProviders: ReadEduProviderDTO[] | null =
     await getAllEduProvidersDetail();
