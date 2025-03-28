@@ -146,7 +146,7 @@ export default function EventsList({
         {!showOnlyRegisteredEvents && (
           <PillButton
             color="inherit"
-            href="/services/jobseekers/dashboard/events"
+            href="/services/events/registered"
             sx={{
               color: "secondary.main",
             }}

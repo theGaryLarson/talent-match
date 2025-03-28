@@ -77,7 +77,7 @@ const jobseekerLinks = [
     label: "Applications",
   },
   {
-    href: "/services/jobseekers/dashboard/events",
+    href: "/services/events/registered",
     icon: <CalendarMonthOutlined />,
     label: "Events",
   },
