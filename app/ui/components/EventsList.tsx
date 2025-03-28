@@ -28,6 +28,7 @@ export default function EventsList({
     // separate events into past and upcoming
     const now = Date.now();
     const past = events.filter((event) => new Date(event.date).getTime() < now);
+    past.reverse(); // show most recent past events first
     const upcoming = events.filter(
       (event) => new Date(event.date).getTime() + PastEventGraceDuration > now,
     );
