@@ -48,7 +48,7 @@ const employerLinks = [
     label: "Search Candidates",
   },
   {
-    href: "/services/events",
+    href: "/services/events/registered",
     icon: <CalendarMonthOutlined />,
     label: "Events",
   },
