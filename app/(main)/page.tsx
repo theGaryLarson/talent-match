@@ -8,6 +8,9 @@ export const metadata = {
   title: "Tech Workforce Coalition",
 };
 
+// Force server-side rendering, to get latest training provider logos
+export const dynamic = "force-dynamic";
+
 export default function Page() {
   return (
     <div>
