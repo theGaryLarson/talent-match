@@ -882,7 +882,7 @@ model skills {
   skill_subcategories         skill_subcategories           @relation(fields: [skill_subcategory_id], references: [skill_subcategory_id], onUpdate: NoAction, map: "fk_skill_skill_category")
   provider_program_has_skills provider_program_has_skills[]
   volunteer_has_skills        volunteer_has_skills[]
-  JobRoleLevelSkill           JobRoleLevelSkill[]
+  JobRoleSkill                JobRoleSkill[]
 
   @@index([skill_subcategory_id], map: "skills_fk_skill_skill_category_idx")
 }
@@ -1014,49 +1014,76 @@ model PostalGeoData {
 
 // ICT Job Family Group Tables & AI Impact
 
-model JobFamily {
-  id          String    @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  name        String    @unique @db.VarChar(255)
-  trainingUrl String?   @db.VarChar(2083) // Optional URL for training resources
-  jobRoles    JobRole[]
+model JobGroup {
+  id               String             @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  name             String             @unique @db.VarChar(255)
+  tooltip          String             @db.VarChar(2083)
+  description      String             @db.Text
+  jobRoles         JobRole[]
+  trainings        Training[]         @relation("JobGroupTrainings")
+  JobGroupTraining JobGroupTraining[]
+}
+
+model Training {
+  id               String             @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  title            String             @db.VarChar(255)
+  url              String             @db.VarChar(2083)
+  provider         String?            @db.VarChar(255)
+  skillsDeveloped  String?            @db.Text
+  jobGroup         JobGroup[]         @relation("JobGroupTrainings")
+  JobGroupTraining JobGroupTraining[]
+  JobRoleTraining  JobRoleTraining[]
+}
+
+model JobGroupTraining {
+  id         String @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobGroupId String @db.UniqueIdentifier
+  trainingId String @db.UniqueIdentifier
+
+  jobGroup JobGroup @relation(fields: [jobGroupId], references: [id])
+  training Training @relation(fields: [trainingId], references: [id])
+
+  @@unique([jobGroupId, trainingId])
 }
 
 model JobRole {
-  id          String         @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  code        Int            @unique
-  title       String         @db.VarChar(255)
-  trainingUrl String?        @db.VarChar(2083) // Optional URL for training resources
-  jobFamilyId String?        @db.UniqueIdentifier
-  jobFamily   JobFamily?     @relation(fields: [jobFamilyId], references: [id])
-  levels      JobRoleLevel[]
+  id               String            @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobGroupId       String?           @db.UniqueIdentifier
+  title            String            @db.VarChar(255)
+  jobLevel         String            @db.VarChar(20)
+  jobDescription   String?           @db.Text
+  principalTasks   String?           @db.Text // delimited list
+  principalSkills  String?           @db.Text // delimited list
+  aiImpact         String?           @db.Text
+  keyInsights      String?           @db.Text
+  aiTransformation String?           @db.Text
+  jobGroup         JobGroup?         @relation(fields: [jobGroupId], references: [id])
+  skills           JobRoleSkill[]
+  JobRoleTraining  JobRoleTraining[]
 }
 
-model JobRoleLevel {
-  id               String   @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobRoleId        String
-  careerLevel      String   @db.VarChar(20)
-  aiTransformation String?  @db.VarChar(20)
-  jobDescription   String?  @db.Text
-  principalTasks   String?  @db.Text // delimited list
-  principalSkills  String?  @db.Text // delimited list
+model JobRoleTraining {
+  id         String @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobRoleId  String @db.UniqueIdentifier
+  trainingId String @db.UniqueIdentifier
+
+  jobRole  JobRole  @relation(fields: [jobRoleId], references: [id])
+  training Training @relation(fields: [trainingId], references: [id])
+
+  @@unique([jobRoleId, trainingId])
+}
+
+model JobRoleSkill {
+  id                 String  @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobRoleId          String  @db.UniqueIdentifier
+  skillId            String  @db.UniqueIdentifier
+  aiImpact           String  @db.VarChar(20)
+  currentProficiency String  @db.VarChar(50)
+  futureRelevance    String  @db.VarChar(50)
+  trainingRequired   Boolean @default(false)
 
   jobRole JobRole @relation(fields: [jobRoleId], references: [id])
-  skills  JobRoleLevelSkill[]
+  skill   skills  @relation(fields: [skillId], references: [skill_id])
 
-  @@unique([jobRoleId, careerLevel])
-}
-
-model JobRoleLevelSkill {
-  id                 String   @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobRoleLevelId     String
-  skillId            String
-  aiImpact           String   @db.VarChar(20)
-  currentProficiency String   @db.VarChar(50)
-  futureRelevance    String   @db.VarChar(50)
-  trainingRequired   Boolean  @default(false)
-
-  jobRoleLevel JobRoleLevel @relation(fields: [jobRoleLevelId], references: [id])
-  skill        skills       @relation(fields: [skillId], references: [skill_id])
-
-  @@unique([jobRoleLevelId, skillId])
+  @@unique([jobRoleId, skillId])
 }
