@@ -27,10 +27,9 @@ export interface CareerPrepGridData {
   "CP Enrollment Status": CareerPrepStatus;
   HighestEdLevel: string;
   "Pool Type": PoolCategories;
-  "Pathway Title": string;
-  JobseekerCreatedAt: Date;
-  JobseekerUpdatedAt: Date;
-  EnrollmentDate: Date;
+  //"Pathway Title": string;
+  // JobseekerCreatedAt: Date;
+  // JobseekerUpdatedAt: Date;
   user_id: string;
   CybersecurityRating: CybersecurityRating[];
   DataAnalyticsRating: DataAnalyticsRating[];
