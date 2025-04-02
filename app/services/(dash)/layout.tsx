@@ -43,7 +43,7 @@ const employerLinks = [
     label: "Jobs",
   },
   {
-    href: "/services/talent-search",
+    href: "/services/employers/dashboard/talent-search",
     icon: <SearchRounded />,
     label: "Search Candidates",
   },
