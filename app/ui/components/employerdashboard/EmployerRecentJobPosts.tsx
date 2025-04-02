@@ -265,7 +265,7 @@ export default function EmployerRecentJobPosts({
                                 <PillButton
                                   target="_blank"
                                   href={
-                                    "/services/talent-search?skills=" +
+                                    "/services/employers/dashboard/talent-search?skills=" +
                                     job.skills?.map((skill) => skill.skill_name)
                                   }
                                   fullWidth
@@ -460,7 +460,7 @@ export default function EmployerRecentJobPosts({
                         fullWidth
                         color="secondary"
                         href={
-                          "/services/talent-search?skills=" +
+                          "/services/employers/dashboard/talent-search?skills=" +
                           job.skills?.map((skill) => skill.skill_name)
                         }
                       >

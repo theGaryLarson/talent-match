@@ -130,7 +130,7 @@ export default async function Page() {
               size="large"
               color="secondary"
               startIcon={<SearchOutlined />}
-              href="/services/talent-search"
+              href="/services/employers/dashboard/talent-search"
               sx={{ width: { xs: "100%", sm: "auto" } }}
             >
               Search for Candidates
@@ -173,7 +173,7 @@ export default async function Page() {
               </Typography>
               <PillButton
                 color="inherit"
-                href="/services/talent-search"
+                href="/services/employers/dashboard/talent-search"
                 startIcon={<SearchOutlined />}
                 sx={{ color: "secondary.main" }}
               >

@@ -34,7 +34,7 @@ export async function POST(request: Request) {
         data: {
           years_work_exp: yearsWorkExperience
             ? parseInt(yearsWorkExperience, 10)
-            : null,
+            : 0,
           months_internship_exp: monthsInternshipExperience
             ? parseInt(monthsInternshipExperience, 10)
             : null,
