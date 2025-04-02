@@ -4,7 +4,6 @@ import { jobSeekerCardViewSelect } from "@/app/lib/prisma";
 import { educationRank } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { devLog } from "@/app/lib/utils";
-import { PoolCategories } from "@/app/lib/poolAssignment";
 
 const prisma = new PrismaClient();
 
@@ -14,8 +13,13 @@ export async function POST(request: Request) {
     industrySector = [],
     educationLevel = undefined,
     trainingProvider = undefined,
+    yearsWorkExpMin = 0,
+    yearsWorkExpMax = undefined,
     zipCode = undefined,
     sortBy = "yearsExp",
+    hasIntroduction = false,
+    hasAnySkills = false,
+    hasResume = false,
     maxResults = 50,
     page = 1,
   } = await request.json();
@@ -25,14 +29,21 @@ export async function POST(request: Request) {
   );
 
   const andConditions: any[] = [];
-  andConditions.push({
-    OR: [
-      { assignedPool: PoolCategories.Recommended }, // pool1 is now assignedPool with Recommended category
-      { assignedPool: PoolCategories.JobReady }, // pool2 is now assignedPool with JobReady category
-    ],
-    assignedPool: { not: PoolCategories.NotJobReady }, // Ensure assignedPool is not "pool3"
-    is_marked_deletion: null,
-  });
+
+  if (hasIntroduction) {
+    andConditions.push({ intro_headline: { not: null } });
+    andConditions.push({ NOT: { intro_headline: "" } });
+  }
+  if (hasAnySkills) {
+    andConditions.push({
+      jobseeker_has_skills: { some: {} },
+    });
+  }
+  if (hasResume) {
+    andConditions.push({
+      hasResume: true,
+    });
+  }
 
   if (normalizedSkills.length > 0) {
     // Here we are checking if the skills are highlighted in projects or listed as their top five
@@ -69,6 +80,30 @@ export async function POST(request: Request) {
     ];
     // fixme: let's change this to an { OR: orConditions } when we have a healthy amount of jobseeker users.
     andConditions.push({ OR: orConditions });
+  }
+
+  // Years Work Experience Filtering with both lower and upper bounds
+  if (yearsWorkExpMin !== undefined && yearsWorkExpMax !== undefined) {
+    andConditions.push({
+      years_work_exp: {
+        gte: yearsWorkExpMin, // Greater than or equal to the minimum
+        lte: yearsWorkExpMax, // Less than or equal to the maximum
+      },
+    });
+  } else if (yearsWorkExpMin !== undefined) {
+    // If only minimum is specified
+    andConditions.push({
+      years_work_exp: {
+        gte: yearsWorkExpMin,
+      },
+    });
+  } else if (yearsWorkExpMax !== undefined) {
+    // If only maximum is specified
+    andConditions.push({
+      years_work_exp: {
+        lte: yearsWorkExpMax,
+      },
+    });
   }
 
   // Industry Sector Filtering

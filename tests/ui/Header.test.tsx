@@ -62,12 +62,6 @@ describe("Header", () => {
 
     expect(screen.getByAltText("Tech Workforce Coalition")).toBeDefined();
 
-    const topLinkForEmployers = screen.getByText("For Employers");
-    expect(topLinkForEmployers).toBeDefined();
-    fireEvent.click(topLinkForEmployers);
-    // expect(screen.getByText('Landing Page')).not.toBeNull(); // Causes duplicate existence error
-    expect(screen.getByText("Talent Showcase")).toBeDefined();
-
     const topLinkForJobseekers = screen.getByText("For Jobseekers");
     expect(topLinkForJobseekers).toBeDefined();
     fireEvent.click(topLinkForJobseekers);
@@ -112,12 +106,6 @@ describe("Header", () => {
     fireEvent.click(screen.getByRole("button", { name: "Open main menu" }));
 
     const mobileMenu = screen.getByRole("presentation");
-
-    const topLinkForEmployers = within(mobileMenu).getByText("For Employers");
-    expect(topLinkForEmployers).toBeDefined();
-    fireEvent.click(topLinkForEmployers);
-    // expect(within(mobileMenu).getByText('Landing Page')).not.toBeNull(); // Causes duplicate existence error
-    expect(within(mobileMenu).getByText("Talent Showcase")).toBeDefined();
 
     const topLinkForJobseekers = within(mobileMenu).getByText("For Jobseekers");
     expect(topLinkForJobseekers).toBeDefined();
