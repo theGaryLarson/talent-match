@@ -30,7 +30,6 @@ import {
 import AccountMenu from "@/app/ui/components/mui/AccountMenu";
 import {
   BuildingOffice2Icon,
-  SparklesIcon,
   BriefcaseIcon,
   NewspaperIcon,
   UserGroupIcon,
@@ -58,11 +57,6 @@ const TopLevelLinks: TopLevelLink[] = [
         name: "Landing Page",
         href: "/services/employers",
         icon: BuildingOffice2Icon,
-      },
-      {
-        name: "Talent Showcase",
-        href: "/services/talent-search",
-        icon: SparklesIcon,
       },
     ],
   },

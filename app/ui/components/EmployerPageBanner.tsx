@@ -28,7 +28,7 @@ export default async function EmployerPageBanner() {
         <div className="gap-4 flex flex-row items-start justify-start">
           <RoundedButton
             content={"Search Talent"}
-            link={"/services/talent-search"}
+            link={"/services/employers/dashboard/talent-search"}
             invertColor={false}
           />
           <RoundedButton
