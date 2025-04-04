@@ -11,6 +11,7 @@ import {
   Menu,
   //NotificationsOutlined,
   PersonOutlineRounded,
+  SearchRounded,
   TaskOutlined,
   WorkOutlineRounded,
 } from "@mui/icons-material";
@@ -33,6 +34,11 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
       href: "/career-prep",
       icon: <PersonOutlineRounded />,
       label: "Home",
+    },
+    {
+      href: "/career-prep/talent-search",
+      icon: <SearchRounded />,
+      label: "Talent Search",
     },
     {
       href: "/career-prep/my-case-load",

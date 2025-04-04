@@ -171,7 +171,7 @@ export default function Event({ event, registered, showLink }: EventProps) {
     <div
       role="button"
       tabIndex={0}
-      className="w-full rounded-md p-4 hover:bg-slate-200 grid grid-cols-4 justify-start items-center mb-4 cursor-pointer gap-8"
+      className="w-full rounded-md p-4 hover:bg-slate-200 grid grid-cols-12 justify-start items-center mb-4 cursor-pointer gap-8"
     >
       <Modal
         open={open}
@@ -184,41 +184,36 @@ export default function Event({ event, registered, showLink }: EventProps) {
       {/* Event info in table row */}
       <div
         onClick={handleOpen}
-        className="self-stretch justify-start items-center flex"
+        className="tablet:col-span-6 col-span-6 text-sky-900 text-base font-medium leading-normal tracking-tight cursor-pointer"
       >
-        <div className="grow shrink basis-0 self-stretch justify-start items-center flex">
-          <div className="grow shrink basis-0 text-sky-900 text-base font-medium leading-normal tracking-tight">
-            {event.name}
-          </div>
-        </div>
+        {event.name}
       </div>
+
       <div
         onClick={handleOpen}
-        className="self-stretch justify-start items-center flex"
+        className="tablet:col-span-2 col-span-3 text-sky-900 text-base font-normal leading-normal tracking-tight"
       >
-        <div className="grow shrink basis-0 text-sky-900 text-base font-</div>normal leading-normal tracking-tight">
-          {new Date(event.date).toDateString()}
-        </div>
+        {new Date(event.date).toDateString()}
       </div>
+
       <div
         onClick={handleOpen}
-        className="self-stretch justify-start items-center flex"
+        className="tablet:col-span-2  tablet:block hidden text-zinc-900/60 text-base font-normal leading-normal tracking-tight"
       >
-        <div className="grow shrink basis-0 text-zinc-900/60 text-base font-normal leading-normal tracking-tight">
-          {new Date(event.date).toLocaleTimeString([], {
+        {new Date(event.date).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }) +
+          " - " +
+          new Date(endTime).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
-          }) +
-            " - " +
-            new Date(endTime).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-        </div>
+          })}
       </div>
+
       <div
         onClick={handleOpen}
-        className="flex-col justify-start items-start inline-flex"
+        className="tablet:col-span-2 col-span-3 flex flex-col justify-start items-end"
       >
         {event.recordingLink && (
           <div className="text-sky-600 underline text-base font-normal leading-normal tracking-tight">

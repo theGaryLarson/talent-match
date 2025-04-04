@@ -16,7 +16,14 @@ import { TrainingProviderDropdownDTO } from "@/data/dtos/TrainingProviderDropdow
 import SingleSelectFilterAutoload from "@/app/ui/components/mui/SingleSelectFilterAutoload";
 import { useSession } from "next-auth/react";
 import { Role } from "@/data/dtos/UserInfoDTO";
-import { Box, Grid2 } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Grid2,
+  Slider,
+  Typography,
+} from "@mui/material";
 import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 const resultsPerPage = 50;
@@ -31,15 +38,17 @@ async function fetchFilteredJobSeekerCardView(
   industrySector: string[] = [],
   educationLevel: string = "",
   trainingProvider: string = "",
+  yearsWorkExpMin: number = 0,
+  yearsWorkExpMax: number | undefined = undefined,
   zipCode: string = "",
   sortBy: string = "yearsExp",
+  hasIntroduction: boolean = false,
+  hasAnySkills: boolean = false,
+  hasResume: boolean = false,
   maxResults: number = resultsPerPage,
   page: number = 1,
 ): Promise<JobSeekerQueryResult> {
-  // Filter based on pools
-  const pool1 = true,
-    pool2 = true,
-    pool3 = false;
+  if (yearsWorkExpMax == 5) yearsWorkExpMax = undefined;
 
   const response = await fetch("/api/jobseekers/query", {
     // Make the request
@@ -52,13 +61,15 @@ async function fetchFilteredJobSeekerCardView(
       industrySector,
       educationLevel,
       trainingProvider,
+      yearsWorkExpMin,
+      yearsWorkExpMax,
       zipCode,
       sortBy,
+      hasIntroduction,
+      hasAnySkills,
+      hasResume,
       maxResults,
       page,
-      pool1,
-      pool2,
-      pool3,
     }),
   });
   if (!response.ok) {
@@ -95,7 +106,12 @@ export default function TalentSearch() {
   const [industry, setIndustry] = useState<string[]>();
   const [eduLevel, setEduLevel] = useState<string>();
   const [trainingProvider, setTrainingProvider] = useState<string>();
+  const [yearsExpMin, setYearsExpMin] = useState<number>();
+  const [yearsExpMax, setYearsExpMax] = useState<number>();
   const [zipCode, setZipCode] = useState<string>();
+  const [hasIntroduction, setHasIntroduction] = useState<boolean>(false);
+  const [hasAnySkills, setHasAnySkills] = useState<boolean>(false);
+  const [hasResume, setHasResume] = useState<boolean>(false);
 
   // Sorting and pagination
   const [sortBy, setSortBy] = useState<string>();
@@ -151,8 +167,13 @@ export default function TalentSearch() {
         industry,
         eduLevel,
         trainingProvider,
+        yearsExpMin,
+        yearsExpMax,
         zipCode,
         sortBy,
+        hasIntroduction,
+        hasAnySkills,
+        hasResume,
         resultsPerPage,
         page,
       );
@@ -164,7 +185,20 @@ export default function TalentSearch() {
     } finally {
       setLoading(false);
     }
-  }, [skillsList, industry, eduLevel, trainingProvider, zipCode, sortBy, page]);
+  }, [
+    skillsList,
+    industry,
+    eduLevel,
+    trainingProvider,
+    yearsExpMin,
+    yearsExpMax,
+    zipCode,
+    hasIntroduction,
+    hasAnySkills,
+    hasResume,
+    sortBy,
+    page,
+  ]);
 
   useEffect(() => {
     const fetchBookmarked = async () => {
@@ -197,6 +231,8 @@ export default function TalentSearch() {
       industry == undefined &&
       eduLevel == undefined &&
       trainingProvider == undefined &&
+      yearsExpMin == undefined &&
+      yearsExpMax == undefined &&
       zipCode == undefined &&
       sortBy == undefined &&
       page == undefined
@@ -205,7 +241,32 @@ export default function TalentSearch() {
       setIndustry(getArrayParam("industry"));
       setEduLevel(getParam("eduLevel"));
       setTrainingProvider(getParam("trainingProvider"));
+      setYearsExpMin(+getParam("yearsExpMin"));
+      setYearsExpMax(
+        +getParam("yearsExpMax") == 0 ? 5 : +getParam("yearsExpMax"),
+      );
       setZipCode(getParam("zipcode"));
+      setHasIntroduction(
+        getParam("has-introduction") === "true"
+          ? true
+          : getParam("has-introduction") !== "false"
+            ? true
+            : false,
+      );
+      setHasAnySkills(
+        getParam("has-any-skills") === "true"
+          ? true
+          : getParam("has-any-skills") !== "false"
+            ? true
+            : false,
+      );
+      setHasResume(
+        getParam("has-resume") === "true"
+          ? true
+          : getParam("has-resume") !== "false"
+            ? true
+            : false,
+      );
       setSortBy(getParam("sort") != "" ? getParam("sort") : "yearsExp");
       const pageParam = getParam("page");
       const pageNumber = pageParam ? +pageParam : 0;
@@ -217,7 +278,20 @@ export default function TalentSearch() {
       }, 500); // simple 0.5sec debounce to avoid rapid queries that could return out of order
       return () => clearTimeout(timeoutId);
     }
-  }, [skillsList, industry, eduLevel, trainingProvider, zipCode, sortBy, page]);
+  }, [
+    skillsList,
+    industry,
+    eduLevel,
+    trainingProvider,
+    yearsExpMin,
+    yearsExpMax,
+    zipCode,
+    hasIntroduction,
+    hasAnySkills,
+    hasResume,
+    sortBy,
+    page,
+  ]);
 
   return (
     <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
@@ -372,16 +446,107 @@ export default function TalentSearch() {
           />
         </Grid2>
 
-        {/* Years of Experience, Removed at Marketing's request */}
-        <Grid2
-          size={{ xs: 12, sm: 6, md: 4 }}
-          sx={{ display: { xs: "none", sm: "block" } }}
-        ></Grid2>
+        {/* Years of Experience */}
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+          <Typography sx={{ justifySelf: "center" }}>
+            Years of Experience
+          </Typography>
+          <Slider
+            size="small"
+            value={[
+              yearsExpMin ?? 0,
+              yearsExpMax ? (yearsExpMax == 0 ? 5 : yearsExpMax) : 5,
+            ]}
+            onChange={(event: Event, newValue: number | number[]) => {
+              if (typeof newValue !== "number") {
+                setYearsExpMin(newValue[0]);
+                setYearsExpMax(newValue[1]);
+                setQueryParam("yearsExpMin", newValue[0].toString());
+                setQueryParam("yearsExpMax", newValue[1].toString());
+              }
+            }}
+            getAriaLabel={() => "Years of Experience filter range"}
+            getAriaValueText={(value: number, index: number) => {
+              return index == 0 ? "min: " + value : "max: " + value;
+            }}
+            step={1}
+            marks={[
+              { value: 0, label: "0" },
+              { value: 1, label: "1" },
+              { value: 2, label: "2" },
+              { value: 3, label: "3" },
+              { value: 4, label: "4" },
+              { value: 5, label: "5+" },
+            ]}
+            min={0}
+            max={5}
+            disableSwap
+          />
+        </Grid2>
+        {/* Has Introduction, any skills, and/or Resume */}
+        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+          <FormControlLabel
+            value=""
+            control={
+              <Checkbox
+                checked={hasIntroduction}
+                onChange={(event: any) => {
+                  const val = event.target.checked;
+                  setQueryParam(
+                    "has-introduction",
+                    encodeURIComponent(val.toString()),
+                  );
+                  setHasIntroduction(val);
+                }}
+              />
+            }
+            label="Has Introduction"
+            labelPlacement="end"
+          />
+
+          <FormControlLabel
+            value=""
+            control={
+              <Checkbox
+                checked={hasAnySkills}
+                onChange={(event: any) => {
+                  const val = event.target.checked;
+                  setQueryParam(
+                    "has-any-skills",
+                    encodeURIComponent(val.toString()),
+                  );
+                  setHasAnySkills(val);
+                }}
+              />
+            }
+            label="Has any Skills"
+            labelPlacement="end"
+          />
+
+          <FormControlLabel
+            value=""
+            control={
+              <Checkbox
+                checked={hasResume}
+                onChange={(event: any) => {
+                  const val = event.target.checked;
+                  setQueryParam(
+                    "has-resume",
+                    encodeURIComponent(val.toString()),
+                  );
+                  setHasResume(val);
+                }}
+              />
+            }
+            label="Has Resume"
+            labelPlacement="end"
+          />
+        </Grid2>
 
         {/* Sorting */}
         <Grid2
           container
-          size={{ xs: 12, sm: 6, md: 4 }}
+          size={12}
           sx={{ justifyContent: "flex-end", alignItems: "flex-end" }}
         >
           <SortDropdown
@@ -394,7 +559,7 @@ export default function TalentSearch() {
             }}
             options={[
               // TODO: future preference for sorting by distance, currently achieved by searching with partial zip code
-              // { label: "Years of Experience", value: "yearsExp" },
+              { label: "Years of Experience", value: "yearsExp" },
               { label: "Highest Degree", value: "highestDegree" },
               { label: "Newest", value: "newest" },
             ]}

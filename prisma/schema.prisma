@@ -666,7 +666,7 @@ model jobseekers {
   intro_headline                   String?                   @db.VarChar(max)
   current_job_title                String?                   @db.VarChar(255)
   linkedin_url                     String?                   @db.VarChar(255)
-  years_work_exp                   Int?                      @db.SmallInt
+  years_work_exp                   Int                       @default(0) @db.SmallInt
   months_internship_exp            Int?                      @db.SmallInt
   portfolio_url                    String?                   @db.VarChar(255)
   portfolio_password               String?                   @db.NVarChar(255)
@@ -674,6 +674,7 @@ model jobseekers {
   employment_type_sought           String?                   @db.NVarChar(255)
   is_marked_deletion               DateTime?                 @db.DateTime
   assignedPool                     String?                   @db.VarChar(20)
+  hasResume                        Boolean                   @default(false) @db.Bit
   careerPrepComplete               Boolean                   @default(false) @db.Bit
   prescreened                      Boolean                   @default(false) @db.Bit
   careerPrepTrackRecommendation    String?                   @db.VarChar(25)

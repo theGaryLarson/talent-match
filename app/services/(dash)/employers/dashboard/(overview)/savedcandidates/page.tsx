@@ -13,7 +13,10 @@ export default async function Page() {
           <div>
             <p>
               No Saved Candidates Found:{" "}
-              <Link href={"/services/talent-search"} className="LINK">
+              <Link
+                href={"/services/employers/dashboard/talent-search"}
+                className="LINK"
+              >
                 Find Candidates here
               </Link>
             </p>
