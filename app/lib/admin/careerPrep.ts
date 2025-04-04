@@ -224,7 +224,7 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
     } finally {
       prisma.$disconnect();
     }
-   };
+  };
 /**
  * Asynchronously retrieves a list of unmanaged Career Prep students.
  * Returns a Promise that resolves to an array of CareerPrepJobseekerCardViewDTO objects.
@@ -288,54 +288,64 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
     return [];
   }
 };
-export const getAllJobSeekersForCareerPrepHomePage = async ():Promise<CareerPrepGridData[]> =>{
+export const getAllJobSeekersForCareerPrepHomePage = async (): Promise<
+  CareerPrepGridData[]
+> => {
   try {
     const JobSeekers = await prisma.jobseekers.findMany({
       include: {
-        CareerPrepAssessment:{
-          include:{
-            CybersecurityRating:true,
-            DataAnalyticsRating:true,
-            ITCloudRating:true,
-            CaseMgmt:true,
-            SoftwareDevRating:true,
-            DurableSkillsRating:true,
-            BrandingRating:true,
+        CareerPrepAssessment: {
+          include: {
+            CybersecurityRating: true,
+            DataAnalyticsRating: true,
+            ITCloudRating: true,
+            CaseMgmt: true,
+            SoftwareDevRating: true,
+            DurableSkillsRating: true,
+            BrandingRating: true,
           },
         },
-        users:true,
-
-      }
-    })
-    const transformedData: CareerPrepGridData[] =
-      JobSeekers.map((item) => ({
-        AppearOnShowCase: item.prescreened,
-        CybersecurityRating: item.CareerPrepAssessment.flatMap((cpa)=>cpa.CybersecurityRating),
-        DataAnalyticsRating: item.CareerPrepAssessment.flatMap((cpa)=>cpa.DataAnalyticsRating),
-        SoftwareDevRating: item.CareerPrepAssessment.flatMap((cpa)=>cpa.SoftwareDevRating),
-        DurableSkillsRating: item.CareerPrepAssessment.flatMap((cpa)=>cpa.DurableSkillsRating),
-        ITCloudRating: item.CareerPrepAssessment.flatMap((cpa)=>cpa.ITCloudRating),
-        BrandingRating: item.CareerPrepAssessment.flatMap((cpa)=>cpa.BrandingRating),
-        jobseeker_id: item.jobseeker_id,
-        first_name: item.users?.first_name || "",
-        HighestEdLevel:
-          item.highest_level_of_study_completed ?? "Unknown",
-        last_name: item.users?.last_name || "",
-        email: item.users.email,
-        careerPrepTrackRecommendation: item.careerPrepTrackRecommendation as CareerPrepTrack,
-        user_id: item.users.id,
-        "CP Enrollment Status": item.CareerPrepAssessment.pop()?.CaseMgmt
-          ?.prepEnrollmentStatus as CareerPrepStatus,
-        "Pool Type":
-          (item.assignedPool as PoolCategories) ||
-          PoolCategories.None,
-      }));
+        users: true,
+      },
+    });
+    const transformedData: CareerPrepGridData[] = JobSeekers.map((item) => ({
+      AppearOnShowCase: item.prescreened,
+      CybersecurityRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.CybersecurityRating,
+      ),
+      DataAnalyticsRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.DataAnalyticsRating,
+      ),
+      SoftwareDevRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.SoftwareDevRating,
+      ),
+      DurableSkillsRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.DurableSkillsRating,
+      ),
+      ITCloudRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.ITCloudRating,
+      ),
+      BrandingRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.BrandingRating,
+      ),
+      jobseeker_id: item.jobseeker_id,
+      first_name: item.users?.first_name || "",
+      HighestEdLevel: item.highest_level_of_study_completed ?? "Unknown",
+      last_name: item.users?.last_name || "",
+      email: item.users.email,
+      careerPrepTrackRecommendation:
+        item.careerPrepTrackRecommendation as CareerPrepTrack,
+      user_id: item.users.id,
+      "CP Enrollment Status": item.CareerPrepAssessment.pop()?.CaseMgmt
+        ?.prepEnrollmentStatus as CareerPrepStatus,
+      "Pool Type": (item.assignedPool as PoolCategories) || PoolCategories.None,
+    }));
     return transformedData;
   } catch (error) {
     console.error(error);
     return [];
   }
-}
+};
 export const getAllPreScreenedCareerPrepStudents = async (): Promise<
   CareerPrepGridData[]
 > => {
@@ -345,7 +355,7 @@ export const getAllPreScreenedCareerPrepStudents = async (): Promise<
         select: selectCareerPrepStudentCardView,
         where: {
           Jobseeker: {
-            prescreened:true
+            prescreened: true,
           },
         },
       });

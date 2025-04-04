@@ -108,15 +108,15 @@ export default function CareerPrepDataGrid({
     {
       field: "Status",
       headerName: "CP Enrollment Status",
-      renderCell: (params) => (
-          params.row["CP Enrollment Status"]?
+      renderCell: (params) =>
+        params.row["CP Enrollment Status"] ? (
           <EnrollmentStatusDropDown
-          careerPrepEnrollmentStatus={params.row["CP Enrollment Status"]}
-          jobseekerId={params.row.jobseeker_id}
-        />:'Not Enrolled'
-        
-        
-      ),
+            careerPrepEnrollmentStatus={params.row["CP Enrollment Status"]}
+            jobseekerId={params.row.jobseeker_id}
+          />
+        ) : (
+          "Not Enrolled"
+        ),
       width: 160,
     },
     ...ratingColumns,
