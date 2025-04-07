@@ -1747,7 +1747,7 @@ export const getBrandingRatings = async (
       }
     : null;
 };
-
+// TODO: Align with ICT Job Group Families
 // Career Prep Pathways are a subset of enum EduProviderPathways
 export enum CareerPrepPathways {
   SOFTWARE_DEVELOPER = "Software Developer",
