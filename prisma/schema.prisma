@@ -784,11 +784,15 @@ model pathway_subcategories {
 model pathways {
   pathway_id                  String                        @id(clustered: false, map: "pathways_PRIMARY") @db.UniqueIdentifier
   pathway_title               String                        @unique @db.VarChar(255)
+  tooltip                     String?                       @db.Text
+  description                 String?                       @db.Text
   jobseekers                  jobseekers[]
   pathway_has_skills          pathway_has_skills[]
   pathway_subcategories       pathway_subcategories[]
   proj_based_tech_assessments proj_based_tech_assessments[]
   self_assessments            self_assessments[]
+  jobRoles                    JobRole[]
+  PathwayTraining             PathwayTraining[]
 }
 
 model proj_based_tech_assessments {
@@ -1014,41 +1018,32 @@ model PostalGeoData {
 
 // ICT Job Family Group Tables & AI Impact
 
-model JobGroup {
-  id               String             @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  name             String             @unique @db.VarChar(255)
-  tooltip          String             @db.VarChar(2083)
-  description      String             @db.Text
-  jobRoles         JobRole[]
-  trainings        Training[]         @relation("JobGroupTrainings")
-  JobGroupTraining JobGroupTraining[]
-}
+// Job Family Group is stored in pathways model
 
 model Training {
-  id               String             @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  title            String             @db.VarChar(255)
-  url              String             @db.VarChar(2083)
-  provider         String?            @db.VarChar(255)
-  skillsDeveloped  String?            @db.Text
-  jobGroup         JobGroup[]         @relation("JobGroupTrainings")
-  JobGroupTraining JobGroupTraining[]
-  JobRoleTraining  JobRoleTraining[]
+  id              String            @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  title           String            @db.VarChar(255)
+  url             String            @db.VarChar(2083)
+  provider        String?           @db.VarChar(255)
+  skillsDeveloped String?           @db.Text
+  PathwayTraining PathwayTraining[]
+  JobRoleTraining JobRoleTraining[]
 }
 
-model JobGroupTraining {
-  id         String @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobGroupId String @db.UniqueIdentifier
-  trainingId String @db.UniqueIdentifier
+model PathwayTraining {
+  // renamed from JobGroupTraining
+  id         String    @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  pathwayId  String?   @db.UniqueIdentifier
+  trainingId String    @db.UniqueIdentifier
+  training   Training  @relation(fields: [trainingId], references: [id])
+  pathways   pathways? @relation(fields: [pathwayId], references: [pathway_id])
 
-  jobGroup JobGroup @relation(fields: [jobGroupId], references: [id])
-  training Training @relation(fields: [trainingId], references: [id])
-
-  @@unique([jobGroupId, trainingId])
+  @@unique([pathwayId, trainingId])
 }
 
 model JobRole {
   id               String            @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobGroupId       String?           @db.UniqueIdentifier
+  pathwayId        String?           @db.UniqueIdentifier
   title            String            @db.VarChar(255)
   jobLevel         String            @db.VarChar(20)
   jobDescription   String?           @db.Text
@@ -1057,9 +1052,9 @@ model JobRole {
   aiImpact         String?           @db.Text
   keyInsights      String?           @db.Text
   aiTransformation String?           @db.Text
-  jobGroup         JobGroup?         @relation(fields: [jobGroupId], references: [id])
   skills           JobRoleSkill[]
   JobRoleTraining  JobRoleTraining[]
+  pathway          pathways?         @relation(fields: [pathwayId], references: [pathway_id])
 }
 
 model JobRoleTraining {

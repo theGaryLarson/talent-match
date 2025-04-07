@@ -1,56 +1,64 @@
 BEGIN TRAN;
 
 ------------------------------------------------------------------
--- 1) INSERT JOB GROUPS
+-- 1) INSERT PATHWAYS (AKA JOB GROUP FAMILIES)
 ------------------------------------------------------------------
-INSERT INTO [dbo].[JobGroup] (id, name, tooltip, description)
-VALUES (NEWID(), 'Business and Management',
-        'Managing the development, business analysis and marketing of technology products and services.',
-        'The role of AI in Business and Management has undergone a profound evolution since IBM''s 1979 declaration that "A computer can never be held accountable; therefore, a computer must never make a management decision." Fast forward to today, while AI has made significant strides, human oversight remains paramount. AI today can help to create product strategies, provide predictive analytics, automate processes, develop reports, manage large-scale projects, and improve customer satisfaction. However, this reliance on AI necessitates robust contingency plans to mitigate risks associated with business decisions, system failures or technical glitches. The increasing integration of AI underscores the demand for skilled workers in the field. Organizations may encounter challenges in recruiting and retaining AI talent, highlighting the need for skill development initiatives. Despite AI''s capabilities, management decisions ultimately remain within the purview of human expertise and judgment, even as AI continues to reshape business operations.'),
+WITH source (pathway_title, tooltip, description) AS (
+    SELECT *
+    FROM (VALUES ('Business and Management',
+                  'Managing the development, business analysis and marketing of technology products and services.',
+                  'The role of AI in Business and Management has undergone a profound evolution since IBM''s 1979 declaration that "A computer can never be held accountable; therefore, a computer must never make a management decision." Fast forward to today, while AI has made significant strides, human oversight remains paramount. AI today can help to create product strategies, provide predictive analytics, automate processes, develop reports, manage large-scale projects, and improve customer satisfaction. However, this reliance on AI necessitates robust contingency plans to mitigate risks associated with business decisions, system failures or technical glitches. The increasing integration of AI underscores the demand for skilled workers in the field. Organizations may encounter challenges in recruiting and retaining AI talent, highlighting the need for skill development initiatives. Despite AI''s capabilities, management decisions ultimately remain within the purview of human expertise and judgment, even as AI continues to reshape business operations.'),
 
-       (NEWID(), 'Cybersecurity',
-        'Protecting systems, networks, and data from security breaches and cyberattacks.',
-        'With the advent of AI, the Cybersecurity job roles have witnessed transition, as 70% of Cybersecurity leaders (CISOs) believe AI gives the advantage to attackers over defenders. However, 35% of the CISOs are already experimenting with it for cyber defense, and 61% will likely use it in the next 12 months. Additionally, 86% of CISOs believe that Gen AI will help alleviate skills gaps and talent shortages on the security team. With the intervention of AI there has been an upgrade to the quality of work. Routine tasks such as log analysis and basic threat detection are being automated—potentially reducing time spent on entry-level tasks—while the right skillset can leverage AI to automate report generation and malware analysis.'),
+                 ('Cybersecurity',
+                  'Protecting systems, networks, and data from security breaches and cyberattacks.',
+                  'With the advent of AI, the Cybersecurity job roles have witnessed transition, as 70% of Cybersecurity leaders (CISOs) believe AI gives the advantage to attackers over defenders. However, 35% of the CISOs are already experimenting with it for cyber defense, and 61% will likely use it in the next 12 months. Additionally, 86% of CISOs believe that Gen AI will help alleviate skills gaps and talent shortages on the security team. With the intervention of AI there has been an upgrade to the quality of work. Routine tasks such as log analysis and basic threat detection are being automated—potentially reducing time spent on entry-level tasks—while the right skillset can leverage AI to automate report generation and malware analysis.'),
 
-       (NEWID(), 'Data Science',
-        'Analyzing and interpreting large sets of data to extract valuable insights.',
-        'Data science leverages advanced statistics and machine learning to tackle business and product challenges through a structured approach encompassing problem identification, data collection, exploration, cleaning, model building, iteration, and communication. In this evolving landscape, the integration of AI marks a transformative shift in business operations and decision-making. AI technologies like NLP, LLMs, Gen AI, and automated data processing have revolutionized data analysis with complex nonlinear correlations and advanced models. While AI enhances efficiency and accelerates data processing, it emphasizes the ongoing necessity of human expertise in interpreting results, validating outputs, and making strategic decisions.'),
+                 ('Data Science',
+                  'Analyzing and interpreting large sets of data to extract valuable insights.',
+                  'Data science leverages advanced statistics and machine learning to tackle business and product challenges through a structured approach encompassing problem identification, data collection, exploration, cleaning, model building, iteration, and communication. In this evolving landscape, the integration of AI marks a transformative shift in business operations and decision-making. AI technologies like NLP, LLMs, Gen AI, and automated data processing have revolutionized data analysis with complex nonlinear correlations and advanced models. While AI enhances efficiency and accelerates data processing, it emphasizes the ongoing necessity of human expertise in interpreting results, validating outputs, and making strategic decisions.'),
 
-       (NEWID(), 'Design and User Experience',
-        'Designing the user experience and interface.',
-        'Effective design hinges on understanding human needs and emotions. This user-centric approach is critical for creating products that resonate with users and achieve desired outcomes. The significance of Design and UX skills is underscored by the World Economic Forum''s Future of Jobs Report 2023, which identifies these skills as top priorities for reskilling and upskilling between 2023 and 2027. Although AI automates routine tasks within UX—streamlining workflows and facilitating data analysis—the human touch remains essential in creating empathetic, innovative designs.'),
+                 ('Design and User Experience',
+                  'Designing the user experience and interface.',
+                  'Effective design hinges on understanding human needs and emotions. This user-centric approach is critical for creating products that resonate with users and achieve desired outcomes. The significance of Design and UX skills is underscored by the World Economic Forum''s Future of Jobs Report 2023, which identifies these skills as top priorities for reskilling and upskilling between 2023 and 2027. Although AI automates routine tasks within UX—streamlining workflows and facilitating data analysis—the human touch remains essential in creating empathetic, innovative designs.'),
 
-       (NEWID(), 'Infrastructure and Operations',
-        'Managing and maintaining computer networks and IT infrastructure.',
-        'Infrastructure and Operations roles deploy, operate, and manage a company’s technology resources. AI is transforming these roles from human-dependent functions to smarter networks that manage configurations, troubleshoot issues, and adapt to changing demands. As per the IBM Global AI Adoption Index 2022, 33% of organizations use AI to automate IT processes—freeing up time for complex problem solving, strategic decision making, and stakeholder management.'),
+                 ('Infrastructure and Operations',
+                  'Managing and maintaining computer networks and IT infrastructure.',
+                  'Infrastructure and Operations roles deploy, operate, and manage a company’s technology resources. AI is transforming these roles from human-dependent functions to smarter networks that manage configurations, troubleshoot issues, and adapt to changing demands. As per the IBM Global AI Adoption Index 2022, 33% of organizations use AI to automate IT processes—freeing up time for complex problem solving, strategic decision making, and stakeholder management.'),
 
-       (NEWID(), 'Software Development',
-        'Designing, coding, testing, and maintaining software applications and systems.',
-        'Software Development is a crucial business element in an era of rapid digitization and evolving user needs. The role of AI in this sector has evolved from basic assistance to now helping developers design efficient and adaptive products. AI tools, including Gen AI and NLP, provide code suggestions, bug detection, and testing capabilities, ensuring developers have more time to focus on broader business requirements. A Gartner report suggests that by 2025, more than half of all software engineering leader role descriptions will explicitly require oversight of Gen AI.'),
+                 ('Software Development',
+                  'Designing, coding, testing, and maintaining software applications and systems.',
+                  'Software Development is a crucial business element in an era of rapid digitization and evolving user needs. The role of AI in this sector has evolved from basic assistance to now helping developers design efficient and adaptive products. AI tools, including Gen AI and NLP, provide code suggestions, bug detection, and testing capabilities, ensuring developers have more time to focus on broader business requirements. A Gartner report suggests that by 2025, more than half of all software engineering leader role descriptions will explicitly require oversight of Gen AI.'),
 
-       (NEWID(), 'Testing and Quality Assurance',
-        'Providing technical support and assistance to users through rigorous software testing and QA.',
-        'Testing and Quality Assurance (QA) workers are crucial for ensuring software reliability and functionality. They plan and execute tests rigorously to detect defects and collaborate with various teams to resolve issues. AI has transformed these roles through automated tools such as Selenium and Appium, enhancing accuracy and speed in defect identification. As AI continues to assume routine tasks like documentation and error detection, upskilling in AI-driven testing tools becomes imperative.');
+                 ('Testing and Quality Assurance',
+                  'Providing technical support and assistance to users through rigorous software testing and QA.',
+                  'Testing and Quality Assurance (QA) workers are crucial for ensuring software reliability and functionality. They plan and execute tests rigorously to detect defects and collaborate with various teams to resolve issues. AI has transformed these roles through automated tools such as Selenium and Appium, enhancing accuracy and speed in defect identification. As AI continues to assume routine tasks like documentation and error detection, upskilling in AI-driven testing tools becomes imperative.')) AS source (pathway_title, tooltip, description)
+    )
 
+    MERGE INTO [dbo].[pathways] AS target
+USING source
+ON target.pathway_title = source.pathway_title
+
+WHEN MATCHED THEN
+    UPDATE SET tooltip = source.tooltip,
+               description = source.description
+
+WHEN NOT MATCHED BY TARGET THEN
+    INSERT (pathway_id, pathway_title, tooltip, description)
+    VALUES (NEWID(), source.pathway_title, source.tooltip, source.description);
 
 ------------------------------------------------------------------
--- 2) INSERT TRAINING AND ASSOCIATE WITH JOB FAMILY GROUP
-------------------------------------------------------------------
-
-
-------------------------------------------------------------------
--- 3) INSERT JOB ROLES WITH DETAILED JOB LEVELS
+-- 2) INSERT JOB ROLES WITH DETAILED JOB LEVELS
 ------------------------------------------------------------------
 
 -- BUSINESS AND MANAGEMENT:
 -- Entry level: Business Analyst, Business Intelligence Analyst, Business Systems Analyst, Customer Service Representative
 -- Mid-level: Digital Marketing Specialist, Product Manager, Project Manager
 -- Senior level: Senior Product Manager
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
                              keyInsights, aiTransformation)
 SELECT NEWID(),
        'Business Analyst',
-       jg.id,
+       p.pathway_id,
        'Entry level',
     -- jobDescription
     'Business Analyst identifies business opportunities through data analysis, recommends operational enhancements, and documents detailed requirements. They translate business needs into technical specifications, analyze and refine requirements for business systems and solutions, develop dashboards, and oversee data quality. Additionally, they conduct market research, manage project timelines, and lead change management initiatives for the smooth adoption of new processes and communicate and collaborate with stakeholders to address business needs.',
@@ -64,14 +72,14 @@ SELECT NEWID(),
     'Automation: Many facets of business analysis are primed for automation, including data processing, cleaning, and initial analysis, with briefs and reports being created through a blend of data processing AI, like NLP and Gen AI tools~Decision making support: Deeper, more insightful analysis of larger bodies of data will be powered by AI tools, helping analysts produce more insightful recommendations around strategic considerations~Predictive analytics: Pattern recognition and other AI powered tools will allow business analysts to generate more accurate business forecasts further in advance~Strategic insight: As business analysts increasingly rely on AI tools to support their responsibilities, predictive analytics will offer better inferences from which to draw better strategic recommendations',
     -- aiTransformation
     'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Business and Management';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Business and Management';
 
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
                              keyInsights, aiTransformation)
 SELECT NEWID(),
        'Business Intelligence Analyst',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Business Intelligence Analysts are required to produce financial and market intelligence by querying data repositories and generating periodic reports. They devise methods for identifying data patterns and trends in available information sources to support decision making, monitor performance, and inform strategy.',
@@ -85,13 +93,12 @@ SELECT NEWID(),
        'Automated data preparation and analysis: AI may allow to automate data cleaning, transformation, and basic analysis, freeing up analysts to focus on more complex tasks and insights~Enhanced pattern recognition and anomaly detection: AI algorithms may identify complex patterns and anomalies in large datasets faster and more accurately than humans, leading to more proactive decision-making~Natural language querying: Gen AI may allow users to interact with data using natural language, making BI tools more accessible to non-technical users and democratizing data insights~Automated report generation: AI may be able to generate reports, summaries, and visualizations based on user queries or predefined templates, saving analysts time and effort~Predictive analytics and forecasting: AI may be able to leverage machine learning to forecast future trends and outcomes, helping businesses make more informed decisions',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Business and Management';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Business and Management';
 
-
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
                              keyInsights, aiTransformation)
-SELECT NEWID(), 'Business Systems Analyst', jg.id, 'Entry level',
+SELECT NEWID(), 'Business Systems Analyst', p.pathway_id, 'Entry level',
        -- jobDescription
        '''Conduct organizational studies and evaluations, design systems and procedures, conduct work simplification and measurement studies, and prepare operations and procedures manuals to assist management in operating more efficiently and effectively. Includes program analysts and management consultants.',
        -- principalTasks
@@ -113,13 +120,13 @@ SELECT NEWID(), 'Business Systems Analyst', jg.id, 'Entry level',
        'Automated data analysis and report generation: AI may enable the rapid analysis of large datasets, pattern identification, and comprehensive report generation, saving BSAs significant time and effort and allowing them to focus on higher-level analysis and solution design~Enhanced process optimization: AI-powered tools may be able to model and simulate various scenarios, helping BSAs identify bottlenecks, inefficiencies, and opportunities for improvement in business processes~Intelligent recommendations: AI can analyze data to offer personalized recommendations for process improvements, resource allocation, and technology solutions, enhancing decision-making for both BSAs and management~Increased efficiency and productivity: Automating repetitive tasks and streamlining data analysis can significantly improve the speed and efficiency of BSAs'' work',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Business and Management';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Business and Management';
 
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact, keyInsights, aiTransformation)
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact, keyInsights, aiTransformation)
 SELECT NEWID(),
        'Customer Service Representative',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Customer Service Representatives are highly skilled workers who collaborate with AI systems to deliver exceptional support. Their responsibilities include managing complex customer interactions, analyzing data to make informed decisions, and explaining AI-driven processes to customers. They must exhibit empathy, technical proficiency, and effective communication to foster trust and transparency.',
@@ -133,15 +140,15 @@ SELECT NEWID(),
        'One-third of customers will use digital assistants to interact with customer service~Three-quarters of customers call customer service due to loneliness~AI allows faster and more accurate information retrieval and personalization~Data privacy and cybersecurity concerns are increasing~CSRs will need to learn to interact with machine customers and apply prompt engineering for AI tools',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Business and Management';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Business and Management';
 
 
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
                              keyInsights, aiTransformation)
 SELECT NEWID(),
        'Digital Marketing Specialist',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Digital Marketing Specialists plan, direct, or coordinate marketing policies and programs, such as determining the demand for products and services offered by a firm and its competitors and identify potential customers. They develop pricing strategies with the goal of maximizing the firm''s profits or share of the market while ensuring the firm''s customers are satisfied and oversee product development or monitor trends that indicate the need for new products and services.',
@@ -155,14 +162,14 @@ SELECT NEWID(),
        'Enhanced content creation: AI can generate diverse marketing materials such as ad copy, social media posts, blog articles, and email campaigns, drastically reducing the time and resources required for content production~Data-driven decision making: AI-powered analytics may be able to identify patterns and trends in customer behavior, market conditions, and campaign performance, which may lead to more informed and effective decisions~Improved customer service: AI chatbots can handle routine customer inquiries, freeing up human agents to focus on complex issues and provide more personalized support~New creative opportunities: AI can generate novel ideas and concepts, sparking creativity and pushing the boundaries of traditional marketing approaches~Hyper-personalization: AI can analyze customer data to create highly personalized marketing messages and experiences, leading to increased engagement and conversion rates',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Business and Management';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Business and Management';
 
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
                              keyInsights, aiTransformation)
 SELECT NEWID(),
        'Product Manager',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'A Product Manager leads the development and lifecycle of a product, defining vision, strategy, and roadmap. Responsibilities include market research, stakeholder collaboration, prioritizing features, ensuring alignment with business goals, and overseeing product launch and performance. Strong communication, analytical, and problem-solving skills are essential.',
@@ -176,15 +183,15 @@ SELECT NEWID(),
        'The Product Manager role involves strategic, analytical, and interpersonal tasks requiring human judgment, creativity, and interaction~Scrum and agile methodologies: AI can optimize workflows but lacks leadership capabilities (moderate impact)~Software project management: AI manages tasks and resources but can''t handle negotiation or decision-making in ambiguity (moderate impact)~SaaS integration: AI analyzes and recommends solutions but can''t assess strategic fit or negotiate terms (moderate impact)~Client relationship management: AI can interact and gather feedback but can''t build deep relationships (low impact)~Quality assurance and data analysis: AI excels in automation and analysis (high impact)~SQL and JavaScript: AI assists with coding but lacks complex problem-solving (high impact)~Team leadership and user experience: AI can''t lead or design holistic experiences (low to moderate impact)~Overall, AI can augment but not fully replace the human elements essential for success in this role',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Business and Management';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Business and Management';
 
 
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
                              keyInsights, aiTransformation)
 SELECT NEWID(),
        'Project Manager',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'An IT Project Manager is responsible for planning and executing projects within defined scope, timelines, and budgets. They coordinate and communicate with team members, stakeholders, and clients, ensuring project objectives are met. They also manage risks, resolve issues, and produce deliverables.',
@@ -198,14 +205,14 @@ SELECT NEWID(),
        'Streamlined task management: AI has the potential to streamline the execution of routine tasks such as scheduling, resource allocation, and progress tracking, freeing up project managers to focus on more strategic aspects of the project~Enhanced risk management: AI can analyze historical project data to identify potential risks and suggest mitigation strategies, improving project outcomes~Improved communication: AI-powered tools can facilitate communication within the project team, generating reports, summaries, and even translating documents in real-time~Data-driven decision making: AI can provide insights based on project data, helping project managers make informed decisions about resource allocation, timeline adjustments, and risk mitigation~Virtual assistants: AI-powered virtual assistants may be able to handle administrative tasks, schedule meetings, and provide project updates, improving efficiency and productivity',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Business and Management';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Business and Management';
 
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
                              keyInsights, aiTransformation)
 SELECT NEWID(),
        'Senior Product Manager',
-       jg.id,
+       p.pathway_id,
        'Senior level',
        -- jobDescription
        'A Senior Product Manager oversees the development and lifecycle of multiple products, defining vision, strategy, and roadmap. Responsibilities include advanced market research, strategic stakeholder collaboration, prioritizing features, ensuring alignment with business goals, and leading product launch and performance. Exceptional leadership, strategic thinking, and communication skills are essential.',
@@ -219,18 +226,18 @@ SELECT NEWID(),
        'The Senior Product Manager role involves strategic, analytical, and interpersonal tasks requiring human judgment, creativity, and interaction~Scrum and agile methodologies: AI can optimize workflows but lacks leadership capabilities (moderate impact)~Advanced market research: AI can process large datasets for market trends but cannot fully grasp nuanced market dynamics or strategic implications (moderate impact)~Strategic stakeholder collaboration: AI can assist in communication but cannot build and maintain the deep, strategic relationships needed (low impact)~Feature prioritization: AI can suggest prioritization based on data, but human insight is needed for strategic alignment and trade-off decisions (moderate impact)~Client relationship management: AI can interact and gather feedback but can''t build or sustain deep, trust-based client relationships (low impact)~Quality assurance and data analysis: AI excels in automation and data analysis, enhancing tasks significantly (high impact)~SQL and advanced analytics: AI assists with data extraction and analysis but cannot handle all complex problem-solving scenarios (high impact)~Strategic planning: AI can provide data-driven insights and forecasts, augmenting but not replacing human strategic thinking (moderate impact)~Team leadership and user experience: AI cannot lead teams or design holistic user experiences that require empathy and creativity (low to moderate impact)~Overall, AI can augment many aspects of the senior product manager role but cannot fully replace the essential human elements of strategic thinking, leadership, and deep interpersonal relationships',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Business and Management';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Business and Management';
 
 
 -- CYBERSECURITY:
 -- Entry level: Cybersecurity Analyst, Information Security Specialist, Soc Analyst Level 1
 -- Mid-level: Ethical Hacker
-INSERT INTO [dbo].[JobRole] (id, title, jobGroupId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
+INSERT INTO [dbo].[JobRole] (id, title, pathwayId, jobLevel, jobDescription, principalTasks, principalSkills, aiImpact,
                              keyInsights, aiTransformation)
 SELECT NEWID(),
        'Cybersecurity Analyst',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Cybersecurity Analysts are responsible for developing and implementing security measures to protect computer systems and networks. They monitor for security breaches, investigate violations, and update security systems to prevent future incidents. They also conduct risk assessments, document security policies and procedures, and educate users about security best practices.',
@@ -244,17 +251,17 @@ SELECT NEWID(),
        'Enhanced threat detection: Gen AI can analyze vast datasets and identify patterns indicative of potential security threats much faster than humans, leading to proactive defense measures~Automated incident response: AI-powered tools can automate parts of the incident response process, such as isolating infected systems and generating reports, allowing for quicker containment and recovery~Vulnerability assessment and patching: AI can simulate attacks and identify system weaknesses, suggesting potential patches and fixes, streamlining the vulnerability management process~Enhanced security awareness training: AI can create realistic phishing simulations and tailor educational content to individual users, improving overall security awareness within organizations',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Cybersecurity';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Cybersecurity';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Information Security Specialist',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'The entry level Information Security Specialist enforces security policies, documents system security operations, implements cybersecurity measures, conducts security reviews, identifies, and mitigates risks, and develops risk management plans. They assess security controls, monitor trends, resolve incidents, ensure compliance, provide leadership recommendations, and contribute to disaster recovery and continuity plans.',
@@ -268,17 +275,17 @@ SELECT NEWID(),
        'Advancing threat detection: Predictive analytics tools, deployed on local hardware, servers, and network devices will require new and augmented sets of skills. These AI-enhanced, pattern recognition tools will help identify threats at the earliest stages of their deployment~Faster incident response: Aspects of isolating and shutting down a threat once detected will become automated, speeding up security outcomes by freeing up Information Security Specialists to focus on identifying measures of remediation~Vulnerability detection and management: Automated audits of systems, networks, and software, powered by AI, will help Information Security Specialists further enhance the security position of organizations, products, and infrastructure by identifying existing vulnerabilities early and kicking off the process of correcting them',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Cybersecurity';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Cybersecurity';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Ethical Hacker',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Ethical Hackers assess and audit the security of servers, systems, and networks to identify vulnerabilities. They develop and execute tests simulating cyber threats, and design security solutions to known vulnerabilities, all while adhering to ethical guidelines and authorized parameters. They also investigate security incidents, maintain knowledge of hacking trends, and deliver specialized security awareness training.',
@@ -292,17 +299,17 @@ SELECT NEWID(),
        'Security auditing and reporting: AI can help automate report generation and analysis, highlighting critical vulnerabilities and suggesting remediation steps~Security recommendations and remediation: While AI can offer suggestions, the final decision-making on remediation strategies often requires human judgment~Social engineering assessment: AI can assist in analyzing communication patterns and identifying potential social engineering attempts, but human insight is crucial~Security research and tool development: AI can analyze large datasets of vulnerabilities, but developing new tools and techniques still requires human creativity~Security awareness training: AI can personalize training materials and simulations, though human rapport is essential~Incident response support: AI can help in analyzing incident data and suggesting containment strategies, but human intervention is needed during crises~Ethical Hackers must understand Gen AI capabilities to exploit vulnerabilities and evaluate integration risks~Expertise in AI and ML will be increasingly important for leveraging AI tools~Critical thinking and problem solving will be essential for evaluating AI-generated outputs and decisions',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Cybersecurity';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Cybersecurity';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Soc Analyst Level 1',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'A SOC Analyst – Level 1 is responsible for monitoring and analyzing security events and incidents within an organization''s network. They respond to alerts, perform initial investigations, and escalate issues as needed, while also maintaining and implementing security measures to detect and respond to threats.',
@@ -316,20 +323,20 @@ SELECT NEWID(),
        'Alert monitoring and triage: AI-powered SIEM systems and threat detection platforms can automate the initial analysis of security alerts, significantly reducing the time and effort required for this task~Log analysis: AI-driven log analysis tools can quickly sift through massive amounts of log data to identify patterns and anomalies, reducing the need for manual analysis~Vulnerability scanning: AI can automate vulnerability scanning and assessment, providing quicker and more comprehensive results than manual processes~Threat intelligence analysis: AI can rapidly process and analyze threat intelligence feeds, identifying relevant information and alerting analysts to emerging threats~Incident response: AI can assist in incident response by automating data collection, suggesting containment actions, and generating initial reports. However, human analysts will still be needed to make critical decisions, investigate complex incidents, and communicate with stakeholders~Threat hunting: AI can help identify potential threats by analyzing patterns in security data, but human analysts are still needed to develop hunting hypotheses, investigate leads, and make strategic decisions~Communication and collaboration: Effective communication with stakeholders remains crucial. AI cannot replace the human element in building relationships, explaining technical issues, and providing reassurance during incidents~Decision making and judgment: AI can offer recommendations, but critical decisions must still be made by human analysts~SOC Analysts will need to understand prompt engineering and how to translate AI-generated output into action',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Cybersecurity';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Cybersecurity';
 
 -- DATA SCIENCE:
 -- Entry level: Data Analyst, Data Specialist
 -- Mid-level: Data Engineer, Data Scientist
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Data Analyst',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Data Analysts synthesize and analyze data to generate reports for stakeholders, providing insights and recommendations based on current trends. They maintain a library of reusable assets, create business intelligence tools, and ensure timely delivery of analytical information. Additionally, they collect, validate, and update data while staying updated on industry advancements, collaborating with stakeholders to define meaningful key performance indicators (KPIs) aligned with organizational goals.',
@@ -343,17 +350,17 @@ SELECT NEWID(),
        'More than half of the skills will likely be impacted by Gen AI in the near term, with a notable fraction being augmented to boost efficiency~In the long run, a further portion of skills could be automated, but the high consequence of errors associated with this work will still necessitate direct human involvement in a notable fraction of skills. These skills could be augmented with advanced Gen AI~Data Analysts will need to understand effective prompt engineering, as Gen AI technologies can be of great aid in their work analyzing, synthesizing and visualizing results from large datasets~Gen AI is particularly useful as an analytic and search tool for textual data analysis. However, experts emphasize human validation and review of AI-generated insights, especially for tasks requiring high accuracy~Integrating Python sandboxes (code interpreter) with Large Language Models (LLMs) enhances data analysis. However, human inspection and oversight of code and processes are essential for accuracy and reliability~Understanding the biases of LLMs will be critical for these workers, as they will need to be able to interpret, validate, and effectively implement Gen AI outputs in the context of their business use case',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Data Science';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Data Science';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Data Engineer',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Data Engineers are responsible for designing, construct, and maintain scalable data pipelines that ensure the efficient extraction, transformation, and loading (ETL) of data from various sources to data warehouses or lakes. They collaborate with data scientists, analysts, and other stakeholders to integrate data from disparate systems, ensuring data quality, consistency, and security throughout the data lifecycle. They also optimize data processing workflows for performance and scalability while automating repetitive tasks to enhance the overall efficiency and reliability of the data infrastructure.',
@@ -367,17 +374,17 @@ SELECT NEWID(),
        'Workers in this role can enhance their productivity by leveraging Gen AI for data modeling, optimizing workflows with Apache Airflow and Tableau, therefore dedicating more time to data engineering tasks.',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Data Science';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Data Science';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Data Scientist',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'A Data Scientist analyzes complex data sets to derive actionable insights and build predictive models. Responsibilities include data cleaning, statistical analysis, machine learning, and communicating findings to stakeholders. Proficiency in programming, data visualization, and strong analytical skills are essential.',
@@ -391,17 +398,17 @@ SELECT NEWID(),
        'The Data Scientist role involves data analysis, machine learning, and deriving actionable insights from complex datasets, requiring human judgment, creativity, and strategic thinking~Data cleaning: AI can automate data cleaning processes, significantly reducing the time spent on this task (high impact)~Statistical analysis: AI can perform statistical analyses quickly and accurately, but human oversight is needed to ensure appropriate methods and interpretations (moderate impact)~Machine learning: AI can build and optimize machine learning models, but human expertise is needed for model selection, tuning, and understanding domain-specific nuances (high impact)~Data visualization: AI tools can create visualizations, but human insight is needed to design effective and meaningful representations (moderate impact)~Communication of findings: AI can generate reports, but the ability to communicate complex findings to non-technical stakeholders requires human skills (low impact)~Strategic decision-making: AI can provide data-driven insights, but strategic decisions require human judgment and contextual understanding (low impact)~Overall, AI will augment many technical aspects of the Data Scientist role, automating routine tasks and enhancing analytical capabilities. However, human expertise in strategic thinking, model interpretation, and effective communication remains crucial for success',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Data Science';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Data Science';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Data Specialist',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Data Specialists ensures the accuracy, integrity, and quality of data by implementing data validation protocols, managing data cleansing processes, and maintaining comprehensive data documentation. They perform detailed data analysis and reporting to generate actionable insights, creating reports and visualizations to support business decision-making and strategic planning. They also integrate data from various sources and collaborate with cross-functional teams to support data-driven projects and initiatives, ensuring effective data utilization across the organization.',
@@ -415,20 +422,20 @@ SELECT NEWID(),
        'Workers in this role can enhance their productivity by leveraging Gen AI for data entry automation, optimizing workflows with Tableau and Apache, and dedicating more time to data engineering tasks.',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Data Science';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Data Science';
 
 -- DESIGN AND USER EXPERIENCE:
 -- Entry level: Design Engineer, UX Designer
 -- Mid-level: Product Design Engineer
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Design Engineer',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Design Engineers develop and modify product designs by creating detailed prototypes, performing rigorous testing, and ensuring adherence to engineering principles and client requirements​. They collaborate with cross-functional teams, including manufacturing and senior engineers, to oversee the entire lifecycle of a project from conceptualization to final production. Also, they are responsible to maintain comprehensive documentation of design processes, project schedules, and budget compliance while staying updated with the latest technological advancements and design trends.',
@@ -442,17 +449,17 @@ SELECT NEWID(),
        'Workers in this role can enhance their productivity by leveraging Gen AI for finite element analysis automation, optimizing product design workflows and dedicating more time to engineering management processes.',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Design and User Experience';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Design and User Experience';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Product Design Engineer',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Designs digital user interfaces or websites. Develop and test layouts, interfaces, functionality, and navigation menus to ensure compatibility and usability across browsers or devices. May use web framework applications as well as client-side code and processes. May evaluate web design following web and accessibility standards and may analyze web use metrics and optimize websites for marketability and search engine ranking. May design and test interfaces that facilitate the human-computer interaction and maximize the usability of digital devices, websites, and software with a focus on aesthetics and design. May create graphics used in websites and manage website content and links.',
@@ -466,17 +473,17 @@ SELECT NEWID(),
        'Rapid prototyping: AI can generate multiple design iterations quickly based on given parameters, allowing designers to streamline the execution of a wider range of ideas and concepts in a shorter time frame~Enhanced user research: AI can analyze user data and provide insights into user behavior, preferences, and pain points, helping designers make more informed decisions~Streamlined design tasks: Gen AI can streamline design of repetitive tasks such as creating layouts, generating icons, or optimizing images, freeing up designers to focus on higher-level design challenges~Improved accessibility: AI tools can assist in designing interfaces that are accessible to users with disabilities, ensuring a broader audience can use the product~Personalized experiences: AI can help create dynamic interfaces that adapt to individual user preferences and behavior, enhancing user satisfaction of IT support operations',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Design and User Experience';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Design and User Experience';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'UX Designer',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'An entry level UX Designer enhances product usability, researches user behavior, and compiles audience insights. They develop and test design models, create accessible website layouts, and prototype interfaces using HTML/CSS. Additionally, they gather requirements, refine specifications, evaluate existing designs, and present design strategies and improvement recommendations and/or updates to stakeholders, ensuring alignment with business and user needs.',
@@ -490,21 +497,21 @@ SELECT NEWID(),
        'User impact and outcomes: UX Designers will need to create designs that allow for bespoke experiences within discrete sections or modules of an application. Additionally, expanding voice interactions and other emerging user input/output paradigms will require a shift in some of the ways user interactions are facilitated. This can be especially impactful for differently abled users who will experience expanded accessibility in several ways~Solution design and development: Refined user research and insights based on large scale real and synthetic user persona data will fuel designed solutions to user problems of all sizes. These developments will benefit users and businesses alike. Some of these insights will facilitate automated design generation and simulated testing solutions~Design deliverables: Accelerated design iterations with Gen AI tools that can draft testable, high-fidelity prototypes in the time it may currently take designers to create paper sketches of wireframes. As new tools are created, design and testing will become faster, with some aspects of design iteration automated',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Design and User Experience';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Design and User Experience';
 
 -- INFRASTRUCTURE AND OPERATIONS:
 -- Entry level: Help Desk Analyst, IT Support Technician, Network Support Technician, Systems Analyst
 -- Mid-level: Database Administrator, IT Manager, Network Administrator, Network and IT Automation Engineer, Systems Administrator
 -- Senior level: Senior Network Engineer
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Database Administrator',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'A Database Administrator (DBA) is responsible for managing and maintaining an organization''s database systems. They ensure data integrity, security, and performance, as well as troubleshoot any issues that may arise.',
@@ -518,17 +525,17 @@ SELECT NEWID(),
        'Impact on number of hours: Gen AI can automate some tasks like documentation and performance tuning, but the overall impact on working hours may be limited~New skills: Database Administrators will need to acquire skills in AI security, TensorFlow, neural networks, and image signal processing to adapt to the changing landscape~Skills in demand: Problem-solving, communication, and interpersonal collaboration will remain essential for database administrators, as they often work closely with other teams to ensure smooth database operations',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Help Desk Analyst',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Help Desk Analysts are the first line of technical support for computer users. They provide assistance via phone or electronically, troubleshooting hardware, software, and network issues. These workers translate technical jargon into user-friendly solutions, guiding individuals through problem-solving steps. Help Desk Analysts combine technical knowledge with strong communication skills to ensure a positive user experience, resolving issues efficiently and effectively.',
@@ -542,17 +549,17 @@ SELECT NEWID(),
        'Tier-1 support and initial troubleshooting: AI chatbots can handle routine inquiries, password resets, and basic troubleshooting, freeing up analysts for more complex issues~Knowledge base creation and maintenance: AI can automatically generate, and update knowledge articles based on resolved tickets and user interactions~Data analysis and reporting: AI can analyze help desk data to identify trends, predict potential problems, and suggest improvements to processes~Complex troubleshooting: AI can suggest solutions based on past cases and knowledge articles, assisting analysts in diagnosing and resolving complex problems faster~Customer communication: AI powered tools can help analysts communicate more effectively by suggesting responses, translating technical jargon, and personalizing interactions',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'IT Manager',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'IT Manager oversees IT Infrastructure and Operations. They manage and maintain the organization''s IT infrastructure, ensuring all systems, networks, and hardware operate efficiently and securely. They lead and develop IT Teams, providing guidance, training, and support to ensure the team meets organizational goals and technological demands. Furthermore, they develop strategic plans for IT projects, align IT initiatives with business goals, and manage the IT budget to optimize costs and investments.',
@@ -566,17 +573,17 @@ SELECT NEWID(),
        'In thinking about professional development and upskilling plans, people currently in this role might consider how to use Gen AI to dramatically reduce time spent troubleshooting how to leverage Gen AI to increase productivity working with cybersecurity features, and how to spend more time developing IT strategies.',
        -- aiTransformation
        'Low'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'IT Support Technician',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'IT Support Technicians monitor and maintain computer systems, install, and set up equipment and software for users, and troubleshoot technical issues. They collaborate with staff to determine system requirements, maintain records of transactions and activities. They also evaluate and recommend software or hardware improvements, develop training materials, and supervise workers on special projects.',
@@ -590,17 +597,17 @@ SELECT NEWID(),
        'Gen AI may have a moderate to transformative impact on IT Support Technicians. While human interaction and problem-solving skills will remain crucial, AI-powered tools have the potential to streamline many routine tasks and enhance the efficiency of issue resolution. Gen AI may increasingly assist with tasks such as question handling, initial responses, case status summarization, recommending knowledge articles, software patching, resolution summarization, and lower complexity ticket resolution. IT Support Technicians will need to adapt by developing new skills in AI tool utilization and focusing on complex troubleshooting and customer service interactions. Overall, AI can help IT Support Technician become even more strategic and customer centric. By embracing AI as a collaborative tool and developing the necessary skills, IT workers can provide better support experiences, solve more complex problems, and ultimately enhance the value they bring to their organizations. Understanding integration capabilities of Gen AI into existing systems will also be important for this role.',
        -- aiTransformation
        'Low'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Network Administrator',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Network Administrators install, configure, and maintain an organization’s network infrastructure, including routers, switches, and wireless access points. They monitor network performance, troubleshoot issues, and ensure security by managing access controls and applying updates. Additionally, they develop disaster recovery plans, provide technical support, train users, and document network configurations. They also stay updated on technological advancements and ensure compliance with organizational policies and legal regulations.',
@@ -614,17 +621,17 @@ SELECT NEWID(),
        'In the immediate term, about one out of three skills are impacted by AI, with the majority being augmented rather than automated. In the long run, an additional quarter of skills could be automated, but the interactive and manual nature of the role will still require direct human involvement in nearly half of the skills. Early use-cases of Gen AI include documentation, help desk support, and integrating/embedding Gen AI technologies into the network for monitoring network performance, among others. LLMs can be integrated in systems to generate configurations and validate existing configurations, analyze logs, monitor performance and detect potential network and system problems to invoke Disaster Recovery (DR) protocols. Network Administrators will need to cultivate awareness of Gen AI technologies, as well as be equipped with strong prompt engineering skills to effectively interact with AI assistants.',
        -- aiTransformation
        'Low'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Network and IT Automation Engineer',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'A Network and IT Automation Engineer is responsible for designing, implementing, and maintaining automated solutions to optimize network and IT operations. They collaborate with teams to select and integrate appropriate automation technologies, ensuring stability, security, and scalability of systems. Their role involves evaluating emerging technologies, developing automated testing and security measures, and establishing standards to meet organizational requirements. Additionally, they create application-specific automation scripts, monitor network performance, and implement Continuous Integration/Continuous Deployment (CI/CD) pipelines to streamline software delivery and infrastructure changes. Overall, their work aims to enhance efficiency, reliability, and responsiveness within network and IT environments.',
@@ -638,17 +645,17 @@ SELECT NEWID(),
        'Two-thirds of the skills are exposed to Gen AI, with the majority of them being augmented by AI tools. In the long run, an additional small fraction of skills could be automated, but the high consequence of errors associated with this work will still necessitate direct human involvement in nearly a quarter of the skills. These could be augmented with advanced Gen AI. Gen AI can help Network and IT Automation Engineers streamline processes and enhance efficiency, including summarizing data sheets and finding solutions that align with pre-defined requirements and generating starter code or component pieces to reduce initial coding effort. If integrated in the appropriate systems, LLMs can help with path verification, test development and execution. Network and IT Automation Engineers will need to be equipped with strong prompt engineering skills to effectively interact with AI assistants as well as understand how Gen AI can be leveraged in generating scripts and code snippets for automation. They are going to play a vital role in building retrieval augmented generation (RAG) capabilities to automate work.',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Network Support Technician',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Network Support Technicians ensure the effective operation and security of computer networks by conducting regular updates, monitoring performance, and responding to alerts. They provide technical support and basic training to users, perform routine maintenance and repairs, and handle the installation and configuration of network hardware and software. Additionally, they contribute to document technical solutions, work within compliance and security standards, and generate reports to keep stakeholders informed about network status and issues.',
@@ -662,17 +669,17 @@ SELECT NEWID(),
        'Currently about 1 out of 10 skills are likely to be impacted by Gen AI in the near term~Due to the low barriers to adoption, about two out of three skills could be automated in the long run as Gen AI technologies advance. However, the interactive and manual nature of the role will still require direct human involvement in nearly one out of five skills~Early use-cases of Gen AI include automating email responses to issues, issue tracking, and generating documentation of issue resolution, among others~Network Support Technicians will need to cultivate awareness of Gen AI technologies, as well as be equipped with strong prompt engineering skills to effectively interact with AI assistants.',
        -- aiTransformation
        'Low'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Senior Network Engineer',
-       jg.id,
+       p.pathway_id,
        'Senior level',
        -- jobDescription
        'Senior Network Engineers design, implement, and maintain optimal network infrastructures and are skilled in networking technologies, hardware, and software. Their tasks include configuring network equipment, troubleshooting, optimizing performance, and ensuring security. They work with virtual servers, cloud technologies, and emerging standards. They collaborate with teams, lead junior engineers, stay updated on technological advancements, and foster a culture of innovation and automation.',
@@ -686,17 +693,17 @@ SELECT NEWID(),
        'AI has high transformation potential in areas like network monitoring, configuration management, and network security. It can assist in troubleshooting, network optimization, and R&D, but strategic tasks such as network planning, vendor communication, and mentorship will still require human expertise. Senior Network Engineers should develop skills in Gen AI, cybersecurity, and predictive analytics, and understand AI governance and ethical use. They must be able to evaluate AI solutions critically and ensure effective deployment that aligns with business objectives.',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Systems Administrator',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'A Systems Administrator (SysAdmin) manages and maintains an organization’s IT infrastructure, including hardware, software, and networks. They ensure system efficiency, perform upgrades, provide technical support, manage security protocols, and resolve IT issues to keep operations running smoothly. Their role is crucial for stable and secure IT functionality.',
@@ -710,17 +717,17 @@ SELECT NEWID(),
        'AI empowers Systems Administrators by automating routine tasks like log analysis and providing intelligent insights for faster problem resolution. However, human expertise remains essential for complex troubleshooting, critical decision-making in incidents, and innovative solutions to unforeseen challenges. While AI enhances efficiency, it''s the combination of human and AI capabilities that ensures the smooth operation and security of IT systems.',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Systems Analyst',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Systems Analysts evaluate current IT systems to ensure they meet business and technical requirements, identifying areas for troubleshooting, upgrading, and maintenance. They design and deploy software solutions that enhance workflow and productivity, collaborating closely with developers and other IT workers. Systems Analysts ensure clear communication of system changes to workers and provide training and support to facilitate smooth adoption of new technologies.',
@@ -734,21 +741,21 @@ SELECT NEWID(),
        'In thinking about professional development and upskilling plans, people currently in this role might consider how to use Gen AI to dramatically reduce time spent troubleshooting, how to leverage Gen AI to increase productivity working with SQL, and how to spend more time specializing with specific types of data systems (e.g., healthcare data, etc.).',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Infrastructure and Operations';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Infrastructure and Operations';
 
 -- SOFTWARE DEVELOPMENT:
--- Entry level: AI / ML Engineer, Application Developer, Back End Developer, Cloud Engineer, Front End Developer, Full Stack Developer, Java Developer, Python Developer, Web Developer
+-- Entry level: AI / ML Engineer, Application Developer, Back-End Developer, Cloud Engineer, Front-End Developer, Full Stack Developer, Java Developer, Python Developer, Web Developer
 -- Mid-level: Software Architect, Software Developer, Software Engineer
 -- Senior level: Principal Software Engineer, Senior Software Development Engineer, Senior Software Engineer
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
-       'AI / ML Engineer',
-       jg.id,
+       'AI/ML Engineer',
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'AI/ML Engineers analyze large datasets using statistical software, apply ML techniques to predict outcomes, and propose data-driven solutions to business problems. The role includes tasks such as cleaning and manipulating data, comparing models, creating visualizations to convey results, and presenting findings to stakeholders. Additionally, the role involves developing, deploying, and optimizing ML models, staying updated on advancements in the field.',
@@ -762,17 +769,17 @@ SELECT NEWID(),
        'Approximately two-thirds of the skills will be impacted by Gen AI, with around half potentially becoming less relevant due to the possibility of automation. In the long run, another small fraction of skills may be automated, but a significant portion will still require a deep understanding of the business context, necessitating direct human involvement. These skills can be further enhanced with advanced Gen AI. AI/ML Engineers will need a deep, technical understanding of LLM architecture as they will be part of the teams building these models in the future. They will also need to be wary of risks of skill erosion—while Gen AI will be able to write code for them, they will still need to be able to validate and appropriately implement Gen AI’s code output.',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Application Developer',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Application developers are responsible for designing, coding, and testing software applications for various platforms such as mobile, web, or desktop. They collaborate with other team members to ensure the functionality and usability of the applications meet the requirements and deliver a seamless user experience.',
@@ -786,42 +793,42 @@ SELECT NEWID(),
        '• Impact on number of hours: Gen AI can potentially automate a significant portion of an Application Developer''s tasks, particularly in areas like documentation and software development~• New skills: Application Developers will need to develop skills in AI-related technologies such as TensorFlow, image signal processing, Azure Cognitive Services, AI model development, machine vision, and AI integration to stay competitive~• Skills in demand: Despite AI''s growing role, the importance of soft skills such as demonstrating responsibility, communication, and interpersonal collaboration will remain high, as these are crucial for effective teamwork and project management',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
-       'Back End Developer',
-       jg.id,
+       'Back-End Developer',
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
-       'Back End Developers develop and maintain server-side logic and database structures. They collaborate with front-end developers to integrate user-facing elements with server-side logic and ensure high performance and responsiveness of back-end services and databases.',
+       'Back-End Developers develop and maintain server-side logic and database structures. They collaborate with front-end developers to integrate user-facing elements with server-side logic and ensure high performance and responsiveness of back-end services and databases.',
        -- principalTasks
        '• Development and maintenance: Creating and maintaining the core application logic, databases, and server-side processes that power a website or application''s functionality.~• Integration services: Developing APIs and integration services to ensure that different systems and applications can communicate effectively, supporting front-end applications and other system integrations.~• Performance optimization: Optimizing the website or application for speed and efficiency, ensuring high performance and scalability of the database and backend systems.',
        -- principalSkills
        'AWS~Docker Products~Git~MongoDB~MySQL~Node.js~PostgreSQL~Python~React.js',
        -- aiImpact
-       'Gen AI may be able to help accomplish many of the tasks for which this role is responsible, leaving more time for people in this role to focus on higher value-added complementary skills. Specifically for Back End Developers, this may mean using Gen AI to accelerate coding and troubleshooting, particularly with tools like Python.',
+       'Gen AI may be able to help accomplish many of the tasks for which this role is responsible, leaving more time for people in this role to focus on higher value-added complementary skills. Specifically for Back-End Developers, this may mean using Gen AI to accelerate coding and troubleshooting, particularly with tools like Python.',
        -- keyInsights
        'In thinking about professional development and upskilling plans, people currently in this role might consider how to use Gen AI to dramatically reduce time spent working with Python, how to leverage Gen AI to increase productivity working with object-oriented programming, and how to spend more time working on microservices.',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Cloud Engineer',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Cloud Engineers are responsible for cloud infrastructure design and management, automation & optimization, and security & compliance. They design, implement, and manage cloud infrastructure solutions using platforms such as AWS, Azure, or Google Cloud, including setting up virtual networks, storage solutions, and computing resources. They develop and maintain automation scripts and tools to streamline cloud operations, improve system performance, and ensure efficient resource utilization, implementing Infrastructure as Code (IaC) practices using tools like terraform or cloud formation. They also ensure cloud environments adhere to security best practices and compliance standards by monitoring for vulnerabilities, implementing encryption protocols, and managing identity and access management (IAM) policies.',
@@ -835,42 +842,42 @@ SELECT NEWID(),
        'In thinking about professional development and upskilling plans, people currently in this role might consider how to use Gen AI to dramatically reduce time spent working with tools like Terraform, how to leverage Gen AI to increase productivity working with tools like Kubernetes, and how to spend more time working with cloud infrastructure design and development.',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
-       'Front End Developer',
-       jg.id,
+       'Front-End Developer',
+       p.pathway_id,
        'Entry level',
        -- jobDescription
-       'Front End Developers develop and implement user interfaces for websites and web applications using technologies such as HTML, CSS, and JavaScript to create engaging and functional user experiences​. They collaborate with back-end developers and web designers to integrate designs, ensure responsive performance across devices, and optimize applications for speed and scalability and maintain up-to-date knowledge of industry trends and technologies, ensuring the continuous improvement of the user interface and staying current with best practices in web development.',
+       'Front-End Developers develop and implement user interfaces for websites and web applications using technologies such as HTML, CSS, and JavaScript to create engaging and functional user experiences​. They collaborate with back-end developers and web designers to integrate designs, ensure responsive performance across devices, and optimize applications for speed and scalability and maintain up-to-date knowledge of industry trends and technologies, ensuring the continuous improvement of the user interface and staying current with best practices in web development.',
        -- principalTasks
        '• Design and user experience: Creating visually appealing and user-focused designs and ensuring that the website or application interfaces are intuitive and engaging for users~• Development and feature implementation: Building and integrating personalized and customized features into applications, translating design wireframes into functional web components using HTML, CSS, and JavaScript​~• Optimization and maintenance: Maintaining an up-to-date knowledge of the latest web technologies and industry trends and optimizing applications for maximum speed and scalability, ensuring all code is up to the standards for quality and efficiency technical knowledge',
        -- principalSkills
        'CSS~Git~HTML5~JavaScript~jQuery~Node.js~React.js~SASS~TypeScript',
        -- aiImpact
-       'Gen AI may be able to help accomplish many of the tasks for which this role is responsible, leaving more time for people in this role to focus on higher value-added complementary skills. Specifically for Front End Developers, this may involve automating simpler scripts and predicting user-friendly customizations and their underlying code.',
+       'Gen AI may be able to help accomplish many of the tasks for which this role is responsible, leaving more time for people in this role to focus on higher value-added complementary skills. Specifically for Front-End Developers, this may involve automating simpler scripts and predicting user-friendly customizations and their underlying code.',
        -- keyInsights
        'In thinking about professional development and upskilling plans, people currently in this role might consider how to use Gen AI to dramatically reduce time spent working with CSS, how to leverage Gen AI to increase productivity working with JavaScript, and how to spend more time working with user interface design.',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
-       'Full Stack Developer',
-       jg.id,
+       'Full-Stack Developer',
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Full Stack Developers develop and maintain both front-end and back-end components of web applications, ensuring seamless integration and functionality. They collaborate with cross-functional teams to design, implement, and optimize scalable and efficient software solutions. They stay updated with the latest industry trends and technologies to continuously improve and innovate on existing systems and processes.',
@@ -884,17 +891,17 @@ SELECT NEWID(),
        'In thinking about professional development and upskilling plans, people currently in this role might consider how to use Gen AI to dramatically reduce time spent working with CSS, how to leverage Gen AI to increase productivity working with JavaScript, and how to spend more time working on microservices.',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Java Developer',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'A Java developer is a software engineer specializing in developing applications using the Java programming language. They are responsible for designing, coding, and testing software solutions, as well as troubleshooting and maintaining existing Java-based applications.',
@@ -908,17 +915,17 @@ SELECT NEWID(),
        'Impact on number of hours: Gen AI can significantly automate tasks related to Java programming, software integration, and development~New skills: Java developers will need to acquire skills in computer vision, natural language processing, TensorFlow, image signal processing, AI model development, cloud AI, prompt engineering, and AI optimization to stay competitive~Skills in demand: Soft skills such as demonstrating responsibility, problem solving, and communication will remain essential for Java Developers, as they often collaborate with cross-functional teams',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Principal Software Engineer',
-       jg.id,
+       p.pathway_id,
        'Senior level',
        -- jobDescription
        'A Principal Software Engineer leads the design, development, and deployment of complex software systems, ensuring high performance and scalability. Responsibilities include setting technical direction, mentoring engineers, and collaborating with stakeholders on strategic projects. Expertise in system architecture, coding, and leadership skills are essential.',
@@ -932,17 +939,17 @@ SELECT NEWID(),
        'AI can augment many aspects of the Principal Software Engineer role but cannot fully replace the essential human elements of creativity, mentorship, strategic thinking, and complex decision-making. System architecture, project leadership, security, innovation, and mentoring require human expertise, while AI tools can assist with performance optimization, code generation, and vulnerability detection.',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Python Developer',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Python Developers analyze requirements and design system installations or modifications using Python, ensuring feasibility within time and cost constraints. They collaborate with stakeholders to gather information and coordinate project activities. Additionally, they develop, modify, and test software systems and stay updated on advancements in Python and related technologies.',
@@ -956,17 +963,17 @@ SELECT NEWID(),
        'More than half of the skills will likely be impacted by Gen AI in the near term, with about one-fifth of them being augmented to boost efficiency~In the long run, about one-sixth of skills could be automated, while nearly a quarter will still require direct human involvement, even with advanced Gen AI~Python Developers will need effective prompt engineering skills as well as a deep, technical understanding of LLM architecture as these workers will be responsible for designing, developing, and maintaining Gen AI applications, building core software automating tasks that will leverage Gen AI, and creating intelligent AI agents~Rather than simply focusing on writing code, Python Developers will now need to understand the core business problems, use cases and success measures as they develop software to address these items',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Senior Software Development Engineer',
-       jg.id,
+       p.pathway_id,
        'Senior level',
        -- jobDescription
        'A Senior Software Development Engineer designs, develops, and maintains high-performance software systems, ensuring scalability and reliability. Responsibilities include advanced coding, system architecture, mentoring team members, and leading technical projects. Expertise in software engineering principles, problem-solving, and leadership skills are essential.',
@@ -980,17 +987,17 @@ SELECT NEWID(),
        'AI-driven system design: Leveraging AI tools to enhance system architecture and design~AI ethics and responsible AI: Understanding and ensuring the ethical use of AI in software development~AI literacy~AI-powered security measures: Developing and implementing AI-based security solutions',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Senior Software Engineer',
-       jg.id,
+       p.pathway_id,
        'Senior level',
        -- jobDescription
        'A Senior Software Engineer designs, develops, and maintains complex software systems, ensuring scalability and performance. Responsibilities include code review, mentoring junior engineers, collaborating with cross-functional teams, and leading technical projects. Strong coding skills, problem-solving, and the ability to manage software development lifecycle are essential.',
@@ -1004,17 +1011,17 @@ SELECT NEWID(),
        'AI-driven software development~AI-powered security measures~AI ethics and responsible AI: Understanding and ensuring the ethical use of AI in product development~AI literacy',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Software Architect',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Software Architects engineer end-to-end system software for a specific technology, product/platform, or market segment, including software structure and bounding box, firmware, drivers, frameworks, cross component, interfaces, interactions, interoperability, protocols, algorithms, and applications.',
@@ -1028,17 +1035,17 @@ SELECT NEWID(),
        'New Gen AI techniques enable:~Design assistance: suggesting design patterns or architectural components based on requirements~Technology selection of most appropriate techniques/frameworks~Performance optimization techniques~Risk analysis and security analysis~Scenario planning~Spec development and review~Documentation generation~Architecture diagram/visualization creation~New skills: AI ethics and responsible AI~AI literacy~LLM architecture and frameworks~Prompt engineering',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Software Developer',
-       jg.id,
+       p.pathway_id,
        'Mid-level',
        -- jobDescription
        'Designs, develops, integrates, tests, validates, and/or debugs software across multiple layers of the software stack spanning firmware, drivers, operating systems, middleware, frameworks, algorithms, and applications/UI for a specific technology, product/platform, and/or market segment, including the development of software to enable specific features, capabilities, solutions and reference platforms.',
@@ -1052,17 +1059,17 @@ SELECT NEWID(),
        'Gartner has forecasted that, by 2028, as many as 3/4 enterprise Software Engineers will harness the power of AI code assistants, up from just one in 10 in 2023 (STAMFORD, Conn, 2024)~Gartner’s research found that the demand for no-code/low-code development platforms is expected to grow at least 5x faster than traditional application development through 2023~In 3-5 years, developers will evolve to think more about connected systems and architecture vs just coding. Junior developers especially will be able to focus on this',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Software Engineer',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'The entry level Software Engineer designs, develops, tests, and debugs responsive web applications using HTML/CSS and JavaScript. They gather user requirements, collaborate with UX/UI designers to create appealing and functional interfaces, maintain front-end and back-end applications, ensure security, optimize performance and SEO, stay current with emerging technologies, create reusable components, and participate in scrum rituals.',
@@ -1076,18 +1083,18 @@ SELECT NEWID(),
        'Software development tools: Further advancements in AI-powered assistive technologies will help guide code development tasks and eventually take on large swaths of development with prompts and other design inputs~Quality assurance: Code review, testing, and analysis tools will help software engineers identify and resolve errors, security vulnerabilities, and inefficiencies more quickly and effectively~Interface development: Voice and chat-enabled software introduced new engineering considerations in software development, and additional AI-powered interactive advancements, like image/live video recognition and gesture controls will be impacted, especially as individualized user experiences become more popular',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Web Developer',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'A Web Developer is responsible for the design and implementation of web applications. Web developers create well-designed, testable, and efficient code using best practices for web development, ensuring responsive and mobile-friendly designs. They maintain and enhance websites by maintaining, expanding, and scaling websites, addressing both front-end and back-end aspects, and ensuring website performance and reliability. They collaborate with teams and stakeholders and work closely with designers, content creators, and other stakeholders to ensure that the website meets both technical and user requirements, providing a positive user experience.',
@@ -1101,20 +1108,20 @@ SELECT NEWID(),
        'In thinking about worker development and upskilling plans, people currently in this role might consider how to use Gen AI to dramatically reduce time spent working with CSS, how to leverage Gen AI to increase productivity working with JavaScript, and how to spend more time developing and maintaining web applications.',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Software Development';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Software Development';
 
 
 -- TESTING AND QUALITY ASSURANCE:
 -- All roles are Entry level.
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Quality Assurance Analyst',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'A Quality Assurance Analyst is responsible for ensuring that software products and applications meet specified quality standards. They perform testing, identify defects, and collaborate with development teams to resolve issues and improve overall product quality.',
@@ -1128,17 +1135,17 @@ SELECT NEWID(),
        'Impact on hours: Gen AI can automate some tasks like documentation and testing, but core responsibilities like auditing and process improvement may be less affected~New skills: Quality Assurance Analysts should acquire emerging skills such as automated testing, speech recognition algorithms, conversational AI, and AI model development to stay relevant and in demand~Soft skills: Demonstrating responsibility, communication, and problem solving will remain essential for quality assurance analysts to effectively ensure product quality and collaborate with teams',
        -- aiTransformation
        'Moderate'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Testing and Quality Assurance';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Testing and Quality Assurance';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Software Test and Debug',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'Integrates and debugs software across the stack including firmware, drivers, and operating systems for a specific product, platform, feature, or technology throughout the product lifecycle. Debugs software products using systematic tests to develop, apply, and maintain quality standards for company products.',
@@ -1152,17 +1159,17 @@ SELECT NEWID(),
        'Automated error/bug detection in software code, reducing time engineers spend identifying and classifying bugs~Code suggestions for fixes in identified bugs by generating code suggestions for engineers to review and apply~Skill shift for test/debug engineers to focus more on software design, system architecture, and understanding complex interactions within code that are harder for Gen AI to detect today~Test plan generation',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Testing and Quality Assurance';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Testing and Quality Assurance';
 
 INSERT INTO [dbo].[JobRole] (
-    id, title, jobGroupId, jobLevel,
+    id, title, pathwayId, jobLevel,
     jobDescription, principalTasks, principalSkills,
     aiImpact, keyInsights, aiTransformation
 )
 SELECT NEWID(),
        'Technical Writer',
-       jg.id,
+       p.pathway_id,
        'Entry level',
        -- jobDescription
        'A Technical Writer is responsible for creating and editing technical documentation, such as user manuals, instruction guides, and online help systems. They translate complex technical information into clear and concise language that is easily understandable for the intended audience.',
@@ -1176,8 +1183,8 @@ SELECT NEWID(),
        'Impact on number of hours: Gen AI can significantly automate tasks related to documentation, user requirements documentation, and research~New skills: Technical Writers will need to acquire skills in automated testing, AI model development, AI integration, cloud AI, and prompt engineering to stay competitive~Skills in demand: Soft skills such as demonstrating responsibility, communication, and interpersonal collaboration will remain essential for Technical Writers, as they often work closely with subject matter experts and development teams',
        -- aiTransformation
        'High'
-FROM [dbo].[JobGroup] jg
-WHERE jg.name = 'Testing and Quality Assurance';
+FROM [dbo].[pathways] p
+WHERE p.pathway_title = 'Testing and Quality Assurance';
 
 
 COMMIT TRAN;

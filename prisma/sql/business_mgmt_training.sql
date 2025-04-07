@@ -26,7 +26,7 @@ USING (VALUES
            ('Introduction to Data Analytics', 'https://www.coursera.org/learn/introduction-to-data-analytics', 'IBM / Coursera', 'Data analysis, data visualization, Microsoft Excel'),
            ('Introduction to modern AI', 'https://skillsforall.com/course/introduction-to-modern-ai?courseLang=en-US', 'Cisco', 'AI literacy'),
            ('Introduction to Prompt Engineering', 'https://www.edx.org/learn/artificial-intelligence/ibm-introduction-to-prompt-engineering', 'IBM / EDX', 'Prompt engineering'),
-           ('Introduction to Responsible AI Skills', 'https://skillsforall.com/learningcollections/ai-intel?courseLang=en-US', 'Cisco / Intel', 'Ethical and Responsible AI, AI ethics and governance'),
+           ('Introduction to Responsible AI Skills', 'https://www.netacad.com/modules/introduction-to-responsible-ai-skills?courseLang=en-US', 'Cisco / Intel', 'Ethical and Responsible AI, AI ethics and governance'),
            ('Responsible AI Foundations', 'https://www.linkedin.com/learning/paths/responsible-ai-foundations', 'LinkedIn', 'Ethical and Responsible AI, AI ethics and governance'),
            ('Working in a Digital World: Professional Skills', 'https://www.credly.com/org/ibm-skillsbuild/badge/working-in-a-digital-world-professional-skills', 'IBM', 'Agile methodologies, business acumen, creative thinking, critical thinking, communication, problem solving, solutioning')
 ) AS source(title, url, provider, skillsDeveloped)
@@ -44,9 +44,9 @@ COMMIT TRAN;
 -------------------------------
 BEGIN TRAN;
 
-INSERT INTO [dbo].[JobGroupTraining] (id, jobGroupId, trainingId)
-SELECT NEWID(), jg.id, t.id
-FROM [dbo].[JobGroup] jg
+INSERT INTO [dbo].[PathwayTraining] (id, pathwayId, trainingId)
+SELECT NEWID(), p.pathway_id, t.id
+FROM [dbo].[pathways] p
          JOIN [dbo].[Training] t ON t.url IN (
                                               'https://ibm.biz/BdGpZ8',
                                               'https://a16z.com/ai-canon/',
@@ -61,18 +61,18 @@ FROM [dbo].[JobGroup] jg
                                               'https://ibm.biz/BdGpYc',
                                               'https://skillsforall.com/course/engaging-stakeholders',
                                               'https://www.coursera.org/learn/enterprise-design-thinking-co-creator',
-                                              'https://www.coursera.org/learn/enterprise-design-thinking-practitioner',
+                                              'https://www.ibm.com/design/thinking/page/courses/Practitioner',
                                               'https://www.credly.com/org/ibm-skillsbuild/badge/explore-emerging-tech',
                                               'https://www.coursera.org/learn/project-management-foundations',
                                               'https://academy.aiskills.eu/course/1-introduction-to-artificial-intelligence',
                                               'https://www.coursera.org/learn/introduction-to-data-analytics',
                                               'https://skillsforall.com/course/introduction-to-modern-ai?courseLang=en-US',
                                               'https://www.edx.org/learn/artificial-intelligence/ibm-introduction-to-prompt-engineering',
-                                              'https://skillsforall.com/learningcollections/ai-intel?courseLang=en-US',
+                                              'https://www.netacad.com/modules/introduction-to-responsible-ai-skills?courseLang=en-US',
                                               'https://www.linkedin.com/learning/paths/responsible-ai-foundations',
                                               'https://www.credly.com/org/ibm-skillsbuild/badge/working-in-a-digital-world-professional-skills'
     )
-WHERE jg.name = 'Business and Management';
+WHERE p.pathway_title = 'Business and Management';
 
 COMMIT TRAN;
 
@@ -123,7 +123,7 @@ FROM [dbo].[JobRole] jr
                                               'https://www.coursera.org/learn/python-for-applied-data-science-ai'
     )
 WHERE jr.title = 'Business Analyst'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Business and Management');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Business and Management');
 
 COMMIT TRAN;
 
@@ -145,8 +145,8 @@ USING (VALUES
            ('Excel Basics for Data Analysis', 'https://www.coursera.org/learn/excel-basics-data-analysis-ibm', 'IBM / Coursera', 'Data analysis, Pivot table'),
            ('Getting Started with R for Data Science', 'https://www.linkedin.com/learning/paths/getting-started-with-r-for-data-science', 'LinkedIn', 'Data analysis, R Programming'),
            ('Machine Learning Specialization', 'https://www.coursera.org/specializations/machine-learning-introduction', 'Stanford / DeepLearning.AI', 'Logistic regression, Artificial Neural Network, Linear Regression, Decision Trees'),
-           ('Machine Learning with Python Foundations', 'https://www.linkedin.com/learning/machine-learning-with-python-foundations/machine-learning-in-our-world-23459526?u=104', 'LinkedIn', 'Step-by-step guidance for machine learning using Python'),
-           ('Power BI: Integrating AI and Machine Learning', 'https://www.linkedin.com/learning/power-bi-integrating-ai-and-machine-learning/the-power-of-power-bi?u=104', 'LinkedIn', 'Overview of Power BI, including AI and machine learning integration'),
+           ('Machine Learning with Python Foundations', 'https://www.linkedin.com/learning/machine-learning-with-python-foundations', 'LinkedIn', 'Step-by-step guidance for machine learning using Python'),
+           ('Power BI: Integrating AI and Machine Learning (FEE)', 'https://www.linkedin.com/learning/power-bi-integrating-ai-and-machine-learning', 'LinkedIn', 'Overview of Power BI, including AI and machine learning integration'),
            ('Python for Data Science, AI & Development', 'https://www.coursera.org/learn/python-for-applied-data-science-ai', 'IBM / Coursera', 'Python Programming, Panda, Numpy'),
            ('SAP analytics', 'https://training.sap.com/content/sap-analytics-training', 'SAP', 'Crystal Reports, SAP BI Platform Administration, SAP Lumira')
 ) AS source(title, url, provider, skillsDeveloped)
@@ -174,13 +174,13 @@ FROM [dbo].[JobRole] jr
                                               'https://www.coursera.org/learn/excel-basics-data-analysis-ibm',
                                               'https://www.linkedin.com/learning/paths/getting-started-with-r-for-data-science',
                                               'https://www.coursera.org/specializations/machine-learning-introduction',
-                                              'https://www.linkedin.com/learning/machine-learning-with-python-foundations/machine-learning-in-our-world-23459526?u=104',
-                                              'https://www.linkedin.com/learning/power-bi-integrating-ai-and-machine-learning/the-power-of-power-bi?u=104',
+                                              'https://www.linkedin.com/learning/machine-learning-with-python-foundations',
+                                              'https://www.linkedin.com/learning/power-bi-integrating-ai-and-machine-learning',
                                               'https://www.coursera.org/learn/python-for-applied-data-science-ai',
                                               'https://training.sap.com/content/sap-analytics-training'
     )
 WHERE jr.title = 'Business Intelligence Analyst'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Business and Management');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Business and Management');
 
 COMMIT TRAN;
 
@@ -199,7 +199,7 @@ USING (VALUES
            ('Excel Basics for Data Analysis', 'https://www.coursera.org/learn/excel-basics-data-analysis-ibm', 'IBM / Coursera', 'Data analysis, Pivot table'),
            ('Information Systems Specialization', 'https://www.coursera.org/specializations/information-systems', 'Coursera / University of Minnesota', 'Analysis for Business Systems, Enterprise Systems, IT Infrastructure, IS/IT Governance'),
            ('Machine Learning Specialization', 'https://www.coursera.org/specializations/machine-learning-introduction', 'Stanford / DeepLearning.AI', 'Logistic regression, Artificial Neural Network, Linear Regression, Decision Trees'),
-           ('Machine Learning with Python Foundations', 'https://www.linkedin.com/learning/machine-learning-with-python-foundations/machine-learning-in-our-world-23459526?u=104', 'LinkedIn', 'Step-by-step guidance for machine learning using Python'),
+           ('Machine Learning with Python Foundations', 'https://www.linkedin.com/learning/machine-learning-with-python-foundations', 'LinkedIn', 'Step-by-step guidance for machine learning using Python'),
            ('Python for Data Science, AI & Development', 'https://www.coursera.org/learn/python-for-applied-data-science-ai', 'IBM / Coursera', 'Python Programming, Panda, Numpy')
 ) AS source(title, url, provider, skillsDeveloped)
 ON target.url = source.url
@@ -223,11 +223,11 @@ FROM [dbo].[JobRole] jr
                                               'https://www.coursera.org/learn/excel-basics-data-analysis-ibm',
                                               'https://www.coursera.org/specializations/information-systems',
                                               'https://www.coursera.org/specializations/machine-learning-introduction',
-                                              'https://www.linkedin.com/learning/machine-learning-with-python-foundations/machine-learning-in-our-world-23459526?u=104',
+                                              'https://www.linkedin.com/learning/machine-learning-with-python-foundations',
                                               'https://www.coursera.org/learn/python-for-applied-data-science-ai'
     )
 WHERE jr.title = 'Business Systems Analyst'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Business and Management');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Business and Management');
 
 COMMIT TRAN;
 
@@ -269,7 +269,7 @@ FROM [dbo].[JobRole] jr
     )
 WHERE jr.title = 'Customer Service Representative'
   AND jr.jobLevel = 'Entry level'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Business and Management');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Business and Management');
 
 COMMIT TRAN;
 
@@ -301,7 +301,7 @@ FROM [dbo].[JobRole] jr
     )
 WHERE jr.title = 'Digital Marketing Specialist'
   AND jr.jobLevel = 'Mid-level'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Business and Management');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Business and Management');
 
 COMMIT TRAN;
 
@@ -336,7 +336,7 @@ FROM [dbo].[JobRole] jr
                                               'https://skillsbuild.org/adult-learners/explore-learning/user-experience-design'
     )
 WHERE jr.title = 'Product Manager'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Business and Management');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Business and Management');
 
 COMMIT TRAN;
 
@@ -374,7 +374,7 @@ FROM [dbo].[JobRole] jr
     )
 WHERE jr.title = 'Project Manager'
   AND jr.jobLevel = 'Mid-level'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Business and Management');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Business and Management');
 
 COMMIT TRAN;
 
@@ -412,6 +412,6 @@ FROM [dbo].[JobRole] jr
     )
 WHERE jr.title = 'Senior Product Manager'
   AND jr.jobLevel = 'Senior level'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Business and Management');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Business and Management');
 
 COMMIT TRAN;

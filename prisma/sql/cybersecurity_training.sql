@@ -15,7 +15,7 @@ USING (VALUES
            ('AI Ethics', 'https://ibm.biz/BdGpZA', 'IBM', 'Ethical and Responsible AI, AI ethics and governance'),
            ('AI for Everyone by Andrew Ng', 'https://www.coursera.org/learn/ai-for-everyone', 'Coursera', 'AI literacy'),
            ('AI Fundamentals', 'https://ibm.biz/BdGpZ9', 'IBM', 'AI Fundamentals'),
-           ('AI Security Nuggets', 'https://www.netacad.com/catalogs/learn/cybersecurity', 'Cisco', 'AI regulations, AI threat modeling, AI supply chain, Retrieval Augmented Generation (RAG), LLM stack'),
+           ('AI Security Nuggets', 'https://www.netacad.com/modules/ai-security-nuggets?courseLang=en-US', 'Cisco', 'AI regulations, AI threat modeling, AI supply chain, Retrieval Augmented Generation (RAG), LLM stack'),
            ('Building AI Literacy', 'https://www.linkedin.com/learning/paths/building-ai-literacy?u=26890602', 'LinkedIn', 'AI literacy'),
            ('Building Career Agility and Resilience in the Age of AI', 'https://www.linkedin.com/learning/building-career-agility-and-resilience-in-the-age-of-ai/prepare-for-your-ai-enhanced-career?u=104', 'LinkedIn', 'AI technologies skills to develop a "future-proof career mindset"'),
            ('Career Management Essentials', 'https://ibm.biz/BdGpZT', 'IBM', 'Career development, Career management, Communication skills, Generative AI tool use, Networking skills, Presentation skills, Professional interviewing skills, Professional online brand development, Resume writing, Socialmedia presence, Workplace research'),
@@ -31,7 +31,7 @@ USING (VALUES
            ('Introduction to Data Analytics', 'https://www.coursera.org/learn/introduction-to-data-analytics', 'IBM / Coursera', 'Data analysis, data visualization, Microsoft excel'),
            ('Introduction to modern AI', 'https://skillsforall.com/course/introduction-to-modern-ai?courseLang=en-US', 'Cisco', 'AI literacy'),
            ('Introduction to Prompt Engineering', 'https://www.edx.org/learn/artificial-intelligence/ibm-introduction-to-prompt-engineering', 'IBM / EDX', 'Prompt engineering'),
-           ('Introduction to Responsible AI Skills', 'https://skillsforall.com/learningcollections/ai-intel?courseLang=en-US', 'Cisco / Intel', 'Ethical and Responsible AI, AI ethics and governance'),
+           ('Introduction to Responsible AI Skills', 'https://www.netacad.com/modules/introduction-to-responsible-ai-skills?courseLang=en-US', 'Cisco / Intel', 'Ethical and Responsible AI, AI ethics and governance'),
            ('Responsible AI Foundations', 'https://www.linkedin.com/learning/paths/responsible-ai-foundations', 'LinkedIn', 'Ethical and Responsible AI, AI ethics and governance'),
            ('Working in a Digital World: Professional Skills', 'https://www.credly.com/org/ibm-skillsbuild/badge/working-in-a-digital-world-professional-skills', 'IBM', 'Agile methodologies, business acumen, creative thinking, critical thinking, communication, problem solving, solutioning')
 ) AS source(title, url, provider, skillsDeveloped)
@@ -47,9 +47,9 @@ COMMIT TRAN;
 -------------------------------
 BEGIN TRAN;
 
-INSERT INTO [dbo].[JobGroupTraining] (id, jobGroupId, trainingId)
-SELECT NEWID(), jg.id, t.id
-FROM [dbo].[JobGroup] jg
+INSERT INTO [dbo].[PathwayTraining] (id, pathwayId, trainingId)
+SELECT NEWID(), p.pathway_id, t.id
+FROM [dbo].[pathways] p
          JOIN [dbo].[Training] t ON t.url IN (
                                               'https://ibm.biz/BdGpZ8',
                                               'https://a16z.com/ai-canon/',
@@ -72,11 +72,11 @@ FROM [dbo].[JobGroup] jg
                                               'https://www.coursera.org/learn/introduction-to-data-analytics',
                                               'https://skillsforall.com/course/introduction-to-modern-ai?courseLang=en-US',
                                               'https://www.edx.org/learn/artificial-intelligence/ibm-introduction-to-prompt-engineering',
-                                              'https://skillsforall.com/learningcollections/ai-intel?courseLang=en-US',
+                                              'https://www.netacad.com/modules/introduction-to-responsible-ai-skills?courseLang=en-US',
                                               'https://www.linkedin.com/learning/paths/responsible-ai-foundations',
                                               'https://www.credly.com/org/ibm-skillsbuild/badge/working-in-a-digital-world-professional-skills'
     )
-WHERE jg.name = 'Cybersecurity';
+WHERE p.pathway_title = 'Cybersecurity';
 
 COMMIT TRAN;
 
@@ -111,7 +111,7 @@ FROM [dbo].[JobRole] jr
                                               'https://skillsforall.com/career-path/cybersecurity?courseLang=en-US'
     )
 WHERE jr.title = 'Cybersecurity Analyst'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Cybersecurity');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Cybersecurity');
 
 COMMIT TRAN;
 
@@ -158,7 +158,7 @@ FROM [dbo].[JobRole] jr
                                               'https://www.coursera.org/learn/ibm-penetration-testing-incident-response-forensics'
     )
 WHERE jr.title = 'Ethical Hacker'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Cybersecurity');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Cybersecurity');
 
 COMMIT TRAN;
 
@@ -205,7 +205,7 @@ FROM [dbo].[JobRole] jr
                                               'https://www.coursera.org/learn/ibm-penetration-testing-incident-response-forensics'
     )
 WHERE jr.title = 'Information Security Specialist'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Cybersecurity');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Cybersecurity');
 
 COMMIT TRAN;
 
@@ -236,6 +236,6 @@ FROM [dbo].[JobRole] jr
                                               'https://www.coursera.org/specializations/machine-learning-introduction'
     )
 WHERE jr.title = 'SOC Analyst Level 1'
-  AND jr.jobGroupId = (SELECT id FROM [dbo].[JobGroup] WHERE name = 'Cybersecurity');
+  AND jr.pathwayId = (SELECT pathway_id FROM [dbo].[pathways] WHERE pathway_title = 'Cybersecurity');
 
 COMMIT TRAN;

@@ -2153,13 +2153,16 @@ async function seedMockUsers(numUsers = 4) {
 }
 
 export const EduProviderPathways = {
-  // maps to TypeScript enum EduProviderPathways
-  SoftwareDeveloper: "Software Developer",
-  ITCloudSupport: "IT & Cloud Support",
+  // TODO: align with enum EduProviderPathways
+  SoftwareDeveloper: "Software Development",
+  ITCloudSupport: "Infrastructure and Operations",
   Cybersecurity: "Cybersecurity",
-  DataAnalytics: "Data Analytics",
+  DataAnalytics: "Data Science",
   ProfessionSkillsTraining: "Profession Skills Training",
-  ProgramManagement: "Program Management",
+  BusinessMgmt: "Business and Management",
+  Design: "Design and User Experience",
+  Tester: "Testing and Quality Assurance",
+
 };
 async function seedPartnerPathways() {
   const pathways = [
@@ -2168,12 +2171,9 @@ async function seedPartnerPathways() {
     EduProviderPathways.Cybersecurity,
     EduProviderPathways.DataAnalytics,
     EduProviderPathways.ProfessionSkillsTraining,
-    EduProviderPathways.ProgramManagement,
-    // "Cloud Support Associate",
-    // "Data Center Operations",
-    // "Digital Marketing",
-    // "UI/UX",
-    // "Other",
+    EduProviderPathways.BusinessMgmt,
+    EduProviderPathways.Design,
+    EduProviderPathways.Tester,
   ];
 
   console.log("Seeding Pathways...");
