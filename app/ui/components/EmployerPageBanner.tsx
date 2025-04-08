@@ -1,43 +1,38 @@
+import Image from "next/image";
 import RoundedButton from "./RoundedButton";
-import { auth } from "@/auth";
 
 export default async function EmployerPageBanner() {
-  const session = await auth();
-  console.log("session is ", session);
-  //h-[615px] content-center bg-jobseeker-hero-1 bg-cover bg-center p-4 text-white bg-blend-darken tablet:p-10 laptop:h-[854px] laptop:p-20 bg-linear-to-r from-purple-500 to-blue-tw500
   return (
     <div
       className={
-        "h-[700px] laptop:h-[700px] flex items-center bg-linear-to-b from-primary-main to-[#39b2c2] px-[16px] sm-tablet:px-[50px] laptop:px-[100px]"
+        "laptop:h-[825px] phone:h-[1300px] grid items-center gap-[64px] laptop:grid-cols-2 bg-linear-to-b from-[#014260] to-[#39b2c2] px-[16px] py-[128px] sm-tablet:px-[50px] laptop:px-[100px] text-white"
       }
     >
-      <div className="inline-flex flex-col items-start justify-start gap-2">
+      <Image src={"/images/employers/Profile-Card.png"} className="justify-self-center max-w-8/10" alt={""} width={611} height={632}/>
+      <div className="laptop:order-first space-y-7">
         <div
-          className="self-stretch font-normal capitalize leading-[105.60px] text-white"
-          style={{ fontSize: "clamp(4rem, 24vw, 5rem)" }}
-        >
-          Unique Access to Undiscovered Talent​{" "}
+          className="self-stretch capitalize leading-tight"
+          style={{ fontSize: "clamp(2rem, 10vw, 5rem)" }}
+        >Discovering Tech Talent Just Got Easier 
         </div>
-        <div className="self-stretch text-[22px] font-normal leading-[30.80px] text-white">
-          The Talent Finder Portal creates a recruiting gateway primarily
-          designed for Public​
-        </div>
-        <div className="flex flex-col items-start justify-start">
-          <div className="relative h-[33.21px] w-px" />
+        <div className="self-stretch text-[22px] leading-relaxed">
+        Revolutionize your hiring process with portfolios that
+        showcase candidates' practical skills and project experience
         </div>
         <div className="gap-4 flex flex-row items-start justify-start">
           <RoundedButton
-            content={"Search Talent"}
+            content={"Explore Portfolios"}
             link={"/services/employers/dashboard/talent-search"}
             invertColor={false}
           />
           <RoundedButton
-            content={"Post Jobs"}
+            content={"Post A Job"}
             link={"mailto:susanne.mata@computingforall.org"}
             invertColor={false}
           />
         </div>
       </div>
+      
     </div>
   );
 }
