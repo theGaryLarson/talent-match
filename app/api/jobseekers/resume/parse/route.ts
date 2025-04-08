@@ -37,6 +37,7 @@ export async function POST(request: Request) {
     await prisma.jobseekers.update({
       where: { user_id: userId },
       data: {
+        hasResume: true,
         updatedAt: new Date(),
       },
     });
