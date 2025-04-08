@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getAllJobPosts } from "@/app/lib/joblistings";
 import JobTrackingTable from "@/app/ui/components/careerPrep/JobTrackingTable";
 import * as React from "react";

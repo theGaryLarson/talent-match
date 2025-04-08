@@ -8,6 +8,9 @@ export const metadata = {
   title: "Tech Workforce Coalition",
 };
 
+// Force server-side rendering, to get latest training provider logos
+export const dynamic = "force-dynamic";
+
 export default function Page() {
   return (
     <div>
@@ -82,7 +85,7 @@ export default function Page() {
                     <div className="justify-start items-start gap-5 inline-flex">
                       <RoundedButton
                         content={"Search Talent"}
-                        link={"/services/talent-search"}
+                        link={"/services/employers/dashboard/talent-search"}
                         invertColor={true}
                       ></RoundedButton>
                       <RoundedButton
@@ -218,7 +221,7 @@ export default function Page() {
             <div className="mt-4 justify-start items-start gap-5 inline-flex">
               <RoundedButton
                 content={"Search Talent"}
-                link={"/services/talent-search"}
+                link={"/services/employers/dashboard/talent-search"}
                 invertColor={true}
               ></RoundedButton>
               <RoundedButton

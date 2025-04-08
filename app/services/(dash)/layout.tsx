@@ -43,12 +43,12 @@ const employerLinks = [
     label: "Jobs",
   },
   {
-    href: "/services/talent-search",
+    href: "/services/employers/dashboard/talent-search",
     icon: <SearchRounded />,
     label: "Search Candidates",
   },
   {
-    href: "/services/events",
+    href: "/services/events/registered",
     icon: <CalendarMonthOutlined />,
     label: "Events",
   },
@@ -77,7 +77,7 @@ const jobseekerLinks = [
     label: "Applications",
   },
   {
-    href: "/services/jobseekers/dashboard/events",
+    href: "/services/events/registered",
     icon: <CalendarMonthOutlined />,
     label: "Events",
   },
