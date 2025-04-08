@@ -1,5 +1,5 @@
 import Image from "next/image";
-import RoundedButton from "./RoundedButton";
+import RoundedButton from "../RoundedButton";
 
 export default async function EmployerPageBanner() {
   return (
