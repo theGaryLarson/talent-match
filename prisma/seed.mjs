@@ -2153,7 +2153,7 @@ async function seedMockUsers(numUsers = 4) {
 }
 
 export const EduProviderPathways = {
-  // TODO: align with enum EduProviderPathways
+  // TODO: align with ICT Job Group Families
   SoftwareDeveloper: "Software Development",
   ITCloudSupport: "Infrastructure and Operations",
   Cybersecurity: "Cybersecurity",
@@ -2162,7 +2162,6 @@ export const EduProviderPathways = {
   BusinessMgmt: "Business and Management",
   Design: "Design and User Experience",
   Tester: "Testing and Quality Assurance",
-
 };
 async function seedPartnerPathways() {
   const pathways = [
