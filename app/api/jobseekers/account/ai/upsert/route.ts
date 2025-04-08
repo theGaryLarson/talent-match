@@ -432,6 +432,9 @@ export async function POST(request: Request) {
                 }
               }
             }
+            const uniqueSkillIds = Array.from(
+              new Set(skillIdsToConnect.map((s) => s.skill_id)),
+            );
 
             await tx.projectExperiences.create({
               data: {
@@ -446,8 +449,8 @@ export async function POST(request: Request) {
                 demoUrl: proj.demoUrl,
                 project_has_skills: {
                   createMany: {
-                    data: skillIdsToConnect.map((s) => ({
-                      skill_id: s.skill_id,
+                    data: uniqueSkillIds.map((id) => ({
+                      skill_id: id,
                     })),
                   },
                 },
@@ -595,6 +598,9 @@ export async function POST(request: Request) {
             }
           }
         }
+        const uniqueSkillIds = Array.from(
+          new Set(skillIdsToConnect.map((s) => s.skill_id)),
+        );
 
         await tx.jobseekers.update({
           where: { jobseeker_id: jobseekerId },
@@ -603,10 +609,10 @@ export async function POST(request: Request) {
               deleteMany: {
                 jobseeker_id: jobseekerId,
               },
-              create: skillIdsToConnect.map((s) => ({
+              create: uniqueSkillIds.map((id) => ({
                 skills: {
                   connect: {
-                    skill_id: s.skill_id,
+                    skill_id: id,
                   },
                 },
               })),
