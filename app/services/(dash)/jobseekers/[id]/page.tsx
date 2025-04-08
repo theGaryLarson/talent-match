@@ -133,6 +133,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       .toLowerCase()
                       .split("linkedin.com")[1]
                   }
+                  target="_blank"
                   sx={{ wordBreak: "break-word" }}
                 >
                   {"https://www.linkedin.com" +
@@ -144,6 +145,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
               {jobseeker?.portfolio_url && (
                 <Link
                   href={jobseeker?.portfolio_url}
+                  target="_blank"
                   sx={{ wordBreak: "break-word" }}
                 >
                   {jobseeker?.portfolio_url}
