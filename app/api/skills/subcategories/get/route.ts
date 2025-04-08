@@ -1,9 +1,9 @@
-import { adminGetSkillSubcategories } from "@/app/lib/admin/skill";
+import { getSkillSubcategories } from "@/app/lib/admin/skill";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const result = await adminGetSkillSubcategories();
+    const result = await getSkillSubcategories();
     return NextResponse.json(result);
   } catch (e) {
     console.error("Error fetching skill subcategories:", e);
