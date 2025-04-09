@@ -166,7 +166,7 @@ export const getAllCareerPrepStudentsCardView = async (): Promise<
     prisma.$disconnect();
   }
 };
-
+//unused
 export const getCareerPrepStudentsCardViewByCaseManagerSession =
   async (): Promise<CareerPrepGridData[]> => {
     try {
@@ -184,6 +184,13 @@ export const getCareerPrepStudentsCardViewByCaseManagerSession =
       devLog("career prep card view", data);
       // Transform the data to match the CareerPrepJobseekerCardViewDTO structure
       const transformedData: CareerPrepGridData[] = data.map((item) => ({
+        AppearOnShowCase: item.Jobseeker.prescreened,
+        CybersecurityRating: item.CybersecurityRating,
+        DataAnalyticsRating: item.DataAnalyticsRating,
+        SoftwareDevRating: item.SoftwareDevRating,
+        DurableSkillsRating: item.DurableSkillsRating,
+        ITCloudRating: item.ITCloudRating,
+        BrandingRating: item.BrandingRating,
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
         HighestEdLevel:
@@ -242,6 +249,13 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
       });
     const transformedData: CareerPrepGridData[] =
       assessmentsWithoutCaseMgmt.map((item) => ({
+        AppearOnShowCase: item.Jobseeker.prescreened,
+        CybersecurityRating: item.CybersecurityRating,
+        DataAnalyticsRating: item.DataAnalyticsRating,
+        SoftwareDevRating: item.SoftwareDevRating,
+        DurableSkillsRating: item.DurableSkillsRating,
+        ITCloudRating: item.ITCloudRating,
+        BrandingRating: item.BrandingRating,
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
         HighestEdLevel:
@@ -274,7 +288,64 @@ export const getUnManagedCareerPrepStudents = async (): Promise<
     return [];
   }
 };
-
+export const getAllJobSeekersForCareerPrepHomePage = async (): Promise<
+  CareerPrepGridData[]
+> => {
+  try {
+    const JobSeekers = await prisma.jobseekers.findMany({
+      include: {
+        CareerPrepAssessment: {
+          include: {
+            CybersecurityRating: true,
+            DataAnalyticsRating: true,
+            ITCloudRating: true,
+            CaseMgmt: true,
+            SoftwareDevRating: true,
+            DurableSkillsRating: true,
+            BrandingRating: true,
+          },
+        },
+        users: true,
+      },
+    });
+    const transformedData: CareerPrepGridData[] = JobSeekers.map((item) => ({
+      AppearOnShowCase: item.prescreened,
+      CybersecurityRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.CybersecurityRating,
+      ),
+      DataAnalyticsRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.DataAnalyticsRating,
+      ),
+      SoftwareDevRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.SoftwareDevRating,
+      ),
+      DurableSkillsRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.DurableSkillsRating,
+      ),
+      ITCloudRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.ITCloudRating,
+      ),
+      BrandingRating: item.CareerPrepAssessment.flatMap(
+        (cpa) => cpa.BrandingRating,
+      ),
+      jobseeker_id: item.jobseeker_id,
+      first_name: item.users?.first_name || "",
+      HighestEdLevel: item.highest_level_of_study_completed ?? "Unknown",
+      last_name: item.users?.last_name || "",
+      email: item.users.email,
+      careerPrepTrackRecommendation:
+        item.careerPrepTrackRecommendation as CareerPrepTrack,
+      user_id: item.users.id,
+      "CP Enrollment Status": item.CareerPrepAssessment.pop()?.CaseMgmt
+        ?.prepEnrollmentStatus as CareerPrepStatus,
+      "Pool Type": (item.assignedPool as PoolCategories) || PoolCategories.None,
+    }));
+    return transformedData;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
 export const getAllPreScreenedCareerPrepStudents = async (): Promise<
   CareerPrepGridData[]
 > => {
@@ -290,6 +361,13 @@ export const getAllPreScreenedCareerPrepStudents = async (): Promise<
       });
     const transformedData: CareerPrepGridData[] =
       assessmentsWithoutCaseMgmt.map((item) => ({
+        AppearOnShowCase: item.Jobseeker.prescreened,
+        CybersecurityRating: item.CybersecurityRating,
+        DataAnalyticsRating: item.DataAnalyticsRating,
+        SoftwareDevRating: item.SoftwareDevRating,
+        DurableSkillsRating: item.DurableSkillsRating,
+        ITCloudRating: item.ITCloudRating,
+        BrandingRating: item.BrandingRating,
         jobseeker_id: item.jobseekerId,
         first_name: item.Jobseeker?.users?.first_name || "",
         HighestEdLevel:
@@ -500,6 +578,12 @@ const selectCareerPrepStudentCardView /*: Prisma.CareerPrepAssessmentSelect*/ =
     pronouns: true,
     assessmentDate: true,
     expectedEduCompletion: true,
+    CybersecurityRating: true,
+    DataAnalyticsRating: true,
+    ITCloudRating: true,
+    SoftwareDevRating: true,
+    DurableSkillsRating: true,
+    BrandingRating: true,
     CaseMgmt: {
       select: {
         prepEnrollmentStatus: true,
@@ -1077,7 +1161,6 @@ export const getCareerPrepAssessment = async (jobseekerId: string) => {
         BrandingRating: true,
       },
     });
-    console.log("assess:", result);
     return result;
   } catch (error) {
     console.error(error);
