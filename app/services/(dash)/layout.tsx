@@ -111,7 +111,7 @@ const UserDrawer = ({
         >
           <Avatar scale={0.66} imgsrc={session?.user.image || ""} />
           <div>
-            <p className="text-wrap font-bold">{session?.user.name}</p>
+            <p className="text-wrap font-bold">{session?.user.firstName}</p>
             <Link
               href={profileLink}
               className="text-wrap text-sm text-primary-600 sm-tablet:text-base"

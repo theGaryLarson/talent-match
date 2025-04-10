@@ -51,6 +51,8 @@
     "next-auth": "^5.0.0-beta.20",
     "nodemailer": "^6.9.16",
     "open-graph-scraper": "^6.9.0",
+    "openai": "^4.91.1",
+    "pdfjs-dist": "^5.1.91",
     "postcss": "8.4.31",
     "react": "19.0.0",
     "react-dom": "19.0.0",

@@ -62,7 +62,7 @@ export default function AccountMenu() {
                 textColor
               }
             >
-              {session?.user?.name || ""}
+              {session?.user?.firstName || ""}
             </p>
             <ChevronDownIcon
               className={"h-5 w-5 flex-none " + textColor}

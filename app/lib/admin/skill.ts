@@ -108,12 +108,7 @@ export async function adminGetSkills() {
   }
 }
 
-export async function adminGetSkillSubcategories() {
-  const Session = await auth();
-  if (!Session?.user.roles.includes(Role.ADMIN)) {
-    throw new Error("Must Be Admin to complete this task");
-  }
-
+export async function getSkillSubcategories() {
   try {
     const skillSubcategories = await prisma.skill_subcategories.findMany({
       include: {
