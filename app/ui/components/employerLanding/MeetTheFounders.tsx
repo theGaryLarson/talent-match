@@ -41,7 +41,7 @@ export default function MeetTheFounders() {
           builda better way to connect employers with exceptional tech talent.
         </p>
       </div>
-      <div className="grid tablet:grid-cols-3 gap-[64px]">
+      <div className="grid tablet:grid-cols-3 gap-[64px] place-items-center">
         {Founders.map((f: FounderCardProps) => (
           <FounderCard {...f} key={f.name} />
         ))}

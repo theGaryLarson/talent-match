@@ -1,6 +1,7 @@
 import Image from "next/image";
 import "./employerLanding.css";
 import RoundedButton from "../RoundedButton";
+import ProfileImg from "./Profile-Image.png";
 export default function TCPortalFunctionsFold() {
   return (
     <div className="flex flex-col items-center gap-[42px] bg-gray-200 py-[80px]">
@@ -14,13 +15,7 @@ export default function TCPortalFunctionsFold() {
         experience,and proven abilities. See their skills in action before you
         hire.
       </div>
-      <Image
-        src={"/images/employers/Profile-Image.png"}
-        alt={""}
-        width={1370}
-        height={665}
-        className="rounded-4xl"
-      />
+      <Image src={ProfileImg} alt={""} className="rounded-4xl px-[16px]" />
       <HighLights />
       <RoundedButton
         content={"Browse Candidate Portfolios"}
@@ -33,15 +28,24 @@ export default function TCPortalFunctionsFold() {
 
 function HighLights() {
   return (
-    <div>
-      <Highlight src={"/images/employers/Vector1.png"} />
-      <Highlight src={"/images/employers/Vector2.png"} />
-      <Highlight src={"/images/employers/Vector3.png"} />
+    <div className="grid tablet:grid-cols-3">
+      <Highlight
+        src={"/images/employers/Vector1.png"}
+        text="Concrete evidence of technical proficiency"
+      />
+      <Highlight
+        src={"/images/employers/Vector2.png"}
+        text="Deeper insights into projects and contributions"
+      />
+      <Highlight
+        src={"/images/employers/Vector3.png"}
+        text="Spotlights soft skill strengths and development"
+      />
     </div>
   );
 }
 
-function Highlight(props: { src: string }) {
+function Highlight(props: { src: string; text: string }) {
   return (
     <div className="self-stretch inline-flex flex-col justify-start items-center gap-4 w-[300px]">
       <Image
@@ -58,7 +62,7 @@ function Highlight(props: { src: string }) {
           className="inline-flex flex-col justify-start items-center"
         >
           <div className="text-center text-2xl">
-            Concrete evidence of technical proficiency
+            {props.text}
           </div>
         </div>
       </div>

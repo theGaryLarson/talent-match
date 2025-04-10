@@ -1,4 +1,5 @@
 //employer landing page
+import BottomFold from "@/app/ui/components/employerLanding/BottomFold";
 import EmployerPageBanner from "@/app/ui/components/employerLanding/EmployerPageBanner";
 import EmployerSteps from "@/app/ui/components/employerLanding/EmployerSteps";
 import MarketingCards from "@/app/ui/components/employerLanding/MarketingCards";
@@ -17,6 +18,7 @@ export default function Page() {
           <MarketingCards />
           <MeetTheFounders />
         </div>
+        <BottomFold/>
       </main>
     </>
   );
