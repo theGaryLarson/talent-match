@@ -1,4 +1,4 @@
-import { Grid2 } from "@mui/material";
+import { Grid } from "@mui/material";
 import { IRelatedData } from "../../lib/data";
 import LinearProgressesWithTitle from "./linear-progresses-with-title";
 
@@ -20,19 +20,19 @@ export default function EducationExperienceDetails({
     }),
   );
   return (
-    <Grid2 container spacing={2}>
-      <Grid2 size={{ xs: 12, md: 6 }}>
+    <Grid container spacing={2}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <LinearProgressesWithTitle
           title="Job openings by degree type"
           items={education_items}
         />
-      </Grid2>
-      <Grid2 size={{ xs: 12, md: 6 }}>
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
         <LinearProgressesWithTitle
           title="Job openings by degree type"
           items={experience_items}
         />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }

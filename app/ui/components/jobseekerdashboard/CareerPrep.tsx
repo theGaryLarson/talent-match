@@ -1,4 +1,4 @@
-import { Card, Grid2, Stack } from "@mui/material";
+import { Card, Grid, Stack } from "@mui/material";
 import Image from "next/image";
 import { ReactNode } from "react";
 import RoundedButton from "../RoundedButton";
@@ -142,7 +142,7 @@ export default async function CareerPrep() {
           src="/images/stock/careerAssesment.jfif"
           alt="4 people looking at a computer, ready to start their journey"
         />
-        <Grid2 container gap={2} direction={"column"}>
+        <Grid container gap={2} direction={"column"}>
           <div>
             <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
               {copy.headline}
@@ -162,7 +162,7 @@ export default async function CareerPrep() {
             link={copy.buttonLink}
             content={copy.button}
           />
-        </Grid2>
+        </Grid>
       </Stack>
     </Card>
   );

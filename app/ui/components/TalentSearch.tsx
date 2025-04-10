@@ -20,7 +20,7 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
-  Grid2,
+  Grid,
   Slider,
   Typography,
 } from "@mui/material";
@@ -319,9 +319,9 @@ export default function TalentSearch() {
       />
 
       {/* Filters */}
-      <Grid2 container spacing={2} sx={{ my: 2 }}>
+      <Grid container spacing={2} sx={{ my: 2 }}>
         {/* Industry */}
-        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <MultipleSelectFilterAutoload
             id="jobseeker-listview-industry"
             label="Industry"
@@ -340,10 +340,10 @@ export default function TalentSearch() {
               option.sector_title
             }
           />
-        </Grid2>
+        </Grid>
 
         {/* Education Level */}
-        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <SingleSelectFilter
             id="jobseeker-listview-edulevel"
             label="Minimum Degree"
@@ -392,11 +392,11 @@ export default function TalentSearch() {
               },
             ]}
           ></SingleSelectFilter>
-        </Grid2>
+        </Grid>
 
         {/* Zip Code */}
         {/* Design has agreed to a text field until we have a better distance measurement system in place */}
-        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <TextField
             autoComplete="off"
             label="Full/Partial Zip Code"
@@ -424,10 +424,10 @@ export default function TalentSearch() {
               }
             }}
           />
-        </Grid2>
+        </Grid>
 
         {/* Training Provider */}
-        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <SingleSelectFilterAutoload
             id="jobseeker-listview-trainingProvider"
             label="Training Provider"
@@ -444,10 +444,10 @@ export default function TalentSearch() {
               option.name
             }
           />
-        </Grid2>
+        </Grid>
 
         {/* Years of Experience */}
-        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Typography sx={{ justifySelf: "center" }}>
             Years of Experience
           </Typography>
@@ -482,9 +482,9 @@ export default function TalentSearch() {
             max={5}
             disableSwap
           />
-        </Grid2>
+        </Grid>
         {/* Has Introduction, any skills, and/or Resume */}
-        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <FormControlLabel
             value=""
             control={
@@ -541,10 +541,10 @@ export default function TalentSearch() {
             label="Has Resume"
             labelPlacement="end"
           />
-        </Grid2>
+        </Grid>
 
         {/* Sorting */}
-        <Grid2
+        <Grid
           container
           size={12}
           sx={{ justifyContent: "flex-end", alignItems: "flex-end" }}
@@ -564,8 +564,8 @@ export default function TalentSearch() {
               { label: "Newest", value: "newest" },
             ]}
           />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
 
       {/* Loading */}
       {loading ? (

@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { fetchOccupations, fetchPathways } from "../api/api";
 import { IOccupation, IPathway } from "../lib/data";
 import {
-  Grid2,
+  Grid,
   Avatar,
   Box,
   Button,
@@ -122,7 +122,7 @@ export default function Pathways() {
               ))}
           </List>
         )}
-        <Grid2 sx={{ flex: 1, height: "75vh", overflow: "auto", pr: 2 }}>
+        <Grid sx={{ flex: 1, height: "75vh", overflow: "auto", pr: 2 }}>
           {selectedCardId && isSmallScreen && (
             <Button onClick={handleBackClick} sx={{ marginBottom: 2 }}>
               Back to Pathways
@@ -179,7 +179,7 @@ export default function Pathways() {
               <></>
             )}
           </List>
-        </Grid2>
+        </Grid>
       </Stack>
     </>
   );

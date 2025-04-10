@@ -8,7 +8,7 @@ import {
   FormGroup,
   FormHelperText,
   FormLabel,
-  Grid2,
+  Grid,
   Link,
   List,
   ListItem,
@@ -144,11 +144,11 @@ export default function Page() {
                 }
               </Typography>
               {/*<p className="subtitle-congrats">{`Thank you again for your participation!`}</p>*/}
-              <Grid2 container>
+              <Grid container>
                 <PillButton href="/services/jobseekers/dashboard">
                   Go to Dashboard
                 </PillButton>
-              </Grid2>
+              </Grid>
             </Box>
           </Box>
         </>
@@ -216,8 +216,8 @@ export default function Page() {
 
           <form onSubmit={handleSubmit}>
             <Box sx={{ py: 2 }}>
-              <Grid2 container>
-                <Grid2 size={12}>
+              <Grid container>
+                <Grid size={12}>
                   <Box sx={{ maxWidth: "720px" }}>
                     <FormControl
                       fullWidth
@@ -240,8 +240,8 @@ export default function Page() {
                       />
                     </FormControl>
                   </Box>
-                </Grid2>
-                <Grid2 size={12}>
+                </Grid>
+                <Grid size={12}>
                   <FormControl required component="fieldset" sx={{ mb: 2 }}>
                     <FormLabel component="legend">
                       Please indicate if you identify with any of the following
@@ -267,8 +267,8 @@ export default function Page() {
                       ))}
                     </FormGroup>
                   </FormControl>
-                </Grid2>
-              </Grid2>
+                </Grid>
+              </Grid>
             </Box>
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}

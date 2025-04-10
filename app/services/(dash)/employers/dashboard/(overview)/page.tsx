@@ -9,7 +9,7 @@ import EmployerTeamMembers from "@/app/ui/components/employerdashboard/EmployerT
 import { auth } from "@/auth";
 import EmployerRecentJobPosts from "@/app/ui/components/employerdashboard/EmployerRecentJobPosts";
 import Link from "next/link";
-import { Box, Grid2, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import NewJobFormButton from "@/app/ui/components/jobManagement/NewJobFormButton";
 import PillButton from "@/app/ui/components/PillButton";
 import { SearchOutlined } from "@mui/icons-material";
@@ -106,12 +106,12 @@ export default async function Page() {
       <Typography variant={"h4"} sx={{ color: "secondary.main", mb: 7 }}>
         Welcome back, {session?.user.firstName}
       </Typography>
-      <Grid2 container direction={"row"}>
+      <Grid container direction={"row"}>
         <Box sx={{ mr: 2, display: { xs: "none", md: "flex" } }}>
           <EmployerTeamMembers companyid={company.company_id} />
         </Box>
-        <Grid2 size={"grow"}>
-          <Grid2
+        <Grid size={"grow"}>
+          <Grid
             container
             size={"grow"}
             columnSpacing={4.5}
@@ -135,30 +135,30 @@ export default async function Page() {
             >
               Search for Candidates
             </PillButton>
-          </Grid2>
-          <Grid2 container spacing={2} sx={{ justifyContent: "center", mb: 7 }}>
-            <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
+          </Grid>
+          <Grid container spacing={2} sx={{ justifyContent: "center", mb: 7 }}>
+            <Grid size={{ xs: 12, md: 4, xl: 3 }}>
               <Link href="/services/employers/dashboard/jobs">
                 <ScoreCard title="Your active jobs" val={activeJobs ?? 0} />
               </Link>
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4, xl: 3 }}>
               <ScoreCard
                 title="Pre-screened candidates"
                 val={preScreened ?? 0}
               />
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 4, xl: 3 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4, xl: 3 }}>
               <Link href="/services/employers/dashboard/savedcandidates">
                 <ScoreCard
                   title="Saved candidates"
                   val={proInfo.BookmarkedJobseeker.length}
                 />
               </Link>
-            </Grid2>
-          </Grid2>
-          <Grid2 container rowSpacing={2} columns={1}>
-            <Grid2
+            </Grid>
+          </Grid>
+          <Grid container rowSpacing={2} columns={1}>
+            <Grid
               container
               spacing={1}
               size={1}
@@ -179,19 +179,19 @@ export default async function Page() {
               >
                 Search for Candidates
               </PillButton>
-            </Grid2>
-            <Grid2 size={1}>
+            </Grid>
+            <Grid size={1}>
               <EmployerRecentJobPosts
                 jobs={recentJobs}
                 bookmarkedJobseekers={proInfo.BookmarkedJobseeker}
               />
-            </Grid2>
-            <Grid2 size={1} sx={{ display: { xs: "flex", md: "none" } }}>
+            </Grid>
+            <Grid size={1} sx={{ display: { xs: "flex", md: "none" } }}>
               <EmployerTeamMembers companyid={company.company_id} />
-            </Grid2>
-          </Grid2>
-        </Grid2>
-      </Grid2>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

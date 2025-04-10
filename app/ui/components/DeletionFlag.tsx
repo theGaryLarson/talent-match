@@ -1,7 +1,6 @@
 "use client";
 
-import AlertTitle from "@mui/material/AlertTitle";
-import Alert from "@mui/material/Alert";
+import { Alert, AlertTitle } from "@mui/material";
 
 interface props {
   className?: string;
