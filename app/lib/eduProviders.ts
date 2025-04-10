@@ -85,7 +85,7 @@ export enum EduProviderPathways {
   ITCloudSupport = "Infrastructure and Operations",
   Cybersecurity = "Cybersecurity",
   DataAnalytics = "Data Science",
-  BusinessMgmt= "Business and Management",
+  BusinessMgmt = "Business and Management",
   ProfessionSkillsTraining = "Profession Skills Training",
   UXDesign = "Design and User Experience",
   QA_assurance = "Testing and Quality Assurance",
