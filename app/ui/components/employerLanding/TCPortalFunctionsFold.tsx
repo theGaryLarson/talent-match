@@ -1,10 +1,11 @@
 import Image from 'next/image';
 import './employerLanding.css'
+import RoundedButton from '../RoundedButton';
 export default function TCPortalFunctionsFold() {
   return (
-    <div className="flex flex-col items-center gap-[42px] bg-gray-200 ">
+    <div className="flex flex-col items-center gap-[42px] bg-gray-200 py-[80px]">
       <div className="text-center">
-        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-secondary-main">
+        <span className="text-[60px] font-normal capitalize leading-[123.20px] text-secondary-main">
         Our Digital <span className="portfolio">Portfolio Platform</span>
         </span>
       </div>
@@ -13,6 +14,7 @@ export default function TCPortalFunctionsFold() {
       </div>
       <Image src={"/images/employers/Profile-Image.png"} alt={''} width={1370} height={665} className='rounded-4xl'/>
       <HighLights/>
+      <RoundedButton content={'Browse Candidate Portfolios'} invertColor={true} link='/services/employers/dashboard/talent-search'/>
       </div>
   );
 }
