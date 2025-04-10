@@ -18,7 +18,7 @@ export default function Page() {
           <MarketingCards />
           <MeetTheFounders />
         </div>
-        <BottomFold/>
+        <BottomFold />
       </main>
     </>
   );

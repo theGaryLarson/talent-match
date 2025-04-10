@@ -61,9 +61,7 @@ function Highlight(props: { src: string; text: string }) {
           data-variant="h4"
           className="inline-flex flex-col justify-start items-center"
         >
-          <div className="text-center text-2xl">
-            {props.text}
-          </div>
+          <div className="text-center text-2xl">{props.text}</div>
         </div>
       </div>
     </div>

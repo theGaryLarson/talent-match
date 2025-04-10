@@ -1,4 +1,3 @@
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Step1 from "./StepCard1.png";
 import Step2 from "./StepCard2.png";
