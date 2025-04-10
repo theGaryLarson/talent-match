@@ -79,12 +79,16 @@ export type PostEduProviderProgramDetailDTO = {
   pathways: EduProviderPathways[]; // provider_programs.pathways will need converted from string to list and each item cast into EduProviderPathways enum
 };
 
+// TODO: align with ICT Job Group Families
 export enum EduProviderPathways {
-  SoftwareDeveloper = "Software Developer",
-  ITCloudSupport = "IT & Cloud Support",
+  SoftwareDeveloper = "Software Development",
+  ITCloudSupport = "Infrastructure and Operations",
   Cybersecurity = "Cybersecurity",
-  DataAnalytics = "Data Analytics",
+  DataAnalytics = "Data Science",
+  BusinessMgmt = "Business and Management",
   ProfessionSkillsTraining = "Profession Skills Training",
+  UXDesign = "Design and User Experience",
+  QA_assurance = "Testing and Quality Assurance",
   ProgramManagement = "Program Management",
 }
 
