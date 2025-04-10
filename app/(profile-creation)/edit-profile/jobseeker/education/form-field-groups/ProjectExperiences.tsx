@@ -182,7 +182,7 @@ export default memo(function ProjectExperiences({
               handleChange(index, classSkillsStack, val);
             }}
             searchPlaceholder="Example: Java"
-            addNewTags={projectExperience.fetchedSkills}
+            value={projectExperience[classSkillsStack]}
             getTagLabel={(option: SkillDTO) => option.skill_name}
             getTagLink={(option: SkillDTO) => option.skill_info_url}
           />

@@ -45,9 +45,6 @@ export default function CreateJobseekerProfileShowcasePage() {
   );
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
-  const [fetchedTags, setFetchedTags] = useState<SkillDTO[]>(
-    showcaseData.skills,
-  );
   const [portfolioUrl, setPortfolioUrl] = useState(
     showcaseData.portfolioUrl ?? "",
   );
@@ -79,7 +76,6 @@ export default function CreateJobseekerProfileShowcasePage() {
               if (fetchedData.skills.length !== 0) {
                 showcaseData.skills = fetchedData.skills;
                 setSkills(showcaseData.skills);
-                setFetchedTags(showcaseData.skills);
               }
               if (fetchedData.introduction) {
                 showcaseData.introduction = fetchedData.introduction;
@@ -250,7 +246,6 @@ export default function CreateJobseekerProfileShowcasePage() {
                   apiSearchRoute="/api/skills/search/"
                   fieldLabel="Select your top five skills: *"
                   id="profile-creation-showcase-skills"
-                  maxTags={5}
                   searchingText="Searching..."
                   noResultsText="No skills found..."
                   onChange={function (ev, val) {
@@ -259,7 +254,7 @@ export default function CreateJobseekerProfileShowcasePage() {
                     }
                   }}
                   searchPlaceholder="Example: Java"
-                  addNewTags={fetchedTags}
+                  value={skills}
                   getTagLabel={(option: SkillDTO) => option.skill_name}
                   getTagLink={(option: SkillDTO) => option.skill_info_url}
                 />

@@ -30,7 +30,7 @@ interface Props<ValueType> {
   getTagLabel: ((option: ValueType) => string) | undefined;
   getTagLink?: ((option: ValueType) => string) | undefined;
   initialTags?: string[];
-  addNewTags?: ValueType[];
+  value?: ValueType[];
 }
 
 export default function TagsWithAutocomplete<ValueType>({
@@ -45,11 +45,10 @@ export default function TagsWithAutocomplete<ValueType>({
   getTagLabel,
   getTagLink,
   initialTags,
-  addNewTags,
+  value,
 }: Props<ValueType>) {
   const [options, setOptions] = useState<ValueType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedTags, setSelectedTags] = useState<ValueType[]>([]);
 
   const handleInputChange = useMemo(() => {
     const cachedFetches: CachedFetches<ValueType> = {
@@ -88,7 +87,6 @@ export default function TagsWithAutocomplete<ValueType>({
         const data: ValueType[] = await response.json();
         if (data.length > 0) initTagsToSelect.push(data[0]);
       }
-      setSelectedTags(initTagsToSelect);
     }
   }
 
@@ -96,25 +94,6 @@ export default function TagsWithAutocomplete<ValueType>({
   useEffect(() => {
     initTags();
   }, []);
-
-  // Additively load in new tags if addNewTags prop changes
-  useEffect(() => {
-    // async function getAndAddNewTags() {
-    //   if (Array.isArray(addNewTags) && addNewTags.length !== 0) {
-    //     const response = await fetch(`${apiSearchRoute}${addNewTags.map(tag => (encodeURIComponent(tag))).join(',')}`);
-    //     const newTagsData: ValueType[] = await response.json();
-    //     setSelectedTags([
-    //       ...selectedTags,
-    //       ...newTagsData
-    //     ]);
-    //   }
-    // }
-    // getAndAddNewTags();
-    if (Array.isArray(addNewTags)) {
-      const tags = new Set([...selectedTags, ...addNewTags]);
-      setSelectedTags(Array.from(tags));
-    }
-  }, [addNewTags]);
 
   return (
     <Autocomplete
@@ -128,20 +107,12 @@ export default function TagsWithAutocomplete<ValueType>({
       multiple
       noOptionsText={noResultsText}
       onChange={(ev, val, reason, details) => {
-        // Disallow change event if max tags has been violated
-        //   or if an item not in the options was entered
-        if (
-          (maxTags !== -1 && val.length > maxTags) ||
-          !val.every((item) => typeof item !== "string")
-        ) {
-          ev.stopPropagation();
+        if (maxTags !== -1 && val.length > maxTags) {
+          ev.preventDefault();
+          return;
         }
-        // Propagate the event if it's valid
-        else {
-          setSelectedTags(val as ValueType[]);
-          if (onChange) {
-            onChange(ev, val as ValueType[], reason, details);
-          }
+        if (onChange) {
+          onChange(ev, val, reason, details);
         }
       }}
       onInputChange={handleInputChange}
@@ -152,7 +123,6 @@ export default function TagsWithAutocomplete<ValueType>({
           inputProps={{
             ...params.inputProps,
             onKeyDown: (ev) => {
-              // Prevent a repeated backspace from deleting tags while allowing a fresh backspace to do it
               if (
                 ev.repeat &&
                 ev.key === "Backspace" &&
@@ -167,8 +137,8 @@ export default function TagsWithAutocomplete<ValueType>({
         />
       )}
       // ChipProps={root=""}
-      renderTags={(value: readonly (string | ValueType)[], getTagProps) =>
-        value.map((option: string | ValueType, index: number) => {
+      renderTags={(tagValue: readonly (string | ValueType)[], getTagProps) =>
+        tagValue.map((option: string | ValueType, index: number) => {
           const { key, ...tagProps } = getTagProps({ index });
           const link =
             (getTagLink && getTagLink(option as ValueType)) ?? "javascript:;";
@@ -212,7 +182,7 @@ export default function TagsWithAutocomplete<ValueType>({
         }
         return "";
       }}
-      value={selectedTags}
+      value={value}
       sx={{
         "& .MuiChip-filled": {
           height: "auto",
