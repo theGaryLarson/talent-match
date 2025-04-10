@@ -1750,10 +1750,10 @@ export const getBrandingRatings = async (
 // TODO: Align with ICT Job Group Families
 // Career Prep Pathways are a subset of enum EduProviderPathways
 export enum CareerPrepPathways {
-  SOFTWARE_DEVELOPER = "Software Developer",
-  IT_CLOUD_SUPPORT = "IT & Cloud Support",
+  SOFTWARE_DEVELOPER = "Software Development",
+  IT_CLOUD_SUPPORT = "Infrastructure and Operations",
   CYBERSECURITY = "Cybersecurity",
-  DATA_ANALYTICS = "Data Analytics",
+  DATA_ANALYTICS = "Data Science",
 }
 
 // Define specific DTOs for skill categories

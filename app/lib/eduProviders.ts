@@ -81,11 +81,14 @@ export type PostEduProviderProgramDetailDTO = {
 
 // TODO: align with ICT Job Group Families
 export enum EduProviderPathways {
-  SoftwareDeveloper = "Software Developer",
-  ITCloudSupport = "IT & Cloud Support",
+  SoftwareDeveloper = "Software Development",
+  ITCloudSupport = "Infrastructure and Operations",
   Cybersecurity = "Cybersecurity",
-  DataAnalytics = "Data Analytics",
+  DataAnalytics = "Data Science",
+  BusinessMgmt= "Business and Management",
   ProfessionSkillsTraining = "Profession Skills Training",
+  UXDesign = "Design and User Experience",
+  QA_assurance = "Testing and Quality Assurance",
   ProgramManagement = "Program Management",
 }
 
