@@ -199,8 +199,8 @@ export default function CreateJobseekerProfileDisclosuresPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(9 / 9) * 100} />
-        <p>Step 9/9</p>
+        <ProgressBarFlat progress={(6 / 6) * 100} />
+        <p>Step 6/6</p>
 
         <h1>Voluntary Disclosures</h1>
         <p className="subtitle">* Indicates a required field</p>

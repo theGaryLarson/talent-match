@@ -15,6 +15,14 @@ import {
 import { setPageSaved } from "@/lib/features/profileCreation/saveSlice";
 import _ from "lodash";
 import { devLog } from "@/app/lib/utils";
+import {
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
+import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -27,6 +35,10 @@ export default function CreateJobseekerProfilePreferencesPage() {
 
   const [employmentType, setEmploymentType] = useState(
     preferencesData.preferredEmploymentType ?? "",
+  );
+  const [pathway, setPathway] = useState(preferencesData.targetedPathway ?? "");
+  const [pathwayId, setPathwayId] = useState(
+    preferencesData.targetedPathwayId ?? "",
   );
 
   useEffect(() => {
@@ -52,6 +64,15 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   fetchedData.preferredEmploymentType;
                 setEmploymentType(preferencesData.preferredEmploymentType);
               }
+              if (fetchedData.targetedPathway) {
+                preferencesData.targetedPathway = fetchedData.targetedPathway;
+                setPathway(preferencesData.targetedPathway);
+              }
+              if (fetchedData.targetedPathwayId) {
+                preferencesData.targetedPathwayId =
+                  fetchedData.targetedPathwayId;
+                setPathwayId(preferencesData.targetedPathwayId);
+              }
             }
           } catch (error) {
             console.error(error);
@@ -73,6 +94,9 @@ export default function CreateJobseekerProfilePreferencesPage() {
     }
 
     preferencesData.userId = session.user.id;
+    preferencesData.targetedPathwayId =
+      preferencesData.targetedPathway !== pathway ? undefined : pathwayId;
+    preferencesData.targetedPathway = pathway;
     preferencesData.preferredEmploymentType = employmentType;
 
     try {
@@ -111,8 +135,8 @@ export default function CreateJobseekerProfilePreferencesPage() {
         {/* TODO: Comment/Uncomment test script below for viewing */}
         {/* <h1>Data on Another Page</h1>
         <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-        <ProgressBarFlat progress={(2 / 9) * 100} />
-        <p>Step 2/9</p>
+        <ProgressBarFlat progress={(2 / 6) * 100} />
+        <p>Step 2/6</p>
         <h1>Your preferences</h1>
 
         <p className="subtitle">* Indicates a required field</p>
@@ -200,6 +224,33 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   </PillButton>
                 </div>
               </fieldset>
+              <FormControl component="fieldset">
+                <FormLabel
+                  id="profile-creation-preferences-require-role"
+                  className="mt-7"
+                  component="legend"
+                  sx={{ color: "#000000ff" }}
+                >
+                  What technology path most interests you?
+                </FormLabel>
+                <RadioGroup
+                  aria-labelledby="profile-creation-preferences-require-role"
+                  name="profile-creation-preferences-require-role"
+                  value={pathway}
+                  onChange={(e) => {
+                    setPathway(e.target.value);
+                  }}
+                >
+                  {Object.values(CareerPrepPathways).map((pathValue) => (
+                    <FormControlLabel
+                      key={pathValue}
+                      value={pathValue}
+                      control={<Radio />}
+                      label={pathValue}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
             </div>
           </fieldset>
 

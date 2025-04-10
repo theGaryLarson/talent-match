@@ -7,7 +7,7 @@ import {
   Card,
   Collapse,
   Divider,
-  Grid2,
+  Grid,
   IconButton,
   Link,
   Stack,
@@ -137,7 +137,7 @@ export default function EmployerRecentJobPosts({
                     >
                       <Collapse in={expandedJobId !== undefined} timeout="auto">
                         {expandedJobId === job.job_posting_id && (
-                          <Grid2 container spacing={1} sx={{ my: 1 }}>
+                          <Grid container spacing={1} sx={{ my: 1 }}>
                             {job.jobApplications.map((application) => (
                               <Card
                                 key={
@@ -145,11 +145,11 @@ export default function EmployerRecentJobPosts({
                                   application.jobseekerId +
                                   " Card"
                                 }
-                                component={Grid2}
+                                component={Grid}
                                 size={4}
                                 sx={{ p: 2 }}
                               >
-                                <Grid2 container spacing={1} sx={{ mb: 2 }}>
+                                <Grid container spacing={1} sx={{ mb: 2 }}>
                                   <Avatar
                                     imgsrc={
                                       application.Jobseekers.users.photo_url ||
@@ -173,7 +173,7 @@ export default function EmployerRecentJobPosts({
                                         application.postalGeoData?.stateCode}
                                     </Typography>
                                   </div>
-                                </Grid2>
+                                </Grid>
                                 <Typography
                                   sx={{
                                     mt: 1,
@@ -239,8 +239,8 @@ export default function EmployerRecentJobPosts({
                                 </Stack>
                               </Card>
                             ))}
-                            <Card component={Grid2} size={4} sx={{ p: 2 }}>
-                              <Grid2
+                            <Card component={Grid} size={4} sx={{ p: 2 }}>
+                              <Grid
                                 container
                                 sx={{
                                   height: "100%",
@@ -273,9 +273,9 @@ export default function EmployerRecentJobPosts({
                                 >
                                   View More
                                 </PillButton>
-                              </Grid2>
+                              </Grid>
                             </Card>
-                          </Grid2>
+                          </Grid>
                         )}
                       </Collapse>
                     </TableCell>
@@ -347,10 +347,10 @@ export default function EmployerRecentJobPosts({
                       key={
                         job.job_posting_id + application.jobseekerId + " Card"
                       }
-                      component={Grid2}
+                      component={Grid}
                       sx={{ p: 2 }}
                     >
-                      <Grid2 container spacing={1} sx={{ mb: 2 }}>
+                      <Grid container spacing={1} sx={{ mb: 2 }}>
                         <Avatar
                           imgsrc={
                             application.Jobseekers.users.photo_url ?? undefined
@@ -372,7 +372,7 @@ export default function EmployerRecentJobPosts({
                               application.postalGeoData?.stateCode}
                           </Typography>
                         </div>
-                      </Grid2>
+                      </Grid>
                       <Typography
                         sx={{
                           mt: 1,
@@ -435,7 +435,7 @@ export default function EmployerRecentJobPosts({
                       </Stack>
                     </Card>
                   ))}
-                  <Card component={Grid2} sx={{ p: 2 }}>
+                  <Card component={Grid} sx={{ p: 2 }}>
                     <Stack
                       sx={{
                         alignItems: "center",

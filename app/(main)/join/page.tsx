@@ -9,7 +9,7 @@ import {
   Checkbox,
   Box,
   Container,
-  Grid2,
+  Grid,
   FormGroup,
   Snackbar,
   Alert,
@@ -239,8 +239,8 @@ export default function Page(): JSX.Element {
             </FormGroup>
           </FormControl>
 
-          <Grid2 container spacing={2} sx={{ mb: 4 }}>
-            <Grid2 size={{ xs: 12, sm: 6 }}>
+          <Grid container spacing={2} sx={{ mb: 4 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 required
                 fullWidth
@@ -250,8 +250,8 @@ export default function Page(): JSX.Element {
                   setFormData({ ...formData, firstName: e.target.value })
                 }
               />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 required
                 fullWidth
@@ -261,8 +261,8 @@ export default function Page(): JSX.Element {
                   setFormData({ ...formData, lastName: e.target.value })
                 }
               />
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
 
           <TextField
             fullWidth

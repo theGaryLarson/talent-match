@@ -23,7 +23,7 @@ const companyStartInfo: companies = {
   estimated_annual_hires: null,
   is_approved: false,
   createdBy: null,
-  createdAt: null,
+  createdAt: new Date(),
 };
 
 export default function Page() {

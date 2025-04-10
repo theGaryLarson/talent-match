@@ -2,7 +2,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { skill_subcategories } from "@prisma/client";
-import { Button, Grid2 } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -220,7 +220,7 @@ export default function Page() {
   };
 
   return (
-    <Grid2 container gap={4}>
+    <Grid container gap={4}>
       <div>
         <h2 className="mb-4 text-xl font-bold">Add Single Skill</h2>
         <form onSubmit={onSingleSubmit} className="space-y-3">
@@ -322,6 +322,6 @@ export default function Page() {
           </Button>
         </form>
       </div>
-    </Grid2>
+    </Grid>
   );
 }

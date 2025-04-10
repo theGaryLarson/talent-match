@@ -1,7 +1,7 @@
 import { getEmployersByCompanyId } from "@/app/lib/prisma";
 import { auth } from "@/auth";
 import ShareMenu from "../ShareButton";
-import { Avatar, Grid2, IconButton, Stack, Typography } from "@mui/material";
+import { Avatar, Grid, IconButton, Stack, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
 export default async function EmployerTeamMembers(props: {
@@ -20,7 +20,7 @@ export default async function EmployerTeamMembers(props: {
       >
         My team
       </Typography>
-      <Grid2 container spacing={3} direction={{ xs: "row", md: "column" }}>
+      <Grid container spacing={3} direction={{ xs: "row", md: "column" }}>
         <Stack sx={{ alignItems: "center" }}>
           <ShareMenu href={"/signin"}>
             <IconButton sx={{ bgcolor: "primary.light" }}>
@@ -46,7 +46,7 @@ export default async function EmployerTeamMembers(props: {
               </Stack>
             );
           })}
-      </Grid2>
+      </Grid>
     </div>
   );
 }

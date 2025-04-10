@@ -4,7 +4,7 @@ import Skills from "@/app/ui/components/Skills";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { auth } from "@/auth";
-import { Alert, Box, Grid2, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Alert, Box, Grid, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { Circle } from "@mui/icons-material";
 import "quill/dist/quill.snow.css";
 import BookmarkWithText from "../BookmarkWithText";
@@ -32,17 +32,17 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
   return (
     <>
       {joblisting.career_services_offered && (
-        <Grid2 container sx={{ mb: 2, mx: { xs: 3, md: 6.25 } }}>
+        <Grid container sx={{ mb: 2, mx: { xs: 3, md: 6.25 } }}>
           <Alert color="info">Career Services Offered</Alert>
-        </Grid2>
+        </Grid>
       )}
       <Stack
         direction={"column"}
         spacing={4}
         sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}
       >
-        <Grid2 container direction={{ xs: "column", sm: "row" }}>
-          <Grid2 size="grow">
+        <Grid container direction={{ xs: "column", sm: "row" }}>
+          <Grid size="grow">
             <Stack direction={"row"} spacing={2} sx={{ alignItems: "center" }}>
               <Typography variant="h3">{job_title}</Typography>
               {session &&
@@ -52,7 +52,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
                 )}
             </Stack>
             <Typography variant="h5">{company_name}</Typography>
-          </Grid2>
+          </Grid>
           <Stack
             direction={{ xs: "column", lg: "row" }}
             spacing={2}
@@ -82,7 +82,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
               </div>
             )}
           </Stack>
-        </Grid2>
+        </Grid>
         <Stack
           direction={{ xs: "column", sm: "row" }}
           columnGap={2}

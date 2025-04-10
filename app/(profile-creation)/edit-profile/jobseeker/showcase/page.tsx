@@ -45,9 +45,6 @@ export default function CreateJobseekerProfileShowcasePage() {
   );
 
   const [skills, setSkills] = useState<SkillDTO[]>(showcaseData.skills);
-  const [fetchedTags, setFetchedTags] = useState<SkillDTO[]>(
-    showcaseData.skills,
-  );
   const [portfolioUrl, setPortfolioUrl] = useState(
     showcaseData.portfolioUrl ?? "",
   );
@@ -79,7 +76,6 @@ export default function CreateJobseekerProfileShowcasePage() {
               if (fetchedData.skills.length !== 0) {
                 showcaseData.skills = fetchedData.skills;
                 setSkills(showcaseData.skills);
-                setFetchedTags(showcaseData.skills);
               }
               if (fetchedData.introduction) {
                 showcaseData.introduction = fetchedData.introduction;
@@ -196,8 +192,8 @@ export default function CreateJobseekerProfileShowcasePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(3 / 9) * 100} />
-        <p>Step 3/9</p>
+        <ProgressBarFlat progress={(3 / 6) * 100} />
+        <p>Step 3/6</p>
         <h1>Showcase</h1>
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
@@ -250,7 +246,6 @@ export default function CreateJobseekerProfileShowcasePage() {
                   apiSearchRoute="/api/skills/search/"
                   fieldLabel="Select your top five skills: *"
                   id="profile-creation-showcase-skills"
-                  maxTags={5}
                   searchingText="Searching..."
                   noResultsText="No skills found..."
                   onChange={function (ev, val) {
@@ -259,7 +254,7 @@ export default function CreateJobseekerProfileShowcasePage() {
                     }
                   }}
                   searchPlaceholder="Example: Java"
-                  addNewTags={fetchedTags}
+                  value={skills}
                   getTagLabel={(option: SkillDTO) => option.skill_name}
                   getTagLink={(option: SkillDTO) => option.skill_info_url}
                 />

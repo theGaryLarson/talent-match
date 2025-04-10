@@ -1,5 +1,5 @@
 "use client";
-import { CircularProgress, Grid2 } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface OgImageProps {
@@ -32,7 +32,7 @@ export default function OgImage({ siteUrl, alt }: OgImageProps) {
 
   if (loading) {
     return (
-      <Grid2
+      <Grid
         container
         sx={{
           height: "150px",
@@ -42,12 +42,12 @@ export default function OgImage({ siteUrl, alt }: OgImageProps) {
         }}
       >
         <CircularProgress />
-      </Grid2>
+      </Grid>
     );
   }
   if (!ogImage) {
     return (
-      <Grid2
+      <Grid
         container
         sx={{
           height: "150px",
@@ -57,7 +57,7 @@ export default function OgImage({ siteUrl, alt }: OgImageProps) {
         }}
       >
         <p>No preview available.</p>
-      </Grid2>
+      </Grid>
     );
   }
   return <img src={ogImage} alt={alt} />;
