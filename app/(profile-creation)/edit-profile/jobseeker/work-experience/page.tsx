@@ -465,7 +465,7 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
       }
 
       await response.json();
-      router.push("/edit-profile/jobseeker/technical-skills");
+      router.push("/edit-profile/jobseeker/disclosures");
     } catch (e: any) {
       setError(`An unexpected error occurred: ${e.message}`);
     }
@@ -475,8 +475,8 @@ export default function CreateJobseekerProfileWorkExperiencePage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(5 / 9) * 100} />
-        <p>Step 5/9</p>
+        <ProgressBarFlat progress={(5 / 6) * 100} />
+        <p>Step 5/6</p>
         <h1>Work experience</h1>
         <p>Complete these sections to improve your visibility to employers.</p>
         <p className="subtitle">* Indicates a required field</p>
