@@ -1,23 +1,27 @@
+import Image from "next/image";
 import RoundedButton from "../RoundedButton";
-
+import ExternshipImg from "./Externship.png"
 export default function MarketingCards() {
   return (
     <div>
       <MarketCard />
+      <MarketCard textfirst={true}/>
+      <MarketCard />
     </div>
   );
 }
-function MarketCard() {
+function MarketCard({textfirst = false}:{textfirst?:boolean}) {
   return (
-    <div className="bg-gray-200 p-[32px] rounded-4xl">
-      <TextHalf />
+    <div className="bg-gray-200 p-[32px] rounded-4xl grid grid-cols-2 gap-[32px]"> 
+      <Image className="" src={ExternshipImg} alt={"Externship marketing image"}/>
+      <TextHalf appearFirst={textfirst}/>
     </div>
   );
 }
 
-function TextHalf() {
+function TextHalf({appearFirst}:{appearFirst:boolean}) {
   return (
-    <div className="max-w-[600px] space-y-[32px]">
+    <div className={`max-w-[600px] space-y-[32px] ${appearFirst?"order-first":""}`}>
       <h3 className="portfolio text-5xl capitalize leading-[58px]">
         Create Externships Tailored to Your Needs
       </h3>
