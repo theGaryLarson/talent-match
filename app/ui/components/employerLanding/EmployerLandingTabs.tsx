@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-export default function TCPortalFunctionsFold() {
+export default function EmployerLandingTabs() {
   const [index, setIndex] = useState<number>(0);
   const tabs = [
     { src: "/images/SearchableDB.svg", text: "Searchable Database", index: 0 },
@@ -30,20 +30,8 @@ export default function TCPortalFunctionsFold() {
 
     return () => clearTimeout(timer); // Clean up the timer
   }, [index]);
-
-  //TODO: add transition on tab content
-  //TODO: Replace content images with higher quality images from figma & crop so they have the same aspect raito
   return (
-    <div className="flex flex-col items-center gap-[42px]">
-      <div className="text-center">
-        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-secondary-main">
-          Talent & Career{" "}
-        </span>
-        <span className="text-[88px] font-normal capitalize leading-[123.20px] text-primary-main">
-          Portal
-        </span>
-      </div>
-
+    <>
       <div className="text-center font-['Roboto'] text-[22px] font-normal leading-[30.80px] text-[#0f1728]">
         {Subtitle[index]}
       </div>
@@ -68,10 +56,9 @@ export default function TCPortalFunctionsFold() {
           alt=""
         />
       ))}
-    </div>
+    </>
   );
 }
-
 function TabButton(props: {
   src: string;
   text: string;
