@@ -11,7 +11,7 @@ import {
   Checkbox,
   Divider,
   FormControlLabel,
-  Grid2,
+  Grid,
   Stack,
   Tab,
   Tabs,
@@ -324,9 +324,9 @@ export default function JobListingsContent() {
         />
 
         {/* Filters */}
-        <Grid2 container spacing={2}>
+        <Grid container spacing={2}>
           {/* City */}
-          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectFilterAutoload
               id="jobseeker-listview-city"
               label="City"
@@ -335,9 +335,9 @@ export default function JobListingsContent() {
               onChange={handleCityChange}
               getOptionLabel={(option: { city: string }) => option.city}
             />
-          </Grid2>
+          </Grid>
           {/* Profession */}
-          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <SingleSelectFilterAutoload
               id="jobseeker-listview-profession"
               label="Profession"
@@ -348,9 +348,9 @@ export default function JobListingsContent() {
                 option.title
               }
             />
-          </Grid2>
+          </Grid>
           {/* Industry */}
-          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectFilterAutoload
               id="jobseeker-listview-industry"
               label="Industry"
@@ -361,9 +361,9 @@ export default function JobListingsContent() {
                 option.sector_title
               }
             />
-          </Grid2>
+          </Grid>
           {/* Employment Type */}
-          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <MultipleSelectCheckmarks
               label="Employment Type"
               value={getArrayParam("employment-type")}
@@ -373,9 +373,9 @@ export default function JobListingsContent() {
                 value: type,
               }))}
             />
-          </Grid2>
+          </Grid>
           {/* Career Services Offered */}
-          <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControlLabel
               value=""
               control={
@@ -387,8 +387,8 @@ export default function JobListingsContent() {
               label="Career Services Offered"
               labelPlacement="end"
             />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
 
         {session?.user.roles.includes(Role.JOBSEEKER) && (
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

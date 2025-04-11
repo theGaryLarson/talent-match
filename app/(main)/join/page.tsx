@@ -9,7 +9,7 @@ import {
   Checkbox,
   Box,
   Container,
-  Grid2,
+  Grid,
   FormGroup,
   Snackbar,
   Alert,
@@ -183,8 +183,41 @@ export default function Page(): JSX.Element {
             Join the Coalition
           </Typography>
           <Typography variant="subtitle1" align="center" sx={{ mb: 4 }}>
-            Membership is FREE. Join us in building a workforce that evolves at
-            the rate of technology advancement.
+            Bridge skills gaps. Align curriculum with advances in technology.
+            Expand employment opportunities.
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4 }}>
+            Guided by AWS, Microsoft, Accenture, and WTIA, the Coalition creates
+            a platform ​for the state’s postsecondary education and training
+            institutions to address industry priorities.
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4 }}>
+            <strong>Employers: Access unique sources of quality talent.</strong>
+            Tap into talent pools that are not easily accessible​ in traditional
+            job boards. You’ll have direct access to quality candidates in
+            Software Development, Cybersecurity, IT/Cloud Support, Data
+            Analytics, and Data Center Support.​ The Industry Committee meets
+            quarterly in January, April, July, and October, and with the full
+            Coalition twice a year.
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4 }}>
+            <strong>Educators: Align curriculum, get students hired.</strong>
+            Align curriculum with advances in technology through direct inputs
+            from industry leaders. Leverage the Coalition to build employer
+            relationships that support student placements. The Education
+            Committee meets quarterly in February. May, August, and November,
+            and with the full Coalition twice a year.
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4 }}>
+            <strong>Community Partners: Drive economic development.</strong>
+            Identify opportunities for public sector and non-Tech employers to
+            access channels into education and employment for constituent
+            populations. help your employer stakeholders avoid the avalanche of
+            resumes from big job boards and receive vetted candidates from
+            trusted sources. join the Coalition meetings twice a year.
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4 }}>
+            Please join the Coalition by completing this form.
           </Typography>
           <FormControl fullWidth sx={{ mb: 4 }}>
             <FormLabel required>
@@ -206,8 +239,8 @@ export default function Page(): JSX.Element {
             </FormGroup>
           </FormControl>
 
-          <Grid2 container spacing={2} sx={{ mb: 4 }}>
-            <Grid2 size={{ xs: 12, sm: 6 }}>
+          <Grid container spacing={2} sx={{ mb: 4 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 required
                 fullWidth
@@ -217,8 +250,8 @@ export default function Page(): JSX.Element {
                   setFormData({ ...formData, firstName: e.target.value })
                 }
               />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 required
                 fullWidth
@@ -228,8 +261,8 @@ export default function Page(): JSX.Element {
                   setFormData({ ...formData, lastName: e.target.value })
                 }
               />
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
 
           <TextField
             fullWidth

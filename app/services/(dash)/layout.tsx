@@ -15,7 +15,7 @@ import {
   AppBar,
   Box,
   Drawer,
-  Grid2,
+  Grid,
   IconButton,
   Stack,
   Toolbar,
@@ -48,7 +48,7 @@ const employerLinks = [
     label: "Search Candidates",
   },
   {
-    href: "/services/events",
+    href: "/services/events/registered",
     icon: <CalendarMonthOutlined />,
     label: "Events",
   },
@@ -77,7 +77,7 @@ const jobseekerLinks = [
     label: "Applications",
   },
   {
-    href: "/services/jobseekers/dashboard/events",
+    href: "/services/events/registered",
     icon: <CalendarMonthOutlined />,
     label: "Events",
   },
@@ -111,7 +111,7 @@ const UserDrawer = ({
         >
           <Avatar scale={0.66} imgsrc={session?.user.image || ""} />
           <div>
-            <p className="text-wrap font-bold">{session?.user.name}</p>
+            <p className="text-wrap font-bold">{session?.user.firstName}</p>
             <Link
               href={profileLink}
               className="text-wrap text-sm text-primary-600 sm-tablet:text-base"
@@ -222,9 +222,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Stack>
           </Toolbar>
         </AppBar>
-        <Grid2
-          sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}
-        >
+        <Grid sx={{ display: { xs: "none", md: "block" }, width: drawerWidth }}>
           <Drawer
             elevation={0}
             variant="permanent"
@@ -261,7 +259,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               profileLink={profileLink}
             />
           </Drawer>
-        </Grid2>
+        </Grid>
         <Box
           component="main"
           sx={{
@@ -272,7 +270,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           {children}
         </Box>
-        <Grid2
+        <Grid
           gap={2}
           container
           sx={{
@@ -299,7 +297,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Link>
             </p>
           </div>
-        </Grid2>
+        </Grid>
       </div>
     );
   } else {

@@ -559,8 +559,8 @@ export default function CreateJobseekerProfileEducationPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(4 / 9) * 100} />
-        <p>Step 4/9</p>
+        <ProgressBarFlat progress={(4 / 6) * 100} />
+        <p>Step 4/6</p>
         <h1>Education</h1>
         <p>
           The Talent Portal connects you to in-demand technical training through

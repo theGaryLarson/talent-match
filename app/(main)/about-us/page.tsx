@@ -9,6 +9,10 @@ export const metadata = {
   description:
     "A Community Developing a Diverse, highly skilled Technology Workforce in Washington State",
 };
+
+// Force server-side rendering, to get latest training provider logos
+export const dynamic = "force-dynamic";
+
 export default function page() {
   return (
     <main>

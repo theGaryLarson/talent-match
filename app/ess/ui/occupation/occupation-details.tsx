@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Box, Chip, Grid2 } from "@mui/material";
+import { Card, CardContent, Typography, Box, Chip, Grid } from "@mui/material";
 import { IRelatedData } from "../../lib/data";
 
 export default function OccupationDetails({
@@ -7,7 +7,7 @@ export default function OccupationDetails({
   occupation: IRelatedData;
 }) {
   return (
-    <Grid2 container spacing={2}>
+    <Grid container spacing={2}>
       <Section
         title="Possible Titles"
         items={occupation.cfa_toppostedjobtitle_Occupation}
@@ -29,7 +29,7 @@ export default function OccupationDetails({
         items={occupation.cfa_topcompaniesposting_Occupation}
         labelKey="cfa_company"
       />
-    </Grid2>
+    </Grid>
   );
 }
 
@@ -43,7 +43,7 @@ function Section({
   labelKey: string;
 }) {
   return (
-    <Grid2 size={{ xs: 12, md: 6, xl: 3 }}>
+    <Grid size={{ xs: 12, md: 6, xl: 3 }}>
       <Card sx={{ height: "100%" }}>
         <CardContent>
           <Typography variant="h5" fontWeight="bold">
@@ -63,6 +63,6 @@ function Section({
           </Box>
         </CardContent>
       </Card>
-    </Grid2>
+    </Grid>
   );
 }

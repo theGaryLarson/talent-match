@@ -5,7 +5,7 @@ import { InteractionStatus } from "@azure/msal-browser";
 import { useEffect, useState } from "react";
 import { fetchPathways } from "../../api/api";
 import { IPathway } from "../../lib/data";
-import { Grid2, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 export default function Pathways() {
   const { instance, accounts, inProgress } = useMsal();
@@ -34,14 +34,14 @@ export default function Pathways() {
 
   return (
     <>
-      <Grid2 container>
+      <Grid container>
         {pathwaysData &&
           pathwaysData.map((pathway, index) => (
-            <Grid2 size={6} key={index}>
+            <Grid size={6} key={index}>
               <Typography>{pathway.cfa_name}</Typography>
-            </Grid2>
+            </Grid>
           ))}
-      </Grid2>
+      </Grid>
     </>
   );
 }

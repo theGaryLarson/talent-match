@@ -9,7 +9,7 @@ import {
   Chip,
   Container,
   Divider,
-  Grid2,
+  Grid,
   IconButton,
   Link,
   Stack,
@@ -133,6 +133,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                       .toLowerCase()
                       .split("linkedin.com")[1]
                   }
+                  target="_blank"
                   sx={{ wordBreak: "break-word" }}
                 >
                   {"https://www.linkedin.com" +
@@ -144,6 +145,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
               {jobseeker?.portfolio_url && (
                 <Link
                   href={jobseeker?.portfolio_url}
+                  target="_blank"
                   sx={{ wordBreak: "break-word" }}
                 >
                   {jobseeker?.portfolio_url}
@@ -206,13 +208,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         </Card>
         {/* About Me */}
         <Box>
-          <Grid2
+          <Grid
             container
             columnSpacing={4}
             rowSpacing={2}
             direction={{ xs: "column-reverse", md: "row" }}
           >
-            <Grid2 size={{ xs: 12, md: "grow" }}>
+            <Grid size={{ xs: 12, md: "grow" }}>
               <Card sx={{ p: 2 }}>
                 <Stack
                   direction={"row"}
@@ -227,8 +229,8 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 </Stack>
                 <Typography>{jobseeker?.intro_headline}</Typography>
               </Card>
-            </Grid2>
-            <Grid2 container size={{ xs: 12, md: "grow" }}>
+            </Grid>
+            <Grid container size={{ xs: 12, md: "grow" }}>
               {videoID && (
                 <iframe
                   className="aspect-video min-w-[200px]"
@@ -240,8 +242,8 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                   style={{ width: "100%" }}
                 ></iframe>
               )}
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </Box>
         {/* Technical Skills */}
         {jobseeker?.jobseeker_has_skills &&
@@ -258,8 +260,8 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             </Stack>
           )}
         <Box>
-          <Grid2 container spacing={4}>
-            <Stack component={Grid2} size={{ xs: 12, md: 4 }} spacing={2}>
+          <Grid container spacing={4}>
+            <Stack component={Grid} size={{ xs: 12, md: 4 }} spacing={2}>
               {/* Education */}
               {jobseeker?.jobseeker_education &&
                 jobseeker?.jobseeker_education.length > 0 && (
@@ -396,7 +398,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                   </Card>
                 )}
             </Stack>
-            <Stack component={Grid2} size={{ xs: 12, md: 8 }} spacing={2}>
+            <Stack component={Grid} size={{ xs: 12, md: 8 }} spacing={2}>
               {/* Projects */}
               {jobseeker?.project_experiences &&
                 jobseeker?.project_experiences.length > 0 && (
@@ -423,13 +425,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                         <Box key={experience.projectId}>
                           {/* Desktop view */}
                           <Box sx={{ display: { xs: "none", md: "block" } }}>
-                            <Grid2 container spacing={4}>
+                            <Grid container spacing={4}>
                               {experience.repoUrl && (
-                                <Grid2 size={{ xs: 12, md: 5 }}>
+                                <Grid size={{ xs: 12, md: 5 }}>
                                   <OgImage siteUrl={experience.repoUrl} />
-                                </Grid2>
+                                </Grid>
                               )}
-                              <Grid2 size="grow">
+                              <Grid size="grow">
                                 <Typography variant="h6">
                                   {experience.projTitle}
                                 </Typography>
@@ -478,8 +480,8 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                                   color="default"
                                   key={experience.projectId + "skills"}
                                 />
-                              </Grid2>
-                            </Grid2>
+                              </Grid>
+                            </Grid>
                             <Typography
                               variant="subtitle1"
                               sx={{ fontWeight: "bold" }}
@@ -619,7 +621,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                   </Card>
                 )}
             </Stack>
-          </Grid2>
+          </Grid>
         </Box>
       </Stack>
     </Container>

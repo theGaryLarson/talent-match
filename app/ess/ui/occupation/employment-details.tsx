@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Grid2, Typography } from "@mui/material";
+import { Box, LinearProgress, Grid, Typography } from "@mui/material";
 import { IRelatedData } from "../../lib/data";
 
 export default function EmploymentDetails({
@@ -13,8 +13,8 @@ export default function EmploymentDetails({
       (item: any) => item.cfa_jobpostingsregionalbreakdownid == regionId,
     );
   return (
-    <Grid2 container spacing={2}>
-      <Grid2 size={{ xs: 12, md: 6 }}>
+    <Grid container spacing={2}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Box sx={{ color: "primary.main" }}>
           <Typography variant="h6">Average Monthly Job Postings</Typography>
           <LinearProgress
@@ -59,8 +59,8 @@ export default function EmploymentDetails({
           />
           <Typography>${occupation.medianSalary}</Typography>
         </Box>
-      </Grid2>
-      <Grid2 xs={12} md={6}>
+      </Grid>
+      <Grid xs={12} md={6}>
         <Box sx={{ color: "secondary.main" }}>
           <Typography variant="h6">Currently Employed</Typography>
           <LinearProgress
@@ -93,7 +93,7 @@ export default function EmploymentDetails({
           />
           <Typography>{occupation.projectedGrowth}%</Typography>*/}
         </Box>
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }

@@ -1,4 +1,4 @@
-import { Card, Grid2, Typography } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 
 //draft
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 export default function ScoreCard(props: Props) {
   return (
     <Card variant="outlined" sx={{ p: 2 }}>
-      <Grid2
+      <Grid
         container
         spacing={1}
         direction={{ xs: "row", md: "column" }}
@@ -18,7 +18,7 @@ export default function ScoreCard(props: Props) {
         <Typography variant="h4" color="primary">
           {props.val}
         </Typography>
-      </Grid2>
+      </Grid>
     </Card>
   );
 }

@@ -1,4 +1,4 @@
-import { Card, Grid2, Stack } from "@mui/material";
+import { Card, Grid, Stack } from "@mui/material";
 import Carousel from "../Carousel";
 import PillButton from "../PillButton";
 
@@ -11,7 +11,7 @@ export default async function AnnouncementSpace() {
         p: "1rem",
       }}
     >
-      <Grid2 direction="row" spacing={2}>
+      <Grid direction="row" spacing={2}>
         <div className="justify-center text-primary-main text-base font-semibold uppercase leading-none mb-2">
           Talent Portal Guide
         </div>
@@ -22,7 +22,7 @@ export default async function AnnouncementSpace() {
           This guide will help you navigate the platform and make the most of
           your journey to a technology career.
         </div>
-      </Grid2>
+      </Grid>
       <Carousel>
         {/* <CareerPrep
           enrollmentStatus={carrerPrepEnrollment?.enrollment}

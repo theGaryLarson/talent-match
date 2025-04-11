@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -36,14 +35,19 @@ export default function ScreenedDropdown(props: {
   };
 
   return (
-    <Box sx={{ width: 120 }}>
-      <FormControl fullWidth size="small">
-        <InputLabel id="demo-simple-select-label">Screened</InputLabel>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%", // Ensures vertical alignment in the cell
+      }}
+    >
+      <FormControl sx={{ minWidth: 120 }} size="small">
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          id={`showcase-select-${props.jobseekerId}`}
           value={screened}
-          label="Screened"
           onChange={handleChange}
         >
           <MenuItem value={"yes"}>Yes</MenuItem>

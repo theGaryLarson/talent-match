@@ -11,7 +11,7 @@ import {
   Select,
   FormHelperText,
   Stack,
-  Grid2,
+  Grid,
   Box,
   Link,
   MenuItem,
@@ -483,7 +483,7 @@ export default function NewJobForm({
         </Stack>
         <Stack spacing={3} sx={{ display: activeStep === 1 ? "flex" : "none" }}>
           <FormControl fullWidth>
-            <Grid2 container direction="row" spacing={2}>
+            <Grid container direction="row" spacing={2}>
               <div>
                 <FormLabel required>Employment Type</FormLabel>
                 <Select
@@ -534,11 +534,11 @@ export default function NewJobForm({
                   label="Apprenticeship"
                 />
               </FormGroup>
-            </Grid2>
+            </Grid>
           </FormControl>
 
           <FormControl fullWidth>
-            <Grid2 container direction="row" spacing={2}>
+            <Grid container direction="row" spacing={2}>
               <div>
                 <FormLabel
                   required={employmentType === EmploymentType.EarnAndLearn}
@@ -576,12 +576,12 @@ export default function NewJobForm({
                   label="Career Services Offered"
                 />
               )}
-            </Grid2>
+            </Grid>
           </FormControl>
 
           <FormControl fullWidth>
             <FormLabel>Employment Duration</FormLabel>
-            <Grid2 container direction="row" spacing={2}>
+            <Grid container direction="row" spacing={2}>
               <TextField
                 required
                 disabled={employmentIsPermanent === "permanent"}
@@ -606,7 +606,7 @@ export default function NewJobForm({
                   label="Temporary"
                 />
               </RadioGroup>
-            </Grid2>
+            </Grid>
           </FormControl>
 
           <FormControl>
@@ -631,7 +631,7 @@ export default function NewJobForm({
           </FormControl>
 
           <FormControl fullWidth>
-            <Grid2 container direction="row" spacing={2}>
+            <Grid container direction="row" spacing={2}>
               <div>
                 <FormLabel required>ZIP Code</FormLabel>
                 <TextField
@@ -675,7 +675,7 @@ export default function NewJobForm({
                   label="H1B Visa Sponsorship"
                 />
               </FormGroup>
-            </Grid2>
+            </Grid>
           </FormControl>
           <div>
             <FormControl>
@@ -695,7 +695,7 @@ export default function NewJobForm({
           </div>
           <FormControl fullWidth disabled={!paidPosition}>
             <FormLabel required>Compensation</FormLabel>
-            <Grid2 container direction="row" spacing={2}>
+            <Grid container direction="row" spacing={2}>
               <TextField
                 required
                 disabled={!paidPosition}
@@ -744,7 +744,7 @@ export default function NewJobForm({
                   label="Annual"
                 />
               </RadioGroup>
-            </Grid2>
+            </Grid>
           </FormControl>
         </Stack>
         <Stack spacing={3} sx={{ display: activeStep === 2 ? "flex" : "none" }}>
@@ -1020,7 +1020,7 @@ export default function NewJobForm({
             </Typography>
           </Box>
         </Box>
-        <Grid2 container sx={{ justifyContent: "space-between", mt: 3 }}>
+        <Grid container sx={{ justifyContent: "space-between", mt: 3 }}>
           <PillButton
             color="secondary"
             disabled={activeStep == 0}
@@ -1047,7 +1047,7 @@ export default function NewJobForm({
               {job_posting ? "Update" : "Publish"}
             </PillButton>
           )}
-        </Grid2>
+        </Grid>
       </Stack>
     </LocalizationProvider>
   );

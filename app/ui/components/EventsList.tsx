@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Divider, Grid2, Stack, Typography } from "@mui/material";
+import { Card, Divider, Grid, Stack, Typography } from "@mui/material";
 import PillButton from "./PillButton";
 import { EventTypeEnum, PastEventGraceDuration } from "@/app/lib/events";
 import Event, { EventData } from "@/app/ui/components/Event";
@@ -28,6 +28,7 @@ export default function EventsList({
     // separate events into past and upcoming
     const now = Date.now();
     const past = events.filter((event) => new Date(event.date).getTime() < now);
+    past.reverse(); // show most recent past events first
     const upcoming = events.filter(
       (event) => new Date(event.date).getTime() + PastEventGraceDuration > now,
     );
@@ -88,8 +89,8 @@ export default function EventsList({
   };
 
   return (
-    <Grid2 container rowSpacing={2} columns={1}>
-      <Grid2
+    <Grid container rowSpacing={2} columns={1}>
+      <Grid
         spacing={1}
         container
         size={1}
@@ -146,7 +147,7 @@ export default function EventsList({
         {!showOnlyRegisteredEvents && (
           <PillButton
             color="inherit"
-            href="/services/jobseekers/dashboard/events"
+            href="/services/events/registered"
             sx={{
               color: "secondary.main",
             }}
@@ -154,8 +155,8 @@ export default function EventsList({
             My Events
           </PillButton>
         )}
-      </Grid2>
-      <Grid2 container sx={{ width: "100%" }}>
+      </Grid>
+      <Grid container sx={{ width: "100%" }}>
         <Card
           variant="outlined"
           sx={{
@@ -184,7 +185,7 @@ export default function EventsList({
               </React.Fragment>
             ))}
         </Card>
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }

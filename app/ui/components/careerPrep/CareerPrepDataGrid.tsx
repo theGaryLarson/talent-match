@@ -4,8 +4,20 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import Link from "next/link";
 import ViewResume from "./ViewResume";
 import SelfAssignCaseButton from "./SelfAsignCaseButton";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { CareerPrepStatus } from "@/app/lib/admin/careerPrep";
 import { PoolCategories } from "@/app/lib/poolAssignment";
+import EnrollmentStatusDropDown from "./EnrollmentStatusDropDown";
+import {
+  BrandingRating,
+  CybersecurityRating,
+  DataAnalyticsRating,
+  DurableSkillsRating,
+  ITCloudRating,
+  SoftwareDevRating,
+} from "@prisma/client";
+import { AssessmentModal } from "./SelfAssementReadOnly";
+import ScreenedDropdown from "./ScreenedDropdown";
 export interface CareerPrepGridData {
   jobseeker_id: string;
   first_name: string;
@@ -15,12 +27,35 @@ export interface CareerPrepGridData {
   "CP Enrollment Status": CareerPrepStatus;
   HighestEdLevel: string;
   "Pool Type": PoolCategories;
-  "Pathway Title": string;
-  JobseekerCreatedAt: Date;
-  JobseekerUpdatedAt: Date;
-  EnrollmentDate: Date;
+  //"Pathway Title": string;
+  // JobseekerCreatedAt: Date;
+  // JobseekerUpdatedAt: Date;
   user_id: string;
+  CybersecurityRating: CybersecurityRating[];
+  DataAnalyticsRating: DataAnalyticsRating[];
+  ITCloudRating: ITCloudRating[];
+  SoftwareDevRating: SoftwareDevRating[];
+  DurableSkillsRating: DurableSkillsRating[];
+  BrandingRating: BrandingRating[];
+  AppearOnShowCase: boolean;
 }
+const ratingFields = [
+  { key: "CybersecurityRating", label: "Cybersecurity" },
+  { key: "DataAnalyticsRating", label: "Data Analytics" },
+  { key: "ITCloudRating", label: "IT & Cloud" },
+  { key: "SoftwareDevRating", label: "Software Development" },
+  { key: "DurableSkillsRating", label: "Durable Skills" },
+  { key: "BrandingRating", label: "Branding" },
+];
+
+const ratingColumns: GridColDef[] = ratingFields.map(({ key, label }) => ({
+  field: key,
+  headerName: label,
+  renderCell: (params) => (
+    <AssessmentModal list={params.row[key]} title={label} />
+  ),
+}));
+
 export default function CareerPrepDataGrid({
   clients,
   ShowClaimButton,
@@ -30,16 +65,24 @@ export default function CareerPrepDataGrid({
 }) {
   const columns: GridColDef[] = [
     {
+      field: "careerPrepAssessmentDate",
+      headerName: "Application Date",
+    },
+    { field: "first_name", headerName: "First Name" },
+    { field: "last_name", headerName: "Last Name" },
+    { field: "email", headerName: "email", width: 200 },
+    {
       field: "actions",
       sortable: false,
-      headerName: "Actions",
+      width: 130,
+      headerName: "Profile",
       renderCell: (params) => (
         <Link
-          href={`/career-prep/${params.id}`}
-          className="LINK"
+          href={"/services/jobseekers/" + params.id}
           target="_blank"
+          className="LINK"
         >
-          View Profile
+          View Profile <OpenInNewIcon />
         </Link>
       ),
     },
@@ -49,25 +92,41 @@ export default function CareerPrepDataGrid({
       headerName: "Resume",
       renderCell: (params) => <ViewResume userId={params.row.user_id} />,
     },
-    { field: "first_name", headerName: "First Name" },
-    { field: "last_name", headerName: "Last Name" },
-    { field: "email", headerName: "email", width: 200 },
-    { field: "careerPrepTrackRecommendation", headerName: "track" },
     {
-      field: "CP Enrollment Status",
+      field: "AppearOnShowCase",
+      width: 130,
+      align: "center",
+      headerName: "AppearOnShowCase",
+      renderCell: (params) => (
+        <ScreenedDropdown
+          screened={params.row.AppearOnShowCase}
+          jobseekerId={params.row.jobseeker_id}
+        />
+      ),
+    },
+    // { field: "careerPrepTrackRecommendation", headerName: "track" },
+    {
+      field: "Status",
       headerName: "CP Enrollment Status",
+      renderCell: (params) =>
+        params.row["CP Enrollment Status"] ? (
+          <EnrollmentStatusDropDown
+            careerPrepEnrollmentStatus={params.row["CP Enrollment Status"]}
+            jobseekerId={params.row.jobseeker_id}
+          />
+        ) : (
+          "Not Enrolled"
+        ),
       width: 160,
     },
-    { field: "HighestEdLevel", headerName: "HighestEdLevel", width: 160 },
+    ...ratingColumns,
+    // { field: "HighestEdLevel", headerName: "HighestEdLevel", width: 160 },
     //{ field: "Pool Type", headerName: "Pool Type" },
-    { field: "Pathway Title", headerName: "Pathway Title" },
+    // { field: "Pathway Title", headerName: "Pathway Title" },
     // { field: "JobseekerCreatedAt", headerName: "JobseekerCreatedAt" },
     // { field: "JobseekerUpdatedAt", headerName: "JobseekerUpdatedAt" },
-    {
-      field: "careerPrepAssessmentDate",
-      headerName: "careerPrepAssessmentDate",
-    },
-    { field: "EnrollmentDate", headerName: "EnrollmentDate" },
+
+    // { field: "EnrollmentDate", headerName: "EnrollmentDate" },
   ];
   if (ShowClaimButton) {
     columns.unshift({

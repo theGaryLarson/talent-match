@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import {
   Box,
-  Grid2,
+  Grid,
   Typography,
   IconButton,
   Button,
@@ -61,7 +61,7 @@ export default function Calendar({ events }: CalendarProps) {
     const startingDay = startDay(currentDate);
 
     for (let i = 0; i < startingDay; i++) {
-      days.push(<Grid2 size={1} key={`empty-${i}`} />);
+      days.push(<Grid size={1} key={`empty-${i}`} />);
     }
 
     for (let i = 1; i <= totalDays; i++) {
@@ -73,8 +73,8 @@ export default function Calendar({ events }: CalendarProps) {
       );
 
       days.push(
-        <Grid2 size={1} key={i}>
-          <Grid2
+        <Grid size={1} key={i}>
+          <Grid
             sx={{
               minHeight: { xs: 200 },
               border: "1px solid #e0e0e0",
@@ -99,8 +99,8 @@ export default function Calendar({ events }: CalendarProps) {
                 {event.title}
               </Button>
             ))}
-          </Grid2>
-        </Grid2>,
+          </Grid>
+        </Grid>,
       );
     }
 
@@ -130,16 +130,16 @@ export default function Calendar({ events }: CalendarProps) {
           <ArrowRight />
         </IconButton>
       </Box>
-      <Grid2 container columns={7}>
+      <Grid container columns={7}>
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <Grid2 size={1} key={day}>
+          <Grid size={1} key={day}>
             <Typography variant="subtitle2" align="center">
               {day}
             </Typography>
-          </Grid2>
+          </Grid>
         ))}
         {renderDays()}
-      </Grid2>
+      </Grid>
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
         <DialogTitle>{eventDetails && eventDetails.title}</DialogTitle>
         <DialogContent>

@@ -2,7 +2,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { skill_subcategories } from "@prisma/client";
-import { Button, Grid2 } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { ArrowCircleRightOutlined } from "@mui/icons-material";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import TextFieldWithAutocomplete from "@/app/ui/components/mui/TextFieldWithAutocomplete";
@@ -106,7 +106,7 @@ export default function UpdateSkillPage() {
   };
 
   return (
-    <Grid2 container gap={4}>
+    <Grid container gap={4}>
       <div className="w-full max-w-2xl">
         <h2 className="mb-4 text-xl font-bold">Update Skill</h2>
 
@@ -201,6 +201,6 @@ export default function UpdateSkillPage() {
           </div>
         </form>
       </div>
-    </Grid2>
+    </Grid>
   );
 }
