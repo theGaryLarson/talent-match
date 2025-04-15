@@ -241,7 +241,7 @@ export default function EmployerRecentJobPosts({
               href={"/services/jobseekers/" + application.jobseekerId}
               target="_blank"
             >
-              View Showcase
+              View Portfolio
             </PillButton>
           </Stack>
         </Box>
