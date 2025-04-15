@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
 import {
@@ -10,6 +10,7 @@ import {
   Grid,
   IconButton,
   Link,
+  Rating,
   Stack,
   Table,
   TableBody,
@@ -17,41 +18,238 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import {
   ArrowDropDown,
   ArrowDropUp,
+  Close,
+  Mail,
   OpenInNew,
   People,
-  SaveAlt,
 } from "@mui/icons-material";
 import Avatar from "../Avatar";
 import PillButton from "../PillButton";
-import BookmarkWithText from "../BookmarkWithText";
+
+type FeedbackTarget = {
+  jobseekerJobPostingId: string;
+  applicantId: string;
+} | null;
 
 export default function EmployerRecentJobPosts({
   jobs,
-  bookmarkedJobseekers,
 }: {
   jobs: JobPostCreationDTO[];
-  bookmarkedJobseekers?: { jobseekerId: string }[];
 }) {
+  const [localJobs, setLocalJobs] = useState<JobPostCreationDTO[]>(jobs);
   const [expandedJobId, setExpandedJobId] = useState<string>();
-  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(
-    bookmarkedJobseekers?.map((item) => item.jobseekerId) || [],
-  );
+  const [feedbackTarget, setFeedbackTarget] = useState<FeedbackTarget>(null);
+  const [feedbackRating, setFeedbackRating] = useState<number | null>(null);
+  const [feedbackText, setFeedbackText] = useState<string>("");
 
-  const handleBookmarkChange = (jobseekerId: string, isBookmarked: boolean) => {
-    console.log(isBookmarked);
-    if (isBookmarked) {
-      setBookmarkedIds((prev) => [...prev, jobseekerId]);
-    } else {
-      setBookmarkedIds((prev) => prev.filter((id) => id !== jobseekerId));
+  useEffect(() => {
+    setLocalJobs(jobs);
+  }, [jobs]);
+
+  const handleShowFeedbackForm = (
+    jobseekerJobPostingId: string,
+    applicantId: string,
+  ) => {
+    setFeedbackTarget({ jobseekerJobPostingId, applicantId });
+    setFeedbackRating(null);
+    setFeedbackText("");
+  };
+
+  const handleCancelFeedback = () => {
+    setFeedbackTarget(null);
+    setFeedbackRating(null);
+    setFeedbackText("");
+  };
+
+  const handleSubmitFeedback = async () => {
+    if (feedbackTarget) {
+      const resp = await fetch("/api/joblistings/feedback", {
+        method: "POST",
+        body: JSON.stringify({
+          jobseekerJobPostingId: feedbackTarget.jobseekerJobPostingId,
+          rating: feedbackRating,
+          comment: feedbackText,
+        }),
+      });
+      if (!resp.ok) {
+        return;
+      }
+      setLocalJobs((prevJobs) =>
+        prevJobs.flatMap((job) => {
+          if (
+            job.jobApplications.some(
+              (app) => app.id === feedbackTarget.jobseekerJobPostingId,
+            )
+          ) {
+            const updatedApplications = job.jobApplications.filter(
+              (app) => !(app.id === feedbackTarget.jobseekerJobPostingId),
+            );
+            if (updatedApplications.length === 0) {
+              return [];
+            }
+            return [
+              {
+                ...job,
+                jobApplications: updatedApplications,
+              },
+            ];
+          }
+          return [job];
+        }),
+      );
+      handleCancelFeedback();
     }
   };
 
-  if (jobs.length == 0) {
+  const renderApplicantCardContent = (
+    job: JobPostCreationDTO,
+    application: JobPostCreationDTO["jobApplications"][0],
+  ) => {
+    const isFeedbackMode =
+      feedbackTarget?.jobseekerJobPostingId === application.id &&
+      feedbackTarget?.applicantId === application.jobseekerId;
+
+    if (isFeedbackMode) {
+      return (
+        <Stack spacing={2} sx={{ p: 2 }}>
+          <Typography variant="subtitle1" gutterBottom>
+            Feedback for {application.Jobseekers.users.first_name}
+          </Typography>
+          <Box>
+            <Typography component="legend">Overall Fit</Typography>
+            <Rating
+              name={`rating-${application.jobseekerId}`}
+              value={feedbackRating}
+              onChange={(event, newValue) => {
+                setFeedbackRating(newValue);
+              }}
+            />
+          </Box>
+          <TextField
+            label="Feedback for candidate"
+            multiline
+            rows={3}
+            value={feedbackText}
+            onChange={(e) => setFeedbackText(e.target.value)}
+            variant="outlined"
+            fullWidth
+          />
+          <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <PillButton onClick={handleCancelFeedback} color="inherit">
+              Cancel
+            </PillButton>
+            <PillButton
+              color="secondary"
+              variant="contained"
+              onClick={handleSubmitFeedback}
+              disabled={feedbackRating === null}
+            >
+              Submit
+            </PillButton>
+          </Stack>
+        </Stack>
+      );
+    } else {
+      return (
+        <Box sx={{ p: 2 }}>
+          <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
+            <Grid container spacing={1} sx={{ mb: 2, flexGrow: 1 }}>
+              <Avatar
+                imgsrc={application.Jobseekers.users.photo_url || undefined}
+              />
+              <Box>
+                <Typography>
+                  {application.Jobseekers.users.first_name +
+                    " " +
+                    application.Jobseekers.users.last_name}
+                </Typography>
+                <Typography color="textSecondary">
+                  {application.Jobseekers.pathways?.pathway_title}
+                </Typography>
+                <Typography color="textSecondary">
+                  {application.postalGeoData?.city +
+                    ", " +
+                    application.postalGeoData?.stateCode}
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid>
+              <IconButton
+                color="error"
+                onClick={() =>
+                  handleShowFeedbackForm(
+                    application.id,
+                    application.jobseekerId,
+                  )
+                }
+                aria-label={`Dismiss candidate ${application.Jobseekers.users.first_name}`}
+              >
+                <Close />
+              </IconButton>
+            </Grid>
+          </Stack>
+          <Typography
+            sx={{
+              mt: 1,
+              mb: 2,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflowWrap: "break-word",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {application.Jobseekers.intro_headline}
+          </Typography>
+          <Typography>
+            {
+              application.Jobseekers.jobseeker_has_skills?.filter((skillObj) =>
+                (job.skills?.map((skill) => skill.skill_id) || []).includes(
+                  skillObj.skills.skill_id,
+                ),
+              ).length
+            }{" "}
+            of {job.skills?.length || 0} skills match
+          </Typography>
+          <Divider sx={{ my: 2 }} />
+          <Stack spacing={1}>
+            <PillButton
+              startIcon={<Mail />}
+              color="inherit"
+              fullWidth
+              href={
+                "mailto:" +
+                application.Jobseekers.users.email +
+                "?subject=" +
+                encodeURIComponent(job.job_title)
+              }
+              sx={{ color: "secondary.main" }}
+            >
+              Connect
+            </PillButton>
+            <PillButton
+              startIcon={<OpenInNew />}
+              color="secondary"
+              fullWidth
+              href={"/services/jobseekers/" + application.jobseekerId}
+              target="_blank"
+            >
+              View Showcase
+            </PillButton>
+          </Stack>
+        </Box>
+      );
+    }
+  };
+
+  if (localJobs.length == 0) {
     return <p>No prescreened applicants currently, check back later</p>;
   }
 
@@ -80,7 +278,7 @@ export default function EmployerRecentJobPosts({
               </TableRow>
             </TableHead>
             <TableBody>
-              {jobs.map((job) => (
+              {localJobs.map((job) => (
                 <React.Fragment key={job.job_posting_id}>
                   <TableRow
                     key={job.job_posting_id}
@@ -132,112 +330,23 @@ export default function EmployerRecentJobPosts({
                   </TableRow>
                   <TableRow>
                     <TableCell
-                      style={{ paddingBottom: 0, paddingTop: 0 }}
+                      sx={{ paddingBottom: 0, paddingTop: 0 }}
                       colSpan={6}
                     >
                       <Collapse in={expandedJobId !== undefined} timeout="auto">
                         {expandedJobId === job.job_posting_id && (
                           <Grid container spacing={1} sx={{ my: 1 }}>
                             {job.jobApplications.map((application) => (
-                              <Card
+                              <Grid
+                                size={{ xs: 12, sm: 6, md: 4 }}
                                 key={
-                                  job.job_posting_id +
-                                  application.jobseekerId +
-                                  " Card"
+                                  job.job_posting_id + application.jobseekerId
                                 }
-                                component={Grid}
-                                size={4}
-                                sx={{ p: 2 }}
                               >
-                                <Grid container spacing={1} sx={{ mb: 2 }}>
-                                  <Avatar
-                                    imgsrc={
-                                      application.Jobseekers.users.photo_url ||
-                                      undefined
-                                    }
-                                  />
-                                  <div>
-                                    <Typography>
-                                      {application.Jobseekers.users.first_name +
-                                        " " +
-                                        application.Jobseekers.users.last_name}
-                                    </Typography>
-                                    <Typography color="textSecondary">
-                                      {application.Jobseekers.pathways &&
-                                        application.Jobseekers.pathways
-                                          .pathway_title}
-                                    </Typography>
-                                    <Typography color="textSecondary">
-                                      {application.postalGeoData?.city +
-                                        ", " +
-                                        application.postalGeoData?.stateCode}
-                                    </Typography>
-                                  </div>
-                                </Grid>
-                                <Typography
-                                  sx={{
-                                    mt: 1,
-                                    mb: 2,
-                                    display: "-webkit-box",
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: "vertical",
-                                    overflowWrap: "break-word",
-                                    overflow: "hidden",
-                                  }}
-                                >
-                                  {application.Jobseekers.intro_headline}
-                                </Typography>
-                                <Typography>
-                                  {
-                                    application.Jobseekers.jobseeker_has_skills?.filter(
-                                      (skillObj) =>
-                                        (
-                                          job.skills?.map(
-                                            (skill) => skill.skill_id,
-                                          ) || []
-                                        ).includes(skillObj.skills.skill_id),
-                                    ).length
-                                  }{" "}
-                                  of {job.skills?.length} skills match
-                                </Typography>
-                                <Divider sx={{ my: 2 }} />
-                                <Stack spacing={1}>
-                                  <BookmarkWithText
-                                    bookmarked={bookmarkedIds.includes(
-                                      application.jobseekerId,
-                                    )}
-                                    addUrl={
-                                      "/api/companies/bookmark/addJobseeker/" +
-                                      application.jobseekerId
-                                    }
-                                    removeUrl={
-                                      "/api/companies/bookmark/removeJobseeker/" +
-                                      application.jobseekerId
-                                    }
-                                    onBookmarkChange={(isBookmarked) =>
-                                      handleBookmarkChange(
-                                        application.jobseekerId,
-                                        isBookmarked,
-                                      )
-                                    }
-                                    unbookmarkedText="Save Candidate"
-                                    unbookmarkedIcon={<SaveAlt />}
-                                    bookmarkedText="Remove Candidate"
-                                    bookmarkedIcon={<SaveAlt />}
-                                  />
-                                  <PillButton
-                                    startIcon={<OpenInNew />}
-                                    color="secondary"
-                                    fullWidth
-                                    href={
-                                      "/services/jobseekers/" +
-                                      application.jobseekerId
-                                    }
-                                  >
-                                    View Showcase
-                                  </PillButton>
-                                </Stack>
-                              </Card>
+                                <Card>
+                                  {renderApplicantCardContent(job, application)}
+                                </Card>
+                              </Grid>
                             ))}
                             <Card component={Grid} size={4} sx={{ p: 2 }}>
                               <Grid
@@ -289,7 +398,7 @@ export default function EmployerRecentJobPosts({
       {/* Mobile View */}
       <Card variant="outlined" sx={{ display: { xs: "block", sm: "none" } }}>
         <Stack spacing={1} direction="column" sx={{ pt: 1 }}>
-          {jobs.map((job, index) => (
+          {localJobs.map((job, index) => (
             <Box key={job.job_posting_id + "sm"} sx={{ px: 2 }}>
               <Stack
                 direction="row"
@@ -343,97 +452,11 @@ export default function EmployerRecentJobPosts({
                   sx={{ justifyContent: "space-around", my: 2 }}
                 >
                   {job.jobApplications.map((application) => (
-                    <Card
-                      key={
-                        job.job_posting_id + application.jobseekerId + " Card"
-                      }
-                      component={Grid}
-                      sx={{ p: 2 }}
-                    >
-                      <Grid container spacing={1} sx={{ mb: 2 }}>
-                        <Avatar
-                          imgsrc={
-                            application.Jobseekers.users.photo_url ?? undefined
-                          }
-                        />
-                        <div>
-                          <Typography>
-                            {application.Jobseekers.users.first_name +
-                              " " +
-                              application.Jobseekers.users.last_name}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            {application.Jobseekers.pathways &&
-                              application.Jobseekers.pathways.pathway_title}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            {application.postalGeoData?.city +
-                              ", " +
-                              application.postalGeoData?.stateCode}
-                          </Typography>
-                        </div>
-                      </Grid>
-                      <Typography
-                        sx={{
-                          mt: 1,
-                          mb: 2,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflowWrap: "break-word",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {application.Jobseekers.intro_headline}
-                      </Typography>
-                      <Typography>
-                        {
-                          application.Jobseekers.jobseeker_has_skills?.filter(
-                            (skillObj) =>
-                              (
-                                job.skills?.map((skill) => skill.skill_id) || []
-                              ).includes(skillObj.skills.skill_id),
-                          ).length
-                        }{" "}
-                        of {job.skills?.length} skills match
-                      </Typography>
-                      <Divider sx={{ my: 2 }} />
-                      <Stack spacing={1}>
-                        <BookmarkWithText
-                          bookmarked={bookmarkedIds.includes(
-                            application.jobseekerId,
-                          )}
-                          addUrl={
-                            "/api/companies/bookmark/addJobseeker/" +
-                            application.jobseekerId
-                          }
-                          removeUrl={
-                            "/api/companies/bookmark/removeJobseeker/" +
-                            application.jobseekerId
-                          }
-                          onBookmarkChange={(isBookmarked) =>
-                            handleBookmarkChange(
-                              application.jobseekerId,
-                              isBookmarked,
-                            )
-                          }
-                          unbookmarkedText="Save Candidate"
-                          unbookmarkedIcon={<SaveAlt />}
-                          bookmarkedText="Remove Candidate"
-                          bookmarkedIcon={<SaveAlt />}
-                        />
-                        <PillButton
-                          startIcon={<OpenInNew />}
-                          color="secondary"
-                          fullWidth
-                          href={
-                            "/services/jobseekers/" + application.jobseekerId
-                          }
-                        >
-                          View Showcase
-                        </PillButton>
-                      </Stack>
-                    </Card>
+                    <Grid key={job.job_posting_id + application.jobseekerId}>
+                      <Card>
+                        {renderApplicantCardContent(job, application)}
+                      </Card>
+                    </Grid>
                   ))}
                   <Card component={Grid} sx={{ p: 2 }}>
                     <Stack
@@ -470,7 +493,7 @@ export default function EmployerRecentJobPosts({
                   </Card>
                 </Stack>
               </Collapse>
-              {index !== jobs.length - 1 && (
+              {index !== localJobs.length - 1 && (
                 <Divider
                   variant="middle"
                   orientation="horizontal"
