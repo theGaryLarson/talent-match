@@ -76,7 +76,7 @@ export default async function Page() {
     (total, job) => total + job.jobApplications.length,
     0,
   );
-  const recentJobs = await processJobs(
+  const jobsWithCandidates = await processJobs(
     jobs.filter((job) => job.jobApplications.length > 0) ?? [],
   );
 
@@ -181,10 +181,7 @@ export default async function Page() {
               </PillButton>
             </Grid>
             <Grid size={1}>
-              <EmployerRecentJobPosts
-                jobs={recentJobs}
-                bookmarkedJobseekers={proInfo.BookmarkedJobseeker}
-              />
+              <EmployerRecentJobPosts jobs={jobsWithCandidates} />
             </Grid>
             <Grid size={1} sx={{ display: { xs: "flex", md: "none" } }}>
               <EmployerTeamMembers companyid={company.company_id} />
