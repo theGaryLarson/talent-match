@@ -8,7 +8,6 @@ import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import { Alert, Card, Chip, Grid, Stack, Typography } from "@mui/material";
 import { Circle } from "@mui/icons-material";
-import ApplyToJobButton from "./ApplyToJobButton";
 import Link from "next/link";
 import React, { useMemo } from "react";
 
