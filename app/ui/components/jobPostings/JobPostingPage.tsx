@@ -87,7 +87,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
           direction={{ xs: "column", sm: "row" }}
           columnGap={2}
           rowGap={0.5}
-          sx={{ alignItems: { sm: "center" }, textTransform: 'capitalize' }}
+          sx={{ alignItems: { sm: "center" }, textTransform: "capitalize" }}
         >
           <Typography>{location}</Typography>
           <Circle sx={{ fontSize: 8, display: { xs: "none", sm: "inline" } }} />

@@ -36,6 +36,7 @@ import {
   QuestionMarkCircleIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
+import GreenMarketingBanner from "../GreenMarketingBanner";
 
 type TopLevelLink = {
   name: string;
@@ -149,10 +150,12 @@ export default function Header() {
     width: "100%",
     color: isTransparent ? "neutral.white" : "inherit",
     padding: 2,
+    top: isTransparent ? 60 : 30,
   };
 
   return (
     <>
+      <GreenMarketingBanner />
       <AppBar sx={appBarStyles}>
         <Toolbar disableGutters>
           {isTransparent ? (

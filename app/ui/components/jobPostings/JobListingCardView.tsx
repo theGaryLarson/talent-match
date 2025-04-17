@@ -57,7 +57,7 @@ function JobListingCardView({
         p: { xs: 0.5, sm: 1, md: 3 },
         borderRadius: "12px",
         transition: "box-shadow 0.3s",
-        
+
         "&:hover": { boxShadow: 3 },
       }}
     >
@@ -94,10 +94,14 @@ function JobListingCardView({
           ""
         )}
       </Stack>
-      <Typography variant="h5" sx={{ my: 1, textTransform: 'capitalize' }}>
+      <Typography variant="h5" sx={{ my: 1, textTransform: "capitalize" }}>
         {job_title}
       </Typography>
-      <Grid container columnSpacing={2} sx={{ alignItems: "center", textTransform: 'capitalize' }}>
+      <Grid
+        container
+        columnSpacing={2}
+        sx={{ alignItems: "center", textTransform: "capitalize" }}
+      >
         <Typography>{joblisting?.location}</Typography>
         <Circle sx={{ fontSize: 8 }} />
         <Typography>
