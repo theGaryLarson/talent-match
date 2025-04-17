@@ -9,7 +9,7 @@ import EmployerTeamMembers from "@/app/ui/components/employerdashboard/EmployerT
 import { auth } from "@/auth";
 import EmployerRecentJobPosts from "@/app/ui/components/employerdashboard/EmployerRecentJobPosts";
 import Link from "next/link";
-import { Box, Grid, Typography } from "@mui/material";
+import { Alert, Box, Grid, Stack, Typography } from "@mui/material";
 import NewJobFormButton from "@/app/ui/components/jobManagement/NewJobFormButton";
 import PillButton from "@/app/ui/components/PillButton";
 import { SearchOutlined } from "@mui/icons-material";
@@ -93,16 +93,20 @@ export default async function Page() {
   return (
     <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
       <DeletionFlag deletionDate={undefined} />
-      {!session?.user.companyId ? (
-        <div className="bg-red-700 py-1 items-center flex text-center justify-center">
-          <h1 className="text-md capitalize text-white">
-            Some Functions May be limited Please Log out and Log back in to gain
-            full functionality
-          </h1>
-        </div>
-      ) : (
-        ""
-      )}
+      <Stack spacing={1}>
+        {!session?.user.companyId && (
+          <Alert severity="error">
+            Some functions may be limited. Please log out and log back in to
+            gain full functionality
+          </Alert>
+        )}
+        {!session?.user.employeeIsApproved && (
+          <Alert severity="error">
+            You are not an approved employer, so functionality is limited at
+            this time
+          </Alert>
+        )}
+      </Stack>
       <Typography variant={"h4"} sx={{ color: "secondary.main", mb: 7 }}>
         Welcome back, {session?.user.firstName}
       </Typography>
