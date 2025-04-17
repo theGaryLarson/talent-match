@@ -1038,3 +1038,51 @@ export async function setJobStatus(
     console.error(error);
   }
 }
+
+export async function setEmployerConnect(
+  jobPostingId: string,
+  applicationId: string,
+  status: boolean,
+) {
+  const session = await auth();
+  const is_admin_or_case_manager =
+    session?.user.roles.includes(Role.ADMIN) ||
+    session?.user.roles.includes(Role.CASE_MANAGER);
+  if (
+    (!session?.user.employeeIsApproved || !session?.user.employerId) &&
+    !is_admin_or_case_manager
+  ) {
+    return;
+  }
+  if (
+    session?.user.roles.includes(Role.EMPLOYER) &&
+    !is_admin_or_case_manager
+  ) {
+    if (status == false) return;
+  }
+  try {
+    const job_posting = await prisma.job_postings.findUnique({
+      where: {
+        job_posting_id: jobPostingId,
+      },
+    });
+    if (
+      job_posting?.company_id !== session?.user.companyId &&
+      !is_admin_or_case_manager
+    ) {
+      throw new Error("Employer not from company that posted the job");
+    }
+    const result = await prisma.jobseekerJobPosting.update({
+      where: {
+        id: applicationId,
+      },
+      data: {
+        employerClickedConnect: status,
+      },
+    });
+
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}

@@ -182,6 +182,31 @@ export default function EmployerRecommendedCandidatesTable({
     }
   };
 
+  const handleConnectClicked = async (
+    applicationId: string,
+    jobPostingId: string,
+  ) => {
+    try {
+      const resp = await fetch(`/api/joblistings/employerconnect`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jobPostingId: jobPostingId,
+          applicationId: applicationId,
+          status: true,
+        }),
+      });
+      if (!resp.ok) {
+        console.error(
+          "Error updating employerClickedConnect status:",
+          await resp.text(),
+        );
+      }
+    } catch (error) {
+      console.error("Error updating employerClickedConnect status:", error);
+    }
+  };
+
   const renderApplicantCardContent = (
     job: JobPostCreationDTO,
     application: JobPostCreationDTO["jobApplications"][0],
@@ -345,6 +370,9 @@ export default function EmployerRecommendedCandidatesTable({
                 application.Jobseekers.users.email +
                 "?subject=" +
                 encodeURIComponent(job.job_title)
+              }
+              onClick={() =>
+                handleConnectClicked(application.id, job.job_posting_id ?? "")
               }
               sx={{ color: "secondary.main" }}
             >
