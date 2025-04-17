@@ -6,6 +6,7 @@ import MarketingCards from "@/app/ui/components/employerLanding/MarketingCards";
 import MeetTheFounders from "@/app/ui/components/employerLanding/MeetTheFounders";
 
 import TCPortalFunctionsFold from "@/app/ui/components/employerLanding/TCPortalFunctionsFold";
+import TrustedByEmployers from "@/app/ui/components/employerLanding/TrustedByEmployers";
 
 export default function Page() {
   return (
@@ -14,6 +15,7 @@ export default function Page() {
       <main className="space-y-3 font-['Roboto'] ">
         <TCPortalFunctionsFold />
         <div className="px-4 tablet:px-[150px] laptop:px-[200px]">
+          <TrustedByEmployers />
           <EmployerSteps />
           <MarketingCards />
           <MeetTheFounders />
