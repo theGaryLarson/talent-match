@@ -760,11 +760,10 @@ export default function NewJobForm({
               onChange={(event: any, val: any) => {
                 setRequiredSkills(val);
               }}
-              initialTags={
+              value={
                 job_posting
-                  ? job_posting.skills &&
-                    job_posting.skills.map((skill) => skill.skill_name)
-                  : requiredSkills.map((skill) => skill.skill_name)
+                  ? job_posting.skills && job_posting.skills
+                  : requiredSkills
               }
               searchPlaceholder="Skill (ex: Java)"
               getTagLabel={(option: SkillDTO) => option.skill_name}
