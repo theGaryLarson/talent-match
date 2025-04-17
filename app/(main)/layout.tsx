@@ -1,6 +1,5 @@
 import Header from "@/app/ui/components/mui/Header";
 import Footer from "@/app/ui/Footer";
-import GreenMarketingBanner from "../ui/components/GreenMarketingBanner";
 
 export default function RootLayout({
   children,
