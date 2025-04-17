@@ -942,3 +942,30 @@ export async function getJobSeekerAppliedJobs() {
     console.error(error);
   }
 }
+
+export async function feedbackToCandidate(
+  jobseekerJobPostingId: string,
+  rating: number,
+  comment: string,
+) {
+  const session = await auth();
+  if (!session?.user.employeeIsApproved || !session?.user.employerId) {
+    return;
+  }
+  try {
+    const result = await prisma.jobseekerJobPosting.update({
+      where: {
+        id: jobseekerJobPostingId,
+      },
+      data: {
+        jobStatus: JobStatus.NotSelected,
+        feedbackRating: rating,
+        feedbackText: comment,
+      },
+    });
+
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}

@@ -2,13 +2,13 @@ import { SkillDTO } from "./SkillDTO";
 import { PostalGeoDataDTO } from "./PostalGeoDataDTO";
 
 export type JobPostCreationDTO = {
-  job_posting_id?: string; // Optional: for updates or responses
-  //location_id?: string;
+  job_posting_id?: string;
   tech_area_id: string | null;
   techArea: { id: string; title: string } | null;
   sector_id: string | null;
   company_id: string | null;
   jobApplications: {
+    id: string;
     jobseekerId: string;
     jobStatus: string;
     Jobseekers: {
@@ -20,6 +20,7 @@ export type JobPostCreationDTO = {
         last_name: string | null;
         photo_url: string | null;
         zip: string | null;
+        email: string | null;
       };
       intro_headline: string | null;
       jobseeker_has_skills?:
@@ -39,7 +40,6 @@ export type JobPostCreationDTO = {
   employment_type?: string;
   location: string;
   salary_range: string;
-  //county: string;
   relocation_services_available: boolean;
   offer_visa_sponsorship: boolean;
   zip: string;
@@ -48,7 +48,7 @@ export type JobPostCreationDTO = {
   job_post_url: string | null;
   assessment_url: string | null;
   skills?: SkillDTO[];
-  skillIds?: string[]; // Array of skill IDs to associate with the job
+  skillIds?: string[];
   earn_and_learn_type: string | null;
   occupation_code: string | null;
   employment_duration: string | null;
