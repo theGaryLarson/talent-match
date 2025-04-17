@@ -7,7 +7,7 @@ import {
 } from "@/app/lib/prisma";
 import EmployerTeamMembers from "@/app/ui/components/employerdashboard/EmployerTeamMembers";
 import { auth } from "@/auth";
-import EmployerRecentJobPosts from "@/app/ui/components/employerdashboard/EmployerRecentJobPosts";
+import EmployerRecommendedCandidatesTable from "@/app/ui/components/employerdashboard/EmployerRecommendedCandidatesTable";
 import Link from "next/link";
 import { Alert, Box, Grid, Stack, Typography } from "@mui/material";
 import NewJobFormButton from "@/app/ui/components/jobManagement/NewJobFormButton";
@@ -185,7 +185,7 @@ export default async function Page() {
               </PillButton>
             </Grid>
             <Grid size={1}>
-              <EmployerRecentJobPosts jobs={jobsWithCandidates} />
+              <EmployerRecommendedCandidatesTable jobs={jobsWithCandidates} />
             </Grid>
             <Grid size={1} sx={{ display: { xs: "flex", md: "none" } }}>
               <EmployerTeamMembers companyid={company.company_id} />

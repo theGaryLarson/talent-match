@@ -7,10 +7,15 @@ import {
   Card,
   Collapse,
   Divider,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
   Link,
+  MenuItem,
   Rating,
+  Select,
+  SelectChangeEvent,
   Stack,
   Table,
   TableBody,
@@ -31,13 +36,14 @@ import {
 } from "@mui/icons-material";
 import Avatar from "../Avatar";
 import PillButton from "../PillButton";
+import { JobStatus } from "@/app/lib/jobseekerJobTracking";
 
 type FeedbackTarget = {
   jobseekerJobPostingId: string;
   applicantId: string;
 } | null;
 
-export default function EmployerRecentJobPosts({
+export default function EmployerRecommendedCandidatesTable({
   jobs,
 }: {
   jobs: JobPostCreationDTO[];
@@ -104,6 +110,75 @@ export default function EmployerRecentJobPosts({
         }),
       );
       handleCancelFeedback();
+    }
+  };
+
+  const handleStatusChange = async (
+    applicationId: string,
+    jobPostingId: string,
+    newStatus: JobStatus,
+  ) => {
+    setLocalJobs((prevJobs) =>
+      prevJobs.map((job) => {
+        if (job.job_posting_id === jobPostingId) {
+          return {
+            ...job,
+            jobApplications: job.jobApplications.map((app) =>
+              app.id === applicationId ? { ...app, jobStatus: newStatus } : app,
+            ),
+          };
+        }
+        return job;
+      }),
+    );
+    try {
+      const resp = await fetch(`/api/joblistings/jobStatus`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jobPostingId: jobPostingId,
+          applicationId: applicationId,
+          status: newStatus,
+        }),
+      });
+
+      if (!resp.ok) {
+        console.error(
+          "Failed to update application status:",
+          await resp.text(),
+        );
+        setLocalJobs(
+          jobs.map((job) => ({
+            ...job,
+            jobApplications: job.jobApplications.map((app) => ({
+              ...app,
+              jobStatus: app.jobStatus as JobStatus,
+            })),
+          })),
+        );
+        alert("Failed to update status. Please try again.");
+      } else {
+        if (newStatus === JobStatus.Accepted) {
+          setLocalJobs((prevJobs) =>
+            prevJobs.filter((job) => job.job_posting_id !== jobPostingId),
+          );
+          if (expandedJobId === jobPostingId) {
+            setExpandedJobId(undefined);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      setLocalJobs(
+        jobs.map((job) => ({
+          ...job,
+          jobApplications: job.jobApplications.map((app) => ({
+            ...app,
+            status: app.jobStatus as JobStatus,
+          })),
+        })),
+      );
+      alert("An error occurred while updating status. Please try again.");
     }
   };
 
@@ -197,7 +272,6 @@ export default function EmployerRecentJobPosts({
           <Typography
             sx={{
               mt: 1,
-              mb: 2,
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
@@ -218,6 +292,48 @@ export default function EmployerRecentJobPosts({
             }{" "}
             of {job.skills?.length || 0} skills match
           </Typography>
+          <FormControl fullWidth sx={{ mt: 2, mb: 1 }}>
+            <InputLabel id={`status-select-label-${application.id}`}>
+              Status
+            </InputLabel>
+            <Select<JobStatus>
+              labelId={`status-select-label-${application.id}`}
+              id={`status-select-${application.id}`}
+              value={application.jobStatus as JobStatus}
+              label="Status"
+              onChange={(event: SelectChangeEvent<JobStatus>) =>
+                handleStatusChange(
+                  application.id,
+                  job.job_posting_id ?? "",
+                  event.target.value as JobStatus,
+                )
+              }
+              size="small"
+            >
+              <MenuItem
+                disabled
+                key={JobStatus.Recommended}
+                value={JobStatus.Recommended}
+              >
+                {JobStatus.Recommended}
+              </MenuItem>
+              <MenuItem
+                key={JobStatus.Interviewing}
+                value={JobStatus.Interviewing}
+              >
+                {JobStatus.Interviewing}
+              </MenuItem>
+              <MenuItem
+                key={JobStatus.Negotiating}
+                value={JobStatus.Negotiating}
+              >
+                {JobStatus.Negotiating}
+              </MenuItem>
+              <MenuItem key={JobStatus.Accepted} value={JobStatus.Accepted}>
+                {JobStatus.Accepted}
+              </MenuItem>
+            </Select>
+          </FormControl>
           <Divider sx={{ my: 2 }} />
           <Stack spacing={1}>
             <PillButton
