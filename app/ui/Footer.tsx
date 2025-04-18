@@ -171,8 +171,11 @@ export default function SitemapFooter() {
           <Link href="/policies/privacy-policy" style={{ color: "inherit" }}>
             Privacy Policy
           </Link>
-          <Link href="/" style={{ color: "inherit" }}>
-            Cookie Settings
+          <Link
+            href="https://form.asana.com/?k=YUsxTQ4kvMZCAIN2QbO7Gg&d=1207928585647173"
+            style={{ color: "inherit" }}
+          >
+            Report An Issue
           </Link>
         </Box>
 
