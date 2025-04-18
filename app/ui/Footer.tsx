@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -56,22 +56,14 @@ export default function SitemapFooter() {
     <>
       <Box sx={{ backgroundColor: "secondary.main", color: "white", py: 6 }}>
         <Container maxWidth="lg">
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 2,
-              textAlign: "center",
-              "@media (min-width: 391px)": {
-                flexDirection: "row",
-                alignItems: "flex-start",
-                textAlign: "left",
-              },
-            }}
+          <Grid
+            container
+            spacing={4}
+            justifyContent="center"
+            alignItems="flex-start"
+            textAlign="left"
           >
-            <Box>
+            <Grid item xs={12} sm={1}>
               <Link href="/">
                 <span className="sr-only">Tech Workforce Coalition</span>
                 <Image
@@ -81,39 +73,19 @@ export default function SitemapFooter() {
                   height={27.24}
                 />
               </Link>
-            </Box>
+            </Grid>
 
-            <Box
-              sx={{
-                flexGrow: 1,
-                width: "100%",
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                px: 2,
-                gap: 2,
-                "@media (min-width: 391px)": {
-                  gridTemplateColumns: "1fr 1fr",
-                },
-                "@media (min-width: 769px)": {
-                  gridTemplateColumns: "1fr 1fr 1fr",
-                },
-                "@media (min-width: 1025px)": {
-                  gridTemplateColumns: "1fr 1fr 1fr 1fr",
-                },
-              }}
-            >
+            <Grid container spacing={16}>
               {footerData.map((section) => (
-                <Box key={section.title} sx={{ px: 2 }}>
+                <Grid item xs={12} sm={6} md={3} key={section.title}>
                   <Typography
                     fontWeight="bold"
                     style={{
-                      display: "block",
                       marginBottom: "1.5rem",
                       color: "inherit",
                       fontSize: "1rem",
                       lineHeight: "150%",
                       letterSpacing: "0.15px",
-                      verticalAlign: "middle",
                     }}
                     gutterBottom
                   >
@@ -130,37 +102,40 @@ export default function SitemapFooter() {
                         fontSize: "1rem",
                         lineHeight: "150%",
                         letterSpacing: "0.15px",
-                        verticalAlign: "middle",
                       }}
                     >
                       {link.label}
                     </Link>
                   ))}
-                </Box>
+                </Grid>
               ))}
-            </Box>
-          </Box>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
 
-      <Box
+      <Grid
+        container
+        spacing={3}
         sx={{
           width: "100%",
           maxWidth: "1370px",
-          flexWrap: "wrap",
           py: "12px",
-          display: "flex",
+          px: { xs: 2, md: 3, xl: 0 },
+          mx: "auto",
+          flexWrap: "wrap",
           justifyContent: "space-between",
           alignItems: "center",
-          mx: "auto",
-          px: { xs: 2, md: 3, xl: 0 },
         }}
       >
-        <Box
+        <Grid
+          item
+          xs={12}
+          sm="auto"
           sx={{
             display: "flex",
             flexDirection: { xs: "column", sm: "row" },
-            alignItems: { xs: "left", sm: "center" },
+            alignItems: { xs: "flex-start", sm: "center" },
             py: "8px",
             gap: 3,
           }}
@@ -177,29 +152,39 @@ export default function SitemapFooter() {
           >
             Report An Issue
           </Link>
-        </Box>
+        </Grid>
 
-        <a
-          className="flex items-center gap-2"
-          href="https://www.linkedin.com/company/washington-tech-workforce-coalition"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            color: "inherit",
+        <Grid
+          item
+          xs={12}
+          sm="auto"
+          sx={{
             display: "flex",
+            justifyContent: "flex-end",
             alignItems: "center",
-            gap: "8px",
           }}
         >
-          <p style={{ margin: 0 }}>Follow Us:</p>
-          <Image
-            src="/images/stock/linkedin-black.png"
-            alt="Linkedin Link"
-            width={22}
-            height={22}
-          />
-        </a>
-      </Box>
+          <a
+            href="https://www.linkedin.com/company/washington-tech-workforce-coalition"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "inherit",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <p style={{ margin: 0 }}>Follow Us:</p>
+            <Image
+              src="/images/stock/linkedin-black.png"
+              alt="Linkedin Link"
+              width={22}
+              height={22}
+            />
+          </a>
+        </Grid>
+      </Grid>
     </>
   );
 }
