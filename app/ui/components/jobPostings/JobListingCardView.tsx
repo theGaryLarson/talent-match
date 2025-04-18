@@ -8,7 +8,6 @@ import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import { Alert, Card, Chip, Grid, Stack, Typography } from "@mui/material";
 import { Circle } from "@mui/icons-material";
-import ApplyToJobButton from "./ApplyToJobButton";
 import Link from "next/link";
 import React, { useMemo } from "react";
 
@@ -152,7 +151,6 @@ function JobListingCardView({
       )}
       <Stack
         direction={{ xs: "column", sm: "row" }}
-        gap={1}
         sx={{ mt: 2, justifyContent: "flex-end" }}
       >
         <PillButton
@@ -163,13 +161,6 @@ function JobListingCardView({
         >
           View job posting
         </PillButton>
-        {(!session?.user || isJobseeker) && (
-          <ApplyToJobButton
-            id={joblisting.job_posting_id}
-            appliedStatus={joblisting.jobStatus}
-            unPublishDate={joblisting.unpublish_date}
-          />
-        )}
       </Stack>
     </Card>
   );

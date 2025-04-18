@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { JobStatus } from "@/app/lib/jobseekerJobTracking";
 import { useSession } from "next-auth/react";
-import { redirect, usePathname } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import PillButton from "../PillButton";
 import { Add, Clear } from "@mui/icons-material";
 import {
@@ -36,10 +36,13 @@ export default function ApplyToJobButton({
       appliedStatus == JobStatus.NoResponse ||
       appliedStatus == JobStatus.NotSelected,
   );
-  const [openConfirm, setOpenConfirm] = useState(false);
+  const [openConfirmWithdraw, setOpenConfirmWithdraw] = useState(false);
+  const [isApplying, setIsApplying] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   const session = useSession();
   const pathname = usePathname();
+  const router = useRouter();
 
   const handleApplicationClick = async () => {
     if (!session?.data?.user) {
@@ -51,6 +54,7 @@ export default function ApplyToJobButton({
     }
     try {
       if (!hasApplied) {
+        setIsApplying(true);
         setHasApplied(true);
         const response = await fetch(`/api/joblistings/apply/${id}`, {
           method: "POST",
@@ -63,16 +67,23 @@ export default function ApplyToJobButton({
           setHasApplied(false);
           throw new Error("Failed to update application status.");
         }
+        router.push("/services/jobseekers/book-appointment");
       } else {
-        setOpenConfirm(true);
+        setOpenConfirmWithdraw(true);
       }
     } catch (error) {
       console.error("Error updating application:", error);
+      if (!appliedStatus) {
+        setHasApplied(false);
+      }
+    } finally {
+      setIsApplying(false);
     }
   };
 
   async function handleConfirmWithdraw() {
-    setOpenConfirm(false);
+    setOpenConfirmWithdraw(false);
+    setIsWithdrawing(true);
     setHasApplied(false);
     try {
       const response = await fetch(`/api/joblistings/withdraw/${id}`, {
@@ -87,12 +98,24 @@ export default function ApplyToJobButton({
       }
     } catch (error) {
       console.error("Error updating application:", error);
+      setHasApplied(true);
+    } finally {
+      setIsWithdrawing(false);
     }
   }
 
   function handleCancelWithdraw() {
-    setOpenConfirm(false);
+    setOpenConfirmWithdraw(false);
   }
+
+  const isButtonDisabled =
+    (unPublishDate && unPublishDate <= new Date()) ||
+    appliedStatus == JobStatus.Screened ||
+    appliedStatus == JobStatus.Interviewing ||
+    appliedStatus == JobStatus.Negotiating ||
+    appliedStatus == JobStatus.Accepted ||
+    appliedStatus == JobStatus.NoResponse ||
+    appliedStatus == JobStatus.NotSelected;
 
   return (
     <>
@@ -100,50 +123,34 @@ export default function ApplyToJobButton({
         <PillButton
           color="error"
           startIcon={<Clear />}
-          disabled={
-            (unPublishDate && unPublishDate <= new Date()) ||
-            appliedStatus == JobStatus.Screened ||
-            appliedStatus == JobStatus.Interviewing ||
-            appliedStatus == JobStatus.Negotiating ||
-            appliedStatus == JobStatus.Accepted ||
-            appliedStatus == JobStatus.NoResponse ||
-            appliedStatus == JobStatus.NotSelected
-          }
+          disabled={isButtonDisabled}
+          loading={isWithdrawing}
           onClick={handleApplicationClick}
         >
-          Withdraw Consideration
+          {isWithdrawing ? "Withdrawing..." : "Withdraw Consideration"}
         </PillButton>
       ) : (
         <PillButton
           color="secondary"
           startIcon={<Add />}
-          disabled={
-            (unPublishDate && unPublishDate <= new Date()) ||
-            appliedStatus == JobStatus.Screened ||
-            appliedStatus == JobStatus.Interviewing ||
-            appliedStatus == JobStatus.Negotiating ||
-            appliedStatus == JobStatus.Accepted ||
-            appliedStatus == JobStatus.NoResponse ||
-            appliedStatus == JobStatus.NotSelected
-          }
+          disabled={isButtonDisabled}
+          loading={isApplying}
           onClick={handleApplicationClick}
         >
-          Be Considered
+          {isApplying ? "Applying..." : "Apply"}
         </PillButton>
       )}
       <Dialog
-        open={openConfirm}
+        open={openConfirmWithdraw}
         onClose={handleCancelWithdraw}
         slotProps={{
           paper: { sx: { borderRadius: "16px", width: "290px", m: 0 } },
         }}
       >
-        <DialogTitle sx={{ m: 2, p: 0 }}>
-          Are you sure you want to withdraw your consideration for this job?
-        </DialogTitle>
+        <DialogTitle sx={{ m: 2, p: 0 }}>Withdraw Consideration?</DialogTitle>
         <DialogContent sx={{ mx: 2, mb: 2, p: 0 }}>
-          Withdrawing means you will no longer be considered for this specific
-          role. You can re-apply if the position is still open.
+          Are you sure you want to withdraw your consideration for this job? You
+          can re-apply if the position is still open.
         </DialogContent>
         <DialogActions
           disableSpacing
@@ -155,6 +162,7 @@ export default function ApplyToJobButton({
             variant="contained"
             onClick={handleCancelWithdraw}
             sx={{ color: "secondary.main" }}
+            loading={isWithdrawing}
           >
             No, Cancel
           </PillButton>
@@ -169,8 +177,9 @@ export default function ApplyToJobButton({
               },
             }}
             onClick={handleConfirmWithdraw}
+            loading={isWithdrawing}
           >
-            Yes, Withdraw
+            {isWithdrawing ? "Withdrawing..." : "Yes, Withdraw"}
           </PillButton>
         </DialogActions>
       </Dialog>
