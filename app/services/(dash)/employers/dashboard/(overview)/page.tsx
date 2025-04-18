@@ -102,8 +102,8 @@ export default async function Page() {
         )}
         {!session?.user.employeeIsApproved && (
           <Alert severity="error">
-            You are not an approved employer, so functionality is limited at
-            this time
+            Employer approval pending. May take up to 24 hours for approval. Log
+            out and log back in to update Employer Approval status.
           </Alert>
         )}
       </Stack>
