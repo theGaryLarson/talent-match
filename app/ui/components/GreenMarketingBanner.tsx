@@ -6,9 +6,7 @@ export default function GreenMarketingBanner(props: { show: boolean }) {
     <div
       className={
         "bg-green-700 min-h-[60px] flex flex-wrap items-center sm-tablet:justify-center px-4 text-white " +
-        props.show
-          ? ""
-          : " hidden"
+        (props.show ? "" : " hidden")
       }
     >
       <p className="mr-2">🔥 Explore our new Talent Portal release 1.4</p>
