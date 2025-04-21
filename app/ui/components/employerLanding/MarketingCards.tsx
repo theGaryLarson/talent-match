@@ -8,13 +8,12 @@ export default function MarketingCards() {
     <div className="space-y-[64px] py-[64px]">
       <MarketCard
         imgSrc={ExternshipImg}
-        link="/underconstruction"
+        link="mailto:susanne.mata@computingforall.org?subject=Talent%20Portal%20Externships"
         tittle={"Create Externships Tailored to Your Needs"}
         paragraph={
           "Collaborate with our skilled candidates on real projects. Observe their skills, teamwork, and problem-solving abilities firsthand before making a hiring decision. Shape projects to meet your specific hiring needs and evaluate potential hires in a real-world setting."
         }
-        buttonText={"More Info Coming Soon"}
-        buttonDisabled={true}
+        buttonText={"Learn More About Externships"}
       />
       <MarketCard
         imgSrc={EventsImg}
