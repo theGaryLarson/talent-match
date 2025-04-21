@@ -14,7 +14,7 @@ export default function Page() {
       <EmployerPageBanner />
       <main className="space-y-3 font-['Roboto'] ">
         <TCPortalFunctionsFold />
-          
+
         <div className="px-[16px] sm-tablet:px-[32px] tablet:px-[32px] laptop:px-[74px] desktop:px-[200px]">
           <TrustedByEmployers />
           <EmployerSteps />

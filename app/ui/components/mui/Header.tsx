@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   AppBar,
   Toolbar,
@@ -109,7 +110,8 @@ const TopLevelLinks: TopLevelLink[] = [
 
 export default function Header() {
   const pathname = usePathname();
-
+  const session = useSession();
+  const loggedin = session.status === "authenticated";
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleDrawer = (open: boolean) => () => {
     setMobileOpen(open);
@@ -150,12 +152,15 @@ export default function Header() {
     width: "100%",
     color: isTransparent ? "neutral.white" : "inherit",
     padding: 2,
-    top: isTransparent ? 60 : 30,
+    top: 0,
   };
+  if (!loggedin) {
+    appBarStyles.top = isTransparent ? 60 : 30;
+  }
 
   return (
     <>
-      <GreenMarketingBanner />
+      <GreenMarketingBanner show={!loggedin} />
       <AppBar sx={appBarStyles}>
         <Toolbar disableGutters>
           {isTransparent ? (

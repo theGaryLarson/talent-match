@@ -94,7 +94,6 @@ describe("Header", () => {
     expect(logo.src).toContain("/images/TWC%20logo_White.svg");
   });
 
-
   it("renders correct links in mobile menu", () => {
     vi.mocked(usePathname).mockReturnValue("/");
     renderWithProviders(<Header />);
