@@ -1,6 +1,8 @@
 "use client";
 
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid";
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -46,7 +48,7 @@ const footerData = [
     title: "For Educators",
     links: [
       { label: "Join the Coalition", href: "/join" },
-      { label: "Partners", href: "/training-providers" },
+      { label: "Partners", href: "/services/training-providers" },
     ],
   },
 ];
@@ -59,11 +61,11 @@ export default function SitemapFooter() {
           <Grid
             container
             spacing={4}
-            justifyContent="center"
+            justifyContent="left"
             alignItems="flex-start"
             textAlign="left"
           >
-            <Grid item xs={12} sm={1}>
+            <Grid size={{ xs: 12, sm: 2, lg: 1 }}>
               <Link href="/">
                 <span className="sr-only">Tech Workforce Coalition</span>
                 <Image
@@ -74,10 +76,12 @@ export default function SitemapFooter() {
                 />
               </Link>
             </Grid>
-
             <Grid container spacing={16}>
               {footerData.map((section) => (
-                <Grid item xs={12} sm={6} md={3} key={section.title}>
+                <Grid
+                  size={{ xs: 12, sm: 5, md: 4, lg: 3 }}
+                  key={section.title}
+                >
                   <Typography
                     fontWeight="bold"
                     style={{
@@ -129,9 +133,10 @@ export default function SitemapFooter() {
         }}
       >
         <Grid
-          item
-          xs={12}
-          sm="auto"
+          size={{
+            xs: 12,
+            sm: "auto",
+          }}
           sx={{
             display: "flex",
             flexDirection: { xs: "column", sm: "row" },
@@ -155,9 +160,10 @@ export default function SitemapFooter() {
         </Grid>
 
         <Grid
-          item
-          xs={12}
-          sm="auto"
+          size={{
+            xs: 12,
+            sm: "auto",
+          }}
           sx={{
             display: "flex",
             justifyContent: "flex-end",
