@@ -61,9 +61,11 @@ export default function SitemapFooter() {
           <Grid
             container
             spacing={4}
-            justifyContent="left"
-            alignItems="flex-start"
-            textAlign="left"
+            sx={{
+              justifyContent: "left",
+              alignItems: "flex-start",
+              textAlign: "left",
+            }}
           >
             <Grid size={{ xs: 12, sm: 2, lg: 1 }}>
               <Link href="/">
