@@ -31,6 +31,7 @@ export enum BlobPrefix {
   CoverLetter = "coverLetter",
   DevPlan = "careerPrepDevPlan",
   EduProviderLogo = "eduProviderLogo",
+  Project = "project",
 }
 
 // Needed to map the correct content-type property based on file extension
@@ -68,7 +69,7 @@ export async function uploadResume(
   );
 }
 
-// Upload resume method using the generalized uploadFile function with SAS token
+// Upload Professional Development Plan method using the generalized uploadFile function with SAS token
 export async function uploadDevPlan(
   file: Buffer,
   fileName: string,
@@ -123,6 +124,33 @@ export async function getDevPlan(userId: string): Promise<string | null> {
   if (userId.length < 1) return null;
   const blobPrefix = `${userId}/${BlobPrefix.DevPlan}`; // Common prefix for resumes
   return await getBlobUrlWithSas(pdfContainerName, blobPrefix);
+}
+
+// Upload project image method using the generalized uploadFile function without SAS token
+export async function uploadProjectImage(
+  file: Buffer,
+  fileName: string,
+  userId: string,
+  projectId: string,
+): Promise<string> {
+  return await uploadFile(
+    file,
+    fileName,
+    `${userId}/${projectId}`,
+    BlobPrefix.Project,
+    imagFileExtensionsAllowed,
+    imageContainerName,
+    false,
+  );
+}
+
+// Method to get a link to the avatar image without SAS token
+export async function getProjectUrl(
+  userId: string,
+  projectId: string,
+): Promise<string | null> {
+  const blobPrefix = `${userId}/${projectId}/${BlobPrefix.Project}`; // Common prefix for projects
+  return await getBlobUrl(imageContainerName, blobPrefix);
 }
 
 // Upload avatar method using the generalized uploadFile function without SAS token
