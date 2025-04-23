@@ -13,12 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`flex min-h-screen flex-col`}>
+    <div>
       <SignupHeader />
       {children}
-      <footer className="mt-auto">
-        <Footer />
-      </footer>
+      <Footer />
     </div>
   );
 }
