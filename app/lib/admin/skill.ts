@@ -181,8 +181,7 @@ export async function generateSkillEmbeddings() {
     const skill_ids = skills.map((skill) => skill.skill_id);
     const BATCH_SIZE = 50;
     const updateOps: PrismaPromise<any>[] = [];
-    // start < skill_names.length
-    for (let start = 0; start < 0; start += BATCH_SIZE) {
+    for (let start = 0; start < skill_names.length; start += BATCH_SIZE) {
       const batchNames = skill_names.slice(start, start + BATCH_SIZE);
 
       const resp = await client.embeddings.create({
@@ -207,19 +206,16 @@ export async function generateSkillEmbeddings() {
           console.warn(`no embedding for skillId ${skillId}, skipping`);
           continue;
         }
-
-        /*updateOps.push(
-          prisma.skills.update({
-            where: { skill_id: skillId },
-            data: { embedding },
-          }),
-        );*/
+        const embeddingString = JSON.stringify(embedding);
+        updateOps.push(
+          prisma.$executeRaw`UPDATE skills SET embedding = ${embeddingString} WHERE skill_id = ${skillId}`,
+        );
       }
     }
 
-    /*if (updateOps.length > 0) {
+    if (updateOps.length > 0) {
       await prisma.$transaction(updateOps);
-      }*/
+    }
     return {
       updated: updateOps.length,
       total: skill_names.length,

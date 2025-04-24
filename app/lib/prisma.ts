@@ -15,6 +15,8 @@ import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { ReadCompanyInfoDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
+import { AzureOpenAI } from "openai";
+import { cosineSimilarity } from "./utils";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -339,6 +341,77 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
     //   matches were found since I'm limiting the results, and OR
     //   clauses do not guarantee results in the order of the filters
     return [...exactResults, ...startsWithResults, ...containsResults];
+  }
+}
+
+export async function vectorSearchSkills(searchTerm: string) {
+  if (searchTerm.length === 0) {
+    return [];
+  } else {
+    const endpoint = process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT;
+    const apiKey = process.env.AZURE_OPENAI_EMBEDDING_API_KEY;
+    const apiVersion = process.env.AZURE_OPENAI_EMBEDDING_API_VERSION;
+    const deploymentName = process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME;
+
+    if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
+      throw new Error(
+        "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
+      );
+    }
+    const client = new AzureOpenAI({
+      endpoint,
+      apiKey,
+      apiVersion,
+      deployment: deploymentName,
+    });
+    const resp = await client.embeddings.create({
+      model: "",
+      input: searchTerm,
+      dimensions: 1536,
+    });
+    const queryVector = resp.data[0].embedding;
+    const allSkills = await prisma.$queryRaw`
+            SELECT
+                skill_id,
+                skill_name,
+                embedding
+            FROM skills
+            WHERE embedding IS NOT NULL
+        `;
+
+    const skillSimilarities = [];
+
+    for (const skill of allSkills) {
+      if (!skill.embedding) {
+        continue;
+      }
+
+      try {
+        const skillVector: number[] = JSON.parse(skill.embedding);
+
+        if (skillVector.length !== queryVector.length) {
+          console.warn(
+            `Skipping skill "${skill.skill_name}" (ID: ${skill.skill_id}) due to dimension mismatch (expected ${queryVector.length}, got ${skillVector.length})`,
+          );
+          continue;
+        }
+        const similarity = cosineSimilarity(queryVector, skillVector);
+
+        skillSimilarities.push({
+          skill_id: skill.skill_id,
+          skill_name: skill.skill_name,
+          similarity: similarity,
+        });
+      } catch (parseError) {
+        console.warn(
+          `Failed to parse embedding for skill "${skill.skill_name}" (ID: ${skill.skill_id}). Skipping. Error: ${parseError}`,
+        );
+      }
+    }
+
+    skillSimilarities.sort((a, b) => b.similarity - a.similarity);
+
+    return skillSimilarities.slice(0, 5);
   }
 }
 

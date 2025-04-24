@@ -15,7 +15,6 @@ import PillButton from "@/app/ui/components/PillButton";
 import { SearchOutlined } from "@mui/icons-material";
 import { getCompanyJobListings } from "@/app/lib/joblistings";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
-import { generateSkillEmbeddings } from "@/app/lib/admin/skill";
 
 async function processJobs(
   jobs: JobPostCreationDTO[],
@@ -80,16 +79,6 @@ export default async function Page() {
   const jobsWithCandidates = await processJobs(
     jobs.filter((job) => job.jobApplications.length > 0) ?? [],
   );
-
-  const vectorizeAndStore = async () => {
-    try {
-      const res = await generateSkillEmbeddings();
-      console.log(res);
-    } catch (e) {
-      console.error("failed to generate skill embeddings", e);
-    }
-  };
-  await vectorizeAndStore();
 
   if (!proInfo || company == undefined) {
     return (
