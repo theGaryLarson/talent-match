@@ -370,7 +370,7 @@ export async function vectorSearchSkills(searchTerm: string) {
       dimensions: 1536,
     });
     const queryVector = resp.data[0].embedding;
-    const allSkills = await prisma.$queryRaw`
+    const allSkills: SkillDTO[] = await prisma.$queryRaw`
             SELECT
                 skill_id,
                 skill_name,
