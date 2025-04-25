@@ -16,7 +16,6 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { ReadCompanyInfoDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 import { AzureOpenAI } from "openai";
-import { cosineSimilarity } from "./utils";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -370,48 +369,34 @@ export async function vectorSearchSkills(searchTerm: string) {
       dimensions: 1536,
     });
     const queryVector = resp.data[0].embedding;
-    const allSkills: SkillDTO[] = await prisma.$queryRaw`
-            SELECT
+    const queryVectorJsonString = JSON.stringify(queryVector);
+    try {
+      const results: (SkillDTO & { distance: number })[] =
+        await prisma.$queryRaw`
+            SELECT TOP 5
                 skill_id,
                 skill_name,
-                embedding
+                skill_info_url,
+                VECTOR_DISTANCE('COSINE', embedding, CAST(${queryVectorJsonString} AS VECTOR(1536))) as distance
             FROM skills
             WHERE embedding IS NOT NULL
-        `;
+            ORDER BY distance ASC; -- Order by distance ascending (smallest distance is most similar)
+          `;
 
-    const skillSimilarities = [];
+      const topSkills: (SkillDTO & { similarity: number })[] = results.map(
+        (r) => ({
+          skill_id: r.skill_id,
+          skill_name: r.skill_name,
+          skill_info_url: r.skill_info_url,
+          similarity: 1 - r.distance,
+        }),
+      );
 
-    for (const skill of allSkills) {
-      if (!skill.embedding) {
-        continue;
-      }
-
-      try {
-        const skillVector: number[] = JSON.parse(skill.embedding);
-
-        if (skillVector.length !== queryVector.length) {
-          console.warn(
-            `Skipping skill "${skill.skill_name}" (ID: ${skill.skill_id}) due to dimension mismatch (expected ${queryVector.length}, got ${skillVector.length})`,
-          );
-          continue;
-        }
-        const similarity = cosineSimilarity(queryVector, skillVector);
-
-        skillSimilarities.push({
-          skill_id: skill.skill_id,
-          skill_name: skill.skill_name,
-          similarity: similarity,
-        });
-      } catch (parseError) {
-        console.warn(
-          `Failed to parse embedding for skill "${skill.skill_name}" (ID: ${skill.skill_id}). Skipping. Error: ${parseError}`,
-        );
-      }
+      return topSkills;
+    } catch (error) {
+      console.error("Error during vector search:", error);
+      throw new Error("Failed to perform vector search in the database.");
     }
-
-    skillSimilarities.sort((a, b) => b.similarity - a.similarity);
-
-    return skillSimilarities.slice(0, 5);
   }
 }
 

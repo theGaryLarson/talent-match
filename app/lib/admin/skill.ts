@@ -208,7 +208,7 @@ export async function generateSkillEmbeddings() {
         }
         const embeddingString = JSON.stringify(embedding);
         updateOps.push(
-          prisma.$executeRaw`UPDATE skills SET embedding = ${embeddingString} WHERE skill_id = ${skillId}`,
+          prisma.$executeRaw`UPDATE skills SET embedding = CAST(${embeddingString} AS VECTOR(1536)) WHERE skill_id = ${skillId}`,
         );
       }
     }
