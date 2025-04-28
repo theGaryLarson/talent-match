@@ -11,6 +11,91 @@ import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { AzureOpenAI } from "openai";
 const prisma: PrismaClient = getPrismaClient();
 
+async function generateAndStoreEmbeddings(
+  skillsToEmbed: Pick<SkillDTO, "skill_id" | "skill_name">[],
+) {
+  if (!skillsToEmbed || skillsToEmbed.length === 0) {
+    return { updated: 0 };
+  }
+
+  const endpoint = process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT;
+  const apiKey = process.env.AZURE_OPENAI_EMBEDDING_API_KEY;
+  const apiVersion = process.env.AZURE_OPENAI_EMBEDDING_API_VERSION;
+  const deploymentName = process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME;
+
+  if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
+    console.error(
+      "Missing required Azure OpenAI configuration for embedding generation. Skipping.",
+    );
+    throw new Error(
+      "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
+    );
+  }
+
+  try {
+    const client = new AzureOpenAI({
+      endpoint,
+      apiKey,
+      apiVersion,
+      deployment: deploymentName,
+    });
+
+    const skillMap = new Map(
+      skillsToEmbed.map((s) => [s.skill_name, s.skill_id]),
+    );
+    const skillNames = skillsToEmbed.map((skill) => skill.skill_name);
+
+    const BATCH_SIZE = 50;
+    const updateOps: PrismaPromise<any>[] = [];
+
+    for (let start = 0; start < skillNames.length; start += BATCH_SIZE) {
+      const batchNames = skillNames.slice(start, start + BATCH_SIZE);
+      const resp = await client.embeddings.create({
+        model: "",
+        input: batchNames,
+        dimensions: 1536,
+      });
+
+      for (const item of resp.data) {
+        const idxInBatch = item.index;
+        const skillName = batchNames[idxInBatch];
+        const skillId = skillMap.get(skillName);
+        const embedding = item.embedding;
+
+        if (!skillId) {
+          console.warn(
+            `Could not find skill_id for skill name "${skillName}" in the provided map. Skipping embedding update.`,
+          );
+          continue;
+        }
+        if (!Array.isArray(embedding)) {
+          console.warn(
+            `No embedding generated for skill: ${skillName} (ID: ${skillId}). Skipping.`,
+          );
+          continue;
+        }
+
+        const embeddingString = JSON.stringify(embedding);
+        updateOps.push(
+          prisma.$executeRaw`UPDATE skills SET embedding = CAST(${embeddingString} AS VECTOR(1536)) WHERE skill_id = ${skillId}`,
+        );
+      }
+    }
+
+    if (updateOps.length > 0) {
+      await prisma.$transaction(updateOps);
+    }
+
+    return { updated: updateOps.length };
+  } catch (error) {
+    console.error("Error generating or storing skill embeddings:", error);
+    return {
+      updated: 0,
+      error: `Embedding generation failed: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
 export async function adminCreateSkills(skillDataArray: SkillDTO[]) {
   const Session = await auth();
   if (!Session?.user.roles.includes(Role.ADMIN)) {
@@ -19,7 +104,10 @@ export async function adminCreateSkills(skillDataArray: SkillDTO[]) {
   if (!Session?.user.id) {
     throw new Error("Must Be a user to complete this task");
   }
-
+  let newlyCreatedSkillsForEmbedding: Pick<
+    SkillDTO,
+    "skill_id" | "skill_name"
+  >[] = [];
   try {
     // First, get all existing skill names (case insensitive)
     const existingSkills = await prisma.skills.findMany({
@@ -51,16 +139,28 @@ export async function adminCreateSkills(skillDataArray: SkillDTO[]) {
     }
 
     // Create only the new skills
-    const result = await prisma.skills.createMany({
-      data: newSkills.map((skillData) => ({
-        skill_id: uuidv4(),
-        skill_name: skillData.skill_name,
-        skill_subcategory_id: skillData.skill_subcategory_id || "",
-        skill_info_url: skillData.skill_info_url || "",
-      })),
+    const skillsToCreate = newSkills.map((skillData) => ({
+      skill_id: uuidv4(),
+      skill_name: skillData.skill_name,
+      skill_subcategory_id: skillData.skill_subcategory_id || "",
+      skill_info_url: skillData.skill_info_url || "",
+    }));
+    const creationResult = await prisma.skills.createMany({
+      data: skillsToCreate,
     });
 
-    return result;
+    if (creationResult.count > 0) {
+      newlyCreatedSkillsForEmbedding = skillsToCreate
+        .filter((created) =>
+          newSkills.some(
+            (newData) => newData.skill_name === created.skill_name,
+          ),
+        )
+        .map((s) => ({ skill_id: s.skill_id, skill_name: s.skill_name }));
+      await generateAndStoreEmbeddings(newlyCreatedSkillsForEmbedding);
+    }
+
+    return creationResult;
   } catch (e) {
     console.error("Error creating skills:", e);
     throw e;
@@ -75,8 +175,20 @@ export async function adminUpdateSkill(skillData: SkillDTO) {
   if (!Session?.user.id) {
     throw new Error("Must Be a user to complete this task");
   }
+  if (!skillData.skill_id) {
+    throw new Error("Skill ID is required for update.");
+  }
 
   try {
+    const currentSkill = await prisma.skills.findUnique({
+      where: { skill_id: skillData.skill_id },
+      select: { skill_name: true },
+    });
+    if (!currentSkill) {
+      throw new Error(`Skill with ID ${skillData.skill_id} not found.`);
+    }
+
+    const nameHasChanged = currentSkill.skill_name !== skillData.skill_name;
     const result = await prisma.skills.update({
       where: {
         skill_id: skillData.skill_id,
@@ -87,6 +199,14 @@ export async function adminUpdateSkill(skillData: SkillDTO) {
         skill_info_url: skillData.skill_info_url,
       },
     });
+    if (nameHasChanged) {
+      await generateAndStoreEmbeddings([
+        {
+          skill_id: result.skill_id,
+          skill_name: result.skill_name,
+        },
+      ]);
+    }
 
     return result;
   } catch (e) {
@@ -154,73 +274,32 @@ export async function adminCreateSkillSubcategory(
   }
 }
 
-export async function generateSkillEmbeddings() {
-  const endpoint = process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT;
-  const apiKey = process.env.AZURE_OPENAI_EMBEDDING_API_KEY;
-  const apiVersion = process.env.AZURE_OPENAI_EMBEDDING_API_VERSION;
-  const deploymentName = process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME;
-
-  if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
-    throw new Error(
-      "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
-    );
+export async function generateAllSkillEmbeddings() {
+  const Session = await auth();
+  if (!Session?.user.roles.includes(Role.ADMIN)) {
+    throw new Error("Must Be Admin to complete this task");
   }
-  const client = new AzureOpenAI({
-    endpoint,
-    apiKey,
-    apiVersion,
-    deployment: deploymentName,
-  });
 
   try {
-    const skills = await adminGetSkills();
+    const skills = await prisma.skills.findMany({
+      select: { skill_id: true, skill_name: true },
+    });
+
     if (!skills || skills.length === 0) {
-      throw new Error("No skills found");
-    }
-    const skill_names = skills.map((skill) => skill.skill_name);
-    const skill_ids = skills.map((skill) => skill.skill_id);
-    const BATCH_SIZE = 50;
-    const updateOps: PrismaPromise<any>[] = [];
-    for (let start = 0; start < skill_names.length; start += BATCH_SIZE) {
-      const batchNames = skill_names.slice(start, start + BATCH_SIZE);
-
-      const resp = await client.embeddings.create({
-        model: "",
-        input: batchNames,
-        dimensions: 1536,
-      });
-
-      for (const item of resp.data) {
-        const idxInBatch = item.index;
-        const globalIndex = start + idxInBatch;
-        const skillId = skill_ids[globalIndex];
-        const embedding = item.embedding;
-
-        if (skillId == null) {
-          console.warn(
-            `missing skillId for index ${globalIndex} (“${batchNames[idxInBatch]}”), skipping`,
-          );
-          continue;
-        }
-        if (!Array.isArray(embedding)) {
-          console.warn(`no embedding for skillId ${skillId}, skipping`);
-          continue;
-        }
-        const embeddingString = JSON.stringify(embedding);
-        updateOps.push(
-          prisma.$executeRaw`UPDATE skills SET embedding = CAST(${embeddingString} AS VECTOR(1536)) WHERE skill_id = ${skillId}`,
-        );
-      }
+      return { updated: 0, total: 0 };
     }
 
-    if (updateOps.length > 0) {
-      await prisma.$transaction(updateOps);
-    }
+    const result = await generateAndStoreEmbeddings(skills);
+
     return {
-      updated: updateOps.length,
-      total: skill_names.length,
+      processed: skills.length,
+      updated: result.updated,
+      error: result.error,
     };
   } catch (error) {
-    console.error("Error calling Azure OpenAI API:", error);
+    console.error("Error during bulk embedding generation:", error);
+    throw new Error(
+      `Failed during bulk embedding: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
