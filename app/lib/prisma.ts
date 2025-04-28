@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { ReadCompanyInfoDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
+import { AzureOpenAI } from "openai";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -339,6 +340,63 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
     //   matches were found since I'm limiting the results, and OR
     //   clauses do not guarantee results in the order of the filters
     return [...exactResults, ...startsWithResults, ...containsResults];
+  }
+}
+
+export async function vectorSearchSkills(searchTerm: string) {
+  if (searchTerm.length === 0) {
+    return [];
+  } else {
+    const endpoint = process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT;
+    const apiKey = process.env.AZURE_OPENAI_EMBEDDING_API_KEY;
+    const apiVersion = process.env.AZURE_OPENAI_EMBEDDING_API_VERSION;
+    const deploymentName = process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME;
+
+    if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
+      throw new Error(
+        "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
+      );
+    }
+    const client = new AzureOpenAI({
+      endpoint,
+      apiKey,
+      apiVersion,
+      deployment: deploymentName,
+    });
+    const resp = await client.embeddings.create({
+      model: "",
+      input: searchTerm,
+      dimensions: 1536,
+    });
+    const queryVector = resp.data[0].embedding;
+    const queryVectorJsonString = JSON.stringify(queryVector);
+    try {
+      const results: (SkillDTO & { distance: number })[] =
+        await prisma.$queryRaw`
+            SELECT TOP 5
+                skill_id,
+                skill_name,
+                skill_info_url,
+                VECTOR_DISTANCE('COSINE', embedding, CAST(${queryVectorJsonString} AS VECTOR(1536))) as distance
+            FROM skills
+            WHERE embedding IS NOT NULL
+            ORDER BY distance ASC; -- Order by distance ascending (smallest distance is most similar)
+          `;
+
+      const topSkills: (SkillDTO & { similarity: number })[] = results.map(
+        (r) => ({
+          skill_id: r.skill_id,
+          skill_name: r.skill_name,
+          skill_info_url: r.skill_info_url,
+          similarity: 1 - r.distance,
+        }),
+      );
+
+      return topSkills;
+    } catch (error) {
+      console.error("Error during vector search:", error);
+      throw new Error("Failed to perform vector search in the database.");
+    }
   }
 }
 
