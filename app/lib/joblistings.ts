@@ -202,7 +202,7 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         requiredCertifications: jobData.requiredCertifications,
         minimumEducationLevel: jobData.minimumEducationLevel,
         skills: {
-          connect: jobData.skillIds?.map((skillId: string) => ({
+          set: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,
           })),
         },

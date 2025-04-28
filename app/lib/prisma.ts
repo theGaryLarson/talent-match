@@ -16,6 +16,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { ReadCompanyInfoDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
 import { AzureOpenAI } from "openai";
+import { getSkillSubcategories } from "./admin/skill";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -377,20 +378,19 @@ export async function vectorSearchSkills(searchTerm: string) {
                 skill_id,
                 skill_name,
                 skill_info_url,
+                skill_subcategory_id,
                 VECTOR_DISTANCE('COSINE', embedding, CAST(${queryVectorJsonString} AS VECTOR(1536))) as distance
             FROM skills
             WHERE embedding IS NOT NULL
             ORDER BY distance ASC; -- Order by distance ascending (smallest distance is most similar)
           `;
 
-      const topSkills: (SkillDTO & { similarity: number })[] = results.map(
-        (r) => ({
-          skill_id: r.skill_id,
-          skill_name: r.skill_name,
-          skill_info_url: r.skill_info_url,
-          similarity: 1 - r.distance,
-        }),
-      );
+      const topSkills: SkillDTO[] = results.map((r) => ({
+        skill_id: r.skill_id,
+        skill_name: r.skill_name,
+        skill_info_url: r.skill_info_url,
+        skill_subcategory_id: r.skill_subcategory_id,
+      }));
 
       return topSkills;
     } catch (error) {
@@ -945,5 +945,83 @@ export async function getEmployerById(employerId: string) {
     return employer;
   } catch (error) {
     console.error("Error fetching employer:", error);
+  }
+}
+
+export async function parseTextForSkills(text: string) {
+  let client: AzureOpenAI;
+  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
+  const apiKey = process.env.AZURE_OPENAI_API_KEY;
+  const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
+  const deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
+
+  if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
+    throw new Error(
+      "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
+    );
+  }
+
+  const skill_subcategories = (await getSkillSubcategories()).flatMap(
+    (subcategory) => subcategory.subcategory_name,
+  );
+
+  try {
+    client = new AzureOpenAI({
+      endpoint,
+      apiKey,
+      apiVersion,
+      deployment: deploymentName,
+    });
+    const completion = await client.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `Extract the resume information into the provided JSON schema. Infer the skills used from the text. Return at most 10 skills`,
+        },
+        {
+          role: "user",
+          content: text,
+        },
+      ],
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "SkillExtractionResponse",
+          strict: true,
+          description: "Schema for extracting skills from a given text.",
+          schema: {
+            type: "object",
+            properties: {
+              skills: {
+                type: "array",
+                description:
+                  "List of identified skills and their subcategories.",
+                items: {
+                  type: "object",
+                  properties: {
+                    skillName: { type: "string" },
+                    subcategory: {
+                      type: "string",
+                      enum: skill_subcategories,
+                    },
+                  },
+                  required: ["skillName", "subcategory"],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ["skills"],
+            additionalProperties: false,
+          },
+        },
+      },
+      model: "",
+      max_completion_tokens: 16384,
+      temperature: 0.2,
+      stream: false,
+    });
+    return completion.choices[0]?.message?.content;
+  } catch (error) {
+    console.error("Error calling Azure OpenAI API:", error);
   }
 }
