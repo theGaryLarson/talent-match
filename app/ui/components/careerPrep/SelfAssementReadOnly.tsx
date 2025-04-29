@@ -1,9 +1,58 @@
-import { getCareerPrepAssessment } from "@/app/lib/admin/careerPrep";
+"use client";
+import {
+  BrandingRating,
+  CareerPrepAssessment,
+  CybersecurityRating,
+  DataAnalyticsRating,
+  DurableSkillsRating,
+  ITCloudRating,
+  SoftwareDevRating,
+} from "@prisma/client";
+//import { getCareerPrepAssessment } from "@/app/lib/admin/careerPrep";
 import BasicModal from "./BasicModal";
 import LikertRating from "./LikertRating";
+import { useEffect, useState } from "react";
 
-export default async function SelfAssementReadOnly(params: { id: string }) {
-  const assessment = await getCareerPrepAssessment(params.id);
+export default function SelfAssementReadOnly(params: { id: string }) {
+  //const assessment = await getCareerPrepAssessment(params.id);
+  const [assessment, setAssessment] = useState<
+    | (CareerPrepAssessment & {
+        BrandingRating: BrandingRating[];
+        CybersecurityRating: CybersecurityRating[];
+        DataAnalyticsRating: DataAnalyticsRating[];
+        ITCloudRating: ITCloudRating[];
+        SoftwareDevRating: SoftwareDevRating[];
+        DurableSkillsRating: DurableSkillsRating[];
+      })
+    | null
+  >(null);
+
+  useEffect(() => {
+    let isMounted = true; // Prevent state update if unmounted
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `/api/admin/career-prep/get-prep-assessment/${params.id}`,
+        );
+        if (!res.ok) throw new Error("Failed to fetch assessment");
+
+        const data = await res.json();
+        if (isMounted) setAssessment(data);
+      } catch (error) {
+        console.error("Error fetching assessment:", error);
+      }
+    };
+
+    if (params.id) {
+      fetchData();
+    }
+
+    return () => {
+      isMounted = false; // Cleanup function
+    };
+  }, [params.id]); // Only re-run when `params.id` changes
+
   const allEmpty = [
     assessment?.BrandingRating,
     assessment?.CybersecurityRating,
@@ -49,16 +98,33 @@ export default async function SelfAssementReadOnly(params: { id: string }) {
     </div>
   );
 }
-
-function AssessmentModal({
+/*
+BrandingRating[], 
+    CybersecurityRating:CybersecurityRating[],
+    DataAnalyticsRating:DataAnalyticsRating[],
+    ITCloudRating:ITCloudRating[],
+    SoftwareDevRating:SoftwareDevRating[],
+    DurableSkillsRating:DurableSkillsRating[]
+*/
+export function AssessmentModal({
   list,
-  title,
 }: {
-  list: any[] | undefined;
+  list:
+    | CybersecurityRating[]
+    | DataAnalyticsRating[]
+    | ITCloudRating[]
+    | SoftwareDevRating[]
+    | DurableSkillsRating[]
+    | BrandingRating[]
+    | undefined;
   title: string;
 }) {
   return list != undefined && list.length > 0 ? (
-    <BasicModal buttonText={title}>
+    <BasicModal
+      buttonText={
+        list[0].overallAverage ? list[0].overallAverage.toString() : "?"
+      }
+    >
       {
         <div className="h-[650px] w-fit flex flex-col flex-wrap">
           {Object.entries(list[0] || {}) // Use first item in array
@@ -75,6 +141,6 @@ function AssessmentModal({
       }
     </BasicModal>
   ) : (
-    ""
+    "Not Found"
   );
 }

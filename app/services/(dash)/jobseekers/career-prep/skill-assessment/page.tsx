@@ -8,7 +8,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
-  Grid2,
+  Grid,
   Stepper,
   Step,
   StepLabel,
@@ -327,8 +327,8 @@ export default function Page() {
       <Typography variant="h6" sx={{ mb: 2 }}>
         Basic Information
       </Typography>
-      <Grid2 container spacing={2}>
-        <Grid2 size={12}>
+      <Grid container spacing={2}>
+        <Grid size={12}>
           <FormControl component="fieldset" sx={{ mb: 2 }}>
             <FormLabel>What are your preferred pronouns?</FormLabel>
             <TextField
@@ -342,9 +342,9 @@ export default function Page() {
               sx={{ mb: 2 }}
             />
           </FormControl>
-        </Grid2>
+        </Grid>
 
-        <Grid2 size={12}>
+        <Grid size={12}>
           <FormControl component="fieldset" sx={{ mb: 2 }}>
             <FormLabel>When do you expect to finish your education?</FormLabel>
             <Select
@@ -361,8 +361,8 @@ export default function Page() {
               ))}
             </Select>
           </FormControl>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Box>
   );
 
@@ -371,8 +371,8 @@ export default function Page() {
       <Typography variant="h6" sx={{ mb: 2 }}>
         Work Experience
       </Typography>
-      <Grid2 container spacing={2}>
-        <Grid2 size={12}>
+      <Grid container spacing={2}>
+        <Grid size={12}>
           <FormControl component="fieldset" sx={{ mb: 2 }}>
             <FormLabel>Do you have previous work experience?</FormLabel>
             <RadioGroup
@@ -384,9 +384,9 @@ export default function Page() {
               <FormControlLabel value={false} control={<Radio />} label="No" />
             </RadioGroup>
           </FormControl>
-        </Grid2>
+        </Grid>
 
-        <Grid2 size={12}>
+        <Grid size={12}>
           <FormControl component="fieldset" sx={{ mb: 2 }}>
             <FormLabel>
               Do you have experience applying for tech jobs?
@@ -400,9 +400,9 @@ export default function Page() {
               <FormControlLabel value={false} control={<Radio />} label="No" />
             </RadioGroup>
           </FormControl>
-        </Grid2>
+        </Grid>
 
-        <Grid2 size={12}>
+        <Grid size={12}>
           <FormControl component="fieldset" sx={{ mb: 2 }}>
             <FormLabel>Have you participated in a job interview?</FormLabel>
             <RadioGroup
@@ -416,8 +416,8 @@ export default function Page() {
               <FormControlLabel value={false} control={<Radio />} label="No" />
             </RadioGroup>
           </FormControl>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Box>
   );
 
@@ -742,7 +742,7 @@ export default function Page() {
         identify areas where you might need support in reaching your career
         goals.
       </Typography>
-      <Grid2 container spacing={2}>
+      <Grid container spacing={2}>
         {
           <EvaluationTable
             questions={[
@@ -829,7 +829,7 @@ export default function Page() {
             formData={formData}
           />
         }
-      </Grid2>
+      </Grid>
     </Box>
   );
 
@@ -843,7 +843,7 @@ export default function Page() {
         identify areas where you might need support in reaching your career
         goals.
       </Typography>
-      <Grid2 container spacing={2}>
+      <Grid container spacing={2}>
         {
           <EvaluationTable
             questions={[
@@ -922,7 +922,7 @@ export default function Page() {
             formData={formData}
           />
         }
-      </Grid2>
+      </Grid>
     </Box>
   );
 
@@ -982,11 +982,11 @@ export default function Page() {
                   "Thank you for completing the skills assessment! A dedicated Career Navigator will review your results and create a personalized Professional Development Plan tailored to your needs. You’ll receive an email notification when your plan is ready."
                 }
               </Typography>
-              <Grid2 container>
+              <Grid container>
                 <PillButton href="/services/jobseekers/dashboard">
                   Go to Dashboard
                 </PillButton>
-              </Grid2>
+              </Grid>
             </Box>
           </Box>
         </>
@@ -1029,7 +1029,7 @@ export default function Page() {
           <form onSubmit={handleSubmit}>
             {getStepContent(activeStep)}
 
-            <Grid2 container sx={{ justifyContent: "space-between", mt: 4 }}>
+            <Grid container sx={{ justifyContent: "space-between", mt: 4 }}>
               <PillButton disabled={activeStep === 0} onClick={handleBack}>
                 Back
               </PillButton>
@@ -1041,7 +1041,7 @@ export default function Page() {
                   <PillButton onClick={handleNext}>Next</PillButton>
                 )}
               </Box>
-            </Grid2>
+            </Grid>
           </form>
         </Box>
       )}

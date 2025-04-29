@@ -83,12 +83,14 @@ export default function RoundedButton({
 
   return (
     <Link
+      aria-disabled={disabled}
       href={!disabled && link ? link : "#"}
       className={`
         box-border
         inline-block
         w-fit
         rounded-full
+        ${disabled ? "pointer-events-none" : ""}
         ${border}
         ${bgColorIdle}
         ${bgColorHover}

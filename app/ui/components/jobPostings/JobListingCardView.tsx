@@ -6,7 +6,7 @@ import Bookmark from "../Bookmark";
 import PillButton from "@/app/ui/components/PillButton";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
-import { Alert, Card, Chip, Grid2, Stack, Typography } from "@mui/material";
+import { Alert, Card, Chip, Grid, Stack, Typography } from "@mui/material";
 import { Circle } from "@mui/icons-material";
 import ApplyToJobButton from "./ApplyToJobButton";
 import Link from "next/link";
@@ -61,9 +61,9 @@ function JobListingCardView({
       }}
     >
       {joblisting.career_services_offered && (
-        <Grid2 container sx={{ mb: 3 }}>
+        <Grid container sx={{ mb: 3 }}>
           <Alert color="info">Career Services Offered</Alert>
-        </Grid2>
+        </Grid>
       )}
       <Stack
         direction={"row"}
@@ -96,7 +96,7 @@ function JobListingCardView({
       <Typography variant="h5" sx={{ my: 1 }}>
         {job_title}
       </Typography>
-      <Grid2 container columnSpacing={2} sx={{ alignItems: "center" }}>
+      <Grid container columnSpacing={2} sx={{ alignItems: "center" }}>
         <Typography>{joblisting?.location}</Typography>
         <Circle sx={{ fontSize: 8 }} />
         <Typography>
@@ -121,7 +121,7 @@ function JobListingCardView({
               })
             : "N/A"}
         </Typography>
-      </Grid2>
+      </Grid>
       <Typography
         component={"div"}
         sx={{
@@ -137,7 +137,7 @@ function JobListingCardView({
       </Typography>
 
       {skills.length > 0 && (
-        <Grid2 container gap={1} sx={{ mt: 1 }}>
+        <Grid container gap={1} sx={{ mt: 1 }}>
           {skills.map((skill) => (
             <Chip
               component={Link}
@@ -148,7 +148,7 @@ function JobListingCardView({
               href={skill?.skill_info_url}
             />
           ))}
-        </Grid2>
+        </Grid>
       )}
       <Stack
         direction={{ xs: "column", sm: "row" }}

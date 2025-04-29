@@ -4,7 +4,7 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  Grid2,
+  Grid,
   Typography,
 } from "@mui/material";
 
@@ -15,7 +15,7 @@ export default function CategoryCard(props: {
   href: string;
 }) {
   return (
-    <Grid2>
+    <Grid>
       <Card
         sx={{
           width: 300,
@@ -44,6 +44,6 @@ export default function CategoryCard(props: {
           </CardContent>
         </CardActionArea>
       </Card>
-    </Grid2>
+    </Grid>
   );
 }

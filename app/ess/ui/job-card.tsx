@@ -6,7 +6,7 @@ import {
   Card,
   CardContent,
   Chip,
-  Grid2,
+  Grid,
   IconButton,
   Stack,
   Typography,
@@ -59,7 +59,7 @@ export default function JobCard({ job }: { job: IOccupation }) {
           direction={{ sm: "column", md: "row" }}
           spacing={2}
         >
-          <Grid2
+          <Grid
             container
             direction={"column"}
             sx={{
@@ -75,9 +75,9 @@ export default function JobCard({ job }: { job: IOccupation }) {
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Company Name
             </Typography>
-          </Grid2>
-          <Grid2 sx={{ width: "100%" }}>
-            <Grid2 container justifyContent={"space-between"}>
+          </Grid>
+          <Grid sx={{ width: "100%" }}>
+            <Grid container justifyContent={"space-between"}>
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                 {job.cfa_name}
               </Typography>
@@ -86,19 +86,19 @@ export default function JobCard({ job }: { job: IOccupation }) {
                   <ShareIcon />
                 </IconButton>
               </Box>
-            </Grid2>
+            </Grid>
             <Typography mb={2} variant="body1">
               {job.cfa_whattheydo}
             </Typography>
             {/* skills */}
-            <Grid2 container mb={2} gap={1}>
+            <Grid container mb={2} gap={1}>
               <Chip label="C# MSSCV" key="ketyopajkeop" />
               <Chip label="C++ WISGYW" key="ketyopajkeop" />
               <Chip label="Software Engineering" key="ketyopajkeop" />
               <Chip label="Machine Learning" key="ketyopajkeop" />
-            </Grid2>
+            </Grid>
             {/* view job listing */}
-            <Grid2 container gap={1} justifyContent={"space-between"}>
+            <Grid container gap={1} justifyContent={"space-between"}>
               <Button
                 variant="outlined"
                 onClick={() => router.push(`/job/JOB_LISTING`)}
@@ -115,8 +115,8 @@ export default function JobCard({ job }: { job: IOccupation }) {
               >
                 <strong>Apply</strong>
               </Button>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </Stack>
       </CardContent>
     </Card>

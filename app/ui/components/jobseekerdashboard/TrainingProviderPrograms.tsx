@@ -1,4 +1,4 @@
-import { Grid2, Stack, Typography } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 import { ReadEduProviderProgramCardDTO } from "@/app/lib/eduProviders";
 import TrainingProgramCard from "@/app/ui/components/career/TrainingProgramCard";
 import PillButton from "../PillButton";
@@ -11,7 +11,7 @@ export default async function TrainingProviderPrograms({
 }) {
   return (
     <Stack direction={"column"} gap={2}>
-      <Grid2 gap={1} container sx={{ justifyContent: "space-between" }}>
+      <Grid gap={1} container sx={{ justifyContent: "space-between" }}>
         <Typography
           variant="h6"
           sx={{
@@ -30,13 +30,13 @@ export default async function TrainingProviderPrograms({
         >
           See More
         </PillButton>
-      </Grid2>
+      </Grid>
       <p>
         Kickstart your career with practical, industry-relevant training. These
         partner programs provide the skills, mentorship, and credentials
         essential for success in your tech field.
       </p>
-      <Grid2 container gap={2}>
+      <Grid container gap={2}>
         {programs.map(function (program) {
           return (
             <React.Fragment key={program.programId}>
@@ -44,7 +44,7 @@ export default async function TrainingProviderPrograms({
             </React.Fragment>
           );
         })}
-      </Grid2>
+      </Grid>
     </Stack>
   );
 }

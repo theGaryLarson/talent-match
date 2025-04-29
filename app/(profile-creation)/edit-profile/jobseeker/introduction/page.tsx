@@ -29,6 +29,22 @@ import {
 } from "@/lib/features/profileCreation/saveSlice";
 import _ from "lodash";
 import RequiredTooltip from "@/app/ui/components/mui/RequiredTooltip";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@mui/material";
+const ResumeUploader = dynamic(
+  () =>
+    import("@/app/ui/components/AIResumeUploader").then(
+      (mod) => mod.ResumeUploader,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div>
+        <Skeleton variant="rectangular" width={200} height={40} />
+      </div>
+    ),
+  },
+);
 
 const formNamePrefix = "profile-creation-intro-";
 
@@ -153,6 +169,59 @@ export default function CreateJobseekerProfileIntroPage() {
     dispatch(setPageDirty("introduction"));
   };
 
+  const handleExtractionComplete = async (jsonData: any) => {
+    if (typeof jsonData?.resumeText !== "string") {
+      console.error("Error: jsonData.resumeText is missing or not a string.");
+      return;
+    }
+
+    let resumeData;
+    try {
+      resumeData = JSON.parse(jsonData.resumeText);
+    } catch (parseError) {
+      console.error("Error parsing resume JSON:", parseError);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/jobseekers/account/ai/upsert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(resumeData),
+      });
+
+      if (!response.ok) {
+        let errorDetails = `API Error: ${response.status} ${response.statusText}`;
+        try {
+          const errorResponse = await response.json();
+          errorDetails = errorResponse.error || errorDetails;
+          console.error("API Error Response:", errorResponse);
+        } catch {
+          console.error("Could not parse error response body.");
+        }
+        throw new Error(errorDetails);
+      }
+      const result = await response.json();
+      setIntroData({
+        ...introData,
+        firstName: result.introduction.firstName ?? "",
+        lastName: result.introduction.lastName ?? "",
+        phone: result.introduction.phoneNumber ?? "",
+      });
+      await updateSessionProperties({
+        firstName: result.introduction.firstName ?? "",
+        lastName: result.introduction.lastName ?? "",
+        phone: result.introduction.phoneNumber ?? "",
+      });
+      devLog("API Upsert Success:", result);
+    } catch (apiError: any) {
+      console.error("Failed to upsert profile:", apiError);
+    } finally {
+    }
+  };
+
   const handleImageUpload = (url: string) => {
     // Update the local state with the uploaded image URL
     updateSessionProperties({
@@ -241,12 +310,20 @@ export default function CreateJobseekerProfileIntroPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        <ProgressBarFlat progress={(1 / 9) * 100} />
-        <p>Step 1/9</p>
+        <ProgressBarFlat progress={(1 / 6) * 100} />
+        <p>Step 1/6</p>
         <h1>Profile Settings</h1>
         <p className="subtitle">* Indicates a required field</p>
 
         <form onSubmit={handleSubmit}>
+          <fieldset>
+            <legend>
+              <h2>Profile autofill</h2>
+            </legend>
+            <ResumeUploader
+              onExtractionCompleteAction={handleExtractionComplete}
+            />
+          </fieldset>
           <fieldset>
             <legend>
               <h2>Avatar</h2>

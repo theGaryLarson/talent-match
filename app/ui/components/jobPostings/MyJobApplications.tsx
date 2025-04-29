@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Grid2, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Grid, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import { JobApplicationsTable } from "../JobApplicationsTable";
 
@@ -39,11 +39,11 @@ export default function MyJobApplications({
         </Tabs>
       </Box>
 
-      <Grid2 container rowSpacing={2} columns={1}>
-        <Grid2 size={12}>
+      <Grid container rowSpacing={2} columns={1}>
+        <Grid size={12}>
           <JobApplicationsTable jobs={jobsToDisplay} />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Stack>
   );
 }

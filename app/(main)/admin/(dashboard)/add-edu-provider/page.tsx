@@ -5,7 +5,7 @@ import AvatarUpload from "@/app/ui/components/AvatarUpload";
 import SelectOptionsWithLabel from "@/app/ui/components/SelectOptionsWithLabel";
 import { v4 as uuidv4 } from "uuid";
 import { EducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
-import { Button, Grid2 } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import {
   ArrowCircleRightOutlined,
   HighlightOffOutlined,
@@ -192,7 +192,7 @@ export default function Page() {
       </div>
 
       {/* Submit Button */}
-      <Grid2 container spacing={1}>
+      <Grid container spacing={1}>
         <Button
           type="reset"
           variant="outlined"
@@ -207,7 +207,7 @@ export default function Page() {
         >
           Create Provider
         </Button>
-      </Grid2>
+      </Grid>
     </form>
   );
 }

@@ -21,6 +21,7 @@ export default auth((req) => {
       "/api/employers/create",
     ],
     [Role.JOBSEEKER]: [
+      "/pdf.worker.min.mjs",
       "/edit-profile/jobseeker/",
       "/services/jobseekers/career-prep/skill-assessment",
       "/services/jobseekers/career-prep/enrollment",
@@ -73,6 +74,7 @@ export default auth((req) => {
     "/signout",
     "/services",
     "/services/events",
+    "/services/events/registered",
     "/services/employers",
     "/services/employers/faq",
     "/services/jobseekers",

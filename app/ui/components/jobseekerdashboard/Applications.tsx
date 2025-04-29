@@ -1,4 +1,4 @@
-import { Grid2, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import PillButton from "../PillButton";
 import { JobApplicationsTable } from "../JobApplicationsTable";
@@ -21,8 +21,8 @@ export default async function Applications({
 
   return (
     <>
-      <Grid2 container rowSpacing={2} columns={1}>
-        <Grid2
+      <Grid container rowSpacing={2} columns={1}>
+        <Grid
           container
           spacing={1}
           size={1}
@@ -41,11 +41,11 @@ export default async function Applications({
           >
             Search Jobs
           </PillButton>
-        </Grid2>
-        <Grid2 size={1}>
+        </Grid>
+        <Grid size={1}>
           <JobApplicationsTable jobs={jobs} />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </>
   );
 }
