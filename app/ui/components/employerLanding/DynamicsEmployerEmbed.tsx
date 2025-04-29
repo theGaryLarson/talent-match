@@ -8,8 +8,8 @@ export default function MicrosoftFormEmbed() {
           Get in Touch
         </span>
         <p>
-          Fill out the short form below to start connecting with top emerging tech talent
-          through our Talent Portal.
+          Fill out the short form below to start connecting with top emerging
+          tech talent through our Talent Portal.
         </p>
       </div>
       <div className="w-full h-[2400px]">
