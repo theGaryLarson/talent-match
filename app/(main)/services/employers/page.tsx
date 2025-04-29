@@ -4,8 +4,8 @@ import EmployerPageBanner from "@/app/ui/components/employerLanding/EmployerPage
 import EmployerSteps from "@/app/ui/components/employerLanding/EmployerSteps";
 import MarketingCards from "@/app/ui/components/employerLanding/MarketingCards";
 import MeetTheFounders from "@/app/ui/components/employerLanding/MeetTheFounders";
-
-import TCPortalFunctionsFold from "@/app/ui/components/employerLanding/TCPortalFunctionsFold";
+import DynamicsEmployerEmbed from "@/app/ui/components/employerLanding/MeetTheFounders"
+import TCPortalFunctionsFold from "@/app/ui/components/employerLanding/DynamicsEmployerEmbed";
 
 export default function Page() {
   return (
@@ -14,11 +14,12 @@ export default function Page() {
       <main className="space-y-3 font-['Roboto'] ">
         <TCPortalFunctionsFold />
         <div className="px-4 tablet:px-[150px] laptop:px-[200px]">
-          <EmployerSteps />
-          <MarketingCards />
-          <MeetTheFounders />
+          <EmployerSteps/>
+          <MarketingCards/>
+          <MeetTheFounders/>
+          <DynamicsEmployerEmbed/>
         </div>
-        <BottomFold />
+        <BottomFold/>
       </main>
     </>
   );
