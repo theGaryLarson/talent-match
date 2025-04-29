@@ -4,8 +4,8 @@ import EmployerPageBanner from "@/app/ui/components/employerLanding/EmployerPage
 import EmployerSteps from "@/app/ui/components/employerLanding/EmployerSteps";
 import MarketingCards from "@/app/ui/components/employerLanding/MarketingCards";
 import MeetTheFounders from "@/app/ui/components/employerLanding/MeetTheFounders";
-import DynamicsEmployerEmbed from "@/app/ui/components/employerLanding/MeetTheFounders";
-import TCPortalFunctionsFold from "@/app/ui/components/employerLanding/DynamicsEmployerEmbed";
+import DynamicsEmployerEmbed from "@/app/ui/components/employerLanding/DynamicsEmployerEmbed";
+import TCPortalFunctionsFold from "@/app/ui/components/employerLanding/TCPortalFunctionsFold";
 
 export default function Page() {
   return (
