@@ -344,8 +344,11 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
   }
 }
 
-export async function vectorSearchSkills(searchTerm: string) {
-  if (searchTerm.length === 0) {
+export async function vectorSearchSkills(
+  skillName: string,
+  amountToReturn: number,
+) {
+  if (skillName.length === 0) {
     return [];
   } else {
     const endpoint = process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT;
@@ -366,7 +369,7 @@ export async function vectorSearchSkills(searchTerm: string) {
     });
     const resp = await client.embeddings.create({
       model: "",
-      input: searchTerm,
+      input: skillName,
       dimensions: 1536,
     });
     const queryVector = resp.data[0].embedding;
@@ -374,7 +377,7 @@ export async function vectorSearchSkills(searchTerm: string) {
     try {
       const results: (SkillDTO & { distance: number })[] =
         await prisma.$queryRaw`
-            SELECT TOP 5
+            SELECT TOP (${amountToReturn})
                 skill_id,
                 skill_name,
                 skill_info_url,

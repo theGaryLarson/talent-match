@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { Prisma, PrismaClient } from "@prisma/client";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { auth } from "@/auth";
-import { getIndustrySectors, getTechnologyAreas } from "@/app/lib/prisma";
+import {
+  getIndustrySectors,
+  getTechnologyAreas,
+  vectorSearchSkills,
+} from "@/app/lib/prisma";
 import { ProgramEnrollmentStatus } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import { v4 as uuidv4 } from "uuid";
 
@@ -398,42 +402,38 @@ export async function POST(request: Request) {
               continue;
             }
 
-            const skillIdsToConnect: { skill_id: string }[] = [];
+            const projectSkillIdsToConnect: string[] = [];
             if (proj.skillsUsed && proj.skillsUsed.length > 0) {
               for (const skill of proj.skillsUsed) {
-                const foundSkill = await tx.skills.findFirst({
-                  where: { skill_name: { contains: skill.skillName } },
-                });
-                if (foundSkill) {
-                  skillIdsToConnect.push({ skill_id: foundSkill.skill_id });
-                } else {
-                  const subcategoryFound =
-                    await tx.skill_subcategories.findFirst({
-                      where: {
-                        subcategory_name: skill.subcategory,
-                      },
-                    });
-                  if (subcategoryFound) {
-                    try {
-                      const skillCreated = await tx.skills.create({
-                        data: {
-                          skill_id: uuidv4(),
-                          skill_name: skill.skillName,
-                          skill_subcategory_id:
-                            subcategoryFound.skill_subcategory_id,
-                        },
-                        select: { skill_id: true },
-                      });
-                      skillIdsToConnect.push({
-                        skill_id: skillCreated.skill_id,
-                      });
-                    } catch {}
+                if (
+                  skill.skillName &&
+                  typeof skill.skillName === "string" &&
+                  skill.skillName.trim()
+                ) {
+                  try {
+                    const searchResults = await vectorSearchSkills(
+                      skill.skillName.trim(),
+                      1,
+                    );
+                    if (searchResults.length > 0) {
+                      projectSkillIdsToConnect.push(searchResults[0].skill_id);
+                    }
+                  } catch (error) {
+                    console.error(
+                      `Error during vector search for project skill "${skill.skillName}":`,
+                      error,
+                    );
                   }
+                } else {
+                  console.warn(
+                    `Skipping invalid/empty skill entry for project "${proj.projectTitle}".`,
+                  );
                 }
               }
             }
-            const uniqueSkillIds = Array.from(
-              new Set(skillIdsToConnect.map((s) => s.skill_id)),
+            // Ensure skill IDs for this specific project are unique
+            const uniqueProjectSkillIds = Array.from(
+              new Set(projectSkillIdsToConnect),
             );
 
             await tx.projectExperiences.create({
@@ -449,8 +449,8 @@ export async function POST(request: Request) {
                 demoUrl: proj.demoUrl,
                 project_has_skills: {
                   createMany: {
-                    data: uniqueSkillIds.map((id) => ({
-                      skill_id: id,
+                    data: uniqueProjectSkillIds.map((skillId) => ({
+                      skill_id: skillId,
                     })),
                   },
                 },
@@ -565,43 +565,36 @@ export async function POST(request: Request) {
           }
         }
 
-        const skillIdsToConnect: { skill_id: string }[] = [];
+        const jobseekerSkillIdsToConnect: string[] = [];
         if (body.skills && body.skills.length > 0) {
           for (const skill of body.skills) {
-            const foundSkill = await tx.skills.findFirst({
-              where: { skill_name: { contains: skill.skillName } },
-            });
-            if (foundSkill) {
-              skillIdsToConnect.push({ skill_id: foundSkill.skill_id });
-            } else {
-              const subcategoryFound = await tx.skill_subcategories.findFirst({
-                where: {
-                  subcategory_name: skill.subcategory,
-                },
-              });
-              if (subcategoryFound) {
-                try {
-                  const skillCreated = await tx.skills.create({
-                    data: {
-                      skill_id: uuidv4(),
-                      skill_name: skill.skillName,
-                      skill_subcategory_id:
-                        subcategoryFound.skill_subcategory_id,
-                    },
-                    select: { skill_id: true },
-                  });
-                  skillIdsToConnect.push({
-                    skill_id: skillCreated.skill_id,
-                  });
-                } catch {}
+            if (
+              skill.skillName &&
+              typeof skill.skillName === "string" &&
+              skill.skillName.trim()
+            ) {
+              try {
+                const searchResults = await vectorSearchSkills(
+                  skill.skillName.trim(),
+                  1,
+                );
+                if (searchResults.length > 0) {
+                  jobseekerSkillIdsToConnect.push(searchResults[0].skill_id);
+                }
+              } catch (error) {
+                console.error(
+                  `Error during vector search for jobseeker skill "${skill.skillName}":`,
+                  error,
+                );
               }
+            } else {
+              console.warn(`Skipping invalid/empty skill entry for jobseeker.`);
             }
           }
         }
-        const uniqueSkillIds = Array.from(
-          new Set(skillIdsToConnect.map((s) => s.skill_id)),
+        const uniqueJobseekerSkillIds = Array.from(
+          new Set(jobseekerSkillIdsToConnect),
         );
-
         await tx.jobseekers.update({
           where: { jobseeker_id: jobseekerId },
           data: {
@@ -609,10 +602,10 @@ export async function POST(request: Request) {
               deleteMany: {
                 jobseeker_id: jobseekerId,
               },
-              create: uniqueSkillIds.map((id) => ({
+              create: uniqueJobseekerSkillIds.map((skillId) => ({
                 skills: {
                   connect: {
-                    skill_id: id,
+                    skill_id: skillId,
                   },
                 },
               })),
