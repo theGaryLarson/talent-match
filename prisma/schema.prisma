@@ -891,6 +891,7 @@ model skills {
   provider_program_has_skills provider_program_has_skills[]
   volunteer_has_skills        volunteer_has_skills[]
   JobRoleSkill                JobRoleSkill[]
+  embedding                   Unsupported("vector(1536)")?
 
   @@index([skill_subcategory_id], map: "skills_fk_skill_skill_category_idx")
 }

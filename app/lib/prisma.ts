@@ -15,6 +15,8 @@ import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { ReadCompanyInfoDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
+import { AzureOpenAI } from "openai";
+import { getSkillSubcategories } from "./admin/skill";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -339,6 +341,62 @@ export async function searchSkills(searchTerm: string): Promise<SkillDTO[]> {
     //   matches were found since I'm limiting the results, and OR
     //   clauses do not guarantee results in the order of the filters
     return [...exactResults, ...startsWithResults, ...containsResults];
+  }
+}
+
+export async function vectorSearchSkills(searchTerm: string) {
+  if (searchTerm.length === 0) {
+    return [];
+  } else {
+    const endpoint = process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT;
+    const apiKey = process.env.AZURE_OPENAI_EMBEDDING_API_KEY;
+    const apiVersion = process.env.AZURE_OPENAI_EMBEDDING_API_VERSION;
+    const deploymentName = process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME;
+
+    if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
+      throw new Error(
+        "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
+      );
+    }
+    const client = new AzureOpenAI({
+      endpoint,
+      apiKey,
+      apiVersion,
+      deployment: deploymentName,
+    });
+    const resp = await client.embeddings.create({
+      model: "",
+      input: searchTerm,
+      dimensions: 1536,
+    });
+    const queryVector = resp.data[0].embedding;
+    const queryVectorJsonString = JSON.stringify(queryVector);
+    try {
+      const results: (SkillDTO & { distance: number })[] =
+        await prisma.$queryRaw`
+            SELECT TOP 5
+                skill_id,
+                skill_name,
+                skill_info_url,
+                skill_subcategory_id,
+                VECTOR_DISTANCE('COSINE', embedding, CAST(${queryVectorJsonString} AS VECTOR(1536))) as distance
+            FROM skills
+            WHERE embedding IS NOT NULL
+            ORDER BY distance ASC; -- Order by distance ascending (smallest distance is most similar)
+          `;
+
+      const topSkills: SkillDTO[] = results.map((r) => ({
+        skill_id: r.skill_id,
+        skill_name: r.skill_name,
+        skill_info_url: r.skill_info_url,
+        skill_subcategory_id: r.skill_subcategory_id,
+      }));
+
+      return topSkills;
+    } catch (error) {
+      console.error("Error during vector search:", error);
+      throw new Error("Failed to perform vector search in the database.");
+    }
   }
 }
 
@@ -887,5 +945,83 @@ export async function getEmployerById(employerId: string) {
     return employer;
   } catch (error) {
     console.error("Error fetching employer:", error);
+  }
+}
+
+export async function parseTextForSkills(text: string) {
+  let client: AzureOpenAI;
+  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
+  const apiKey = process.env.AZURE_OPENAI_API_KEY;
+  const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
+  const deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
+
+  if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
+    throw new Error(
+      "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
+    );
+  }
+
+  const skill_subcategories = (await getSkillSubcategories()).flatMap(
+    (subcategory) => subcategory.subcategory_name,
+  );
+
+  try {
+    client = new AzureOpenAI({
+      endpoint,
+      apiKey,
+      apiVersion,
+      deployment: deploymentName,
+    });
+    const completion = await client.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `Extract the resume information into the provided JSON schema. Infer the skills used from the text. Return at most 10 skills`,
+        },
+        {
+          role: "user",
+          content: text,
+        },
+      ],
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "SkillExtractionResponse",
+          strict: true,
+          description: "Schema for extracting skills from a given text.",
+          schema: {
+            type: "object",
+            properties: {
+              skills: {
+                type: "array",
+                description:
+                  "List of identified skills and their subcategories.",
+                items: {
+                  type: "object",
+                  properties: {
+                    skillName: { type: "string" },
+                    subcategory: {
+                      type: "string",
+                      enum: skill_subcategories,
+                    },
+                  },
+                  required: ["skillName", "subcategory"],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ["skills"],
+            additionalProperties: false,
+          },
+        },
+      },
+      model: "",
+      max_completion_tokens: 16384,
+      temperature: 0.2,
+      stream: false,
+    });
+    return completion.choices[0]?.message?.content;
+  } catch (error) {
+    console.error("Error calling Azure OpenAI API:", error);
   }
 }
