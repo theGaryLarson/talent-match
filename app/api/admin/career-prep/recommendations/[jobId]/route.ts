@@ -30,7 +30,7 @@ export async function GET(
                 s.skill_id,
                 s.embedding
             FROM skills s
-            JOIN _JobPostingSkills jps ON s.skill_id = jps.B -- Assumes Prisma default join table name
+            JOIN _JobPostingSkills jps ON s.skill_id = jps.B
             WHERE jps.A = ${jobId} AND s.embedding IS NOT NULL
         ),
         JobseekerSkills AS (

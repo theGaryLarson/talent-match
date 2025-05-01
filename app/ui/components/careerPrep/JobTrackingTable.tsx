@@ -175,7 +175,6 @@ function Row({ row }: RowProps) {
               </Typography>
               {row.jobApplications.length > 0 ? (
                 <TableContainer component={Paper} sx={{ mb: 3 }}>
-                  {/* Added margin bottom */}
                   <Table size="small" aria-label="applications">
                     <TableHead>
                       <TableRow>
@@ -204,14 +203,7 @@ function Row({ row }: RowProps) {
                           </TableCell>
                           <TableCell>{app.Jobseekers.users.email}</TableCell>
                           <TableCell>{app.Jobseekers.years_work_exp}</TableCell>
-                          <TableCell
-                            sx={{
-                              maxWidth: 150,
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
+                          <TableCell>
                             {app.Jobseekers.highest_level_of_study_completed}
                           </TableCell>
                           <TableCell>
@@ -408,7 +400,7 @@ export default function JobTrackingTable({ data }: JobTrackingTableProps) {
               label="Hybrid"
             />
             <FormControlLabel
-              value="onsite"
+              value="on-site"
               control={<Radio size="small" />}
               label="On-Site"
             />
