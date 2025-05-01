@@ -197,7 +197,7 @@ function Row({ row }: RowProps) {
                               href={"/services/jobseekers/" + app.jobseekerId}
                               target="_blank"
                             >
-                              {app.Jobseekers.users.first_name}
+                              {app.Jobseekers.users.first_name}{" "}
                               {app.Jobseekers.users.last_name}
                             </Link>
                           </TableCell>
