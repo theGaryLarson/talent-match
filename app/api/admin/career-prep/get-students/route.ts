@@ -3,8 +3,17 @@ import {
   CareerPrepJobseekerCardViewDTO,
   getAllCareerPrepStudentsCardView,
 } from "@/app/lib/admin/careerPrep";
+import { auth } from "@/auth";
+import { Role } from "@/data/dtos/UserInfoDTO";
 
 export async function GET() {
+  const session = await auth();
+  if (
+    !session?.user.roles.includes(Role.CASE_MANAGER) ||
+    !session?.user.roles.includes(Role.ADMIN)
+  ) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const data: CareerPrepJobseekerCardViewDTO[] | null =
     await getAllCareerPrepStudentsCardView();
 
