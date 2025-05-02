@@ -202,7 +202,7 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         requiredCertifications: jobData.requiredCertifications,
         minimumEducationLevel: jobData.minimumEducationLevel,
         skills: {
-          connect: jobData.skillIds?.map((skillId: string) => ({
+          set: jobData.skillIds?.map((skillId: string) => ({
             skill_id: skillId,
           })),
         },
@@ -938,6 +938,150 @@ export async function getJobSeekerAppliedJobs() {
       })) as JobListingCardViewDTO[];
 
     return transformedJobPostings;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function feedbackToCandidate(
+  jobseekerJobPostingId: string,
+  rating: number,
+  comment: string,
+) {
+  const session = await auth();
+  if (!session?.user.employeeIsApproved || !session?.user.employerId) {
+    return;
+  }
+  try {
+    const jobseekerJobPosting = await prisma.jobseekerJobPosting.findUnique({
+      where: {
+        id: jobseekerJobPostingId,
+      },
+    });
+    if (!jobseekerJobPosting) {
+      throw new Error("No jobseeker job posting exists for the given id");
+    }
+    const job_posting = await prisma.job_postings.findUnique({
+      where: {
+        job_posting_id: jobseekerJobPosting.jobPostId,
+      },
+    });
+    if (job_posting?.company_id !== session?.user.companyId) {
+      throw new Error("Employer not from company that posted the job");
+    }
+    const result = await prisma.jobseekerJobPosting.update({
+      where: {
+        id: jobseekerJobPostingId,
+      },
+      data: {
+        jobStatus: JobStatus.NotSelected,
+        feedbackRating: rating,
+        feedbackText: comment,
+      },
+    });
+
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function setJobStatus(
+  jobPostingId: string,
+  applicationId: string,
+  jobStatus: JobStatus,
+) {
+  const session = await auth();
+  const is_admin_or_case_manager =
+    session?.user.roles.includes(Role.ADMIN) ||
+    session?.user.roles.includes(Role.CASE_MANAGER);
+  if (
+    (!session?.user.employeeIsApproved || !session?.user.employerId) &&
+    !is_admin_or_case_manager
+  ) {
+    return;
+  }
+  if (
+    session?.user.roles.includes(Role.EMPLOYER) &&
+    !is_admin_or_case_manager
+  ) {
+    if (
+      jobStatus !== JobStatus.Interviewing &&
+      jobStatus !== JobStatus.Negotiating &&
+      jobStatus !== JobStatus.Accepted
+    )
+      return;
+  }
+  try {
+    const job_posting = await prisma.job_postings.findUnique({
+      where: {
+        job_posting_id: jobPostingId,
+      },
+    });
+    if (
+      job_posting?.company_id !== session?.user.companyId &&
+      !is_admin_or_case_manager
+    ) {
+      throw new Error("Employer not from company that posted the job");
+    }
+    const result = await prisma.jobseekerJobPosting.update({
+      where: {
+        id: applicationId,
+      },
+      data: {
+        jobStatus: jobStatus,
+      },
+    });
+
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function setEmployerConnect(
+  jobPostingId: string,
+  applicationId: string,
+  status: boolean,
+) {
+  const session = await auth();
+  const is_admin_or_case_manager =
+    session?.user.roles.includes(Role.ADMIN) ||
+    session?.user.roles.includes(Role.CASE_MANAGER);
+  if (
+    (!session?.user.employeeIsApproved || !session?.user.employerId) &&
+    !is_admin_or_case_manager
+  ) {
+    return;
+  }
+  if (
+    session?.user.roles.includes(Role.EMPLOYER) &&
+    !is_admin_or_case_manager
+  ) {
+    if (status == false) return;
+  }
+  try {
+    const job_posting = await prisma.job_postings.findUnique({
+      where: {
+        job_posting_id: jobPostingId,
+      },
+    });
+    if (
+      job_posting?.company_id !== session?.user.companyId &&
+      !is_admin_or_case_manager
+    ) {
+      throw new Error("Employer not from company that posted the job");
+    }
+    const result = await prisma.jobseekerJobPosting.update({
+      where: {
+        id: applicationId,
+      },
+      data: {
+        employerClickedConnect: status,
+      },
+    });
+
+    return result;
   } catch (error) {
     console.error(error);
   }

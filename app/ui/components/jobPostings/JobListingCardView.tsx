@@ -8,7 +8,6 @@ import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { JobListingCardViewDTO } from "@/data/dtos/JobListingCardViewDTO";
 import { Alert, Card, Chip, Grid, Stack, Typography } from "@mui/material";
 import { Circle } from "@mui/icons-material";
-import ApplyToJobButton from "./ApplyToJobButton";
 import Link from "next/link";
 import React, { useMemo } from "react";
 
@@ -57,6 +56,7 @@ function JobListingCardView({
         p: { xs: 0.5, sm: 1, md: 3 },
         borderRadius: "12px",
         transition: "box-shadow 0.3s",
+
         "&:hover": { boxShadow: 3 },
       }}
     >
@@ -93,10 +93,14 @@ function JobListingCardView({
           ""
         )}
       </Stack>
-      <Typography variant="h5" sx={{ my: 1 }}>
+      <Typography variant="h5" sx={{ my: 1, textTransform: "capitalize" }}>
         {job_title}
       </Typography>
-      <Grid container columnSpacing={2} sx={{ alignItems: "center" }}>
+      <Grid
+        container
+        columnSpacing={2}
+        sx={{ alignItems: "center", textTransform: "capitalize" }}
+      >
         <Typography>{joblisting?.location}</Typography>
         <Circle sx={{ fontSize: 8 }} />
         <Typography>
@@ -152,7 +156,6 @@ function JobListingCardView({
       )}
       <Stack
         direction={{ xs: "column", sm: "row" }}
-        gap={1}
         sx={{ mt: 2, justifyContent: "flex-end" }}
       >
         <PillButton
@@ -163,13 +166,6 @@ function JobListingCardView({
         >
           View job posting
         </PillButton>
-        {(!session?.user || isJobseeker) && (
-          <ApplyToJobButton
-            id={joblisting.job_posting_id}
-            appliedStatus={joblisting.jobStatus}
-            unPublishDate={joblisting.unpublish_date}
-          />
-        )}
       </Stack>
     </Card>
   );

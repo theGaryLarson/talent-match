@@ -244,7 +244,7 @@ export default function CreateJobseekerProfileShowcasePage() {
               >
                 <TagsWithAutocomplete
                   apiSearchRoute="/api/skills/search/"
-                  fieldLabel="Select your top five skills: *"
+                  fieldLabel="Select your top skills: *"
                   id="profile-creation-showcase-skills"
                   searchingText="Searching..."
                   noResultsText="No skills found..."
