@@ -5,7 +5,11 @@ import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlin
 import { auth } from "@/auth";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import ApprovalOutlinedIcon from "@mui/icons-material/ApprovalOutlined";
-import { AddBusinessOutlined, PsychologyOutlined } from "@mui/icons-material";
+import {
+  AddBusinessOutlined,
+  PsychologyOutlined,
+  Science,
+} from "@mui/icons-material";
 import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
 export default async function layout({
   children,
@@ -24,6 +28,13 @@ export default async function layout({
         >
           <PersonOutlineOutlinedIcon />
           Home
+        </Link>
+        <Link
+          href="/admin/generate-embeddings"
+          className="inline-flex items-center justify-start gap-[5px] p-2 hover:bg-gray-200"
+        >
+          <Science />
+          Generate Embeddings
         </Link>
         <Link
           href="/admin/add-edu-provider"
