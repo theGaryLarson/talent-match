@@ -7,9 +7,9 @@ import {
 } from "@/app/lib/prisma";
 import EmployerTeamMembers from "@/app/ui/components/employerdashboard/EmployerTeamMembers";
 import { auth } from "@/auth";
-import EmployerRecentJobPosts from "@/app/ui/components/employerdashboard/EmployerRecentJobPosts";
+import EmployerRecommendedCandidatesTable from "@/app/ui/components/employerdashboard/EmployerRecommendedCandidatesTable";
 import Link from "next/link";
-import { Box, Grid, Typography } from "@mui/material";
+import { Alert, Box, Grid, Stack, Typography } from "@mui/material";
 import NewJobFormButton from "@/app/ui/components/jobManagement/NewJobFormButton";
 import PillButton from "@/app/ui/components/PillButton";
 import { SearchOutlined } from "@mui/icons-material";
@@ -76,7 +76,7 @@ export default async function Page() {
     (total, job) => total + job.jobApplications.length,
     0,
   );
-  const recentJobs = await processJobs(
+  const jobsWithCandidates = await processJobs(
     jobs.filter((job) => job.jobApplications.length > 0) ?? [],
   );
 
@@ -93,16 +93,20 @@ export default async function Page() {
   return (
     <Box sx={{ mb: 12, mx: { xs: 3, md: 6.25 } }}>
       <DeletionFlag deletionDate={undefined} />
-      {!session?.user.companyId ? (
-        <div className="bg-red-700 py-1 items-center flex text-center justify-center">
-          <h1 className="text-md capitalize text-white">
-            Some Functions May be limited Please Log out and Log back in to gain
-            full functionality
-          </h1>
-        </div>
-      ) : (
-        ""
-      )}
+      <Stack spacing={1}>
+        {!session?.user.companyId && (
+          <Alert severity="error">
+            Some functions may be limited. Please log out and log back in to
+            gain full functionality
+          </Alert>
+        )}
+        {!session?.user.employeeIsApproved && (
+          <Alert severity="error">
+            Employer approval pending. May take up to 24 hours for approval. Log
+            out and log back in to update Employer Approval status.
+          </Alert>
+        )}
+      </Stack>
       <Typography variant={"h4"} sx={{ color: "secondary.main", mb: 7 }}>
         Welcome back, {session?.user.firstName}
       </Typography>
@@ -181,10 +185,7 @@ export default async function Page() {
               </PillButton>
             </Grid>
             <Grid size={1}>
-              <EmployerRecentJobPosts
-                jobs={recentJobs}
-                bookmarkedJobseekers={proInfo.BookmarkedJobseeker}
-              />
+              <EmployerRecommendedCandidatesTable jobs={jobsWithCandidates} />
             </Grid>
             <Grid size={1} sx={{ display: { xs: "flex", md: "none" } }}>
               <EmployerTeamMembers companyid={company.company_id} />

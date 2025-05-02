@@ -18,7 +18,7 @@ export default function EmployerSteps() {
           and resources.
         </p>
       </div>
-      <div className="grid tablet:grid-cols-3 items-start min-h-[400px] justify-items-center">
+      <div className="grid tablet:grid-cols-3 items-start min-h-[400px] justify-items-center mt-[32px]">
         <Image className="w-[300px]" src={Step1} alt={""} quality={50} />
         <Image className="w-[300px] self-end" src={Step2} alt="" quality={50} />
         <Image className="w-[300px]" src={Step3} alt={""} quality={50} />

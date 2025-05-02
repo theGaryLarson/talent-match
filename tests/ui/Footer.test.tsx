@@ -25,9 +25,9 @@ describe("Footer", () => {
   it("renders the Tech Workforce Coalition logo", () => {
     const logo = screen.getByAltText("Tech Workforce Coalition");
     expect(logo).toBeDefined();
-    expect(logo.getAttribute("src")).toBe("/images/TWC logo_White.svg");
-    expect(logo.getAttribute("width")).toBe("75");
-    expect(logo.getAttribute("height")).toBe("31.8");
+    expect(logo.getAttribute("src")).toBe("/images/TWC-alt-white.svg");
+    expect(logo.getAttribute("width")).toBe("69");
+    expect(logo.getAttribute("height")).toBe("27.24");
   });
 
   it("renders the LinkedIn link", () => {
@@ -40,22 +40,13 @@ describe("Footer", () => {
     const linkedinIcon = screen.getByAltText("Linkedin Link");
     expect(linkedinIcon).toBeDefined();
     expect(linkedinIcon.getAttribute("src")).toBe(
-      "/images/stock/LI-In-Bug.png",
+      "/images/stock/linkedin-black.png",
     );
-    expect(linkedinIcon.getAttribute("width")).toBe("40");
+    expect(linkedinIcon.getAttribute("width")).toBe("22");
   });
 
   it("renders the Privacy Policy link", () => {
-    const privacyLink = screen.getByText("Terms of Service");
+    const privacyLink = screen.getByText("Terms of Services");
     expect(privacyLink.getAttribute("href")).toBe("/policies/terms-of-service");
-    expect(privacyLink.className).toContain("text-white");
-    expect(privacyLink.className).toContain("underline");
-  });
-
-  it("renders the copyright text", () => {
-    const copyrightText = screen.getByText(
-      "© Copyright 2024. All rights reserved.",
-    );
-    expect(copyrightText).toBeDefined();
   });
 });

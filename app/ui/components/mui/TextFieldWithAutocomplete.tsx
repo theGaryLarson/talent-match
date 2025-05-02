@@ -66,6 +66,7 @@ export default function TextFieldWithAutocomplete<ValueType>({
               `${apiSearchRoute}${encodeURIComponent(newInputValue)}`,
             );
             const data: ValueType[] = await response.json();
+            console.log(data);
             cachedFetches[newInputValue] = data; // Cache the fetch data
 
             setOptions(data); // Update the options with fetched data

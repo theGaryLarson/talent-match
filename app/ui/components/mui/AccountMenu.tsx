@@ -21,7 +21,6 @@ import Login from "@mui/icons-material/Login";
 export default function AccountMenu() {
   const { data: session } = useSession();
   const role = session?.user.roles;
-
   const pathname = usePathname();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -36,14 +35,25 @@ export default function AccountMenu() {
   };
 
   let textColor = "text-black";
+  let borderColor = "border-black";
   if (
     pathname == "/services/jobseekers" ||
     pathname == "/services/employers" ||
     pathname.startsWith("/services/training-programs/")
   ) {
     textColor = "text-white";
+    borderColor = "border-white";
   }
-
+  if (!role) {
+    return (
+      <Link
+        href={"/signin"}
+        className={`px-6 py-2.5 rounded-[100px] ${textColor} border border-2 ${borderColor} hover:bg-gray-200`}
+      >
+        Sign In/Sign Up
+      </Link>
+    );
+  }
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
