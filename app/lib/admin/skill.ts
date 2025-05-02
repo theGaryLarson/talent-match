@@ -275,11 +275,6 @@ export async function adminCreateSkillSubcategory(
 }
 
 export async function generateAllSkillEmbeddings() {
-  const Session = await auth();
-  if (!Session?.user.roles.includes(Role.ADMIN)) {
-    throw new Error("Must Be Admin to complete this task");
-  }
-
   try {
     const skills = await prisma.skills.findMany({
       select: { skill_id: true, skill_name: true },
