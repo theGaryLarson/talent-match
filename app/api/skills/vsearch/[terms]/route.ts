@@ -9,7 +9,7 @@ export async function GET(
   if (session) {
     const params = await props.params;
     const terms = decodeURIComponent(params.terms);
-    const searchResults = await vectorSearchSkills(terms);
+    const searchResults = await vectorSearchSkills(terms, 5);
 
     return Response.json(searchResults, {
       status: 200,

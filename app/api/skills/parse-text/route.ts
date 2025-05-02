@@ -20,6 +20,7 @@ export async function POST(req: Request) {
       try {
         const searchResults: SkillDTO[] = await vectorSearchSkills(
           sk.skillName,
+          1,
         );
         if (searchResults && searchResults.length > 0) {
           return searchResults[0];

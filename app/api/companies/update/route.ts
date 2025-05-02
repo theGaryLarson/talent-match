@@ -1,8 +1,14 @@
 import { updateCompany } from "@/app/lib/employer";
+import { auth } from "@/auth";
+import { Role } from "@/data/dtos/UserInfoDTO";
 import { companies } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  const session = await auth();
+  if (!session?.user.roles.includes(Role.ADMIN)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const body: companies = await req.json();
     if (body.estimated_annual_hires) {
