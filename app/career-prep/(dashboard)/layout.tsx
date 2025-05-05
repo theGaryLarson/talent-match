@@ -61,6 +61,11 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
       label: "Application Status",
     },
     {
+      href: "/career-prep/ict-recommendations",
+      icon: <CalendarMonthOutlined />,
+      label: "ICT Job Role Recommendations",
+    },
+    {
       href: "/career-prep/events",
       icon: <EditCalendarIcon />,
       label: "Events",
