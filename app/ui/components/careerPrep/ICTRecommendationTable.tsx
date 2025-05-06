@@ -24,6 +24,7 @@ import { ICTRecommendationResult } from "@/app/api/admin/career-prep/ict-recomme
 type Seeker = {
   user_id: string;
   jobseeker_id: string;
+  hasResume: boolean;
   first_name: string;
   last_name: string;
   email: string;
@@ -71,14 +72,16 @@ const SeekerRow = React.memo(
           </Link>
         </TableCell>
         <TableCell>
-          <Button
-            size="small"
-            startIcon={<DownloadIcon fontSize="small" />}
-            onClick={() => onFetchResume(seeker.user_id)}
-            disabled={isLoading}
-          >
-            {isLoading ? "Loading…" : "Fetch Resume"}
-          </Button>
+          {seeker.hasResume && (
+            <Button
+              size="small"
+              startIcon={<DownloadIcon fontSize="small" />}
+              onClick={() => onFetchResume(seeker.user_id)}
+              disabled={isLoading}
+            >
+              {isLoading ? "Loading…" : "Fetch Resume"}
+            </Button>
+          )}
         </TableCell>
         <TableCell align="right">{seeker.final_score.toFixed(3)}</TableCell>
       </TableRow>
@@ -115,6 +118,7 @@ export default function ICTRecommendationTable() {
           map[pt][rid].seekers.push({
             user_id: r.id,
             jobseeker_id: r.jobseeker_id,
+            hasResume: r.hasResume,
             first_name: r.first_name,
             last_name: r.last_name,
             email: r.email,

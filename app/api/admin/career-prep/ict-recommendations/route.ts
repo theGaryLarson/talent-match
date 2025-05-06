@@ -12,6 +12,7 @@ export type ICTRecommendationResult = {
   first_name: string;
   last_name: string;
   email: string;
+  hasResume: boolean;
   pathway_title: string;
   role_id: string;
   title: string;
@@ -100,6 +101,7 @@ export async function GET() {
               tpr.role_id,
               jr.title,
               pw.pathway_title,
+              j.hasResume,
               u.first_name,
               u.last_name,
               u.email,
@@ -121,6 +123,7 @@ export async function GET() {
             fs.jobseeker_id,
             fs.first_name,
             fs.last_name,
+            fs.hasResume,
             fs.email,
             fs.role_id,
             fs.title,
