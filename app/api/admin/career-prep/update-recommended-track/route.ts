@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 export async function PATCH(request: Request) {
   const session = await auth();
   if (
-    !session?.user.roles.includes(Role.CASE_MANAGER) ||
+    !session?.user.roles.includes(Role.CASE_MANAGER) &&
     !session?.user.roles.includes(Role.ADMIN)
   ) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
