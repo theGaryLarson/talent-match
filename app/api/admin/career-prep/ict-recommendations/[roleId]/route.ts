@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { Role } from "@/data/dtos/UserInfoDTO";
@@ -20,13 +20,20 @@ export type ICTRecommendationResult = {
   final_score: number;
 };
 
-export async function GET() {
-  const session = await auth();
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ roleId: string }> },
+) {
+  const [session, { roleId }] = await Promise.all([auth(), params]);
+
   if (
-    !session?.user.roles.includes(Role.CASE_MANAGER) ||
+    !session?.user.roles.includes(Role.CASE_MANAGER) &&
     !session?.user.roles.includes(Role.ADMIN)
   ) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!roleId) {
+    return NextResponse.json({ error: "roleId is required" }, { status: 400 });
   }
 
   try {
@@ -39,6 +46,7 @@ export async function GET() {
             FROM JobRoleSkill jrs
             JOIN skills s ON jrs.skillId = s.skill_id
             WHERE s.embedding IS NOT NULL
+            AND jrs.jobRoleId = ${roleId}
           ),
 
           JobseekerSkills AS (
@@ -51,9 +59,6 @@ export async function GET() {
             WHERE s.embedding IS NOT NULL
           ),
 
-          -- performance bottleneck, due to join & amount of comparisons
-          -- (num_job_roles * skills_on_job_roles * num_jobseekers * skills_on_jobseekers)
-          -- We should consider ANN (like KNN, & will need hnsw)
           BestMatchPerRoleSkill AS (
             SELECT
               jrs.role_id,
@@ -116,6 +121,7 @@ export async function GET() {
             JOIN pathways pw         ON pw.pathway_id = jr.pathwayId
             JOIN jobseekers j        ON j.jobseeker_id = tpr.jobseeker_id
             JOIN users u             ON u.id = j.user_id
+            WHERE tpr.role_id = ${roleId}
           )
 
           SELECT
@@ -131,7 +137,7 @@ export async function GET() {
             fs.final_score
           FROM FinalScores fs
           WHERE fs.final_score > ${SIMILARITY_THRESHOLD}
-          ORDER BY fs.role_id, fs.final_score DESC;
+          ORDER BY fs.final_score DESC;
         `;
 
     const results =
@@ -139,14 +145,14 @@ export async function GET() {
 
     if (results.length === 0) {
       return NextResponse.json(
-        { message: "No matching candidates found." },
+        { message: "No matching candidates found for this role." },
         { status: 200 },
       );
     }
 
     return NextResponse.json(results);
   } catch (error) {
-    console.error("Error fetching recommendations:", error);
+    console.error("Error fetching recommendations for role:", roleId, error);
     return NextResponse.json(
       { error: "Failed to fetch recommendations" },
       { status: 500 },

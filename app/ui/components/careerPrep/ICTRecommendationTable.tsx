@@ -19,7 +19,18 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DownloadIcon from "@mui/icons-material/Download";
-import { ICTRecommendationResult } from "@/app/api/admin/career-prep/ict-recommendations/route";
+import { ICTRecommendationResult } from "@/app/api/admin/career-prep/ict-recommendations/[roleId]/route";
+
+type ApiRoleInfo = {
+  role_id: string;
+  title: string;
+};
+
+type ApiPathwayStructure = {
+  pathway_id: string;
+  pathway_title: string;
+  roles: ApiRoleInfo[];
+};
 
 type Seeker = {
   user_id: string;
@@ -35,9 +46,13 @@ interface RoleGroup {
   roleId: string;
   roleTitle: string;
   seekers: Seeker[];
+  isLoadingSeekers: boolean;
+  hasFetchedSeekers: boolean;
+  errorSeekers?: string | null;
 }
 
 interface PathwayGroup {
+  pathwayId: string;
   pathwayTitle: string;
   roles: RoleGroup[];
 }
@@ -45,7 +60,7 @@ interface PathwayGroup {
 interface SeekerRowProps {
   seeker: Seeker;
   roleId: string;
-  isLoading: boolean;
+  isLoadingResume: boolean;
   onFetchResume: (userId: string) => void;
 }
 
@@ -53,7 +68,7 @@ const SeekerRow = React.memo(
   function SeekerRowComponent({
     seeker,
     roleId,
-    isLoading,
+    isLoadingResume,
     onFetchResume,
   }: SeekerRowProps) {
     return (
@@ -77,9 +92,9 @@ const SeekerRow = React.memo(
               size="small"
               startIcon={<DownloadIcon fontSize="small" />}
               onClick={() => onFetchResume(seeker.user_id)}
-              disabled={isLoading}
+              disabled={isLoadingResume}
             >
-              {isLoading ? "Loading…" : "Fetch Resume"}
+              {isLoadingResume ? "Loading…" : "Fetch Resume"}
             </Button>
           )}
         </TableCell>
@@ -88,116 +103,219 @@ const SeekerRow = React.memo(
     );
   },
   (prev, next) =>
-    prev.seeker === next.seeker && prev.isLoading === next.isLoading,
+    prev.seeker.jobseeker_id === next.seeker.jobseeker_id &&
+    prev.isLoadingResume === next.isLoadingResume &&
+    prev.seeker.final_score === next.seeker.final_score,
 );
 
 export default function ICTRecommendationTable() {
-  const [data, setData] = useState<PathwayGroup[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [pathwayData, setPathwayData] = useState<PathwayGroup[]>([]);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [initialError, setInitialError] = useState<string | null>(null);
+  const [resumeLoadingId, setResumeLoadingId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/career-prep/ict-recommendations")
+    setInitialLoading(true);
+    fetch("/api/admin/career-prep/jobroles-by-pathway")
       .then(async (res) => {
         if (!res.ok) {
           const err = await res.json();
           throw new Error(err.error || `HTTP ${res.status}`);
         }
-        return res.json() as Promise<ICTRecommendationResult[]>;
+        return res.json() as Promise<ApiPathwayStructure[]>;
       })
-      .then((rows) => {
-        const map: Record<string, Record<string, RoleGroup>> = {};
-        rows.forEach((r) => {
-          const pt = r.pathway_title;
-          const rid = r.role_id;
-          if (!map[pt]) map[pt] = {};
-          if (!map[pt][rid]) {
-            map[pt][rid] = { roleId: rid, roleTitle: r.title, seekers: [] };
-          }
-          map[pt][rid].seekers.push({
-            user_id: r.id,
-            jobseeker_id: r.jobseeker_id,
-            hasResume: r.hasResume,
-            first_name: r.first_name,
-            last_name: r.last_name,
-            email: r.email,
-            final_score: r.final_score,
-          });
-        });
-        const grouped: PathwayGroup[] = Object.entries(map).map(
-          ([pathwayTitle, rolesMap]) => ({
-            pathwayTitle,
-            roles: Object.values(rolesMap).map((rg) => {
-              rg.seekers.sort((a, b) => b.final_score - a.final_score);
-              return rg;
-            }),
-          }),
-        );
-        setData(grouped);
+      .then((apiPathways) => {
+        const transformedData: PathwayGroup[] = apiPathways
+          .filter((p) => p.roles.length > 0)
+          .map((p) => ({
+            pathwayId: p.pathway_id,
+            pathwayTitle: p.pathway_title,
+            roles: p.roles.map((r) => ({
+              roleId: r.role_id,
+              roleTitle: r.title,
+              seekers: [],
+              isLoadingSeekers: false,
+              hasFetchedSeekers: false,
+              errorSeekers: null,
+            })),
+          }));
+        setPathwayData(transformedData);
       })
       .catch((err: Error) => {
-        console.error(err);
-        setError(err.message);
+        console.error("Error fetching pathway structure:", err);
+        setInitialError(err.message);
       })
-      .finally(() => setLoading(false));
+      .finally(() => setInitialLoading(false));
   }, []);
 
+  const handleFetchSeekersForRole = useCallback(
+    async (pathwayIndex: number, roleIndex: number) => {
+      const role = pathwayData[pathwayIndex]?.roles[roleIndex];
+      if (!role || role.isLoadingSeekers || role.hasFetchedSeekers) {
+        return;
+      }
+
+      setPathwayData((prevData) => {
+        const newData = [...prevData];
+        const pathwayToUpdate = { ...newData[pathwayIndex] };
+        const roleToUpdate = { ...pathwayToUpdate.roles[roleIndex] };
+        roleToUpdate.isLoadingSeekers = true;
+        roleToUpdate.errorSeekers = null;
+        pathwayToUpdate.roles = [...pathwayToUpdate.roles];
+        pathwayToUpdate.roles[roleIndex] = roleToUpdate;
+        newData[pathwayIndex] = pathwayToUpdate;
+        return newData;
+      });
+
+      try {
+        const res = await fetch(
+          `/api/admin/career-prep/ict-recommendations/${role.roleId}`,
+        );
+        const responseData = await res.json();
+
+        if (!res.ok) {
+          throw new Error(responseData.error || `HTTP ${res.status}`);
+        }
+
+        let seekersResults: ICTRecommendationResult[] = [];
+        if (
+          responseData.message &&
+          Array.isArray(responseData.results) &&
+          responseData.results.length === 0
+        ) {
+          seekersResults = [];
+        } else if (Array.isArray(responseData)) {
+          seekersResults = responseData as ICTRecommendationResult[];
+        } else if (responseData.message) {
+          seekersResults = [];
+        }
+
+        seekersResults.sort((a, b) => b.final_score - a.final_score);
+
+        const mappedSeekers: Seeker[] = seekersResults.map((s) => ({
+          user_id: s.id,
+          jobseeker_id: s.jobseeker_id,
+          hasResume: s.hasResume,
+          first_name: s.first_name,
+          last_name: s.last_name,
+          email: s.email,
+          final_score: s.final_score,
+        }));
+
+        setPathwayData((prevData) => {
+          const newData = [...prevData];
+          const pathwayToUpdate = { ...newData[pathwayIndex] };
+          const roleToUpdate = { ...pathwayToUpdate.roles[roleIndex] };
+          roleToUpdate.seekers = mappedSeekers;
+          roleToUpdate.isLoadingSeekers = false;
+          roleToUpdate.hasFetchedSeekers = true;
+          pathwayToUpdate.roles = [...pathwayToUpdate.roles];
+          pathwayToUpdate.roles[roleIndex] = roleToUpdate;
+          newData[pathwayIndex] = pathwayToUpdate;
+          return newData;
+        });
+      } catch (e: any) {
+        console.error(`Failed to fetch seekers for role ${role.roleId}:`, e);
+        setPathwayData((prevData) => {
+          const newData = [...prevData];
+          const pathwayToUpdate = { ...newData[pathwayIndex] };
+          const roleToUpdate = { ...pathwayToUpdate.roles[roleIndex] };
+          roleToUpdate.isLoadingSeekers = false;
+          roleToUpdate.hasFetchedSeekers = true;
+          roleToUpdate.errorSeekers =
+            e.message || "Failed to load recommendations";
+          pathwayToUpdate.roles = [...pathwayToUpdate.roles];
+          pathwayToUpdate.roles[roleIndex] = roleToUpdate;
+          newData[pathwayIndex] = pathwayToUpdate;
+          return newData;
+        });
+      }
+    },
+    [pathwayData],
+  );
+
   const handleFetchResume = useCallback(async (userId: string) => {
-    setLoadingId(userId);
+    setResumeLoadingId(userId);
     try {
       const res = await fetch(`/api/jobseekers/resume/get/${userId}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${await res.text()}`);
       const url = await res.json();
       window.open(url, "_blank");
     } catch (e: any) {
       console.error("Failed to fetch resume:", e.message);
-      alert("Could not fetch resume, they most likely don't have one");
+      alert("Could not fetch resume.");
     } finally {
-      setLoadingId(null);
+      setResumeLoadingId(null);
     }
   }, []);
 
-  if (loading) {
+  if (initialLoading) {
     return (
       <Box display="flex" justifyContent="center" p={4}>
         <CircularProgress />
       </Box>
     );
   }
-  if (error) {
+  if (initialError) {
     return (
       <Box p={4}>
         <Typography color="error" align="center">
-          Error loading recommendations: {error}
+          Error loading pathway data: {initialError}
         </Typography>
       </Box>
     );
   }
-  if (data.length === 0) {
+  if (pathwayData.length === 0) {
     return (
       <Box p={4}>
-        <Typography align="center">No recommendations found.</Typography>
+        <Typography align="center">No pathways found.</Typography>
       </Box>
     );
   }
 
   return (
     <Box sx={{ width: "100%" }}>
-      {data.map((pg) => (
-        <Accordion key={pg.pathwayTitle} disableGutters>
+      {pathwayData.map((pg, pathwayIndex) => (
+        <Accordion key={pg.pathwayId} sx={{ bgcolor: "neutral.100" }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h5">{pg.pathwayTitle}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {pg.roles.map((role) => (
-              <Accordion key={role.roleId} disableGutters>
+            {pg.roles.map((role, roleIndex) => (
+              <Accordion
+                key={role.roleId}
+                disableGutters
+                onChange={(_event, expanded) => {
+                  if (expanded) {
+                    handleFetchSeekersForRole(pathwayIndex, roleIndex);
+                  }
+                }}
+              >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography variant="h6">{role.roleTitle}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  {role.seekers.length > 0 ? (
-                    <TableContainer component={Paper}>
+                  {role.isLoadingSeekers ? (
+                    <Box display="flex" justifyContent="center" p={2}>
+                      <CircularProgress size={24} />
+                      <Typography sx={{ ml: 1 }}>
+                        Loading recommendations...
+                      </Typography>
+                    </Box>
+                  ) : role.errorSeekers ? (
+                    <Typography color="error" sx={{ p: 2 }}>
+                      Error: {role.errorSeekers}
+                    </Typography>
+                  ) : !role.hasFetchedSeekers ? (
+                    <Typography sx={{ fontStyle: "italic", p: 2 }}>
+                      Expand to load recommendations.
+                    </Typography>
+                  ) : role.seekers.length > 0 ? (
+                    <TableContainer
+                      component={Paper}
+                      variant="outlined"
+                      sx={{ mt: 1 }}
+                    >
                       <Table size="small" stickyHeader>
                         <TableHead>
                           <TableRow>
@@ -213,7 +331,7 @@ export default function ICTRecommendationTable() {
                               key={s.user_id}
                               seeker={s}
                               roleId={role.roleId}
-                              isLoading={loadingId === s.user_id}
+                              isLoadingResume={resumeLoadingId === s.user_id}
                               onFetchResume={handleFetchResume}
                             />
                           ))}
@@ -222,7 +340,7 @@ export default function ICTRecommendationTable() {
                     </TableContainer>
                   ) : (
                     <Typography sx={{ fontStyle: "italic", p: 2 }}>
-                      No matching seekers for this role.
+                      No matching seekers found for this role.
                     </Typography>
                   )}
                 </AccordionDetails>
