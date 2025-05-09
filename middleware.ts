@@ -46,6 +46,7 @@ export default auth((req) => {
       "/api/companies",
       "/api/users/avatar/upload",
       "/api/skills/search/",
+      "/api/skills/parse-text/",
       "/api/postal-geo-data/zip/search",
     ],
     [Role.CASE_MANAGER]: [
@@ -56,6 +57,7 @@ export default auth((req) => {
       "/api/jobseekers/career-prep/meeting",
       "/api/admin/career-prep/update-recomended-track/",
       "/api/joblistings/",
+      "/api/skills/parse-text",
       // Add any other routes accessible by case managers
     ],
     [Role.ADMIN]: [], // Admin has full access, so this can be empty
