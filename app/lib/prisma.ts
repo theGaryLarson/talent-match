@@ -1019,7 +1019,7 @@ export async function parseTextForSkills(text: string) {
         },
       },
       model: "",
-      max_completion_tokens: 16384,
+      max_completion_tokens: 32768,
       temperature: 0.2,
       stream: false,
     });
