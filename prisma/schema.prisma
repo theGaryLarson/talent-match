@@ -631,19 +631,19 @@ model job_postings {
 }
 
 model JobseekerJobPosting {
-  id                        String          @id(clustered: false, map: "jobseeker_job_posting_PRIMARY") @default(uuid()) @db.UniqueIdentifier
-  jobPostId                 String          @db.UniqueIdentifier
-  jobseekerId               String          @db.UniqueIdentifier
-  jobStatus                 String          @default("Not Selected") @db.VarChar(45)
-  isBookmarked              Boolean?        @default(false)
-  employerClickedConnect    Boolean         @default(false)
-  feedbackRating            Int?            @db.SmallInt
-  feedbackText              String?         @db.NText
-  savedAt                   DateTime        @default(now())
-  appliedDate               DateTime?
-  followUpDate              DateTime?
-  job_posting               job_postings    @relation(fields: [jobPostId], references: [job_posting_id])
-  Jobseekers                jobseekers      @relation(fields: [jobseekerId], references: [jobseeker_id])
+  id                     String       @id(clustered: false, map: "jobseeker_job_posting_PRIMARY") @default(uuid()) @db.UniqueIdentifier
+  jobPostId              String       @db.UniqueIdentifier
+  jobseekerId            String       @db.UniqueIdentifier
+  jobStatus              String       @default("Not Selected") @db.VarChar(45)
+  isBookmarked           Boolean?     @default(false)
+  employerClickedConnect Boolean      @default(false)
+  feedbackRating         Int?         @db.SmallInt
+  feedbackText           String?      @db.NText
+  savedAt                DateTime     @default(now())
+  appliedDate            DateTime?
+  followUpDate           DateTime?
+  job_posting            job_postings @relation(fields: [jobPostId], references: [job_posting_id])
+  Jobseekers             jobseekers   @relation(fields: [jobseekerId], references: [jobseeker_id])
 }
 
 model jobseeker_has_skills {
@@ -883,6 +883,7 @@ model skills {
   skill_subcategory_id        String                        @db.UniqueIdentifier
   skill_name                  String                        @db.VarChar(255)
   skill_info_url              String                        @default("") @db.VarChar(255)
+  skill_type                  String?                       @db.VarChar(255)
   job_postings                job_postings[]                @relation("JobPostingSkills")
   jobseeker_has_skills        jobseeker_has_skills[]
   pathway_has_skills          pathway_has_skills[]
