@@ -1,17 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import * as pdfjsLib from "pdfjs-dist";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import {
   Box,
   Button,
   CircularProgress,
   FormControl,
-  Snackbar,
   Alert,
   TextField,
   Typography,
   List,
-  ListItem,
   Divider,
   Card,
   CardContent,
@@ -35,7 +34,13 @@ type RecommendedCandidate = {
   email: string;
   final_score: number;
   matched_skills: MatchedSkillDetailFrontend[];
+  resume_url?: string | null;
+  hasResume: boolean;
+  analysis?: string | null;
+  analysisLoading?: boolean;
 };
+
+const PDF_WORKER_URL = "/pdf.worker.min.mjs";
 
 export default function Page() {
   const [jobDescription, setJobDescription] = useState<string>("");
@@ -44,7 +49,55 @@ export default function Page() {
   const [isLoadingSkills, setIsLoadingSkills] = useState<boolean>(false);
   const [isLoadingCandidates, setIsLoadingCandidates] =
     useState<boolean>(false);
+  const [isAnalyzingResumes, setIsAnalyzingResumes] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [pdfWorkerError, setPdfWorkerError] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER_URL;
+    } catch (e) {
+      console.error("Failed to set PDF worker source:", e);
+      setPdfWorkerError(
+        "Failed to configure PDF processing library. Resume analysis may not work.",
+      );
+    }
+  }, []);
+
+  const parsePdf = async (fileBuffer: ArrayBuffer): Promise<string> => {
+    if (pdfWorkerError || !pdfjsLib.getDocument) {
+      throw new Error(pdfWorkerError || "PDF library not initialized.");
+    }
+    try {
+      const loadingTask = pdfjsLib.getDocument({ data: fileBuffer });
+      const pdf = await loadingTask.promise;
+      let fullText = "";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        if (textContent?.items && Array.isArray(textContent.items)) {
+          const pageText = textContent.items
+            .filter(
+              (item: any) =>
+                typeof item === "object" &&
+                item !== null &&
+                typeof item.str === "string",
+            )
+            .map((item: any) => item.str)
+            .join(" ");
+          fullText += pageText + "\n\n";
+        }
+      }
+      const trimmedText = fullText.trim();
+      if (!trimmedText) {
+        throw new Error("No text could be extracted from the PDF.");
+      }
+      return trimmedText;
+    } catch (err: any) {
+      console.error("Error parsing PDF:", err);
+      throw new Error(`Error reading PDF: ${err.message || "Unknown error"}`);
+    }
+  };
 
   const handleFetchSkillsAndCandidates = async () => {
     if (!jobDescription.trim()) {
@@ -52,9 +105,10 @@ export default function Page() {
       return;
     }
     setIsLoadingSkills(true);
-    setIsLoadingSkills(true);
     setIsLoadingCandidates(false);
+    setIsAnalyzingResumes(false);
     setError(null);
+    setPdfWorkerError(null);
     setSkills([]);
     setCandidates([]);
 
@@ -76,14 +130,15 @@ export default function Page() {
 
       const parsedSkills: SkillDTO[] = await skillsResponse.json();
       setSkills(parsedSkills);
-      setIsLoadingSkills(false);
 
       if (parsedSkills.length === 0) {
         setError(
           "No skills were extracted from the job description. Cannot find candidates.",
         );
+        setIsLoadingSkills(false);
         return;
       }
+      setIsLoadingSkills(false);
 
       setIsLoadingCandidates(true);
       const skillIds = parsedSkills.map((skill) => skill.skill_id);
@@ -119,8 +174,129 @@ export default function Page() {
             "No matching candidates found for the extracted skills.",
         );
         setCandidates([]);
+        setIsLoadingCandidates(false);
       } else {
-        setCandidates(recommendedCandidates);
+        const candidatesWithAnalysisState = recommendedCandidates.map((c) => ({
+          ...c,
+          analysis: null,
+          analysisLoading: false,
+          resume_url: null,
+        }));
+        setCandidates(candidatesWithAnalysisState);
+        setIsLoadingCandidates(false);
+
+        if (candidatesWithAnalysisState.length > 0) {
+          setIsAnalyzingResumes(true);
+          const analysisPromises = candidatesWithAnalysisState.map(
+            async (candidate) => {
+              if (!candidate.hasResume) {
+                setCandidates((prev) =>
+                  prev.map((c) =>
+                    c.jobseeker_id === candidate.jobseeker_id
+                      ? {
+                          ...c,
+                          analysisLoading: false,
+                        }
+                      : c,
+                  ),
+                );
+                return;
+              }
+              setCandidates((prev) =>
+                prev.map((c) =>
+                  c.jobseeker_id === candidate.jobseeker_id
+                    ? { ...c, analysisLoading: true }
+                    : c,
+                ),
+              );
+              try {
+                const resumeUrlResponse = await fetch(
+                  `/api/jobseekers/resume/get/${candidate.user_id}`,
+                );
+                if (!resumeUrlResponse.ok) {
+                  const errorData = await resumeUrlResponse
+                    .json()
+                    .catch(() => ({}));
+                  throw new Error(
+                    errorData.message ||
+                      `Failed to fetch resume URL: ${resumeUrlResponse.status}`,
+                  );
+                }
+                const resumeBlobUrl = await resumeUrlResponse.json();
+
+                if (!resumeBlobUrl) {
+                  throw new Error("Resume URL not found for candidate.");
+                }
+                setCandidates((prev) =>
+                  prev.map((c) =>
+                    c.jobseeker_id === candidate.jobseeker_id
+                      ? { ...c, resume_url: resumeBlobUrl }
+                      : c,
+                  ),
+                );
+
+                const resumeBlobResponse = await fetch(resumeBlobUrl);
+                if (!resumeBlobResponse.ok) {
+                  throw new Error(
+                    `Failed to fetch resume content: ${resumeBlobResponse.status}`,
+                  );
+                }
+                const resumePdfBuffer = await resumeBlobResponse.arrayBuffer();
+
+                const resumeText = await parsePdf(resumePdfBuffer);
+
+                const analysisResponse = await fetch(
+                  "/api/admin/career-prep/analyze-match",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ resumeText, jobDescription }),
+                  },
+                );
+
+                if (!analysisResponse.ok) {
+                  const errorData = await analysisResponse
+                    .json()
+                    .catch(() => ({}));
+                  throw new Error(
+                    errorData.message ||
+                      `Analysis API failed: ${analysisResponse.status}`,
+                  );
+                }
+                const analysisData = await analysisResponse.json();
+
+                setCandidates((prev) =>
+                  prev.map((c) =>
+                    c.jobseeker_id === candidate.jobseeker_id
+                      ? {
+                          ...c,
+                          analysis: analysisData.analysis,
+                          analysisLoading: false,
+                        }
+                      : c,
+                  ),
+                );
+              } catch (analysisErr: any) {
+                console.error(
+                  `Failed to analyze resume for ${candidate.email}:`,
+                  analysisErr,
+                );
+                setCandidates((prev) =>
+                  prev.map((c) =>
+                    c.jobseeker_id === candidate.jobseeker_id
+                      ? {
+                          ...c,
+                          analysisLoading: false,
+                        }
+                      : c,
+                  ),
+                );
+              }
+            },
+          );
+          await Promise.allSettled(analysisPromises);
+          setIsAnalyzingResumes(false);
+        }
       }
     } catch (e: any) {
       console.error("Operation failed:", e);
@@ -128,6 +304,7 @@ export default function Page() {
     } finally {
       setIsLoadingSkills(false);
       setIsLoadingCandidates(false);
+      setIsAnalyzingResumes(false);
     }
   };
 
@@ -144,7 +321,9 @@ export default function Page() {
           value={jobDescription}
           onChange={(e) => setJobDescription(e.target.value)}
           placeholder="Enter job description..."
-          disabled={isLoadingSkills || isLoadingCandidates}
+          disabled={
+            isLoadingSkills || isLoadingCandidates || isAnalyzingResumes
+          }
         />
       </FormControl>
 
@@ -152,19 +331,25 @@ export default function Page() {
         variant="contained"
         color="primary"
         onClick={handleFetchSkillsAndCandidates}
-        disabled={isLoadingSkills || isLoadingCandidates}
+        loading={isLoadingSkills || isLoadingCandidates || isAnalyzingResumes}
         sx={{ mb: 2 }}
       >
-        {isLoadingSkills
-          ? "Parsing Skills..."
-          : isLoadingCandidates
-            ? "Fetching Candidates..."
-            : "Find Matching Candidates"}
+        Find Matching Candidates
       </Button>
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
           {error}
+        </Alert>
+      )}
+
+      {pdfWorkerError && !error && (
+        <Alert
+          severity="warning"
+          sx={{ mb: 2 }}
+          onClose={() => setPdfWorkerError(null)}
+        >
+          {pdfWorkerError}
         </Alert>
       )}
 
@@ -185,9 +370,10 @@ export default function Page() {
         <Typography variant="h5" gutterBottom>
           Matched Candidates
         </Typography>
-        {isLoadingCandidates && (
-          <CircularProgress sx={{ display: "block", margin: "auto" }} />
+        {isLoadingCandidates && !isLoadingSkills && (
+          <CircularProgress sx={{ display: "block", margin: "auto", my: 2 }} />
         )}
+
         {!isLoadingCandidates &&
           candidates.length === 0 &&
           !error &&
@@ -198,7 +384,8 @@ export default function Page() {
           )}
         {!isLoadingCandidates && candidates.length > 0 && (
           <>
-            <Typography>
+            <Typography component="div">
+              {" "}
               {candidates.map((candidate) => (
                 <React.Fragment key={candidate.email}>
                   {candidate.email}{" "}
@@ -225,41 +412,78 @@ export default function Page() {
                       <Typography color="textSecondary">
                         Match Score: {(candidate.final_score * 100).toFixed(2)}%
                       </Typography>
-                      {candidate.matched_skills &&
-                        candidate.matched_skills.length > 0 && (
-                          <>
-                            <Typography
-                              variant="subtitle2"
-                              sx={{ mt: 1, mb: 0.5 }}
-                            >
-                              Matched Skills (job ⇒ jobseeker):
+                      <Grid container spacing={2}>
+                        <Grid size={{ xs: 12, md: 4 }}>
+                          {candidate.matched_skills &&
+                            candidate.matched_skills.length > 0 && (
+                              <>
+                                <Typography
+                                  variant="subtitle2"
+                                  sx={{ mt: 1, mb: 0.5 }}
+                                >
+                                  Matched Skills (job ⇒ jobseeker):
+                                </Typography>
+                                {candidate.matched_skills.map(
+                                  (skillMatch, idx) => (
+                                    <Box
+                                      key={
+                                        candidate.user_id +
+                                        skillMatch.job_skill_name +
+                                        idx
+                                      }
+                                      sx={{ p: 0.5 }}
+                                    >
+                                      <Chip
+                                        color="primary"
+                                        label={skillMatch.job_skill_name}
+                                      />
+                                      ⇒
+                                      <Chip
+                                        label={skillMatch.seeker_skill_name}
+                                        sx={{ mr: 2 }}
+                                      />
+                                      {(skillMatch.score * 100).toFixed(1)}%
+                                    </Box>
+                                  ),
+                                )}
+                              </>
+                            )}
+                        </Grid>
+                        {candidate.analysisLoading && (
+                          <Box
+                            sx={{
+                              mt: 1,
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <CircularProgress size={20} sx={{ mr: 1 }} />
+                            <Typography variant="body2">
+                              Analyzing resume...
                             </Typography>
-                            <List dense>
-                              {candidate.matched_skills.map(
-                                (skillMatch, idx) => (
-                                  <ListItem
-                                    key={
-                                      candidate.user_id +
-                                      skillMatch.job_skill_name +
-                                      idx
-                                    }
-                                  >
-                                    <Chip
-                                      color="primary"
-                                      label={skillMatch.job_skill_name}
-                                    />
-                                    ⇒
-                                    <Chip
-                                      label={skillMatch.seeker_skill_name}
-                                      sx={{ mr: 2 }}
-                                    />
-                                    {(skillMatch.score * 100).toFixed(1)}%
-                                  </ListItem>
-                                ),
-                              )}
-                            </List>
-                          </>
+                          </Box>
                         )}
+                        {candidate.analysis && !candidate.analysisLoading && (
+                          <Grid size={{ xs: 12, md: "grow" }}>
+                            <Typography variant="subtitle2">
+                              Match Analysis (from resume):
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                whiteSpace: "pre-wrap",
+                                mt: 0.5,
+                                border: "1px solid",
+                                borderColor: "neutral.300",
+                                p: 1,
+                                borderRadius: 1,
+                              }}
+                            >
+                              {candidate.analysis}
+                            </Typography>
+                          </Grid>
+                        )}
+                      </Grid>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -268,21 +492,6 @@ export default function Page() {
           </>
         )}
       </Box>
-
-      <Snackbar
-        open={!!error && !(skills.length > 0 && candidates.length === 0)}
-        autoHideDuration={6000}
-        onClose={() => setError(null)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setError(null)}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {error}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

@@ -19,6 +19,7 @@ type RecommendationResult = {
   user_id: string;
   first_name: string | null;
   last_name: string | null;
+  hasResume: boolean;
   email: string;
   final_score: number;
   matched_skills: MatchedSkillDetail[];
@@ -112,6 +113,7 @@ export async function POST(request: NextRequest) {
       SELECT TOP (${TOP_RECOMMENDATIONS})
         ts.jobseeker_id,
         j.user_id,
+        j.hasResume,
         u.first_name,
         u.last_name,
         u.email,
@@ -129,6 +131,7 @@ export async function POST(request: NextRequest) {
       user_id: string;
       first_name: string | null;
       last_name: string | null;
+      hasResume: boolean;
       email: string;
       final_score: number;
       matched_text: string | null;
@@ -164,6 +167,7 @@ export async function POST(request: NextRequest) {
         user_id: row.user_id,
         first_name: row.first_name,
         last_name: row.last_name,
+        hasResume: row.hasResume,
         email: row.email,
         final_score: row.final_score,
         matched_skills,
