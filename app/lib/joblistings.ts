@@ -219,39 +219,48 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
     console.log(error);
   }
 }
-export async function getJobListingById(joblistingId: string) {
+export async function getJobListingById(
+  joblistingId: string,
+  jobseekerId?: string,
+) {
   try {
+    const include: any = {
+      skills: true,
+      industry_sectors: {
+        select: {
+          sector_title: true,
+        },
+      },
+      company_addresses: {
+        include: {
+          locationData: true,
+        },
+      },
+      companies: true,
+      techArea: {
+        select: {
+          title: true,
+        },
+      },
+    };
+
+    if (jobseekerId) {
+      include.jobApplications = {
+        where: { jobseekerId },
+        select: {
+          isBookmarked: true,
+          jobPostId: true,
+          jobseekerId: true,
+          jobStatus: true,
+        },
+      };
+    }
+
     const joblisting = await prisma.job_postings.findUnique({
       where: {
         job_posting_id: joblistingId,
       },
-      include: {
-        skills: true,
-        industry_sectors: {
-          select: {
-            sector_title: true,
-          },
-        },
-        company_addresses: {
-          include: {
-            locationData: true,
-          },
-        },
-        companies: true,
-        techArea: {
-          select: {
-            title: true,
-          },
-        },
-        jobApplications: {
-          select: {
-            isBookmarked: true,
-            jobPostId: true,
-            jobseekerId: true,
-            jobStatus: true,
-          },
-        },
-      },
+      include,
     });
     return joblisting;
   } catch (e) {
