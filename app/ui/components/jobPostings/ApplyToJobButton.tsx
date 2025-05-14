@@ -15,12 +15,14 @@ import {
 
 interface Props {
   id: string;
+  job_post_url?: string;
   appliedStatus?: string;
   unPublishDate?: Date;
 }
 
 export default function ApplyToJobButton({
   id,
+  job_post_url = "",
   appliedStatus = "",
   unPublishDate,
 }: Props) {
@@ -67,7 +69,8 @@ export default function ApplyToJobButton({
           setHasApplied(false);
           throw new Error("Failed to update application status.");
         }
-        router.push("/services/jobseekers/book-appointment");
+        if (job_post_url.length !== 0)
+          router.push("/services/joblistings/" + id + "/book");
       } else {
         setOpenConfirmWithdraw(true);
       }

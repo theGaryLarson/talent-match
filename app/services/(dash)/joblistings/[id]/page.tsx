@@ -5,9 +5,12 @@ import { auth } from "@/auth";
 
 export default async function page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const joblisting = await getJobListingById(params.id);
   const session = await auth();
-  const connectedJobApplication = joblisting?.jobApplications.find(
+  const joblisting = await getJobListingById(
+    params.id,
+    session?.user.jobseekerId ?? undefined,
+  );
+  const connectedJobApplication = joblisting?.jobApplications?.find(
     (app) =>
       app.jobPostId === params.id &&
       app.jobseekerId === session?.user.jobseekerId,
