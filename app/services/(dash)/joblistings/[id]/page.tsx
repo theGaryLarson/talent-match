@@ -6,21 +6,11 @@ import { auth } from "@/auth";
 export default async function page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const session = await auth();
-  const joblisting = await getJobListingById(
+  const joblisting: any = await getJobListingById(
     params.id,
     session?.user.jobseekerId ?? undefined,
   );
-  const connectedJobApplication = joblisting?.jobApplications?.find(
-    (app) =>
-      app.jobPostId === params.id &&
-      app.jobseekerId === session?.user.jobseekerId,
-  );
-  const listingWithJobseeker = {
-    ...joblisting,
-    jobStatus: connectedJobApplication?.jobStatus ?? "",
-    isBookmarked: connectedJobApplication?.isBookmarked ?? false,
-    job_posting_id: joblisting?.job_posting_id ?? "",
-  };
+
   if (joblisting == null || joblisting == undefined) {
     return (
       <main className="h-screen text-center space-y-3 py-8 ml-4 tablet:mx-[150px] laptop:mx-[200px]">
@@ -31,6 +21,16 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
       </main>
     );
   }
-
-  return <JobPostingPage joblisting={listingWithJobseeker} params={params} />;
+  if (joblisting.jobApplications[0]) {
+    const connectedJobApplication = joblisting.jobApplications[0];
+    const listingWithJobseeker = {
+      ...joblisting,
+      jobStatus: connectedJobApplication.jobStatus ?? "",
+      isBookmarked: connectedJobApplication?.isBookmarked ?? false,
+      job_posting_id: joblisting?.job_posting_id ?? "",
+    };
+    return <JobPostingPage joblisting={listingWithJobseeker} params={params} />;
+  } else {
+    return <JobPostingPage joblisting={joblisting} params={params} />;
+  }
 }
