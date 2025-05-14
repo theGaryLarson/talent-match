@@ -190,6 +190,7 @@ export default function NewJobForm({
     if (activeStep === 0) {
       return (
         jobTitle.trim() !== "" &&
+        jobUrl.includes("https://") &&
         jobDescription.trim() !== "" &&
         occupationCode.trim() !== "" &&
         applicationDeadline
@@ -422,10 +423,12 @@ export default function NewJobForm({
             </FormControl>
 
             <FormControl fullWidth>
-              <FormLabel>Job URL</FormLabel>
+              <FormLabel required>Job Application Form URL</FormLabel>
               <TextField
+                required
                 value={jobUrl}
                 onChange={(e) => setJobUrl(e.target.value)}
+                placeholder="https://example.org"
                 helperText="Enter a URL to the job post, if applicable"
               />
             </FormControl>
