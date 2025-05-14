@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { JobStatus } from "@/app/lib/jobseekerJobTracking";
 import { useSession } from "next-auth/react";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import PillButton from "../PillButton";
 import { Add, Clear } from "@mui/icons-material";
 import {
@@ -44,7 +44,6 @@ export default function ApplyToJobButton({
 
   const session = useSession();
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleApplicationClick = async () => {
     if (!session?.data?.user) {
@@ -56,6 +55,14 @@ export default function ApplyToJobButton({
     }
     try {
       if (!hasApplied) {
+        if (job_post_url.length !== 0) {
+          const job_post_url_formatted = job_post_url.includes("https://")
+            ? job_post_url
+            : job_post_url.includes("http://")
+              ? job_post_url.replace("http://", "https://")
+              : job_post_url.concat("https://", job_post_url);
+          window.open(job_post_url_formatted, "_blank");
+        }
         setIsApplying(true);
         setHasApplied(true);
         const response = await fetch(`/api/joblistings/apply/${id}`, {
@@ -69,8 +76,6 @@ export default function ApplyToJobButton({
           setHasApplied(false);
           throw new Error("Failed to update application status.");
         }
-        if (job_post_url.length !== 0)
-          router.push("/services/joblistings/" + id + "/book");
       } else {
         setOpenConfirmWithdraw(true);
       }
