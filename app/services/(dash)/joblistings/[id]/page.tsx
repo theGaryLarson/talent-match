@@ -21,7 +21,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
       </main>
     );
   }
-  if (joblisting.jobApplications[0]) {
+  if (joblisting.jobApplications && joblisting.jobApplications[0]) {
     const connectedJobApplication = joblisting.jobApplications[0];
     const listingWithJobseeker = {
       ...joblisting,
