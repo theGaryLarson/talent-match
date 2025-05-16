@@ -48,6 +48,7 @@ model User {
   createdEvents           Events[] // One-to-many relationship with Events
 
   @@map("users")
+  EmployerJobRoleFeedBack EmployerJobRoleFeedBack[]
 }
 
 model Account {
@@ -894,6 +895,7 @@ model skills {
   embedding                   Unsupported("vector(1536)")?
 
   @@index([skill_subcategory_id], map: "skills_fk_skill_skill_category_idx")
+  EmployerJobRoleFeedBack EmployerJobRoleFeedBack[]
 }
 
 model social_media_platforms {
@@ -1060,6 +1062,8 @@ model JobRole {
   skills           JobRoleSkill[]
   JobRoleTraining  JobRoleTraining[]
   pathway          pathways?         @relation(fields: [pathwayId], references: [pathway_id])
+
+  EmployerJobRoleFeedBack EmployerJobRoleFeedBack[]
 }
 
 model JobRoleTraining {
@@ -1086,4 +1090,16 @@ model JobRoleSkill {
   skill   skills  @relation(fields: [skillId], references: [skill_id])
 
   @@unique([jobRoleId, skillId])
+}
+
+model EmployerJobRoleFeedBack{
+    id                 String  @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+    jobRoleId          String  @db.UniqueIdentifier
+    skillId            String  @db.UniqueIdentifier
+    likertRating       Int
+    submiterid         String  @db.UniqueIdentifier
+    submiter           User @relation(fields: [submiterid], references: [id])
+    skill   skills  @relation(fields: [skillId], references: [skill_id])
+
+    jobRole JobRole @relation(fields: [jobRoleId], references: [id])
 }

@@ -48,6 +48,7 @@ export default auth((req) => {
       "/api/skills/search/",
       "/api/skills/parse-text/",
       "/api/postal-geo-data/zip/search",
+      "/employer-feedback"
     ],
     [Role.CASE_MANAGER]: [
       "/api/admin",
