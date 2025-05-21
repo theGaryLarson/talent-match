@@ -109,7 +109,7 @@ const subcategoriesData = [
   { skill_category: "Wireless Technologies" },
   { skill_category: "Soft Skill" },
   { skill_category: "Unspecified" },
-  { skill_category: "Business Intelligence"}
+  { skill_category: "Business Intelligence" },
 ]; // Lightcast IT subcategories data
 
 // // replaced with real data from Dynamics (programs table)

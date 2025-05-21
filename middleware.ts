@@ -49,7 +49,7 @@ export default auth((req) => {
       "/api/skills/parse-text/",
       "/api/postal-geo-data/zip/search",
       "/employer-feedback",
-      "/api/employer-feedback"
+      "/api/employer-feedback",
     ],
     [Role.CASE_MANAGER]: [
       "/api/admin",

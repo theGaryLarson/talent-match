@@ -3,24 +3,32 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-     const { jobRoleId, skillRatings, projectedHires } = await req.json();
+    const { jobRoleId, skillRatings, projectedHires } = await req.json();
 
     if (!jobRoleId || !skillRatings || !projectedHires) {
-      return NextResponse.json({ message: 'Invalid data' },{status:400});
+      return NextResponse.json({ message: "Invalid data" }, { status: 400 });
     }
 
-
-const result = await TakeEmployerFeedBack(jobRoleId, skillRatings, projectedHires);
+    const result = await TakeEmployerFeedBack(
+      jobRoleId,
+      skillRatings,
+      projectedHires,
+    );
 
     // Assuming TakeEmployerFeedBack returns a success message or status
     if (result.success) {
-      return NextResponse.json({ message: 'Data processed successfully' }, { status: 200 });
+      return NextResponse.json(
+        { message: "Data processed successfully" },
+        { status: 200 },
+      );
     } else {
-      return NextResponse.json({ message: 'Failed to process data' }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to process data" },
+        { status: 500 },
+      );
     }
-
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error("Error processing request:", error);
     return NextResponse.json(
       { success: false, error: "Internal Server Error" },
       { status: 500 },
