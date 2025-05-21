@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@mui/material";
-import { JobRole, JobRoleSkill, skills } from "@prisma/client";
+import { JobRole, JobRoleSkill } from "@prisma/client";
 import { useState } from "react";
 interface EmployerFeedbackFormProps {
   jobroles: (JobRole & {

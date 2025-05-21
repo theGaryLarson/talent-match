@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { auth } from "@/auth";
 const prisma: PrismaClient = getPrismaClient();
@@ -19,6 +19,7 @@ export async function getictjobs() {
     });
     return res;
   } catch (e) {
+    console.log(e);
     return [];
   }
 }
@@ -35,7 +36,7 @@ interface FeedbackResult {
 export async function TakeEmployerFeedBack(
   jobRoleId: string,
   skillRatings: SkillRatings,
-  projectedHires: number,
+  projectedHires: number, // eslint-disable-line @typescript-eslint/no-unused-vars
 ): Promise<FeedbackResult> {
   try {
     const session = await auth();
@@ -66,7 +67,6 @@ export async function TakeEmployerFeedBack(
       }));
     await prisma.employerJobRoleFeedBack.createMany({ data: feedbacks });
 
-    console.log("Multiple feedbacks inserted successfully:", feedbacks);
     return {
       success: true,
       message: "Feedback processed successfully.",
