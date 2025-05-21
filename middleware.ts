@@ -36,6 +36,7 @@ export default auth((req) => {
       "/api/users/avatar/upload",
     ],
     [Role.EMPLOYER]: [
+      "/pdf.worker.min.mjs",
       "/edit-profile/employer/",
       "/services/employers/dashboard",
       "/services/jobseekers/",
@@ -52,6 +53,7 @@ export default auth((req) => {
       "/api/employer-feedback",
     ],
     [Role.CASE_MANAGER]: [
+      "/pdf.worker.min.mjs",
       "/api/admin",
       "/career-prep",
       "/services/jobseekers",

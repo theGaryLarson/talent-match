@@ -5,6 +5,7 @@ import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
 import {
+  ArticleOutlined,
   AssignmentOutlined,
   CalendarMonthOutlined,
   LogoutRounded,
@@ -34,6 +35,11 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
       href: "/career-prep",
       icon: <PersonOutlineRounded />,
       label: "Home",
+    },
+    {
+      href: "/career-prep/power-bi",
+      icon: <ArticleOutlined />,
+      label: "Dynamics Data",
     },
     {
       href: "/career-prep/talent-search",

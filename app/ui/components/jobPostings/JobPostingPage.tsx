@@ -76,6 +76,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
               <div>
                 <ApplyToJobButton
                   id={params.id}
+                  job_post_url={joblisting.job_post_url}
                   appliedStatus={joblisting.jobStatus}
                   unPublishDate={joblisting.unpublish_date}
                 />
@@ -138,6 +139,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
             <div>
               <ApplyToJobButton
                 id={params.id}
+                job_post_url={joblisting.job_post_url}
                 appliedStatus={joblisting.jobStatus}
                 unPublishDate={joblisting.unpublish_date}
               />
