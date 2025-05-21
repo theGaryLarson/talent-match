@@ -87,7 +87,7 @@ export default function EmployerFeedbackForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 p-7">
       {/* Job Role Selection */}
       <div>
         <label className="block font-medium text-gray-700">
@@ -116,10 +116,10 @@ export default function EmployerFeedbackForm({
             Rate the importance of each skill (1-5):
           </h3>
           {selectedJobRole.skills.map((skill) => (
-            <div key={skill.skillId} className="flex items-center my-2">
-              <label className="w-full">{skill.skill.skill_name}</label>
+            <div key={skill.skillId} className="grid grid-cols-2  my-2">
+              <label>{skill.skill.skill_name}</label>
               <select
-                className="ml-4 p-2 border rounded-md"
+                className="p-2 border rounded-md"
                 value={skillRatings[skill.skillId] || ""}
                 onChange={(e) =>
                   handleSkillRatingChange(
