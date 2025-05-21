@@ -64,6 +64,7 @@ export async function TakeEmployerFeedBack(
         likertRating,
         submiterid: submiterId,
       }));
+      await prisma.employerJobRoleFeedBack.createMany({data:feedbacks})
 
     console.log("Multiple feedbacks inserted successfully:", feedbacks);
     return {
