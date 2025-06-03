@@ -23,7 +23,30 @@ export async function getictjobs() {
     return [];
   }
 }
-
+export async function getictjobsByPathWay(pathway_id:string) {
+  try {
+    const res = await prisma.jobRole.findMany({
+      where:{
+        pathwayId:pathway_id
+      },
+      include: {
+        skills: {
+          include: {
+            skill: {
+              select: {
+                skill_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return res;
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+}
 type SkillRatings = {
   [key: string]: number; // key is skill ID, value is the rating (likely between 1-5)
 };
