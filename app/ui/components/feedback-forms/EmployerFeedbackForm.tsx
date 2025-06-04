@@ -13,9 +13,11 @@ interface EmployerFeedbackFormProps {
       };
     })[];
   })[];
+
+  jobroleId:string
 }
 export default function EmployerFeedbackForm({
-  jobroles,
+  jobroles,jobroleId
 }: EmployerFeedbackFormProps) {
   //fetch all ict roles
   // select a role
@@ -33,7 +35,7 @@ export default function EmployerFeedbackForm({
         })[];
       })
     | null
-  >(null);
+  >(jobroles.find((role) => role.id === jobroleId) || null);
   const [extraSkills, setExtraSkills] = useState<SkillDTO[]>([]);
   const [currentSkill, setCurrentSkill] = useState<SkillDTO | null>(null);
   const [skillRatings, setSkillRatings] = useState<{
@@ -41,12 +43,6 @@ export default function EmployerFeedbackForm({
   }>({});
   const [projectedHires, setProjectedHires] = useState<number>(0);
 
-  // Handle job role selection
-  const handleJobRoleChange = (roleId: string) => {
-    const selectedRole = jobroles.find((role) => role.id === roleId) || null;
-    setSelectedJobRole(selectedRole);
-    setSkillRatings({});
-  };
 
   // Handle skill rating change
   const handleSkillRatingChange = (skillId: string, rating: number) => {
@@ -98,27 +94,7 @@ export default function EmployerFeedbackForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 p-7">
-      {/* Job Role Selection */}
-      <div>
-        <label className="block font-medium text-gray-700">
-          Select Job Role:
-        </label>
-        <select
-          className="w-full mt-2 p-2 border rounded-md"
-          value={selectedJobRole?.id || ""}
-          onChange={(e) => handleJobRoleChange(e.target.value)}
-        >
-          <option value="" disabled>
-            Select a Job Role
-          </option>
-          {jobroles.map((role) => (
-            <option key={role.id} value={role.id}>
-              {role.title}
-            </option>
-          ))}
-        </select>
-      </div>
-
+      <h1>{selectedJobRole?.title}</h1>
       {/* Skill Ratings */}
       {selectedJobRole && (
         <div>
