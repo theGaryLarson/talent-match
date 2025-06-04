@@ -90,7 +90,7 @@ export async function createJobListingWithSkills(jobData: JobPostCreationDTO) {
           Session?.user.roles.includes(Role.ADMIN) ||
           Session?.user.roles.includes(Role.CASE_MANAGER)
             ? jobData.career_services_offered
-            : null,
+            : true,
         trainingRequirements: jobData.trainingRequirements,
         requiredCertifications: jobData.requiredCertifications,
         minimumEducationLevel: jobData.minimumEducationLevel,
