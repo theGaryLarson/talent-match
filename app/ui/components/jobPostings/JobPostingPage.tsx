@@ -33,7 +33,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
     <>
       {joblisting.career_services_offered && (
         <Grid container sx={{ mb: 2, mx: { xs: 3, md: 6.25 } }}>
-          <Alert color="info">Career Services Offered</Alert>
+          <Alert color="info">Employer Partner Jobs</Alert>
         </Grid>
       )}
       <Stack

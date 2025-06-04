@@ -62,7 +62,7 @@ function JobListingCardView({
     >
       {joblisting.career_services_offered && (
         <Grid container sx={{ mb: 3 }}>
-          <Alert color="info">Career Services Offered</Alert>
+          <Alert color="info">Employer Partner Job</Alert>
         </Grid>
       )}
       <Stack
