@@ -95,7 +95,7 @@ export default function NewJobForm({
   const [earnAndLearnType, setEarnAndLearnType] = useState<string | null>(null);
   const [careerServicesOffered, setCareerServicesOffered] = useState<
     boolean | null
-  >(null);
+  >(true);
   const [paidPosition, setPaidPosition] = useState(false);
   const [internship, setInternship] = useState(false);
   const [apprenticeship, setApprenticeship] = useState(false);
@@ -137,7 +137,7 @@ export default function NewJobForm({
       // Step 1: Employment Information state
       setEmploymentType(job_posting.employment_type || "");
       setEarnAndLearnType(job_posting.earn_and_learn_type || null);
-      setCareerServicesOffered(job_posting.career_services_offered || false);
+      setCareerServicesOffered(job_posting.career_services_offered || true);
       setPaidPosition(job_posting.is_paid || false);
       setInternship(job_posting.is_internship || false);
       setApprenticeship(job_posting.is_apprenticeship || false);
@@ -596,14 +596,14 @@ export default function NewJobForm({
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={careerServicesOffered ?? false}
+                        checked={careerServicesOffered ?? true}
                         onChange={(e) =>
                           setCareerServicesOffered(e.target.checked)
                         }
                         name="paid-position"
                       />
                     }
-                    label="Career Services Offered"
+                    label="Employer Partner Job"
                   />
                 )}
               </Grid>

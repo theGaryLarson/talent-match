@@ -374,7 +374,7 @@ export default function JobListingsContent() {
               }))}
             />
           </Grid>
-          {/* Career Services Offered */}
+          {/* Employer Partner Jobs */}
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControlLabel
               value=""
@@ -384,7 +384,7 @@ export default function JobListingsContent() {
                   onChange={handleCareerServicesChange}
                 />
               }
-              label="Career Services Offered"
+              label="Employer Partner Jobs"
               labelPlacement="end"
             />
           </Grid>
