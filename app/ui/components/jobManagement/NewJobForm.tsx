@@ -347,7 +347,7 @@ export default function NewJobForm({
 
       if (response.ok) {
         const parsedSkills: SkillDTO[] = await response.json();
-        const topSkills = parsedSkills.slice(0, 5);
+        const topSkills = parsedSkills.slice(0, 10);
         setRequiredSkills((currentSkills) => {
           if (currentSkills.length === 0) {
             console.log("Skills parsed and state updated:", topSkills);
@@ -784,12 +784,12 @@ export default function NewJobForm({
         {activeStep === 2 && (
           <Stack spacing={3}>
             <FormControl fullWidth>
-              <FormLabel>Top 5 required skills</FormLabel>
+              <FormLabel>Top 10 required skills</FormLabel>
               <TagsWithAutocomplete
                 apiSearchRoute="/api/skills/search/"
                 fieldLabel=""
                 id="employer-jobpost-skills"
-                maxTags={5}
+                maxTags={10}
                 searchingText="Searching..."
                 noResultsText="No skills found..."
                 onChange={(event: any, val: any) => {
@@ -807,8 +807,8 @@ export default function NewJobForm({
                 getTagLink={(option: SkillDTO) => option.skill_info_url}
               />
               <FormHelperText>
-                Enter five required skills needed for this role. Start typing to
-                see suggestions and select multiple skill
+                Enter up to ten required skills needed for this role. Start
+                typing to see suggestions and select multiple skill
               </FormHelperText>
             </FormControl>
 

@@ -193,7 +193,7 @@ export default async function JobPostingPage({ joblisting, params }: Props) {
             <div className="mt-2 flex grow text-sm tablet:text-base">
               <Skills
                 skillsList={skills}
-                maxNumSkills={5}
+                maxNumSkills={11}
                 jobseekerID={undefined}
               />
             </div>
