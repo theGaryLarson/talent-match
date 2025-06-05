@@ -979,7 +979,7 @@ export async function parseTextForSkills(text: string) {
       messages: [
         {
           role: "system",
-          content: `Extract the resume information into the provided JSON schema. Infer the skills used from the text. Return at most 10 skills`,
+          content: `Infer the skills used from the text. Return at most 10 skills`,
         },
         {
           role: "user",
