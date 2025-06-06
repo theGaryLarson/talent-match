@@ -51,6 +51,7 @@ export default auth((req) => {
       "/api/postal-geo-data/zip/search",
       "/employer-feedback",
       "/api/employer-feedback",
+      "/api/ict-jobs-by-id",
     ],
     [Role.CASE_MANAGER]: [
       "/pdf.worker.min.mjs",

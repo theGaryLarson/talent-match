@@ -23,11 +23,11 @@ export async function getictjobs() {
     return [];
   }
 }
-export async function getictjobsByPathWay(pathway_id:string) {
+export async function getictjobsById(jobRoleId: string) {
   try {
-    const res = await prisma.jobRole.findMany({
-      where:{
-        pathwayId:pathway_id
+    const res = await prisma.jobRole.findUnique({
+      where: {
+        id: jobRoleId,
       },
       include: {
         skills: {
@@ -44,7 +44,7 @@ export async function getictjobsByPathWay(pathway_id:string) {
     return res;
   } catch (e) {
     console.log(e);
-    return [];
+    return null;
   }
 }
 type SkillRatings = {

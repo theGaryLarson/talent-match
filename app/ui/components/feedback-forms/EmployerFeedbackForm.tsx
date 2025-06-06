@@ -3,21 +3,13 @@
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { Button } from "@mui/material";
 import { JobRole, JobRoleSkill, skills } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextFieldWithAutocomplete from "../mui/TextFieldWithAutocomplete";
 interface EmployerFeedbackFormProps {
-  jobroles: (JobRole & {
-    skills: (JobRoleSkill & {
-      skill: {
-        skill_name: string;
-      };
-    })[];
-  })[];
-
-  jobroleId:string
+  jobroleId: string;
 }
 export default function EmployerFeedbackForm({
-  jobroles,jobroleId
+  jobroleId,
 }: EmployerFeedbackFormProps) {
   //fetch all ict roles
   // select a role
@@ -35,14 +27,18 @@ export default function EmployerFeedbackForm({
         })[];
       })
     | null
-  >(jobroles.find((role) => role.id === jobroleId) || null);
+  >(null);
   const [extraSkills, setExtraSkills] = useState<SkillDTO[]>([]);
   const [currentSkill, setCurrentSkill] = useState<SkillDTO | null>(null);
   const [skillRatings, setSkillRatings] = useState<{
     [skillId: string]: number;
   }>({});
   const [projectedHires, setProjectedHires] = useState<number>(0);
-
+  useEffect(() => {
+    fetch("/api/ict-jobs-by-id/" + jobroleId)
+      .then((res) => res.json())
+      .then((jsonData) => setSelectedJobRole(jsonData));
+  }, []);
 
   // Handle skill rating change
   const handleSkillRatingChange = (skillId: string, rating: number) => {
@@ -85,12 +81,18 @@ export default function EmployerFeedbackForm({
       alert("An error occurred while submitting feedback. Please try again.");
     }
   };
-  const addAdditionalSkills = () =>{
-      if(currentSkill){
-        if(extraSkills.some((sk)=>sk.skill_id == currentSkill.skill_id) || selectedJobRole?.skills.some((sjk)=>sjk.skillId == currentSkill.skill_id)) return;
-        setExtraSkills((prev)=>[...prev, currentSkill])
-      }
-  }
+  const addAdditionalSkills = () => {
+    if (currentSkill) {
+      if (
+        extraSkills.some((sk) => sk.skill_id == currentSkill.skill_id) ||
+        selectedJobRole?.skills.some(
+          (sjk) => sjk.skillId == currentSkill.skill_id,
+        )
+      )
+        return;
+      setExtraSkills((prev) => [...prev, currentSkill]);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 p-7">
@@ -125,9 +127,8 @@ export default function EmployerFeedbackForm({
               </select>
             </div>
           ))}
-          {
-            extraSkills.map((skill)=>(
-              <div key={skill.skill_id} className="grid grid-cols-2  my-2">
+          {extraSkills.map((skill) => (
+            <div key={skill.skill_id} className="grid grid-cols-2  my-2">
               <label>{skill.skill_name}</label>
               <select
                 className="p-2 border rounded-md"
@@ -149,30 +150,34 @@ export default function EmployerFeedbackForm({
                 ))}
               </select>
             </div>
-            ))
-
-          }
+          ))}
           <div>
             <div className="mb-6">
-                      <TextFieldWithAutocomplete<SkillDTO>
-                        apiSearchRoute="/api/skills/search/"
-                        fieldLabel="Select Additional Skill"
-                        value={currentSkill || ""}
-                        onChange={(_, value) => {
-                          if (value && typeof value !== "string") {
-                            setCurrentSkill(value);
-                          } else {
-                            setCurrentSkill(null);
-                          }
-                        }}
-                        searchPlaceholder="Search for a skill..."
-                        getOptionLabel={(option: SkillDTO) => option.skill_name}
-                        noResultsText="No skills found"
-                        allowNewOption={false}
-                        searchingText="Searching skills..."
-                      />
-                    </div>
-          <Button type="button"  onClick={addAdditionalSkills} disabled={!currentSkill}>Add Additional skill</Button>
+              <TextFieldWithAutocomplete<SkillDTO>
+                apiSearchRoute="/api/skills/search/"
+                fieldLabel="Select Additional Skill"
+                value={currentSkill || ""}
+                onChange={(_, value) => {
+                  if (value && typeof value !== "string") {
+                    setCurrentSkill(value);
+                  } else {
+                    setCurrentSkill(null);
+                  }
+                }}
+                searchPlaceholder="Search for a skill..."
+                getOptionLabel={(option: SkillDTO) => option.skill_name}
+                noResultsText="No skills found"
+                allowNewOption={false}
+                searchingText="Searching skills..."
+              />
+            </div>
+            <Button
+              type="button"
+              onClick={addAdditionalSkills}
+              disabled={!currentSkill}
+            >
+              Add Additional skill
+            </Button>
           </div>
         </div>
       )}
