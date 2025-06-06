@@ -2,7 +2,7 @@
 
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { Button } from "@mui/material";
-import { JobRole, JobRoleSkill, skills } from "@prisma/client";
+import { JobRole, JobRoleSkill } from "@prisma/client";
 import { useEffect, useState } from "react";
 import TextFieldWithAutocomplete from "../mui/TextFieldWithAutocomplete";
 interface EmployerFeedbackFormProps {
