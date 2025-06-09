@@ -102,7 +102,7 @@ export default function Page(props: {
                 sx={{ my: 2 }}
                 variant="contained"
                 LinkComponent={NextLink}
-                onClick={() => router.push("/ess/pathways")}
+                onClick={() => router.push("/ess")}
               >
                 See other Pathways
               </Button>

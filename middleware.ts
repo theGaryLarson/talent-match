@@ -11,6 +11,7 @@ export default auth((req) => {
   // Map roles to their allowed routes
   const roleRoutes: Record<Role, string[]> = {
     [Role.GUEST]: [
+      "/ess",
       "/signup",
       "/signup/jobseeker",
       "/signup/employer",
@@ -21,6 +22,7 @@ export default auth((req) => {
       "/api/employers/create",
     ],
     [Role.JOBSEEKER]: [
+      "/ess",
       "/pdf.worker.min.mjs",
       "/edit-profile/jobseeker/",
       "/services/jobseekers/career-prep/skill-assessment",
@@ -36,6 +38,7 @@ export default auth((req) => {
       "/api/users/avatar/upload",
     ],
     [Role.EMPLOYER]: [
+      "/ess",
       "/pdf.worker.min.mjs",
       "/edit-profile/employer/",
       "/services/employers/dashboard",
