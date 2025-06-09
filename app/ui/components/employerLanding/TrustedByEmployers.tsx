@@ -11,6 +11,8 @@ import Captus from "@/public/images/employers/AI-FILE-ai-1.png";
 import NadikaHealth from "@/public/images/employers/Nadika Health.png";
 import TekSystems from "@/public/images/employers/teksystems.svg";
 import Ofm from "@/public/images/employers/Office of Financial Management.svg";
+import AiHouse from "@/public/images/employers/AI-house-Logo.png";
+import SeattleBank from "@/public/images/employers/Seattle-bank-logo.png";
 import { Box, Grid, Typography } from "@mui/material";
 
 interface Logo {
@@ -32,11 +34,13 @@ const logos: Logo[] = [
   { src: NadikaHealth, alt: "Nadika Health Logo", width: 323 },
   { src: TekSystems, alt: "TekSystems Logo", width: 152 },
   { src: Ofm, alt: "Office of Financial Management Logo", width: 106 },
+  { src: AiHouse, alt: "AI House Logo", width: 100 },
+  { src: SeattleBank, alt: "Seattle Bank Logo", width: 100 },
 ];
 
 const row1Logos = logos.slice(0, 6);
 const row2Logos = logos.slice(6, 9);
-const row3Logos = logos.slice(9, 12);
+const row3Logos = logos.slice(9, 14);
 
 export default function TrustedByEmployers() {
   return (

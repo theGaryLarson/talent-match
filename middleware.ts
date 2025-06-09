@@ -49,6 +49,9 @@ export default auth((req) => {
       "/api/skills/search/",
       "/api/skills/parse-text/",
       "/api/postal-geo-data/zip/search",
+      "/employer-feedback",
+      "/api/employer-feedback",
+      "/api/ict-jobs-by-id",
     ],
     [Role.CASE_MANAGER]: [
       "/pdf.worker.min.mjs",
