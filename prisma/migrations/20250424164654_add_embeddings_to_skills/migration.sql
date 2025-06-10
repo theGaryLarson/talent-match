@@ -1,19 +1,28 @@
-BEGIN TRY
-
 BEGIN TRAN;
+BEGIN TRY
+    IF EXISTS (
+        SELECT 1
+        FROM sys.types
+        WHERE name = 'vector'
+    )
+        BEGIN
+            EXEC(N'
+      ALTER TABLE [dbo].[skills]
+      ADD [embedding] vector(1536);
+    ');
+        END
+    ELSE
+        BEGIN
+            PRINT 'Skipping embedding column: VECTOR type not available locally.';
+        END;
 
--- AlterTable
-ALTER TABLE [dbo].[skills] ADD [embedding] vector(1536);
-
-COMMIT TRAN;
-
+    COMMIT TRAN;
 END TRY
 BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRAN;
 
-IF @@TRANCOUNT > 0
-BEGIN
-    ROLLBACK TRAN;
-END;
-THROW
-
-END CATCH
+    -- Re‑throw everything except "type not found" (2715)
+    IF ERROR_NUMBER() <> 2715
+        THROW;
+END CATCH;
