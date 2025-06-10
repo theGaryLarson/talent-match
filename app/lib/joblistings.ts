@@ -706,7 +706,10 @@ export async function getJobListingsFiltered(request: Request) {
   } = await request.json();
 
   const andConditions: any[] = [];
-  const orderBy = [{ publish_date: "desc" as const }];
+  const orderBy = [
+    { career_services_offered: "desc" as const },
+    { publish_date: "desc" as const },
+  ];
   // Determine the number of results to skip based on the page number and maxResults
   const skip = (page - 1) * maxResults;
 
