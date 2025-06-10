@@ -1,5 +1,6 @@
-import { getJobRole, getRecommendedJobSeekersByJobRole } from "@/app/lib/ict";
+import { getJobRole } from "@/app/lib/ict";
 import EmployerFeedbackForm from "@/app/ui/components/feedback-forms/EmployerFeedbackForm";
+import RecommendedJobSeekersTable from "@/app/ui/components/feedback-forms/RecommendedJobSeekersTable";
 import { auth } from "@/auth";
 import { ExpandMore } from "@mui/icons-material";
 import {
@@ -14,16 +15,9 @@ import {
   ListItemText,
   Grid,
   Stack,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Link,
 } from "@mui/material";
 
 export default async function Page(props: {
@@ -31,8 +25,6 @@ export default async function Page(props: {
 }) {
   const [session, params] = await Promise.all([auth(), props.params]);
   const jobRole = await getJobRole(params.jobrole);
-  const jobseekers = await getRecommendedJobSeekersByJobRole(params.jobrole);
-
   const employer = session?.user.employeeIsApproved;
 
   if (!jobRole) {
@@ -95,30 +87,7 @@ export default async function Page(props: {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <TableContainer sx={{ mt: 1 }}>
-                  <Table size="small" stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Name</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {jobseekers?.map((jobseeker) => (
-                        <TableRow key={jobseeker.jobseeker_id}>
-                          <TableCell>
-                            <Link
-                              href={
-                                "/services/jobseekers/" + jobseeker.jobseeker_id
-                              }
-                            >
-                              {jobseeker.first_name} {jobseeker.last_name}
-                            </Link>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                <RecommendedJobSeekersTable jobRoleId={params.jobrole} />
               </AccordionDetails>
             </Accordion>
           </>

@@ -168,9 +168,7 @@ export default function ICTRecommendationTable() {
       });
 
       try {
-        const res = await fetch(
-          `/api/admin/career-prep/ict-recommendations/${role.roleId}`,
-        );
+        const res = await fetch(`/api/ict/recommendations/${role.roleId}`);
         const responseData = await res.json();
 
         if (!res.ok) {

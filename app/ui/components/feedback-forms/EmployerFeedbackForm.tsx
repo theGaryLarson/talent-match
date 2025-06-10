@@ -27,7 +27,7 @@ export default function EmployerFeedbackForm({
     [skillId: string]: number;
   }>({});
   useEffect(() => {
-    fetch("/api/ict-jobs-by-id/" + jobroleId)
+    fetch("/api/ict/jobs-by-id/" + jobroleId)
       .then((res) => res.json())
       .then((jsonData) => setSelectedJobRole(jsonData));
   }, []);

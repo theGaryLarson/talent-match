@@ -50,7 +50,8 @@ export default auth((req) => {
       "/api/skills/parse-text/",
       "/api/postal-geo-data/zip/search",
       "/api/employer-feedback",
-      "/api/ict-jobs-by-id",
+      "/api/ict/jobs-by-id",
+      "/api/ict/recommendations",
     ],
     [Role.CASE_MANAGER]: [
       "/pdf.worker.min.mjs",
@@ -62,6 +63,8 @@ export default auth((req) => {
       "/api/admin/career-prep/update-recomended-track/",
       "/api/joblistings/",
       "/api/skills/parse-text",
+      "/api/ict/jobs-by-id",
+      "/api/ict/recommendations",
       // Add any other routes accessible by case managers
     ],
     [Role.ADMIN]: [], // Admin has full access, so this can be empty
