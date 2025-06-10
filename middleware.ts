@@ -98,6 +98,7 @@ export default auth((req) => {
     "/api/joblistings/query",
     "/api/employers/industry-sectors",
     "/api/postal-geo-data/city/get",
+    "/api/postal-geo-data/city/search/",
     "/api/postal-geo-data/zip/search/",
     "/api/employers/training-providers",
     "/api/events",
@@ -132,6 +133,7 @@ export default auth((req) => {
       !publicRoutes.includes(pathname) &&
       !pathname.startsWith("/services/joblistings") &&
       !pathname.startsWith("/services/training-programs") &&
+      !pathname.startsWith("/api/postal-geo-data/city/search") &&
       !pathname.startsWith("/services/training-providers");
 
     if (isProtectedRoute) {
@@ -173,6 +175,7 @@ export default auth((req) => {
     publicRoutes.includes(pathname) || // training providers/programs needs wildcard for id, but all other public routes are explicit
     pathname.startsWith("/services/training-programs/") ||
     pathname.startsWith("/services/training-providers/") ||
+    pathname.startsWith("/api/postal-geo-data/city/search/") ||
     pathname.startsWith("/services/joblistings")
   ) {
     return NextResponse.next();
