@@ -1,21 +1,16 @@
-import { TakeEmployerFeedBack } from "@/app/lib/EmployerFeedback";
+import { TakeEmployerFeedBack } from "@/app/lib/ict";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { jobRoleId, skillRatings, projectedHires } = await req.json();
+    const { jobRoleId, skillRatings } = await req.json();
 
-    if (!jobRoleId || !skillRatings || !projectedHires) {
+    if (!jobRoleId || !skillRatings) {
       return NextResponse.json({ message: "Invalid data" }, { status: 400 });
     }
 
-    const result = await TakeEmployerFeedBack(
-      jobRoleId,
-      skillRatings,
-      projectedHires,
-    );
+    const result = await TakeEmployerFeedBack(jobRoleId, skillRatings);
 
-    // Assuming TakeEmployerFeedBack returns a success message or status
     if (result.success) {
       return NextResponse.json(
         { message: "Data processed successfully" },

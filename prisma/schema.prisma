@@ -1052,6 +1052,7 @@ model PathwayTraining {
 model JobRole {
   id               String            @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
   pathwayId        String?           @db.UniqueIdentifier
+  onetCode         String?           @db.VarChar(30)
   title            String            @db.VarChar(255)
   jobLevel         String            @db.VarChar(20)
   jobDescription   String?           @db.Text

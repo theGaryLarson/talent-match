@@ -1,4 +1,7 @@
 import { getJobRole, getRecommendedJobSeekersByJobRole } from "@/app/lib/ict";
+import EmployerFeedbackForm from "@/app/ui/components/feedback-forms/EmployerFeedbackForm";
+import { auth } from "@/auth";
+import { ExpandMore } from "@mui/icons-material";
 import {
   Container,
   Typography,
@@ -17,14 +20,20 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Link,
 } from "@mui/material";
 
 export default async function Page(props: {
   params: Promise<{ jobrole: string }>;
 }) {
-  const params = await props.params;
+  const [session, params] = await Promise.all([auth(), props.params]);
   const jobRole = await getJobRole(params.jobrole);
   const jobseekers = await getRecommendedJobSeekersByJobRole(params.jobrole);
+
+  const employer = session?.user.employeeIsApproved;
 
   if (!jobRole) {
     return (
@@ -53,6 +62,68 @@ export default async function Page(props: {
         >
           {jobRole?.title}
         </Typography>
+        {employer && (
+          <>
+            <Accordion sx={{ p: 2, mt: 2 }}>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="employer-feedback-content"
+                id="employer-feedback-header"
+              >
+                <Typography variant="h5" fontWeight="bold">
+                  Employer Feedback Form
+                </Typography>
+                <Typography sx={{ alignContent: "center", ml: 2 }}>
+                  Help us find you better job matches
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <EmployerFeedbackForm jobroleId={params.jobrole} />
+              </AccordionDetails>
+            </Accordion>
+            <Accordion sx={{ p: 2, mb: 2 }}>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="job-seeker-matches-content"
+                id="job-seeker-matches-header"
+              >
+                <Typography variant="h5" fontWeight="bold">
+                  Job Seeker Matches
+                </Typography>
+                <Typography sx={{ alignContent: "center", ml: 2 }}>
+                  Check out the candidates best matched for this role
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer sx={{ mt: 1 }}>
+                  <Table size="small" stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {jobseekers?.map((jobseeker) => (
+                        <TableRow key={jobseeker.jobseeker_id}>
+                          <TableCell>
+                            <Link
+                              href={
+                                "/services/jobseekers/" + jobseeker.jobseeker_id
+                              }
+                            >
+                              {jobseeker.first_name} {jobseeker.last_name}
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
+          </>
+        )}
+
         <Card sx={{ p: 2, mb: 2, mt: 2 }}>
           <CardContent component={Stack} spacing={2}>
             <Box>
@@ -141,41 +212,6 @@ export default async function Page(props: {
             </Card>
           </Grid>
         </Grid>
-        <Card>
-          <CardContent>
-            <Typography variant="h5" fontWeight="bold">
-              Job Seeker Matches
-            </Typography>
-            <TableContainer sx={{ mt: 1 }}>
-              <Table size="small" stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Resume</TableCell>
-                    <TableCell align="right">Match Score</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {jobseekers?.map((jobseeker) => (
-                    <TableRow key={jobseeker.jobseeker_id}>
-                      <TableCell>
-                        {jobseeker.first_name} {jobseeker.last_name}
-                      </TableCell>
-                      <TableCell>{jobseeker.email}</TableCell>
-                      <TableCell>
-                        {jobseeker.hasResume ? "true" : "false"}
-                      </TableCell>
-                      <TableCell align="right">
-                        {jobseeker.final_score}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
-        </Card>
       </Box>
     </Container>
   );

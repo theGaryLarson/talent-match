@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import getPrismaClient from "./prismaClient.mjs";
+import { auth } from "@/auth";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -23,6 +24,15 @@ export type ICTRecommendationResult = {
   hasResume: boolean;
   final_score: number;
 };
+
+type SkillRatings = {
+  [key: string]: number;
+};
+
+interface FeedbackResult {
+  success: boolean;
+  message: string;
+}
 
 export async function getJobRolesPerPathway() {
   try {
@@ -70,6 +80,17 @@ export async function getJobRole(id: string) {
     const jobRole = await prisma.jobRole.findUnique({
       where: {
         id: id,
+      },
+      include: {
+        skills: {
+          include: {
+            skill: {
+              select: {
+                skill_name: true,
+              },
+            },
+          },
+        },
       },
     });
     return jobRole;
@@ -190,5 +211,51 @@ export async function getRecommendedJobSeekersByJobRole(jobRoleId: string) {
     console.error(error);
   } finally {
     prisma.$disconnect();
+  }
+}
+
+export async function TakeEmployerFeedBack(
+  jobRoleId: string,
+  skillRatings: SkillRatings,
+): Promise<FeedbackResult> {
+  try {
+    const session = await auth();
+    if (!session?.user.id)
+      return {
+        success: false,
+        message: "user id needed",
+      };
+
+    const submiterId = session.user.id;
+    const validSkills = await prisma.skills.findMany({
+      select: {
+        skill_id: true,
+      },
+    });
+
+    // Convert validSkills to a set for fast lookup
+    const validSkillIds = new Set(validSkills.map((skill) => skill.skill_id));
+    console.log(Object.entries(skillRatings));
+    // Filter the skillRatings to only include valid skillIds
+    const feedbacks = Object.entries(skillRatings)
+      .filter(([skillId]) => validSkillIds.has(skillId))
+      .map(([skillId, likertRating]) => ({
+        jobRoleId,
+        skillId,
+        likertRating,
+        submiterid: submiterId,
+      }));
+    await prisma.employerJobRoleFeedBack.createMany({ data: feedbacks });
+
+    return {
+      success: true,
+      message: "Feedback processed successfully.",
+    };
+  } catch (error) {
+    console.error("Error in processing feedback:", error);
+    return {
+      success: false,
+      message: "An error occurred while processing feedback.",
+    };
   }
 }

@@ -11,7 +11,6 @@ export default auth((req) => {
   // Map roles to their allowed routes
   const roleRoutes: Record<Role, string[]> = {
     [Role.GUEST]: [
-      "/ess",
       "/signup",
       "/signup/jobseeker",
       "/signup/employer",
@@ -22,7 +21,6 @@ export default auth((req) => {
       "/api/employers/create",
     ],
     [Role.JOBSEEKER]: [
-      "/ess",
       "/pdf.worker.min.mjs",
       "/edit-profile/jobseeker/",
       "/services/jobseekers/career-prep/skill-assessment",
@@ -38,7 +36,6 @@ export default auth((req) => {
       "/api/users/avatar/upload",
     ],
     [Role.EMPLOYER]: [
-      "/ess",
       "/pdf.worker.min.mjs",
       "/edit-profile/employer/",
       "/services/employers/dashboard",
@@ -52,7 +49,6 @@ export default auth((req) => {
       "/api/skills/search/",
       "/api/skills/parse-text/",
       "/api/postal-geo-data/zip/search",
-      "/employer-feedback",
       "/api/employer-feedback",
       "/api/ict-jobs-by-id",
     ],
@@ -76,6 +72,7 @@ export default auth((req) => {
   const publicRoutes = [
     "/",
     "/about-us",
+    "/ess",
     "/underconstruction",
     "/policies/terms-of-service",
     "/policies/privacy-policy",
@@ -133,6 +130,7 @@ export default auth((req) => {
   if (!req.auth) {
     const isProtectedRoute =
       !publicRoutes.includes(pathname) &&
+      !pathname.startsWith("/ess") &&
       !pathname.startsWith("/services/joblistings") &&
       !pathname.startsWith("/services/training-programs") &&
       !pathname.startsWith("/services/training-providers");
@@ -174,6 +172,7 @@ export default auth((req) => {
   // Allow public routes
   if (
     publicRoutes.includes(pathname) || // training providers/programs needs wildcard for id, but all other public routes are explicit
+    pathname.startsWith("/ess") ||
     pathname.startsWith("/services/training-programs/") ||
     pathname.startsWith("/services/training-providers/") ||
     pathname.startsWith("/services/joblistings")
