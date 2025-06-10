@@ -55,7 +55,7 @@ export default function RequiredTooltip({
         tooltip: {
           sx: {
             backgroundColor: theme.palette.error.main,
-            color: theme.palette.error.text,
+            color: theme.palette.error.contrastText,
           },
         },
         arrow: {

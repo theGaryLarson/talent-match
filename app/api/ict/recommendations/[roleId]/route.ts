@@ -22,7 +22,7 @@ export async function GET(
   try {
     const results = await getRecommendedJobSeekersByJobRole(roleId);
     if (!results) {
-      return [];
+      return NextResponse.json([]);
     }
 
     return NextResponse.json(results);
