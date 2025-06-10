@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getictjobsById } from "@/app/lib/EmployerFeedback";
+import { getJobRole } from "@/app/lib/ict";
 
 export async function GET(
   request: Request,
@@ -13,7 +13,7 @@ export async function GET(
     //   return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     // }
 
-    const jobRoleRes = await getictjobsById(jobRoleId);
+    const jobRoleRes = await getJobRole(jobRoleId);
 
     if (!jobRoleRes) {
       return NextResponse.json({ error: "Jobrole not found" }, { status: 404 });

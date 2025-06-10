@@ -3,7 +3,7 @@ BEGIN TRY
 BEGIN TRAN;
 
 -- AlterTable
-ALTER TABLE [dbo].[skills] ADD [embedding] vector(1536);
+ALTER TABLE [dbo].[JobRole] ADD [onetCode] VARCHAR(30);
 
 COMMIT TRAN;
 

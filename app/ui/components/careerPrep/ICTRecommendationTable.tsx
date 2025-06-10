@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DownloadIcon from "@mui/icons-material/Download";
-import { ICTRecommendationResult } from "@/app/api/admin/career-prep/ict-recommendations/[roleId]/route";
+import { ICTRecommendationResult } from "@/app/lib/ict";
 
 type ApiRoleInfo = {
   role_id: string;
@@ -168,9 +168,7 @@ export default function ICTRecommendationTable() {
       });
 
       try {
-        const res = await fetch(
-          `/api/admin/career-prep/ict-recommendations/${role.roleId}`,
-        );
+        const res = await fetch(`/api/ict/recommendations/${role.roleId}`);
         const responseData = await res.json();
 
         if (!res.ok) {

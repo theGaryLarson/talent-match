@@ -11,13 +11,6 @@ interface EmployerFeedbackFormProps {
 export default function EmployerFeedbackForm({
   jobroleId,
 }: EmployerFeedbackFormProps) {
-  //fetch all ict roles
-  // select a role
-  //check if employer has already submitted for job role (potenally allow them to update it)
-  //once job is selected load the skills assocoiteted with that job
-  //give each skill a rating of importance of 1-5
-  //collect number of potentail hires in the next 3 years
-
   const [selectedJobRole, setSelectedJobRole] = useState<
     | (JobRole & {
         skills: (JobRoleSkill & {
@@ -33,14 +26,26 @@ export default function EmployerFeedbackForm({
   const [skillRatings, setSkillRatings] = useState<{
     [skillId: string]: number;
   }>({});
-  const [projectedHires, setProjectedHires] = useState<number>(0);
   useEffect(() => {
-    fetch("/api/ict-jobs-by-id/" + jobroleId)
+    fetch("/api/ict/jobs-by-id/" + jobroleId)
       .then((res) => res.json())
       .then((jsonData) => setSelectedJobRole(jsonData));
   }, []);
 
-  // Handle skill rating change
+  function isFormValid() {
+    const allSkillsRated = selectedJobRole?.skills.every(
+      (skill) =>
+        skillRatings[skill.skillId] !== undefined &&
+        skillRatings[skill.skillId] > 0,
+    );
+    const allExtraSkillsRated = extraSkills.every(
+      (skill) =>
+        skillRatings[skill.skill_id] !== undefined &&
+        skillRatings[skill.skill_id] > 0,
+    );
+    return allSkillsRated && allExtraSkillsRated;
+  }
+
   const handleSkillRatingChange = (skillId: string, rating: number) => {
     setSkillRatings((prev) => ({
       ...prev,
@@ -48,13 +53,11 @@ export default function EmployerFeedbackForm({
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
       jobRoleId: selectedJobRole?.id,
       skillRatings,
-      projectedHires,
     };
     console.log("Submitting feedback:", payload);
     try {
@@ -96,7 +99,6 @@ export default function EmployerFeedbackForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 p-7">
-      <h1>{selectedJobRole?.title}</h1>
       {/* Skill Ratings */}
       {selectedJobRole && (
         <div>
@@ -121,7 +123,16 @@ export default function EmployerFeedbackForm({
                 </option>
                 {[1, 2, 3, 4, 5].map((n) => (
                   <option key={n} value={n}>
-                    {n}
+                    {n} -{" "}
+                    {
+                      [
+                        "Not Important at All",
+                        "Slightly Important",
+                        "Moderately Important",
+                        "Very Important",
+                        "Critical / Must-Have",
+                      ][n - 1]
+                    }
                   </option>
                 ))}
               </select>
@@ -145,7 +156,16 @@ export default function EmployerFeedbackForm({
                 </option>
                 {[1, 2, 3, 4, 5].map((n) => (
                   <option key={n} value={n}>
-                    {n}
+                    {n} -{" "}
+                    {
+                      [
+                        "Not Important at All",
+                        "Slightly Important",
+                        "Moderately Important",
+                        "Very Important",
+                        "Critical / Must-Have",
+                      ][n - 1]
+                    }
                   </option>
                 ))}
               </select>
@@ -154,7 +174,7 @@ export default function EmployerFeedbackForm({
           <div>
             <div className="mb-6">
               <TextFieldWithAutocomplete<SkillDTO>
-                apiSearchRoute="/api/skills/search/"
+                apiSearchRoute="/api/skills/vsearch/"
                 fieldLabel="Select Additional Skill"
                 value={currentSkill || ""}
                 onChange={(_, value) => {
@@ -181,25 +201,7 @@ export default function EmployerFeedbackForm({
           </div>
         </div>
       )}
-
-      {/* Projected Hires */}
-      {selectedJobRole && (
-        <div>
-          <label className="block font-medium text-gray-700">
-            Projected Hires in the Next 3 Years:
-          </label>
-          <input
-            type="number"
-            min="0"
-            className="w-full mt-2 p-2 border rounded-md"
-            value={projectedHires || ""}
-            onChange={(e) => setProjectedHires(parseInt(e.target.value) || 0)}
-          />
-        </div>
-      )}
-
-      {/* Submit Button */}
-      <Button type="submit" disabled={!selectedJobRole}>
+      <Button type="submit" disabled={!isFormValid()}>
         Submit Feedback
       </Button>
     </form>

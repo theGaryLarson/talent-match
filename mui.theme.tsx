@@ -87,23 +87,13 @@ const theme = createTheme({
         },
         success: {
           main: "#61CE70",
-          bg: "#61CE70",
-          text: "#001C00",
         },
         warning: {
           main: "#EC7304",
-          bg: "#EC7304",
-          text: "#FFFFFF",
         },
         error: {
           main: "#DB241C",
           light: "#F8D3D2",
-          bg: "#DB241C",
-          text: "#FFFFFF",
-        },
-        accent: {
-          main: "#61CE70",
-          light: "#C1F2C8",
         },
         neutral: {
           white: "#FFFFFF",
