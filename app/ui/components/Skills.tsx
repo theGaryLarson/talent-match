@@ -1,3 +1,4 @@
+"use client";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import { Chip, ChipProps, Grid } from "@mui/material";
 import Link from "next/link";
@@ -27,22 +28,34 @@ export default function Skills({
 
   return (
     <Grid container gap={1}>
-      {skillsList.map((pill) => (
-        <Chip
-          component={Link}
-          clickable
-          color={color}
-          key={pill?.skill_id}
-          label={pill?.skill_name}
-          target="_blank"
-          href={pill?.skill_info_url}
-        />
-      ))}
+      {skillsList.map((skill) =>
+        skill?.skill_info_url.length > 0 ? (
+          <Chip
+            component={Link}
+            clickable
+            onClick={() => {}}
+            color={color}
+            key={skill?.skill_id}
+            label={skill?.skill_name}
+            target="_blank"
+            href={skill?.skill_info_url}
+          />
+        ) : (
+          <Chip
+            clickable={false}
+            onClick={() => {}}
+            color={color}
+            key={skill?.skill_id}
+            label={skill?.skill_name}
+          />
+        ),
+      )}
       {/* N-maxNumSkills link here */}
       {jobseekerID != null && leftoverSkillsCount > 0 ? (
         <Chip
           component={Link}
           clickable
+          onClick={() => {}}
           key={"leftoverSkills"}
           label={"+" + leftoverSkillsCount}
           href={"/services/jobseekers/" + jobseekerID + "#skills"}

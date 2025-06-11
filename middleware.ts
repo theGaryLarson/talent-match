@@ -49,9 +49,9 @@ export default auth((req) => {
       "/api/skills/search/",
       "/api/skills/parse-text/",
       "/api/postal-geo-data/zip/search",
-      "/employer-feedback",
       "/api/employer-feedback",
-      "/api/ict-jobs-by-id",
+      "/api/ict/jobs-by-id",
+      "/api/ict/recommendations",
     ],
     [Role.CASE_MANAGER]: [
       "/pdf.worker.min.mjs",
@@ -63,6 +63,8 @@ export default auth((req) => {
       "/api/admin/career-prep/update-recomended-track/",
       "/api/joblistings/",
       "/api/skills/parse-text",
+      "/api/ict/jobs-by-id",
+      "/api/ict/recommendations",
       // Add any other routes accessible by case managers
     ],
     [Role.ADMIN]: [], // Admin has full access, so this can be empty
@@ -73,6 +75,7 @@ export default auth((req) => {
   const publicRoutes = [
     "/",
     "/about-us",
+    "/ess",
     "/underconstruction",
     "/policies/terms-of-service",
     "/policies/privacy-policy",
@@ -98,6 +101,7 @@ export default auth((req) => {
     "/api/joblistings/query",
     "/api/employers/industry-sectors",
     "/api/postal-geo-data/city/get",
+    "/api/postal-geo-data/city/search/",
     "/api/postal-geo-data/zip/search/",
     "/api/employers/training-providers",
     "/api/events",
@@ -130,8 +134,10 @@ export default auth((req) => {
   if (!req.auth) {
     const isProtectedRoute =
       !publicRoutes.includes(pathname) &&
+      !pathname.startsWith("/ess") &&
       !pathname.startsWith("/services/joblistings") &&
       !pathname.startsWith("/services/training-programs") &&
+      !pathname.startsWith("/api/postal-geo-data/city/search") &&
       !pathname.startsWith("/services/training-providers");
 
     if (isProtectedRoute) {
@@ -171,8 +177,10 @@ export default auth((req) => {
   // Allow public routes
   if (
     publicRoutes.includes(pathname) || // training providers/programs needs wildcard for id, but all other public routes are explicit
+    pathname.startsWith("/ess") ||
     pathname.startsWith("/services/training-programs/") ||
     pathname.startsWith("/services/training-providers/") ||
+    pathname.startsWith("/api/postal-geo-data/city/search/") ||
     pathname.startsWith("/services/joblistings")
   ) {
     return NextResponse.next();

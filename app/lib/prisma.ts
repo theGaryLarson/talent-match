@@ -646,7 +646,7 @@ export async function getJobSeekerCardViewByWorkExperience() {}
 
 export async function getAllCities(): Promise<{ city: string }[]> {
   return await prisma.postalGeoData.findMany({
-    where: {},
+    where: { stateCode: "WA" },
     distinct: ["city"],
     select: { city: true },
   });

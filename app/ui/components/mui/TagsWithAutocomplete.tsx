@@ -120,44 +120,52 @@ export default function TagsWithAutocomplete<ValueType>({
       renderInput={(params) => (
         <TextField
           {...params}
-          inputProps={{
-            ...params.inputProps,
-            onKeyDown: (ev) => {
-              if (
-                ev.repeat &&
-                ev.key === "Backspace" &&
-                (ev.target as HTMLInputElement).value === ""
-              ) {
-                ev.stopPropagation();
-              }
-            },
-          }}
           label={fieldLabel}
           placeholder={searchPlaceholder}
         />
       )}
-      // ChipProps={root=""}
-      renderTags={(tagValue: readonly (string | ValueType)[], getTagProps) =>
-        tagValue.map((option: string | ValueType, index: number) => {
-          const { key, ...tagProps } = getTagProps({ index });
-          const link =
-            (getTagLink && getTagLink(option as ValueType)) ?? "javascript:;";
+      renderValue={(valueArray, getItemProps) =>
+        valueArray.map((option: string | ValueType, index: number) => {
+          const { key, ...props } = getItemProps({ index });
+          const link = getTagLink && getTagLink(option as ValueType);
           const label =
             typeof option === "string"
               ? option
-              : getTagLabel && getTagLabel(option);
-          const target = link == "javascript:;" ? "_self" : "_blank";
+              : getTagLabel
+                ? getTagLabel(option as ValueType)
+                : "";
+          if (link && link.length > 0) {
+            return (
+              <Chip
+                color="primary"
+                clickable
+                onClick={() =>
+                  window.open(link, "_blank", "noopener,noreferrer")
+                }
+                label={label}
+                deleteIcon={
+                  <svg
+                    className="inline-block w-5 fill-white hover:fill-gray-300"
+                    focusable="false"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    data-testid="CancelIcon"
+                  >
+                    <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"></path>
+                  </svg>
+                }
+                key={key}
+                {...props}
+              />
+            );
+          }
           return (
             <Chip
               color="primary"
-              clickable
-              label={
-                <a href={link} target={target}>
-                  {label}
-                </a>
-              }
+              label={label}
+              onClick={() => {}}
+              clickable={false}
               deleteIcon={
-                // make the delete X white
                 <svg
                   className="inline-block w-5 fill-white hover:fill-gray-300"
                   focusable="false"
@@ -169,7 +177,7 @@ export default function TagsWithAutocomplete<ValueType>({
                 </svg>
               }
               key={key}
-              {...tagProps}
+              {...props}
             />
           );
         })

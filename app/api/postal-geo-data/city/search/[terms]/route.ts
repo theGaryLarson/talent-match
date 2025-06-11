@@ -1,4 +1,6 @@
-import { searchLocations } from "@/app/lib/prisma";
+import getPrismaClient from "@/app/lib/prismaClient.mjs";
+import { PrismaClient } from "@prisma/client";
+const prisma: PrismaClient = getPrismaClient();
 
 export async function GET(
   req: Request,
@@ -6,9 +8,14 @@ export async function GET(
 ) {
   const params = await props.params;
   const terms = decodeURIComponent(params.terms);
-  const searchResults = await searchLocations(terms, "city");
+  const cities = await prisma.postalGeoData.findMany({
+    where: { city: { contains: terms }, stateCode: "WA" },
+    distinct: ["city"],
+    take: 5,
+    select: { city: true },
+  });
 
-  return Response.json(searchResults, {
+  return Response.json(cities, {
     status: 200,
   });
 }

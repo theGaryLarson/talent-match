@@ -234,10 +234,10 @@ export default function JobListingsContent() {
   );
 
   const handleCityChange = useCallback(
-    (event: any) => {
-      const newValue = event.target.value;
-      setQueryParam("city", encodeURIComponent(newValue.toString()));
-      setCity(typeof newValue === "string" ? [newValue] : newValue);
+    (event: any, val: any) => {
+      const newVal = val.map((v: { city: string }) => v.city);
+      setQueryParam("city", encodeURIComponent(newVal.toString()));
+      setCity(newVal);
     },
     [setQueryParam],
   );
@@ -319,21 +319,28 @@ export default function JobListingsContent() {
           onChange={handleSkillsChange}
           searchPlaceholder="Skill (ex: Java)"
           getTagLabel={(option: SkillDTO) => option.skill_name}
-          getTagLink={(option: SkillDTO) => option.skill_info_url}
-          initialTags={getArrayParam("skills")}
+          value={skillsList.map((skillName) => ({
+            skill_id: "",
+            skill_name: skillName,
+            skill_info_url: "",
+          }))}
         />
 
         {/* Filters */}
         <Grid container spacing={2}>
           {/* City */}
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <MultipleSelectFilterAutoload
+            <TagsWithAutocomplete
+              apiSearchRoute="/api/postal-geo-data/city/search/"
+              fieldLabel="Select up to 5 cities to search"
               id="jobseeker-listview-city"
-              label="City"
-              apiAutoloadRoute="/api/postal-geo-data/city/get"
-              value={getArrayParam("city")}
+              maxTags={5}
+              searchingText="Searching..."
+              noResultsText="No cities found..."
               onChange={handleCityChange}
-              getOptionLabel={(option: { city: string }) => option.city}
+              searchPlaceholder="City (ex: Seattle)"
+              getTagLabel={(option: { city: string }) => option.city}
+              value={city.map((city) => ({ city: city }))}
             />
           </Grid>
           {/* Profession */}
