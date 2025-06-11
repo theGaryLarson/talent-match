@@ -142,16 +142,26 @@ function JobListingCardView({
 
       {skills.length > 0 && (
         <Grid container gap={1} sx={{ mt: 1 }}>
-          {skills.map((skill) => (
-            <Chip
-              component={Link}
-              clickable
-              target="_blank"
-              key={skill?.skill_id}
-              label={skill?.skill_name}
-              href={skill?.skill_info_url}
-            />
-          ))}
+          {skills.map((skill) =>
+            skill?.skill_info_url.length > 0 ? (
+              <Chip
+                component={Link}
+                clickable
+                onClick={() => {}}
+                key={skill?.skill_id}
+                label={skill?.skill_name}
+                target="_blank"
+                href={skill?.skill_info_url}
+              />
+            ) : (
+              <Chip
+                clickable={false}
+                onClick={() => {}}
+                key={skill?.skill_id}
+                label={skill?.skill_name}
+              />
+            ),
+          )}
         </Grid>
       )}
       <Stack

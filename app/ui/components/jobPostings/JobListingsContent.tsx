@@ -228,7 +228,6 @@ export default function JobListingsContent() {
     (event: any, val: any) => {
       const newVal = (val as SkillDTO[]).map((skill) => skill.skill_name);
       setQueryParam("skills", encodeURIComponent(newVal.toString()));
-      console.log(newVal);
       setSkillsList(newVal);
     },
     [setQueryParam],
@@ -236,7 +235,6 @@ export default function JobListingsContent() {
 
   const handleCityChange = useCallback(
     (event: any, val: any) => {
-      console.log(val);
       const newVal = val.map((v: { city: string }) => v.city);
       setQueryParam("city", encodeURIComponent(newVal.toString()));
       setCity(newVal);
