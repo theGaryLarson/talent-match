@@ -303,9 +303,6 @@ export default function EmployersListDialog() {
               <ListItemText>Expeditors</ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemText>TEKSYSTEMS</ListItemText>
-            </ListItem>
-            <ListItem>
               <ListItemText>Expedia Group</ListItemText>
             </ListItem>
             <ListItem>
@@ -322,9 +319,6 @@ export default function EmployersListDialog() {
             </ListItem>
             <ListItem>
               <ListItemText>Allegis Group</ListItemText>
-            </ListItem>
-            <ListItem>
-              <ListItemText>TEKsystems Global Services</ListItemText>
             </ListItem>
             <ListItem>
               <ListItemText>NCESD</ListItemText>
