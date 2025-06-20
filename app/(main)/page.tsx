@@ -2,6 +2,7 @@ import RoundedButton from "../ui/components/RoundedButton";
 import Image from "next/image";
 import TrainingProviderMembers from "../ui/components/TrainingProviderMembers";
 import { Link, List, ListItem, ListItemText } from "@mui/material";
+import EmployersListDialog from "../ui/components/mainLanding/EmployersListDialog";
 
 //entire TWC landing page
 export const metadata = {
@@ -216,7 +217,8 @@ export default function Page() {
               We reduce your recruiting load by offering candidates from sources
               not easily identified on the big job boards. Save time and money
               by accessing candidates with the degrees and industry recognized
-              certifications you value
+              certifications you value. Amazon, Microsoft, BECU, and more have
+              already hired through the coalition.
             </div>
             <div className="mt-4 justify-start items-start gap-5 inline-flex">
               <RoundedButton
@@ -231,6 +233,9 @@ export default function Page() {
                 }
                 invertColor={true}
               ></RoundedButton>
+            </div>
+            <div className="mt-2 text-xl font-normal">
+              <EmployersListDialog />
             </div>
           </div>
         </div>
