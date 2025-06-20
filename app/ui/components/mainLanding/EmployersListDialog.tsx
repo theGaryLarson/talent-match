@@ -134,25 +134,16 @@ export default function EmployersListDialog() {
               <ListItemText>Costco IT</ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemText>PACCAR Parts</ListItemText>
-            </ListItem>
-            <ListItem>
               <ListItemText>PACCAR</ListItemText>
             </ListItem>
             <ListItem>
               <ListItemText>Allen Institute</ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemText>Allen Institute for AI</ListItemText>
-            </ListItem>
-            <ListItem>
               <ListItemText>Chenega Agile Real-Time Solutions</ListItemText>
             </ListItem>
             <ListItem>
               <ListItemText>US Coast Guard</ListItemText>
-            </ListItem>
-            <ListItem>
-              <ListItemText>PACCAR IT</ListItemText>
             </ListItem>
             <ListItem>
               <ListItemText>Amazon Web Services</ListItemText>
@@ -433,11 +424,6 @@ export default function EmployersListDialog() {
             </ListItem>
             <ListItem>
               <ListItemText>Columbia Distributing</ListItemText>
-            </ListItem>
-            <ListItem>
-              <ListItemText>
-                Space Exploration Technologies Corp (SpaceX)
-              </ListItemText>
             </ListItem>
             <ListItem>
               <ListItemText>Right Systems Inc.</ListItemText>
