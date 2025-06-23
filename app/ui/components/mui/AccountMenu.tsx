@@ -39,6 +39,7 @@ export default function AccountMenu() {
   if (
     pathname == "/services/jobseekers" ||
     pathname == "/services/employers" ||
+    pathname == "/services/employers/hiring-companies" ||
     pathname.startsWith("/services/training-programs/")
   ) {
     textColor = "text-white";

@@ -2,6 +2,7 @@ import RoundedButton from "../ui/components/RoundedButton";
 import Image from "next/image";
 import TrainingProviderMembers from "../ui/components/TrainingProviderMembers";
 import { Link, List, ListItem, ListItemText } from "@mui/material";
+import { companies } from "../lib/data";
 
 //entire TWC landing page
 export const metadata = {
@@ -216,7 +217,7 @@ export default function Page() {
               We reduce your recruiting load by offering candidates from sources
               not easily identified on the big job boards. Save time and money
               by accessing candidates with the degrees and industry recognized
-              certifications you value
+              certifications you value.
             </div>
             <div className="mt-4 justify-start items-start gap-5 inline-flex">
               <RoundedButton
@@ -327,8 +328,38 @@ export default function Page() {
         </div>
       </div>
 
-      {/* footer - join the team of coalition members bg-neutral-100 */}
       <div className="mt-40 px-8 laptop:px-24">
+        <div className="text-center">
+          <h2 className="self-stretch text-cyan-700 text-5xl font-normal font-['Roboto'] capitalize leading-10">
+            Companies Hiring Through the Coalition
+          </h2>
+          <p className="mt-4 text-xl text-gray-600">
+            We've connected candidates with over 100 companies across Washington
+          </p>
+        </div>
+        <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 gap-4 mt-4">
+          {companies.slice(0, 20).map((company, index) => (
+            <div
+              key={index}
+              className="justify-center items-center h-22 px-7 py-4 bg-neutral-100 rounded-3xl flex-col gap-2.5 inline-flex"
+            >
+              <p className="text-base text-center font-semibold font-['Roboto'] uppercase leading-none tracking-wider">
+                {company}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-12 text-center">
+          <RoundedButton
+            content="View All Companies"
+            link="/services/employers/hiring-companies"
+            invertColor={true}
+          />
+        </div>
+      </div>
+
+      {/* footer - join the team of coalition members bg-neutral-100 */}
+      <div className="mt-24 px-8 laptop:px-24">
         <TrainingProviderMembers></TrainingProviderMembers>
       </div>
     </div>

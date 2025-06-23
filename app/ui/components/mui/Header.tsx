@@ -141,6 +141,7 @@ export default function Header() {
     [
       "/services/jobseekers",
       "/services/employers",
+      "/services/employers/hiring-companies",
       "/services/careers",
     ].includes(pathname) || pathname.startsWith("/services/training-programs/");
 
