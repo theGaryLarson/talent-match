@@ -86,6 +86,7 @@ export default auth((req) => {
     "/services/events",
     "/services/events/registered",
     "/services/employers",
+    "/services/employers/hiring-companies",
     "/services/employers/faq",
     "/services/jobseekers",
     "/services/joblistings",
