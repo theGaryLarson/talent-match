@@ -116,66 +116,62 @@ export async function POST(request: Request) {
       }
 
       const createdWorkExperiences: WorkExperience[] = [];
-      const workExpPromises = workExperiences?.map(
-        async (workExperience: WorkExperience) => {
-          const existingWorkExperience = await prisma.workExperience.findUnique(
-            {
-              where: {
-                workId: workExperience.workId,
-              },
-            },
-          );
+      const workExpPromises = workExperiences?.map(async (workExperience) => {
+        const existingWorkExperience = await prisma.workExperience.findUnique({
+          where: {
+            workId: workExperience.workId,
+          },
+        });
 
-          const updateData: Partial<WorkExperience> = {
-            company: workExperience.company,
-            jobTitle: workExperience.jobTitle,
-            isCurrentJob: workExperience.isCurrentJob,
-            startDate: new Date(workExperience.startDate),
-            endDate: workExperience.endDate
-              ? new Date(workExperience.endDate)
-              : null,
-            responsibilities: workExperience.responsibilities,
-            isInternship: workExperience.isInternship,
-            techAreaId: workExperience.techAreaId || null,
-            sectorId: workExperience.sectorId || null,
-          };
+        const updateData: Partial<WorkExperience> = {
+          company: workExperience.company,
+          jobTitle: workExperience.jobTitle,
+          isCurrentJob: workExperience.isCurrentJob,
+          startDate: new Date(workExperience.startDate),
+          endDate: workExperience.endDate
+            ? new Date(workExperience.endDate)
+            : null,
+          responsibilities: workExperience.responsibilities,
+          isInternship: workExperience.isInternship,
+          techAreaId: workExperience.techAreaId || null,
+          sectorId: workExperience.sectorId || null,
+        };
 
-          if (existingWorkExperience) {
-            const updatedWorkExperience = await prisma.workExperience.update({
-              where: { workId: existingWorkExperience.workId },
-              data: updateData,
-            });
-            createdWorkExperiences.push(updatedWorkExperience);
-          } else {
-            const createdWorkExperience = await prisma.workExperience.create({
-              data: {
-                workId: workExperience.workId,
-                company: workExperience.company,
-                jobTitle: workExperience.jobTitle,
-                isCurrentJob: workExperience.isCurrentJob,
-                startDate: new Date(workExperience.startDate),
-                endDate: workExperience.endDate
-                  ? new Date(workExperience.endDate)
-                  : null,
-                responsibilities: workExperience.responsibilities,
-                isInternship: workExperience.isInternship,
-                jobseekers: {
-                  connect: {
-                    jobseeker_id: updatedJobseeker?.jobseeker_id ?? undefined,
-                  },
+        if (existingWorkExperience) {
+          const updatedWorkExperience = await prisma.workExperience.update({
+            where: { workId: existingWorkExperience.workId },
+            data: updateData,
+          });
+          createdWorkExperiences.push(updatedWorkExperience);
+        } else {
+          const createdWorkExperience = await prisma.workExperience.create({
+            data: {
+              workId: workExperience.workId,
+              company: workExperience.company,
+              jobTitle: workExperience.jobTitle,
+              isCurrentJob: workExperience.isCurrentJob,
+              startDate: new Date(workExperience.startDate),
+              endDate: workExperience.endDate
+                ? new Date(workExperience.endDate)
+                : null,
+              responsibilities: workExperience.responsibilities,
+              isInternship: workExperience.isInternship,
+              jobseekers: {
+                connect: {
+                  jobseeker_id: updatedJobseeker?.jobseeker_id ?? undefined,
                 },
-                techArea: workExperience?.techAreaId
-                  ? { connect: { id: workExperience.techAreaId } }
-                  : undefined, // Skip connection if techAreaId is undefined,
-                industrySector: workExperience.sectorId
-                  ? { connect: { industry_sector_id: workExperience.sectorId } }
-                  : undefined,
               },
-            });
-            createdWorkExperiences.push(createdWorkExperience);
-          }
-        },
-      );
+              techArea: workExperience?.techAreaId
+                ? { connect: { id: workExperience.techAreaId } }
+                : undefined, // Skip connection if techAreaId is undefined,
+              industrySector: workExperience.sectorId
+                ? { connect: { industry_sector_id: workExperience.sectorId } }
+                : undefined,
+            },
+          });
+          createdWorkExperiences.push(createdWorkExperience);
+        }
+      });
       if (workExpPromises) {
         await Promise.all(workExpPromises);
       }
