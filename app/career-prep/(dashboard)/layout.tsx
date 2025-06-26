@@ -82,6 +82,16 @@ const CareerNavDrawer = ({ session }: { session: any }) => {
       label: "Generic job match",
     },
     {
+      href: "/career-prep/add-company",
+      icon: <PostAddOutlinedIcon />,
+      label: "Create a company",
+    },
+    {
+      href: "/career-prep/update-company",
+      icon: <UpdateOutlinedIcon />,
+      label: "Update a company",
+    },
+    {
       href: "/career-prep/postajob",
       icon: <PostAddOutlinedIcon />,
       label: "Post a job",
