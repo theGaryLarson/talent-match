@@ -193,6 +193,8 @@ export type JsWorkDTO = {
   startDate: Date;
   techAreaId: string | null;
   workId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type JsShowcaseDTO = {

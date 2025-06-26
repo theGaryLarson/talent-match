@@ -73,6 +73,8 @@ export async function GET(
           responsibilities: w.responsibilities,
           isInternship: w.isInternship,
           techAreaId: w.techAreaId,
+          updatedAt: w.updatedAt,
+          createdAt: w.createdAt,
         }),
       );
 

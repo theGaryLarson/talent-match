@@ -13,24 +13,24 @@ datasource db {
 /////////////////////////////////////////////////////
 
 model User {
-  id                      String          @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  role                    String          @db.VarChar(255)
-  first_name              String?         @db.VarChar(255) // TODO: does this need to be name for auth.js
-  last_name               String?         @db.VarChar(255) // TODO: do we need to add username
-  birthdate               DateTime?       @db.DateTime
-  email                   String          @unique @db.VarChar(255)
-  emailVerified           DateTime?       @map("email_verified") @db.DateTime
-  phoneCountryCode        String?         @db.VarChar(100)
-  phone                   String?         @db.VarChar(16)
-  zip                     String?         @db.VarChar(5)
-  photo_url               String?         @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
-  has_agreed_terms        Boolean         @default(false) @db.Bit
-  sendNewJobPosts         Boolean?        @default(false) @db.Bit
-  sendCareerOpportunities Boolean?        @default(false) @db.Bit
-  createdAt               DateTime        @default(now()) @map("created_at") @db.DateTime
-  updatedAt               DateTime?       @updatedAt @map("updated_at") @db.DateTime
-  is_marked_deletion      DateTime?       @db.DateTime
-  locationData            PostalGeoData?  @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
+  id                      String                    @id(clustered: false, map: "contacts_PRIMARY") @unique @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  role                    String                    @db.VarChar(255)
+  first_name              String?                   @db.VarChar(255) // TODO: does this need to be name for auth.js
+  last_name               String?                   @db.VarChar(255) // TODO: do we need to add username
+  birthdate               DateTime?                 @db.DateTime
+  email                   String                    @unique @db.VarChar(255)
+  emailVerified           DateTime?                 @map("email_verified") @db.DateTime
+  phoneCountryCode        String?                   @db.VarChar(100)
+  phone                   String?                   @db.VarChar(16)
+  zip                     String?                   @db.VarChar(5)
+  photo_url               String?                   @db.VarChar(255) // TODO: check if auth.js needs this renamed to image
+  has_agreed_terms        Boolean                   @default(false) @db.Bit
+  sendNewJobPosts         Boolean?                  @default(false) @db.Bit
+  sendCareerOpportunities Boolean?                  @default(false) @db.Bit
+  createdAt               DateTime                  @default(now()) @map("created_at") @db.DateTime
+  updatedAt               DateTime                  @default(now()) @updatedAt @map("updated_at") @db.DateTime
+  is_marked_deletion      DateTime?                 @db.DateTime
+  locationData            PostalGeoData?            @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_user_address_postgeodata1")
   cfa_admin               CfaAdmin[]
   educators               educators[]
   employers               employers[]
@@ -46,9 +46,9 @@ model User {
   CaseMgmtNotes           CaseMgmtNotes[]
   events                  EventsOnUsers[] // Many-to-many relationship with Events
   createdEvents           Events[] // One-to-many relationship with Events
+  EmployerJobRoleFeedBack EmployerJobRoleFeedBack[]
 
   @@map("users")
-  EmployerJobRoleFeedBack EmployerJobRoleFeedBack[]
 }
 
 model Account {
@@ -129,7 +129,7 @@ model Events {
   blurb            String?         @db.VarChar(255) // One-sentence blurb about the event
   eventType        String          @db.VarChar(50) // Type of the event
   createdAt        DateTime        @default(now()) @db.DateTime
-  updatedAt        DateTime?       @updatedAt @db.DateTime
+  updatedAt        DateTime        @default(now()) @updatedAt @db.DateTime
   attendees        EventsOnUsers[] // Many-to-many relationship with Users
   createdById      String?         @db.UniqueIdentifier
 
@@ -139,11 +139,13 @@ model Events {
 }
 
 model EventsOnUsers {
-  id      String @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  eventId String @db.UniqueIdentifier
-  userId  String @db.UniqueIdentifier
-  event   Events @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id        String   @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  eventId   String   @db.UniqueIdentifier
+  userId    String   @db.UniqueIdentifier
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.DateTime
+  event     Events   @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([eventId, userId])
   @@map("events_on_users")
@@ -163,6 +165,8 @@ model certificates {
   issueDate     DateTime?  @map("issue_date") @db.DateTime
   expiryDate    DateTime?  @map("expiration_date") @db.DateTime
   description   String?    @db.NText
+  createdAt     DateTime   @default(now()) @map("created_at") @db.DateTime
+  updatedAt     DateTime   @default(now()) @updatedAt @map("updated_at") @db.DateTime
   jobseekers    jobseekers @relation(fields: [jobSeekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_certificates_jobseeker1")
 
   @@index([jobSeekerId], map: "fk_certificates_jobseeker1_idx")
@@ -193,7 +197,8 @@ model companies {
   size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
   estimated_annual_hires Int?
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
-  createdAt              DateTime?              @default(now()) @db.DateTime
+  createdAt              DateTime               @default(now()) @db.DateTime
+  updatedAt              DateTime               @default(now()) @updatedAt @db.DateTime
   createdBy              String?                @db.UniqueIdentifier
   createdByUser          User?                  @relation(fields: [createdBy], references: [id], onDelete: NoAction)
   industry_sectors       industry_sectors?      @relation(fields: [industry_sector_id], references: [industry_sector_id], onUpdate: NoAction, map: "fk_company_industry_sectors1")
@@ -213,6 +218,8 @@ model BookmarkedJobseeker {
   jobseekerId String     @map("jobseeker_id") @db.UniqueIdentifier
   companyId   String     @map("company_id") @db.UniqueIdentifier
   employerId  String?    @map("employer_id") @db.UniqueIdentifier
+  createdAt   DateTime   @default(now()) @map("created_at") @db.DateTime
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at") @db.DateTime
   jobseeker   jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_jobseekers1")
   company     companies  @relation(fields: [companyId], references: [company_id], onUpdate: NoAction, map: "fk_companies1")
   employer    employers? @relation(fields: [employerId], references: [employer_id], onUpdate: NoAction, onDelete: SetNull, map: "fk_employers1")
@@ -224,6 +231,8 @@ model company_addresses {
   company_address_id String         @id(clustered: false, map: "company_addresses_PRIMARY") @db.UniqueIdentifier
   company_id         String         @db.UniqueIdentifier
   zip                String         @map("zip_region") @db.VarChar(5)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.DateTime
+  updatedAt          DateTime       @default(now()) @updatedAt @map("updated_at") @db.DateTime
   companies          companies      @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_company_address_company1")
   locationData       PostalGeoData  @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_company_address_postgeodata1")
   employers          employers[]
@@ -276,6 +285,8 @@ model edu_providers {
   isAdminReviewed      Boolean                @default(false) @db.Bit
   isCoalitionMember    Boolean                @default(false) @db.Bit
   logoUrl              String?                @default("") @db.VarChar(255)
+  createdAt            DateTime               @default(now()) @map("created_at") @db.DateTime
+  updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at") @db.DateTime
   edu_addresses        edu_addresses[]
   educators            educators[]
   jobseeker_education  jobseekers_education[]
@@ -300,6 +311,8 @@ model edu_addresses {
   street1         String        @db.VarChar(255)
   street2         String?       @db.VarChar(255)
   zip             String        @db.VarChar(5)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.DateTime
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.DateTime
   edu_providers   edu_providers @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, map: "fk_edu_address_edu_institution1")
   locationData    PostalGeoData @relation(fields: [zip], references: [zip], onUpdate: NoAction, map: "fk_edu_address_postgeodata1")
 
@@ -310,6 +323,8 @@ model educators {
   educator_id      String        @id(clustered: false, map: "educators_PRIMARY") @db.UniqueIdentifier
   user_id          String        @db.UniqueIdentifier
   edu_providers_id String        @db.UniqueIdentifier
+  createdAt        DateTime      @default(now()) @map("created_at") @db.DateTime
+  updatedAt        DateTime      @default(now()) @updatedAt @map("updated_at") @db.DateTime
   users            User          @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_educators_contacts1")
   edu_providers    edu_providers @relation(fields: [edu_providers_id], references: [id], onUpdate: NoAction, map: "fk_educators_edu_institution1")
 
@@ -329,6 +344,8 @@ model TraineeDetail {
   startDate                DateTime                   @db.Date
   exitDate                 DateTime                   @db.Date
   nonCompletionReason      String?                    @db.VarChar(45)
+  createdAt                DateTime                   @default(now()) @map("created_at") @db.DateTime
+  updatedAt                DateTime                   @default(now()) @updatedAt @map("updated_at") @db.DateTime
   jobseekerEd              jobseekers_education       @relation(fields: [jobseekerEdId], references: [id], onUpdate: NoAction, onDelete: Cascade, map: "fk_traineeDetail_jobseekers_education1")
   OtherPriorityPopulations OtherPriorityPopulations[] @relation("OtherPriorityPopulations")
 }
@@ -336,6 +353,8 @@ model TraineeDetail {
 model OtherPriorityPopulations {
   id            String          @id(clustered: false, map: "otherPriorityPopulations_PRIMARY") @db.UniqueIdentifier
   option        String          @db.VarChar(45)
+  createdAt     DateTime        @default(now()) @map("created_at") @db.DateTime
+  updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at") @db.DateTime
   TraineeDetail TraineeDetail[] @relation("OtherPriorityPopulations")
 }
 
@@ -354,7 +373,8 @@ model CareerPrepAssessment {
   prevWorkExperience      Boolean               @default(false) @db.Bit
   streetAddress           String?               @db.VarChar(255)
   priorityPopulations     String?               @db.Text
-  updatedAt               DateTime              @updatedAt @db.DateTime
+  updatedAt               DateTime              @default(now()) @updatedAt @db.DateTime
+  createdAt               DateTime              @default(now()) @db.DateTime
   Jobseeker               jobseekers            @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_career_prep_app_jobseeker1", onDelete: Cascade)
   CaseMgmt                CaseMgmt?
   CaseMgmtNotes           CaseMgmtNotes[]
@@ -367,44 +387,48 @@ model CareerPrepAssessment {
 }
 
 model CybersecurityRating {
-  jobseekerId           String               @id(clustered: false, map: "cybersecurity_rating_PRIMARY") @db.UniqueIdentifier
-  networking            Int                  @db.TinyInt
-  projectManagement     Int                  @db.TinyInt
-  securityTools         Int                  @db.TinyInt
-  operatingSystems      Int                  @db.TinyInt
-  programming           Int                  @db.TinyInt
-  cryptography          Int                  @db.TinyInt
-  cloudSecurity         Int                  @db.TinyInt
-  incidentResponse      Int                  @db.TinyInt
-  dataSecurity          Int                  @db.TinyInt
-  technicalSupport      Int                  @db.TinyInt
-  computationalThinking Int                  @db.TinyInt
-  apiUsage              Int                  @db.TinyInt
-  updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1", onDelete: Cascade)
+  jobseekerId           String   @id(clustered: false, map: "cybersecurity_rating_PRIMARY") @db.UniqueIdentifier
+  networking            Int      @db.TinyInt
+  projectManagement     Int      @db.TinyInt
+  securityTools         Int      @db.TinyInt
+  operatingSystems      Int      @db.TinyInt
+  programming           Int      @db.TinyInt
+  cryptography          Int      @db.TinyInt
+  cloudSecurity         Int      @db.TinyInt
+  incidentResponse      Int      @db.TinyInt
+  dataSecurity          Int      @db.TinyInt
+  technicalSupport      Int      @db.TinyInt
+  computationalThinking Int      @db.TinyInt
+  apiUsage              Int      @db.TinyInt
+  updatedAt             DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt             DateTime @default(now()) @db.DateTime
+
+  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_cybersecurity_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
 
 model DataAnalyticsRating {
-  jobseekerId           String               @id(clustered: false, map: "data_analytics_rating_PRIMARY") @db.UniqueIdentifier
-  dataAnalysis          Int                  @db.TinyInt
-  sqlProgramming        Int                  @db.TinyInt
-  pythonPackages        Int                  @db.TinyInt
-  dataScience           Int                  @db.TinyInt
-  dataEngineering       Int                  @db.TinyInt
-  tableau               Int                  @db.TinyInt
-  machineLearning       Int                  @db.TinyInt
-  rProgramming          Int                  @db.TinyInt
-  projectManagement     Int                  @db.TinyInt
-  dataVisualization     Int                  @db.TinyInt
-  dataStructures        Int                  @db.TinyInt
-  bigOComplexity        Int                  @db.TinyInt
-  sortingAlgorithms     Int                  @db.TinyInt
-  databases             Int                  @db.TinyInt
-  computationalThinking Int                  @db.TinyInt
-  updatedAt             DateTime             @updatedAt @db.DateTime
-  PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1", onDelete: Cascade)
+  jobseekerId           String   @id(clustered: false, map: "data_analytics_rating_PRIMARY") @db.UniqueIdentifier
+  dataAnalysis          Int      @db.TinyInt
+  sqlProgramming        Int      @db.TinyInt
+  pythonPackages        Int      @db.TinyInt
+  dataScience           Int      @db.TinyInt
+  dataEngineering       Int      @db.TinyInt
+  tableau               Int      @db.TinyInt
+  machineLearning       Int      @db.TinyInt
+  rProgramming          Int      @db.TinyInt
+  projectManagement     Int      @db.TinyInt
+  dataVisualization     Int      @db.TinyInt
+  dataStructures        Int      @db.TinyInt
+  bigOComplexity        Int      @db.TinyInt
+  sortingAlgorithms     Int      @db.TinyInt
+  databases             Int      @db.TinyInt
+  computationalThinking Int      @db.TinyInt
+  updatedAt             DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt             DateTime @default(now()) @db.DateTime
+
+  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_data_analytics_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -426,83 +450,90 @@ model ITCloudRating {
   apiUsage              Int                  @db.TinyInt
   httpResponseCodes     Int                  @db.TinyInt
   computationalThinking Int                  @db.TinyInt
-  updatedAt             DateTime             @updatedAt @db.DateTime
+  updatedAt             DateTime             @default(now()) @updatedAt @db.DateTime
+  createdAt             DateTime             @default(now()) @db.DateTime
   PrepAssessment        CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_it_cloud_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
 
 model SoftwareDevRating {
-  jobseekerId                  String               @id(clustered: false, map: "software_dev_rating_PRIMARY") @db.UniqueIdentifier
-  softwareEngineering          Int                  @db.TinyInt
-  softwareDevelopmentLifecycle Int                  @db.TinyInt
-  programmingLanguages         Int                  @db.TinyInt
-  dataStructuresAndAlgorithms  Int                  @db.TinyInt
-  softwareArchitecture         Int                  @db.TinyInt
-  versionControl               Int                  @db.TinyInt
-  databaseManagement           Int                  @db.TinyInt
-  devOps                       Int                  @db.TinyInt
-  cloudComputing               Int                  @db.TinyInt
-  conceptualSystemsThinking    Int                  @db.TinyInt
-  problemSolving               Int                  @db.TinyInt
-  fundamentalCodingConcepts    Int                  @db.TinyInt
-  debugging                    Int                  @db.TinyInt
-  computationalThinking        Int                  @db.TinyInt
-  softwareOptimization         Int                  @db.TinyInt
-  updatedAt                    DateTime             @updatedAt @db.DateTime
-  PrepAssessment               CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1", onDelete: Cascade)
+  jobseekerId                  String   @id(clustered: false, map: "software_dev_rating_PRIMARY") @db.UniqueIdentifier
+  softwareEngineering          Int      @db.TinyInt
+  softwareDevelopmentLifecycle Int      @db.TinyInt
+  programmingLanguages         Int      @db.TinyInt
+  dataStructuresAndAlgorithms  Int      @db.TinyInt
+  softwareArchitecture         Int      @db.TinyInt
+  versionControl               Int      @db.TinyInt
+  databaseManagement           Int      @db.TinyInt
+  devOps                       Int      @db.TinyInt
+  cloudComputing               Int      @db.TinyInt
+  conceptualSystemsThinking    Int      @db.TinyInt
+  problemSolving               Int      @db.TinyInt
+  fundamentalCodingConcepts    Int      @db.TinyInt
+  debugging                    Int      @db.TinyInt
+  computationalThinking        Int      @db.TinyInt
+  softwareOptimization         Int      @db.TinyInt
+  updatedAt                    DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt                    DateTime @default(now()) @db.DateTime
+
+  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_software_dev_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
 
 model DurableSkillsRating {
-  jobseekerId            String               @id(clustered: false, map: "durable_skills_rating_PRIMARY") @db.UniqueIdentifier
-  emotionManagement      Int                  @db.TinyInt
-  empathy                Int                  @db.TinyInt
-  goalSetting            Int                  @db.TinyInt
-  timeManagement         Int                  @db.TinyInt
-  adaptability           Int                  @db.TinyInt
-  criticalThinking       Int                  @db.TinyInt
-  creativity             Int                  @db.TinyInt
-  resilience             Int                  @db.TinyInt
-  communication          Int                  @db.TinyInt
-  activeListening        Int                  @db.TinyInt
-  conflictResolution     Int                  @db.TinyInt
-  nonverbalCommunication Int                  @db.TinyInt
-  teamwork               Int                  @db.TinyInt
-  trustBuilding          Int                  @db.TinyInt
-  leadership             Int                  @db.TinyInt
-  perspectiveTaking      Int                  @db.TinyInt
-  culturalAwareness      Int                  @db.TinyInt
-  relationshipBuilding   Int                  @db.TinyInt
-  documentationSkills    Int                  @db.TinyInt
-  updatedAt              DateTime             @updatedAt @db.DateTime
-  PrepAssessment         CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1", onDelete: Cascade)
+  jobseekerId            String   @id(clustered: false, map: "durable_skills_rating_PRIMARY") @db.UniqueIdentifier
+  emotionManagement      Int      @db.TinyInt
+  empathy                Int      @db.TinyInt
+  goalSetting            Int      @db.TinyInt
+  timeManagement         Int      @db.TinyInt
+  adaptability           Int      @db.TinyInt
+  criticalThinking       Int      @db.TinyInt
+  creativity             Int      @db.TinyInt
+  resilience             Int      @db.TinyInt
+  communication          Int      @db.TinyInt
+  activeListening        Int      @db.TinyInt
+  conflictResolution     Int      @db.TinyInt
+  nonverbalCommunication Int      @db.TinyInt
+  teamwork               Int      @db.TinyInt
+  trustBuilding          Int      @db.TinyInt
+  leadership             Int      @db.TinyInt
+  perspectiveTaking      Int      @db.TinyInt
+  culturalAwareness      Int      @db.TinyInt
+  relationshipBuilding   Int      @db.TinyInt
+  documentationSkills    Int      @db.TinyInt
+  updatedAt              DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt              DateTime @default(now()) @db.DateTime
+
+  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_durable_skills_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
 
 model BrandingRating {
-  jobseekerId              String               @id(clustered: false, map: "branding_rating_PRIMARY") @db.UniqueIdentifier
-  personalBrand            Int                  @db.TinyInt
-  onlinePresence           Int                  @db.TinyInt
-  elevatorPitch            Int                  @db.TinyInt
-  resumeEffectiveness      Int                  @db.TinyInt
-  coverLetterEffectiveness Int                  @db.TinyInt
-  interviewExperience      Int                  @db.TinyInt
-  responseTechnique        Int                  @db.TinyInt
-  followUpImportance       Int                  @db.TinyInt
-  onlineNetworking         Int                  @db.TinyInt
-  eventNetworking          Int                  @db.TinyInt
-  relationshipManagement   Int                  @db.TinyInt
-  jobSearchStrategy        Int                  @db.TinyInt
-  materialDistribution     Int                  @db.TinyInt
-  networkingTechniques     Int                  @db.TinyInt
-  onboardingBestPractices  Int                  @db.TinyInt
-  developmentPlan          Int                  @db.TinyInt
-  mentorship               Int                  @db.TinyInt
-  updatedAt                DateTime             @updatedAt @db.DateTime
-  PrepAssessment           CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1", onDelete: Cascade)
+  jobseekerId              String   @id(clustered: false, map: "branding_rating_PRIMARY") @db.UniqueIdentifier
+  personalBrand            Int      @db.TinyInt
+  onlinePresence           Int      @db.TinyInt
+  elevatorPitch            Int      @db.TinyInt
+  resumeEffectiveness      Int      @db.TinyInt
+  coverLetterEffectiveness Int      @db.TinyInt
+  interviewExperience      Int      @db.TinyInt
+  responseTechnique        Int      @db.TinyInt
+  followUpImportance       Int      @db.TinyInt
+  onlineNetworking         Int      @db.TinyInt
+  eventNetworking          Int      @db.TinyInt
+  relationshipManagement   Int      @db.TinyInt
+  jobSearchStrategy        Int      @db.TinyInt
+  materialDistribution     Int      @db.TinyInt
+  networkingTechniques     Int      @db.TinyInt
+  onboardingBestPractices  Int      @db.TinyInt
+  developmentPlan          Int      @db.TinyInt
+  mentorship               Int      @db.TinyInt
+  updatedAt                DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt                DateTime @default(now()) @db.DateTime
+
+  PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], map: "fk_branding_rating_career_prep_assessment1", onDelete: Cascade)
 
   overallAverage Float? @db.Float // Computed column
 }
@@ -517,7 +548,7 @@ model CaseMgmt {
   prepExpectedEndDate     DateTime?            @db.DateTime
   prepActualEndDate       DateTime?            @db.DateTime
   createdAt               DateTime             @default(now()) @db.DateTime
-  updatedAt               DateTime             @updatedAt @db.DateTime
+  updatedAt               DateTime             @default(now()) @updatedAt @db.DateTime
   PrepAssessment          CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onDelete: Cascade)
   CaseManager             User?                @relation(fields: [managerId], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_user1")
   Meeting                 Meeting[]
@@ -534,7 +565,7 @@ model CaseMgmtNotes {
   noteContent    String               @db.NText
   createdBy      String               @db.UniqueIdentifier
   createdAt      DateTime             @default(now()) @db.DateTime
-  updatedAt      DateTime             @updatedAt @db.DateTime
+  updatedAt      DateTime             @default(now()) @updatedAt @db.DateTime
   PrepAssessment CareerPrepAssessment @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_case_mgmt_notes_case_mgmt1", onDelete: Cascade)
   Author         User                 @relation(fields: [createdBy], references: [id], onUpdate: NoAction, map: "fk_case_mgmt_notes_user1")
 }
@@ -545,7 +576,8 @@ model Meeting {
   title         String   @db.VarChar(45)
   meetingAgenda String?  @db.NText
   meetingDate   DateTime @db.DateTime
-  updatedAt     DateTime @updatedAt @db.DateTime
+  updatedAt     DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt     DateTime @default(now()) @db.DateTime
   caseMgmt      CaseMgmt @relation(fields: [jobseekerId], references: [jobseekerId], onUpdate: NoAction, map: "fk_meeting_case_mgmt1", onDelete: Cascade)
 }
 
@@ -560,7 +592,8 @@ model employers {
   linkedin_url         String?                @db.VarChar(255)
   // hasAgreedTerms       Boolean                @default(false) @map("has_agreed_terms")
   is_verified_employee Boolean                @default(false, map: "DF__employers__is_verified") @db.Bit
-  createdAt            DateTime?              @default(now()) @db.DateTime
+  createdAt            DateTime               @default(now()) @db.DateTime
+  updatedAt            DateTime               @default(now()) @updatedAt @db.DateTime
   users                User                   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_employer_user1")
   companies            companies?             @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_employers_company1")
   company_addresses    company_addresses?     @relation(fields: [work_address_id], references: [company_address_id], onUpdate: NoAction, map: "fk_employers_company_addresses")
@@ -576,6 +609,8 @@ model employers {
 model industry_sectors {
   industry_sector_id String           @id(clustered: false, map: "industry_sectors_PRIMARY") @db.UniqueIdentifier
   sector_title       String           @db.VarChar(255)
+  updatedAt          DateTime         @default(now()) @updatedAt @db.DateTime
+  createdAt          DateTime         @default(now()) @db.DateTime
   companies          companies[]
   WorkExperience     WorkExperience[]
   job_postings       job_postings[]
@@ -613,6 +648,8 @@ model job_postings {
   trainingRequirements          String?   @db.VarChar(2083)
   requiredCertifications        String?   @db.VarChar(2083)
   minimumEducationLevel         String?   @db.VarChar(2083)
+  updatedAt                     DateTime  @default(now()) @updatedAt @db.DateTime
+  createdAt                     DateTime  @default(now()) @db.DateTime
 
   skills            skills[]          @relation("JobPostingSkills") // Direct One-directional reference to skills to skills
   companies         companies         @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "fk_job_postings_companies1")
@@ -643,6 +680,8 @@ model JobseekerJobPosting {
   savedAt                DateTime     @default(now())
   appliedDate            DateTime?
   followUpDate           DateTime?
+  updatedAt              DateTime     @default(now()) @updatedAt @db.DateTime
+  createdAt              DateTime     @default(now()) @db.DateTime
   job_posting            job_postings @relation(fields: [jobPostId], references: [job_posting_id])
   Jobseekers             jobseekers   @relation(fields: [jobseekerId], references: [jobseeker_id])
 }
@@ -650,6 +689,8 @@ model JobseekerJobPosting {
 model jobseeker_has_skills {
   jobseeker_id String     @db.UniqueIdentifier
   skill_id     String     @db.UniqueIdentifier
+  updatedAt    DateTime   @default(now()) @updatedAt @db.DateTime
+  createdAt    DateTime   @default(now()) @db.DateTime
   jobseekers   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_jobseeker_has_skill_jobseeker1")
   skills       skills     @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_jobseeker_has_skill_skill1")
 
@@ -715,6 +756,8 @@ model jobseekers_private_data {
   gender                       String     @default("") @db.VarChar(45)
   race                         String     @default("") @db.VarChar(45)
   ethnicity                    String     @default("") @db.VarChar(45)
+  updatedAt                    DateTime   @default(now()) @updatedAt @db.DateTime
+  createdAt                    DateTime   @default(now()) @db.DateTime
   jobseekers                   jobseekers @relation(fields: [jobseeker_id], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_user_learner_private_data_user1")
 
   @@index([jobseeker_id], map: "jobseekers_private_data_fk_user_learner_private_data_user1")
@@ -737,6 +780,8 @@ model jobseekers_education {
   minor            String?         @db.NVarChar(45) // TODO: remove from table
   gpa              String?         @db.NVarChar(45)
   description      String?         @db.NText
+  updatedAt        DateTime        @default(now()) @updatedAt @db.DateTime
+  createdAt        DateTime        @default(now()) @db.DateTime
   jobseekers       jobseekers      @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_jobseeker_education_jobseeker1")
   eduProviders     edu_providers   @relation(fields: [eduProviderId], references: [id], onUpdate: Cascade, map: "fk_jobseeker_education_edu_institution1")
   program          programs?       @relation(fields: [programId], references: [id], onUpdate: NoAction, map: "fk_jobseeker_education_programs1")
@@ -758,6 +803,8 @@ model JobPlacement {
   naicsCode        String?    @db.VarChar(45)
   employerName     String     @db.VarChar(45)
   hourlyEarnings   String     @db.VarChar(15)
+  updatedAt        DateTime   @default(now()) @updatedAt @db.DateTime
+  createdAt        DateTime   @default(now()) @db.DateTime
   Jobseeker        jobseekers @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, map: "fk_job_placement_jobseeker1")
   Company          companies? @relation(fields: [companyId], references: [company_id], onUpdate: NoAction, map: "fk_job_placement_companies1")
 }
@@ -767,6 +814,8 @@ model JobPlacement {
 model pathway_has_skills {
   pathway_id String   @db.UniqueIdentifier
   skill_id   String   @db.UniqueIdentifier
+  updatedAt  DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt  DateTime @default(now()) @db.DateTime
   pathways   pathways @relation(fields: [pathway_id], references: [pathway_id], onUpdate: NoAction, map: "fk_Pathways_has_skill_Pathways1")
   skills     skills   @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_Pathways_has_skill_skill1")
 
@@ -780,6 +829,8 @@ model pathway_subcategories {
   pathway_id                 String   @db.UniqueIdentifier
   pw_subcategory_name        String   @db.VarChar(45)
   subcategory_assessment_url String?  @db.VarChar(255)
+  updatedAt                  DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt                  DateTime @default(now()) @db.DateTime
   pathways                   pathways @relation(fields: [pathway_id], references: [pathway_id], onUpdate: NoAction, map: "fk_pathway_subcategories_pathways1")
 
   @@id([pathway_subcategory_id, pathway_id], map: "pathway_subcategories_PRIMARY", clustered: false)
@@ -791,6 +842,8 @@ model pathways {
   pathway_title               String                        @unique @db.VarChar(255)
   tooltip                     String?                       @db.Text
   description                 String?                       @db.Text
+  updatedAt                   DateTime                      @default(now()) @updatedAt @db.DateTime
+  createdAt                   DateTime                      @default(now()) @db.DateTime
   jobseekers                  jobseekers[]
   pathway_has_skills          pathway_has_skills[]
   pathway_subcategories       pathway_subcategories[]
@@ -822,6 +875,8 @@ model ProjectExperiences {
   teamSize                 Int                  @map("team_size") @db.SmallInt
   repoUrl                  String?              @map("repo_url") @db.VarChar(255)
   demoUrl                  String?              @map("demo_url") @db.VarChar(255)
+  updatedAt                DateTime             @default(now()) @updatedAt @db.DateTime
+  createdAt                DateTime             @default(now()) @db.DateTime
   jobseekers               jobseekers           @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_project_experience_jobseeker1")
   project_has_skills       project_has_skills[]
 
@@ -832,6 +887,8 @@ model ProjectExperiences {
 model project_has_skills {
   proj_exp_id         String             @db.UniqueIdentifier
   skill_id            String             @db.UniqueIdentifier
+  updatedAt           DateTime           @default(now()) @updatedAt @db.DateTime
+  createdAt           DateTime           @default(now()) @db.DateTime
   project_experiences ProjectExperiences @relation(fields: [proj_exp_id], references: [projectId], onUpdate: NoAction, onDelete: Cascade, map: "fk_project_experience_has_skill_project_experience1")
   skills              skills             @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_project_experience_has_skill_skill1")
 
@@ -876,6 +933,8 @@ model skill_subcategories {
   skill_subcategory_id    String   @id(clustered: false, map: "skill_subcategories_PRIMARY") @unique(map: "skill_subcategories_skill_category_id_UNIQUE") @default(dbgenerated()) @db.UniqueIdentifier
   subcategory_name        String   @db.VarChar(255)
   subcategory_description String   @db.VarChar(255)
+  updatedAt               DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt               DateTime @default(now()) @db.DateTime
   skills                  skills[]
 }
 
@@ -894,21 +953,27 @@ model skills {
   volunteer_has_skills        volunteer_has_skills[]
   JobRoleSkill                JobRoleSkill[]
   embedding                   Unsupported("vector(1536)")?
+  updatedAt                   DateTime                      @default(now()) @updatedAt @db.DateTime
+  createdAt                   DateTime                      @default(now()) @db.DateTime
+  EmployerJobRoleFeedBack     EmployerJobRoleFeedBack[]
 
   @@index([skill_subcategory_id], map: "skills_fk_skill_skill_category_idx")
-  EmployerJobRoleFeedBack EmployerJobRoleFeedBack[]
 }
 
 model social_media_platforms {
   social_platform_id   String                 @id(clustered: false, map: "social_media_platforms_PRIMARY") @db.UniqueIdentifier
   platform             String                 @db.VarChar(45)
   social_logo_url      String                 @db.VarChar(255)
+  updatedAt            DateTime               @default(now()) @updatedAt @db.DateTime
+  createdAt            DateTime               @default(now()) @db.DateTime
   company_social_links company_social_links[]
 }
 
 model technology_areas {
   id               String           @id(clustered: false, map: "technology_areas_PRIMARY") @db.UniqueIdentifier
   title            String           @db.VarChar(255)
+  updatedAt        DateTime         @default(now()) @updatedAt @db.DateTime
+  createdAt        DateTime         @default(now()) @db.DateTime
   job_postings     job_postings[]
   work_experiences WorkExperience[]
 }
@@ -916,6 +981,8 @@ model technology_areas {
 model provider_program_has_skills {
   training_program_id String            @db.UniqueIdentifier
   skill_id            String            @db.UniqueIdentifier
+  updatedAt           DateTime          @default(now()) @updatedAt @db.DateTime
+  createdAt           DateTime          @default(now()) @db.DateTime
   skills              skills            @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_training_program_has_skills_skills1")
   provider_programs   provider_programs @relation(fields: [training_program_id], references: [training_program_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_training_program_has_skills_training_program1")
 
@@ -925,29 +992,30 @@ model provider_program_has_skills {
 }
 
 model provider_programs {
-  training_program_id String  @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
-  program_id          String  @db.UniqueIdentifier
-  edu_provider_id     String  @db.UniqueIdentifier
-  pathway_id          String? @db.UniqueIdentifier
-  targetedJobRoles    String? @map("target_job_roles") @db.Text
-  description         String? @db.Text
-  months              String? @db.VarChar(45)
-  hoursPerWeek        String? @db.VarChar(45)
-  targetPopulation    String? @db.Text
-  serviceArea         String? @db.Text
-  pathways            String? @db.Text
-  programDescription  String? @db.Text
-  locations           String? @db.Text // this with be a delimited list. Delimiter: ~
-  about               String? @db.Text
-  tuition             String? @db.VarChar(25)
-  fees                String? @db.VarChar(25)
-  costSummary         String? @db.Text
-  locationType        String? @db.VarChar(25) // enum LocationType
-  getStartedUrl       String? @db.VarChar(255)
-  faq                 String? @db.Text
-  eduLevel            String? @db.VarChar(45) // enum EducationLevel
-  programLength       String? @db.Text
-
+  training_program_id         String                        @id(clustered: false, map: "training_programs_PRIMARY") @unique(map: "training_programs_training_program_id_UNIQUE") @db.UniqueIdentifier
+  program_id                  String                        @db.UniqueIdentifier
+  edu_provider_id             String                        @db.UniqueIdentifier
+  pathway_id                  String?                       @db.UniqueIdentifier
+  targetedJobRoles            String?                       @map("target_job_roles") @db.Text
+  description                 String?                       @db.Text
+  months                      String?                       @db.VarChar(45)
+  hoursPerWeek                String?                       @db.VarChar(45)
+  targetPopulation            String?                       @db.Text
+  serviceArea                 String?                       @db.Text
+  pathways                    String?                       @db.Text
+  programDescription          String?                       @db.Text
+  locations                   String?                       @db.Text // this with be a delimited list. Delimiter: ~
+  about                       String?                       @db.Text
+  tuition                     String?                       @db.VarChar(25)
+  fees                        String?                       @db.VarChar(25)
+  costSummary                 String?                       @db.Text
+  locationType                String?                       @db.VarChar(25) // enum LocationType
+  getStartedUrl               String?                       @db.VarChar(255)
+  faq                         String?                       @db.Text
+  eduLevel                    String?                       @db.VarChar(45) // enum EducationLevel
+  programLength               String?                       @db.Text
+  updatedAt                   DateTime                      @default(now()) @updatedAt @db.DateTime
+  createdAt                   DateTime                      @default(now()) @db.DateTime
   provider_program_has_skills provider_program_has_skills[]
   edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, onDelete: Cascade, map: "fk_training_program_training_provider1")
   Program                     programs                      @relation(fields: [program_id], references: [id], onUpdate: NoAction, map: "fk_provider_programs_programs1")
@@ -959,6 +1027,8 @@ model provider_programs {
 model programs {
   id                   String                 @id @unique(map: "programs_id_UNIQUE") @default(uuid()) @db.UniqueIdentifier
   title                String                 @unique @db.NVarChar(255)
+  updatedAt            DateTime               @default(now()) @updatedAt @db.DateTime
+  createdAt            DateTime               @default(now()) @db.DateTime
   jobseekers_education jobseekers_education[]
   provider_programs    provider_programs[]
 }
@@ -969,6 +1039,8 @@ model volunteer_has_skills {
   skill_id            String     @db.UniqueIdentifier
   skills              skills     @relation(fields: [skill_id], references: [skill_id], onUpdate: NoAction, map: "fk_volunteer_has_skill_skill1")
   volunteers          volunteers @relation(fields: [volunteer_id], references: [volunteer_id], onUpdate: NoAction, map: "fk_volunteer_has_skill_volunteer1")
+  updatedAt           DateTime   @default(now()) @updatedAt @db.DateTime
+  createdAt           DateTime   @default(now()) @db.DateTime
 
   @@index([skill_id], map: "volunteer_has_skills_fk_volunteer_has_skill_skill1_idx")
   @@index([volunteer_id], map: "volunteer_has_skills_fk_volunteer_has_skill_volunteer1_idx")
@@ -978,6 +1050,8 @@ model volunteers {
   volunteer_id         String                 @id(clustered: false, map: "volunteers_PRIMARY") @unique(map: "volunteers_mentor_id_UNIQUE") @db.UniqueIdentifier
   user_id              String                 @db.UniqueIdentifier
   volunteer_type       String                 @db.NVarChar(255)
+  updatedAt            DateTime               @default(now()) @updatedAt @db.DateTime
+  createdAt            DateTime               @default(now()) @db.DateTime
   volunteer_has_skills volunteer_has_skills[]
   users                User                   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_mentor_user1")
 
@@ -996,6 +1070,8 @@ model WorkExperience {
   startDate        DateTime          @map("start_date") @db.DateTime
   endDate          DateTime?         @map("end_date") @db.DateTime
   responsibilities String            @db.NText
+  updatedAt        DateTime          @default(now()) @updatedAt @db.DateTime
+  createdAt        DateTime          @default(now()) @db.DateTime
   jobseekers       jobseekers        @relation(fields: [jobseekerId], references: [jobseeker_id], onUpdate: NoAction, onDelete: Cascade, map: "fk_work_experience_jobseeker1")
   techArea         technology_areas? @relation(fields: [techAreaId], references: [id], onUpdate: NoAction, map: "fk_work_experiences_technology_areas1")
   industrySector   industry_sectors? @relation(fields: [sectorId], references: [industry_sector_id], onUpdate: NoAction, map: "fk_work_eperiences_industry_sectors1")
@@ -1034,6 +1110,8 @@ model Training {
   url             String            @db.VarChar(2083)
   provider        String?           @db.VarChar(255)
   skillsDeveloped String?           @db.Text
+  updatedAt       DateTime          @default(now()) @updatedAt @db.DateTime
+  createdAt       DateTime          @default(now()) @db.DateTime
   PathwayTraining PathwayTraining[]
   JobRoleTraining JobRoleTraining[]
 }
@@ -1043,6 +1121,8 @@ model PathwayTraining {
   id         String    @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
   pathwayId  String?   @db.UniqueIdentifier
   trainingId String    @db.UniqueIdentifier
+  updatedAt  DateTime  @default(now()) @updatedAt @db.DateTime
+  createdAt  DateTime  @default(now()) @db.DateTime
   training   Training  @relation(fields: [trainingId], references: [id])
   pathways   pathways? @relation(fields: [pathwayId], references: [pathway_id])
 
@@ -1061,6 +1141,8 @@ model JobRole {
   aiImpact         String?           @db.Text
   keyInsights      String?           @db.Text
   aiTransformation String?           @db.Text
+  updatedAt        DateTime          @default(now()) @updatedAt @db.DateTime
+  createdAt        DateTime          @default(now()) @db.DateTime
   skills           JobRoleSkill[]
   JobRoleTraining  JobRoleTraining[]
   pathway          pathways?         @relation(fields: [pathwayId], references: [pathway_id])
@@ -1069,39 +1151,43 @@ model JobRole {
 }
 
 model JobRoleTraining {
-  id         String @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobRoleId  String @db.UniqueIdentifier
-  trainingId String @db.UniqueIdentifier
-
-  jobRole  JobRole  @relation(fields: [jobRoleId], references: [id])
-  training Training @relation(fields: [trainingId], references: [id])
+  id         String   @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobRoleId  String   @db.UniqueIdentifier
+  trainingId String   @db.UniqueIdentifier
+  updatedAt  DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt  DateTime @default(now()) @db.DateTime
+  jobRole    JobRole  @relation(fields: [jobRoleId], references: [id])
+  training   Training @relation(fields: [trainingId], references: [id])
 
   @@unique([jobRoleId, trainingId])
 }
 
 model JobRoleSkill {
-  id                 String  @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-  jobRoleId          String  @db.UniqueIdentifier
-  skillId            String  @db.UniqueIdentifier
-  aiImpact           String  @db.VarChar(20)
-  currentProficiency String  @db.VarChar(50)
-  futureRelevance    String  @db.VarChar(50)
-  trainingRequired   Boolean @default(false)
-
-  jobRole JobRole @relation(fields: [jobRoleId], references: [id])
-  skill   skills  @relation(fields: [skillId], references: [skill_id])
+  id                 String   @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobRoleId          String   @db.UniqueIdentifier
+  skillId            String   @db.UniqueIdentifier
+  aiImpact           String   @db.VarChar(20)
+  currentProficiency String   @db.VarChar(50)
+  futureRelevance    String   @db.VarChar(50)
+  trainingRequired   Boolean  @default(false)
+  updatedAt          DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt          DateTime @default(now()) @db.DateTime
+  jobRole            JobRole  @relation(fields: [jobRoleId], references: [id])
+  skill              skills   @relation(fields: [skillId], references: [skill_id])
 
   @@unique([jobRoleId, skillId])
 }
 
-model EmployerJobRoleFeedBack{
-    id                 String  @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
-    jobRoleId          String  @db.UniqueIdentifier
-    skillId            String  @db.UniqueIdentifier
-    likertRating       Int
-    submiterid         String  @db.UniqueIdentifier
-    submiter           User @relation(fields: [submiterid], references: [id])
-    skill   skills  @relation(fields: [skillId], references: [skill_id])
+model EmployerJobRoleFeedBack {
+  id           String   @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  jobRoleId    String   @db.UniqueIdentifier
+  skillId      String   @db.UniqueIdentifier
+  likertRating Int
+  submiterid   String   @db.UniqueIdentifier
+  updatedAt    DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt    DateTime @default(now()) @db.DateTime
+  submiter     User     @relation(fields: [submiterid], references: [id])
+  skill        skills   @relation(fields: [skillId], references: [skill_id])
 
-    jobRole JobRole @relation(fields: [jobRoleId], references: [id])
+  jobRole JobRole @relation(fields: [jobRoleId], references: [id])
 }
