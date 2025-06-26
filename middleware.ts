@@ -59,6 +59,7 @@ export default auth((req) => {
       "/career-prep",
       "/services/jobseekers",
       "/api/admin/career-prep/self-assign-case",
+      "/api/companies",
       "/api/jobseekers/career-prep/meeting",
       "/api/admin/career-prep/update-recomended-track/",
       "/api/joblistings/",

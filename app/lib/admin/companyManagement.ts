@@ -8,7 +8,10 @@ const prisma: PrismaClient = getPrismaClient();
 
 export async function adminCreateCompany(companyData: CompanyAdminCreationDTO) {
   const Session = await auth();
-  if (!Session?.user.roles.includes(Role.ADMIN)) {
+  if (
+    !Session?.user.roles.includes(Role.ADMIN) &&
+    !Session?.user.roles.includes(Role.CASE_MANAGER)
+  ) {
     throw new Error("Must Be Admin to complete this task");
   }
   if (!Session?.user.id) {
