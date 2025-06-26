@@ -24,6 +24,7 @@ const companyStartInfo: companies = {
   is_approved: false,
   createdBy: null,
   createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 export default function Page() {
