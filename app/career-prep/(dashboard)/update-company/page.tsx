@@ -13,6 +13,7 @@ const companyStartInfo: companies = {
   company_logo_url: null,
   about_us: "",
   company_email: "",
+  contact_name: null,
   year_founded: 0,
   company_website_url: null,
   company_video_url: null,
@@ -188,10 +189,9 @@ export default function Page() {
             <label htmlFor="is_approved">Company is approved</label>
           </div>
           <div className="grid grid-cols-1">
-            <label htmlFor="about_us">About Company *</label>
+            <label htmlFor="about_us">About Company</label>
             <textarea
               name="about_us"
-              required
               value={formData.about_us || ""}
               onChange={handleInputChange}
             />
@@ -216,11 +216,21 @@ export default function Page() {
           </div>
 
           <div className="grid grid-cols-1">
-            <label htmlFor="company_email">Company Email *</label>
+            <label htmlFor="contact_name">Contact name</label>
             <input
-              type="email"
+              type="text"
+              name="contact_name"
+              id="contact_name"
+              value={formData.contact_name || ""}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="grid grid-cols-1">
+            <label htmlFor="company_email">Contact Email or URL</label>
+            <input
+              type="text"
               name="company_email"
-              required
               value={formData.company_email || ""}
               onChange={handleInputChange}
             />
@@ -238,12 +248,13 @@ export default function Page() {
 
           <div className="grid grid-cols-1">
             <label htmlFor="company_website_url">
-              Company URL <span className="text-xs">(http:// required)</span>
+              Company Website
+              <span className="text-xs">(http:// required)</span>
             </label>
             <input
               type="url"
               name="company_website_url"
-              placeholder="http://www.example.com"
+              placeholder="https://www.example.com"
               value={formData.company_website_url || ""}
               onChange={handleInputChange}
             />
@@ -254,7 +265,7 @@ export default function Page() {
             <input
               type="number"
               name="year_founded"
-              value={formData.year_founded || 0}
+              value={formData.year_founded || ""}
               onChange={handleInputChange}
             />
           </div>

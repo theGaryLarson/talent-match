@@ -186,15 +186,16 @@ model companies {
   industry_sector_id     String?                @db.UniqueIdentifier
   company_name           String                 @unique @db.VarChar(255)
   company_logo_url       String?                @db.VarChar(255)
-  about_us               String                 @db.VarChar(2083)
-  company_email          String                 @db.VarChar(255)
-  year_founded           Int
+  about_us               String?                @db.VarChar(2083)
+  company_email          String?                @db.VarChar(255)
+  contact_name           String?                @db.VarChar(255)
+  year_founded           Int?
   company_website_url    String?                @db.VarChar(255)
   company_video_url      String?                @db.VarChar(255)
   company_phone          String?                @db.VarChar(16) // TODO: default phoneCountryCode to 'United States +1 in page.tsx'
   company_mission        String?                @db.VarChar(2083)
   company_vision         String?                @db.VarChar(2083)
-  size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
+  size                   String?                @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
   estimated_annual_hires Int?
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
   createdAt              DateTime               @default(now()) @db.DateTime
@@ -669,21 +670,39 @@ model job_postings {
 }
 
 model JobseekerJobPosting {
-  id                     String       @id(clustered: false, map: "jobseeker_job_posting_PRIMARY") @default(uuid()) @db.UniqueIdentifier
-  jobPostId              String       @db.UniqueIdentifier
-  jobseekerId            String       @db.UniqueIdentifier
-  jobStatus              String       @default("Not Selected") @db.VarChar(45)
-  isBookmarked           Boolean?     @default(false)
-  employerClickedConnect Boolean      @default(false)
-  feedbackRating         Int?         @db.SmallInt
-  feedbackText           String?      @db.NText
-  savedAt                DateTime     @default(now())
-  appliedDate            DateTime?
-  followUpDate           DateTime?
-  updatedAt              DateTime     @default(now()) @updatedAt @db.DateTime
-  createdAt              DateTime     @default(now()) @db.DateTime
-  job_posting            job_postings @relation(fields: [jobPostId], references: [job_posting_id])
-  Jobseekers             jobseekers   @relation(fields: [jobseekerId], references: [jobseeker_id])
+  id                            String                          @id(clustered: false, map: "jobseeker_job_posting_PRIMARY") @default(uuid()) @db.UniqueIdentifier
+  jobPostId                     String                          @db.UniqueIdentifier
+  jobseekerId                   String                          @db.UniqueIdentifier
+  jobStatus                     String                          @default("Not Selected") @db.VarChar(45)
+  isBookmarked                  Boolean?                        @default(false)
+  employerClickedConnect        Boolean                         @default(false)
+  feedbackRating                Int?                            @db.SmallInt
+  feedbackText                  String?                         @db.NText
+  savedAt                       DateTime                        @default(now())
+  appliedDate                   DateTime?
+  followUpDate                  DateTime?
+  totalMatchScore               Float?                          @db.Float()
+  gabAnalysis                   String?                         @db.NText
+  linkedInProfileUpdate         String?                         @db.NText
+  elevatorPitch                 String?                         @db.NText
+  generatedResume               String?                         @db.NText
+  analysisDate                  DateTime?
+  updatedAt                     DateTime                        @default(now()) @updatedAt @db.DateTime
+  createdAt                     DateTime                        @default(now()) @db.DateTime
+  job_posting                   job_postings                    @relation(fields: [jobPostId], references: [job_posting_id])
+  Jobseekers                    jobseekers                      @relation(fields: [jobseekerId], references: [jobseeker_id])
+  JobseekerJobPostingSkillMatch JobseekerJobPostingSkillMatch[]
+}
+
+model JobseekerJobPostingSkillMatch {
+  jobseekerJobPostingId String @db.UniqueIdentifier
+  jobSkill              String @db.VarChar(255)
+  jobseekerSkill        String @db.VarChar(255)
+  matchScore            Float  @db.Float()
+
+  jobseekerJobPosting JobseekerJobPosting @relation(fields: [jobseekerJobPostingId], references: [id])
+
+  @@id([jobseekerJobPostingId, jobseekerSkill])
 }
 
 model jobseeker_has_skills {

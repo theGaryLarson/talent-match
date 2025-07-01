@@ -12,6 +12,7 @@ const companyStartInfo: companies = {
   company_name: "",
   company_logo_url: null,
   about_us: "",
+  contact_name: null,
   company_email: "",
   year_founded: 0,
   company_website_url: null,

@@ -4,6 +4,7 @@ export interface CompanyAdminCreationDTO {
   companyName: string;
   companyLogoUrl?: string;
   aboutUs: string;
+  contactName?: string;
   companyEmail: string;
   yearFounded: number;
   companyWebsiteUrl?: string;
