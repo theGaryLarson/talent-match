@@ -682,7 +682,7 @@ model JobseekerJobPosting {
   appliedDate                   DateTime?
   followUpDate                  DateTime?
   totalMatchScore               Float?                          @db.Float()
-  gabAnalysis                   String?                         @db.NText
+  gapAnalysis                   String?                         @db.NText
   linkedInProfileUpdate         String?                         @db.NText
   elevatorPitch                 String?                         @db.NText
   generatedResume               String?                         @db.NText
