@@ -188,6 +188,7 @@ model companies {
   company_logo_url       String?                @db.VarChar(255)
   about_us               String                 @db.VarChar(2083)
   company_email          String                 @db.VarChar(255)
+  contact_name           String?                @db.VarChar(255)
   year_founded           Int
   company_website_url    String?                @db.VarChar(255)
   company_video_url      String?                @db.VarChar(255)
