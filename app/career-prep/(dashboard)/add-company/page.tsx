@@ -38,6 +38,7 @@ export default function Page() {
       companyId: companyId,
       companyName: formData.get("company_name") as string,
       aboutUs: formData.get("about_company") as string,
+      contactName: formData.get("contact_name") as string,
       companyEmail: formData.get("company_email") as string,
       yearFounded: parseInt(formData.get("year_founded") as string, 10),
       size: formData.get("size") as string,
@@ -131,8 +132,8 @@ export default function Page() {
 
       {/* Company about*/}
       <div className="grid grid-cols-1">
-        <label htmlFor="about_company">About Company *</label>
-        <textarea name="about_company" required />
+        <label htmlFor="about_company">About Company</label>
+        <textarea name="about_company" />
       </div>
       {/* Company mission */}
       <div className="grid grid-cols-1">
@@ -144,11 +145,14 @@ export default function Page() {
         <label htmlFor="company_vision">Company Vision</label>
         <textarea name="company_vision" />
       </div>
-
+      <div className="grid grid-cols-1">
+        <label htmlFor="contact_name">Contact Name</label>
+        <input type="text" name="contact_name" />
+      </div>
       {/*company email */}
       <div className="grid grid-cols-1">
-        <label htmlFor="company_email">Company Email *</label>
-        <input type="email" name="company_email" required />
+        <label htmlFor="company_email">Contact Email or URL</label>
+        <input type="text" name="company_email" />
       </div>
       {/*company email */}
       <div className="grid grid-cols-1">
@@ -158,12 +162,12 @@ export default function Page() {
       {/*company url */}
       <div className="grid grid-cols-1">
         <label htmlFor="company_url">
-          Company URL <span className="text-xs">(http:// required)</span>
+          Company Website <span className="text-xs">(http:// required)</span>
         </label>
         <input
           type="url"
           name="company_url"
-          placeholder="http://www.example.com"
+          placeholder="https://www.example.com"
         />
       </div>
 
