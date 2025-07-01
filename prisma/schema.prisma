@@ -669,21 +669,37 @@ model job_postings {
 }
 
 model JobseekerJobPosting {
-  id                     String       @id(clustered: false, map: "jobseeker_job_posting_PRIMARY") @default(uuid()) @db.UniqueIdentifier
-  jobPostId              String       @db.UniqueIdentifier
-  jobseekerId            String       @db.UniqueIdentifier
-  jobStatus              String       @default("Not Selected") @db.VarChar(45)
-  isBookmarked           Boolean?     @default(false)
-  employerClickedConnect Boolean      @default(false)
-  feedbackRating         Int?         @db.SmallInt
-  feedbackText           String?      @db.NText
-  savedAt                DateTime     @default(now())
-  appliedDate            DateTime?
-  followUpDate           DateTime?
-  updatedAt              DateTime     @default(now()) @updatedAt @db.DateTime
-  createdAt              DateTime     @default(now()) @db.DateTime
-  job_posting            job_postings @relation(fields: [jobPostId], references: [job_posting_id])
-  Jobseekers             jobseekers   @relation(fields: [jobseekerId], references: [jobseeker_id])
+  id                            String                          @id(clustered: false, map: "jobseeker_job_posting_PRIMARY") @default(uuid()) @db.UniqueIdentifier
+  jobPostId                     String                          @db.UniqueIdentifier
+  jobseekerId                   String                          @db.UniqueIdentifier
+  jobStatus                     String                          @default("Not Selected") @db.VarChar(45)
+  isBookmarked                  Boolean?                        @default(false)
+  employerClickedConnect        Boolean                         @default(false)
+  feedbackRating                Int?                            @db.SmallInt
+  feedbackText                  String?                         @db.NText
+  savedAt                       DateTime                        @default(now())
+  appliedDate                   DateTime?
+  followUpDate                  DateTime?
+  totalMatchScore               Float?                          @db.Float()
+  gabAnalysis                   String?                         @db.NText
+  linkedInProfileUpdate         String?                         @db.NText
+  elevatorPitch                 String?                         @db.NText
+  generatedResume               String?                         @db.NText
+  analysisDate                  DateTime?
+  updatedAt                     DateTime                        @default(now()) @updatedAt @db.DateTime
+  createdAt                     DateTime                        @default(now()) @db.DateTime
+  job_posting                   job_postings                    @relation(fields: [jobPostId], references: [job_posting_id])
+  Jobseekers                    jobseekers                      @relation(fields: [jobseekerId], references: [jobseeker_id])
+  JobseekerJobPostingSkillMatch JobseekerJobPostingSkillMatch[]
+}
+
+model JobseekerJobPostingSkillMatch {
+  jobseekerJobPostingId String @id @db.UniqueIdentifier
+  jobSkill              String @db.VarChar(255)
+  jobseekerSkill        String @db.VarChar(255)
+  matchScore            Float  @db.Float()
+
+  jobseekerJobPosting JobseekerJobPosting @relation(fields: [jobseekerJobPostingId], references: [id])
 }
 
 model jobseeker_has_skills {
