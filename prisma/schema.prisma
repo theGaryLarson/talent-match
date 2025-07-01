@@ -694,12 +694,14 @@ model JobseekerJobPosting {
 }
 
 model JobseekerJobPostingSkillMatch {
-  jobseekerJobPostingId String @id @db.UniqueIdentifier
+  jobseekerJobPostingId String @db.UniqueIdentifier
   jobSkill              String @db.VarChar(255)
   jobseekerSkill        String @db.VarChar(255)
   matchScore            Float  @db.Float()
 
   jobseekerJobPosting JobseekerJobPosting @relation(fields: [jobseekerJobPostingId], references: [id])
+
+  @@id([jobseekerJobPostingId, jobseekerSkill])
 }
 
 model jobseeker_has_skills {
