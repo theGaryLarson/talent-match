@@ -186,16 +186,16 @@ model companies {
   industry_sector_id     String?                @db.UniqueIdentifier
   company_name           String                 @unique @db.VarChar(255)
   company_logo_url       String?                @db.VarChar(255)
-  about_us               String                 @db.VarChar(2083)
-  company_email          String                 @db.VarChar(255)
+  about_us               String?                @db.VarChar(2083)
+  company_email          String?                @db.VarChar(255)
   contact_name           String?                @db.VarChar(255)
-  year_founded           Int
+  year_founded           Int?
   company_website_url    String?                @db.VarChar(255)
   company_video_url      String?                @db.VarChar(255)
   company_phone          String?                @db.VarChar(16) // TODO: default phoneCountryCode to 'United States +1 in page.tsx'
   company_mission        String?                @db.VarChar(2083)
   company_vision         String?                @db.VarChar(2083)
-  size                   String                 @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
+  size                   String?                @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
   estimated_annual_hires Int?
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
   createdAt              DateTime               @default(now()) @db.DateTime
