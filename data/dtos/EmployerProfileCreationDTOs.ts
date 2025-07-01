@@ -97,9 +97,9 @@ export type ReadCompanyInfoDTO = {
   companyName: string;
   companyAddresses?: ReadAddressDTO[];
   logoUrl?: string | null;
-  aboutUs?: string;
-  companyEmail: string;
-  yearFounded: string;
+  aboutUs?: string | null;
+  companyEmail: string | null;
+  yearFounded?: string | null;
   websiteUrl?: string | null;
   videoUrl?: string | null;
   phoneCountryCode?: string | null;
@@ -201,7 +201,7 @@ export type PostEmployerProfileDTO = {
   logoUrl?: string | null;
   aboutUs?: string | null;
   companyEmail: string;
-  yearFounded: string;
+  yearFounded?: string | null;
   websiteUrl?: string | null;
   videoUrl?: string | null;
   phoneCountryCode?: string | null;
