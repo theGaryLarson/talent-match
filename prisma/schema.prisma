@@ -704,7 +704,7 @@ model JobseekerJobPostingSkillMatch {
 
   jobseekerJobPosting JobseekerJobPosting @relation(fields: [jobseekerJobPostingId], references: [id])
 
-  @@id([jobseekerJobPostingId, jobseekerSkill])
+  @@id([jobseekerJobPostingId, jobSkill])
 }
 
 model jobseeker_has_skills {
