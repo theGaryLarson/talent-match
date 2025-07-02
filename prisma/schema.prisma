@@ -692,6 +692,8 @@ model JobseekerJobPosting {
   job_posting                   job_postings                    @relation(fields: [jobPostId], references: [job_posting_id])
   Jobseekers                    jobseekers                      @relation(fields: [jobseekerId], references: [jobseeker_id])
   JobseekerJobPostingSkillMatch JobseekerJobPostingSkillMatch[]
+
+  @@unique([jobseekerId, jobPostId], name: "jobseeker_jobPost_unique")
 }
 
 model JobseekerJobPostingSkillMatch {
