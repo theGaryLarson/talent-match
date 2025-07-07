@@ -51,15 +51,18 @@ export enum TechCertificateStatus {
  * @enum {string}
  */
 export enum CareerPrepStatus {
-  Applied = "Applied", // submitting assessment will be Applied
   CreatingPlan = "Creating Plan",
   PlanCreated = "Plan Created",
   MeetingScheduled = "Meeting Scheduled",
   MetCareerNavigator = "Met Career Navigator",
-  Enrolled = "Enrolled",
-  Completed = "Completed",
+  Applied = "Applied", // submitting assessment will be Applied
+  Admitted = "Admitted",
   Rejected = "Rejected",
+  Enrolled = "Enrolled",
+  Active = "Active",
+  Inactive = "Inactive",
   Withdrawn = "Withdrawn", // additional option from what was given.
+  Completed = "Completed",
   Placed = "Placed", // added in light of filters for stats requested by Bethany.
 }
 
