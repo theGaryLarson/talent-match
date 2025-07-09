@@ -195,7 +195,7 @@ model companies {
   company_phone          String?                @db.VarChar(16) // TODO: default phoneCountryCode to 'United States +1 in page.tsx'
   company_mission        String?                @db.VarChar(2083)
   company_vision         String?                @db.VarChar(2083)
-  size                   String?                @default("less than 10", map: "DF__companies__size__3F466844") @db.VarChar(45)
+  size                   String?                @default("1-10", map: "DF__companies__size__3F466844") @db.VarChar(45)
   estimated_annual_hires Int?
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
   createdAt              DateTime               @default(now()) @db.DateTime
