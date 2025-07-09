@@ -269,6 +269,7 @@ export default function Page() {
               onChange={handleInputChange}
             >
               <option value={"1-10"}>1-10</option>
+              <option value={"11-50"}>1-10</option>
               <option value={"51-200"}>51-200</option>
               <option value={"201-500"}>201-500</option>
               <option value={"501-1000"}>501-1000</option>
