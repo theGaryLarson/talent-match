@@ -200,6 +200,7 @@ model companies {
   is_approved            Boolean                @default(false, map: "DF_companies__is_approved") @db.Bit
   createdAt              DateTime               @default(now()) @db.DateTime
   updatedAt              DateTime               @default(now()) @updatedAt @db.DateTime
+  leadType               String?                @default("cold")
   createdBy              String?                @db.UniqueIdentifier
   createdByUser          User?                  @relation(fields: [createdBy], references: [id], onDelete: NoAction)
   industry_sectors       industry_sectors?      @relation(fields: [industry_sector_id], references: [industry_sector_id], onUpdate: NoAction, map: "fk_company_industry_sectors1")
@@ -649,6 +650,7 @@ model job_postings {
   trainingRequirements          String?   @db.VarChar(2083)
   requiredCertifications        String?   @db.VarChar(2083)
   minimumEducationLevel         String?   @db.VarChar(2083)
+  status                        String?   @default("open")
   updatedAt                     DateTime  @default(now()) @updatedAt @db.DateTime
   createdAt                     DateTime  @default(now()) @db.DateTime
 
