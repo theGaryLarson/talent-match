@@ -8,9 +8,11 @@ const prisma = new PrismaClient();
 export const PastEventGraceDuration = 1000 * 60 * 60 * 48; // 48 hours
 
 export enum EventTypeEnum {
-  Workshop = "Workshop",
   General = "General",
-  Event = "Event",
+  Jobseeker = "Jobseeker",
+  Coalition = "Coalition",
+  Employer = "Employer",
+  Student = "Student",
 }
 export type CreateEventData = {
   name: string;
