@@ -26,7 +26,7 @@ const companyStartInfo: companies = {
   createdBy: null,
   createdAt: new Date(),
   updatedAt: new Date(),
-  leadType: "",
+  engagementType: "",
 };
 
 export default function Page() {
