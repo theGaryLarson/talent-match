@@ -6,7 +6,7 @@ export interface CompanyAdminCreationDTO {
   aboutUs: string;
   contactName?: string;
   companyEmail: string;
-  yearFounded: number;
+  yearFounded?: number | null;
   companyWebsiteUrl?: string;
   companyVideoUrl?: string;
   companyPhone?: string; // TODO: default phoneCountryCode to 'United States +1 in page.tsx'

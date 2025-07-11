@@ -14,7 +14,7 @@ const companyStartInfo: companies = {
   about_us: "",
   company_email: "",
   contact_name: null,
-  year_founded: 0,
+  year_founded: null,
   company_website_url: null,
   company_video_url: null,
   company_phone: null,
@@ -84,7 +84,14 @@ export default function Page() {
     const checked = "checked" in e.target ? e.target.checked : undefined;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : type === "number"
+            ? value === ""
+              ? null
+              : Number(value)
+            : value,
     }));
   };
 
