@@ -193,6 +193,7 @@ export async function getAllCompanies() {
   const res = await prisma.companies.findMany();
   return res;
 }
+
 export async function getAllEmployers() {
   return await prisma.employers.findMany({
     include: {
@@ -200,6 +201,7 @@ export async function getAllEmployers() {
     },
   });
 }
+
 export async function getAllTechAreas() {
   const res = await prisma.technology_areas.findMany();
   return res;
@@ -239,4 +241,36 @@ export async function getEmployerWithSession() {
   }
   const res: ReadEmployerRecordDTO = await getEmployer(userId);
   return res;
+}
+
+/**
+ * Stages of a company’s journey through the Employer Engagement Pipeline.
+ *
+ * @remarks
+ * - **LEAD**: Newly identified cold lead (e.g. from JSearch API); goal is to gather contact info and convert to ENGAGED.
+ * - **ENGAGED**: Actively in communication with the Employer Engagement team.
+ * - **OPPORTUNITY**: Company has agreed to host one or more activities (see {@link OpportunityType}).
+ * - **HIRED**: Company has successfully hired talent from the Coalition pool.
+ */
+export enum EngagementType {
+  LEAD = "Lead",
+  ENGAGED = "Engaged",
+  OPPORTUNITY = "Opportunity",
+  HIRED = "Hired",
+}
+
+/**
+ * Types of engagement activities a company can offer to jobseekers or students.
+ *
+ * @remarks
+ * - **JOB_POSTS**: Posting jobs to our board.
+ * - **MENTORING**: Hosting mock interviews or mentoring sessions.
+ * - **INDUSTRY_COUNCIL**: Advising on curriculum modernization.
+ * - **AMA_SPEAKER**: Presenting in an “Ask Me Anything” session.
+ */
+export enum OpportunityType {
+  JOB_POSTS = "Job Posts",
+  MENTORING = "Mentoring",
+  INDUSTRY_COUNCIL = "Industry Council",
+  AMA_SPEAKER = "AMA Speaker",
 }
