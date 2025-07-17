@@ -15,8 +15,8 @@ import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { ReadCompanyInfoDTO } from "@/data/dtos/EmployerProfileCreationDTOs";
-import { AzureOpenAI } from "openai";
 import { getSkillSubcategories } from "./admin/skill";
+import { getCompletionsClient, getEmbeddingsClient } from "./openAiClients";
 
 // used singleton pattern to avoid connection timeouts due to reaching connection limit
 const prisma: PrismaClient = getPrismaClient();
@@ -351,22 +351,7 @@ export async function vectorSearchSkills(
   if (skillName.length === 0) {
     return [];
   } else {
-    const endpoint = process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT;
-    const apiKey = process.env.AZURE_OPENAI_EMBEDDING_API_KEY;
-    const apiVersion = process.env.AZURE_OPENAI_EMBEDDING_API_VERSION;
-    const deploymentName = process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME;
-
-    if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
-      throw new Error(
-        "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
-      );
-    }
-    const client = new AzureOpenAI({
-      endpoint,
-      apiKey,
-      apiVersion,
-      deployment: deploymentName,
-    });
+    const client = getEmbeddingsClient();
     const resp = await client.embeddings.create({
       model: "",
       input: skillName,
@@ -952,29 +937,13 @@ export async function getEmployerById(employerId: string) {
 }
 
 export async function parseTextForSkills(text: string) {
-  let client: AzureOpenAI;
-  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
-  const apiKey = process.env.AZURE_OPENAI_API_KEY;
-  const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
-  const deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
-
-  if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
-    throw new Error(
-      "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
-    );
-  }
+  const client = getCompletionsClient();
 
   const skill_subcategories = (await getSkillSubcategories()).flatMap(
     (subcategory) => subcategory.subcategory_name,
   );
 
   try {
-    client = new AzureOpenAI({
-      endpoint,
-      apiKey,
-      apiVersion,
-      deployment: deploymentName,
-    });
     const completion = await client.chat.completions.create({
       messages: [
         {

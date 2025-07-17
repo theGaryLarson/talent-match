@@ -1,7 +1,7 @@
+import { getCompletionsClient } from "@/app/lib/openAiClients";
 import { auth } from "@/auth";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { NextResponse } from "next/server";
-import { AzureOpenAI } from "openai";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -22,27 +22,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
-    const apiKey = process.env.AZURE_OPENAI_API_KEY;
-    const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
-    const deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
-
-    if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
-      console.error(
-        "Azure OpenAI environment variables are not fully configured.",
-      );
-      return NextResponse.json(
-        { message: "AI service configuration error on server." },
-        { status: 500 },
-      );
-    }
-
-    const client = new AzureOpenAI({
-      endpoint,
-      apiKey,
-      apiVersion,
-      deployment: deploymentName,
-    });
+    const client = getCompletionsClient();
 
     const systemPrompt = `You are an expert HR analyst. Your task is to compare a candidate's resume with a job description.
     Provide a concise analysis highlighting the candidate's strengths (pros) and potential weaknesses or gaps (cons) concerning the specific requirements of the job description.
@@ -74,7 +54,7 @@ export async function POST(request: Request) {
     Please provide your analysis:`;
 
     const completion = await client.chat.completions.create({
-      model: deploymentName,
+      model: "",
       messages: [
         {
           role: "system",
