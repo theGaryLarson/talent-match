@@ -34,6 +34,7 @@ export default auth((req) => {
       "/api/skills/search/",
       "/api/employers/technology-areas",
       "/api/users/avatar/upload",
+      "/api/chatbot",
     ],
     [Role.EMPLOYER]: [
       "/pdf.worker.min.mjs",
