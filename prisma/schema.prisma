@@ -1214,3 +1214,63 @@ model EmployerJobRoleFeedBack {
 
   jobRole JobRole @relation(fields: [jobRoleId], references: [id])
 }
+
+/////////////////////////////////////////////////////////
+////////////// CIP & SOCC Tables & Maps /////////////////
+/////////////////////////////////////////////////////////
+
+model CIP {
+  id          String  @id @map("cip_code")
+  title       String
+  description String?
+
+  soccLinks CIPToSOCCMap[]
+
+  @@map("cip_table")
+}
+
+model SOCC {
+  id          String  @id @map("socc_code")
+  title       String
+  description String?
+
+  cipLinks    CIPToSOCCMap[]
+  socc2010Map SOCCToSOCCMap[] @relation("SOCC2010")
+  socc2018Map SOCCToSOCCMap[] @relation("SOCC2018")
+
+  @@map("socc_table_2018")
+}
+
+model CIPToSOCCMap {
+  cip_code  String
+  socc_code String
+
+  cip  CIP  @relation(fields: [cip_code], references: [id])
+  socc SOCC @relation(fields: [socc_code], references: [id])
+
+  @@id([cip_code, socc_code])
+  @@map("cip_to_socc_map")
+}
+
+model SOCCToCIPMap {
+  socc_code String
+  cip_code  String
+
+  @@id([socc_code, cip_code])
+  @@map("socc_to_cip_map_2018")
+}
+
+model SOCCToSOCCMap {
+  socc_code_2010 String
+  socc_code_2018 String
+
+  socc2010 SOCC @relation("SOCC2010", fields: [socc_code_2010], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  socc2018 SOCC @relation("SOCC2018", fields: [socc_code_2018], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([socc_code_2010, socc_code_2018])
+  @@map("socc_to_socc_map_2010_2018")
+}
+
+/////////////////////////////////////////////////////////
+//////////// End CIP & SOCC Tables & Maps ///////////////
+/////////////////////////////////////////////////////////
