@@ -8,7 +8,7 @@ import {
 import getPrismaClient from "../prismaClient.mjs";
 import { v4 as uuidv4 } from "uuid";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
-import { AzureOpenAI } from "openai";
+import { getEmbeddingsClient } from "../openAiClients";
 const prisma: PrismaClient = getPrismaClient();
 
 async function generateAndStoreEmbeddings(
@@ -17,29 +17,9 @@ async function generateAndStoreEmbeddings(
   if (!skillsToEmbed || skillsToEmbed.length === 0) {
     return { updated: 0 };
   }
-
-  const endpoint = process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT;
-  const apiKey = process.env.AZURE_OPENAI_EMBEDDING_API_KEY;
-  const apiVersion = process.env.AZURE_OPENAI_EMBEDDING_API_VERSION;
-  const deploymentName = process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME;
-
-  if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
-    console.error(
-      "Missing required Azure OpenAI configuration for embedding generation. Skipping.",
-    );
-    throw new Error(
-      "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
-    );
-  }
+  const client = getEmbeddingsClient();
 
   try {
-    const client = new AzureOpenAI({
-      endpoint,
-      apiKey,
-      apiVersion,
-      deployment: deploymentName,
-    });
-
     const skillMap = new Map(
       skillsToEmbed.map((s) => [s.skill_name, s.skill_id]),
     );

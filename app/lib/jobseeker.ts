@@ -17,11 +17,11 @@ import {
 import { devLog } from "@/app/lib/utils";
 import { Role } from "@/data/dtos/UserInfoDTO";
 import { v4 as uuidv4 } from "uuid";
-import { AzureOpenAI } from "openai";
 import { CareerPrepPathways } from "./admin/careerPrep";
 import { getAllIndustrySectors } from "./employer";
 import { getTechnologyAreas } from "./prisma";
 import { getSkillSubcategories } from "./admin/skill";
+import { getCompletionsClient } from "./openAiClients";
 
 const prisma: PrismaClient = getPrismaClient();
 
@@ -389,19 +389,290 @@ export const deleteJobseekerWithSession = async (): Promise<void> => {
   }
 };
 
-export async function parseResumeText(resumeText: string) {
-  let client: AzureOpenAI;
-  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
-  const apiKey = process.env.AZURE_OPENAI_API_KEY;
-  const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
-  const deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
+export async function jobseekerJobAnalysis(jobseekerId: string) {
+  try {
+    const jobseeker = await prisma.jobseekers.findUnique({
+      where: { jobseeker_id: jobseekerId },
+      include: {
+        BookmarkedJobs: {
+          include: {
+            job_posting: {
+              select: { job_posting_id: true, updatedAt: true },
+            },
+          },
+        },
+      },
+    });
 
-  if (!endpoint || !apiKey || !apiVersion || !deploymentName) {
-    throw new Error(
-      "Missing required Azure OpenAI configuration: endpoint, apiKey, apiVersion, or deploymentName",
-    );
+    if (!jobseeker) {
+      return { error: "Jobseeker not found" };
+    }
+
+    // Get all active job postings
+    const allJobPostings = await prisma.job_postings.findMany({
+      where: {
+        unpublish_date: {
+          gte: new Date(),
+        },
+      },
+      select: { job_posting_id: true, updatedAt: true },
+    });
+
+    // Identify jobs needing recalculation
+    const jobsToRecalc: string[] = [];
+    const existingMatchesMap = new Map<string, string>();
+
+    for (const job of allJobPostings) {
+      const existingMatch = jobseeker.BookmarkedJobs.find(
+        (jp) => jp.jobPostId === job.job_posting_id,
+      );
+
+      if (existingMatch && existingMatch.analysisDate && jobseeker.updatedAt) {
+        existingMatchesMap.set(job.job_posting_id, existingMatch.id);
+
+        // Check if recalculation is needed
+        const jobUpdatedAfterAnalysis =
+          job.updatedAt > existingMatch.analysisDate;
+        const jobseekerUpdatedAfterAnalysis =
+          jobseeker.updatedAt > existingMatch.analysisDate;
+
+        if (jobUpdatedAfterAnalysis || jobseekerUpdatedAfterAnalysis) {
+          jobsToRecalc.push(job.job_posting_id);
+        }
+      } else {
+        // New job that hasn't been analyzed
+        jobsToRecalc.push(job.job_posting_id);
+      }
+    }
+
+    if (jobsToRecalc.length === 0) {
+      return {
+        message: "All job matches are up-to-date. No recalculation needed.",
+      };
+    }
+
+    const jobParams = Prisma.join(jobsToRecalc.map((id) => Prisma.sql`${id}`));
+
+    // jhps.A and other "A" is job_posting_id
+    const matchQuery = Prisma.sql`
+        WITH JobseekerSkills AS (
+          SELECT s.skill_id, s.skill_name, s.embedding
+          FROM jobseeker_has_skills jhs
+          JOIN skills s ON jhs.skill_id = s.skill_id
+          WHERE jhs.jobseeker_id = ${jobseekerId} AND s.embedding IS NOT NULL
+        ),
+        JobSkills AS (
+          SELECT
+            jphs.A,
+            s.skill_id,
+            s.skill_name,
+            s.embedding
+          FROM _JobPostingSkills jphs
+          JOIN skills s ON jphs.B = s.skill_id
+          WHERE s.embedding IS NOT NULL
+            AND jphs.A IN (${jobParams})
+        ),
+        SimilarityScores AS (
+          SELECT
+            js.A,
+            js.skill_name AS job_skill_name,
+            jss.skill_name AS seeker_skill_name,
+            1.0 - VECTOR_DISTANCE('COSINE', js.embedding, jss.embedding) AS similarity
+          FROM JobSkills js
+          CROSS JOIN JobseekerSkills jss
+        ),
+        BestMatches AS (
+          SELECT
+            A,
+            job_skill_name,
+            seeker_skill_name,
+            similarity,
+            ROW_NUMBER() OVER (
+              PARTITION BY A, job_skill_name
+              ORDER BY similarity DESC
+            ) AS rn
+          FROM SimilarityScores
+          WHERE similarity BETWEEN 0.0 AND 1.0
+        ),
+        AggregatedMatches AS (
+          SELECT
+            A,
+            AVG(similarity) AS totalMatchScore
+          FROM BestMatches
+          WHERE rn = 1
+          GROUP BY A
+        )
+        SELECT
+          am.A AS jobId,
+          am.totalMatchScore,
+          bm.job_skill_name,
+          bm.seeker_skill_name,
+          bm.similarity AS matchScore
+        FROM AggregatedMatches am
+        JOIN BestMatches bm ON am.A = bm.A AND bm.rn = 1
+      `;
+
+    const matchResults: Array<{
+      jobId: string;
+      totalMatchScore: number;
+      job_skill_name: string;
+      seeker_skill_name: string;
+      matchScore: number;
+    }> = await prisma.$queryRaw(matchQuery);
+
+    const jobMatchesMap = new Map<
+      string,
+      {
+        totalMatchScore: number;
+        skillMatches: {
+          job_skill_name: string;
+          seeker_skill_name: string;
+          matchScore: number;
+        }[];
+      }
+    >();
+
+    matchResults.forEach((row) => {
+      if (!jobMatchesMap.has(row.jobId)) {
+        jobMatchesMap.set(row.jobId, {
+          totalMatchScore: row.totalMatchScore,
+          skillMatches: [],
+        });
+      }
+      jobMatchesMap.get(row.jobId)?.skillMatches.push({
+        job_skill_name: row.job_skill_name,
+        seeker_skill_name: row.seeker_skill_name,
+        matchScore: row.matchScore,
+      });
+    });
+
+    await prisma.$transaction(async (tx) => {
+      const now = new Date();
+
+      for (const jobId of jobsToRecalc) {
+        const matchData = jobMatchesMap.get(jobId);
+        if (!matchData) continue;
+
+        const { id: postingId } = await tx.jobseekerJobPosting.upsert({
+          where: {
+            jobseeker_jobPost_unique: {
+              jobseekerId: jobseekerId,
+              jobPostId: jobId,
+            },
+          },
+          update: {
+            totalMatchScore: matchData.totalMatchScore,
+            analysisDate: now,
+          },
+          create: {
+            jobseekerId,
+            jobPostId: jobId,
+            totalMatchScore: matchData.totalMatchScore,
+            jobStatus: "",
+            isBookmarked: false,
+            employerClickedConnect: false,
+            analysisDate: now,
+          },
+        });
+
+        await tx.jobseekerJobPostingSkillMatch.deleteMany({
+          where: { jobseekerJobPostingId: postingId },
+        });
+
+        const skillMatches = matchData.skillMatches.map((sm) => ({
+          jobseekerJobPostingId: postingId,
+          jobSkill: sm.job_skill_name,
+          jobseekerSkill: sm.seeker_skill_name,
+          matchScore: sm.matchScore,
+        }));
+
+        await tx.jobseekerJobPostingSkillMatch.createMany({
+          data: skillMatches,
+        });
+      }
+    });
+
+    const topMatches = await prisma.jobseekerJobPosting.findMany({
+      where: {
+        jobseekerId: jobseekerId,
+        job_posting: {
+          OR: [{ unpublish_date: { gte: new Date() } }],
+        },
+      },
+      orderBy: { totalMatchScore: "desc" },
+      take: 3,
+      include: {
+        job_posting: {
+          select: {
+            job_posting_id: true,
+            job_title: true,
+          },
+        },
+        JobseekerJobPostingSkillMatch: {
+          select: {
+            jobSkill: true,
+            jobseekerSkill: true,
+            matchScore: true,
+          },
+        },
+      },
+    });
+
+    return topMatches.map((match) => ({
+      jobPostingId: match.job_posting.job_posting_id,
+      jobTitle: match.job_posting.job_title,
+      individualMatches: match.JobseekerJobPostingSkillMatch.map(
+        (skillMatch) => ({
+          jobSkill: skillMatch.jobSkill,
+          jobseekerSkill: skillMatch.jobseekerSkill,
+          matchScore: skillMatch.matchScore,
+        }),
+      ),
+      overallMatchScore: match.totalMatchScore,
+    }));
+  } catch (error) {
+    console.error("Error in job matching:", error);
+    return { error: "Failed to process job matching" };
   }
+}
 
+export async function jobGapAnalysis(resumeText: string, jobPostingId: string) {
+  try {
+    const jobText = await prisma.job_postings.findFirst({
+      where: {
+        job_posting_id: jobPostingId,
+      },
+      select: {
+        job_description: true,
+      },
+    });
+    if (!jobText) {
+      return "Sorry unable to perform a gap analysis right now.";
+    }
+    const client = getCompletionsClient();
+    const completion = await client.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `Compare the student's resume to the job description and give a gap analysis.`,
+        },
+        {
+          role: "user",
+          content: resumeText + "\n\n" + jobText?.job_description,
+        },
+      ],
+      model: "",
+      max_completion_tokens: 32768,
+      temperature: 0.2,
+      stream: false,
+    });
+    return completion.choices[0]?.message?.content;
+  } catch (error) {
+    console.error("Error calling Azure OpenAI API:", error);
+  }
+}
+
+export async function parseResumeText(resumeText: string) {
   const industry_sectors = (await getAllIndustrySectors()).flatMap(
     (industry) => industry.sector_title,
   );
@@ -413,12 +684,7 @@ export async function parseResumeText(resumeText: string) {
   );
 
   try {
-    client = new AzureOpenAI({
-      endpoint,
-      apiKey,
-      apiVersion,
-      deployment: deploymentName,
-    });
+    const client = getCompletionsClient();
     const completion = await client.chat.completions.create({
       messages: [
         {
