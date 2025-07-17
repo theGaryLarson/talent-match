@@ -115,7 +115,7 @@ const ChatBot = () => {
     }
   }, [parsePdf, resumeText]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.trim()) {
       sendMessage(input);
