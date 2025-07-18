@@ -198,6 +198,7 @@ export async function updateJobListing(jobData: JobPostCreationDTO) {
         end_date: jobData.end_date,
         job_post_url: jobData.job_post_url,
         assessment_url: jobData.assessment_url,
+        occupation_code: jobData.occupation_code,
         trainingRequirements: jobData.trainingRequirements,
         requiredCertifications: jobData.requiredCertifications,
         minimumEducationLevel: jobData.minimumEducationLevel,
