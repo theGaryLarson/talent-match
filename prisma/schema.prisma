@@ -1225,7 +1225,8 @@ model CIP {
   title       String
   description String?
 
-  soccLinks CIPToSOCCMap[]
+  soccLinks    CIPToSOCCMap[]
+  SOCCToCIPMap SOCCToCIPMap[]
 
   @@map("cip")
 }
@@ -1246,8 +1247,9 @@ model SOCC2018 {
   title       String
   description String?
 
-  cipLinks    CIPToSOCCMap[]
-  socc2018Map SOCCToSOCCMap[] @relation("SOCC2018")
+  cipLinks     CIPToSOCCMap[]
+  socc2018Map  SOCCToSOCCMap[] @relation("SOCC2018")
+  SOCCToCIPMap SOCCToCIPMap[]
 
   @@map("socc_2018")
 }
@@ -1266,6 +1268,9 @@ model CIPToSOCCMap {
 model SOCCToCIPMap {
   socc_code String
   cip_code  String
+
+  SOCC2018 SOCC2018 @relation(fields: [socc_code], references: [id])
+  CIP2020  CIP      @relation(fields: [cip_code], references: [id])
 
   @@id([socc_code, cip_code])
   @@map("socc2018_to_cip2020_map")
