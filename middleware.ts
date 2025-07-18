@@ -5,7 +5,6 @@ import { Role } from "./data/dtos/UserInfoDTO";
 export default auth((req) => {
   const pathname = req.nextUrl.pathname;
   const userRoles = req.auth?.user?.roles || [];
-  const jobseekerId = req.auth?.user?.jobseekerId;
   const homeUrl = new URL("/", req.nextUrl.origin);
 
   // Map roles to their allowed routes
@@ -44,6 +43,7 @@ export default auth((req) => {
       "/api/jobseekers/get/",
       "/api/jobseekers/resume/get/",
       "/api/joblistings/",
+      "/api/socc/",
       "/api/employers/",
       "/api/companies",
       "/api/users/avatar/upload",
