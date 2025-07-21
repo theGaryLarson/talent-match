@@ -55,15 +55,16 @@ export enum CareerPrepStatus {
   PlanCreated = "Plan Created",
   MeetingScheduled = "Meeting Scheduled",
   MetCareerNavigator = "Met Career Navigator",
-  Applied = "Applied", // submitting assessment will be Applied
+  Applied = "Applied",
   Admitted = "Admitted",
   Rejected = "Rejected",
   Enrolled = "Enrolled",
   Active = "Active",
   Inactive = "Inactive",
   Withdrawn = "Withdrawn", // additional option from what was given.
-  Completed = "Completed",
   Placed = "Placed", // added in light of filters for stats requested by Bethany.
+  Completed = "Completed", // Student has marked their readiness packet as complete, signals Career Nav for manual review
+  JobReady = "Job-Ready", // After student marks completion Career Navigator manually assigns Job Ready after satisfactory review.
 }
 
 /**
