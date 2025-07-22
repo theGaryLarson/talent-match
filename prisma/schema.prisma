@@ -1030,18 +1030,20 @@ model provider_programs {
   locations                   String?                       @db.Text // this with be a delimited list. Delimiter: ~
   about                       String?                       @db.Text
   tuition                     String?                       @db.VarChar(25)
-  fees                        String?                       @db.VarChar(25)
+  fees                        String?                       @db.NVarChar(1000)
   costSummary                 String?                       @db.Text
   locationType                String?                       @db.VarChar(25) // enum LocationType
   getStartedUrl               String?                       @db.VarChar(255)
   faq                         String?                       @db.Text
   eduLevel                    String?                       @db.VarChar(45) // enum EducationLevel
   programLength               String?                       @db.Text
+  cipCode                     String?
   updatedAt                   DateTime                      @default(now()) @updatedAt @db.DateTime
   createdAt                   DateTime                      @default(now()) @db.DateTime
   provider_program_has_skills provider_program_has_skills[]
   edu_provider                edu_providers                 @relation(fields: [edu_provider_id], references: [id], onUpdate: NoAction, onDelete: Cascade, map: "fk_training_program_training_provider1")
   Program                     programs                      @relation(fields: [program_id], references: [id], onUpdate: NoAction, map: "fk_provider_programs_programs1")
+  CIP                         CIP?                          @relation(fields: [cipCode], references: [id])
 
   @@index([edu_provider_id], map: "training_programs_fk_training_program_training_provider1_idx")
   @@index([pathway_id], map: "training_programs_fk_training_program_Pathways1_idx")
@@ -1225,8 +1227,9 @@ model CIP {
   title       String
   description String?
 
-  soccLinks    CIPToSOCCMap[]
-  SOCCToCIPMap SOCCToCIPMap[]
+  soccLinks         CIPToSOCCMap[]
+  SOCCToCIPMap      SOCCToCIPMap[]
+  provider_programs provider_programs[]
 
   @@map("cip")
 }
