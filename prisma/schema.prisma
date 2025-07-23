@@ -1234,13 +1234,24 @@ model CIP {
   @@map("cip")
 }
 
+model SOCC {
+  id           String         @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  code         String
+  title        String         @db.NVarChar(1000)
+  description  String?        @db.NVarChar(1000)
+  version      String         @db.VarChar(4) // versions is denoted by year (i.e 2010, 2018, 2020)
+  CIPToSOCCMap CIPToSOCCMap[]
+
+  @@map("socc")
+}
+
 /// holds ONLY the 2010 codes
 model SOCC2010 {
-  id          String          @id @map("socc_code")
+  id          String  @id @map("socc_code")
   title       String
   description String?
-  soc2010Map  SOCCToSOCCMap[] @relation("SOCC2010")
 
+  // soc2010Map  SOCCToSOCCMap[] @relation("SOCC2010")
   @@map("socc_2010")
 }
 
@@ -1250,44 +1261,31 @@ model SOCC2018 {
   title       String
   description String?
 
-  cipLinks     CIPToSOCCMap[]
-  socc2018Map  SOCCToSOCCMap[] @relation("SOCC2018")
   SOCCToCIPMap SOCCToCIPMap[]
 
   @@map("socc_2018")
 }
 
 model CIPToSOCCMap {
-  cip_code  String
-  socc_code String
+  cip  String @map("cip_code")
+  socc String @map("socc_code") @db.UniqueIdentifier // now stores socc.id
 
-  cip  CIP      @relation(fields: [cip_code], references: [id])
-  socc SOCC2018 @relation(fields: [socc_code], references: [id])
+  CIP  CIP  @relation(fields: [cip], references: [id])
+  SOCC SOCC @relation(fields: [socc], references: [id])
 
-  @@id([cip_code, socc_code])
+  @@id([cip, socc])
   @@map("cip_to_socc_map")
 }
 
 model SOCCToCIPMap {
-  socc_code String
-  cip_code  String
+  socc String @map("socc_code")
+  cip  String @map("cip_code")
 
-  SOCC2018 SOCC2018 @relation(fields: [socc_code], references: [id])
-  CIP2020  CIP      @relation(fields: [cip_code], references: [id])
+  SOCC2018 SOCC2018 @relation(fields: [socc], references: [id])
+  CIP2020  CIP      @relation(fields: [cip], references: [id])
 
-  @@id([socc_code, cip_code])
+  @@id([socc, cip])
   @@map("socc2018_to_cip2020_map")
-}
-
-model SOCCToSOCCMap {
-  socc_code_2010 String
-  socc_code_2018 String
-
-  socc2010 SOCC2010 @relation("SOCC2010", fields: [socc_code_2010], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  socc2018 SOCC2018 @relation("SOCC2018", fields: [socc_code_2018], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([socc_code_2010, socc_code_2018])
-  @@map("socc_to_socc_map_2010_2018")
 }
 
 /////////////////////////////////////////////////////////
