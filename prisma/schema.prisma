@@ -1223,7 +1223,7 @@ model EmployerJobRoleFeedBack {
 
 /// holds ONLY the 2020 codes
 model CIP {
-  id          String  @id @map("cip_code")
+  id          String  @id @map("code")
   title       String
   description String?
 
@@ -1267,13 +1267,13 @@ model SOCC2018 {
 }
 
 model CIPToSOCCMap {
-  cip  String @map("cip_code")
-  socc String @map("socc_code") @db.UniqueIdentifier // now stores socc.id
+  cip    String @map("cip_code")
+  soccId String @map("socc_id") @db.UniqueIdentifier // now stores socc.id
 
   CIP  CIP  @relation(fields: [cip], references: [id])
-  SOCC SOCC @relation(fields: [socc], references: [id])
+  SOCC SOCC @relation(fields: [soccId], references: [id])
 
-  @@id([cip, socc])
+  @@id([cip, soccId], map: "cip_to_socc_PRIMARY", clustered: false)
   @@map("cip_to_socc_map")
 }
 
