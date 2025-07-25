@@ -2,9 +2,16 @@ SET NOCOUNT ON;
 
 BEGIN TRY
     BEGIN TRANSACTION;
+    ----------------------------------------------------------------
+    -- Clear out any existing mappings
+    ----------------------------------------------------------------
+    DELETE FROM dbo.cip_to_socc_map;
 
-    INSERT INTO [dbo].[cip_to_socc_map] (cip_code, socc_code)
-    SELECT v.cip_code, v.socc_code
+    ----------------------------------------------------------------
+    -- Bulk‐insert new mappings, looking up socc.id by socc.code
+    ----------------------------------------------------------------
+    INSERT INTO [dbo].[cip_to_socc_map] (cip_code, socc_id)
+    SELECT v.cip_code, s.id
     FROM (VALUES
         ('010000','191011'),
         ('010000','191012'),
@@ -6104,9 +6111,12 @@ BEGIN TRY
         ('999999','553013'),
         ('999999','553016')
     ) AS v(cip_code, socc_code)
+     INNER JOIN dbo.socc AS s
+                ON s.code    = v.socc_code
+                    AND s.version = '2018'
     WHERE NOT EXISTS (
         SELECT 1 FROM [dbo].[cip_to_socc_map] t
-        WHERE t.cip_code = v.cip_code AND t.socc_code = v.socc_code
+        WHERE t.cip_code = v.cip_code AND t.socc_id = s.id
     );
 
     COMMIT TRANSACTION;
