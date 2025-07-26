@@ -5,6 +5,7 @@ import {
   Prisma,
   PrismaClient,
   programs,
+  SOCC2018,
 } from "@prisma/client";
 import getPrismaClient from "@/app/lib/prismaClient.mjs";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
@@ -211,6 +212,16 @@ export async function searchLocations(
     fields: [field],
     maxResults: 10,
     sortField: field == "county" || field == "city" ? "city" : field,
+  });
+}
+
+export async function searchSocc(soccCode: string): Promise<SOCC2018[]> {
+  return genericSearch<SOCC2018>({
+    searchTerm: soccCode,
+    entity: "sOCC2018",
+    fields: ["id"],
+    maxResults: 10,
+    sortField: "id",
   });
 }
 

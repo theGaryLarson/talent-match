@@ -34,11 +34,7 @@ import {
 } from "@mui/icons-material";
 import SingleSelectFilterAutoload from "../mui/SingleSelectFilterAutoload";
 import { IndustrySectorDropdownDTO } from "@/data/dtos/IndustrySectorDropdownDTO";
-import {
-  EarnLearnType,
-  EmploymentType,
-  OccupationCode,
-} from "@/app/lib/admin/jobTracking";
+import { EarnLearnType, EmploymentType } from "@/app/lib/admin/jobTracking";
 import { SkillDTO } from "@/data/dtos/SkillDTO";
 import TagsWithAutocomplete from "../mui/TagsWithAutocomplete";
 import { JobPostCreationDTO } from "@/data/dtos/JobListingDTO";
@@ -46,6 +42,7 @@ import { TechnologyAreaDropdownDTO } from "@/data/dtos/TechnologyAreaDropdownDTO
 import dayjs, { Dayjs } from "dayjs";
 import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 import QuillEditor from "./QuillEditor";
+import TextFieldWithAutocomplete from "../mui/TextFieldWithAutocomplete";
 
 function getCompensationType(salary_range: string) {
   const lowerCaseSalary = salary_range.toLowerCase();
@@ -482,18 +479,34 @@ export default function NewJobForm({
             </FormControl>
 
             <FormControl fullWidth>
-              <FormLabel required>Occupation Code (NAICS)</FormLabel>
-              <Select
-                required
-                value={occupationCode}
-                onChange={(e) => setOccupationCode(e.target.value)}
-              >
-                {Object.values(OccupationCode).map((code) => (
-                  <MenuItem key={code + 1} value={code}>
-                    {code}
-                  </MenuItem>
-                ))}
-              </Select>
+              <FormLabel required>Occupation Code (SOCC)</FormLabel>
+              <TextFieldWithAutocomplete<{
+                id: string;
+                title: string;
+                description: string | null;
+              }>
+                apiSearchRoute="/api/socc/search/"
+                fieldLabel=""
+                searchingText="Searching..."
+                noResultsText="No socc code found..."
+                value={occupationCode ?? ""}
+                onChange={(
+                  _event,
+                  value:
+                    | string
+                    | { id: string; title: string; description: string | null }
+                    | null,
+                ) => {
+                  if (value && typeof value === "object" && "id" in value) {
+                    setOccupationCode(value.id);
+                  } else {
+                    setOccupationCode("");
+                  }
+                }}
+                searchPlaceholder=""
+                allowNewOption={false}
+                getOptionLabel={(option) => `${option?.id} - ${option.title}`}
+              />
               <FormHelperText>Select an occupation code</FormHelperText>
             </FormControl>
 
@@ -979,7 +992,7 @@ export default function NewJobForm({
                 <strong>Tech Area:</strong> {techArea}
               </Typography>
               <Typography>
-                <strong>Occupation Code:</strong> {occupationCode}
+                <strong>Occupation Code (onet-socc):</strong> {occupationCode}
               </Typography>
               <Typography>
                 <strong>Application Deadline:</strong>{" "}
