@@ -1038,6 +1038,7 @@ model provider_programs {
   eduLevel                    String?                       @db.VarChar(45) // enum EducationLevel
   programLength               String?                       @db.Text
   cipCode                     String?
+  awardType                   String?                       @db.NVarChar(100)
   updatedAt                   DateTime                      @default(now()) @updatedAt @db.DateTime
   createdAt                   DateTime                      @default(now()) @db.DateTime
   provider_program_has_skills provider_program_has_skills[]
