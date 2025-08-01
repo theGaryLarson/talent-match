@@ -75,7 +75,7 @@ export default function page() {
               <b className="text-fluid-xl leading-fluid-xl block font-normal text-blue-text2">
                 1,000 job candidates
               </b>{" "}
-              in tech roles by 2025
+              in tech roles by 2026
             </p>
           </header>
         </div>
