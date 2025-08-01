@@ -125,7 +125,7 @@ export default function Page() {
               </div>
               <div className="sm-tablet:mb-4 self-stretch text-center text-neutral-700 text-2xl sm-tablet:text-5xl font-normal font-['Roboto'] capitalize leading-10">
                 {" "}
-                In Tech roles by 2025
+                In Tech roles by 2026
               </div>
             </div>
             {/* What we do */}
