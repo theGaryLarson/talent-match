@@ -24,12 +24,55 @@ export default async function AnnouncementSpace() {
         </div>
       </Grid>
       <Carousel>
-        {/* <CareerPrep
-          enrollmentStatus={carrerPrepEnrollment?.enrollment}
-          track={carrerPrepEnrollment?.AssignedTrack}
-          jobseekerId={session?.user.jobseekerId ?? ""}
-          caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? "Our"} ${carrerPrepEnrollment?.CaseManger?.last_name ?? "Career Navigator"}`}
-        /> */}
+        {/* Career Prep Card with Enrollment & Info Buttons */}
+        <Card
+          elevation={0}
+          sx={{
+            borderRadius: "1rem",
+            p: "calc(var(--spacing) * 4)",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <Stack direction={{ sx: "column" }} gap={2}>
+            <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
+              Join the Career Prep Program
+            </p>
+            <div className="inline-flex items-start justify-start gap-2.5 self-stretch">
+              <p className="font-semibold leading-none tracking-wider text-primary-main">
+                Build confidence, get guidance, and prepare for a career in
+                tech.
+              </p>
+            </div>
+            <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
+              <p>
+                Enroll today to gain access to job-readiness workshops, a
+                dedicated career navigator, and industry connections.{" "}
+                <a
+                  href="/services/jobseekers/career-prep" // Career Prep info page link
+                  className="text-primary-main underline hover:text-primary-dark"
+                >
+                  Learn more
+                </a>{" "}
+                about how the Career Prep program can help you achieve your
+                goals.
+              </p>
+            </div>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ placeSelf: "end", mt: "calc(var(--spacing) * 4)" }}
+            >
+              <PillButton
+                color="secondary"
+                href="/services/jobseekers/career-prep/enrollment" // Enrollment form link
+              >
+                Enroll
+              </PillButton>
+            </Stack>
+          </Stack>
+        </Card>
+
         {/* Update your profile card */}
         <Card
           elevation={0}
