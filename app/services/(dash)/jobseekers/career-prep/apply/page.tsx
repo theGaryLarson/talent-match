@@ -231,8 +231,8 @@ export default function Page() {
     const u = session?.user as any;
     setFormData((prev) => ({
       ...prev,
-      firstName: prev.firstName || u?.first_name || "",
-      lastName: prev.lastName || u?.last_name || "",
+      firstName: prev.firstName || u?.name.split(" ")[0] || "",
+      lastName: prev.lastName || u?.name.split(" ")[1] || "",
       email: prev.email || u?.email || "",
     }));
   }, [status, session?.user]);
