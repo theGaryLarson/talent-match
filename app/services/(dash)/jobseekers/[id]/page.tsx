@@ -41,6 +41,11 @@ const monthNames = [
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const [params, session] = await Promise.all([props.params, auth()]);
   const jobseeker = await getJobSeekerEmployerView(params.id);
+  const employmentTypesSought =
+    (jobseeker?.employment_type_sought ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
 
   const isOwnProfile = session?.user.jobseekerId === params.id;
   let videoID = null;
@@ -173,11 +178,15 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             <Stack spacing={1} sx={{ p: 2, width: { xs: "100%", sm: "50%" } }}>
               <Typography>Interested in</Typography>
               <Box>
-                <Chip
-                  variant="outlined"
-                  color="primary"
-                  label={jobseeker?.employment_type_sought}
-                />
+                {employmentTypesSought.length > 0 ? (
+                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                    {employmentTypesSought.map((label) => (
+                      <Chip key={label} variant="outlined" color="primary" label={label} />
+                    ))}
+                  </Stack>
+                ) : (
+                  <Chip variant="outlined" color="default" label="None" />
+                )}
               </Box>
             </Stack>
             <Divider
