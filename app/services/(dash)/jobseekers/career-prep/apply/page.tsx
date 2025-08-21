@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Alert,
   Box,
@@ -16,6 +17,8 @@ import {
   Snackbar,
   TextField,
   Typography,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import PillButton from "@/app/ui/components/PillButton";
 import { useSession } from "next-auth/react";
@@ -23,10 +26,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Confetti from "@/app/ui/components/Confetti";
 import "@/app/ui/profile-creation.css";
 
-// dnd-kit: React API
-import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
-import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
-import { arrayMove } from "@dnd-kit/helpers";
+/* --- constants ------------------------------------------------------------ */
 
 interface FormData {
   firstName: string;
@@ -109,6 +109,7 @@ const CERTIFICATION_OPTIONS = [
 ] as const;
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
+
 const TIMEBLOCKS = [
   "Morning (9-11am)",
   "Afternoon (1-3pm)",
@@ -117,81 +118,104 @@ const TIMEBLOCKS = [
   "Evening (5-7pm)",
 ] as const;
 
-function SortableRow({ id }: { id: string }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+/* --- ranking UI (radio-based) -------------------------------------------- */
 
-  const style: React.CSSProperties = {
-    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
-    transition,
-  };
+/** Move an item to a specific index to keep ranks unique. */
+function moveToIndex(list: string[], id: string, toIndex: number) {
+  const next = list.slice();
+  const from = next.indexOf(id);
+  if (from === -1 || toIndex < 0 || toIndex >= next.length) return list;
+  next.splice(from, 1);
+  next.splice(toIndex, 0, id);
+  return next;
+}
 
+/** One row showing the label and N radio buttons for position 1..N. */
+function RankRow({
+                   id,
+                   total,
+                   currentIndex,
+                   onChangeIndex,
+                 }: {
+  id: string;
+  total: number;
+  currentIndex: number; // 0-based
+  onChangeIndex: (idx: number) => void;
+}) {
   return (
     <Box
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={style}
       sx={{
         px: 2,
         py: 1.25,
         mb: 1,
         border: "1px solid",
-        borderColor: isDragging ? "primary.main" : "divider",
+        borderColor: "divider",
         borderRadius: 2,
-        bgcolor: isDragging ? "action.hover" : "background.paper",
-        boxShadow: isDragging ? 2 : 0,
-        cursor: "grab",
-        userSelect: "none",
+        bgcolor: "background.paper",
+        display: "flex",
+        alignItems: "center",
+        gap: 2,
       }}
     >
-      {id}
+      <Box sx={{ flex: 1 }}>{id}</Box>
+      <RadioGroup
+        row
+        name={`rank-${id}`}
+        value={currentIndex + 1}
+        onChange={(_, val) => {
+          const n = Number(val);
+          if (!Number.isNaN(n)) onChangeIndex(n - 1);
+        }}
+      >
+        {Array.from({ length: total }, (_, i) => i + 1).map((rank) => (
+          <FormControlLabel
+            key={rank}
+            value={rank}
+            control={<Radio size="small" />}
+            label={rank}
+          />
+        ))}
+      </RadioGroup>
     </Box>
   );
 }
 
-
-function SortableList({
-                        items,
-                        onChange,
-                        label,
-                      }: {
-  items: string[];
-  onChange: (next: string[]) => void;
+/** List wrapper that maintains array order based on radio selections. */
+function RankList({
+                    label,
+                    value,
+                    onChange,
+                  }: {
   label: string;
+  value: string[];
+  onChange: (next: string[]) => void;
 }) {
-  // Infer the exact event type from DragDropProvider’s prop
-  type DragEndParams = Parameters<
-    NonNullable<React.ComponentProps<typeof DragDropProvider>["onDragEnd"]>
-  >;
-
-  const handleDragEnd = (event: DragEndParams[0]) => {
-    const { source, target } = event.operation;
-    if (!target || source?.id === target.id) return;
-
-    const oldIndex = items.indexOf(String(source?.id));
-    const newIndex = items.indexOf(String(target.id));
-    if (oldIndex < 0 || newIndex < 0) return;
-
-    onChange(arrayMove(items, oldIndex, newIndex));
-  };
-
+  const total = value.length;
   return (
     <FormControl component="fieldset" sx={{ mb: 2, width: "100%" }}>
       <FormLabel sx={{ mb: 1 }}>{label}</FormLabel>
-      <DragDropProvider sensors={[PointerSensor]} onDragEnd={handleDragEnd}>
-        <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          <Box>
-            {items.map((id) => (
-              <SortableRow key={id} id={id} />
-            ))}
-          </Box>
-        </SortableContext>
-      </DragDropProvider>
+      <Box>
+        {value.map((id, idx) => (
+          <RankRow
+            key={id}
+            id={id}
+            total={total}
+            currentIndex={idx}
+            onChangeIndex={(toIdx) => onChange(moveToIndex(value, id, toIdx))}
+          />
+        ))}
+      </Box>
+      <FormHelperText sx={{ mt: 1 }}>
+        Selecting a position reorders the list; each row has exactly one rank.
+      </FormHelperText>
     </FormControl>
   );
 }
 
+/* --- page ----------------------------------------------------------------- */
+
 export default function Page() {
+  // I prefill name/email from session if available.
   const { data: session, status } = useSession();
 
   const [formData, setFormData] = useState<FormData>({
@@ -220,7 +244,11 @@ export default function Page() {
   });
 
   const [successfullySubmitted, setSuccessfullySubmitted] = useState<boolean>();
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "error" }>({
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: "success" | "error";
+  }>({
     open: false,
     message: "",
     severity: "success",
@@ -231,12 +259,13 @@ export default function Page() {
     const u = session?.user as any;
     setFormData((prev) => ({
       ...prev,
-      firstName: prev.firstName || u?.name.split(" ")[0] || "",
-      lastName: prev.lastName || u?.name.split(" ")[1] || "",
+      firstName: prev.firstName || u?.name?.split(" ")?.[0] || "",
+      lastName: prev.lastName || u?.name?.split(" ")?.[1] || "",
       email: prev.email || u?.email || "",
     }));
   }, [status, session?.user]);
 
+  // I keep certification toggling unchanged.
   const handleCertToggle = (cert: string) => {
     setFormData((prev) => {
       const set = new Set(prev.certifications);
@@ -245,6 +274,7 @@ export default function Page() {
     });
   };
 
+  // I validate required fields and basic email shape.
   const validate = (): string | null => {
     const r = formData;
     const req = [
@@ -265,7 +295,8 @@ export default function Page() {
     return null;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  // I submit the same payload shape as before.
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const err = validate();
     if (err) {
@@ -343,17 +374,13 @@ export default function Page() {
         </Box>
       ) : (
         <Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: "auto", my: 4 }}>
-          <Typography variant="h4" align="center" sx={{ mb: 4 }}>
+          <Typography variant="h3" align="center" sx={{ fontWeight: 800, mb: 2 }}>
             Career Prep Application
           </Typography>
-
-          <Typography variant="h3" sx={{ fontWeight: 800, mb: 2 }}>
-            CFA Career Prep Application
-          </Typography>
           <Typography sx={{ mb: 2 }}>
-            Provided by Computing For All (CFA), Career Prep is a complimentary career readiness program that is designed to equip Washington State residents,
-            who have recently completed or are nearing completion of a technology degree, with the essential skills to successfully enter the job market and
-            initiate their tech career.
+            Provided by Computing For All (CFA), Career Prep is a complimentary career readiness program that is designed to
+            equip Washington State residents, who have recently completed or are nearing completion of a technology degree,
+            with the essential skills to successfully enter the job market and initiate their tech career.
           </Typography>
           <Typography sx={{ mb: 1, fontWeight: 700 }}>Duration:</Typography>
           <Typography sx={{ mb: 2 }}>
@@ -395,7 +422,8 @@ export default function Page() {
               <strong>Exit Interview:</strong>
               <ul style={{ marginTop: 8 }}>
                 <li>
-                  On the 6th week, you will meet with our Career Navigator to receive feedback on your resume, LinkedIn profile, and interview skills and discuss your next steps and placement opportunities.
+                  On the 6th week, I will meet with our Career Navigator to receive feedback on my resume, LinkedIn profile,
+                  and interview skills and discuss next steps and placement opportunities.
                 </li>
               </ul>
             </li>
@@ -403,7 +431,8 @@ export default function Page() {
               <strong>Job Search &amp; Job Placement Support:</strong>
               <ul style={{ marginTop: 8 }}>
                 <li>
-                  Upon completion, you’ll be added to our exclusive Job Placement Talent Pool. We actively share job opportunities, match you to relevant roles, and work to get you placed in a tech role by 2026.
+                  Upon completion, I’ll be added to the Job Placement Talent Pool. CFA shares opportunities, matches me to
+                  relevant roles, and supports placement by 2026.
                 </li>
               </ul>
             </li>
@@ -412,6 +441,7 @@ export default function Page() {
           <form onSubmit={handleSubmit}>
             <Box sx={{ py: 2 }}>
               <Grid container spacing={2}>
+                {/* contact */}
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
                     <FormLabel>First Name</FormLabel>
@@ -462,6 +492,7 @@ export default function Page() {
                   </FormControl>
                 </Grid>
 
+                {/* residency */}
                 <Grid size={{ xs: 12 }}>
                   <FormControl component="fieldset" sx={{ mb: 2 }}>
                     <FormGroup>
@@ -469,7 +500,9 @@ export default function Page() {
                         control={
                           <Checkbox
                             checked={formData.isWAResident}
-                            onChange={() => setFormData({ ...formData, isWAResident: !formData.isWAResident })}
+                            onChange={() =>
+                              setFormData({ ...formData, isWAResident: !formData.isWAResident })
+                            }
                           />
                         }
                         label="I am a Washington State resident"
@@ -478,6 +511,7 @@ export default function Page() {
                   </FormControl>
                 </Grid>
 
+                {/* education */}
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
                     <FormLabel>Technical Pathway</FormLabel>
@@ -502,7 +536,9 @@ export default function Page() {
                     <FormLabel>Highest Level of Education</FormLabel>
                     <Select
                       value={formData.highestEducation}
-                      onChange={(e) => setFormData({ ...formData, highestEducation: e.target.value as string })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, highestEducation: e.target.value as string })
+                      }
                       displayEmpty
                     >
                       <MenuItem value="" disabled>
@@ -525,7 +561,10 @@ export default function Page() {
                           <Checkbox
                             checked={formData.currentlyEnrolledDegree}
                             onChange={() =>
-                              setFormData({ ...formData, currentlyEnrolledDegree: !formData.currentlyEnrolledDegree })
+                              setFormData({
+                                ...formData,
+                                currentlyEnrolledDegree: !formData.currentlyEnrolledDegree,
+                              })
                             }
                           />
                         }
@@ -539,7 +578,9 @@ export default function Page() {
                     <FormLabel>Degree Completion Window</FormLabel>
                     <Select
                       value={formData.degreeCompletionWindow}
-                      onChange={(e) => setFormData({ ...formData, degreeCompletionWindow: e.target.value as string })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, degreeCompletionWindow: e.target.value as string })
+                      }
                       displayEmpty
                     >
                       <MenuItem value="" disabled>
@@ -579,6 +620,7 @@ export default function Page() {
                   </FormControl>
                 </Grid>
 
+                {/* training and certs */}
                 <Grid size={{ xs: 12 }}>
                   <FormControl component="fieldset" sx={{ mb: 2 }}>
                     <FormGroup>
@@ -586,7 +628,12 @@ export default function Page() {
                         control={
                           <Checkbox
                             checked={formData.hasTrainingProgram}
-                            onChange={() => setFormData({ ...formData, hasTrainingProgram: !formData.hasTrainingProgram })}
+                            onChange={() =>
+                              setFormData({
+                                ...formData,
+                                hasTrainingProgram: !formData.hasTrainingProgram,
+                              })
+                            }
                           />
                         }
                         label="I’m enrolled in or completed a technical training program"
@@ -616,7 +663,12 @@ export default function Page() {
                         control={
                           <Checkbox
                             checked={formData.hasCertifications}
-                            onChange={() => setFormData({ ...formData, hasCertifications: !formData.hasCertifications })}
+                            onChange={() =>
+                              setFormData({
+                                ...formData,
+                                hasCertifications: !formData.hasCertifications,
+                              })
+                            }
                           />
                         }
                         label="I have technical certifications"
@@ -644,18 +696,23 @@ export default function Page() {
                   </Grid>
                 )}
 
+                {/* ranking (radio-based) */}
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <SortableList
+                  <RankList
                     label="16. Please rank the following week days in the order of your availability:"
-                    items={formData.weekdayAvailabilityRank}
-                    onChange={(next) => setFormData((p) => ({ ...p, weekdayAvailabilityRank: next }))}
+                    value={formData.weekdayAvailabilityRank}
+                    onChange={(next) =>
+                      setFormData((p) => ({ ...p, weekdayAvailabilityRank: next }))
+                    }
                   />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <SortableList
+                  <RankList
                     label="17. Please rank the following time blocks in the order of your availability:"
-                    items={formData.timeblockAvailabilityRank}
-                    onChange={(next) => setFormData((p) => ({ ...p, timeblockAvailabilityRank: next }))}
+                    value={formData.timeblockAvailabilityRank}
+                    onChange={(next) =>
+                      setFormData((p) => ({ ...p, timeblockAvailabilityRank: next }))
+                    }
                   />
                 </Grid>
               </Grid>
