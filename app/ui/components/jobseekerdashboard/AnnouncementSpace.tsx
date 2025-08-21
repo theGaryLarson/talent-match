@@ -46,7 +46,7 @@ export default async function AnnouncementSpace() {
             </div>
             <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
               <p>
-                Enroll today to gain access to job-readiness workshops, a
+                Apply today to gain access to job-readiness workshops, a
                 dedicated career navigator, and industry connections.{" "}
                 <a
                   href="/services/jobseekers/career-prep" // Career Prep info page link
@@ -65,9 +65,9 @@ export default async function AnnouncementSpace() {
             >
               <PillButton
                 color="secondary"
-                href="/services/jobseekers/career-prep/enrollment" // Enrollment form link
+                href="/services/jobseekers/career-prep/apply" // Enrollment form link
               >
-                Enroll
+                Apply
               </PillButton>
             </Stack>
           </Stack>
