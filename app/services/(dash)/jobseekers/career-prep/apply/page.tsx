@@ -275,7 +275,13 @@ export default function Page() {
   const handleCertToggle = (cert: string) => {
     setFormData((prev) => {
       const set = new Set(prev.certifications);
-      set.has(cert) ? set.delete(cert) : set.add(cert);
+
+      if (set.has(cert)) {
+        set.delete(cert);
+      } else {
+        set.add(cert);
+      }
+
       return { ...prev, certifications: Array.from(set) };
     });
   };
