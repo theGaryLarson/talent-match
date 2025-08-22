@@ -54,13 +54,6 @@ interface FormData {
   timeblockAvailabilityRank: string[];
 }
 
-const PATHWAYS = [
-  "Software Development",
-  "Infrastructure and Operations",
-  "Cybersecurity",
-  "Data Science",
-] as const;
-
 const HIGHEST_ED = [
   "High School or GED",
   "Some College",
