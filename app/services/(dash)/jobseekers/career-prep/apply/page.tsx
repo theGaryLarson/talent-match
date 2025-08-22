@@ -25,6 +25,7 @@ import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Confetti from "@/app/ui/components/Confetti";
 import "@/app/ui/profile-creation.css";
+import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
 
 /* --- constants ------------------------------------------------------------ */
 
@@ -613,7 +614,7 @@ export default function Page() {
                       <MenuItem value="" disabled>
                         Select pathway
                       </MenuItem>
-                      {PATHWAYS.map((p) => (
+                      {Object.values(CareerPrepPathways).map((p) => (
                         <MenuItem key={p} value={p}>
                           {p}
                         </MenuItem>
