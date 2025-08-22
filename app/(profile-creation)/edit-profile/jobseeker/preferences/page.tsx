@@ -22,7 +22,8 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  Checkbox, Stack,
+  Checkbox,
+  Stack,
 } from "@mui/material";
 import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
 
@@ -36,8 +37,13 @@ export default function CreateJobseekerProfilePreferencesPage() {
   const preferencesData = { ...preferencesStoreData };
   const [error, setError] = useState<string | null>(null);
 
-  const EMPLOYMENT_OPTIONS = ["Full-time", "Part-time", "Internship", "On-campus"] as const;
-  type EmploymentLabel = typeof EMPLOYMENT_OPTIONS[number];
+  const EMPLOYMENT_OPTIONS = [
+    "Full-time",
+    "Part-time",
+    "Internship",
+    "On-campus",
+  ] as const;
+  type EmploymentLabel = (typeof EMPLOYMENT_OPTIONS)[number];
 
   const parseCSV = (s?: string | null): string[] =>
     (s ?? "")
@@ -49,7 +55,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
     [...new Set(arr.map((v) => v.trim()))].join(",");
 
   const [employmentTypes, setEmploymentTypes] = useState<string[]>(
-    parseCSV(preferencesData.preferredEmploymentType)
+    parseCSV(preferencesData.preferredEmploymentType),
   );
 
   const [pathway, setPathway] = useState(preferencesData.targetedPathway ?? "");
@@ -59,7 +65,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
 
   const toggleEmployment = (label: EmploymentLabel, checked: boolean) => {
     setEmploymentTypes((prev) =>
-      checked ? [...prev, label] : prev.filter((l) => l !== label)
+      checked ? [...prev, label] : prev.filter((l) => l !== label),
     );
   };
 
@@ -236,7 +242,9 @@ export default function CreateJobseekerProfilePreferencesPage() {
           <div className="profile-form-progress-btn-group">
             <PillButton
               variant="outlined"
-              onClick={() => router.push("/edit-profile/jobseeker/introduction")}
+              onClick={() =>
+                router.push("/edit-profile/jobseeker/introduction")
+              }
             >
               Previous
             </PillButton>

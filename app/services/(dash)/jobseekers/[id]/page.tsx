@@ -41,11 +41,10 @@ const monthNames = [
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const [params, session] = await Promise.all([props.params, auth()]);
   const jobseeker = await getJobSeekerEmployerView(params.id);
-  const employmentTypesSought =
-    (jobseeker?.employment_type_sought ?? "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+  const employmentTypesSought = (jobseeker?.employment_type_sought ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   const isOwnProfile = session?.user.jobseekerId === params.id;
   let videoID = null;
@@ -181,7 +180,12 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 {employmentTypesSought.length > 0 ? (
                   <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                     {employmentTypesSought.map((label) => (
-                      <Chip key={label} variant="outlined" color="primary" label={label} />
+                      <Chip
+                        key={label}
+                        variant="outlined"
+                        color="primary"
+                        label={label}
+                      />
                     ))}
                   </Stack>
                 ) : (

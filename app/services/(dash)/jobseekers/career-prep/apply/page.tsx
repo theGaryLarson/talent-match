@@ -108,7 +108,13 @@ const CERTIFICATION_OPTIONS = [
   "Other",
 ] as const;
 
-const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
+const WEEKDAYS = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+] as const;
 
 const TIMEBLOCKS = [
   "Morning (9-11am)",
@@ -132,11 +138,11 @@ function moveToIndex(list: string[], id: string, toIndex: number) {
 
 /** One row showing the label and N radio buttons for position 1..N. */
 function RankRow({
-                   id,
-                   total,
-                   currentIndex,
-                   onChangeIndex,
-                 }: {
+  id,
+  total,
+  currentIndex,
+  onChangeIndex,
+}: {
   id: string;
   total: number;
   currentIndex: number; // 0-based
@@ -182,10 +188,10 @@ function RankRow({
 
 /** List wrapper that maintains array order based on radio selections. */
 function RankList({
-                    label,
-                    value,
-                    onChange,
-                  }: {
+  label,
+  value,
+  onChange,
+}: {
   label: string;
   value: string[];
   onChange: (next: string[]) => void;
@@ -288,10 +294,14 @@ export default function Page() {
       ["collegeName", r.collegeName],
       ["degreeProgram", r.degreeProgram],
     ] as const;
-    for (const [k, v] of req) if (!String(v || "").trim()) return `${k} is required`;
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(r.email)) return "Invalid email address";
-    if (r.hasTrainingProgram && !r.trainingProvider) return "Training provider is required";
-    if (r.hasCertifications && r.certifications.length === 0) return "Select at least one certification";
+    for (const [k, v] of req)
+      if (!String(v || "").trim()) return `${k} is required`;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(r.email))
+      return "Invalid email address";
+    if (r.hasTrainingProgram && !r.trainingProvider)
+      return "Training provider is required";
+    if (r.hasCertifications && r.certifications.length === 0)
+      return "Select at least one certification";
     return null;
   };
 
@@ -305,8 +315,14 @@ export default function Page() {
     }
 
     const payload = {
-      basicInformation: { pronouns: "", expectedEduCompletion: formData.degreeCompletionWindow },
-      technicalSelfAssessment: { interestPathway: formData.pathway, skillRatings: {} },
+      basicInformation: {
+        pronouns: "",
+        expectedEduCompletion: formData.degreeCompletionWindow,
+      },
+      technicalSelfAssessment: {
+        interestPathway: formData.pathway,
+        skillRatings: {},
+      },
       workExperienceAndMaterials: {
         hasWorkExperience: false,
         hasResume: false,
@@ -341,17 +357,24 @@ export default function Page() {
     };
 
     try {
-      const res = await fetch("/api/jobseekers/career-prep/application/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        "/api/jobseekers/career-prep/application/submit",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
       if (!res.ok) throw new Error("Submission failed");
       setSuccessfullySubmitted(true);
       window.scrollTo({ top: 0, behavior: "instant" });
     } catch {
       setSuccessfullySubmitted(false);
-      setSnackbar({ open: true, message: "Submission failed. Please try again.", severity: "error" });
+      setSnackbar({
+        open: true,
+        message: "Submission failed. Please try again.",
+        severity: "error",
+      });
     }
   };
 
@@ -361,36 +384,57 @@ export default function Page() {
     <>
       {successfullySubmitted ? (
         <Box className="flex justify-center">
-          <Box style={{ height: "100vh" }} className="profile-form-section main-content">
+          <Box
+            style={{ height: "100vh" }}
+            className="profile-form-section main-content"
+          >
             <Confetti />
             <h1>Next Steps</h1>
             <Typography sx={{ pt: 3, mb: 3 }}>
-              You’re all set! Thanks for applying to Career Prep. Return to your dashboard to view your status and next steps.
+              You’re all set! Thanks for applying to Career Prep. Return to your
+              dashboard to view your status and next steps.
             </Typography>
             <Grid container>
-              <PillButton href="/services/jobseekers/dashboard">Go to Dashboard</PillButton>
+              <PillButton href="/services/jobseekers/dashboard">
+                Go to Dashboard
+              </PillButton>
             </Grid>
           </Box>
         </Box>
       ) : (
         <Paper elevation={0} sx={{ p: 3, maxWidth: "75%", mx: "auto", my: 4 }}>
-          <Typography variant="h3" align="center" sx={{ fontWeight: 800, mb: 2 }}>
+          <Typography
+            variant="h3"
+            align="center"
+            sx={{ fontWeight: 800, mb: 2 }}
+          >
             Career Prep Application
           </Typography>
           <Typography sx={{ mb: 2 }}>
-            Provided by Computing For All (CFA), Career Prep is a complimentary career readiness program that is designed to
-            equip Washington State residents, who have recently completed or are nearing completion of a technology degree,
-            with the essential skills to successfully enter the job market and initiate their tech career.
+            Provided by Computing For All (CFA), Career Prep is a complimentary
+            career readiness program that is designed to equip Washington State
+            residents, who have recently completed or are nearing completion of
+            a technology degree, with the essential skills to successfully enter
+            the job market and initiate their tech career.
           </Typography>
           <Typography sx={{ mb: 1, fontWeight: 700 }}>Duration:</Typography>
           <Typography sx={{ mb: 2 }}>
-            This program will run in 8 monthly cohorts beginning the first week of July 2025.
-            <strong> The next cohort begins on Monday, August 4th, 2025.</strong>
+            This program will run in 8 monthly cohorts beginning the first week
+            of July 2025.
+            <strong>
+              {" "}
+              The next cohort begins on Monday, August 4th, 2025.
+            </strong>
           </Typography>
-          <Typography sx={{ mb: 1, fontWeight: 700 }}>Eligibility Criteria:</Typography>
+          <Typography sx={{ mb: 1, fontWeight: 700 }}>
+            Eligibility Criteria:
+          </Typography>
           <ul style={{ marginTop: 0, marginBottom: 16 }}>
             <li>Washington State resident</li>
-            <li>Currently enrolled in or recently graduated from a tech degree program</li>
+            <li>
+              Currently enrolled in or recently graduated from a tech degree
+              program
+            </li>
             <li>Actively seeking employment</li>
           </ul>
           <Typography sx={{ mb: 1, fontWeight: 700 }}>Benefits:</Typography>
@@ -404,7 +448,10 @@ export default function Page() {
             <li>
               <strong>5 Workshops:</strong>
               <ul style={{ marginTop: 8 }}>
-                <li>Delivered weekly (two date &amp; time slots to accommodate participant schedules):</li>
+                <li>
+                  Delivered weekly (two date &amp; time slots to accommodate
+                  participant schedules):
+                </li>
                 <li>Building Your Brand</li>
                 <li>Expanding Your Network</li>
                 <li>Finding Opportunities</li>
@@ -415,15 +462,18 @@ export default function Page() {
             <li>
               <strong>2 Weekly Office Hours (optional):</strong>
               <ul style={{ marginTop: 8 }}>
-                <li>Offered twice a week for personalized support and feedback.</li>
+                <li>
+                  Offered twice a week for personalized support and feedback.
+                </li>
               </ul>
             </li>
             <li>
               <strong>Exit Interview:</strong>
               <ul style={{ marginTop: 8 }}>
                 <li>
-                  On the 6th week, I will meet with our Career Navigator to receive feedback on my resume, LinkedIn profile,
-                  and interview skills and discuss next steps and placement opportunities.
+                  On the 6th week, I will meet with our Career Navigator to
+                  receive feedback on my resume, LinkedIn profile, and interview
+                  skills and discuss next steps and placement opportunities.
                 </li>
               </ul>
             </li>
@@ -431,8 +481,9 @@ export default function Page() {
               <strong>Job Search &amp; Job Placement Support:</strong>
               <ul style={{ marginTop: 8 }}>
                 <li>
-                  Upon completion, I’ll be added to the Job Placement Talent Pool. CFA shares opportunities, matches me to
-                  relevant roles, and supports placement by 2026.
+                  Upon completion, I’ll be added to the Job Placement Talent
+                  Pool. CFA shares opportunities, matches me to relevant roles,
+                  and supports placement by 2026.
                 </li>
               </ul>
             </li>
@@ -443,7 +494,12 @@ export default function Page() {
               <Grid container spacing={2}>
                 {/* contact */}
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>First Name</FormLabel>
                     <TextField
                       fullWidth
@@ -455,7 +511,12 @@ export default function Page() {
                   </FormControl>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>Last Name</FormLabel>
                     <TextField
                       fullWidth
@@ -467,7 +528,12 @@ export default function Page() {
                   </FormControl>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>Email Address</FormLabel>
                     <TextField
                       type="email"
@@ -480,7 +546,12 @@ export default function Page() {
                   </FormControl>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>Phone Number</FormLabel>
                     <TextField
                       fullWidth
@@ -501,7 +572,10 @@ export default function Page() {
                           <Checkbox
                             checked={formData.isWAResident}
                             onChange={() =>
-                              setFormData({ ...formData, isWAResident: !formData.isWAResident })
+                              setFormData({
+                                ...formData,
+                                isWAResident: !formData.isWAResident,
+                              })
                             }
                           />
                         }
@@ -513,11 +587,21 @@ export default function Page() {
 
                 {/* education */}
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>Technical Pathway</FormLabel>
                     <Select
                       value={formData.pathway}
-                      onChange={(e) => setFormData({ ...formData, pathway: e.target.value as string })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          pathway: e.target.value as string,
+                        })
+                      }
                       displayEmpty
                     >
                       <MenuItem value="" disabled>
@@ -532,12 +616,20 @@ export default function Page() {
                   </FormControl>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>Highest Level of Education</FormLabel>
                     <Select
                       value={formData.highestEducation}
                       onChange={(e) =>
-                        setFormData({ ...formData, highestEducation: e.target.value as string })
+                        setFormData({
+                          ...formData,
+                          highestEducation: e.target.value as string,
+                        })
                       }
                       displayEmpty
                     >
@@ -563,7 +655,8 @@ export default function Page() {
                             onChange={() =>
                               setFormData({
                                 ...formData,
-                                currentlyEnrolledDegree: !formData.currentlyEnrolledDegree,
+                                currentlyEnrolledDegree:
+                                  !formData.currentlyEnrolledDegree,
                               })
                             }
                           />
@@ -574,12 +667,20 @@ export default function Page() {
                   </FormControl>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>Degree Completion Window</FormLabel>
                     <Select
                       value={formData.degreeCompletionWindow}
                       onChange={(e) =>
-                        setFormData({ ...formData, degreeCompletionWindow: e.target.value as string })
+                        setFormData({
+                          ...formData,
+                          degreeCompletionWindow: e.target.value as string,
+                        })
                       }
                       displayEmpty
                     >
@@ -596,25 +697,41 @@ export default function Page() {
                 </Grid>
 
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>College (current/completed)</FormLabel>
                     <TextField
                       fullWidth
                       value={formData.collegeName}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setFormData({ ...formData, collegeName: e.target.value })
+                        setFormData({
+                          ...formData,
+                          collegeName: e.target.value,
+                        })
                       }
                     />
                   </FormControl>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                  <FormControl
+                    fullWidth
+                    required
+                    component="fieldset"
+                    sx={{ mb: 2 }}
+                  >
                     <FormLabel>Technical Degree Program</FormLabel>
                     <TextField
                       fullWidth
                       value={formData.degreeProgram}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setFormData({ ...formData, degreeProgram: e.target.value })
+                        setFormData({
+                          ...formData,
+                          degreeProgram: e.target.value,
+                        })
                       }
                     />
                   </FormControl>
@@ -631,7 +748,8 @@ export default function Page() {
                             onChange={() =>
                               setFormData({
                                 ...formData,
-                                hasTrainingProgram: !formData.hasTrainingProgram,
+                                hasTrainingProgram:
+                                  !formData.hasTrainingProgram,
                               })
                             }
                           />
@@ -643,13 +761,21 @@ export default function Page() {
                 </Grid>
                 {formData.hasTrainingProgram && (
                   <Grid size={{ xs: 12 }}>
-                    <FormControl fullWidth required component="fieldset" sx={{ mb: 2 }}>
+                    <FormControl
+                      fullWidth
+                      required
+                      component="fieldset"
+                      sx={{ mb: 2 }}
+                    >
                       <FormLabel>Training Provider</FormLabel>
                       <TextField
                         fullWidth
                         value={formData.trainingProvider}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          setFormData({ ...formData, trainingProvider: e.target.value })
+                          setFormData({
+                            ...formData,
+                            trainingProvider: e.target.value,
+                          })
                         }
                       />
                     </FormControl>
@@ -680,14 +806,31 @@ export default function Page() {
                   <Grid size={{ xs: 12 }}>
                     <FormControl component="fieldset" sx={{ mb: 2 }}>
                       <FormLabel>Select certifications</FormLabel>
-                      <FormHelperText sx={{ m: 0 }}>Click to toggle</FormHelperText>
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+                      <FormHelperText sx={{ m: 0 }}>
+                        Click to toggle
+                      </FormHelperText>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 1,
+                          mt: 1,
+                        }}
+                      >
                         {CERTIFICATION_OPTIONS.map((c) => (
                           <Chip
                             key={c}
                             label={c}
-                            variant={formData.certifications.includes(c) ? "filled" : "outlined"}
-                            color={formData.certifications.includes(c) ? "primary" : "default"}
+                            variant={
+                              formData.certifications.includes(c)
+                                ? "filled"
+                                : "outlined"
+                            }
+                            color={
+                              formData.certifications.includes(c)
+                                ? "primary"
+                                : "default"
+                            }
                             onClick={() => handleCertToggle(c)}
                           />
                         ))}
@@ -702,7 +845,10 @@ export default function Page() {
                     label="16. Please rank the following week days in the order of your availability:"
                     value={formData.weekdayAvailabilityRank}
                     onChange={(next) =>
-                      setFormData((p) => ({ ...p, weekdayAvailabilityRank: next }))
+                      setFormData((p) => ({
+                        ...p,
+                        weekdayAvailabilityRank: next,
+                      }))
                     }
                   />
                 </Grid>
@@ -711,14 +857,19 @@ export default function Page() {
                     label="17. Please rank the following time blocks in the order of your availability:"
                     value={formData.timeblockAvailabilityRank}
                     onChange={(next) =>
-                      setFormData((p) => ({ ...p, timeblockAvailabilityRank: next }))
+                      setFormData((p) => ({
+                        ...p,
+                        timeblockAvailabilityRank: next,
+                      }))
                     }
                   />
                 </Grid>
               </Grid>
             </Box>
 
-            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}
+            >
               <Box />
               <PillButton type="submit">Submit Application</PillButton>
             </Box>
