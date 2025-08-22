@@ -55,6 +55,87 @@ export default function Page() {
     CareerPrepPathways,
     { id: string; text: string }[]
   > = {
+    [CareerPrepPathways.BUSINESS_MGMT]: [
+      {
+        id: "businessStrategy",
+        text: "Business Strategy: Understanding organizational strategy, competitive analysis, and business models.",
+      },
+      {
+        id: "financialLiteracy",
+        text: "Financial Literacy: Basic knowledge of budgeting, forecasting, and financial decision-making.",
+      },
+      {
+        id: "projectManagement",
+        text: "Project Management: Applying frameworks like Agile, Scrum, or Waterfall to organize and deliver projects.",
+      },
+      {
+        id: "communication",
+        text: "Communication: Developing clear written, verbal, and presentation skills for diverse audiences.",
+      },
+      {
+        id: "leadership",
+        text: "Leadership: Motivating, managing, and coaching teams to achieve organizational goals.",
+      },
+      {
+        id: "dataDrivenDecisions",
+        text: "Data-Driven Decisions: Using data and KPIs to inform management choices.",
+      },
+    ],
+
+    [CareerPrepPathways.UI_UX_DESIGN]: [
+      {
+        id: "uxResearch",
+        text: "UX Research: Conducting user interviews, surveys, and usability testing to gather insights.",
+      },
+      {
+        id: "uiDesign",
+        text: "UI Design: Creating wireframes, prototypes, and high-fidelity mockups with tools like Figma or Adobe XD.",
+      },
+      {
+        id: "designSystems",
+        text: "Design Systems: Applying reusable patterns, components, and accessibility standards.",
+      },
+      {
+        id: "interactionDesign",
+        text: "Interaction Design: Designing intuitive interactions and user flows.",
+      },
+      {
+        id: "accessibility",
+        text: "Accessibility: Ensuring inclusive design principles (WCAG, ARIA).",
+      },
+      {
+        id: "visualDesign",
+        text: "Visual Design: Applying typography, color theory, and layout principles.",
+      },
+    ],
+
+    [CareerPrepPathways.TESTING_QUALITY_ASSURANCE]: [
+      {
+        id: "manualTesting",
+        text: "Manual Testing: Writing and executing test cases to validate software functionality.",
+      },
+      {
+        id: "automatedTesting",
+        text: "Automated Testing: Building and maintaining test scripts with frameworks like Selenium, Jest, or Cypress.",
+      },
+      {
+        id: "qaProcesses",
+        text: "QA Processes: Understanding unit, integration, system, and acceptance testing.",
+      },
+      {
+        id: "bugTracking",
+        text: "Bug Tracking: Documenting, prioritizing, and resolving issues using tools like JIRA or Azure DevOps.",
+      },
+      {
+        id: "performanceTesting",
+        text: "Performance Testing: Assessing load, stress, and scalability of software systems.",
+      },
+      {
+        id: "securityTesting",
+        text: "Security Testing: Identifying vulnerabilities through penetration testing and code reviews.",
+      },
+    ],
+
     [CareerPrepPathways.CYBERSECURITY]: [
       {
         id: "networking",
