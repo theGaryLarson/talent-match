@@ -1841,6 +1841,9 @@ export enum CareerPrepPathways {
   IT_CLOUD_SUPPORT = "Infrastructure and Operations",
   CYBERSECURITY = "Cybersecurity",
   DATA_ANALYTICS = "Data Science",
+  BUSINESS_MGMT = "Business and Management",
+  UI_UX_DESIGN = "Design and User Experience",
+  TESTING_QUALITY_ASSURANCE = "Testing and Quality Assurance",
 }
 
 // Define specific DTOs for skill categories
