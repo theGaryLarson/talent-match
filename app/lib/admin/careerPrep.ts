@@ -1170,6 +1170,60 @@ export const getCareerPrepAssessment = async (jobseekerId: string) => {
     console.error(error);
   }
 };
+
+export type CareerPrepApplicationDTO = Record<string, string>;
+
+/**
+ * Submits a Career Prep application to the Microsoft List endpoint.
+ *
+ * @param {CareerPrepApplicationDTO} data - Flattened payload representing the application form.
+ * @returns {Promise<{ success: boolean; status: number; data?: any; error?: string }>}
+ */
+export const submitCareerPrepApplication = async (
+  data: CareerPrepApplicationDTO,
+): Promise<{
+  success: boolean;
+  status: number;
+  data?: any;
+  error?: string;
+}> => {
+  const endpoint = process.env.CP_APPLICATION_ENDPOINT;
+  if (!endpoint) {
+    return { success: false, status: 500, error: "Server not configured" };
+  }
+
+  try {
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+      signal: AbortSignal.timeout(15_000),
+    });
+
+    const raw = await resp.text().catch(() => "");
+    let parsed: any = null;
+    try {
+      parsed = raw ? JSON.parse(raw) : null;
+    } catch {}
+
+    if (!resp.ok) {
+      return {
+        success: false,
+        status: resp.status || 502,
+        error: (raw || "Upstream failed").slice(0, 500),
+      };
+    }
+
+    return { success: true, status: resp.status || 200, data: parsed ?? raw };
+  } catch (e: any) {
+    return {
+      success: false,
+      status: 500,
+      error: e?.message ?? "Unknown error",
+    };
+  }
+};
+
 /**
  * Submits a career preparation skills assessment with session data.
  *
@@ -1841,6 +1895,9 @@ export enum CareerPrepPathways {
   IT_CLOUD_SUPPORT = "Infrastructure and Operations",
   CYBERSECURITY = "Cybersecurity",
   DATA_ANALYTICS = "Data Science",
+  BUSINESS_MGMT = "Business and Management",
+  UI_UX_DESIGN = "Design and User Experience",
+  TESTING_QUALITY_ASSURANCE = "Testing and Quality Assurance",
 }
 
 // Define specific DTOs for skill categories
