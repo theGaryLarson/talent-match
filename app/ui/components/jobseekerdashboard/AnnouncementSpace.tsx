@@ -34,30 +34,28 @@ export default async function AnnouncementSpace() {
             height: "100%",
           }}
         >
-          <Stack direction={{ sx: "column" }} gap={2}>
+          <Stack direction="column" gap={2}>
+            {/* Headline */}
             <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
               Join the Career Prep Program
             </p>
+
+            {/* Benefit-driven subheadline */}
             <div className="inline-flex items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
-                Build confidence, get guidance, and prepare for a career in
-                tech.
+                Free workshops, personalized support, and access to a job placement pool.
               </p>
             </div>
+
+            {/* Supporting motivation */}
             <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
               <p>
-                Apply today to gain access to job-readiness workshops, a
-                dedicated career navigator, and industry connections.{" "}
-                <a
-                  href="/services/jobseekers/career-prep" // Career Prep info page link
-                  className="text-primary-main underline hover:text-primary-dark"
-                >
-                  Learn more
-                </a>{" "}
-                about how the Career Prep program can help you achieve your
-                goals.
+                CFA Career Prep helps Washington tech grads build confidence, expand
+                their network, and launch their careers by joining the next cohort.
               </p>
             </div>
+
+            {/* CTA Button */}
             <Stack
               direction="row"
               spacing={2}
@@ -65,7 +63,7 @@ export default async function AnnouncementSpace() {
             >
               <PillButton
                 color="secondary"
-                href="/services/jobseekers/career-prep/apply" // Enrollment form link
+                href="/services/jobseekers/career-prep/apply"
               >
                 Apply
               </PillButton>
