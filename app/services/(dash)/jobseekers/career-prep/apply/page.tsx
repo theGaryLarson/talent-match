@@ -10,7 +10,6 @@ import {
   FormGroup,
   FormHelperText,
   FormLabel,
-  Grid,
   MenuItem,
   Paper,
   Select,
@@ -19,6 +18,7 @@ import {
   Typography,
   Radio,
   RadioGroup,
+  Stack,
 } from "@mui/material";
 import PillButton from "@/app/ui/components/PillButton";
 import { useSession } from "next-auth/react";
@@ -26,6 +26,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Confetti from "@/app/ui/components/Confetti";
 import "@/app/ui/profile-creation.css";
 import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
+import { HighestCompletedEducationLevel } from "@/data/dtos/JobSeekerProfileCreationDTOs";
 
 /* --- constants ------------------------------------------------------------ */
 
@@ -54,19 +55,44 @@ interface FormData {
   timeblockAvailabilityRank: string[];
 }
 
-const HIGHEST_ED = [
-  "High School or GED",
-  "Some College",
-  "Associate's Degree",
-  "Bachelor's Degree",
-  "Master's Degree",
-  "Doctorate / PhD",
-  "Bootcamp / Certificate",
+const DEGREE_PROGRAM_OPTIONS = [
+  "Application Development",
+  "Artificial Intelligence",
+  "Business Administration, Management and Operations",
+  "Computer and Information Sciences, General",
+  "Computer Engineering",
+  "Computer/Information Technology Administration and Management",
+  "Computer Science",
+  "Computer Software and Media Applications",
+  "Cybersecurity",
+  "Data Management and Analysis",
+  "Data Science",
+  "Engineering, General",
+  "Healthcare Informatics",
+  "Information Systems & Technology",
+  "Information Technology",
+  "Network Systems Administration",
+  "Software Development",
+  "Software Engineering",
+  "Statistics",
+  "Other",
+] as const;
+
+const TRAINING_PROVIDER_PROGRAMS = [
+  "Ada Developers Academy",
+  "Career Connect SW ESD 112",
+  "CodeDay x MinT",
+  "Computing For All (CFA)",
+  "North Central ESD 171",
+  "Per Scholas Seattle",
+  "PNW Cyber Challenge Games",
+  "Riipen",
+  "Washington Vets2Tech (WaV2T)",
+  "Year Up Puget Sound",
   "Other",
 ] as const;
 
 const DEGREE_WINDOW = [
-  "N/A",
   "0-3 months",
   "3-6 months",
   "6-9 months",
@@ -212,10 +238,30 @@ function RankList({
   );
 }
 
+/* --- numbered Question wrapper ------------------------------------------- */
+
+function Question({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <FormControl fullWidth component="fieldset" sx={{ mb: 3 }}>
+      <FormLabel sx={{ mb: 1, fontWeight: 700 }}>
+        {label} {required && <span style={{ color: "red" }}>*</span>}
+      </FormLabel>
+      {children}
+    </FormControl>
+  );
+}
+
 /* --- page ----------------------------------------------------------------- */
 
 export default function Page() {
-  // I prefill name/email from session if available.
   const { data: session, status } = useSession();
 
   const [formData, setFormData] = useState<FormData>({
@@ -228,7 +274,7 @@ export default function Page() {
     pathway: "",
     highestEducation: "",
     currentlyEnrolledDegree: false,
-    degreeCompletionWindow: "",
+    degreeCompletionWindow: "N/A",
 
     collegeName: "",
     degreeProgram: "",
@@ -265,24 +311,23 @@ export default function Page() {
     }));
   }, [status, session?.user]);
 
-  // I keep certification toggling unchanged.
   const handleCertToggle = (cert: string) => {
     setFormData((prev) => {
       const set = new Set(prev.certifications);
-
-      if (set.has(cert)) {
-        set.delete(cert);
-      } else {
-        set.add(cert);
-      }
-
+      if (set.has(cert)) set.delete(cert);
+      else set.add(cert);
       return { ...prev, certifications: Array.from(set) };
     });
   };
 
-  // I validate required fields and basic email shape.
   const validate = (): string | null => {
     const r = formData;
+
+    // residency rule
+    if (!r.isWAResident) {
+      return "Non-Washington residents are ineligible for the Career Prep program.";
+    }
+
     const req = [
       ["firstName", r.firstName],
       ["lastName", r.lastName],
@@ -305,67 +350,64 @@ export default function Page() {
     return null;
   };
 
-  // I submit the same payload shape as before.
+  const toYesNo = (b: boolean) => (b ? "Yes" : "No");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const err = validate();
     if (err) {
       setSnackbar({ open: true, message: err, severity: "error" });
       return;
     }
 
+    // Flat payload to Microsoft List (unchanged)
     const payload = {
-      basicInformation: {
-        pronouns: "",
-        expectedEduCompletion: formData.degreeCompletionWindow,
-      },
-      technicalSelfAssessment: {
-        interestPathway: formData.pathway,
-        skillRatings: {},
-      },
-      workExperienceAndMaterials: {
-        hasWorkExperience: false,
-        hasResume: false,
-        hasPortfolio: false,
-        hasCoverLetter: false,
-        hasLinkedInProfile: false,
-        experienceWithApplying: false,
-        experienceWithInterviewing: false,
-      },
-      durableSkills: {},
-      professionalBrandingAndJobMarketReadiness: {},
-      contact: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        isWAResident: formData.isWAResident,
-      },
-      education: {
-        highestEducation: formData.highestEducation,
-        currentlyEnrolledDegree: formData.currentlyEnrolledDegree,
-        collegeName: formData.collegeName,
-        degreeProgram: formData.degreeProgram,
-        hasTrainingProgram: formData.hasTrainingProgram,
-        trainingProvider: formData.trainingProvider,
-      },
-      certifications: formData.hasCertifications ? formData.certifications : [],
-      availability: {
-        weekday: formData.weekdayAvailabilityRank,
-        timeblocks: formData.timeblockAvailabilityRank,
-      },
-    };
+      "First Name": formData.firstName.trim(),
+      "Application Date": new Date().toISOString(),
+      "Last Name": formData.lastName.trim(),
+      "Email Address": formData.email.trim(),
+      "Phone Number": formData.phone.trim(),
+
+      Resident: toYesNo(formData.isWAResident),
+
+      Pathways: formData.pathway,
+      "Ed. Level": formData.highestEducation,
+
+      "Tech Degree": formData.currentlyEnrolledDegree
+        ? "Enrolled"
+        : "Graduated",
+      Enrolled: toYesNo(formData.currentlyEnrolledDegree),
+      Graduated: toYesNo(!formData.currentlyEnrolledDegree),
+
+      "Degree Program": formData.degreeProgram,
+      "Expected Graduation": formData.currentlyEnrolledDegree
+        ? formData.degreeCompletionWindow || ""
+        : "N/A",
+      College: formData.collegeName,
+
+      "Tech Training Program": toYesNo(formData.hasTrainingProgram),
+      "Training Provider": formData.hasTrainingProgram
+        ? formData.trainingProvider || ""
+        : "",
+
+      "Obtained Certifications": toYesNo(formData.hasCertifications),
+      Certifications: formData.hasCertifications
+        ? formData.certifications.join(";")
+        : "",
+
+      "Day Availability": formData.weekdayAvailabilityRank.join(";"),
+      "Time Availability": formData.timeblockAvailabilityRank.join(";"),
+    } as const;
 
     try {
-      const res = await fetch(
-        "/api/jobseekers/career-prep/application/submit",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
-      );
+      const res = await fetch("/api/jobseekers/career-prep/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
       if (!res.ok) throw new Error("Submission failed");
+
       setSuccessfullySubmitted(true);
       window.scrollTo({ top: 0, behavior: "instant" });
     } catch {
@@ -391,14 +433,11 @@ export default function Page() {
             <Confetti />
             <h1>Next Steps</h1>
             <Typography sx={{ pt: 3, mb: 3 }}>
-              You’re all set! Thanks for applying to Career Prep. Return to your
-              dashboard to view your status and next steps.
+              You’re all set! Thanks for applying to Career Prep. CFA staff will be in contact with the next available enrollment date.
             </Typography>
-            <Grid container>
-              <PillButton href="/services/jobseekers/dashboard">
-                Go to Dashboard
-              </PillButton>
-            </Grid>
+            <PillButton href="/services/jobseekers/dashboard">
+              Go to Dashboard
+            </PillButton>
           </Box>
         </Box>
       ) : (
@@ -410,6 +449,7 @@ export default function Page() {
           >
             Career Prep Application
           </Typography>
+
           <Typography sx={{ mb: 2 }}>
             Provided by Computing For All (CFA), Career Prep is a complimentary
             career readiness program that is designed to equip Washington State
@@ -417,15 +457,17 @@ export default function Page() {
             a technology degree, with the essential skills to successfully enter
             the job market and initiate their tech career.
           </Typography>
+
           <Typography sx={{ mb: 1, fontWeight: 700 }}>Duration:</Typography>
           <Typography sx={{ mb: 2 }}>
             This program will run in 8 monthly cohorts beginning the first week
             of July 2025.
             <strong>
               {" "}
-              The next cohort begins on Monday, August 4th, 2025.
+              CFA Staff will contact you with the next available start date.
             </strong>
           </Typography>
+
           <Typography sx={{ mb: 1, fontWeight: 700 }}>
             Eligibility Criteria:
           </Typography>
@@ -437,20 +479,29 @@ export default function Page() {
             </li>
             <li>Actively seeking employment</li>
           </ul>
+
           <Typography sx={{ mb: 1, fontWeight: 700 }}>Benefits:</Typography>
           <ul style={{ marginTop: 0, marginBottom: 16 }}>
             <li>Career Readiness Support</li>
             <li>Networking Opportunities</li>
             <li>Job Placement Assistance</li>
           </ul>
+
           <Typography sx={{ mb: 1, fontWeight: 700 }}>Training:</Typography>
           <ul style={{ marginTop: 0, marginBottom: 16 }}>
             <li>
               <strong>5 Workshops:</strong>
-              <ul style={{ marginTop: 8 }}>
+              <ul
+                style={{
+                  marginTop: 8,
+                  marginBottom: 8,
+                  listStyleType: "disc",
+                  paddingLeft: "20px",
+                }}
+              >
                 <li>
                   Delivered weekly (two date &amp; time slots to accommodate
-                  participant schedules):
+                  schedules)
                 </li>
                 <li>Building Your Brand</li>
                 <li>Expanding Your Network</li>
@@ -460,142 +511,97 @@ export default function Page() {
               </ul>
             </li>
             <li>
-              <strong>2 Weekly Office Hours (optional):</strong>
-              <ul style={{ marginTop: 8 }}>
-                <li>
-                  Offered twice a week for personalized support and feedback.
-                </li>
-              </ul>
+              <strong>2 Weekly Office Hours (optional):</strong> Personalized
+              support and feedback.
             </li>
             <li>
-              <strong>Exit Interview:</strong>
-              <ul style={{ marginTop: 8 }}>
-                <li>
-                  On the 6th week, I will meet with our Career Navigator to
-                  receive feedback on my resume, LinkedIn profile, and interview
-                  skills and discuss next steps and placement opportunities.
-                </li>
-              </ul>
+              <strong>Exit Interview:</strong> Meet with our Career Navigator
+              for feedback and next steps.
             </li>
             <li>
-              <strong>Job Search &amp; Job Placement Support:</strong>
-              <ul style={{ marginTop: 8 }}>
-                <li>
-                  Upon completion, I’ll be added to the Job Placement Talent
-                  Pool. CFA shares opportunities, matches me to relevant roles,
-                  and supports placement by 2026.
-                </li>
-              </ul>
+              <strong>Job Search &amp; Job Placement Support:</strong> You’ll be
+              added to the Job Placement Talent Pool upon completion.
             </li>
           </ul>
 
+          {/* FORM ------------------------------------------------------------------ */}
           <form onSubmit={handleSubmit}>
-            <Box sx={{ py: 2 }}>
-              <Grid container spacing={2}>
-                {/* contact */}
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
-                    required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
-                  >
-                    <FormLabel>First Name</FormLabel>
-                    <TextField
-                      fullWidth
-                      value={formData.firstName}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setFormData({ ...formData, firstName: e.target.value })
-                      }
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
-                    required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
-                  >
-                    <FormLabel>Last Name</FormLabel>
-                    <TextField
-                      fullWidth
-                      value={formData.lastName}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setFormData({ ...formData, lastName: e.target.value })
-                      }
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
-                    required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
-                  >
-                    <FormLabel>Email Address</FormLabel>
-                    <TextField
-                      type="email"
-                      fullWidth
-                      value={formData.email}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
-                    required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
-                  >
-                    <FormLabel>Phone Number</FormLabel>
-                    <TextField
-                      fullWidth
-                      value={formData.phone}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
-                    />
-                  </FormControl>
-                </Grid>
+            <Stack spacing={3} sx={{ py: 2 }}>
+              {/* 1-4 Contact */}
+              <Question label="First Name" required>
+                <TextField
+                  fullWidth
+                  required
+                  value={formData.firstName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, firstName: e.target.value })
+                  }
+                />
+              </Question>
 
-                {/* residency */}
-                <Grid size={{ xs: 12 }}>
-                  <FormControl component="fieldset" sx={{ mb: 2 }}>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={formData.isWAResident}
-                            onChange={() =>
-                              setFormData({
-                                ...formData,
-                                isWAResident: !formData.isWAResident,
-                              })
-                            }
-                          />
-                        }
-                        label="I am a Washington State resident"
-                      />
-                    </FormGroup>
-                  </FormControl>
-                </Grid>
+              <Question label="Last Name" required>
+                <TextField
+                  fullWidth
+                  required
+                  value={formData.lastName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lastName: e.target.value })
+                  }
+                />
+              </Question>
 
-                {/* education */}
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
+              <Question label="Email Address" required>
+                <TextField
+                  type="email"
+                  fullWidth
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </Question>
+
+              <Question label="Phone Number" required>
+                <TextField
+                  fullWidth
+                  required
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                />
+              </Question>
+
+              {/* 5 Residency */}
+              <Question label="Are you a Washington resident?" required>
+                <RadioGroup
+                  row
+                  value={formData.isWAResident ? "Yes" : "No"}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      isWAResident: e.target.value === "Yes",
+                    })
+                  }
+                >
+                  <FormControlLabel
+                    value="Yes"
+                    control={<Radio />}
+                    label="Yes"
+                  />
+                  <FormControlLabel value="No" control={<Radio />} label="No" />
+                </RadioGroup>
+              </Question>
+              {formData.isWAResident && (
+                <>
+                  {/* 6 Pathway */}
+                  <Question
+                    label="What technical pathway are you most interested in?"
                     required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
                   >
-                    <FormLabel>Technical Pathway</FormLabel>
                     <Select
-                      value={formData.pathway}
+                      value={formData.pathway || ""}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -603,6 +609,7 @@ export default function Page() {
                         })
                       }
                       displayEmpty
+                      fullWidth
                     >
                       <MenuItem value="" disabled>
                         Select pathway
@@ -613,18 +620,15 @@ export default function Page() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
+                  </Question>
+
+                  {/* 7 Highest Education */}
+                  <Question
+                    label="What is your highest level of education?"
                     required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
                   >
-                    <FormLabel>Highest Level of Education</FormLabel>
                     <Select
-                      value={formData.highestEducation}
+                      value={formData.highestEducation || ""}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -632,80 +636,75 @@ export default function Page() {
                         })
                       }
                       displayEmpty
+                      fullWidth
                     >
                       <MenuItem value="" disabled>
                         Select highest education
                       </MenuItem>
-                      {HIGHEST_ED.map((e) => (
-                        <MenuItem key={e} value={e}>
-                          {e}
-                        </MenuItem>
-                      ))}
+                      {Object.values(HighestCompletedEducationLevel).map(
+                        (e) => (
+                          <MenuItem key={e} value={e}>
+                            {e}
+                          </MenuItem>
+                        ),
+                      )}
                     </Select>
-                  </FormControl>
-                </Grid>
+                  </Question>
 
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl component="fieldset" sx={{ mb: 2 }}>
+                  {/* 8 Enrolled in Degree */}
+                  <Question label="Are you currently enrolled in a technical degree program?">
                     <FormGroup>
                       <FormControlLabel
                         control={
                           <Checkbox
                             checked={formData.currentlyEnrolledDegree}
-                            onChange={() =>
+                            onChange={() => {
+                              const newValue =
+                                !formData.currentlyEnrolledDegree;
                               setFormData({
                                 ...formData,
-                                currentlyEnrolledDegree:
-                                  !formData.currentlyEnrolledDegree,
-                              })
-                            }
+                                currentlyEnrolledDegree: newValue,
+                                degreeCompletionWindow: newValue ? "" : "N/A", // enrolled -> empty; not enrolled -> N/A
+                              });
+                            }}
                           />
                         }
-                        label="Currently enrolled in a technical degree program"
+                        label="Yes"
                       />
                     </FormGroup>
-                  </FormControl>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
-                    required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
-                  >
-                    <FormLabel>Degree Completion Window</FormLabel>
-                    <Select
-                      value={formData.degreeCompletionWindow}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          degreeCompletionWindow: e.target.value as string,
-                        })
-                      }
-                      displayEmpty
-                    >
-                      <MenuItem value="" disabled>
-                        Select timeframe
-                      </MenuItem>
-                      {DEGREE_WINDOW.map((w) => (
-                        <MenuItem key={w} value={w}>
-                          {w}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
+                  </Question>
 
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
-                    required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
-                  >
-                    <FormLabel>College (current/completed)</FormLabel>
+                  {/* 9 Degree Completion Window - conditional */}
+                  {formData.currentlyEnrolledDegree && (
+                    <Question label="How many months are left until you graduate?" required>
+                      <Select
+                        value={formData.degreeCompletionWindow || ""} // empty until they choose
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            degreeCompletionWindow: e.target.value as string,
+                          })
+                        }
+                        displayEmpty
+                        fullWidth
+                      >
+                        <MenuItem value="" disabled>
+                          Select timeframe
+                        </MenuItem>
+                        {DEGREE_WINDOW.map((w) => (
+                          <MenuItem key={w} value={w}>
+                            {w}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Question>
+                  )}
+
+                  {/* 10 College */}
+                  <Question label="College (current/completed)" required>
                     <TextField
                       fullWidth
+                      required
                       value={formData.collegeName}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setFormData({
@@ -714,32 +713,31 @@ export default function Page() {
                         })
                       }
                     />
-                  </FormControl>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl
-                    fullWidth
-                    required
-                    component="fieldset"
-                    sx={{ mb: 2 }}
-                  >
-                    <FormLabel>Technical Degree Program</FormLabel>
-                    <TextField
-                      fullWidth
-                      value={formData.degreeProgram}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setFormData({
-                          ...formData,
-                          degreeProgram: e.target.value,
-                        })
-                      }
-                    />
-                  </FormControl>
-                </Grid>
+                  </Question>
 
-                {/* training and certs */}
-                <Grid size={{ xs: 12 }}>
-                  <FormControl component="fieldset" sx={{ mb: 2 }}>
+                  {/* 11 Technical Degree Program */}
+                  <Question label="Technical degree program" required>
+                    <Select
+                      value={formData.degreeProgram || ""}
+                      onChange={(e) =>
+                        setFormData({ ...formData, degreeProgram: e.target.value as string })
+                      }
+                      displayEmpty
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select program
+                      </MenuItem>
+                      {DEGREE_PROGRAM_OPTIONS.map((opt) => (
+                        <MenuItem key={opt} value={opt}>
+                          {opt}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Question>
+
+                  {/* 12 Training Program toggle */}
+                  <Question label="I’m enrolled in or completed a technical training program">
                     <FormGroup>
                       <FormControlLabel
                         control={
@@ -750,40 +748,46 @@ export default function Page() {
                                 ...formData,
                                 hasTrainingProgram:
                                   !formData.hasTrainingProgram,
+                                trainingProvider: !formData.hasTrainingProgram
+                                  ? ""
+                                  : formData.trainingProvider, // clear when unchecked
                               })
                             }
                           />
                         }
-                        label="I’m enrolled in or completed a technical training program"
+                        label="Yes"
                       />
                     </FormGroup>
-                  </FormControl>
-                </Grid>
-                {formData.hasTrainingProgram && (
-                  <Grid size={{ xs: 12 }}>
-                    <FormControl
-                      fullWidth
-                      required
-                      component="fieldset"
-                      sx={{ mb: 2 }}
-                    >
-                      <FormLabel>Training Provider</FormLabel>
-                      <TextField
-                        fullWidth
-                        value={formData.trainingProvider}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  </Question>
+
+                  {/* 13 Training Provider (conditional dropdown) */}
+                  {formData.hasTrainingProgram && (
+                    <Question label="Training provider" required>
+                      <Select
+                        value={formData.trainingProvider || ""}
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
-                            trainingProvider: e.target.value,
+                            trainingProvider: e.target.value as string,
                           })
                         }
-                      />
-                    </FormControl>
-                  </Grid>
-                )}
+                        displayEmpty
+                        fullWidth
+                      >
+                        <MenuItem value="" disabled>
+                          Select provider
+                        </MenuItem>
+                        {TRAINING_PROVIDER_PROGRAMS.map((p) => (
+                          <MenuItem key={p} value={p}>
+                            {p}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Question>
+                  )}
 
-                <Grid size={{ xs: 12 }}>
-                  <FormControl component="fieldset" sx={{ mb: 1 }}>
+                  {/* 14 Certifications toggle */}
+                  <Question label="I have technical certifications">
                     <FormGroup>
                       <FormControlLabel
                         control={
@@ -793,19 +797,21 @@ export default function Page() {
                               setFormData({
                                 ...formData,
                                 hasCertifications: !formData.hasCertifications,
+                                certifications: !formData.hasCertifications
+                                  ? []
+                                  : formData.certifications, // clear if unchecked
                               })
                             }
                           />
                         }
-                        label="I have technical certifications"
+                        label="Yes"
                       />
                     </FormGroup>
-                  </FormControl>
-                </Grid>
-                {formData.hasCertifications && (
-                  <Grid size={{ xs: 12 }}>
-                    <FormControl component="fieldset" sx={{ mb: 2 }}>
-                      <FormLabel>Select certifications</FormLabel>
+                  </Question>
+
+                  {/* 15 Certifications picker */}
+                  {formData.hasCertifications && (
+                    <Question label="Select certifications">
                       <FormHelperText sx={{ m: 0 }}>
                         Click to toggle
                       </FormHelperText>
@@ -835,43 +841,43 @@ export default function Page() {
                           />
                         ))}
                       </Box>
-                    </FormControl>
-                  </Grid>
-                )}
+                    </Question>
+                  )}
 
-                {/* ranking (radio-based) */}
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <RankList
-                    label="16. Please rank the following week days in the order of your availability:"
-                    value={formData.weekdayAvailabilityRank}
-                    onChange={(next) =>
-                      setFormData((p) => ({
-                        ...p,
-                        weekdayAvailabilityRank: next,
-                      }))
-                    }
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <RankList
-                    label="17. Please rank the following time blocks in the order of your availability:"
-                    value={formData.timeblockAvailabilityRank}
-                    onChange={(next) =>
-                      setFormData((p) => ({
-                        ...p,
-                        timeblockAvailabilityRank: next,
-                      }))
-                    }
-                  />
-                </Grid>
-              </Grid>
-            </Box>
+                  {/* 16-17 Availability rankers */}
+                  <Question label="Please rank the following week days in the order of your availability:">
+                    <RankList
+                      label=""
+                      value={formData.weekdayAvailabilityRank}
+                      onChange={(next) =>
+                        setFormData((p) => ({
+                          ...p,
+                          weekdayAvailabilityRank: next,
+                        }))
+                      }
+                    />
+                  </Question>
 
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}
-            >
-              <Box />
-              <PillButton type="submit">Submit Application</PillButton>
+                  <Question label="Please rank the following time blocks in the order of your availability:">
+                    <RankList
+                      label=""
+                      value={formData.timeblockAvailabilityRank}
+                      onChange={(next) =>
+                        setFormData((p) => ({
+                          ...p,
+                          timeblockAvailabilityRank: next,
+                        }))
+                      }
+                    />
+                  </Question>
+                </>
+              )}
+            </Stack>
+
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <PillButton type="submit">
+                Submit Application
+              </PillButton>
             </Box>
           </form>
         </Paper>
