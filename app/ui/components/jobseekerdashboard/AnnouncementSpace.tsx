@@ -43,15 +43,17 @@ export default async function AnnouncementSpace() {
             {/* Benefit-driven subheadline */}
             <div className="inline-flex items-start justify-start gap-2.5 self-stretch">
               <p className="font-semibold leading-none tracking-wider text-primary-main">
-                Free workshops, personalized support, and access to a job placement pool.
+                Free workshops, personalized support, and access to a job
+                placement pool.
               </p>
             </div>
 
             {/* Supporting motivation */}
             <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
               <p>
-                CFA Career Prep helps Washington tech grads build confidence, expand
-                their network, and launch their careers by joining the next cohort.
+                CFA Career Prep helps Washington tech grads build confidence,
+                expand their network, and launch their careers by joining the
+                next cohort.
               </p>
             </div>
 

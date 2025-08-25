@@ -433,7 +433,8 @@ export default function Page() {
             <Confetti />
             <h1>Next Steps</h1>
             <Typography sx={{ pt: 3, mb: 3 }}>
-              You’re all set! Thanks for applying to Career Prep. CFA staff will be in contact with the next available enrollment date.
+              You’re all set! Thanks for applying to Career Prep. CFA staff will
+              be in contact with the next available enrollment date.
             </Typography>
             <PillButton href="/services/jobseekers/dashboard">
               Go to Dashboard
@@ -676,7 +677,10 @@ export default function Page() {
 
                   {/* 9 Degree Completion Window - conditional */}
                   {formData.currentlyEnrolledDegree && (
-                    <Question label="How many months are left until you graduate?" required>
+                    <Question
+                      label="How many months are left until you graduate?"
+                      required
+                    >
                       <Select
                         value={formData.degreeCompletionWindow || ""} // empty until they choose
                         onChange={(e) =>
@@ -720,7 +724,10 @@ export default function Page() {
                     <Select
                       value={formData.degreeProgram || ""}
                       onChange={(e) =>
-                        setFormData({ ...formData, degreeProgram: e.target.value as string })
+                        setFormData({
+                          ...formData,
+                          degreeProgram: e.target.value as string,
+                        })
                       }
                       displayEmpty
                       fullWidth
@@ -875,9 +882,7 @@ export default function Page() {
             </Stack>
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-              <PillButton type="submit">
-                Submit Application
-              </PillButton>
+              <PillButton type="submit">Submit Application</PillButton>
             </Box>
           </form>
         </Paper>

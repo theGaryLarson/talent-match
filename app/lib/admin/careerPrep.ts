@@ -1181,7 +1181,12 @@ export type CareerPrepApplicationDTO = Record<string, string>;
  */
 export const submitCareerPrepApplication = async (
   data: CareerPrepApplicationDTO,
-): Promise<{ success: boolean; status: number; data?: any; error?: string }> => {
+): Promise<{
+  success: boolean;
+  status: number;
+  data?: any;
+  error?: string;
+}> => {
   const endpoint = process.env.CP_APPLICATION_ENDPOINT;
   if (!endpoint) {
     return { success: false, status: 500, error: "Server not configured" };
@@ -1218,7 +1223,6 @@ export const submitCareerPrepApplication = async (
     };
   }
 };
-
 
 /**
  * Submits a career preparation skills assessment with session data.
