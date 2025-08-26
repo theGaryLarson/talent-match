@@ -213,7 +213,9 @@ export default function Page(): JSX.Element {
             Please join the Coalition by completing this form.
           </Typography>
           <FormControl fullWidth required sx={{ mb: 4 }}>
-            <FormLabel>I would like to receive information relevant to:</FormLabel>
+            <FormLabel>
+              I would like to receive information relevant to:
+            </FormLabel>
             <RadioGroup
               name="memberRole"
               value={formData.memberRole}
@@ -222,7 +224,12 @@ export default function Page(): JSX.Element {
               }
             >
               {memberRoles.map((type) => (
-                <FormControlLabel key={type} value={type} control={<Radio />} label={type} />
+                <FormControlLabel
+                  key={type}
+                  value={type}
+                  control={<Radio />}
+                  label={type}
+                />
               ))}
             </RadioGroup>
           </FormControl>
