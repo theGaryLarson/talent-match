@@ -14,12 +14,14 @@ import {
   Snackbar,
   Alert,
   AlertColor,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import PillButton from "@/app/ui/components/PillButton";
 import { JSX } from "react/jsx-runtime";
 
 interface FormData {
-  memberRoles: string[];
+  memberRole: string;
   firstName: string;
   lastName: string;
   jobTitle: string;
@@ -48,7 +50,7 @@ interface PayloadData {
 
 export default function Page(): JSX.Element {
   const [formData, setFormData] = useState<FormData>({
-    memberRoles: [],
+    memberRole: "",
     firstName: "",
     lastName: "",
     jobTitle: "",
@@ -86,11 +88,11 @@ export default function Page(): JSX.Element {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
-    if (formData.memberRoles.length === 0) {
+    if (formData.memberRole) {
       setSubmitStatus({
         open: true,
         severity: "error",
-        message: "Please select at least one member type",
+        message: "Please select a member type",
       });
       return;
     }
@@ -98,14 +100,14 @@ export default function Page(): JSX.Element {
     setIsSubmitting(true);
 
     const payload: PayloadData = {
-      "Member role": formData.memberRoles.join(", "),
+      "Member role": formData.memberRole,
       Firstname: formData.firstName,
       Lastname: formData.lastName,
       JobTitle: formData.jobTitle,
       Organization: formData.organization,
       Email: formData.email,
       "Area of Interest": formData.interests.join(", "),
-      "Form Name": "Membership Form (universal) V3",
+      "Form Name": "Membership Form (universal) V4",
       Notification:
         "This is a notification that a contact form was submitted on your website (Washington Tech Workforce Coalition)",
     };
@@ -133,7 +135,7 @@ export default function Page(): JSX.Element {
       });
 
       setFormData({
-        memberRoles: [],
+        memberRole: "",
         firstName: "",
         lastName: "",
         jobTitle: "",
@@ -151,15 +153,6 @@ export default function Page(): JSX.Element {
     }
 
     setIsSubmitting(false);
-  };
-
-  const handleMemberTypeToggle = (type: string): void => {
-    setFormData((prev) => ({
-      ...prev,
-      memberRoles: prev.memberRoles.includes(type)
-        ? prev.memberRoles.filter((t) => t !== type)
-        : [...prev.memberRoles, type],
-    }));
   };
 
   const handleInterestToggle = (interest: string): void => {
@@ -219,24 +212,26 @@ export default function Page(): JSX.Element {
           <Typography variant="body1" sx={{ mb: 4 }}>
             Please join the Coalition by completing this form.
           </Typography>
-          <FormControl fullWidth sx={{ mb: 4 }}>
-            <FormLabel required>
+          <FormControl fullWidth required sx={{ mb: 4 }}>
+            <FormLabel>
               I would like to receive information relevant to:
             </FormLabel>
-            <FormGroup>
+            <RadioGroup
+              name="memberRole"
+              value={formData.memberRole}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, memberRole: e.target.value }))
+              }
+            >
               {memberRoles.map((type) => (
                 <FormControlLabel
                   key={type}
-                  control={
-                    <Checkbox
-                      checked={formData.memberRoles.includes(type)}
-                      onChange={() => handleMemberTypeToggle(type)}
-                    />
-                  }
+                  value={type}
+                  control={<Radio />}
                   label={type}
                 />
               ))}
-            </FormGroup>
+            </RadioGroup>
           </FormControl>
 
           <Grid container spacing={2} sx={{ mb: 4 }}>
