@@ -88,7 +88,7 @@ export default function Page(): JSX.Element {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
-    if (formData.memberRole) {
+    if (!formData.memberRole) {
       setSubmitStatus({
         open: true,
         severity: "error",
