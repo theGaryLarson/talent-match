@@ -52,15 +52,10 @@ export function ChatProvider({ children }: ChatProviderProps) {
       setIsLoading(true);
 
       try {
-        const history = newMessages.map((m) => ({
-          role: m.sender === "user" ? "user" : ("assistant" as const),
-          content: m.text,
-        }));
-
         const response = await fetch("/api/chatbot", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: history, resumeText }),
+          body: JSON.stringify({ message: message, resumeText }),
         });
 
         if (!response.ok) {
