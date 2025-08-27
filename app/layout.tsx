@@ -3,6 +3,8 @@ import { SessionProvider } from "next-auth/react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "@/mui.theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import { ChatProvider } from "./contexts/ChatContext";
+import ChatBot from "./ui/components/ChatBot";
 import "@/app/ui/global.css";
 
 export default function RootLayout({
@@ -16,7 +18,12 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <SessionProvider>{children}</SessionProvider>
+            <SessionProvider>
+              <ChatProvider>
+                <ChatBot />
+                {children}
+              </ChatProvider>
+            </SessionProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
