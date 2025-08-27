@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Message, useChat } from "@/app/contexts/ChatContext";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
+import { useSession } from "next-auth/react";
 
 const PDF_WORKER_URL = "/pdf.worker.min.mjs";
 
@@ -24,6 +25,8 @@ marked.setOptions({
 });
 
 const ChatBot = () => {
+  const session = useSession();
+
   const {
     isOpen,
     messages,
@@ -91,6 +94,9 @@ const ChatBot = () => {
 
   useEffect(() => {
     async function fetchAndParseResume() {
+      if (!session.data?.user.jobseekerId) {
+        return;
+      }
       try {
         const resp = await fetch("/api/jobseekers/resume/get");
         if (!resp.ok) {
@@ -122,6 +128,10 @@ const ChatBot = () => {
       setInput("");
     }
   };
+
+  if (!session.data?.user.jobseekerId) {
+    return <></>;
+  }
 
   if (!isOpen) {
     return (
