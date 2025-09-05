@@ -15,6 +15,7 @@ import AiHouse from "@/public/images/employers/AI-house-Logo.png";
 import SeattleBank from "@/public/images/employers/Seattle-bank-logo.png";
 import OIUnvest from "@/public/images/employers/OIUnvest.png";
 import Quadrant from "@/public/images/employers/Quadrant.png";
+import Yupro from "@/public/images/employers/Yupro.png";
 import { Box, Grid, Typography } from "@mui/material";
 
 interface Logo {
@@ -40,16 +41,17 @@ const logos: Logo[] = [
   { src: SeattleBank, alt: "Seattle Bank Logo", width: 100 },
   { src: OIUnvest, alt: "OIUnvest Logo", width: 200 },
   { src: Quadrant, alt: "Quadrant Logo", width: 250 },
+  { src: Yupro, alt: "Yupro Logo", width: 250 },
 ];
 
 const row1Logos = logos.slice(0, 6);
 const row2Logos = logos.slice(6, 9);
-const row3Logos = logos.slice(9, 16);
+const row3Logos = logos.slice(9, 17);
 
 export default function TrustedByEmployers() {
   return (
     <Box sx={{ my: 10, px: { xs: 2, sm: 3 } }}>
-      <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>
+      <Typography variant="h4" sx={{ textAlign: "center", mb: 10 }}>
         Trusted By Employers
       </Typography>
       <Grid
