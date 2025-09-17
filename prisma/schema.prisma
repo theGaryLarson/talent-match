@@ -1224,9 +1224,11 @@ model EmployerJobRoleFeedBack {
 
 /// holds ONLY the 2020 codes
 model CIP {
-  id          String  @id @map("code")
+  id          String   @id @map("code")
   title       String
   description String?
+  updatedAt   DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt   DateTime @default(now()) @db.DateTime
 
   soccLinks         CIPToSOCCMap[]
   SOCCToCIPMap      SOCCToCIPMap[]
@@ -1241,6 +1243,8 @@ model SOCC {
   title        String         @db.NVarChar(1000)
   description  String?        @db.NVarChar(1000)
   version      String         @db.VarChar(4) // versions is denoted by year (i.e 2010, 2018, 2020)
+  updatedAt    DateTime       @default(now()) @updatedAt @db.DateTime
+  createdAt    DateTime       @default(now()) @db.DateTime
   CIPToSOCCMap CIPToSOCCMap[]
 
   @@map("socc")
@@ -1268,8 +1272,10 @@ model SOCC2018 {
 }
 
 model CIPToSOCCMap {
-  cip    String @map("cip_code")
-  soccId String @map("socc_id") @db.UniqueIdentifier // now stores socc.id
+  cip       String   @map("cip_code")
+  soccId    String   @map("socc_id") @db.UniqueIdentifier // now stores socc.id
+  updatedAt DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt DateTime @default(now()) @db.DateTime
 
   CIP  CIP  @relation(fields: [cip], references: [id])
   SOCC SOCC @relation(fields: [soccId], references: [id])
@@ -1292,3 +1298,15 @@ model SOCCToCIPMap {
 /////////////////////////////////////////////////////////
 //////////// End CIP & SOCC Tables & Maps ///////////////
 /////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////
+/////////////// RAG RECORD MANAGER //////////////////////
+/////////////////////////////////////////////////////////
+
+model RAGRecordManager {
+  id        String   @id @default(dbgenerated("newid()")) @db.UniqueIdentifier
+  updatedAt DateTime @default(now()) @updatedAt @db.DateTime
+  createdAt DateTime @default(now()) @db.DateTime
+  fileId    String   @unique @db.VarChar(128)
+  hash      String   @db.Char(64)
+}
