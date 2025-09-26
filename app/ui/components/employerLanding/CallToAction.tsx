@@ -22,14 +22,14 @@ export default function CallToAction() {
       </Typography>
 
       <Grid container spacing={5}>
-        <Grid size={{xs:12, lg: 6}}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Stack spacing={2}>
             <Box sx={{ width: "100%" }}>
               <Grid
                 container
                 direction="row"
                 alignItems="center"
-                sx={{ justifyContent: "space-between"}}
+                sx={{ justifyContent: "space-between" }}
               >
                 <Typography variant="h3" sx={{ fontWeight: 500 }}>
                   Planning Ahead
@@ -61,20 +61,23 @@ export default function CallToAction() {
             </Box>
           </Stack>
         </Grid>
-        <Grid size={{xs:12, lg: 6}}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Stack spacing={2}>
             <Box sx={{ width: "100%" }}>
               <Grid
                 container
                 direction="row"
                 alignItems="center"
-                sx={{ justifyContent: "space-between"}}
+                sx={{ justifyContent: "space-between" }}
               >
                 <Typography variant="h3" sx={{ fontWeight: 500 }}>
                   Hiring Now
                 </Typography>
 
-                <PillButton href={"mailto:susanne.mata@computingforall.org"} size="small">
+                <PillButton
+                  href={"mailto:susanne.mata@computingforall.org"}
+                  size="small"
+                >
                   Get In Touch
                 </PillButton>
               </Grid>

@@ -115,7 +115,14 @@ export default async function MarketingCards() {
                 <Typography sx={{ fontWeight: 500 }} color="textSecondary">
                   1,000 raw résumés
                 </Typography>
-                <Box sx={{ my: 2.5, flexGrow: 1, width: "100%", position: "relative" }}>
+                <Box
+                  sx={{
+                    my: 2.5,
+                    flexGrow: 1,
+                    width: "100%",
+                    position: "relative",
+                  }}
+                >
                   <Image
                     src={funnel}
                     alt="funnel"
@@ -123,10 +130,11 @@ export default async function MarketingCards() {
                     style={{ objectFit: "contain" }}
                   />
                 </Box>
-                <Typography sx={{ fontWeight: 500 }}>5 CFA finalists</Typography>
+                <Typography sx={{ fontWeight: 500 }}>
+                  5 CFA finalists
+                </Typography>
               </Stack>
             </Grid>
-            
 
             {/* $0 placement fees */}
             <Grid size={12}>
@@ -190,8 +198,6 @@ export default async function MarketingCards() {
             </Box>
           </Grid>
         </Grid>
-
-          
       </Box>
     </Box>
   );
