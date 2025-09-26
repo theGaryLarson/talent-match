@@ -23,21 +23,41 @@ export default async function EmployerSteps() {
       </Box>
       <Grid
         container
-        spacing={2}
-        sx={{ justifyContent: "center", alignItems: "center" }}
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+          gap: { xs: 1.5, md: 3 }, // tighten horizontal spacing
+          flexWrap: { xs: "wrap", sm: "nowrap" }, // stack on mobile, one row on sm+
+        }}
       >
-        <Grid size={{ xs: 12, sm: 4 }} sx={{ justifyItems: "center" }}>
-          <Image className="w-[300px]" src={Step1} alt={""} quality={50} />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 4 }} sx={{ justifyItems: "center" }}>
-          <Image className="w-[300px]" src={Step2} alt="" quality={50} />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 4 }} sx={{ justifyItems: "center" }}>
-          <Image className="w-[300px]" src={Step3} alt={""} quality={50} />
-        </Grid>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Image
+            src={Step1}
+            alt="Step 1"
+            quality={50}
+            style={{ width: 350, height: "auto" }}
+          />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Image
+            src={Step2}
+            alt="Step 2"
+            quality={50}
+            style={{ width: 350, height: "auto" }}
+          />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Image
+            src={Step3}
+            alt="Step 3"
+            quality={50}
+            style={{ width: 350, height: "auto" }}
+          />
+        </Box>
       </Grid>
-      <Grid container sx={{ mt: 5, justifySelf: "center" }}>
-        <PillButton href={"mailto:susanne.mata@computingforall.org"}>
+
+      <Grid container justifyContent="center" sx={{ mt: 5 }}>
+        <PillButton href="mailto:susanne.mata@computingforall.org">
           Get In Touch
         </PillButton>
       </Grid>

@@ -103,18 +103,31 @@ export default async function MarketingCards() {
                   p: 4,
                   borderRadius: "25px",
                   justifyContent: "flex-start",
-                  alignItems: "center",
+                  alignItems: "center", // keep the rest centered
+                  gap: 1.5,
                 }}
               >
                 <Typography
                   variant="h3"
-                  sx={{ fontWeight: 500, textAlign: "right" }}
+                  sx={{
+                    fontWeight: 500,
+                    alignSelf: "stretch",
+                    textAlign: "left",
+                    lineHeight: 1.1,
+                  }}
                 >
-                  Reduced screening time
+                  <Box component="span" display="block">
+                    Reduced
+                  </Box>
+                  <Box component="span" display="block">
+                    screening time
+                  </Box>
                 </Typography>
+
                 <Typography sx={{ fontWeight: 500 }} color="textSecondary">
                   1,000 raw résumés
                 </Typography>
+
                 <Box
                   sx={{
                     my: 2.5,
@@ -130,6 +143,7 @@ export default async function MarketingCards() {
                     style={{ objectFit: "contain" }}
                   />
                 </Box>
+
                 <Typography sx={{ fontWeight: 500 }}>
                   5 CFA finalists
                 </Typography>
@@ -144,14 +158,24 @@ export default async function MarketingCards() {
                   height: "100%",
                   p: 4,
                   borderRadius: "25px",
+                  display: "flex",
+                  alignItems: "center", // vertical center
+                  justifyContent: "center", // horizontal center
+                  textAlign: "center",
+                  minHeight: 200, // optional: ensures enough height to see the centering
                 }}
               >
-                <Typography
-                  variant="h3"
-                  sx={{ fontWeight: 500, textAlign: "right" }}
-                >
-                  $0 placement fees
-                </Typography>
+                <Stack spacing={1} alignItems="center">
+                  <Typography
+                    variant="h1"
+                    sx={{ fontWeight: 700, lineHeight: 1 }} // larger $0
+                  >
+                    $0
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 500 }}>
+                    placement fees
+                  </Typography>
+                </Stack>
               </Box>
             </Grid>
           </Grid>
