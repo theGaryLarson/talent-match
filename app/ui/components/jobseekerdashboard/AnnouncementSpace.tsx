@@ -24,12 +24,55 @@ export default async function AnnouncementSpace() {
         </div>
       </Grid>
       <Carousel>
-        {/* <CareerPrep
-          enrollmentStatus={carrerPrepEnrollment?.enrollment}
-          track={carrerPrepEnrollment?.AssignedTrack}
-          jobseekerId={session?.user.jobseekerId ?? ""}
-          caseManager={`${carrerPrepEnrollment?.CaseManger?.first_name ?? "Our"} ${carrerPrepEnrollment?.CaseManger?.last_name ?? "Career Navigator"}`}
-        /> */}
+        {/* Career Prep Card with Enrollment & Info Buttons */}
+        <Card
+          elevation={0}
+          sx={{
+            borderRadius: "1rem",
+            p: "calc(var(--spacing) * 4)",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <Stack direction="column" gap={2}>
+            {/* Headline */}
+            <p className="self-stretch text-[32px] font-normal leading-[38.40px] text-secondary-main">
+              Join the Career Prep Program
+            </p>
+
+            {/* Benefit-driven subheadline */}
+            <div className="inline-flex items-start justify-start gap-2.5 self-stretch">
+              <p className="font-semibold leading-none tracking-wider text-primary-main">
+                Free workshops, personalized support, and access to a job
+                placement pool.
+              </p>
+            </div>
+
+            {/* Supporting motivation */}
+            <div className="font-normal leading-tight text-neutral-900/60 w-[50vw]">
+              <p>
+                CFA Career Prep helps Washington tech grads build confidence,
+                expand their network, and launch their careers by joining the
+                next cohort.
+              </p>
+            </div>
+
+            {/* CTA Button */}
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ placeSelf: "end", mt: "calc(var(--spacing) * 4)" }}
+            >
+              <PillButton
+                color="secondary"
+                href="/services/jobseekers/career-prep/apply"
+              >
+                Apply
+              </PillButton>
+            </Stack>
+          </Stack>
+        </Card>
+
         {/* Update your profile card */}
         <Card
           elevation={0}

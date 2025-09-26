@@ -18,11 +18,15 @@ import { devLog } from "@/app/lib/utils";
 import {
   FormControl,
   FormControlLabel,
+  FormGroup,
   FormLabel,
   Radio,
   RadioGroup,
+  Checkbox,
+  Stack,
 } from "@mui/material";
 import { CareerPrepPathways } from "@/app/lib/admin/careerPrep";
+
 export default function CreateJobseekerProfilePreferencesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -31,15 +35,43 @@ export default function CreateJobseekerProfilePreferencesPage() {
     (state: RootState) => state.jobseeker.preferences,
   );
   const preferencesData = { ...preferencesStoreData };
-  const [error, setError] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [error, setError] = useState<string | null>(null);
 
-  const [employmentType, setEmploymentType] = useState(
-    preferencesData.preferredEmploymentType ?? "",
+  const EMPLOYMENT_OPTIONS = [
+    "Full-time",
+    "Part-time",
+    "Internship",
+    "On-campus",
+  ] as const;
+  type EmploymentLabel = (typeof EMPLOYMENT_OPTIONS)[number];
+
+  const parseCSV = (s?: string | null): string[] =>
+    (s ?? "")
+      .split(",")
+      .map((v) => v.trim())
+      .filter(Boolean);
+
+  const toCSV = (arr: string[]): string =>
+    [...new Set(arr.map((v) => v.trim()))].join(",");
+
+  const [employmentTypes, setEmploymentTypes] = useState<string[]>(
+    parseCSV(preferencesData.preferredEmploymentType),
   );
+
   const [pathway, setPathway] = useState(preferencesData.targetedPathway ?? "");
   const [pathwayId, setPathwayId] = useState(
     preferencesData.targetedPathwayId ?? "",
   );
+
+  const toggleEmployment = (label: EmploymentLabel, checked: boolean) => {
+    setEmploymentTypes((prev) =>
+      checked ? [...prev, label] : prev.filter((l) => l !== label),
+    );
+  };
+
+  useEffect(() => {
+    devLog("Selected employment types:", employmentTypes);
+  }, [employmentTypes]);
 
   useEffect(() => {
     if (session?.user?.id && status === "authenticated") {
@@ -59,11 +91,13 @@ export default function CreateJobseekerProfilePreferencesPage() {
               const fetchedData: JsPreferencesDTO = (await response.json())
                 .result;
               preferencesData.userId = id!;
+
               if (fetchedData.preferredEmploymentType) {
-                preferencesData.preferredEmploymentType =
-                  fetchedData.preferredEmploymentType;
-                setEmploymentType(preferencesData.preferredEmploymentType);
+                const list = parseCSV(fetchedData.preferredEmploymentType);
+                preferencesData.preferredEmploymentType = toCSV(list);
+                setEmploymentTypes(list);
               }
+
               if (fetchedData.targetedPathway) {
                 preferencesData.targetedPathway = fetchedData.targetedPathway;
                 setPathway(preferencesData.targetedPathway);
@@ -79,12 +113,13 @@ export default function CreateJobseekerProfilePreferencesPage() {
           }
         } else {
           devLog("fetching from store");
+          setEmploymentTypes(parseCSV(preferencesData.preferredEmploymentType));
         }
       };
       dispatch(setPageSaved("preferences"));
       initializeFormFields();
     }
-  }, [session?.user?.id]);
+  }, [session?.user?.id, status]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -93,11 +128,15 @@ export default function CreateJobseekerProfilePreferencesPage() {
       return;
     }
 
-    preferencesData.userId = session.user.id;
-    preferencesData.targetedPathwayId =
-      preferencesData.targetedPathway !== pathway ? undefined : pathwayId;
-    preferencesData.targetedPathway = pathway;
-    preferencesData.preferredEmploymentType = employmentType;
+    const employmentCsv = toCSV(employmentTypes);
+
+    const dto: JsPreferencesDTO = {
+      userId: session.user.id,
+      targetedPathway: pathway,
+      targetedPathwayId:
+        preferencesData.targetedPathway !== pathway ? undefined : pathwayId,
+      preferredEmploymentType: employmentCsv,
+    };
 
     try {
       const response = await fetch(
@@ -107,7 +146,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(preferencesData),
+          body: JSON.stringify(dto),
         },
       );
 
@@ -116,7 +155,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
         devLog(JSON.stringify(result, null, 2));
 
         dispatch(setPageSaved("preferences"));
-        dispatch(setPreferences(preferencesData));
+        dispatch(setPreferences({ ...preferencesData, ...dto }));
 
         router.push("/edit-profile/jobseeker/showcase");
       } else {
@@ -132,9 +171,6 @@ export default function CreateJobseekerProfilePreferencesPage() {
     <main className="flex justify-center">
       <aside className="profile-form-aside"></aside>
       <section className="profile-form-section">
-        {/* TODO: Comment/Uncomment test script below for viewing */}
-        {/* <h1>Data on Another Page</h1>
-        <pre>{JSON.stringify(fields, null, 2)}</pre> */}
         <ProgressBarFlat progress={(2 / 6) * 100} />
         <p>Step 2/6</p>
         <h1>Your preferences</h1>
@@ -142,92 +178,43 @@ export default function CreateJobseekerProfilePreferencesPage() {
         <p className="subtitle">* Indicates a required field</p>
         <form onSubmit={handleSubmit}>
           <fieldset>
-            <div>
-              <fieldset>
-                <legend>What are you looking for?</legend>
-                <div className="container">
-                  <PillButton
-                    sx={{
-                      m: 2, // Margin all sides equivalent to 'm-2'
-                      backgroundColor:
-                        employmentType === "Full-time"
-                          ? "primary.main"
-                          : "transparent",
-                      color:
-                        employmentType === "Full-time"
-                          ? "neutral.white"
-                          : "primary.main",
-                    }}
-                    variant="outlined"
-                    onClick={() => {
-                      setEmploymentType("Full-time");
-                    }}
-                  >
-                    Full-time job
-                  </PillButton>
-                  <PillButton
-                    sx={{
-                      m: 2,
-                      backgroundColor:
-                        employmentType === "Part-time"
-                          ? "primary.main"
-                          : "transparent",
-                      color:
-                        employmentType === "Part-time"
-                          ? "neutral.white"
-                          : "primary.main",
-                    }}
-                    variant="outlined"
-                    onClick={() => {
-                      setEmploymentType("Part-time");
-                    }}
-                  >
-                    Part-time job
-                  </PillButton>
-                  <PillButton
-                    sx={{
-                      m: 2,
-                      backgroundColor:
-                        employmentType === "Internship"
-                          ? "primary.main"
-                          : "transparent",
-                      color:
-                        employmentType === "Internship"
-                          ? "neutral.white"
-                          : "primary.main",
-                    }}
-                    variant="outlined"
-                    onClick={() => {
-                      setEmploymentType("Internship");
-                    }}
-                  >
-                    Internship
-                  </PillButton>
-                  <PillButton
-                    sx={{
-                      m: 2,
-                      backgroundColor:
-                        employmentType === "On-campus"
-                          ? "primary.main"
-                          : "transparent",
-                      color:
-                        employmentType === "On-campus"
-                          ? "neutral.white"
-                          : "primary.main",
-                    }}
-                    variant="outlined"
-                    onClick={() => {
-                      setEmploymentType("On-campus");
-                    }}
-                  >
-                    On-campus job
-                  </PillButton>
-                </div>
-              </fieldset>
-              <FormControl component="fieldset">
+            <legend>What are you looking for?</legend>
+            <Stack spacing={4}>
+              <FormControl component="fieldset" variant="standard">
+                <FormLabel component="legend" sx={{ color: "#000000ff" }}>
+                  Select all that apply
+                </FormLabel>
+                <FormGroup>
+                  {EMPLOYMENT_OPTIONS.map((label) => (
+                    <FormControlLabel
+                      key={label}
+                      control={
+                        <Checkbox
+                          checked={employmentTypes.includes(label)}
+                          onChange={(e) =>
+                            toggleEmployment(label, e.target.checked)
+                          }
+                          name={label}
+                        />
+                      }
+                      label={
+                        label === "Full-time"
+                          ? "Full-time job"
+                          : label === "Part-time"
+                            ? "Part-time job"
+                            : label === "Internship"
+                              ? "Internship"
+                              : "On-campus job"
+                      }
+                      sx={{ mr: 2 }}
+                    />
+                  ))}
+                </FormGroup>
+              </FormControl>
+
+              <FormControl component="fieldset" sx={{ mt: 4 }}>
                 <FormLabel
                   id="profile-creation-preferences-require-role"
-                  className="mt-7"
                   component="legend"
                   sx={{ color: "#000000ff" }}
                 >
@@ -237,9 +224,7 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   aria-labelledby="profile-creation-preferences-require-role"
                   name="profile-creation-preferences-require-role"
                   value={pathway}
-                  onChange={(e) => {
-                    setPathway(e.target.value);
-                  }}
+                  onChange={(e) => setPathway(e.target.value)}
                 >
                   {Object.values(CareerPrepPathways).map((pathValue) => (
                     <FormControlLabel
@@ -251,21 +236,23 @@ export default function CreateJobseekerProfilePreferencesPage() {
                   ))}
                 </RadioGroup>
               </FormControl>
-            </div>
+            </Stack>
           </fieldset>
 
           <div className="profile-form-progress-btn-group">
             <PillButton
               variant="outlined"
-              onClick={() => {
-                router.push("/edit-profile/jobseeker/introduction");
-              }}
+              onClick={() =>
+                router.push("/edit-profile/jobseeker/introduction")
+              }
             >
               Previous
             </PillButton>
             <PillButton type="submit">Save and continue</PillButton>
           </div>
         </form>
+
+        {error && <p style={{ color: "crimson", marginTop: 12 }}>{error}</p>}
       </section>
     </main>
   );
