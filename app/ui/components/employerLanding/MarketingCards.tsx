@@ -17,125 +17,136 @@ export default async function MarketingCards() {
         Why Choose Us?
       </Typography>
       <Box sx={{ flexGrow: 1, p: 0 }}>
-        <Grid container spacing={3}>
-          {/* Education Partner Network */}
-          <Grid size={{ xs: 12, md: 8 }}>
-            <Box
-              sx={{
-                backgroundColor: "neutral.100",
-                height: "100%",
-                p: 4,
-                borderRadius: "25px",
-              }}
-            >
+        <Grid container spacing={5}>
+          <Stack component={Grid} size={{ xs: 12, md: 8 }} spacing={5}>
+            {/* Education Partner Network */}
+            <Grid size={12}>
+              <Box
+                sx={{
+                  backgroundColor: "neutral.100",
+                  height: "100%",
+                  p: 4,
+                  borderRadius: "25px",
+                }}
+              >
+                <Stack
+                  direction={{ xs: "column", md: "row" }}
+                  sx={{ justifyContent: "space-between" }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{ fontWeight: 500, alignSelf: "center" }}
+                  >
+                    Education partner network
+                  </Typography>
+                  <Box sx={{ width: "450px" }}>
+                    <Image src={employersImg} alt="partner logo" />
+                  </Box>
+                </Stack>
+              </Box>
+            </Grid>
+            {/* Job-ready candidates */}
+            <Grid container spacing={5}>
+              <Grid size={{ xs: 12, md: 6 }} sx={{ minHeight: "400px" }}>
+                <Box
+                  sx={{
+                    backgroundImage: `url(${personCoding.src})`,
+                    backgroundSize: "cover",
+                    height: "100%",
+                    p: 4,
+                    borderRadius: "25px",
+                  }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{ color: "neutral.white", fontWeight: 500 }}
+                  >
+                    Job-ready, vetted candidates
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Local diverse pool */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Box
+                  sx={{
+                    backgroundColor: "neutral.100",
+                    height: "100%",
+                    p: 4,
+                    borderRadius: "25px",
+                  }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{ fontWeight: 500, alignSelf: "center" }}
+                  >
+                    Local & diverse WA talent pool
+                  </Typography>
+                  <Box sx={{ my: 2.5 }}>
+                    <Image
+                      src={diversePool}
+                      alt="A picture of 7 different candidates"
+                    />
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+          </Stack>
+
+          <Grid container size={{ xs: 12, md: 4 }} spacing={5}>
+            {/* Reduced screening time */}
+            <Grid size={12}>
               <Stack
-                direction={{ xs: "column", md: "row" }}
-                sx={{ justifyContent: "space-between" }}
+                sx={{
+                  backgroundColor: "neutral.100",
+                  height: "100%",
+                  p: 4,
+                  borderRadius: "25px",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
               >
                 <Typography
                   variant="h3"
-                  sx={{ fontWeight: 500, alignSelf: "center" }}
+                  sx={{ fontWeight: 500, textAlign: "right" }}
                 >
-                  Education partner network
+                  Reduced screening time
                 </Typography>
-                <Box sx={{ width: "450px" }}>
-                  <Image src={employersImg} alt="partner logo" />
+                <Typography sx={{ fontWeight: 500 }} color="textSecondary">
+                  1,000 raw résumés
+                </Typography>
+                <Box sx={{ my: 2.5, flexGrow: 1, width: "100%", position: "relative" }}>
+                  <Image
+                    src={funnel}
+                    alt="funnel"
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
                 </Box>
+                <Typography sx={{ fontWeight: 500 }}>5 CFA finalists</Typography>
               </Stack>
-            </Box>
-          </Grid>
+            </Grid>
+            
 
-          {/* Reduced screening time */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Stack
-              sx={{
-                backgroundColor: "neutral.100",
-                height: "100%",
-                p: 4,
-                borderRadius: "25px",
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="h3"
-                sx={{ fontWeight: 500, textAlign: "right" }}
+            {/* $0 placement fees */}
+            <Grid size={12}>
+              <Box
+                sx={{
+                  backgroundColor: "neutral.100",
+                  height: "100%",
+                  p: 4,
+                  borderRadius: "25px",
+                }}
               >
-                Reduced screening time
-              </Typography>
-              <Typography sx={{ fontWeight: 500 }} color="textSecondary">
-                1,000 raw résumés
-              </Typography>
-              <Box sx={{ my: 2.5 }}>
-                <Image src={funnel} alt="funnel" />
+                <Typography
+                  variant="h3"
+                  sx={{ fontWeight: 500, textAlign: "right" }}
+                >
+                  $0 placement fees
+                </Typography>
               </Box>
-              <Typography sx={{ fontWeight: 500 }}>5 CFA finalists</Typography>
-            </Stack>
+            </Grid>
           </Grid>
-          {/* Job-ready candidates */}
-          <Grid size={{ xs: 12, md: 4 }} sx={{ minHeight: "400px" }}>
-            <Box
-              sx={{
-                backgroundImage: `url(${personCoding.src})`,
-                backgroundSize: "cover",
-                height: "100%",
-                p: 4,
-                borderRadius: "25px",
-              }}
-            >
-              <Typography
-                variant="h3"
-                sx={{ color: "neutral.white", fontWeight: 500 }}
-              >
-                Job-ready, vetted candidates
-              </Typography>
-            </Box>
-          </Grid>
-
-          {/* Local diverse pool */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Box
-              sx={{
-                backgroundColor: "neutral.100",
-                height: "100%",
-                p: 4,
-                borderRadius: "25px",
-              }}
-            >
-              <Typography
-                variant="h3"
-                sx={{ fontWeight: 500, alignSelf: "center" }}
-              >
-                Local & diverse WA talent pool
-              </Typography>
-              <Box sx={{ my: 2.5 }}>
-                <Image
-                  src={diversePool}
-                  alt="A picture of 7 different candidates"
-                />
-              </Box>
-            </Box>
-          </Grid>
-
-          {/* $0 placement fees */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Box
-              sx={{
-                backgroundColor: "neutral.100",
-                height: "100%",
-                p: 4,
-                borderRadius: "25px",
-              }}
-            >
-              <Typography
-                variant="h3"
-                sx={{ fontWeight: 500, textAlign: "right" }}
-              >
-                $0 placement fees
-              </Typography>
-            </Box>
-          </Grid>
-
           {/* Why free */}
           <Grid size={12}>
             <Box
@@ -179,6 +190,8 @@ export default async function MarketingCards() {
             </Box>
           </Grid>
         </Grid>
+
+          
       </Box>
     </Box>
   );
