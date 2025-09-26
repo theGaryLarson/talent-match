@@ -3,11 +3,22 @@ import talentSolutionsImage from "./TalentSolutions.jpg";
 import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
 export default async function TCPortalFunctionsFold() {
   return (
-    <Box sx={{ px: { xs: 1, md: 5, lg: 10 }, pt: 10 }}>
-      <Typography variant="h1" color="secondary" sx={{ fontWeight: 500 }}>
+    <Box
+      sx={{ px: { xs: 1, md: 5, lg: 10 }, pt: 10, maxWidth: 1720, mx: "auto" }}
+    >
+      <Typography
+        variant="h1"
+        color="secondary"
+        sx={{
+          fontWeight: 500,
+          mb: { xs: 3, md: 6 },
+          lineHeight: 1.1,
+          fontSize: { xs: "2.5rem", md: "3.25rem", lg: "3.75em" },
+        }}
+      >
         Talent Solutions at a Glance.
       </Typography>
-      <Grid spacing={{ sm: 2, md: 10 }} container>
+      <Grid spacing={{ sm: 2, md: 10 }} container sx={{ mt: { xs: 0, md: 0 } }}>
         <Stack
           spacing={5}
           component={Grid}
