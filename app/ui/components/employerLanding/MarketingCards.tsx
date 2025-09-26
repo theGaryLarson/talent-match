@@ -1,101 +1,204 @@
-import Image, { StaticImageData } from "next/image";
-import RoundedButton from "../RoundedButton";
-import ExternshipImg from "./Externship.png";
-import EventsImg from "./events.png";
-import LogosImg from "./logos.png";
-export default function MarketingCards() {
-  return (
-    <div className="space-y-[64px] py-[64px]">
-      <MarketCard
-        imgSrc={ExternshipImg}
-        link="mailto:susanne.mata@computingforall.org?subject=Talent%20Portal%20Externships"
-        tittle={"Create Externships Tailored to Your Needs"}
-        paragraph={
-          "Collaborate with our skilled candidates on real projects. Observe their skills, teamwork, and problem-solving abilities firsthand before making a hiring decision. Shape projects to meet your specific hiring needs and evaluate potential hires in a real-world setting."
-        }
-        buttonText={"Learn More About Externships"}
-      />
-      <MarketCard
-        imgSrc={EventsImg}
-        link="/services/events"
-        textfirst={true}
-        tittle={"Join Our Tech Community Network"}
-        paragraph={
-          "Engage with our community by participating in various events from workshops to talent showcases, industry panels and hiring fairs. Network with potential candidates and build your employer brand in our Tech Community Network forum."
-        }
-        buttonText={"Get Connected"}
-      />
-      <MarketCard
-        imgSrc={LogosImg}
-        link="/services/training-providers"
-        tittle={"Building a Skilled and Diverse Tech Workforce"}
-        paragraph={
-          "We are committed to bridging the skills gap and promoting diversity in tech. We partner with leading training providers and educational institutions to ensure our candidates have the skills you need."
-        }
-        buttonText={"Learn About Our Partners"}
-      />
-    </div>
-  );
-}
-function MarketCard({
-  tittle,
-  paragraph,
-  buttonText,
-  buttonDisabled = false,
-  textfirst = false,
-  link,
-  imgSrc,
-}: {
-  imgSrc: StaticImageData;
-  link: string;
-  textfirst?: boolean;
-  tittle: string;
-  paragraph: string;
-  buttonText: string;
-  buttonDisabled?: boolean;
-}) {
-  return (
-    <div className="bg-gray-200 p-[32px] rounded-4xl grid grid-cols-1 laptop:grid-cols-2 gap-[32px]">
-      <Image className="" src={imgSrc} alt={"Externship marketing image"} />
-      <TextHalf
-        link={link}
-        appearFirst={textfirst}
-        tittle={tittle}
-        paragraph={paragraph}
-        buttonDisabled={buttonDisabled}
-        buttonText={buttonText}
-      />
-    </div>
-  );
-}
+import { Box, Grid, Stack, Typography } from "@mui/material";
+import diversePool from "./DiversePool.png";
+import employersImg from "./logos.png";
+import funnel from "./funnel.svg";
+import personCoding from "./PersonCoding.jpg";
+import Image from "next/image";
+import PillButton from "../PillButton";
 
-function TextHalf({
-  appearFirst,
-  tittle,
-  paragraph,
-  buttonText,
-  buttonDisabled = false,
-  link,
-}: {
-  link: string;
-  appearFirst: boolean;
-  tittle: string;
-  paragraph: string;
-  buttonText: string;
-  buttonDisabled?: boolean;
-}) {
+export default async function MarketingCards() {
   return (
-    <div
-      className={`max-w-[600px] space-y-[32px] ${appearFirst ? "laptop:order-first" : ""}`}
-    >
-      <h3 className="portfolio text-5xl capitalize leading-[58px]">{tittle}</h3>
-      <p>{paragraph}</p>
-      <RoundedButton
-        content={buttonText}
-        invertColor={true}
-        link={link}
-        disabled={buttonDisabled}
-      />
-    </div>
+    <Box sx={{ px: { xs: 1, md: 5, lg: 10 }, py: 10 }}>
+      <Typography
+        variant="h1"
+        color="secondary"
+        sx={{ fontWeight: 500, textAlign: "center", pb: 10 }}
+      >
+        Why Choose Us?
+      </Typography>
+      <Box sx={{ flexGrow: 1, p: 0 }}>
+        <Grid container spacing={5}>
+          <Stack component={Grid} size={{ xs: 12, md: 8 }} spacing={5}>
+            {/* Education Partner Network */}
+            <Grid size={12}>
+              <Box
+                sx={{
+                  backgroundColor: "neutral.100",
+                  height: "100%",
+                  p: 4,
+                  borderRadius: "25px",
+                }}
+              >
+                <Stack
+                  direction={{ xs: "column", md: "row" }}
+                  sx={{ justifyContent: "space-between" }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{ fontWeight: 500, alignSelf: "center" }}
+                  >
+                    Education partner network
+                  </Typography>
+                  <Box sx={{ width: "450px" }}>
+                    <Image src={employersImg} alt="partner logo" />
+                  </Box>
+                </Stack>
+              </Box>
+            </Grid>
+            {/* Job-ready candidates */}
+            <Grid container spacing={5}>
+              <Grid size={{ xs: 12, md: 6 }} sx={{ minHeight: "400px" }}>
+                <Box
+                  sx={{
+                    backgroundImage: `url(${personCoding.src})`,
+                    backgroundSize: "cover",
+                    height: "100%",
+                    p: 4,
+                    borderRadius: "25px",
+                  }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{ color: "neutral.white", fontWeight: 500 }}
+                  >
+                    Job-ready, vetted candidates
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Local diverse pool */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Box
+                  sx={{
+                    backgroundColor: "neutral.100",
+                    height: "100%",
+                    p: 4,
+                    borderRadius: "25px",
+                  }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{ fontWeight: 500, alignSelf: "center" }}
+                  >
+                    Local & diverse WA talent pool
+                  </Typography>
+                  <Box sx={{ my: 2.5 }}>
+                    <Image
+                      src={diversePool}
+                      alt="A picture of 7 different candidates"
+                    />
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+          </Stack>
+
+          <Grid container size={{ xs: 12, md: 4 }} spacing={5}>
+            {/* Reduced screening time */}
+            <Grid size={12}>
+              <Stack
+                sx={{
+                  backgroundColor: "neutral.100",
+                  height: "100%",
+                  p: 4,
+                  borderRadius: "25px",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  sx={{ fontWeight: 500, textAlign: "right" }}
+                >
+                  Reduced screening time
+                </Typography>
+                <Typography sx={{ fontWeight: 500 }} color="textSecondary">
+                  1,000 raw résumés
+                </Typography>
+                <Box
+                  sx={{
+                    my: 2.5,
+                    flexGrow: 1,
+                    width: "100%",
+                    position: "relative",
+                  }}
+                >
+                  <Image
+                    src={funnel}
+                    alt="funnel"
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </Box>
+                <Typography sx={{ fontWeight: 500 }}>
+                  5 CFA finalists
+                </Typography>
+              </Stack>
+            </Grid>
+
+            {/* $0 placement fees */}
+            <Grid size={12}>
+              <Box
+                sx={{
+                  backgroundColor: "neutral.100",
+                  height: "100%",
+                  p: 4,
+                  borderRadius: "25px",
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  sx={{ fontWeight: 500, textAlign: "right" }}
+                >
+                  $0 placement fees
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
+          {/* Why free */}
+          <Grid size={12}>
+            <Box
+              sx={{
+                backgroundColor: "neutral.100",
+                height: "100%",
+                p: 4,
+                borderRadius: "25px",
+              }}
+            >
+              <Grid container direction={{ xs: "column", lg: "row" }}>
+                <Stack
+                  component={Grid}
+                  size={{ xs: 12, lg: 6 }}
+                  spacing={{ xs: 1, lg: 5 }}
+                >
+                  <Typography variant="h3" sx={{ fontWeight: 500 }}>
+                    Why is it free for now
+                  </Typography>
+                  <Box>
+                    <PillButton
+                      href="/about-us"
+                      color="inherit"
+                      variant="outlined"
+                      sx={{ fontSize: "1.5rem" }}
+                    >
+                      Learn More
+                    </PillButton>
+                  </Box>
+                </Stack>
+                <Grid size={{ xs: 12, lg: 6 }}>
+                  <Typography sx={{ fontSize: "1.5rem", mr: 2 }}>
+                    Our sourcing service is fully funded by Washington’s Good
+                    Jobs Challenge grant, which covers all placement costs as we
+                    help place 1,000 tech workers by Sept 2026. After the grant
+                    sunsets, CFA will shift to a cost-share model. Until then,
+                    employer access is 100% free.
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 }

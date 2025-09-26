@@ -82,7 +82,6 @@ structured development workflow.
    ```
 
 3. Applying fixes to the release branch should be done as follows:
-
    - Ensure you are on the correct release branch.
      ```bash
      git checkout release/[release-version]

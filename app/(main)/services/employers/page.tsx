@@ -1,26 +1,23 @@
 //employer landing page
-import BottomFold from "@/app/ui/components/employerLanding/BottomFold";
+import CallToAction from "@/app/ui/components/employerLanding/CallToAction";
 import EmployerPageBanner from "@/app/ui/components/employerLanding/EmployerPageBanner";
 import EmployerSteps from "@/app/ui/components/employerLanding/EmployerSteps";
 import MarketingCards from "@/app/ui/components/employerLanding/MarketingCards";
-import MeetTheFounders from "@/app/ui/components/employerLanding/MeetTheFounders";
+import RealNumbers from "@/app/ui/components/employerLanding/RealNumbers";
 import TCPortalFunctionsFold from "@/app/ui/components/employerLanding/TCPortalFunctionsFold";
 import TrustedByEmployers from "@/app/ui/components/employerLanding/TrustedByEmployers";
 
-export default function Page() {
+export default async function Page() {
   return (
     <>
-      <EmployerPageBanner />
-      <main className="space-y-3 font-['Roboto'] ">
+      <main>
+        <EmployerPageBanner />
         <TCPortalFunctionsFold />
-
-        <div className="px-[16px] sm-tablet:px-[32px] tablet:px-[32px] laptop:px-[74px] desktop:px-[200px]">
-          <TrustedByEmployers />
-          <EmployerSteps />
-          <MarketingCards />
-          <MeetTheFounders />
-        </div>
-        <BottomFold />
+        <TrustedByEmployers />
+        <EmployerSteps />
+        <MarketingCards />
+        <RealNumbers />
+        <CallToAction />
       </main>
     </>
   );

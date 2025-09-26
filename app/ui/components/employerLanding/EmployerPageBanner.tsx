@@ -1,5 +1,5 @@
 import Image from "next/image";
-import RoundedButton from "../RoundedButton";
+import PillButton from "../PillButton";
 
 export default async function EmployerPageBanner() {
   return (
@@ -20,23 +20,30 @@ export default async function EmployerPageBanner() {
           className="self-stretch capitalize leading-tight"
           style={{ fontSize: "clamp(2rem, 10vw, 5rem)" }}
         >
-          Discovering Tech Talent Just Got Easier
+          Your Hiring Concierge for WA Tech Talent
         </div>
         <div className="self-stretch text-[22px] leading-relaxed">
-          Revolutionize your hiring process with portfolios that showcase
-          candidates' practical skills and project experience
+          Stop sifting through résumés. Access a pre‑vetted pipeline of 1000+
+          skilled tech job seekers from 15+ colleges and training partners
+          statewide.
         </div>
         <div className="gap-4 flex flex-row items-start justify-start">
-          <RoundedButton
-            content={"Explore Portfolios"}
-            link={"/services/employers/dashboard/talent-search"}
-            invertColor={false}
-          />
-          <RoundedButton
-            content={"Post A Job"}
-            link={"mailto:susanne.mata@computingforall.org"}
-            invertColor={false}
-          />
+          <PillButton
+            variant="outlined"
+            size="large"
+            href={"/about-us"}
+            sx={{ color: "neutral.black", backgroundColor: "primary.light" }}
+          >
+            Learn More
+          </PillButton>
+          <PillButton
+            variant="outlined"
+            color="inherit"
+            size="large"
+            href={"mailto:susanne.mata@computingforall.org"}
+          >
+            Get In Touch
+          </PillButton>
         </div>
       </div>
     </div>
